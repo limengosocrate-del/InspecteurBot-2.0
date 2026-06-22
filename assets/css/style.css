@@ -478,3 +478,60 @@ body{
     }
 
   }
+
+.card,
+.quick-card,
+.chart-box{
+    transition:.4s;
+}
+
+.card:hover,
+.quick-card:hover,
+.chart-box:hover{
+    transform:translateY(-10px);
+}
+
+.sidebar{
+    scrollbar-width:none;
+}
+
+.sidebar::-webkit-scrollbar{
+    display:none;
+}
+
+.top-box{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
+.banner{
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.quick-card button{
+    transition:.3s;
+}
+
+.quick-card button:hover{
+    transform:scale(1.05);
+}
+
+.card h1{
+    font-weight:700;
+      }
+
