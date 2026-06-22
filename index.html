@@ -1,399 +1,298 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InspecteurBot RDC | Inspection Générale du Travail</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plateforme numérique de l'Inspection Générale du Travail de la République Démocratique du Congo">
 
-<title>InspecteurBot RDC | Inspection Générale du Travail</title>
+    <link rel="icon" type="image/png" href="images/logo-igt.png">
+    <link rel="stylesheet" href="./style.css">
 
-<meta name="description"
-content="Plateforme numérique de l'Inspection Générale du Travail de la République Démocratique du Congo">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link rel="icon" href="images/logo-igt.png">
-
-<link rel="stylesheet" href="style.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+    <!-- ================= NAVBAR ================= -->
 
-<nav class="top-navbar">
+    <nav class="top-navbar">
 
-<div class="nav-logo">
+        <div class="nav-logo">
+            <img src="./images/logo-igt.png" alt="Logo IGT">
 
-<img src="images/logo-igt.png" alt="Logo IGT">
+            <div>
+                <h2>InspecteurBot RDC</h2>
+                <p>Inspection Générale du Travail</p>
+            </div>
+        </div>
 
-<div>
+        <ul>
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-house"></i>
+                    Accueil
+                </a>
+            </li>
 
-<h2>InspecteurBot RDC</h2>
+            <li>
+                <a href="./login.html">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Connexion
+                </a>
+            </li>
 
-<p>Inspection Générale du Travail</p>
+            <li>
+                <a href="./register.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Inscription
+                </a>
+            </li>
 
-</div>
+            <li>
+                <a href="./dashboard.html">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Plateforme
+                </a>
+            </li>
+        </ul>
 
-</div>
+    </nav>
 
-<ul>
+    <!-- ================= HERO ================= -->
 
-<li>
-<a href="index.html">
-<i class="fa-solid fa-house"></i>
-Accueil
-</a>
-</li>
+    <header class="hero">
 
-<li>
-<a href="login.html">
-<i class="fa-solid fa-right-to-bracket"></i>
-Connexion
-</a>
-</li>
+        <img src="./images/batiment-igt.jpg"
+            class="hero-image"
+            alt="Bâtiment IGT">
 
-<li>
-<a href="register.html">
-<i class="fa-solid fa-user-plus"></i>
-Inscription
-</a>
-</li>
+        <div class="hero-overlay"></div>
 
-<li>
-<a href="dashboard.html">
-<i class="fa-solid fa-chart-line"></i>
-Plateforme
-</a>
-</li>
+        <img src="./images/logo-igt.png"
+            class="logo-watermark"
+            alt="Logo IGT">
 
-</ul>
+        <div class="hero-content">
 
-</nav>
+            <img src="./images/logo-igt.png"
+                class="logo"
+                alt="Logo IGT">
+
+            <h1>INSPECTEURBOT RDC</h1>
+
+            <h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
+
+            <p>
+                Plateforme numérique de gestion des inspections,
+                des entreprises, des infractions et des
+                procès-verbaux de la République Démocratique du Congo.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="./login.html" class="btn-start">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Connexion
+                </a>
+
+                <a href="./register.html" class="btn-start">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Inscription
+                </a>
+
+            </div>
 
-<!-- ================= HERO ================= -->
+        </div>
 
-<header class="hero">
+    </header>
 
-<img
-src="images/batiment-igt.jpg"
-class="hero-image"
-alt="Bâtiment IGT">
+    <!-- ================= CITATION ================= -->
+
+    <section class="notification">
 
-<div class="hero-overlay"></div>
-
-<img
-src="images/logo-igt.png"
-class="logo-watermark">
-
-<div class="hero-content">
-
-<img
-src="images/logo-igt.png"
-class="logo">
-
-<h1>INSPECTEURBOT RDC</h1>
-
-<h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
-
-<p>
-
-Plateforme numérique de gestion des inspections,
-des entreprises, des infractions et des
-procès-verbaux de la République Démocratique du Congo.
-
-</p>
-
-<div class="hero-buttons">
-
-<a href="login.html" class="btn-start">
-
-<i class="fa-solid fa-right-to-bracket"></i>
-
-Connexion
-
-</a>
-
-<a href="register.html" class="btn-start">
-
-<i class="fa-solid fa-user-plus"></i>
-
-Inscription
-
-</a>
-
-</div>
-
-</div>
-
-</header>
-
-<!-- ================= PRÉSENTATION ================= -->
-
-<section class="notification">
-
-<div class="notification-box">
-
-<i class="fa-solid fa-lightbulb"></i>
-
-<p>
-
-« Travailler pour la dignité,
-la justice sociale et le développement de la
-République Démocratique du Congo. »
-
-</p>
-
-</div>
-
-</section>
-
-<!-- ================= SERVICES ================= -->
-
-<section class="main-menu">
-
-<h2>
-
-<i class="fa-solid fa-table-cells-large"></i>
-
-NOS PRINCIPALES FONCTIONNALITÉS
-
-</h2>
-
-<div class="menu-grid">
-
-<div class="menu-card">
-
-<i class="fa-solid fa-building"></i>
-
-<h3>Entreprises</h3>
-
-<p>
-
-Enregistrement et suivi des entreprises
-inspectées sur toute l'étendue du territoire.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-clipboard-check"></i>
-
-<h3>Inspections</h3>
-
-<p>
-
-Planification et gestion intelligente
-des missions d'inspection.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-file-signature"></i>
-
-<h3>Procès-Verbaux</h3>
-
-<p>
-
-Création automatique et archivage
-des procès-verbaux.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-triangle-exclamation"></i>
-
-<h3>Infractions</h3>
-
-<p>
-
-Consultation des infractions,
-sanctions et amendes prévues.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-scale-balanced"></i>
-
-<h3>Code du Travail</h3>
-
-<p>
-
-Recherche rapide des articles
-et dispositions légales.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-robot"></i>
-
-<h3>Assistant IA</h3>
-
-<p>
-
-Un assistant intelligent capable
-d'aider les inspecteurs dans leurs missions.
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ================= STATISTIQUES ================= -->
-
-<section class="dashboard">
-
-<h2>
-
-<i class="fa-solid fa-chart-line"></i>
-
-PLATEFORME NUMÉRIQUE IGT
-
-</h2>
-
-<div class="dashboard-cards">
-
-<div class="card">
-
-<i class="fa-solid fa-building"></i>
-
-<h3>Entreprises</h3>
-
-<h1>1248</h1>
-
-</div>
-
-<div class="card">
-
-<i class="fa-solid fa-file-circle-check"></i>
-
-<h3>Inspections</h3>
-
-<h1>532</h1>
-
-</div>
-
-<div class="card">
-
-<i class="fa-solid fa-triangle-exclamation"></i>
-
-<h3>Infractions</h3>
-
-<h1>189</h1>
-
-</div>
-
-<div class="card">
-
-<i class="fa-solid fa-file-signature"></i>
-
-<h3>Procès-Verbaux</h3>
-
-<h1>317</h1>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ================= APPEL À L'ACTION ================= -->
-
-<section class="assistant">
-
-<h2>
-
-<i class="fa-solid fa-rocket"></i>
-
-COMMENCER MAINTENANT
-
-</h2>
-
-<div class="assistant-box">
-
-<p>
-
-Accédez à la plateforme numérique de
-l'Inspection Générale du Travail pour
-gérer les entreprises, les inspections,
-les infractions et les procès-verbaux.
-
-</p>
-
-<br>
-
-<a href="login.html" class="btn-start">
-
-<i class="fa-solid fa-arrow-right"></i>
-
-Accéder à la plateforme
-
-</a>
-
-</div>
-
-</section>
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-<img
-src="images/logo-igt.png"
-class="footer-logo">
-
-<h3>
-
-Inspection Générale du Travail
-
-</h3>
-
-<p>
-
-InspecteurBot RDC
-
-</p>
-
-<p>
-
-Plateforme numérique des Inspecteurs du Travail
-de la République Démocratique du Congo.
-
-</p>
-
-<hr>
-
-<p>
-
-Créé Par
-<strong>Inspecteur Limengo (Pmiller)</strong>
-© 2026
-
-</p>
-
-</footer>
+        <div class="notification-box">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            <p>
+                « Travailler pour la dignité, la justice sociale
+                et le développement de la République Démocratique du Congo. »
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FONCTIONNALITÉS ================= -->
+
+    <section class="main-menu">
+
+        <h2>
+            <i class="fa-solid fa-table-cells-large"></i>
+            NOS PRINCIPALES FONCTIONNALITÉS
+        </h2>
+
+        <div class="menu-grid">
+
+            <div class="menu-card">
+                <i class="fa-solid fa-building"></i>
+                <h3>Entreprises</h3>
+                <p>
+                    Enregistrement et suivi des entreprises
+                    inspectées sur toute l'étendue du territoire.
+                </p>
+            </div>
+
+            <div class="menu-card">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <h3>Inspections</h3>
+                <p>
+                    Planification et gestion intelligente
+                    des missions d'inspection.
+                </p>
+            </div>
+
+            <div class="menu-card">
+                <i class="fa-solid fa-file-signature"></i>
+                <h3>Procès-Verbaux</h3>
+                <p>
+                    Création automatique et archivage
+                    des procès-verbaux.
+                </p>
+            </div>
+
+            <div class="menu-card">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>Infractions</h3>
+                <p>
+                    Consultation des infractions,
+                    sanctions et amendes prévues.
+                </p>
+            </div>
+
+            <div class="menu-card">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <h3>Code du Travail</h3>
+                <p>
+                    Recherche rapide des articles
+                    et dispositions légales.
+                </p>
+            </div>
+
+            <div class="menu-card">
+                <i class="fa-solid fa-robot"></i>
+                <h3>Assistant IA</h3>
+                <p>
+                    Un assistant intelligent capable
+                    d'aider les inspecteurs dans leurs missions.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= STATISTIQUES ================= -->
+
+    <section class="dashboard">
+
+        <h2>
+            <i class="fa-solid fa-chart-line"></i>
+            PLATEFORME NUMÉRIQUE IGT
+        </h2>
+
+        <div class="dashboard-cards">
+
+            <div class="card">
+                <i class="fa-solid fa-building blue"></i>
+                <h3>Entreprises</h3>
+                <h1>1 248</h1>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-file-circle-check green"></i>
+                <h3>Inspections</h3>
+                <h1>532</h1>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-triangle-exclamation orange"></i>
+                <h3>Infractions</h3>
+                <h1>189</h1>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-file-signature purple"></i>
+                <h3>Procès-Verbaux</h3>
+                <h1>317</h1>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= APPEL À L'ACTION ================= -->
+
+    <section class="assistant">
+
+        <h2>
+            <i class="fa-solid fa-rocket"></i>
+            COMMENCER MAINTENANT
+        </h2>
+
+        <div class="assistant-box">
+
+            <p>
+                Accédez à la plateforme numérique de
+                l'Inspection Générale du Travail pour gérer
+                les entreprises, les inspections,
+                les infractions et les procès-verbaux.
+            </p>
+
+            <br>
+
+            <a href="./login.html" class="btn-start">
+                <i class="fa-solid fa-arrow-right"></i>
+                Accéder à la plateforme
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <img src="./images/logo-igt.png"
+            class="footer-logo"
+            alt="Logo IGT">
+
+        <h3>Inspection Générale du Travail</h3>
+
+        <p>InspecteurBot RDC</p>
+
+        <p>
+            Plateforme numérique des Inspecteurs du Travail
+            de la République Démocratique du Congo.
+        </p>
+
+        <hr>
+
+        <p>
+            Créé Par
+            <strong>Inspecteur Limengo (Pmiller)</strong>
+            © 2026
+        </p>
+
+    </footer>
 
 </body>
- </html>
+                 </html>
