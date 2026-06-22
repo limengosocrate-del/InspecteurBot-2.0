@@ -1,394 +1,308 @@
-/*====================================================
-            INSPECTEURBOT IA
-                 APP.JS v1.1
-====================================================*/
+/*=========================================
+      INSPECTEURBOT RDC
+      dashboard.js v2.0
+==========================================*/
 
-/*=====================================
-      LOADER
-=====================================*/
-function hideLoader() {
+/*=========================================
+      DATE ET HEURE EN TEMPS RÉEL
+==========================================*/
 
-    const loader = document.getElementById("loader");
+function updateDateTime() {
 
-    if (!loader) return;
+    const dateElement =
+        document.getElementById("dateActuelle");
 
-    setTimeout(() => {
+    if (!dateElement) return;
 
-        loader.style.transition = "opacity 0.8s";
-        loader.style.opacity = "0";
+    const now = new Date();
 
-        setTimeout(() => {
-            loader.style.display = "none";
-        }, 800);
-
-    }, 1800);
+    dateElement.innerHTML =
+        now.toLocaleString("fr-FR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
 }
 
-/*=====================================
-      COMPTEURS ANIMÉS
-=====================================*/
-function animateCounter(id, endValue) {
+updateDateTime();
+setInterval(updateDateTime, 1000);
 
-    const element = document.getElementById(id);
+/*=========================================
+      ANIMATION DES CHIFFRES
+==========================================*/
 
-    if (!element) return;
+function animateNumbers() {
 
-    let start = 0;
-    const duration = 2000;
-    const increment = endValue / 100;
+    const numbers =
+        document.querySelectorAll(".card h1");
 
-    const timer = setInterval(() => {
+    numbers.forEach(number => {
 
-        start += increment;
+        const finalValue =
+            parseInt(number.textContent);
 
-        if (start >= endValue) {
+        let current = 0;
 
-            start = endValue;
-            clearInterval(timer);
+        const increment =
+            finalValue / 100;
 
-        }
+        const timer =
+            setInterval(() => {
 
-        element.textContent = Math.floor(start);
+                current += increment;
 
-    }, duration / 100);
+                if (current >= finalValue) {
+
+                    current = finalValue;
+                    clearInterval(timer);
+
+                }
+
+                number.textContent =
+                    Math.floor(current);
+
+            }, 15);
+
+    });
+
 }
 
-/*=====================================
+window.addEventListener(
+    "load",
+    animateNumbers
+);
+
+/*=========================================
+      ANIMATION DES CARTES
+==========================================*/
+
+function initCards() {
+
+    const cards =
+        document.querySelectorAll(
+            ".card,.quick-card,.chart-box"
+        );
+
+    cards.forEach(card => {
+
+        card.addEventListener(
+            "mouseenter",
+            () => {
+
+                card.style.transform =
+                    "translateY(-10px)";
+
+            }
+        );
+
+        card.addEventListener(
+            "mouseleave",
+            () => {
+
+                card.style.transform =
+                    "translateY(0)";
+
+            }
+        );
+
+    });
+
+}
+
+window.addEventListener(
+    "load",
+    initCards
+);
+
+/*=========================================
       MESSAGES MOTIVATION
-=====================================*/
-const motivationMessages = [
+==========================================*/
+
+const messages = [
 
     "Bienvenue Inspecteur 👋",
+
     "La loi protège le travailleur.",
-    "Chaque inspection améliore le monde du travail.",
+
     "L'intégrité est la force de l'Inspecteur.",
-    "Votre mission contribue à une société plus juste.",
-    "Soyez rigoureux, juste et impartial.",
+
+    "Chaque inspection améliore le monde du travail.",
+
     "Le respect du Code du Travail protège tous les citoyens.",
-    "Chaque contrôle est une opportunité d'amélioration.",
-    "La sécurité des travailleurs est une priorité.",
+
+    "La sécurité des travailleurs reste une priorité.",
+
     "Bonne mission Inspecteur."
 
 ];
 
-function changeNotification() {
-
-    const notification =
-        document.getElementById("notification-text");
-
-    if (!notification) return;
-
-    const index =
-        Math.floor(Math.random() * motivationMessages.length);
-
-    notification.textContent =
-        motivationMessages[index];
-}
-
-/*=====================================
-      HORLOGE
-=====================================*/
-function updateClock() {
-
-    const clock =
-        document.getElementById("clock");
-
-    if (!clock) return;
-
-    clock.textContent =
-        new Date().toLocaleTimeString("fr-FR");
-}
-
-/*=====================================
-      CHART.JS
-=====================================*/
-function initCharts() {
-
-    if (typeof Chart === "undefined") {
-        console.warn("Chart.js non chargé");
-        return;
-    }
-
-    const inspectionCanvas =
-        document.getElementById("inspectionChart");
-
-    if (inspectionCanvas) {
-
-        new Chart(inspectionCanvas, {
-
-            type: "bar",
-
-            data: {
-
-                labels: [
-                    "Jan",
-                    "Fév",
-                    "Mar",
-                    "Avr",
-                    "Mai",
-                    "Juin"
-                ],
-
-                datasets: [{
-
-                    label: "Inspections",
-
-                    data: [
-                        21,
-                        34,
-                        27,
-                        48,
-                        39,
-                        52
-                    ],
-
-                    backgroundColor: "#005baa"
-
-                }]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-
-            }
-
-        });
-    }
-
-    const pvCanvas =
-        document.getElementById("pvChart");
-
-    if (pvCanvas) {
-
-        new Chart(pvCanvas, {
-
-            type: "doughnut",
-
-            data: {
-
-                labels: [
-                    "PV établis",
-                    "Dossiers ouverts",
-                    "En attente"
-                ],
-
-                datasets: [{
-
-                    data: [91, 38, 17],
-
-                    backgroundColor: [
-                        "#005baa",
-                        "#2e7d32",
-                        "#ff9800"
-                    ]
-
-                }]
-
-            },
-
-            options: {
-                responsive: true
-            }
-
-        });
-    }
-}
-
-/*=====================================
-      IA FLOTTANTE
-=====================================*/
-function initFloatingAI() {
-
-    const floatingAI =
-        document.getElementById("floatingAI");
-
-    if (!floatingAI) return;
-
-    floatingAI.addEventListener("click", () => {
-
-        alert(
-            "🤖 InspecteurBot IA\n\nCette fonctionnalité sera reliée au Code du Travail et à l'IA."
-        );
-
-    });
-}
-
-/*=====================================
-      MESSAGE IA
-=====================================*/
-const smartMessages = [
-
-    "💡 Pensez à vérifier les contrats de travail.",
-    "📚 Consultez toujours les articles du Code du Travail.",
-    "⚖️ Une bonne inspection repose sur des preuves.",
-    "👷 La sécurité des travailleurs reste prioritaire.",
-    "📄 Vérifiez les registres obligatoires.",
-    "🛡️ Respectez la procédure avant toute sanction.",
-    "🤖 InspecteurBot IA est prêt à vous assister."
-
-];
-
-function rotateSmartMessage() {
+function showMessage() {
 
     const element =
-        document.getElementById("smartMessage");
+        document.getElementById(
+            "notificationMessage"
+        );
 
     if (!element) return;
 
     const random =
-        Math.floor(Math.random() * smartMessages.length);
+        Math.floor(
+            Math.random() *
+            messages.length
+        );
 
-    element.textContent =
-        smartMessages[random];
-}
-
-/*=====================================
-      ANIMATION CARTES
-=====================================*/
-function initCards() {
-
-    const cards = document.querySelectorAll(
-        ".card,.menu-card,.news-card,.inf-card,.stat-card"
-    );
-
-    cards.forEach(card => {
-
-        card.style.transition = "0.3s";
-
-        card.addEventListener("mouseenter", () => {
-
-            card.style.transform =
-                "translateY(-8px)";
-
-        });
-
-        card.addEventListener("mouseleave", () => {
-
-            card.style.transform =
-                "translateY(0)";
-
-        });
-
-    });
-}
-
-/*=====================================
-      CODE DU TRAVAIL
-=====================================*/
-let codeTravail = [];
-let articlesCode = [];
-
-async function chargerCodeTravail() {
-
-    console.log(
-        "Chargement du Code du Travail..."
-    );
+    element.innerText =
+        messages[random];
 
 }
 
-function rechercherArticle(motCle) {
+showMessage();
+setInterval(showMessage, 7000);
 
-    if (!motCle) return [];
+/*=========================================
+      GRAPHIQUE INSPECTIONS
+==========================================*/
 
-    motCle = motCle.toLowerCase();
+window.addEventListener(
+    "load",
+    () => {
 
-    return articlesCode.filter(article =>
-        article.texte.toLowerCase().includes(motCle)
-    );
-}
+        if (
+            typeof Chart ===
+            "undefined"
+        ) {
+            return;
+        }
 
-function rechercherNumero(numero) {
+        const inspection =
+            document.getElementById(
+                "inspectionChart"
+            );
 
-    return articlesCode.find(article =>
-        article.numero == numero
-    );
-}
+        if (inspection) {
 
-async function poserQuestionIA(question) {
+            new Chart(
+                inspection,
+                {
 
-    if (!question) return [];
+                    type: "line",
 
-    const resultat =
-        rechercherArticle(question);
+                    data: {
 
-    if (resultat.length > 0) {
+                        labels: [
+                            "Jan",
+                            "Fév",
+                            "Mar",
+                            "Avr",
+                            "Mai",
+                            "Juin"
+                        ],
 
-        console.log(resultat);
-        return resultat;
+                        datasets: [{
+
+                            label:
+                                "Inspections",
+
+                            data: [
+                                180,
+                                300,
+                                240,
+                                450,
+                                300,
+                                680
+                            ],
+
+                            fill: true,
+
+                            borderColor:
+                                "#005baa",
+
+                            backgroundColor:
+                                "rgba(0,91,170,0.2)",
+
+                            tension: 0.4
+
+                        }]
+
+                    },
+
+                    options: {
+                        responsive: true
+                    }
+
+                }
+            );
+        }
+
+        const infraction =
+            document.getElementById(
+                "infractionChart"
+            );
+
+        if (infraction) {
+
+            new Chart(
+                infraction,
+                {
+
+                    type:
+                        "doughnut",
+
+                    data: {
+
+                        labels: [
+
+                            "Travail dissimulé",
+
+                            "SMIG",
+
+                            "Conditions",
+
+                            "Sécurité",
+
+                            "Autres"
+
+                        ],
+
+                        datasets: [{
+
+                            data: [
+                                38,
+                                24,
+                                18,
+                                12,
+                                8
+                            ],
+
+                            backgroundColor: [
+
+                                "#005baa",
+                                "#2e7d32",
+                                "#ff9800",
+                                "#c62828",
+                                "#6a1b9a"
+
+                            ]
+
+                        }]
+
+                    },
+
+                    options: {
+                        responsive: true
+                    }
+
+                }
+            );
+        }
 
     }
+);
 
-    console.log("Aucun article trouvé.");
-    return [];
-}
-
-/*=====================================
-      BOUTONS
-=====================================*/
-function initButtons() {
-
-    document
-        .querySelectorAll("button")
-        .forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                console.log(
-                    "Bouton :",
-                    btn.innerText
-                );
-
-            });
-
-        });
-
-}
-
-/*=====================================
-      MODE SOMBRE
-=====================================*/
-function changerTheme() {
-
-    document.body.classList.toggle("dark");
-
-}
-
-/*=====================================
-      INITIALISATION
-=====================================*/
-window.addEventListener("load", () => {
-
-    hideLoader();
-
-    animateCounter("inspectionCount", 248);
-    animateCounter("pvCount", 91);
-    animateCounter("companyCount", 164);
-    animateCounter("infractionCount", 56);
-
-    changeNotification();
-    setInterval(changeNotification, 7000);
-
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    rotateSmartMessage();
-    setInterval(rotateSmartMessage, 6000);
-
-    initCharts();
-    initFloatingAI();
-    initCards();
-    initButtons();
-
-    console.log("InspecteurBot IA démarré.");
-    console.log("Application prête.");
-    console.log("En attente du Code du Travail PDF.");
-
-});
+console.log(
+    "InspecteurBot RDC démarré."
+);
