@@ -1,775 +1,428 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Dashboard | InspecteurBot IA</title>
-
-<meta name="description" content="Tableau de bord des Inspecteurs du Travail">
-
-<link rel="icon" href="images/logo-igt.png">
+<title>InspecteurBot RDC | Tableau de Bord</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="dashboard.css">
-
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
-
 </head>
 
 <body>
 
-<!-- ==========================
-     BARRE SUPÉRIEURE
-=========================== -->
+<div class="dashboard-layout">
 
-<header class="top-header">
+    <!-- ================= MENU LATÉRAL ================= -->
 
-<div class="header-left">
+    <aside class="sidebar">
 
-<img src="images/logo-igt.png" class="header-logo">
+        <div class="sidebar-logo">
+            <img src="images/logo-igt.png" alt="IGT">
+            <h3>MENU PRINCIPAL</h3>
+        </div>
 
-<div>
+        <ul>
 
-<h2>InspecteurBot IA</h2>
+            <li class="active">
+                <a href="#">
+                    <i class="fa-solid fa-house"></i>
+                    Tableau de bord
+                </a>
+            </li>
 
-<p>Inspection Générale du Travail</p>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-house-user"></i>
+                    Accueil
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-file-lines"></i>
+                    Fiches F01 à F07
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Fiches S01 à S03
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-building-columns"></i>
+                    ONEM
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-file-signature"></i>
+                    Procès-Verbaux
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    Code du Travail
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Infractions
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-robot"></i>
+                    Assistant IA
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-chart-column"></i>
+                    Statistiques
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-folder"></i>
+                    Archives
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-users"></i>
+                    Utilisateurs
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-gear"></i>
+                    Paramètres
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="logout">
+            <a href="index.html">
+                <i class="fa-solid fa-power-off"></i>
+                Déconnexion
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- ================= CONTENU ================= -->
+
+    <main class="main-content">
+
+        <!-- ================= BANNIÈRE ================= -->
+
+        <section class="banner">
+
+            <img src="images/batiment-igt.jpg" class="banner-image">
+
+            <div class="banner-overlay"></div>
+
+            <div class="banner-content">
+
+                <div class="banner-left">
+
+                    <img src="images/logo-igt.png">
+
+                    <div>
+
+                        <h1>InspecteurBot RDC</h1>
+
+                        <h3>INSPECTION GENERALE DU TRAVAIL</h3>
+
+                        <p>
+                            Travailler pour la dignité, la justice sociale
+                            et le développement de la République Démocratique du Congo
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="banner-right">
+
+                    <div class="top-box">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span id="dateActuelle"></span>
+                    </div>
+
+                    <div class="top-box">
+                        <i class="fa-solid fa-user"></i>
+                        <span>I.G.T. - Inspecteur Général du Travail</span>
+                    </div>
+
+                    <div class="top-box">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>5</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= TABLEAU DE BORD ================= -->
+
+        <section class="dashboard-section">
+
+            <h2>TABLEAU DE BORD INTELLIGENT</h2>
+
+            <div class="stats-grid">
+
+                <div class="card">
+                    <i class="fa-solid fa-building blue"></i>
+                    <div>
+                        <h3>Entreprises</h3>
+                        <h1>1248</h1>
+                        <p>Enregistrées</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-clipboard-check green"></i>
+                    <div>
+                        <h3>Inspections</h3>
+                        <h1>532</h1>
+                        <p>Réalisées</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-triangle-exclamation orange"></i>
+                    <div>
+                        <h3>Infractions</h3>
+                        <h1>189</h1>
+                        <p>Constatées</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-file-signature purple"></i>
+                    <div>
+                        <h3>PV rédigés</h3>
+                        <h1>317</h1>
+                        <p>Générés</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-users cyan"></i>
+                    <div>
+                        <h3>Travailleurs</h3>
+                        <h1>12845</h1>
+                        <p>Déclarés</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <i class="fa-solid fa-user-shield dark"></i>
+                    <div>
+                        <h3>Inspecteurs</h3>
+                        <h1>86</h1>
+                        <p>Actifs</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= ACCÈS RAPIDE ================= -->
+
+        <section class="quick-section">
+
+            <h2>ACCÈS RAPIDE</h2>
+
+            <div class="quick-grid">
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>Gestion du Personnel</h3>
+                    <p>Gérer les inspecteurs, contrôleurs et agents.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-building"></i>
+                    <h3>Gestion des Entreprises</h3>
+                    <p>Enregistrer et suivre les entreprises inspectées.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    <h3>Fiches de Contrôle</h3>
+                    <p>Créer et gérer les fiches d'inspection.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-gavel"></i>
+                    <h3>Infractions & Sanctions</h3>
+                    <p>Suivre les infractions et sanctions.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h3>Procès-Verbaux</h3>
+                    <p>Rédiger et gérer les procès-verbaux.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <h3>Planification</h3>
+                    <p>Planifier et suivre les missions d'inspection.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <h3>Statistiques</h3>
+                    <p>Consulter les statistiques et graphiques.</p>
+                    <button>Accéder</button>
+                </div>
+
+                <div class="quick-card">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <h3>Archives</h3>
+                    <p>Consulter l'historique des inspections.</p>
+                    <button>Accéder</button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ================= GRAPHIQUES ================= -->
+
+        <section class="charts-section">
+
+            <div class="chart-box">
+
+                <h3>INSPECTIONS PAR MOIS</h3>
+
+                <canvas id="inspectionChart"></canvas>
+
+            </div>
+
+            <div class="chart-box">
+
+                <h3>RÉPARTITION DES INFRACTIONS</h3>
+
+                <canvas id="infractionChart"></canvas>
+
+            </div>
+
+        </section>
+
+        <!-- ================= DERNIÈRES INSPECTIONS ================= -->
+
+        <section class="inspection-list">
+
+            <h3>DERNIÈRES INSPECTIONS</h3>
+
+            <table>
+
+                <tr>
+                    <td>Société ABC SARL</td>
+                    <td>21/05/2025</td>
+                    <td><span class="success">Conforme</span></td>
+                </tr>
+
+                <tr>
+                    <td>Entreprise XYZ</td>
+                    <td>20/05/2025</td>
+                    <td><span class="danger">Non conforme</span></td>
+                </tr>
+
+                <tr>
+                    <td>ETS MOKILI</td>
+                    <td>19/05/2025</td>
+                    <td><span class="success">Conforme</span></td>
+                </tr>
+
+                <tr>
+                    <td>Société FUTUR SARL</td>
+                    <td>18/05/2025</td>
+                    <td><span class="warning">À corriger</span></td>
+                </tr>
+
+            </table>
+
+        </section>
+
+        <footer class="footer">
+            Inspection Générale du Travail –
+            République Démocratique du Congo © 2025
+        </footer>
+
+    </main>
 
 </div>
-
-</div>
-
-<div class="header-search">
-
-<input
-type="search"
-placeholder="Rechercher une entreprise, un inspecteur, un article...">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-</div>
-
-<div class="header-right">
-
-<button class="icon-btn">
-
-<i class="fa-solid fa-bell"></i>
-
-<span class="badge">3</span>
-
-</button>
-
-<button class="icon-btn">
-
-<i class="fa-solid fa-envelope"></i>
-
-<span class="badge">5</span>
-
-</button>
-
-<div class="profile">
-
-<img src="images/user.png">
-
-<div>
-
-<h4>Inspecteur</h4>
-
-<p>Connecté</p>
-
-</div>
-
-</div>
-
-</div>
-
-</header>
-
-<!-- ==========================
-     CONTENU PRINCIPAL
-=========================== -->
-
-<div class="dashboard-container">
-
-<!-- ==========================
-     MENU LATÉRAL
-=========================== -->
-
-<aside class="sidebar">
-
-<h3>MENU PRINCIPAL</h3>
-
-<ul>
-
-<li><a href="#"><i class="fa-solid fa-house"></i> Accueil</a></li>
-
-<li><a href="#"><i class="fa-solid fa-chart-line"></i> Tableau de bord</a></li>
-
-<li><a href="#"><i class="fa-solid fa-building"></i> Entreprises</a></li>
-
-<li><a href="#"><i class="fa-solid fa-clipboard-check"></i> Missions</a></li>
-
-<li><a href="#"><i class="fa-solid fa-file-lines"></i> Fiches F01 à F07</a></li>
-
-<li><a href="#"><i class="fa-solid fa-folder-open"></i> Fiches S01 à S03</a></li>
-
-<li><a href="#"><i class="fa-solid fa-building-columns"></i> ONEM</a></li>
-
-<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
-
-<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
-
-<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-
-<li><a href="#"><i class="fa-solid fa-robot"></i> Assistant IA</a></li>
-
-<li><a href="#"><i class="fa-solid fa-chart-column"></i> Statistiques</a></li>
-
-<li><a href="#"><i class="fa-solid fa-folder"></i> Archives</a></li>
-
-<li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
-
-<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
-
-<li><a href="index.html"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</a></li>
-
-</ul>
-
-</aside>
-
-<!-- ==========================
-     ZONE PRINCIPALE
-=========================== -->
-
-<main class="main-content">
-
-<h1>
-
-<i class="fa-solid fa-chart-line"></i>
-
-Tableau de Bord Intelligent
-
-</h1>
-
-<p>
-
-Bienvenue sur InspecteurBot IA.
-
-Toutes vos activités d'inspection sont centralisées ici.
-
-</p>
-
-<!-- ==========================
-     CARTES STATISTIQUES
-=========================== -->
-
-<section class="stats-section">
-
-<div class="stats-grid">
-
-<div class="stat-card">
-
-<div class="stat-icon blue">
-<i class="fa-solid fa-building"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbEntreprise">0</h2>
-<p>Entreprises</p>
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-icon green">
-<i class="fa-solid fa-file-circle-check"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbInspection">0</h2>
-<p>Inspections</p>
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-icon red">
-<i class="fa-solid fa-triangle-exclamation"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbInfraction">0</h2>
-<p>Infractions</p>
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-icon orange">
-<i class="fa-solid fa-file-signature"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbPv">0</h2>
-<p>Procès-Verbaux</p>
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-icon purple">
-<i class="fa-solid fa-users"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbTravailleurs">0</h2>
-<p>Travailleurs</p>
-</div>
-
-</div>
-
-<div class="stat-card">
-
-<div class="stat-icon dark">
-<i class="fa-solid fa-user-shield"></i>
-</div>
-
-<div class="stat-info">
-<h2 id="nbInspecteurs">0</h2>
-<p>Inspecteurs</p>
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ==========================
-     INDICATEURS DE PERFORMANCE
-=========================== -->
-
-<section class="performance-section">
-
-<h2>
-<i class="fa-solid fa-chart-simple"></i>
-Indicateurs de Performance
-</h2>
-
-<div class="performance-grid">
-
-<div class="performance-card">
-
-<h3>Taux de conformité</h3>
-
-<div class="progress-bar">
-<div class="progress progress-green" style="width:82%"></div>
-</div>
-
-<span>82%</span>
-
-</div>
-
-<div class="performance-card">
-
-<h3>Inspections réalisées</h3>
-
-<div class="progress-bar">
-<div class="progress progress-blue" style="width:67%"></div>
-</div>
-
-<span>67%</span>
-
-</div>
-
-<div class="performance-card">
-
-<h3>PV rédigés</h3>
-
-<div class="progress-bar">
-<div class="progress progress-orange" style="width:74%"></div>
-</div>
-
-<span>74%</span>
-
-</div>
-
-<div class="performance-card">
-
-<h3>Dossiers clôturés</h3>
-
-<div class="progress-bar">
-<div class="progress progress-red" style="width:58%"></div>
-</div>
-
-<span>58%</span>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ==========================
-     MISSIONS DU JOUR
-=========================== -->
-
-<section class="mission-section">
-
-<h2>
-
-<i class="fa-solid fa-calendar-check"></i>
-
-Missions d'aujourd'hui
-
-</h2>
-
-<table class="mission-table">
-
-<thead>
-
-<tr>
-
-<th>Entreprise</th>
-
-<th>Inspecteur</th>
-
-<th>Heure</th>
-
-<th>État</th>
-
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-
-<td>Société ABC SARL</td>
-
-<td>Limengo</td>
-
-<td>08h30</td>
-
-<td><span class="status ok">Prévue</span></td>
-
-<td>
-
-<button class="btn-action">
-
-Commencer
-
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>ETS MOKILI</td>
-
-<td>Ngoma</td>
-
-<td>10h00</td>
-
-<td><span class="status warning">En attente</span></td>
-
-<td>
-
-<button class="btn-action">
-
-Ouvrir
-
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Entreprise XYZ</td>
-
-<td>Mutombo</td>
-
-<td>14h00</td>
-
-<td><span class="status danger">Urgente</span></td>
-
-<td>
-
-<button class="btn-action">
-
-Inspecter
-
-</button>
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
-</section>
-
-<!-- ==========================
-     ACTIVITÉS RÉCENTES
-=========================== -->
-
-<section class="activity-section">
-
-<h2>
-
-<i class="fa-solid fa-clock-rotate-left"></i>
-
-Activités récentes
-
-</h2>
-
-<div class="activity-list">
-
-<div class="activity-item">
-
-<i class="fa-solid fa-circle-check"></i>
-
-<div>
-
-<h4>Inspection terminée</h4>
-
-<p>Société ABC SARL</p>
-
-<small>Il y a 15 minutes</small>
-
-</div>
-
-</div>
-
-<div class="activity-item">
-
-<i class="fa-solid fa-file-signature"></i>
-
-<div>
-
-<h4>PV généré automatiquement</h4>
-
-<p>Entreprise XYZ</p>
-
-<small>Il y a 45 minutes</small>
-
-</div>
-
-</div>
-
-<div class="activity-item">
-
-<i class="fa-solid fa-robot"></i>
-
-<div>
-
-<h4>Assistant IA utilisé</h4>
-
-<p>Recherche d'un article du Code du Travail</p>
-
-<small>Il y a 1 heure</small>
-
-</div>
-
-</div>
-
-<div class="activity-item">
-
-<i class="fa-solid fa-bell"></i>
-
-<div>
-
-<h4>Nouvelle notification</h4>
-
-<p>Mission programmée demain à 08h00</p>
-
-<small>Aujourd'hui</small>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- =====================================
-     GRAPHIQUES
-====================================== -->
-
-<section class="charts-section">
-
-<div class="chart-card">
-
-<h2>
-<i class="fa-solid fa-chart-column"></i>
-Inspections mensuelles
-</h2>
-
-<canvas id="inspectionChart"></canvas>
-
-</div>
-
-<div class="chart-card">
-
-<h2>
-<i class="fa-solid fa-chart-pie"></i>
-Répartition des infractions
-</h2>
-
-<canvas id="infractionChart"></canvas>
-
-</div>
-
-</section>
-
-<!-- =====================================
-     ASSISTANT IA
-====================================== -->
-
-<section class="assistant-section">
-
-<h2>
-
-<i class="fa-solid fa-robot"></i>
-
-InspecteurBot IA
-
-</h2>
-
-<div class="assistant-box">
-
-<div class="assistant-message">
-
-Bonjour Inspecteur 👋
-
-Je peux vous aider à :
-
-<ul>
-
-<li>Rechercher un article du Code du Travail</li>
-
-<li>Préparer une mission d'inspection</li>
-
-<li>Générer un Procès-Verbal</li>
-
-<li>Calculer une amende</li>
-
-<li>Analyser une fiche F01 à F07</li>
-
-</ul>
-
-</div>
-
-<div class="assistant-input">
-
-<input
-type="text"
-placeholder="Posez votre question...">
-
-<button>
-
-<i class="fa-solid fa-paper-plane"></i>
-
-Envoyer
-
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- =====================================
-     NOTIFICATIONS
-====================================== -->
-
-<section class="notification-section">
-
-<h2>
-
-<i class="fa-solid fa-bell"></i>
-
-Notifications
-
-</h2>
-
-<div class="notification-list">
-
-<div class="notification success">
-
-Inspection prévue aujourd'hui à 08h30.
-
-</div>
-
-<div class="notification warning">
-
-Deux Procès-Verbaux sont en attente de validation.
-
-</div>
-
-<div class="notification info">
-
-Nouvelle version du Code du Travail disponible.
-
-</div>
-
-<div class="notification danger">
-
-Une mission urgente vient d'être ajoutée.
-
-</div>
-
-</div>
-
-</section>
-
-<!-- =====================================
-     ACTUALITÉS
-====================================== -->
-
-<section class="news-section">
-
-<h2>
-
-<i class="fa-solid fa-newspaper"></i>
-
-Actualités IGT
-
-</h2>
-
-<div class="news-grid">
-
-<div class="news-card">
-
-<h3>Nouvelle circulaire</h3>
-
-<p>Mise à jour des procédures d'inspection.</p>
-
-<button>Lire</button>
-
-</div>
-
-<div class="news-card">
-
-<h3>Formation</h3>
-
-<p>Formation InspecteurBot IA le mois prochain.</p>
-
-<button>Voir</button>
-
-</div>
-
-<div class="news-card">
-
-<h3>Statistiques nationales</h3>
-
-<p>Publication du rapport annuel.</p>
-
-<button>Consulter</button>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- =====================================
-     PIED DE PAGE
-====================================== -->
-
-<footer class="dashboard-footer">
-
-<p>
-
-© 2025 InspecteurBot IA |
-Inspection Générale du Travail
-
-</p>
-
-</footer>
-
-</main>
-
-</div>
-
-<!-- =====================================
-     CHART JS
-====================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 
-const inspectionChart = new Chart(
-document.getElementById('inspectionChart'),
-{
-type:'bar',
+document.getElementById("dateActuelle").innerHTML =
+new Date().toLocaleString("fr-FR");
 
-data:{
-
-labels:['Jan','Fév','Mar','Avr','Mai','Juin'],
-
-datasets:[{
-
-label:'Inspections',
-
-data:[12,19,8,15,22,18]
-
-}]
-
-}
-
+new Chart(document.getElementById("inspectionChart"),{
+    type:"line",
+    data:{
+        labels:["Jan","Fév","Mar","Avr","Mai","Juin"],
+        datasets:[{
+            label:"Inspections",
+            data:[180,300,240,450,300,680],
+            fill:true
+        }]
+    }
 });
 
-const infractionChart = new Chart(
-document.getElementById('infractionChart'),
-{
-
-type:'doughnut',
-
-data:{
-
-labels:[
-'Salaire',
-'Sécurité',
-'Temps de travail',
-'Contrat'
-],
-
-datasets:[{
-
-data:[18,30,12,22]
-
-}]
-
-}
-
+new Chart(document.getElementById("infractionChart"),{
+    type:"doughnut",
+    data:{
+        labels:[
+            "Travail dissimulé",
+            "SMIG",
+            "Conditions",
+            "Sécurité",
+            "Autres"
+        ],
+        datasets:[{
+            data:[38,24,18,12,8]
+        }]
+    }
 });
 
 </script>
 
 </body>
-
 </html>
-    
