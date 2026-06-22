@@ -1,1 +1,645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>F01 - Identification de l'entreprise</title>
+
+<link rel="stylesheet" href="css/f01.css">
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- ENTÊTE -->
+
+    <header class="header">
+
+        <div class="logo">
+            <img src="../../assets/logo.png" alt="Logo">
+        </div>
+
+        <div class="titre">
+
+            <h2>
+                RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
+            </h2>
+
+            <h3>
+                Ministère de l'Emploi et du Travail
+            </h3>
+
+            <h1>
+                FORMULAIRE F01
+            </h1>
+
+            <p>
+                IDENTIFICATION DE L'ÉTABLISSEMENT
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- Bloc Identification -->
+
+    <section class="bloc">
+
+        <table>
+
+            <tr>
+
+                <td>
+                    Province
+                </td>
+
+                <td>
+                    <input
+                        type="text"
+                        id="province">
+                </td>
+
+                <td>
+                    Ville
+                </td>
+
+                <td>
+                    <input
+                        type="text"
+                        id="ville">
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Commune
+                </td>
+
+                <td>
+                    <input
+                        type="text"
+                        id="commune">
+                </td>
+
+                <td>
+                    Quartier
+                </td>
+
+                <td>
+                    <input
+                        type="text"
+                        id="quartier">
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Nom ou raison sociale
+                </td>
+
+                <td colspan="3">
+
+                    <input
+                        type="text"
+                        id="entreprise">
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    Adresse
+                </td>
+
+                <td colspan="3">
+
+                    <input
+                        type="text"
+                        id="adresse">
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </section>
+
+    <!-- Informations administratives -->
+
+<section class="bloc">
+
+<table>
+
+<tr>
+
+<td>RCCM</td>
+<td>
+<input type="text" id="rccm">
+</td>
+
+<td>ID NAT</td>
+<td>
+<input type="text" id="idnat">
+</td>
+
+</tr>
+
+<tr>
+
+<td>NIF</td>
+<td>
+<input type="text" id="nif">
+</td>
+
+<td>CNSS</td>
+<td>
+<input type="text" id="cnss">
+</td>
+
+</tr>
+
+<tr>
+
+<td>Téléphone</td>
+<td>
+<input type="text" id="telephone">
+</td>
+
+<td>Email</td>
+<td>
+<input type="email" id="email">
+</td>
+
+</tr>
+
+<tr>
+
+<td>Activité principale</td>
+
+<td colspan="3">
+
+<input
+type="text"
+id="activite">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Nature juridique</td>
+
+<td>
+
+<select id="nature">
+
+<option value=""></option>
+
+<option>SARL</option>
+
+<option>SA</option>
+
+<option>Entreprise individuelle</option>
+
+<option>ASBL</option>
+
+<option>Coopérative</option>
+
+<option>Établissement public</option>
+
+<option>Autre</option>
+
+</select>
+
+</td>
+
+<td>Date de création</td>
+
+<td>
+
+<input
+type="date"
+id="creation">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Employeur</td>
+
+<td colspan="3">
+
+<input
+type="text"
+id="employeur">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Responsable visité</td>
+
+<td colspan="3">
+
+<input
+type="text"
+id="responsable">
+
+</td>
+
+</tr>
+
+</table>
+
+</section>
+
+<!-- Effectifs des travailleurs -->
+
+<section class="bloc">
+
+<h3 class="section-title">
+Effectifs des travailleurs
+</h3>
+
+<table>
+
+<tr>
+
+<th>Catégorie</th>
+<th>Hommes</th>
+<th>Femmes</th>
+<th>Total</th>
+
+</tr>
+
+<tr>
+
+<td>Nationaux</td>
+
+<td><input type="number" id="nat_h" min="0" value="0"></td>
+
+<td><input type="number" id="nat_f" min="0" value="0"></td>
+
+<td><input type="number" id="nat_total" readonly></td>
+
+</tr>
+
+<tr>
+
+<td>Expatriés</td>
+
+<td><input type="number" id="exp_h" min="0" value="0"></td>
+
+<td><input type="number" id="exp_f" min="0" value="0"></td>
+
+<td><input type="number" id="exp_total" readonly></td>
+
+</tr>
+
+<tr class="grand-total">
+
+<td><strong>TOTAL GÉNÉRAL</strong></td>
+
+<td><input type="number" id="hommes_total" readonly></td>
+
+<td><input type="number" id="femmes_total" readonly></td>
+
+<td><input type="number" id="grand_total" readonly></td>
+
+</tr>
+
+</table>
+
+<br>
+
+<table>
+
+<tr>
+
+<td>Travailleurs permanents</td>
+
+<td>
+
+<input type="number"
+
+id="permanents"
+
+min="0"
+
+value="0">
+
+</td>
+
+<td>Travailleurs temporaires</td>
+
+<td>
+
+<input type="number"
+
+id="temporaires"
+
+min="0"
+
+value="0">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Apprentis</td>
+
+<td>
+
+<input type="number"
+
+id="apprentis"
+
+min="0"
+
+value="0">
+
+</td>
+
+<td>Stagiaires</td>
+
+<td>
+
+<input type="number"
+
+id="stagiaires"
+
+min="0"
+
+value="0">
+
+</td>
+
+</tr>
+
+</table>
+
+</section>
+
+ <!-- Organisation du travail -->
+
+<section class="bloc">
+
+<h3 class="section-title">
+Organisation du travail
+</h3>
+
+<table>
+
+<tr>
+
+<td>Heure de début</td>
+
+<td>
+<input
+type="time"
+id="heure_debut">
+</td>
+
+<td>Heure de fin</td>
+
+<td>
+<input
+type="time"
+id="heure_fin">
+</td>
+
+</tr>
+
+<tr>
+
+<td>Repos hebdomadaire</td>
+
+<td>
+
+<select id="repos">
+
+<option value=""></option>
+
+<option>Lundi</option>
+<option>Mardi</option>
+<option>Mercredi</option>
+<option>Jeudi</option>
+<option>Vendredi</option>
+<option>Samedi</option>
+<option>Dimanche</option>
+
+</select>
+
+</td>
+
+<td>Heures par semaine</td>
+
+<td>
+
+<input
+type="number"
+id="heures_semaine"
+readonly>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Salaire minimum observé</td>
+
+<td>
+
+<input
+type="number"
+id="salaire_min">
+
+</td>
+
+<td>Salaire maximum observé</td>
+
+<td>
+
+<input
+type="number"
+id="salaire_max">
+
+</td>
+
+</tr>
+
+</table>
+
+<br>
+
+<label>
+Observations de l'inspecteur
+</label>
+
+<textarea
+id="observations"
+rows="6">
+</textarea>
+
+ </section>  
+
+ <!-- Actions -->
+
+<section class="bloc">
+
+<div class="actions">
+
+<button
+type="button"
+id="btnEnregistrer">
+💾 Enregistrer
+</button>
+
+<button
+type="button"
+id="btnPDF">
+📄 PDF
+</button>
+
+<button
+type="button"
+id="btnRapport">
+📑 Générer le rapport
+</button>
+
+<button
+type="button"
+id="btnImprimer">
+🖨 Imprimer
+</button>
+
+<button
+type="reset"
+id="btnReset">
+🔄 Réinitialiser
+</button>
+
+</div>
+
+</section>  
+
+<section class="bloc">
+
+<h3>Rapport automatique</h3>
+
+<textarea
+
+id="rapport"
+
+rows="18"
+
+readonly>
+
+</textarea>
+
+</section>
+
+<section class="bloc">
+
+<h3>Infractions détectées</h3>
+
+<textarea
+id="infractions"
+rows="10"
+readonly>
+</textarea>
+
+ </section>   
+
+<section class="bloc">
+
+<section class="bloc">
+
+<h3>Analyse intelligente</h3>
+
+<div class="ligne">
+
+<div class="champ">
+<label>Niveau de risque</label>
+<input
+type="text"
+id="niveauRisque"
+readonly>
+</div>
+
+<div class="champ">
+<label>Décision</label>
+<input
+type="text"
+id="decisionInspection"
+readonly>
+</div>
+
+</div>
+
+<label>Conclusion automatique</label>
+
+<textarea
+id="conclusionIA"
+rows="8"
+readonly>
+</textarea>
+
+</section>
+
+<h3>Informations de l'inspection</h3>
+
+<div class="ligne">
+
+<div class="champ">
+<label>N° Inspection</label>
+<input
+type="text"
+id="numeroInspection"
+readonly>
+</div>
+
+<div class="champ">
+<label>Date et heure</label>
+<input
+type="text"
+id="dateHeure"
+readonly>
+</div>
+
+<div class="champ">
+<label>Statut</label>
+<input
+type="text"
+id="statutInspection"
+readonly>
+</div>
+
+</div>
+
+</section>
+
+<script src="js/f01.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>
+
+               
