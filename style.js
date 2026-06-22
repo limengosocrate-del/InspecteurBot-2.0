@@ -1,6 +1,6 @@
 /*=================================
       INSPECTEURBOT RDC
-      STYLE DASHBOARD
+      STYLE GLOBAL
 ==================================*/
 
 *{
@@ -10,9 +10,29 @@
     font-family:'Poppins',sans-serif;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 body{
     background:#edf2f9;
+    color:#222;
     overflow-x:hidden;
+    min-height:100vh;
+}
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+a{
+    text-decoration:none;
+}
+
+button{
+    font-family:'Poppins',sans-serif;
+    cursor:pointer;
 }
 
 /*=================================
@@ -30,14 +50,20 @@ body{
 
 .sidebar{
     width:270px;
-    background:#041c5c;
+    background:linear-gradient(180deg,#04256f,#001845);
     color:#fff;
     position:fixed;
     top:0;
     left:0;
-    height:100%;
+    height:100vh;
     padding:20px;
     overflow-y:auto;
+    z-index:1000;
+    scrollbar-width:none;
+}
+
+.sidebar::-webkit-scrollbar{
+    display:none;
 }
 
 .sidebar-logo{
@@ -46,12 +72,12 @@ body{
 }
 
 .sidebar-logo img{
-    width:90px;
-    margin-bottom:10px;
+    width:120px;
+    margin:0 auto 15px;
 }
 
 .sidebar-logo h3{
-    font-size:18px;
+    font-size:20px;
     font-weight:600;
 }
 
@@ -64,13 +90,12 @@ body{
 }
 
 .sidebar ul li a{
-    text-decoration:none;
     color:#fff;
     display:flex;
     align-items:center;
     gap:15px;
     padding:15px;
-    border-radius:12px;
+    border-radius:14px;
     transition:.3s;
     font-size:15px;
 }
@@ -85,7 +110,7 @@ body{
 }
 
 .logout{
-    margin-top:35px;
+    margin-top:40px;
 }
 
 .logout a{
@@ -95,10 +120,10 @@ body{
     gap:12px;
     background:#e21b23;
     color:#fff;
-    text-decoration:none;
     padding:16px;
-    border-radius:12px;
+    border-radius:14px;
     font-weight:600;
+    transition:.3s;
 }
 
 .logout a:hover{
@@ -112,6 +137,7 @@ body{
 .main-content{
     flex:1;
     margin-left:270px;
+    width:calc(100% - 270px);
     padding:25px;
 }
 
@@ -121,10 +147,11 @@ body{
 
 .banner{
     position:relative;
-    height:250px;
+    height:300px;
     border-radius:25px;
     overflow:hidden;
     margin-bottom:30px;
+    box-shadow:0 15px 40px rgba(0,0,0,.20);
 }
 
 .banner-image{
@@ -136,7 +163,10 @@ body{
 .banner-overlay{
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,.45);
+    background:linear-gradient(
+        rgba(0,43,120,.85),
+        rgba(0,43,120,.70)
+    );
 }
 
 .banner-content{
@@ -156,25 +186,26 @@ body{
 }
 
 .banner-left img{
-    width:90px;
+    width:110px;
     background:#fff;
     border-radius:50%;
-    padding:5px;
+    padding:6px;
 }
 
 .banner-left h1{
-    font-size:42px;
+    font-size:46px;
     margin-bottom:10px;
 }
 
 .banner-left h3{
     color:#ffd43b;
     margin-bottom:12px;
+    font-size:30px;
 }
 
 .banner-left p{
-    max-width:600px;
-    line-height:1.6;
+    max-width:650px;
+    line-height:1.7;
 }
 
 .banner-right{
@@ -191,6 +222,7 @@ body{
     display:flex;
     align-items:center;
     gap:12px;
+    animation:pulse 2s infinite;
 }
 
 .top-box i{
@@ -198,17 +230,19 @@ body{
 }
 
 /*=================================
-      SECTION TITRES
+      TITRES
 ==================================*/
 
 .dashboard-section h2,
-.quick-section h2{
+.quick-section h2,
+.charts-section h2{
     color:#142c7a;
     margin-bottom:25px;
+    font-size:28px;
 }
 
 /*=================================
-      CARDS STATISTIQUES
+      STATISTIQUES
 ==================================*/
 
 .stats-grid{
@@ -225,11 +259,11 @@ body{
     align-items:center;
     gap:20px;
     box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.3s;
+    transition:.4s;
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-10px);
 }
 
 .card i{
@@ -251,10 +285,11 @@ body{
 .card h1{
     font-size:34px;
     color:#142c7a;
+    font-weight:700;
 }
 
 .card p{
-    color:#777;
+    color:#666;
 }
 
 /* Couleurs */
@@ -302,11 +337,11 @@ body{
     padding:30px;
     border-radius:20px;
     box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.3s;
+    transition:.4s;
 }
 
 .quick-card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-10px);
 }
 
 .quick-card i{
@@ -332,12 +367,13 @@ body{
     color:#fff;
     padding:12px 30px;
     border-radius:12px;
-    cursor:pointer;
     font-weight:600;
+    transition:.3s;
 }
 
 .quick-card button:hover{
     background:#083ea5;
+    transform:scale(1.05);
 }
 
 /*=================================
@@ -346,7 +382,7 @@ body{
 
 .charts-section{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(450px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
     gap:25px;
     margin-top:40px;
 }
@@ -356,6 +392,11 @@ body{
     padding:30px;
     border-radius:20px;
     box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.4s;
+}
+
+.chart-box:hover{
+    transform:translateY(-10px);
 }
 
 .chart-box h3{
@@ -422,86 +463,13 @@ body{
 
 .footer{
     text-align:center;
-    padding:30px;
+    padding:35px;
     color:#666;
 }
 
 /*=================================
-      RESPONSIVE
+      ANIMATIONS
 ==================================*/
-
-@media(max-width:1000px){
-
-    .sidebar{
-        width:100%;
-        position:relative;
-        height:auto;
-    }
-
-    .main-content{
-        margin-left:0;
-    }
-
-    .dashboard-layout{
-        flex-direction:column;
-    }
-
-    .banner-content{
-        flex-direction:column;
-        justify-content:center;
-        text-align:center;
-        gap:25px;
-    }
-
-    .banner-left{
-        flex-direction:column;
-    }
-}
-
-@media(max-width:768px){
-
-    .banner{
-        height:420px;
-    }
-
-    .charts-section{
-        grid-template-columns:1fr;
-    }
-
-    .stats-grid,
-    .quick-grid{
-        grid-template-columns:1fr;
-    }
-
-    .inspection-list{
-        overflow:auto;
-    }
-
-}
-
-.card,
-.quick-card,
-.chart-box{
-    transition:.4s;
-}
-
-.card:hover,
-.quick-card:hover,
-.chart-box:hover{
-    transform:translateY(-10px);
-}
-
-.sidebar{
-    scrollbar-width:none;
-}
-
-.sidebar::-webkit-scrollbar{
-    display:none;
-}
-
-.top-box{
-    animation:pulse 2s infinite;
-}
 
 @keyframes pulse{
 
@@ -516,21 +484,93 @@ body{
     100%{
         transform:scale(1);
     }
-
 }
 
-.banner{
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
+/*=================================
+      RESPONSIVE TABLETTE
+==================================*/
+
+@media(max-width:1000px){
+
+    .dashboard-layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .banner{
+        height:460px;
+    }
+
+    .banner-content{
+        flex-direction:column;
+        justify-content:center;
+        text-align:center;
+        gap:25px;
+        padding:20px;
+    }
+
+    .banner-left{
+        flex-direction:column;
+    }
+
+    .banner-left h1{
+        font-size:34px;
+    }
+
+    .banner-left h3{
+        font-size:24px;
+    }
 }
 
-.quick-card button{
-    transition:.3s;
-}
+/*=================================
+      RESPONSIVE MOBILE
+==================================*/
 
-.quick-card button:hover{
-    transform:scale(1.05);
-}
+@media(max-width:768px){
 
-.card h1{
-    font-weight:700;
-          }
+    .banner{
+        height:520px;
+    }
+
+    .stats-grid,
+    .quick-grid,
+    .charts-section{
+        grid-template-columns:1fr;
+    }
+
+    .banner-left img{
+        width:90px;
+    }
+
+    .banner-left h1{
+        font-size:28px;
+    }
+
+    .banner-left h3{
+        font-size:20px;
+    }
+
+    .banner-left p{
+        font-size:14px;
+    }
+
+    .card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .inspection-list{
+        overflow-x:auto;
+    }
+    }
