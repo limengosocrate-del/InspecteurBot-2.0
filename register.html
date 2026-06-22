@@ -1,122 +1,152 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inscription | InspecteurBot-IA</title>
+<title>Inscription | InspecteurBot RDC</title>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="images/logo-igt.png">
+
+<link rel="stylesheet" href="style.css">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
 </head>
 
 <body>
 
-<div class="background-animation"></div>
+<!-- ================= NAVBAR ================= -->
 
-<div class="form-container">
+<nav class="top-navbar">
 
-<h1>
+<div class="nav-logo">
 
-<i class="fas fa-user-plus"></i>
+<img src="images/logo-igt.png" alt="Logo IGT">
 
+<div>
+
+<h2>InspecteurBot RDC</h2>
+
+<p>Inspection Générale du Travail</p>
+
+</div>
+
+</div>
+
+<ul>
+
+<li>
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+Accueil
+</a>
+</li>
+
+<li>
+<a href="login.html">
+<i class="fa-solid fa-right-to-bracket"></i>
+Connexion
+</a>
+</li>
+
+</ul>
+
+</nav>
+
+<!-- ================= SECTION INSCRIPTION ================= -->
+
+<section class="hero">
+
+<img
+src="images/batiment-igt.jpg"
+class="hero-image"
+alt="Bâtiment IGT">
+
+<div class="hero-overlay"></div>
+
+<div class="hero-content">
+
+<img
+src="images/logo-igt.png"
+class="logo">
+
+<h1>INSCRIPTION</h1>
+
+<h3>Inspection Générale du Travail</h3>
+
+<p>
+
+Créez votre compte afin d'accéder à la plateforme
+numérique de l'Inspection Générale du Travail.
+
+</p>
+
+<div class="assistant-box"
+style="
+max-width:650px;
+margin-top:30px;
+background:rgba(255,255,255,.95);
+color:#222;
+">
+
+<h2 style="color:#005baa; margin-bottom:25px;">
+<i class="fa-solid fa-user-plus"></i>
 Créer un compte
+</h2>
 
-</h1>
+<form action="login.html">
 
-<form action="dashboard.html">
-
-<div class="input-box">
-
-<label>Nom complet</label>
-
-<input type="text" placeholder="Votre nom complet" required>
-
-</div>
-
-<div class="input-box">
-
-<label>Email</label>
-
-<input type="email" placeholder="Votre adresse email" required>
-
-</div>
-
-<div class="input-box">
-
-<label>Téléphone</label>
-
-<input type="tel" placeholder="+243..." required>
-
-</div>
-
-<div class="input-box">
-
-<label>Pays</label>
-
-<select required>
-
-<option value="">Choisir votre pays</option>
-
-<option>RDC</option>
-
-<option>Congo Brazzaville</option>
-
-<option>Cameroun</option>
-
-<option>Gabon</option>
-
-<option>Sénégal</option>
-
-<option>Côte d'Ivoire</option>
-
-<option>Autre</option>
-
-</select>
-
-</div>
-
-<div class="input-box">
-
-<label>Profession</label>
-
-<input type="text" placeholder="Inspecteur du Travail">
-
-</div>
-
-<div class="input-box">
-
-<label>Mot de passe</label>
-
-<input type="password" required>
-
-</div>
-
-<div class="input-box">
-
-<label>Confirmer le mot de passe</label>
-
-<input type="password" required>
-
-</div>
-
-<label class="check">
-
-<input type="checkbox" required>
-
-J'accepte les conditions d'utilisation.
-
-</label>
+<input
+type="text"
+placeholder="Nom complet"
+required>
 
 <br><br>
 
-<button class="btn-register">
+<input
+type="email"
+placeholder="Adresse e-mail"
+required>
+
+<br><br>
+
+<input
+type="text"
+placeholder="Fonction (Inspecteur, Contrôleur, Agent...)"
+required>
+
+<br><br>
+
+<input
+type="text"
+placeholder="Province ou Direction"
+required>
+
+<br><br>
+
+<input
+type="password"
+placeholder="Mot de passe"
+required>
+
+<br><br>
+
+<input
+type="password"
+placeholder="Confirmer le mot de passe"
+required>
+
+<br><br>
+
+<button type="submit">
+
+<i class="fa-solid fa-user-check"></i>
 
 Créer mon compte
 
@@ -130,28 +160,164 @@ Créer mon compte
 
 Vous avez déjà un compte ?
 
-<a href="login.html">
-
+<a
+href="login.html"
+style="
+color:#005baa;
+font-weight:600;
+text-decoration:none;
+">
 Se connecter
-
 </a>
 
 </p>
 
 </div>
 
+</div>
+
+</section>
+
+<!-- ================= INFORMATIONS ================= -->
+
+<section class="notification">
+
+<div class="notification-box">
+
+<i class="fa-solid fa-circle-info"></i>
+
+<p>
+
+L'inscription est réservée aux agents,
+inspecteurs et responsables autorisés de
+l'Inspection Générale du Travail.
+Toutes les informations fournies sont protégées
+et utilisées uniquement dans le cadre
+professionnel.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ================= AVANTAGES ================= -->
+
+<section class="main-menu">
+
+<h2>
+
+<i class="fa-solid fa-star"></i>
+
+Pourquoi créer un compte ?
+
+</h2>
+
+<div class="menu-grid">
+
+<div class="menu-card">
+
+<i class="fa-solid fa-building"></i>
+
+<h3>Gestion des Entreprises</h3>
+
+<p>
+
+Consulter et gérer les entreprises
+enregistrées.
+
+</p>
+
+</div>
+
+<div class="menu-card">
+
+<i class="fa-solid fa-clipboard-check"></i>
+
+<h3>Gestion des Inspections</h3>
+
+<p>
+
+Planifier et suivre toutes les missions
+d'inspection.
+
+</p>
+
+</div>
+
+<div class="menu-card">
+
+<i class="fa-solid fa-file-signature"></i>
+
+<h3>Procès-Verbaux</h3>
+
+<p>
+
+Créer et gérer automatiquement
+les procès-verbaux.
+
+</p>
+
+</div>
+
+<div class="menu-card">
+
+<i class="fa-solid fa-robot"></i>
+
+<h3>Assistant IA</h3>
+
+<p>
+
+Utiliser InspecteurBot RDC pour
+rechercher des informations et générer
+des rapports.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
 <footer>
 
-Créé par <strong>Inspecteur Limengo (P. Miller)</strong>
+<img
+src="images/logo-igt.png"
+class="footer-logo">
 
-© 2026.
+<h3>
 
-Tous droits réservés.
+Inspection Générale du Travail
+
+</h3>
+
+<p>
+
+InspecteurBot RDC
+
+</p>
+
+<p>
+
+Plateforme numérique des Inspecteurs du Travail
+de la République Démocratique du Congo.
+
+</p>
+
+<hr>
+
+<p>
+
+Créé Par
+<strong>Inspecteur Limengo (Pmiller)</strong>
+© 2026
+
+</p>
 
 </footer>
 
-<script src="assets/js/app.js"></script>
-
 </body>
-
   </html>
