@@ -1,261 +1,234 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Connexion | InspecteurBot-IA</title>
+<title>Connexion | InspecteurBot RDC</title>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="images/logo-igt.png">
+
+<link rel="stylesheet" href="style.css">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
 </head>
 
 <body>
 
-<div class="background-animation"></div>
+<!-- ================= NAVBAR ================= -->
 
-<div class="form-container">
+<nav class="top-navbar">
 
-<div class="login-logo">
+<div class="nav-logo">
 
-<img src="images/logo-igt.png"
-alt="Logo IGT">
+<img src="images/logo-igt.png" alt="Logo IGT">
+
+<div>
+
+<h2>InspecteurBot RDC</h2>
+
+<p>Inspection Générale du Travail</p>
 
 </div>
 
-<h1>
+</div>
 
-<i class="fas fa-user-lock"></i>
+<ul>
 
-Connexion à InspecteurBot IA
+<li>
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+Accueil
+</a>
+</li>
 
-</h1>
+<li>
+<a href="register.html">
+<i class="fa-solid fa-user-plus"></i>
+Inscription
+</a>
+</li>
 
-<p class="login-subtitle">
+</ul>
 
-Inspection Générale du Travail
+</nav>
 
-</p>
+<!-- ================= SECTION CONNEXION ================= -->
 
-  <div class="welcome-box">
+<section class="hero">
 
-<h3>Bienvenue sur InspecteurBot IA</h3>
+<img
+src="images/batiment-igt.jpg"
+class="hero-image"
+alt="Bâtiment IGT">
+
+<div class="hero-overlay"></div>
+
+<div class="hero-content">
+
+<img
+src="images/logo-igt.png"
+class="logo">
+
+<h1>CONNEXION</h1>
+
+<h3>Inspection Générale du Travail</h3>
 
 <p>
-Votre assistant intelligent pour les inspections du travail,
-les analyses juridiques et la gestion des dossiers.
+
+Connectez-vous pour accéder à la plateforme
+numérique de gestion des inspections et des
+procès-verbaux.
+
 </p>
 
-</div>
-  
-</h1>
+<div class="assistant-box"
+style="
+max-width:500px;
+margin-top:30px;
+background:rgba(255,255,255,.95);
+color:#222;
+">
 
-<form id="loginForm">
+<h2 style="color:#005baa; margin-bottom:25px;">
+<i class="fa-solid fa-user-lock"></i>
+Espace de Connexion
+</h2>
 
-<div class="input-box">
-
-<label>Email</label>
+<form action="dashboard.html">
 
 <input
 type="email"
-id="email"
-placeholder="Votre adresse email"
+placeholder="Adresse e-mail"
 required>
 
-</div>
-
-<div class="input-box">
-
-<label>Mot de passe</label>
-
-<div class="password-box">
+<br><br>
 
 <input
 type="password"
-id="password"
-placeholder="Votre mot de passe"
+placeholder="Mot de passe"
 required>
 
-<i
-class="fa-solid fa-eye"
-id="togglePassword"></i>
+<br><br>
 
-</div>
+<button type="submit">
 
-</div>
-
-<div class="remember">
-
-<label>
-
-<input type="checkbox">
-
-Se souvenir de moi
-
-</label>
-
-</div>
-
-<br>
-
-<button
-type="submit"
-class="btn-register">
+<i class="fa-solid fa-right-to-bracket"></i>
 
 Se connecter
-
-<div class="login-links">
-
-<a href="index.html">
-
-<i class="fa-solid fa-house"></i>
-
-Retour à l'accueil
-
-</a>
-
-</div>
 
 </button>
 
 </form>
 
-<div class="premium-info">
-
-<h3>🚀 InspecteurBot IA Premium</h3>
+<br>
 
 <p>
 
-Accédez bientôt à des fonctionnalités avancées :
+Mot de passe oublié ?
+
+<a
+href="#"
+style="
+color:#005baa;
+font-weight:600;
+text-decoration:none;
+">
+Cliquez ici
+</a>
 
 </p>
-
-<ul>
-
-<li>✔ IA Juridique avancée</li>
-
-<li>✔ Génération automatique de rapports</li>
-
-<li>✔ Assistance 24h/24</li>
-
-<li>✔ Archivage sécurisé</li>
-
-<li>✔ Analyse complète des dossiers</li>
-
-</ul>
-
-</div>
 
 <br>
 
-<p style="text-align:center;">
+<p>
 
-<a href="#">
+Vous n'avez pas de compte ?
 
-Mot de passe oublié ?
-
-</a>
-
-</p>
-
-<p style="text-align:center;">
-
-Vous n'avez pas encore un compte ?
-
-<a href="register.html">
-
+<a
+href="register.html"
+style="
+color:#005baa;
+font-weight:600;
+text-decoration:none;
+">
 Créer un compte
-
 </a>
 
 </p>
 
 </div>
 
+</div>
+
+</section>
+
+<!-- ================= INFORMATIONS ================= -->
+
+<section class="notification">
+
+<div class="notification-box">
+
+<i class="fa-solid fa-shield-halved"></i>
+
+<p>
+
+Votre accès est sécurisé.
+Toutes les opérations effectuées sur la plateforme
+sont protégées et enregistrées conformément aux
+procédures de l'Inspection Générale du Travail.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
 <footer>
 
-Créé par
+<img
+src="images/logo-igt.png"
+class="footer-logo">
 
-<strong>
+<h3>
 
-Inspecteur Limengo (P. Miller)
+Inspection Générale du Travail
 
-</strong>
+</h3>
 
-© 2026.
+<p>
+
+InspecteurBot RDC
+
+</p>
+
+<p>
+
+Plateforme numérique des Inspecteurs du Travail
+de la République Démocratique du Congo.
+
+</p>
+
+<hr>
+
+<p>
+
+Créé Par
+<strong>Inspecteur Limengo (Pmiller)</strong>
+© 2026
+
+</p>
 
 </footer>
 
-<script src="assets/js/app.js"></script>
-
-<script>
-
-document
-.getElementById("loginForm")
-.addEventListener("submit",function(e){
-
-e.preventDefault();
-
-const email=
-document.getElementById("email").value;
-
-const password=
-document.getElementById("password").value;
-
-if(email==="" || password===""){
-
-alert("Veuillez remplir tous les champs.");
-
-return;
-
-}
-
-localStorage.setItem("inspecteur_connecte","true");
-
-localStorage.setItem("inspecteur_email",email);
-
-window.location.href="dashboard.html";
-
-});
-
-const togglePassword =
-document.getElementById("togglePassword");
-
-if (togglePassword) {
-
-togglePassword.addEventListener("click", () => {
-
-const password =
-document.getElementById("password");
-
-if (password.type === "password") {
-
-password.type = "text";
-
-togglePassword.classList.remove("fa-eye");
-
-togglePassword.classList.add("fa-eye-slash");
-
-} else {
-
-password.type = "password";
-
-togglePassword.classList.remove("fa-eye-slash");
-
-togglePassword.classList.add("fa-eye");
-
-}
-
-});
-
-}
-
-</script>
-
 </body>
-
   </html>
+
