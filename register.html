@@ -1,308 +1,323 @@
-/*=========================================
-      INSPECTEURBOT RDC
-      dashboard.js v2.0
-==========================================*/
+<!DOCTYPE html>
+<html lang="fr">
+<head>
 
-/*=========================================
-      DATE ET HEURE EN TEMPS RÉEL
-==========================================*/
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-function updateDateTime() {
+<title>Inscription | InspecteurBot RDC</title>
 
-    const dateElement =
-        document.getElementById("dateActuelle");
+<link rel="icon" href="images/logo-igt.png">
 
-    if (!dateElement) return;
+<link rel="stylesheet" href="style.css">
 
-    const now = new Date();
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    dateElement.innerHTML =
-        now.toLocaleString("fr-FR", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        });
-}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
-updateDateTime();
-setInterval(updateDateTime, 1000);
+</head>
 
-/*=========================================
-      ANIMATION DES CHIFFRES
-==========================================*/
+<body>
 
-function animateNumbers() {
+<!-- ================= NAVBAR ================= -->
 
-    const numbers =
-        document.querySelectorAll(".card h1");
+<nav class="top-navbar">
 
-    numbers.forEach(number => {
+<div class="nav-logo">
 
-        const finalValue =
-            parseInt(number.textContent);
+<img src="images/logo-igt.png" alt="Logo IGT">
 
-        let current = 0;
+<div>
 
-        const increment =
-            finalValue / 100;
+<h2>InspecteurBot RDC</h2>
 
-        const timer =
-            setInterval(() => {
+<p>Inspection Générale du Travail</p>
 
-                current += increment;
+</div>
 
-                if (current >= finalValue) {
+</div>
 
-                    current = finalValue;
-                    clearInterval(timer);
+<ul>
 
-                }
+<li>
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+Accueil
+</a>
+</li>
 
-                number.textContent =
-                    Math.floor(current);
+<li>
+<a href="login.html">
+<i class="fa-solid fa-right-to-bracket"></i>
+Connexion
+</a>
+</li>
 
-            }, 15);
+</ul>
 
-    });
+</nav>
 
-}
+<!-- ================= SECTION INSCRIPTION ================= -->
 
-window.addEventListener(
-    "load",
-    animateNumbers
-);
+<section class="hero">
 
-/*=========================================
-      ANIMATION DES CARTES
-==========================================*/
+<img
+src="images/batiment-igt.jpg"
+class="hero-image"
+alt="Bâtiment IGT">
 
-function initCards() {
+<div class="hero-overlay"></div>
 
-    const cards =
-        document.querySelectorAll(
-            ".card,.quick-card,.chart-box"
-        );
+<div class="hero-content">
 
-    cards.forEach(card => {
+<img
+src="images/logo-igt.png"
+class="logo">
 
-        card.addEventListener(
-            "mouseenter",
-            () => {
+<h1>INSCRIPTION</h1>
 
-                card.style.transform =
-                    "translateY(-10px)";
+<h3>Inspection Générale du Travail</h3>
 
-            }
-        );
+<p>
 
-        card.addEventListener(
-            "mouseleave",
-            () => {
+Créez votre compte afin d'accéder à la plateforme
+numérique de l'Inspection Générale du Travail.
 
-                card.style.transform =
-                    "translateY(0)";
+</p>
 
-            }
-        );
+<div class="assistant-box"
+style="
+max-width:650px;
+margin-top:30px;
+background:rgba(255,255,255,.95);
+color:#222;
+">
 
-    });
+<h2 style="color:#005baa; margin-bottom:25px;">
+<i class="fa-solid fa-user-plus"></i>
+Créer un compte
+</h2>
 
-}
+<form action="login.html">
 
-window.addEventListener(
-    "load",
-    initCards
-);
+<input
+type="text"
+placeholder="Nom complet"
+required>
 
-/*=========================================
-      MESSAGES MOTIVATION
-==========================================*/
+<br><br>
 
-const messages = [
+<input
+type="email"
+placeholder="Adresse e-mail"
+required>
 
-    "Bienvenue Inspecteur 👋",
+<br><br>
 
-    "La loi protège le travailleur.",
+<input
+type="text"
+placeholder="Fonction (Inspecteur, Contrôleur, Agent...)"
+required>
 
-    "L'intégrité est la force de l'Inspecteur.",
+<br><br>
 
-    "Chaque inspection améliore le monde du travail.",
+<input
+type="text"
+placeholder="Province ou Direction"
+required>
 
-    "Le respect du Code du Travail protège tous les citoyens.",
+<br><br>
 
-    "La sécurité des travailleurs reste une priorité.",
+<input
+type="password"
+placeholder="Mot de passe"
+required>
 
-    "Bonne mission Inspecteur."
+<br><br>
 
-];
+<input
+type="password"
+placeholder="Confirmer le mot de passe"
+required>
 
-function showMessage() {
+<br><br>
 
-    const element =
-        document.getElementById(
-            "notificationMessage"
-        );
+<button type="submit">
 
-    if (!element) return;
+<i class="fa-solid fa-user-check"></i>
 
-    const random =
-        Math.floor(
-            Math.random() *
-            messages.length
-        );
+Créer mon compte
 
-    element.innerText =
-        messages[random];
+</button>
 
-}
+</form>
 
-showMessage();
-setInterval(showMessage, 7000);
+<br>
 
-/*=========================================
-      GRAPHIQUE INSPECTIONS
-==========================================*/
+<p>
 
-window.addEventListener(
-    "load",
-    () => {
+Vous avez déjà un compte ?
 
-        if (
-            typeof Chart ===
-            "undefined"
-        ) {
-            return;
-        }
+<a
+href="login.html"
+style="
+color:#005baa;
+font-weight:600;
+text-decoration:none;
+">
+Se connecter
+</a>
 
-        const inspection =
-            document.getElementById(
-                "inspectionChart"
-            );
+</p>
 
-        if (inspection) {
+</div>
 
-            new Chart(
-                inspection,
-                {
+</div>
 
-                    type: "line",
+</section>
 
-                    data: {
+<!-- ================= INFORMATIONS ================= -->
 
-                        labels: [
-                            "Jan",
-                            "Fév",
-                            "Mar",
-                            "Avr",
-                            "Mai",
-                            "Juin"
-                        ],
+<section class="notification">
 
-                        datasets: [{
+<div class="notification-box">
 
-                            label:
-                                "Inspections",
+<i class="fa-solid fa-circle-info"></i>
 
-                            data: [
-                                180,
-                                300,
-                                240,
-                                450,
-                                300,
-                                680
-                            ],
+<p>
 
-                            fill: true,
+L'inscription est réservée aux agents,
+inspecteurs et responsables autorisés de
+l'Inspection Générale du Travail.
+Toutes les informations fournies sont protégées
+et utilisées uniquement dans le cadre
+professionnel.
 
-                            borderColor:
-                                "#005baa",
+</p>
 
-                            backgroundColor:
-                                "rgba(0,91,170,0.2)",
+</div>
 
-                            tension: 0.4
+</section>
 
-                        }]
+<!-- ================= AVANTAGES ================= -->
 
-                    },
+<section class="main-menu">
 
-                    options: {
-                        responsive: true
-                    }
+<h2>
 
-                }
-            );
-        }
+<i class="fa-solid fa-star"></i>
 
-        const infraction =
-            document.getElementById(
-                "infractionChart"
-            );
+Pourquoi créer un compte ?
 
-        if (infraction) {
+</h2>
 
-            new Chart(
-                infraction,
-                {
+<div class="menu-grid">
 
-                    type:
-                        "doughnut",
+<div class="menu-card">
 
-                    data: {
+<i class="fa-solid fa-building"></i>
 
-                        labels: [
+<h3>Gestion des Entreprises</h3>
 
-                            "Travail dissimulé",
+<p>
 
-                            "SMIG",
+Consulter et gérer les entreprises
+enregistrées.
 
-                            "Conditions",
+</p>
 
-                            "Sécurité",
+</div>
 
-                            "Autres"
+<div class="menu-card">
 
-                        ],
+<i class="fa-solid fa-clipboard-check"></i>
 
-                        datasets: [{
+<h3>Gestion des Inspections</h3>
 
-                            data: [
-                                38,
-                                24,
-                                18,
-                                12,
-                                8
-                            ],
+<p>
 
-                            backgroundColor: [
+Planifier et suivre toutes les missions
+d'inspection.
 
-                                "#005baa",
-                                "#2e7d32",
-                                "#ff9800",
-                                "#c62828",
-                                "#6a1b9a"
+</p>
 
-                            ]
+</div>
 
-                        }]
+<div class="menu-card">
 
-                    },
+<i class="fa-solid fa-file-signature"></i>
 
-                    options: {
-                        responsive: true
-                    }
+<h3>Procès-Verbaux</h3>
 
-                }
-            );
-        }
+<p>
 
-    }
-);
+Créer et gérer automatiquement
+les procès-verbaux.
 
-console.log(
-    "InspecteurBot RDC démarré."
-);
+</p>
+
+</div>
+
+<div class="menu-card">
+
+<i class="fa-solid fa-robot"></i>
+
+<h3>Assistant IA</h3>
+
+<p>
+
+Utiliser InspecteurBot RDC pour
+rechercher des informations et générer
+des rapports.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+<img
+src="images/logo-igt.png"
+class="footer-logo">
+
+<h3>
+
+Inspection Générale du Travail
+
+</h3>
+
+<p>
+
+InspecteurBot RDC
+
+</p>
+
+<p>
+
+Plateforme numérique des Inspecteurs du Travail
+de la République Démocratique du Congo.
+
+</p>
+
+<hr>
+
+<p>
+
+Créé Par
+<strong>Inspecteur Limengo (Pmiller)</strong>
+© 2026
+
+</p>
+
+</footer>
+
+</body>
+          </html>
