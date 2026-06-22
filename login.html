@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Connexion | InspecteurBot-IA</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="background-animation"></div>
+
+<div class="form-container">
+
+<div class="login-logo">
+
+<img src="images/logo-igt.png"
+alt="Logo IGT">
+
+</div>
+
+<h1>
+
+<i class="fas fa-user-lock"></i>
+
+Connexion à InspecteurBot IA
+
+</h1>
+
+<p class="login-subtitle">
+
+Inspection Générale du Travail
+
+</p>
+
+  <div class="welcome-box">
+
+<h3>Bienvenue sur InspecteurBot IA</h3>
+
+<p>
+Votre assistant intelligent pour les inspections du travail,
+les analyses juridiques et la gestion des dossiers.
+</p>
+
+</div>
+  
+</h1>
+
+<form id="loginForm">
+
+<div class="input-box">
+
+<label>Email</label>
+
+<input
+type="email"
+id="email"
+placeholder="Votre adresse email"
+required>
+
+</div>
+
+<div class="input-box">
+
+<label>Mot de passe</label>
+
+<div class="password-box">
+
+<input
+type="password"
+id="password"
+placeholder="Votre mot de passe"
+required>
+
+<i
+class="fa-solid fa-eye"
+id="togglePassword"></i>
+
+</div>
+
+</div>
+
+<div class="remember">
+
+<label>
+
+<input type="checkbox">
+
+Se souvenir de moi
+
+</label>
+
+</div>
+
+<br>
+
+<button
+type="submit"
+class="btn-register">
+
+Se connecter
+
+<div class="login-links">
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Retour à l'accueil
+
+</a>
+
+</div>
+
+</button>
+
+</form>
+
+<div class="premium-info">
+
+<h3>🚀 InspecteurBot IA Premium</h3>
+
+<p>
+
+Accédez bientôt à des fonctionnalités avancées :
+
+</p>
+
+<ul>
+
+<li>✔ IA Juridique avancée</li>
+
+<li>✔ Génération automatique de rapports</li>
+
+<li>✔ Assistance 24h/24</li>
+
+<li>✔ Archivage sécurisé</li>
+
+<li>✔ Analyse complète des dossiers</li>
+
+</ul>
+
+</div>
+
+<br>
+
+<p style="text-align:center;">
+
+<a href="#">
+
+Mot de passe oublié ?
+
+</a>
+
+</p>
+
+<p style="text-align:center;">
+
+Vous n'avez pas encore un compte ?
+
+<a href="register.html">
+
+Créer un compte
+
+</a>
+
+</p>
+
+</div>
+
+<footer>
+
+Créé par
+
+<strong>
+
+Inspecteur Limengo (P. Miller)
+
+</strong>
+
+© 2026.
+
+</footer>
+
+<script src="assets/js/app.js"></script>
+
+<script>
+
+document
+.getElementById("loginForm")
+.addEventListener("submit",function(e){
+
+e.preventDefault();
+
+const email=
+document.getElementById("email").value;
+
+const password=
+document.getElementById("password").value;
+
+if(email==="" || password===""){
+
+alert("Veuillez remplir tous les champs.");
+
+return;
+
+}
+
+localStorage.setItem("inspecteur_connecte","true");
+
+localStorage.setItem("inspecteur_email",email);
+
+window.location.href="dashboard.html";
+
+});
+
+const togglePassword =
+document.getElementById("togglePassword");
+
+if (togglePassword) {
+
+togglePassword.addEventListener("click", () => {
+
+const password =
+document.getElementById("password");
+
+if (password.type === "password") {
+
+password.type = "text";
+
+togglePassword.classList.remove("fa-eye");
+
+togglePassword.classList.add("fa-eye-slash");
+
+} else {
+
+password.type = "password";
+
+togglePassword.classList.remove("fa-eye-slash");
+
+togglePassword.classList.add("fa-eye");
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+
+  </html>
