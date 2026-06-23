@@ -573,4 +573,4 @@ button{
     .inspection-list{
         overflow-x:auto;
     }
-    }
+          }
