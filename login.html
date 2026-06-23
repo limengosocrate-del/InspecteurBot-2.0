@@ -53,18 +53,13 @@
     <section class="hero">
 
         <img
-            src="./images/batiment-igt.jpg"
+            src="./images/photo1.jpg"
             class="hero-image"
             alt="Bâtiment IGT">
 
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
-
-            <img
-                src="./images/logo-igt.png"
-                class="logo"
-                alt="Logo IGT">
 
             <h1>CONNEXION</h1>
 
@@ -192,8 +187,33 @@
 
     </footer>
 
+
+    <script>
+    const images = [
+     "./images/photo1.jpg",
+     "./images/photo2.jpg",
+     "./images/photo3.jpg",
+     "./images/photo4.jpg",
+     "./images/photo5.jpg",
+     "./images/photo6.jpg",
+     "./images/photo7.jpg",
+     "./images/photo8.jpg",
+     "./images/photo9.jpg",
+     "./images/photo10.jpg"
+    ];
+
+    let current = 0;
+
+    setInterval(() => {
+        current = (current + 1) % images.length;
+        document.querySelector(".hero-image").src = images[current];
+    }, 8000);
+    </script>
+
 </body>
+
 </html>
 .
+
 
 
