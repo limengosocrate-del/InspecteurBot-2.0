@@ -1,309 +1,577 @@
-/*=========================================
+/*=================================
       INSPECTEURBOT RDC
-      dashboard.js v2.0
-==========================================*/
+      STYLE GLOBAL
+==================================*/
 
-/*=========================================
-      DATE ET HEURE EN TEMPS RÉEL
-==========================================*/
-
-function updateDateTime() {
-
-    const dateElement =
-        document.getElementById("dateActuelle");
-
-    if (!dateElement) return;
-
-    const now = new Date();
-
-    dateElement.innerHTML =
-        now.toLocaleString("fr-FR", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        });
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 }
 
-updateDateTime();
-setInterval(updateDateTime, 1000);
-
-/*=========================================
-      ANIMATION DES CHIFFRES
-==========================================*/
-
-function animateNumbers() {
-
-    const numbers =
-        document.querySelectorAll(".card h1");
-
-    numbers.forEach(number => {
-
-        const finalValue =
-            parseInt(number.textContent);
-
-        let current = 0;
-
-        const increment =
-            finalValue / 100;
-
-        const timer =
-            setInterval(() => {
-
-                current += increment;
-
-                if (current >= finalValue) {
-
-                    current = finalValue;
-                    clearInterval(timer);
-
-                }
-
-                number.textContent =
-                    Math.floor(current);
-
-            }, 15);
-
-    });
-
+html{
+    scroll-behavior:smooth;
 }
 
-window.addEventListener(
-    "load",
-    animateNumbers
-);
-
-/*=========================================
-      ANIMATION DES CARTES
-==========================================*/
-
-function initCards() {
-
-    const cards =
-        document.querySelectorAll(
-            ".card,.quick-card,.chart-box"
-        );
-
-    cards.forEach(card => {
-
-        card.addEventListener(
-            "mouseenter",
-            () => {
-
-                card.style.transform =
-                    "translateY(-10px)";
-
-            }
-        );
-
-        card.addEventListener(
-            "mouseleave",
-            () => {
-
-                card.style.transform =
-                    "translateY(0)";
-
-            }
-        );
-
-    });
-
+body{
+    background:#edf2f9;
+    color:#222;
+    overflow-x:hidden;
+    min-height:100vh;
 }
 
-window.addEventListener(
-    "load",
-    initCards
-);
-
-/*=========================================
-      MESSAGES MOTIVATION
-==========================================*/
-
-const messages = [
-
-    "Bienvenue Inspecteur 👋",
-
-    "La loi protège le travailleur.",
-
-    "L'intégrité est la force de l'Inspecteur.",
-
-    "Chaque inspection améliore le monde du travail.",
-
-    "Le respect du Code du Travail protège tous les citoyens.",
-
-    "La sécurité des travailleurs reste une priorité.",
-
-    "Bonne mission Inspecteur."
-
-];
-
-function showMessage() {
-
-    const element =
-        document.getElementById(
-            "notificationMessage"
-        );
-
-    if (!element) return;
-
-    const random =
-        Math.floor(
-            Math.random() *
-            messages.length
-        );
-
-    element.innerText =
-        messages[random];
-
+img{
+    max-width:100%;
+    display:block;
 }
 
-showMessage();
-setInterval(showMessage, 7000);
+a{
+    text-decoration:none;
+}
 
-/*=========================================
-      GRAPHIQUE INSPECTIONS
-==========================================*/
+button{
+    font-family:'Poppins',sans-serif;
+    cursor:pointer;
+}
 
-window.addEventListener(
-    "load",
-    () => {
+/*=================================
+      LAYOUT
+==================================*/
 
-        if (
-            typeof Chart ===
-            "undefined"
-        ) {
-            return;
-        }
+.dashboard-layout{
+    display:flex;
+    min-height:100vh;
+}
 
-        const inspection =
-            document.getElementById(
-                "inspectionChart"
-            );
+/*=================================
+      SIDEBAR
+==================================*/
 
-        if (inspection) {
+.sidebar{
+    width:270px;
+    background:linear-gradient(180deg,#04256f,#001845);
+    color:#fff;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    padding:20px;
+    overflow-y:auto;
+    z-index:1000;
+    scrollbar-width:none;
+}
 
-            new Chart(
-                inspection,
-                {
+.sidebar::-webkit-scrollbar{
+    display:none;
+}
 
-                    type: "line",
+.sidebar-logo{
+    text-align:center;
+    margin-bottom:35px;
+}
 
-                    data: {
+.sidebar-logo img{
+    width:120px;
+    margin:0 auto 15px;
+}
 
-                        labels: [
-                            "Jan",
-                            "Fév",
-                            "Mar",
-                            "Avr",
-                            "Mai",
-                            "Juin"
-                        ],
+.sidebar-logo h3{
+    font-size:20px;
+    font-weight:600;
+}
 
-                        datasets: [{
+.sidebar ul{
+    list-style:none;
+}
 
-                            label:
-                                "Inspections",
+.sidebar ul li{
+    margin-bottom:10px;
+}
 
-                            data: [
-                                180,
-                                300,
-                                240,
-                                450,
-                                300,
-                                680
-                            ],
+.sidebar ul li a{
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border-radius:14px;
+    transition:.3s;
+    font-size:15px;
+}
 
-                            fill: true,
+.sidebar ul li a:hover,
+.sidebar ul li.active a{
+    background:#0b52d6;
+}
 
-                            borderColor:
-                                "#005baa",
+.sidebar ul li i{
+    width:20px;
+}
 
-                            backgroundColor:
-                                "rgba(0,91,170,0.2)",
+.logout{
+    margin-top:40px;
+}
 
-                            tension: 0.4
+.logout a{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    background:#e21b23;
+    color:#fff;
+    padding:16px;
+    border-radius:14px;
+    font-weight:600;
+    transition:.3s;
+}
 
-                        }]
+.logout a:hover{
+    background:#c8141c;
+}
 
-                    },
+/*=================================
+      MAIN CONTENT
+==================================*/
 
-                    options: {
-                        responsive: true
-                    }
+.main-content{
+    flex:1;
+    margin-left:270px;
+    width:calc(100% - 270px);
+    padding:25px;
+}
 
-                }
-            );
-        }
+/*=================================
+      BANNER
+==================================*/
 
-        const infraction =
-            document.getElementById(
-                "infractionChart"
-            );
+.banner{
+    position:relative;
+    height:300px;
+    border-radius:25px;
+    overflow:hidden;
+    margin-bottom:30px;
+    box-shadow:0 15px 40px rgba(0,0,0,.20);
+}
 
-        if (infraction) {
+.banner-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
 
-            new Chart(
-                infraction,
-                {
+.banner-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        rgba(0,43,120,.85),
+        rgba(0,43,120,.70)
+    );
+}
 
-                    type:
-                        "doughnut",
+.banner-content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:35px;
+    color:#fff;
+}
 
-                    data: {
+.banner-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
 
-                        labels: [
+.banner-left img{
+    width:110px;
+    background:#fff;
+    border-radius:50%;
+    padding:6px;
+}
 
-                            "Travail dissimulé",
+.banner-left h1{
+    font-size:46px;
+    margin-bottom:10px;
+}
 
-                            "SMIG",
+.banner-left h3{
+    color:#ffd43b;
+    margin-bottom:12px;
+    font-size:30px;
+}
 
-                            "Conditions",
+.banner-left p{
+    max-width:650px;
+    line-height:1.7;
+}
 
-                            "Sécurité",
+.banner-right{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
 
-                            "Autres"
+.top-box{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+    padding:15px 20px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    animation:pulse 2s infinite;
+}
 
-                        ],
+.top-box i{
+    font-size:20px;
+}
 
-                        datasets: [{
+/*=================================
+      TITRES
+==================================*/
 
-                            data: [
-                                38,
-                                24,
-                                18,
-                                12,
-                                8
-                            ],
+.dashboard-section h2,
+.quick-section h2,
+.charts-section h2{
+    color:#142c7a;
+    margin-bottom:25px;
+    font-size:28px;
+}
 
-                            backgroundColor: [
+/*=================================
+      STATISTIQUES
+==================================*/
 
-                                "#005baa",
-                                "#2e7d32",
-                                "#ff9800",
-                                "#c62828",
-                                "#6a1b9a"
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
 
-                            ]
+.card{
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.4s;
+}
 
-                        }]
+.card:hover{
+    transform:translateY(-10px);
+}
 
-                    },
+.card i{
+    width:75px;
+    height:75px;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    font-size:30px;
+}
 
-                    options: {
-                        responsive: true
-                    }
+.card h3{
+    font-size:18px;
+    margin-bottom:8px;
+}
 
-                }
-            );
-        }
+.card h1{
+    font-size:34px;
+    color:#142c7a;
+    font-weight:700;
+}
 
+.card p{
+    color:#666;
+}
+
+/* Couleurs */
+
+.blue{
+    background:#0b52d6;
+}
+
+.green{
+    background:#1eaa4b;
+}
+
+.orange{
+    background:#ff9800;
+}
+
+.purple{
+    background:#673ab7;
+}
+
+.cyan{
+    background:#00acc1;
+}
+
+.dark{
+    background:#08296d;
+}
+
+/*=================================
+      ACCÈS RAPIDE
+==================================*/
+
+.quick-section{
+    margin-top:40px;
+}
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.quick-card{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.4s;
+}
+
+.quick-card:hover{
+    transform:translateY(-10px);
+}
+
+.quick-card i{
+    font-size:42px;
+    color:#0b52d6;
+    margin-bottom:20px;
+}
+
+.quick-card h3{
+    color:#142c7a;
+    margin-bottom:12px;
+}
+
+.quick-card p{
+    color:#666;
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.quick-card button{
+    border:none;
+    background:#0b52d6;
+    color:#fff;
+    padding:12px 30px;
+    border-radius:12px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.quick-card button:hover{
+    background:#083ea5;
+    transform:scale(1.05);
+}
+
+/*=================================
+      GRAPHIQUES
+==================================*/
+
+.charts-section{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+    gap:25px;
+    margin-top:40px;
+}
+
+.chart-box{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.4s;
+}
+
+.chart-box:hover{
+    transform:translateY(-10px);
+}
+
+.chart-box h3{
+    color:#142c7a;
+    margin-bottom:25px;
+}
+
+.chart-box canvas{
+    width:100% !important;
+    height:300px !important;
+}
+
+/*=================================
+      DERNIÈRES INSPECTIONS
+==================================*/
+
+.inspection-list{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    margin-top:40px;
+}
+
+.inspection-list h3{
+    color:#142c7a;
+    margin-bottom:25px;
+}
+
+.inspection-list table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.inspection-list td{
+    padding:18px;
+    border-bottom:1px solid #eee;
+}
+
+.success{
+    background:#dff5e7;
+    color:#178644;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+.warning{
+    background:#fff0d8;
+    color:#d18200;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+.danger{
+    background:#ffe2e2;
+    color:#cf2222;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+/*=================================
+      FOOTER
+==================================*/
+
+.footer{
+    text-align:center;
+    padding:35px;
+    color:#666;
+}
+
+/*=================================
+      ANIMATIONS
+==================================*/
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
     }
-);
 
-console.log(
-    "InspecteurBot RDC démarré."
-);
-                  
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+}
+
+/*=================================
+      RESPONSIVE TABLETTE
+==================================*/
+
+@media(max-width:1000px){
+
+    .dashboard-layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:15px;
+    }
+
+    .banner{
+        height:460px;
+    }
+
+    .banner-content{
+        flex-direction:column;
+        justify-content:center;
+        text-align:center;
+        gap:25px;
+        padding:20px;
+    }
+
+    .banner-left{
+        flex-direction:column;
+    }
+
+    .banner-left h1{
+        font-size:34px;
+    }
+
+    .banner-left h3{
+        font-size:24px;
+    }
+}
+
+/*=================================
+      RESPONSIVE MOBILE
+==================================*/
+
+@media(max-width:768px){
+
+    .banner{
+        height:520px;
+    }
+
+    .stats-grid,
+    .quick-grid,
+    .charts-section{
+        grid-template-columns:1fr;
+    }
+
+    .banner-left img{
+        width:90px;
+    }
+
+    .banner-left h1{
+        font-size:28px;
+    }
+
+    .banner-left h3{
+        font-size:20px;
+    }
+
+    .banner-left p{
+        font-size:14px;
+    }
+
+    .card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .inspection-list{
+        overflow-x:auto;
+    }
+}
+      
