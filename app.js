@@ -306,3 +306,4 @@ window.addEventListener(
 console.log(
     "InspecteurBot RDC démarré."
 );
+          
