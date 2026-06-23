@@ -1,263 +1,196 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | InspecteurBot RDC</title>
 
-<title>Connexion | InspecteurBot-IA</title>
+    <link rel="icon" type="image/png" href="./images/logo-igt.png">
+    <link rel="stylesheet" href="./style.css">
 
-<link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 </head>
 
 <body>
 
-<div class="background-animation"></div>
+    <!-- NAVBAR -->
 
-<div class="form-container">
+    <nav class="top-navbar">
 
-<div class="login-logo">
+        <div class="nav-logo">
+            <img src="./images/logo-igt.png" alt="Logo IGT">
 
-<img src="images/logo-igt.png"
-alt="Logo IGT">
+            <div>
+                <h2>InspecteurBot RDC</h2>
+                <p>Inspection Générale du Travail</p>
+            </div>
+        </div>
 
-</div>
+        <ul>
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-house"></i>
+                    Accueil
+                </a>
+            </li>
 
-<h1>
+            <li>
+                <a href="./register.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Inscription
+                </a>
+            </li>
+        </ul>
 
-<i class="fas fa-user-lock"></i>
+    </nav>
 
-Connexion à InspecteurBot IA
+    <!-- SECTION CONNEXION -->
 
-</h1>
+    <section class="hero">
 
-<p class="login-subtitle">
+        <img
+            src="./images/batiment-igt.jpg"
+            class="hero-image"
+            alt="Bâtiment IGT">
 
-Inspection Générale du Travail
+        <div class="hero-overlay"></div>
 
-</p>
+        <div class="hero-content">
 
-  <div class="welcome-box">
+            <img
+                src="./images/logo-igt.png"
+                class="logo"
+                alt="Logo IGT">
 
-<h3>Bienvenue sur InspecteurBot IA</h3>
+            <h1>CONNEXION</h1>
 
-<p>
-Votre assistant intelligent pour les inspections du travail,
-les analyses juridiques et la gestion des dossiers.
-</p>
+            <h3>Inspection Générale du Travail</h3>
 
-</div>
-  
-</h1>
+            <p>
+                Connectez-vous pour accéder à la plateforme
+                numérique de gestion des inspections et des
+                procès-verbaux.
+            </p>
 
-<form id="loginForm">
+            <div class="assistant-box"
+                 style="
+                 max-width:500px;
+                 margin-top:30px;
+                 background:rgba(255,255,255,.95);
+                 color:#222;">
 
-<div class="input-box">
+                <h2 style="color:#005baa; margin-bottom:25px;">
+                    <i class="fa-solid fa-user-lock"></i>
+                    Espace de Connexion
+                </h2>
 
-<label>Email</label>
+                <form action="./dashboard.html">
 
-<input
-type="email"
-id="email"
-placeholder="Votre adresse email"
-required>
+                    <input
+                        type="email"
+                        placeholder="Adresse e-mail"
+                        required>
 
-</div>
+                    <br><br>
 
-<div class="input-box">
+                    <input
+                        type="password"
+                        placeholder="Mot de passe"
+                        required>
 
-<label>Mot de passe</label>
+                    <br><br>
 
-<div class="password-box">
+                    <button type="submit">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Se connecter
+                    </button>
 
-<input
-type="password"
-id="password"
-placeholder="Votre mot de passe"
-required>
+                </form>
 
-<i
-class="fa-solid fa-eye"
-id="togglePassword"></i>
+                <br>
 
-</div>
+                <p>
+                    Mot de passe oublié ?
 
-</div>
+                    <a href="#"
+                       style="
+                       color:#005baa;
+                       font-weight:600;
+                       text-decoration:none;">
+                        Cliquez ici
+                    </a>
+                </p>
 
-<div class="remember">
+                <br>
 
-<label>
+                <p>
+                    Vous n'avez pas de compte ?
 
-<input type="checkbox">
+                    <a href="./register.html"
+                       style="
+                       color:#005baa;
+                       font-weight:600;
+                       text-decoration:none;">
+                        Créer un compte
+                    </a>
+                </p>
 
-Se souvenir de moi
+            </div>
 
-</label>
+        </div>
 
-</div>
+    </section>
 
-<br>
+    <!-- INFORMATIONS -->
 
-<button
-type="submit"
-class="btn-register">
+    <section class="notification">
 
-Se connecter
+        <div class="notification-box">
 
-<div class="login-links">
+            <i class="fa-solid fa-shield-halved"></i>
 
-<a href="index.html">
+            <p>
+                Votre accès est sécurisé.
+                Toutes les opérations effectuées sur la plateforme
+                sont protégées et enregistrées conformément aux
+                procédures de l'Inspection Générale du Travail.
+            </p>
 
-<i class="fa-solid fa-house"></i>
+        </div>
 
-Retour à l'accueil
+    </section>
 
-</a>
+    <!-- FOOTER -->
 
-</div>
+    <footer class="footer">
 
-</button>
+        <img
+            src="./images/logo-igt.png"
+            class="footer-logo"
+            alt="Logo IGT">
 
-</form>
+        <h3>Inspection Générale du Travail</h3>
 
-<div class="premium-info">
+        <p>InspecteurBot RDC</p>
 
-<h3>🚀 InspecteurBot IA Premium</h3>
+        <p>
+            Plateforme numérique des Inspecteurs du Travail
+            de la République Démocratique du Congo.
+        </p>
 
-<p>
+        <hr>
 
-Accédez bientôt à des fonctionnalités avancées :
+        <p>
+            Créé Par
+            <strong>Inspecteur Limengo (Pmiller)</strong>
+            © 2026
+        </p>
 
-</p>
-
-<ul>
-
-<li>✔ IA Juridique avancée</li>
-
-<li>✔ Génération automatique de rapports</li>
-
-<li>✔ Assistance 24h/24</li>
-
-<li>✔ Archivage sécurisé</li>
-
-<li>✔ Analyse complète des dossiers</li>
-
-</ul>
-
-</div>
-
-<br>
-
-<p style="text-align:center;">
-
-<a href="#">
-
-Mot de passe oublié ?
-
-</a>
-
-</p>
-
-<p style="text-align:center;">
-
-Vous n'avez pas encore un compte ?
-
-<a href="register.html">
-
-Créer un compte
-
-</a>
-
-</p>
-
-</div>
-
-<footer>
-
-Créé par
-
-<strong>
-
-Inspecteur Limengo (P. Miller)
-
-</strong>
-
-© 2026.
-
-</footer>
-
-<script src="assets/js/app.js"></script>
-
-<script>
-
-document
-.getElementById("loginForm")
-.addEventListener("submit",function(e){
-
-e.preventDefault();
-
-const email=
-document.getElementById("email").value;
-
-const password=
-document.getElementById("password").value;
-
-if(email==="" || password===""){
-
-alert("Veuillez remplir tous les champs.");
-
-return;
-
-}
-
-localStorage.setItem("inspecteur_connecte","true");
-
-localStorage.setItem("inspecteur_email",email);
-
-window.location.href="dashboard.html";
-
-});
-
-const togglePassword =
-document.getElementById("togglePassword");
-
-if (togglePassword) {
-
-togglePassword.addEventListener("click", () => {
-
-const password =
-document.getElementById("password");
-
-if (password.type === "password") {
-
-password.type = "text";
-
-togglePassword.classList.remove("fa-eye");
-
-togglePassword.classList.add("fa-eye-slash");
-
-} else {
-
-password.type = "password";
-
-togglePassword.classList.remove("fa-eye-slash");
-
-togglePassword.classList.add("fa-eye");
-
-}
-
-});
-
-}
-
-</script>
+    </footer>
 
 </body>
-
-    </html>
-    
-                    
+</html>
