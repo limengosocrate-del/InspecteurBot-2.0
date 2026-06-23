@@ -1,324 +1,196 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | InspecteurBot RDC</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./images/logo-igt.png">
+    <link rel="stylesheet" href="./style.css">
 
-<title>Inscription | InspecteurBot RDC</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link rel="icon" type="image/png" href="./images/logo-igt.png">
-
-<link rel="stylesheet" href="./style.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+    <!-- NAVBAR -->
 
-<nav class="top-navbar">
+    <nav class="top-navbar">
 
-<div class="nav-logo">
+        <div class="nav-logo">
+            <img src="./images/logo-igt.png" alt="Logo IGT">
 
+            <div>
+                <h2>InspecteurBot RDC</h2>
+                <p>Inspection Générale du Travail</p>
+            </div>
+        </div>
 
+        <ul>
+            <li>
+                <a href="./index.html">
+                    <i class="fa-solid fa-house"></i>
+                    Accueil
+                </a>
+            </li>
 
-<div>
+            <li>
+                <a href="./register.html">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Inscription
+                </a>
+            </li>
+        </ul>
 
-<h2>InspecteurBot RDC</h2>
+    </nav>
 
-<p>Inspection Générale du Travail</p>
+    <!-- SECTION CONNEXION -->
 
-</div>
+    <section class="hero">
 
-</div>
+        <img
+            src="./images/batiment-igt.jpg"
+            class="hero-image"
+            alt="Bâtiment IGT">
 
-<ul>
+        <div class="hero-overlay"></div>
 
-<li>
-<a href="./index.html">
-<i class="fa-solid fa-house"></i>
-Accueil
-</a>
-</li>
+        <div class="hero-content">
 
-<li>
-<a href="./login.html">
-<i class="fa-solid fa-right-to-bracket"></i>
-Connexion
-</a>
-</li>
+            <img
+                src="./images/logo-igt.png"
+                class="logo"
+                alt="Logo IGT">
 
-</ul>
+            <h1>CONNEXION</h1>
 
-</nav>
+            <h3>Inspection Générale du Travail</h3>
 
-<!-- ================= SECTION INSCRIPTION ================= -->
+            <p>
+                Connectez-vous pour accéder à la plateforme
+                numérique de gestion des inspections et des
+                procès-verbaux.
+            </p>
 
-<section class="hero">
+            <div class="assistant-box"
+                 style="
+                 max-width:500px;
+                 margin-top:30px;
+                 background:rgba(255,255,255,.95);
+                 color:#222;">
 
-<img
-src="./images/batiment-igt.jpg"
-class="hero-image"
-alt="Bâtiment IGT">
+                <h2 style="color:#005baa; margin-bottom:25px;">
+                    <i class="fa-solid fa-user-lock"></i>
+                    Espace de Connexion
+                </h2>
 
-<div class="hero-overlay"></div>
+                <form action="./dashboard.html">
 
-<div class="hero-content">
+                    <input
+                        type="email"
+                        placeholder="Adresse e-mail"
+                        required>
 
+                    <br><br>
 
+                    <input
+                        type="password"
+                        placeholder="Mot de passe"
+                        required>
 
-<h1>INSCRIPTION</h1>
+                    <br><br>
 
-<h3>Inspection Générale du Travail</h3>
+                    <button type="submit">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Se connecter
+                    </button>
 
-<p>
+                </form>
 
-Créez votre compte afin d'accéder à la plateforme
-numérique de l'Inspection Générale du Travail.
+                <br>
 
-</p>
+                <p>
+                    Mot de passe oublié ?
 
-<div class="assistant-box"
-style="
-max-width:650px;
-margin-top:30px;
-background:rgba(255,255,255,.95);
-color:#222;
-">
+                    <a href="#"
+                       style="
+                       color:#005baa;
+                       font-weight:600;
+                       text-decoration:none;">
+                        Cliquez ici
+                    </a>
+                </p>
 
-<h2 style="color:#005baa; margin-bottom:25px;">
-<i class="fa-solid fa-user-plus"></i>
-Créer un compte
-</h2>
+                <br>
 
-<form action="./login.html">
+                <p>
+                    Vous n'avez pas de compte ?
 
-<input
-type="text"
-placeholder="Nom complet"
-required>
+                    <a href="./register.html"
+                       style="
+                       color:#005baa;
+                       font-weight:600;
+                       text-decoration:none;">
+                        Créer un compte
+                    </a>
+                </p>
 
-<br><br>
+            </div>
 
-<input
-type="email"
-placeholder="Adresse e-mail"
-required>
+        </div>
 
-<br><br>
+    </section>
 
-<input
-type="text"
-placeholder="Fonction (Inspecteur, Contrôleur, Agent...)"
-required>
+    <!-- INFORMATIONS -->
 
-<br><br>
+    <section class="notification">
 
-<input
-type="text"
-placeholder="Province ou Direction"
-required>
+        <div class="notification-box">
 
-<br><br>
+            <i class="fa-solid fa-shield-halved"></i>
 
-<input
-type="password"
-placeholder="Mot de passe"
-required>
+            <p>
+                Votre accès est sécurisé.
+                Toutes les opérations effectuées sur la plateforme
+                sont protégées et enregistrées conformément aux
+                procédures de l'Inspection Générale du Travail.
+            </p>
 
-<br><br>
+        </div>
 
-<input
-type="password"
-placeholder="Confirmer le mot de passe"
-required>
+    </section>
 
-<br><br>
+    <!-- FOOTER -->
 
-<button type="submit">
+    <footer class="footer">
 
-<i class="fa-solid fa-user-check"></i>
+        <img
+            src="./images/logo-igt.png"
+            class="footer-logo"
+            alt="Logo IGT">
 
-Créer mon compte
+        <h3>Inspection Générale du Travail</h3>
 
-</button>
+        <p>InspecteurBot RDC</p>
 
-</form>
+        <p>
+            Plateforme numérique des Inspecteurs du Travail
+            de la République Démocratique du Congo.
+        </p>
 
-<br>
+        <hr>
 
-<p>
+        <p>
+            Créé Par
+            <strong>Inspecteur Limengo (Pmiller)</strong>
+            © 2026
+        </p>
 
-Vous avez déjà un compte ?
-
-<a
-href="./login.html"
-style="
-color:#005baa;
-font-weight:600;
-text-decoration:none;
-">
-Se connecter
-</a>
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ================= INFORMATIONS ================= -->
-
-<section class="notification">
-
-<div class="notification-box">
-
-<i class="fa-solid fa-circle-info"></i>
-
-<p>
-
-L'inscription est réservée aux agents,
-inspecteurs et responsables autorisés de
-l'Inspection Générale du Travail.
-Toutes les informations fournies sont protégées
-et utilisées uniquement dans le cadre
-professionnel.
-
-</p>
-
-</div>
-
-</section>
-
-<!-- ================= AVANTAGES ================= -->
-
-<section class="main-menu">
-
-<h2>
-
-<i class="fa-solid fa-star"></i>
-
-Pourquoi créer un compte ?
-
-</h2>
-
-<div class="menu-grid">
-
-<div class="menu-card">
-
-<i class="fa-solid fa-building"></i>
-
-<h3>Gestion des Entreprises</h3>
-
-<p>
-
-Consulter et gérer les entreprises
-enregistrées.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-clipboard-check"></i>
-
-<h3>Gestion des Inspections</h3>
-
-<p>
-
-Planifier et suivre toutes les missions
-d'inspection.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-file-signature"></i>
-
-<h3>Procès-Verbaux</h3>
-
-<p>
-
-Créer et gérer automatiquement
-les procès-verbaux.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-robot"></i>
-
-<h3>Assistant IA</h3>
-
-<p>
-
-Utiliser InspecteurBot RDC pour
-rechercher des informations et générer
-des rapports.
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-<img
-src="./images/logo-igt.png"
-class="footer-logo"
-alt="Logo IGT">
-
-<h3>
-
-Inspection Générale du Travail
-
-</h3>
-
-<p>
-
-InspecteurBot RDC
-
-</p>
-
-<p>
-
-Plateforme numérique des Inspecteurs du Travail
-de la République Démocratique du Congo.
-
-</p>
-
-<hr>
-
-<p>
-
-Créé Par
-<strong>Inspecteur Limengo (Pmiller)</strong>
-© 2026
-
-</p>
-
-</footer>
+    </footer>
 
 </body>
-  </html>
-
-    
+</html>
