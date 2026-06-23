@@ -21,10 +21,13 @@ rel="stylesheet">
 
     <aside class="sidebar">
 
+        
         <div class="sidebar-logo">
+            <img src="images/batiment-igt.jpg" alt="Bâtiment IGT" style="width:100%;border-radius:12px;margin-bottom:15px;">
             <img src="images/logo-igt.png" alt="IGT">
             <h3>MENU PRINCIPAL</h3>
         </div>
+
 
         <ul>
 
@@ -87,39 +90,97 @@ rel="stylesheet">
             <li>
                 <a href="#">
                     <i class="fa-solid fa-robot"></i>
-                    Assistant IA
-                </a>
-            </li>
+                    <div class="menu-grid">
 
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-chart-column"></i>
-                    Statistiques
-                </a>
-            </li>
+<div class="menu-card">
+<i class="fa-solid fa-house"></i>
+<h3>Accueil</h3>
+<p>Page principale de l'application.</p>
+</div>
 
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-folder"></i>
-                    Archives
-                </a>
-            </li>
+<div class="menu-card">
+<i class="fa-solid fa-landmark"></i>
+<h3>IGT</h3>
+<p>Inspection Générale du Travail.</p>
+</div>
 
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-users"></i>
-                    Utilisateurs
-                </a>
-            </li>
+<div class="menu-card">
+<i class="fa-solid fa-folder-tree"></i>
+<h3>Formulaires de Contrôle</h3>
 
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-gear"></i>
-                    Paramètres
-                </a>
-            </li>
+<ul style="text-align:left;">
+<li>F01</li>
+<li>F02</li>
+<li>F03</li>
+<li>F04</li>
+<li>F05</li>
+<li>F06</li>
+<li>F07</li>
+<li>S01</li>
+<li>S02</li>
+<li>S03</li>
+<li>Arrêtés</li>
+<li>Notes Circulaires</li>
+<li>ONEM</li>
+</ul>
 
-        </ul>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-file-signature"></i>
+<h3>Procès-Verbaux</h3>
+<p>Création automatique des PV.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-calculator"></i>
+<h3>Calcul du Décompte Final</h3>
+<p>Calcul automatique des décomptes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-scale-balanced"></i>
+<h3>Code du Travail</h3>
+<p>Consultation rapide des articles.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions et Amendes</h3>
+<p>Infractions, sanctions et amendes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-robot"></i>
+<h3>Assistant IA</h3>
+<p>Assistant intelligent des inspecteurs.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-chart-column"></i>
+<h3>Statistiques</h3>
+<p>Rapports et analyses.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-folder-open"></i>
+<h3>Archives</h3>
+<p>Consultation des anciens dossiers.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-users"></i>
+<h3>Utilisateurs</h3>
+<p>Gestion des comptes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-gear"></i>
+<h3>Paramètres</h3>
+<p>Configuration générale.</p>
+</div>
+
+</div>
 
         <div class="logout">
             <a href="index.html">
@@ -260,6 +321,16 @@ Bienvenue Inspecteur 👋
                     </div>
                 </div>
 
+                <div class="card">
+
+<i class="fa-solid fa-calculator"></i>
+
+<h3>Décompte Final</h3>
+
+<h1 id="nbDecompte">0</h1>
+
+                            </div>
+
             </div>
 
         </section>
@@ -390,9 +461,34 @@ Bienvenue Inspecteur 👋
 
         </section>
 
-        <footer class="footer">
-            Inspection Générale du Travail –
-            République Démocratique du Congo © 2025
+        <<footer>
+
+<div class="footer-content">
+
+<img src="images/logo-igt.png" class="footer-logo">
+
+<h3>Inspection Générale du Travail</h3>
+
+<p>InspecteurBot IA</p>
+
+<hr>
+
+<p style="color:#ffffff;">
+
+Créé Par
+
+<strong style="color:#ffd700;">
+
+Inspecteur Limengo (Pmiller)
+
+</strong>
+
+© 2026
+
+</p>
+
+</div>
+
         </footer>
 
     </main>
@@ -437,5 +533,6 @@ new Chart(document.getElementById("infractionChart"),{
 </script>
     
 </body>
-</html>
-.
+    </html>
+
+    
