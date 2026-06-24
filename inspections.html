@@ -2,25 +2,104 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestion des Inspections</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
-<h1>Gestion des Inspections</h1>
+<div class="main-content">
 
-<input id="entreprise" placeholder="Entreprise">
-<input id="date" type="date">
-<input id="inspecteur" placeholder="Inspecteur">
-<input id="type" placeholder="Type d'inspection">
+<section class="dashboard-section">
 
-<button onclick="ajouterInspection()">
-Enregistrer
+<h2>
+<i class="fa-solid fa-clipboard-check"></i>
+GESTION DES INSPECTIONS
+</h2>
+
+<div class="chart-box">
+
+<h3>Nouvelle Inspection</h3>
+
+<form id="formInspection">
+
+<input
+type="text"
+id="entreprise"
+placeholder="Nom de l'entreprise"
+required>
+
+<input
+type="date"
+id="date"
+required>
+
+<input
+type="text"
+id="inspecteur"
+placeholder="Nom de l'inspecteur"
+required>
+
+<select id="type" required>
+
+<option value="">
+Choisir le type d'inspection
+</option>
+
+<option>
+Inspection ordinaire
+</option>
+
+<option>
+Inspection inopinée
+</option>
+
+<option>
+Contre-visite
+</option>
+
+<option>
+Inspection spéciale
+</option>
+
+<option>
+Inspection de sécurité
+</option>
+
+<option>
+Inspection du travail des enfants
+</option>
+
+<option>
+Inspection de conformité au SMIG
+</option>
+
+</select>
+
+<button type="submit">
+<i class="fa-solid fa-floppy-disk"></i>
+Enregistrer l'inspection
 </button>
 
-<hr>
+</form>
 
-<table border="1" width="100%">
+</div>
+
+<div class="inspection-list">
+
+<h3>
+<i class="fa-solid fa-list"></i>
+Liste des Inspections
+</h3>
+
+<table>
+
 <thead>
+
 <tr>
 <th>N°</th>
 <th>Entreprise</th>
@@ -29,85 +108,130 @@ Enregistrer
 <th>Type</th>
 <th>Action</th>
 </tr>
+
 </thead>
 
 <tbody id="listeInspections">
+
 </tbody>
+
 </table>
+
+</div>
+
+</section>
+
+</div>
 
 <script>
 
 let inspections =
-JSON.parse(localStorage.getItem("inspections")) || [];
+JSON.parse(
+localStorage.getItem("inspections")
+) || [];
 
 function afficherInspections(){
 
-    let html="";
+let html = "";
 
-    inspections.forEach((i,index)=>{
+inspections.forEach((i,index)=>{
 
-        html += `
-        <tr>
-        <td>${index+1}</td>
-        <td>${i.entreprise}</td>
-        <td>${i.date}</td>
-        <td>${i.inspecteur}</td>
-        <td>${i.type}</td>
+html += `
+<tr>
 
-        <td>
-        <button
-        onclick="supprimerInspection(${index})">
-        Supprimer
-        </button>
-        </td>
+<td>${index + 1}</td>
 
-        </tr>`;
-    });
+<td>${i.entreprise}</td>
 
-    document.getElementById(
-        "listeInspections"
-    ).innerHTML = html;
+<td>${i.date}</td>
+
+<td>${i.inspecteur}</td>
+
+<td>${i.type}</td>
+
+<td>
+
+<button
+onclick="supprimerInspection(${index})">
+
+<i class="fa-solid fa-trash"></i>
+Supprimer
+
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById(
+"listeInspections"
+).innerHTML = html;
+
 }
 
-function ajouterInspection(){
+document.getElementById(
+"formInspection"
+).addEventListener(
+"submit",
+function(e){
 
-    inspections.push({
+e.preventDefault();
 
-        entreprise:
-        document.getElementById(
-        "entreprise").value,
+inspections.push({
 
-        date:
-        document.getElementById(
-        "date").value,
+entreprise:
+document.getElementById(
+"entreprise"
+).value,
 
-        inspecteur:
-        document.getElementById(
-        "inspecteur").value,
+date:
+document.getElementById(
+"date"
+).value,
 
-        type:
-        document.getElementById(
-        "type").value
-    });
+inspecteur:
+document.getElementById(
+"inspecteur"
+).value,
 
-    localStorage.setItem(
-        "inspections",
-        JSON.stringify(inspections)
-    );
+type:
+document.getElementById(
+"type"
+).value
 
-    afficherInspections();
-}
+});
+
+localStorage.setItem(
+"inspections",
+JSON.stringify(inspections)
+);
+
+this.reset();
+
+afficherInspections();
+
+});
 
 function supprimerInspection(index){
 
-    inspections.splice(index,1);
+if(confirm(
+"Supprimer cette inspection ?"
+)){
 
-    localStorage.setItem(
-        "inspections",
-        JSON.stringify(inspections)
-    );
+inspections.splice(index,1);
 
-    afficherInspections();
+localStorage.setItem(
+"inspections",
+JSON.stringify(inspections)
+);
+
+afficherInspections();
+
+}
+
 }
 
 afficherInspections();
@@ -115,4 +239,4 @@ afficherInspections();
 </script>
 
 </body>
-  </html>
+</html>
