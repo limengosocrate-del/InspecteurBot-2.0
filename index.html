@@ -203,68 +203,32 @@
 
     <!-- STATISTIQUES -->
 
-    <section class="dashboard">
+    <script>
 
-        <h2>
-            <i class="fa-solid fa-chart-line"></i>
-            PLATEFORME NUMÉRIQUE IGT
-        </h2>
+document.getElementById("nbEntreprises").textContent =
+JSON.parse(localStorage.getItem("entreprises") || "[]").length;
 
-        <div class="dashboard-cards">
+document.getElementById("nbInspections").textContent =
+JSON.parse(localStorage.getItem("inspections") || "[]").length;
 
-            <div class="card">
-                <i class="fa-solid fa-building blue"></i>
-                <h3>Entreprises</h3>
-                <h1>1 248</h1>
-            </div>
+document.getElementById("nbInfractions").textContent =
+JSON.parse(localStorage.getItem("infractions") || "[]").length;
 
-            <div class="card">
-                <i class="fa-solid fa-file-circle-check green"></i>
-                <h3>Inspections</h3>
-                <h1>532</h1>
-            </div>
+document.getElementById("nbPV").textContent =
+JSON.parse(localStorage.getItem("pv") || "[]").length;
 
-            <div class="card">
-                <i class="fa-solid fa-triangle-exclamation orange"></i>
-                <h3>Infractions</h3>
-                <h1>189</h1>
-            </div>
+document.getElementById("nbTravailleurs").textContent =
+JSON.parse(localStorage.getItem("travailleurs") || "[]").length;
 
-            <div class="card">
-                <i class="fa-solid fa-file-signature purple"></i>
-                <h3>Procès-Verbaux</h3>
-                <h1>317</h1>
-            </div>
+let inspecteurs =
+JSON.parse(localStorage.getItem("inspecteurs") || "[]");
 
-        </div>
+document.getElementById("nbInspecteurs").textContent =
+inspecteurs.filter(
+i => i.statut === "Actif"
+).length;
 
-    </section>
-
-    <!-- APPEL À L'ACTION -->
-
-    <section class="assistant">
-
-        <h2>
-            <i class="fa-solid fa-rocket"></i>
-            COMMENCER MAINTENANT
-        </h2>
-
-        <div class="assistant-box">
-
-            <p>
-                Accédez à la plateforme numérique de l'Inspection
-                Générale du Travail pour gérer les entreprises,
-                les inspections, les infractions et les procès-verbaux.
-            </p>
-
-            <br>
-
-            <a href="./login.html" class="btn-start">
-                <i class="fa-solid fa-arrow-right"></i>
-                Accéder à la plateforme
-            </a>
-
-        </div>
+</script>
 
     </section>
 
