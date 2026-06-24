@@ -13,20 +13,45 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 rel="stylesheet">
 
 <style>
-/* ===== SLIDER IMAGES HAUT ===== */
-#topSlider {
-    width: 100%;
-    height: 320px;
-    overflow: hidden;
-    border-radius: 18px;
-    margin-bottom: 15px;
+/* ================= WHATSAPP NOTIFICATIONS ================= */
+
+#notif-container{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
 }
 
-#topSlider img {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-    transition: opacity 1s ease;
+.whatsapp-notif{
+    background: #25D366;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    min-width: 220px;
+    max-width: 300px;
+    font-size: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    animation: slideIn 0.4s ease, fadeOut 0.5s ease 4.5s forwards;
+}
+
+.whatsapp-notif i{
+    font-size: 18px;
+}
+
+@keyframes slideIn{
+    from{transform: translateX(120%); opacity:0;}
+    to{transform: translateX(0); opacity:1;}
+}
+
+@keyframes fadeOut{
+    to{opacity:0; transform: translateX(120%);}
 }
 </style>
 
@@ -52,13 +77,14 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <ul>
 <li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
-<li><a href="entreprises.html"><i class="fa-solid fa-building"></i> Entreprises</a></li>
-<li><a href="inspections.html"><i class="fa-solid fa-clipboard-check"></i> Inspections</a></li>
-<li><a href="infractions.html"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="pv.html"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
-<li><a href="travailleurs.html"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
-<li><a href="inspecteurs.html"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
-<li><a href="controleurs.html"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
+<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
+<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
+<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
+<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
 <li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
 </ul>
 
@@ -66,11 +92,6 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <!-- ================= CONTENU ================= -->
 <main class="main-content">
-
-<!-- 🔥 SLIDER AJOUTÉ EN HAUT -->
-<div id="topSlider">
-    <img id="sliderImage" src="images/photos-igt/img1.jpg">
-</div>
 
 <!-- ================= BANNIÈRE ================= -->
 <section class="banner">
@@ -191,52 +212,72 @@ Inspecteur Limengo (Pmiller)
 </main>
 </div>
 
-<!-- ================= WHATSAPP NOTIFS ================= -->
+<!-- ================= NOTIFICATIONS ================= -->
 <div id="notif-container"></div>
 
 <script>
 
-// ===== HORLOGE =====
+// date + heure dynamique
 function updateTime(){
     const now = new Date();
+
     document.getElementById("heure").innerHTML =
     now.toLocaleTimeString("fr-FR");
+
     document.getElementById("dateActuelle").innerHTML =
     now.toLocaleDateString("fr-FR");
 }
 setInterval(updateTime,1000);
 updateTime();
 
-// ===== SLIDER 20 IMAGES =====
-const images = [
-"images/photos-igt/img1.jpg",
-"images/photos-igt/img2.jpg",
-"images/photos-igt/img3.jpg",
-"images/photos-igt/img4.jpg",
-"images/photos-igt/img5.jpg",
-"images/photos-igt/img6.jpg",
-"images/photos-igt/img7.jpg",
-"images/photos-igt/img8.jpg",
-"images/photos-igt/img9.jpg",
-"images/photos-igt/img10.jpg",
-"images/photos-igt/img11.jpg",
-"images/photos-igt/img12.jpg",
-"images/photos-igt/img13.jpg",
-"images/photos-igt/img14.jpg",
-"images/photos-igt/img15.jpg",
-"images/photos-igt/img16.jpg",
-"images/photos-igt/img17.jpg",
-"images/photos-igt/img18.jpg",
-"images/photos-igt/img19.jpg",
-"images/photos-igt/img20.jpg"
+// notifications WhatsApp style
+function showNotification(message){
+
+    const container = document.getElementById("notif-container");
+
+    const notif = document.createElement("div");
+    notif.className = "whatsapp-notif";
+
+    notif.innerHTML = `
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(notif);
+
+    setTimeout(()=>notif.remove(),5000);
+}
+
+// messages automatiques (40 messages rotatifs)
+const messages = [
+"Bienvenue Inspecteur 👋",
+"Nouvelle inspection possible aujourd'hui",
+"Rappel : vérifier les entreprises",
+"Attention aux infractions ⚠️",
+"Travail et discipline 💼",
+"Contrôle en cours...",
+"Inspection générale active",
+"Respect du code du travail 📜",
+"Mission en préparation...",
+"Rapports disponibles 📊",
+"Analyse des données...",
+"Alertes système activées",
+"Bonne journée Inspecteur ☀️",
+"Focus sur la sécurité",
+"Nouvelle mission assignée",
+"Contrôleurs en activité",
+"Inspecteurs sur terrain",
+"Suivi des travailleurs",
+"Audit en cours",
+"Rapport en attente"
 ];
 
 let i = 0;
 
-setInterval(() => {
-    const img = document.getElementById("sliderImage");
-    i = (i + 1) % images.length;
-    img.src = images[i];
+setInterval(()=>{
+    showNotification(messages[i]);
+    i++;
+    if(i >= messages.length) i = 0;
 }, 10000);
 
 </script>
