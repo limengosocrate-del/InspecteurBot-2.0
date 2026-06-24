@@ -1093,8 +1093,16 @@ img{
 
 /* MENU PLEINE LARGEUR */
 .sidebar{
-    width:270px;
-    min-width:270px;
+    width:320px;
+    min-width:320px;
+    background:#041c5c;
+    color:#fff;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    padding:25px;
+    overflow-y:auto;
 }
     
 /* Évite les espaces à droite */
