@@ -1127,4 +1127,20 @@ body{
     width:100% !important;
     box-sizing:border-box !important;
 }
+
+/* Titres des cartes en vert */
+.quick-card h3,
+.quick-card .card-title,
+.quick-card .title,
+.card h1,
+.card h3,
+.dashboard-card h3 {
+    color: #22c55e !important;
+}
+
+/* Icônes des cartes en vert (facultatif) */
+.quick-card i,
+.quick-card svg {
+    color: #22c55e !important;
+}
           
