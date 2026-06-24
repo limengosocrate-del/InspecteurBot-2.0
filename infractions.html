@@ -2,29 +2,107 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestion des Infractions</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
-<h1>Gestion des Infractions</h1>
+<div class="main-content">
 
-<input id="entreprise"
-placeholder="Entreprise">
+<section class="dashboard-section">
 
-<input id="infraction"
-placeholder="Type d'infraction">
+<h2>
+<i class="fa-solid fa-triangle-exclamation"></i>
+GESTION DES INFRACTIONS
+</h2>
 
-<input id="sanction"
-placeholder="Sanction">
+<div class="chart-box">
 
-<button onclick="ajouterInfraction()">
-Enregistrer
+<h3>Nouvelle Infraction</h3>
+
+<form id="formInfraction">
+
+<input
+type="text"
+id="entreprise"
+placeholder="Nom de l'entreprise"
+required>
+
+<select id="infraction" required>
+
+<option value="">
+Choisir le type d'infraction
+</option>
+
+<option>
+Travail dissimulé
+</option>
+
+<option>
+Non-respect du SMIG
+</option>
+
+<option>
+Absence de contrat de travail
+</option>
+
+<option>
+Non-déclaration des travailleurs
+</option>
+
+<option>
+Non-paiement des salaires
+</option>
+
+<option>
+Non-respect des congés
+</option>
+
+<option>
+Violation des règles de sécurité
+</option>
+
+<option>
+Obstruction à l'inspection
+</option>
+
+<option>
+Autre infraction
+</option>
+
+</select>
+
+<input
+type="text"
+id="sanction"
+placeholder="Sanction ou mesure prise"
+required>
+
+<button type="submit">
+<i class="fa-solid fa-floppy-disk"></i>
+Enregistrer l'infraction
 </button>
 
-<hr>
+</form>
 
-<table border="1" width="100%">
+</div>
+
+<div class="inspection-list">
+
+<h3>
+<i class="fa-solid fa-list"></i>
+Liste des Infractions
+</h3>
+
+<table>
+
 <thead>
+
 <tr>
 <th>N°</th>
 <th>Entreprise</th>
@@ -32,81 +110,123 @@ Enregistrer
 <th>Sanction</th>
 <th>Action</th>
 </tr>
+
 </thead>
 
 <tbody id="listeInfractions">
+
 </tbody>
+
 </table>
+
+</div>
+
+</section>
+
+</div>
 
 <script>
 
 let infractions =
-JSON.parse(localStorage.getItem(
-"infractions")) || [];
+JSON.parse(
+localStorage.getItem("infractions")
+) || [];
 
 function afficherInfractions(){
 
-    let html="";
+let html = "";
 
-    infractions.forEach((i,index)=>{
+infractions.forEach((i,index)=>{
 
-        html += `
-        <tr>
+html += `
+<tr>
 
-        <td>${index+1}</td>
-        <td>${i.entreprise}</td>
-        <td>${i.infraction}</td>
-        <td>${i.sanction}</td>
+<td>${index + 1}</td>
 
-        <td>
-        <button
-        onclick="supprimerInfraction(${index})">
-        Supprimer
-        </button>
-        </td>
+<td>${i.entreprise}</td>
 
-        </tr>`;
-    });
+<td>${i.infraction}</td>
 
-    document.getElementById(
-    "listeInfractions").innerHTML = html;
+<td>${i.sanction}</td>
+
+<td>
+
+<button
+onclick="supprimerInfraction(${index})">
+
+<i class="fa-solid fa-trash"></i>
+Supprimer
+
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById(
+"listeInfractions"
+).innerHTML = html;
+
 }
 
-function ajouterInfraction(){
+document.getElementById(
+"formInfraction"
+).addEventListener(
+"submit",
+function(e){
 
-    infractions.push({
+e.preventDefault();
 
-        entreprise:
-        document.getElementById(
-        "entreprise").value,
+infractions.push({
 
-        infraction:
-        document.getElementById(
-        "infraction").value,
+entreprise:
+document.getElementById(
+"entreprise"
+).value,
 
-        sanction:
-        document.getElementById(
-        "sanction").value
-    });
+infraction:
+document.getElementById(
+"infraction"
+).value,
 
-    localStorage.setItem(
-        "infractions",
-        JSON.stringify(infractions)
-    );
+sanction:
+document.getElementById(
+"sanction"
+).value
 
-    afficherInfractions();
-}
+});
+
+localStorage.setItem(
+"infractions",
+JSON.stringify(infractions)
+);
+
+this.reset();
+
+afficherInfractions();
+
+});
 
 function supprimerInfraction(index){
 
-    infractions.splice(index,1);
+if(confirm(
+"Supprimer cette infraction ?"
+)){
 
-    localStorage.setItem(
-        "infractions",
-        JSON.stringify(infractions)
-    );
+infractions.splice(index,1);
 
-    afficherInfractions();
+localStorage.setItem(
+"infractions",
+JSON.stringify(infractions)
+);
+
+afficherInfractions();
+
+}
+
 }
 
 afficherInfractions();
