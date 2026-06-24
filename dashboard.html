@@ -14,81 +14,82 @@ rel="stylesheet">
 
 <style>
 
-/* ================= WHATSAPP NOTIFICATIONS ================= */
-
-#notif-container{
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 9999;
-}
-
-.whatsapp-notif{
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    min-width: 200px;
-    max-width: 260px;
-    font-size: 13px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: slideIn 0.4s ease, fadeOut 0.5s ease 4.5s forwards;
-}
-
-@keyframes slideIn{
-    from{transform:translateX(120%);opacity:0;}
-    to{transform:translateX(0);opacity:1;}
-}
-
-@keyframes fadeOut{
-    to{transform:translateX(120%);opacity:0;}
-}
-
 /* ================= SLIDER ================= */
-
-.slider{
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
+.banner{
+    position:relative;
+    height:320px;
     overflow:hidden;
 }
 
 .slider img{
+    position:absolute;
     width:100%;
     height:100%;
     object-fit:cover;
-    position:absolute;
     opacity:0;
-    transition: opacity 1s ease;
+    transition:opacity 1s ease;
 }
 
-.slider img.active{
-    opacity:1;
+.slider img.active{opacity:1;}
+
+/* ================= TIME ================= */
+.time-box{
+    position:absolute;
+    top:10px;
+    right:15px;
+    background:rgba(0,0,0,0.4);
+    padding:6px 10px;
+    border-radius:10px;
+    color:white;
+    font-size:13px;
+    text-align:right;
 }
 
-/* ================= MOTIVATION BAR ================= */
-
-.motivation-bar{
+/* ================= MOTIVATION ================= */
+.motivation{
     background:#0b3d91;
     color:white;
     text-align:center;
-    padding:10px;
-    font-size:14px;
+    padding:8px;
+    font-size:13px;
 }
 
-/* DATE TIME STYLE */
-
-.top-box{
-    font-size:18px;
-    font-weight:bold;
+/* ================= WHATSAPP NOTIF ================= */
+#notif-container{
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    z-index:9999;
 }
+
+.notif{
+    color:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:12px;
+    min-width:180px;
+    max-width:250px;
+    animation:slide 0.4s ease, fade 0.5s ease 4.5s forwards;
+}
+
+@keyframes slide{
+    from{transform:translateX(120%);opacity:0;}
+    to{transform:translateX(0);opacity:1;}
+}
+
+@keyframes fade{
+    to{opacity:0;transform:translateX(120%);}
+}
+
+/* ================= FOOTER SMALL ================= */
+footer{
+    padding:8px 0;
+}
+footer h3{font-size:13px;}
+footer p{font-size:11px;}
 
 </style>
 
@@ -98,14 +99,12 @@ rel="stylesheet">
 
 <div class="dashboard-layout">
 
-<!-- ================= MENU LATÉRAL ================= -->
+<!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
-
 <img src="images/batiment-igt.jpg"
-style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
-
+style="width:100%;height:200px;object-fit:cover;border-radius:18px;margin-bottom:10px;">
 <h3>MENU PRINCIPAL</h3>
 </div>
 
@@ -124,15 +123,14 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 </aside>
 
-<!-- ================= CONTENU ================= -->
+<!-- ================= MAIN ================= -->
 <main class="main-content">
 
-<!-- ================= BANNIÈRE SLIDER ================= -->
-<section class="banner" style="position:relative;height:320px;overflow:hidden;">
+<!-- ================= SLIDER ================= -->
+<section class="banner">
 
 <div class="slider" id="slider">
 
-<!-- 20 images -->
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
@@ -156,30 +154,16 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 </div>
 
-<div class="banner-overlay"></div>
-
-<div class="banner-content">
-
-<div class="banner-right">
-
-<div class="top-box">
-<i class="fa-solid fa-clock"></i>
-<span id="heure"></span>
-</div>
-
-<div class="top-box">
-<i class="fa-solid fa-calendar-days"></i>
-<span id="dateActuelle"></span>
-</div>
-
-</div>
-
+<!-- TIME TOP -->
+<div class="time-box">
+<div id="heure"></div>
+<div id="date"></div>
 </div>
 
 </section>
 
 <!-- ================= MOTIVATION ================= -->
-<div class="motivation-bar">
+<div class="motivation">
 <span id="motivationText"></span>
 </div>
 
@@ -190,32 +174,32 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 <div class="quick-grid">
 
-<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><a href="entreprises.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><a href="inspections.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><a href="infractions.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><a href="pv.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><a href="travailleurs.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><a href="inspecteurs.html"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><a href="controleurs.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><a href="#"><button>Accéder</button></a></div>
 
 </div>
 
 </section>
 
 <!-- ================= FOOTER ================= -->
-<footer style="padding:10px 0;">
+<footer>
 
-<div class="footer-content" style="padding:10px;">
+<div class="footer-content">
 
-<img src="images/logo-igt.png" class="footer-logo" style="width:40px;">
+<img src="images/logo-igt.png" class="footer-logo" style="width:35px;">
 
-<h3 style="font-size:14px;">Inspection Générale du Travail</h3>
+<h3>Inspection Générale du Travail</h3>
 
-<p style="font-size:12px;">InspecteurBot IA</p>
+<p>InspecteurBot IA</p>
 
 <hr>
 
-<p style="font-size:11px;">
+<p>
 Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
 
@@ -226,85 +210,60 @@ Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </main>
 </div>
 
-<!-- ================= NOTIFICATIONS ================= -->
+<!-- ================= NOTIFS ================= -->
 <div id="notif-container"></div>
 
 <script>
 
-/* ================= TIME ================= */
-function updateTime(){
-    const now = new Date();
-    document.getElementById("heure").innerHTML = now.toLocaleTimeString("fr-FR");
-    document.getElementById("dateActuelle").innerHTML = now.toLocaleDateString("fr-FR");
+/* TIME */
+function update(){
+    const d = new Date();
+    document.getElementById("heure").innerText = d.toLocaleTimeString("fr-FR");
+    document.getElementById("date").innerText = d.toLocaleDateString("fr-FR");
 }
-setInterval(updateTime,1000);
-updateTime();
+setInterval(update,1000);
+update();
 
-/* ================= SLIDER ================= */
-let index = 0;
+/* SLIDER 10s */
+let i = 0;
 const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
-    slides[index].classList.remove("active");
-    index = (index + 1) % slides.length;
-    slides[index].classList.add("active");
-}, 10000);
+    slides[i].classList.remove("active");
+    i = (i+1)%slides.length;
+    slides[i].classList.add("active");
+},10000);
 
-/* ================= MOTIVATION TEXT ================= */
-
-const motivation = [
-"Le travail bien fait construit la nation 🇨🇩",
-"La discipline est la base de toute réussite 💼",
-"Inspecter, c’est protéger les travailleurs 👷",
-"Chaque mission compte pour la justice sociale ⚖️",
-"La rigueur au travail change les nations 🔥",
-"Le respect du code du travail est essentiel 📜",
-"L’avenir du Congo dépend du travail bien fait 🇨🇩",
-"Un inspecteur sérieux construit la confiance 🤝",
-"La sécurité au travail est une priorité ⚠️",
-"Chaque contrôle améliore la société 📊"
+/* MOTIVATION */
+const msgs = [
+"Le travail construit la nation 🇨🇩",
+"La discipline mène au succès",
+"Inspecter, c’est protéger",
+"Justice sociale et rigueur",
+"L’avenir dépend du travail",
+"Respect du code du travail",
+"Motivation et courage 💼",
+"Chaque mission compte"
 ];
 
 let m = 0;
-
 setInterval(()=>{
-    document.getElementById("motivationText").innerText = motivation[m];
-    m = (m + 1) % motivation.length;
-}, 8000);
+    document.getElementById("motivationText").innerText = msgs[m];
+    m = (m+1)%msgs.length;
+},8000);
 
-/* ================= WHATSAPP NOTIFICATIONS ================= */
+/* NOTIFICATIONS */
+const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt","Travail sérieux 💼"];
 
-function showNotification(msg){
-
-    const colors = ["#25D366","#128C7E","#34B7F1","#FF9800","#9C27B0"];
-
-    const notif = document.createElement("div");
-    notif.className = "whatsapp-notif";
-    notif.style.background = colors[Math.floor(Math.random()*colors.length)];
-
-    notif.innerHTML = `<i class="fa-brands fa-whatsapp"></i> ${msg}`;
-
-    document.getElementById("notif-container").appendChild(notif);
-
-    setTimeout(()=>notif.remove(),5000);
+function show(){
+    const box = document.createElement("div");
+    box.className="notif";
+    box.style.background=["#25D366","#128C7E","#34B7F1","#FF9800"][Math.floor(Math.random()*4)];
+    box.innerText = notif[Math.floor(Math.random()*notif.length)];
+    document.getElementById("notif-container").appendChild(box);
+    setTimeout(()=>box.remove(),5000);
 }
-
-/* auto messages */
-const messages = [
-"Bienvenue Inspecteur 👋",
-"Nouvelle mission disponible",
-"Contrôle en cours...",
-"Inspection active ⚠️",
-"Rapport généré 📊",
-"Travail et discipline 💼"
-];
-
-let i = 0;
-
-setInterval(()=>{
-    showNotification(messages[i]);
-    i = (i + 1) % messages.length;
-}, 10000);
+setInterval(show,10000);
 
 </script>
 
