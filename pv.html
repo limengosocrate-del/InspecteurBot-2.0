@@ -2,103 +2,241 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Procès-Verbaux</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-<h1>Procès-Verbaux</h1>
+<div class="main-content">
 
-<input id="numero"
-placeholder="Numéro PV">
+<section class="dashboard-section">
 
-<input id="entreprise"
-placeholder="Entreprise">
+<h2>
+<i class="fa-solid fa-file-signature"></i>
+PROCÈS-VERBAUX
+</h2>
 
-<button onclick="ajouterPV()">
+<div class="chart-box">
+
+<h3>Nouveau Procès-Verbal</h3>
+
+<form id="formPV">
+
+<input
+type="text"
+id="numeroPV"
+placeholder="Numéro du PV"
+required>
+
+<br><br>
+
+<input
+type="date"
+id="datePV"
+required>
+
+<br><br>
+
+<input
+type="text"
+id="entreprisePV"
+placeholder="Nom de l'entreprise"
+required>
+
+<br><br>
+
+<label>Type de Procès-Verbal</label>
+
+<select id="typePV">
+
+<option>
+PV de clôture de mission auprès de la société
+</option>
+
+<option>
+Procès-verbal constat d'infraction
+</option>
+
+<option>
+Procès-verbal constat d'obstruction
+</option>
+
+<option>
+Procès-verbal d'audition
+</option>
+
+<option>
+Procès-verbal de mise en demeure
+</option>
+
+<option>
+Procès-verbal de conciliation
+</option>
+
+<option>
+Procès-verbal de contrôle
+</option>
+
+<option>
+Procès-verbal de constat
+</option>
+
+<option>
+Autre type de procès-verbal
+</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">
 Enregistrer
 </button>
 
-<hr>
+</form>
 
-<table border="1" width="100%">
+</div>
+
+<br>
+
+<div class="inspection-list">
+
+<h3>Liste des Procès-Verbaux</h3>
+
+<table>
+
 <thead>
+
 <tr>
-<th>N°</th>
-<th>PV</th>
+<th>N° PV</th>
+<th>Date</th>
 <th>Entreprise</th>
+<th>Type de PV</th>
 <th>Action</th>
 </tr>
+
 </thead>
 
-<tbody id="listePV">
+<tbody id="tablePV">
+
 </tbody>
 
 </table>
 
+</div>
+
+</section>
+
+</div>
+
 <script>
 
 let pv =
-JSON.parse(localStorage.getItem(
-"pv")) || [];
+JSON.parse(
+localStorage.getItem("pv")
+) || [];
 
 function afficherPV(){
 
-    let html="";
+let html = "";
 
-    pv.forEach((p,index)=>{
+pv.forEach((p,index)=>{
 
-        html += `
-        <tr>
+html += `
+<tr>
 
-        <td>${index+1}</td>
-        <td>${p.numero}</td>
-        <td>${p.entreprise}</td>
+<td>${p.numero}</td>
 
-        <td>
-        <button
-        onclick="supprimerPV(${index})">
-        Supprimer
-        </button>
-        </td>
+<td>${p.date}</td>
 
-        </tr>`;
-    });
+<td>${p.entreprise}</td>
 
-    document.getElementById(
-    "listePV").innerHTML = html;
+<td>${p.type}</td>
+
+<td>
+
+<button
+onclick="supprimerPV(${index})">
+
+Supprimer
+
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById(
+"tablePV"
+).innerHTML = html;
 }
 
-function ajouterPV(){
+document.getElementById(
+"formPV"
+).addEventListener(
+"submit",
+function(e){
 
-    pv.push({
+e.preventDefault();
 
-        numero:
-        document.getElementById(
-        "numero").value,
+pv.push({
 
-        entreprise:
-        document.getElementById(
-        "entreprise").value
-    });
+numero:
+document.getElementById(
+"numeroPV"
+).value,
 
-    localStorage.setItem(
-        "pv",
-        JSON.stringify(pv)
-    );
+date:
+document.getElementById(
+"datePV"
+).value,
 
-    afficherPV();
-}
+entreprise:
+document.getElementById(
+"entreprisePV"
+).value,
+
+type:
+document.getElementById(
+"typePV"
+).value
+
+});
+
+localStorage.setItem(
+"pv",
+JSON.stringify(pv)
+);
+
+this.reset();
+
+afficherPV();
+
+});
 
 function supprimerPV(index){
 
-    pv.splice(index,1);
+if(confirm(
+"Supprimer ce procès-verbal ?"
+)){
 
-    localStorage.setItem(
-        "pv",
-        JSON.stringify(pv)
-    );
+pv.splice(index,1);
 
-    afficherPV();
+localStorage.setItem(
+"pv",
+JSON.stringify(pv)
+);
+
+afficherPV();
+
+}
 }
 
 afficherPV();
