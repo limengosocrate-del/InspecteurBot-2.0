@@ -10,22 +10,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-.banner-image, #slideshow{
-    width:100%;
-    height:320px;
-    object-fit:cover;
-    border-radius:20px;
+.banner-image {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 20px;
 }
 
-.small-text{
-    font-size:12px;
+#slideshow {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 20px;
 }
 
-.footer-content{
-    padding:8px 0;
-    line-height:1.4;
+.small-text {
+    font-size: 12px;
+}
+
+.footer-content {
+    padding: 8px 0;
 }
 </style>
+
 </head>
 
 <body>
@@ -36,7 +43,7 @@
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
-<img src="images/photos/logo-igt.png" style="width:70px;display:block;margin:auto;">
+<img src="images/photos/logo-igt.png" style="width:70px;margin:auto;display:block;">
 <h3>MENU PRINCIPAL</h3>
 </div>
 
@@ -71,12 +78,14 @@
 <div class="banner-content">
 
 <div class="banner-left">
+
 <img src="images/photos/logo-igt.png">
 
 <div>
 <h1>InspecteurBot RDC</h1>
 <h3>Inspection Générale du Travail</h3>
 </div>
+
 </div>
 
 <div class="banner-right">
@@ -113,12 +122,12 @@
 
 <div class="footer-content">
 
-<h3>Inspection Générale du Travail</h3>
-<p>InspecteurBot IA</p>
+<h3 style="margin:4px 0;">Inspection Générale du Travail</h3>
+<p style="margin:2px 0;">InspecteurBot IA</p>
 
-<hr>
+<hr style="margin:4px 0;">
 
-<p style="font-size:12px;">
+<p style="font-size:12px;margin:3px 0;">
 Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
 
@@ -129,8 +138,10 @@ Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </main>
 </div>
 
+<!-- ================= SCRIPT ================= -->
 <script>
-// ================= DATE + HEURE =================
+
+// DATE + HEURE LIVE
 function updateTime(){
     const now = new Date();
     document.getElementById("dateActuelle").textContent =
@@ -143,48 +154,48 @@ setInterval(updateTime,1000);
 updateTime();
 
 
-// ================= MESSAGES ROTATIFS =================
+// 40 MESSAGES ROTATIFS (10s)
 const messages = [
 "Travail, discipline et rigueur pour la nation",
 "Inspection = protection des travailleurs",
-"Zéro corruption",
-"Respect du Code du Travail",
-"Justice sociale",
-"Travail digne pour tous",
-"Paix sociale",
-"Contrôle strict des entreprises",
-"Stop aux abus",
-"Sécurité au travail",
-"Développement national",
-"Respect mutuel",
-"Travail légal",
-"Inspection moderne",
-"Égalité au travail",
-"Justice et transparence",
-"Protection des travailleurs",
-"Entreprise responsable",
-"Rigueur et discipline",
-"Amélioration continue",
+"Zéro corruption dans les services",
+"Respect du Code du Travail obligatoire",
+"Justice sociale pour tous",
+"Un travail digne pour chaque citoyen",
+"La loi protège les travailleurs",
+"Inspection efficace et moderne",
+"Stop aux abus en entreprise",
+"Travail sécurisé et équitable",
+"Développement par le travail",
+"Respect mutuel employeur-travailleur",
+"Paix sociale dans les entreprises",
+"Contrôle strict des normes",
+"L’inspecteur protège la nation",
 "Travail sans exploitation",
-"État de droit",
-"Inspection efficace",
-"Bonnes conditions de travail",
-"Dialogue social",
-"Contrôle permanent",
-"Justice économique",
-"Travail sécurisé",
-"Protection sociale",
+"Entreprises responsables",
+"Rigueur et discipline",
+"Chaque inspection compte",
+"Amélioration continue du travail",
+"Égalité dans le travail",
+"Justice et transparence",
+"Protection des droits humains",
+"Travail légal obligatoire",
+"Inspection sans compromis",
 "Développement durable",
-"Zéro injustice",
-"Travail organisé",
-"Paix dans les entreprises",
+"Bonnes conditions de travail",
+"Dialogue social renforcé",
+"Contrôle permanent",
+"Travail digne pour tous",
 "Respect des lois",
-"Confiance sociale",
-"Inspection forte",
-"Travail équitable",
-"Nation forte",
-"Économie stable",
-"Progrès social"
+"Fin du travail illégal",
+"Sécurité au travail",
+"Justice économique",
+"Organisation et discipline",
+"Inspection moderne",
+"Travail sans injustice",
+"État de droit renforcé",
+"Protection sociale garantie",
+"Un Congo meilleur par le travail"
 ];
 
 let i = 0;
@@ -195,7 +206,7 @@ setInterval(()=>{
 },10000);
 
 
-// ================= SLIDESHOW =================
+// SLIDESHOW 20 IMAGES (images/photos/)
 let img = 1;
 
 setInterval(()=>{
