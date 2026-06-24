@@ -17,8 +17,8 @@ rel="stylesheet">
 /* ================= SLIDER ================= */
 .banner{
     position:relative;
-    height:320px;
-    overflow:hidden;
+    height:0px;
+    overflow:hidden;display:none;
 }
 
 .slider img{
@@ -103,8 +103,28 @@ footer p{font-size:11px;}
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
-<img src="images/batiment-igt.jpg"
-style="width:100%;height:200px;object-fit:cover;border-radius:18px;margin-bottom:10px;">
+<div class="slider" id="sidebarSlider" style="width:100%;height:200px;position:relative;overflow:hidden;border-radius:18px;margin-bottom:10px;">
+<img src="images/photos_igt/1.jpg" class="active">
+<img src="images/photos_igt/2.jpg">
+<img src="images/photos_igt/3.jpg">
+<img src="images/photos_igt/4.jpg">
+<img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
+</div>
 <h3>MENU PRINCIPAL</h3>
 </div>
 
@@ -125,6 +145,7 @@ style="width:100%;height:200px;object-fit:cover;border-radius:18px;margin-bottom
 
 <!-- ================= MAIN ================= -->
 <main class="main-content">
+<div class="time-box" style="position:relative;display:block;margin:10px 0 10px auto;width:max-content;"> <div id="heure"></div><div id="date"></div></div>
 
 <!-- ================= SLIDER ================= -->
 <section class="banner">
@@ -232,18 +253,50 @@ setInterval(()=>{
     slides[i].classList.remove("active");
     i = (i+1)%slides.length;
     slides[i].classList.add("active");
-},10000);
+},9000);
 
 /* MOTIVATION */
 const msgs = [
 "Le travail construit la nation 🇨🇩",
-"La discipline mène au succès",
-"Inspecter, c’est protéger",
-"Justice sociale et rigueur",
-"L’avenir dépend du travail",
-"Respect du code du travail",
-"Motivation et courage 💼",
-"Chaque mission compte"
+"L'Inspection Générale du Travail veille au respect des droits des travailleurs.",
+"Le respect du Code du travail garantit la justice sociale.",
+"Chaque mission d'inspection contribue au développement du pays.",
+"La discipline est le fondement d'une administration performante.",
+"Protéger les travailleurs, c'est protéger l'avenir de la nation.",
+"Le dialogue social favorise la paix en entreprise.",
+"La sécurité au travail est un droit fondamental.",
+"Chaque contrôle renforce la confiance entre employeurs et travailleurs.",
+"L'éthique guide chacune de nos actions.",
+"Le professionnalisme inspire le respect.",
+"La rigueur est la clé d'une inspection efficace.",
+"Servir avec intégrité est notre engagement.",
+"Le travail décent est une priorité pour tous.",
+"La prévention vaut mieux que la sanction.",
+"Le respect des lois protège tous les acteurs du monde du travail.",
+"Chaque dossier mérite impartialité et transparence.",
+"Une inspection juste favorise un climat social apaisé.",
+"L'excellence est le résultat d'un effort quotidien.",
+"Notre mission est au service du bien commun.",
+"La responsabilité renforce la crédibilité.",
+"Agir avec équité, c'est servir la justice.",
+"La ponctualité reflète le professionnalisme.",
+"Le respect des normes améliore les conditions de travail.",
+"Un inspecteur exemplaire inspire la confiance.",
+"La qualité du travail fait la réputation de l'institution.",
+"Le développement passe par le respect des droits sociaux.",
+"La compétence est une richesse au service de la nation.",
+"Le travail bien fait est une source de fierté.",
+"Chaque visite d'inspection est une opportunité d'amélioration.",
+"La transparence est le pilier de la bonne gouvernance.",
+"Prévenir les conflits sociaux est une mission essentielle.",
+"La loi protège aussi bien le travailleur que l'employeur.",
+"La collaboration renforce l'efficacité des inspections.",
+"Servir avec honneur est une valeur de l'IGT.",
+"La vigilance garantit le respect des normes.",
+"Ensemble pour un environnement de travail sûr et équitable.",
+"La justice sociale commence par le respect du travail.",
+"L'engagement quotidien fait la force de l'Inspection Générale du Travail.",
+"Travaillons avec intégrité pour une RDC plus forte. 🇨🇩"
 ];
 
 let m = 0;
@@ -263,9 +316,14 @@ function show(){
     document.getElementById("notif-container").appendChild(box);
     setTimeout(()=>box.remove(),5000);
 }
+
 setInterval(show,10000);
+let s=0;const ss=document.querySelectorAll("#sidebarSlider img");
+setInterval(()=>{ss[s].classList.remove("active");s=(s+1)%ss.length;ss[s].classList.add("active");},9000);
+
 
 </script>
 
 </body>
     </html>
+    
