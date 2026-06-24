@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Procès-Verbaux</title>
+</head>
+<body>
+
+<h1>Procès-Verbaux</h1>
+
+<input id="numero"
+placeholder="Numéro PV">
+
+<input id="entreprise"
+placeholder="Entreprise">
+
+<button onclick="ajouterPV()">
+Enregistrer
+</button>
+
+<hr>
+
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>N°</th>
+<th>PV</th>
+<th>Entreprise</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="listePV">
+</tbody>
+
+</table>
+
+<script>
+
+let pv =
+JSON.parse(localStorage.getItem(
+"pv")) || [];
+
+function afficherPV(){
+
+    let html="";
+
+    pv.forEach((p,index)=>{
+
+        html += `
+        <tr>
+
+        <td>${index+1}</td>
+        <td>${p.numero}</td>
+        <td>${p.entreprise}</td>
+
+        <td>
+        <button
+        onclick="supprimerPV(${index})">
+        Supprimer
+        </button>
+        </td>
+
+        </tr>`;
+    });
+
+    document.getElementById(
+    "listePV").innerHTML = html;
+}
+
+function ajouterPV(){
+
+    pv.push({
+
+        numero:
+        document.getElementById(
+        "numero").value,
+
+        entreprise:
+        document.getElementById(
+        "entreprise").value
+    });
+
+    localStorage.setItem(
+        "pv",
+        JSON.stringify(pv)
+    );
+
+    afficherPV();
+}
+
+function supprimerPV(index){
+
+    pv.splice(index,1);
+
+    localStorage.setItem(
+        "pv",
+        JSON.stringify(pv)
+    );
+
+    afficherPV();
+}
+
+afficherPV();
+
+</script>
+
+</body>
+</html>
