@@ -13,26 +13,45 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 rel="stylesheet">
 
 <style>
-/* SLIDER IMAGE */
-.banner-image {
-    width:100%;
-    height:320px;
-    object-fit:cover;
-    transition:opacity 1s ease-in-out;
+/* ================= WHATSAPP NOTIFICATIONS ================= */
+
+#notif-container{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
 }
 
-/* FOOTER RÉDUIT */
-.footer-content {
-    padding:10px 0;
+.whatsapp-notif{
+    background: #25D366;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    min-width: 220px;
+    max-width: 300px;
+    font-size: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    animation: slideIn 0.4s ease, fadeOut 0.5s ease 4.5s forwards;
 }
 
-.footer-content hr {
-    margin:6px 0;
+.whatsapp-notif i{
+    font-size: 18px;
 }
 
-/* HORLOGE COMPACTE */
-.top-box span {
-    font-size:13px;
+@keyframes slideIn{
+    from{transform: translateX(120%); opacity:0;}
+    to{transform: translateX(0); opacity:1;}
+}
+
+@keyframes fadeOut{
+    to{opacity:0; transform: translateX(120%);}
 }
 </style>
 
@@ -43,7 +62,6 @@ rel="stylesheet">
 <div class="dashboard-layout">
 
 <!-- ================= MENU LATÉRAL ================= -->
-
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
@@ -64,29 +82,21 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 <li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
 <li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
 <li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
-<li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
-<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
+<li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
 </ul>
-
-<div class="logout">
-<a href="index.html">
-<i class="fa-solid fa-power-off"></i>
-Déconnexion
-</a>
-</div>
 
 </aside>
 
 <!-- ================= CONTENU ================= -->
-
 <main class="main-content">
 
 <!-- ================= BANNIÈRE ================= -->
-
 <section class="banner">
 
-<img id="bannerImg" class="banner-image" src="images/photos_igt/1.jpg">
-
+<img src="images/batiment-igt.jpg" class="banner-image">
 <div class="banner-overlay"></div>
 
 <div class="banner-content">
@@ -100,10 +110,6 @@ Déconnexion
 <h1>InspecteurBot RDC</h1>
 <h3>INSPECTION GENERALE DU TRAVAIL</h3>
 
-<p id="slogan">
-Travailler pour la dignité...
-</p>
-
 </div>
 
 </div>
@@ -111,151 +117,66 @@ Travailler pour la dignité...
 <div class="banner-right">
 
 <div class="top-box">
+<i class="fa-solid fa-clock"></i>
+<span id="heure"></span>
+</div>
+
+<div class="top-box">
 <i class="fa-solid fa-calendar-days"></i>
 <span id="dateActuelle"></span>
 </div>
 
-<div class="top-box">
-<i class="fa-solid fa-user"></i>
-<span>I.G.T. - Inspecteur Général du Travail</span>
-</div>
-
-<div class="top-box">
-<i class="fa-solid fa-bell"></i>
-<span>5</span>
 </div>
 
 </div>
-
-</div>
-
-</section>
-
-<!-- ================= TABLEAU DE BORD ================= -->
-
-<section class="dashboard-section">
-
-<h2>TABLEAU DE BORD INTELLIGENT</h2>
-
-<div class="notification-box">
-
-<i class="fa-solid fa-lightbulb"></i>
-
-<p id="notificationMessage">
-Bienvenue Inspecteur 👋
-</p>
-
-</div>
-
-<div class="stats-grid">
-
-<div class="card">
-<i class="fa-solid fa-building blue"></i>
-<div>
-<h3>Entreprises</h3>
-<h1 id="nbEntreprises">0</h1>
-<p>Enregistrées</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-clipboard-check green"></i>
-<div>
-<h3>Inspections</h3>
-<h1 id="nbInspections">0</h1>
-<p>Réalisées</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-triangle-exclamation orange"></i>
-<div>
-<h3>Infractions</h3>
-<h1 id="nbInfractions">0</h1>
-<p>Constatées</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-file-signature purple"></i>
-<div>
-<h3>PV rédigés</h3>
-<h1 id="nbPV">0</h1>
-<p>Générés</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-users cyan"></i>
-<div>
-<h3>Travailleurs</h3>
-<h1 id="nbTravailleurs">0</h1>
-<p>Déclarés</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-user-shield"></i>
-<div>
-<h3>Inspecteurs</h3>
-<h1 id="nbInspecteurs">0</h1>
-<p>Actifs</p>
-</div>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-user-tie"></i>
-<div>
-<h3>Contrôleurs</h3>
-<h1 id="nbControleurs">0</h1>
-<p>Actifs</p>
-</div>
-</div>
-
-</div>
-
 </section>
 
 <!-- ================= ACCÈS RAPIDE ================= -->
-
 <section class="quick-section">
 
-<h2>ACCÈS RAPIDE</h2>
+<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
 
 <div class="quick-grid">
 
 <div class="quick-card">
 <i class="fa-solid fa-building"></i>
 <h3>Entreprises</h3>
-<p>Gestion des entreprises.</p>
 <a href="entreprises.html"><button>Accéder</button></a>
 </div>
 
 <div class="quick-card">
 <i class="fa-solid fa-clipboard-check"></i>
 <h3>Inspections</h3>
-<p>Gestion des inspections.</p>
 <a href="inspections.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions</h3>
+<a href="infractions.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-file-signature"></i>
+<h3>PV</h3>
+<a href="pv.html"><button>Accéder</button></a>
 </div>
 
 <div class="quick-card">
 <i class="fa-solid fa-users"></i>
 <h3>Travailleurs</h3>
-<p>Gestion des travailleurs.</p>
 <a href="travailleurs.html"><button>Accéder</button></a>
 </div>
 
 <div class="quick-card">
 <i class="fa-solid fa-user-shield"></i>
 <h3>Inspecteurs</h3>
-<p>Gestion inspecteurs.</p>
 <a href="inspecteurs.html"><button>Accéder</button></a>
 </div>
 
 <div class="quick-card">
 <i class="fa-solid fa-user-tie"></i>
 <h3>Contrôleurs</h3>
-<p>Gestion contrôleurs.</p>
 <a href="controleurs.html"><button>Accéder</button></a>
 </div>
 
@@ -264,7 +185,6 @@ Bienvenue Inspecteur 👋
 </section>
 
 <!-- ================= FOOTER ================= -->
-
 <footer>
 
 <div class="footer-content">
@@ -277,8 +197,12 @@ Bienvenue Inspecteur 👋
 
 <hr>
 
-<p style="color:#ffffff; margin:2px;">
-Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> © 2026
+<p style="color:#ffffff;">
+Créé Par
+<strong style="color:#ffd700;">
+Inspecteur Limengo (Pmiller)
+</strong>
+© 2026
 </p>
 
 </div>
@@ -288,84 +212,73 @@ Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> 
 </main>
 </div>
 
+<!-- ================= NOTIFICATIONS ================= -->
+<div id="notif-container"></div>
+
 <script>
 
-/* DATE + HEURE */
-function updateDate(){
-    document.getElementById("dateActuelle").innerHTML =
-    new Date().toLocaleString("fr-FR");
-}
-setInterval(updateDate,1000);
-updateDate();
+// date + heure dynamique
+function updateTime(){
+    const now = new Date();
 
-/* SLOGANS ROTATIFS (40) */
-const slogans = [
-"Travailler pour la dignité du peuple",
-"La justice sociale avant tout",
-"Inspection rigoureuse et honnête",
-"Zéro corruption dans le travail",
-"Respect du Code du Travail",
-"Amour de la patrie",
-"Contrôle efficace des entreprises",
-"Protection des travailleurs",
-"Discipline et rigueur",
-"Un travail bien fait est un honneur",
-"Le Congo avance avec le travail",
-"Inspection sans compromis",
-"Travail = dignité",
-"Justice pour tous",
-"Respect des normes sociales",
-"Un inspecteur doit être exemplaire",
-"Solidarité au travail",
-"Contrôle strict mais humain",
-"Sécurité avant profit",
-"Éthique professionnelle",
-"Travail propre = nation forte",
-"Respect des droits humains",
-"Un Congo discipliné",
-"Inspection et développement",
-"Paix sociale par le travail",
-"Travail bien encadré",
-"Responsabilité professionnelle",
-"Développement par la rigueur",
-"Ordre et discipline",
-"Inspection moderne",
-"Travail équitable",
-"Zéro injustice",
-"Conformité obligatoire",
-"Force du travail",
-"Respect mutuel",
-"Travail organisé",
-"Leadership et discipline",
-"Inspection intelligente",
-"Nation forte par le travail",
-"Justice et emploi"
+    document.getElementById("heure").innerHTML =
+    now.toLocaleTimeString("fr-FR");
+
+    document.getElementById("dateActuelle").innerHTML =
+    now.toLocaleDateString("fr-FR");
+}
+setInterval(updateTime,1000);
+updateTime();
+
+// notifications WhatsApp style
+function showNotification(message){
+
+    const container = document.getElementById("notif-container");
+
+    const notif = document.createElement("div");
+    notif.className = "whatsapp-notif";
+
+    notif.innerHTML = `
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(notif);
+
+    setTimeout(()=>notif.remove(),5000);
+}
+
+// messages automatiques (40 messages rotatifs)
+const messages = [
+"Bienvenue Inspecteur 👋",
+"Nouvelle inspection possible aujourd'hui",
+"Rappel : vérifier les entreprises",
+"Attention aux infractions ⚠️",
+"Travail et discipline 💼",
+"Contrôle en cours...",
+"Inspection générale active",
+"Respect du code du travail 📜",
+"Mission en préparation...",
+"Rapports disponibles 📊",
+"Analyse des données...",
+"Alertes système activées",
+"Bonne journée Inspecteur ☀️",
+"Focus sur la sécurité",
+"Nouvelle mission assignée",
+"Contrôleurs en activité",
+"Inspecteurs sur terrain",
+"Suivi des travailleurs",
+"Audit en cours",
+"Rapport en attente"
 ];
 
-let i=0;
+let i = 0;
+
 setInterval(()=>{
-document.getElementById("notificationMessage").innerText = slogans[i];
-i = (i+1) % slogans.length;
-},10000);
-
-/* SLIDER IMAGES */
-const images = [];
-for(let j=1;j<=20;j++){
-images.push(`images/photos_igt/${j}.jpg`);
-}
-
-let imgIndex = 0;
-setInterval(()=>{
-const img = document.getElementById("bannerImg");
-img.style.opacity = 0.5;
-
-setTimeout(()=>{
-img.src = images[imgIndex];
-img.style.opacity = 1;
-imgIndex = (imgIndex+1)%images.length;
-},500);
-
-},9000);
+    showNotification(messages[i]);
+    i++;
+    if(i >= messages.length) i = 0;
+}, 10000);
 
 </script>
 
