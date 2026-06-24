@@ -6,540 +6,233 @@
 <title>InspecteurBot RDC | Tableau de Bord</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <div class="dashboard-layout">
 
-    <!-- ================= MENU LATÉRAL ================= -->
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
 
-    <aside class="sidebar">
+<div class="sidebar-logo">
 
-        
-        <div class="sidebar-logo" style="text-align:center;">
 <img src="images/batiment-igt.jpg"
-     alt="Bâtiment IGT"
-     <img src="images/batiment-igt.jpg" alt="Bâtiment IGT" style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
-<img src="images/logo-igt.png" alt="IGT" style="width:70px;display:block;margin:0 auto 10px auto;">
+style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
+
+<img src="images/logo-igt.png"
+style="width:70px;display:block;margin:0 auto 10px auto;">
+
 <h3>MENU PRINCIPAL</h3>
+
 </div>
 
 <ul>
-
-<li class="active">
-    <a href="#">
-        <i class="fa-solid fa-house"></i>
-        Tableau de bord
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-house-user"></i>
-        Accueil
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-file-signature"></i>
-        Procès-Verbaux
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-scale-balanced"></i>
-        Code du Travail
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        Infractions
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-landmark"></i>
-        IGT
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-clipboard-list"></i>
-        Fiches de Contrôle
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-calculator"></i>
-        Calcul du Décompte Final
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-robot"></i>
-        Assistant IA
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-chart-column"></i>
-        Statistiques
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-folder-open"></i>
-        Archives
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-users"></i>
-        Utilisateurs
-    </a>
-</li>
-
-<li>
-    <a href="#">
-        <i class="fa-solid fa-gear"></i>
-        Paramètres
-    </a>
-</li>
-
+<li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
+<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
+<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
+<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa-solid fa-landmark"></i> IGT</a></li>
+<li><a href="fiches.html"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
+<li><a href="#"><i class="fa-solid fa-calculator"></i> Décompte Final</a></li>
+<li><a href="#"><i class="fa-solid fa-robot"></i> Assistant IA</a></li>
+<li><a href="#"><i class="fa-solid fa-chart-column"></i> Statistiques</a></li>
+<li><a href="#"><i class="fa-solid fa-folder-open"></i> Archives</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
+<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
 </ul>
 
 <div class="logout">
-    <a href="index.html">
-        <i class="fa-solid fa-power-off"></i>
-        Déconnexion
-    </a>
+<a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a>
 </div>
-    </aside>
 
-    <!-- ================= CONTENU ================= -->
+</aside>
 
-    <main class="main-content">
+<!-- ================= CONTENU ================= -->
+<main class="main-content">
 
-        <!-- ================= BANNIÈRE ================= -->
+<!-- BANNIÈRE -->
+<section class="banner">
 
-        <section class="banner">
+<img src="images/batiment-igt.jpg" class="banner-image">
+<div class="banner-overlay"></div>
 
-            <img src="images/batiment-igt.jpg" class="banner-image">
+<div class="banner-content">
 
-            <div class="banner-overlay"></div>
+<div class="banner-left">
 
-            <div class="banner-content">
+<img src="images/logo-igt.png">
 
-                <div class="banner-left">
+<div>
+<h1>InspecteurBot RDC</h1>
+<h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
+<p>Travailler pour la dignité, la justice sociale et le développement du pays</p>
+</div>
 
-                    <img src="images/logo-igt.png">
+</div>
 
-                    <div>
+<div class="banner-right">
 
-                        <h1>InspecteurBot RDC</h1>
+<div class="top-box">
+<i class="fa-solid fa-calendar-days"></i>
+<span id="dateActuelle"></span>
+</div>
 
-                        <h3>INSPECTION GENERALE DU TRAVAIL</h3>
+<div class="top-box">
+<i class="fa-solid fa-user"></i>
+<span>I.G.T.</span>
+</div>
 
-                        <p>
-                            Travailler pour la dignité, la justice sociale
-                            et le développement de la République Démocratique du Congo
-                        </p>
+<div class="top-box">
+<i class="fa-solid fa-bell"></i>
+<span>5</span>
+</div>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-                <div class="banner-right">
+</section>
 
-                    <div class="top-box">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span id="dateActuelle"></span>
-                    </div>
+<!-- TABLEAU DE BORD -->
+<section class="dashboard-section">
 
-                    <div class="top-box">
-                        <i class="fa-solid fa-user"></i>
-                        <span>I.G.T. - Inspecteur Général du Travail</span>
-                    </div>
+<h2>TABLEAU DE BORD</h2>
 
-                    <div class="top-box">
-                        <i class="fa-solid fa-bell"></i>
-                        <span>5</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ================= TABLEAU DE BORD ================= -->
-
-        <section class="dashboard-section">
-
-            <h2>TABLEAU DE BORD INTELLIGENT</h2>
-
-            <div class="notification-box">
-
+<div class="notification-box">
 <i class="fa-solid fa-lightbulb"></i>
+<p>Bienvenue Inspecteur 👋</p>
+</div>
 
-<p id="notificationMessage">
+<div class="stats-grid">
 
-Bienvenue Inspecteur 👋
+<div class="card"><i class="fa-solid fa-building blue"></i>
+<div><h3>Entreprises</h3><h1 id="nbEntreprises">0</h1></div></div>
 
-</p>
+<div class="card"><i class="fa-solid fa-clipboard-check green"></i>
+<div><h3>Inspections</h3><h1 id="nbInspections">0</h1></div></div>
 
-            </div>
+<div class="card"><i class="fa-solid fa-triangle-exclamation orange"></i>
+<div><h3>Infractions</h3><h1 id="nbInfractions">0</h1></div></div>
 
-            <div class="stats-grid">
+<div class="card"><i class="fa-solid fa-file-signature purple"></i>
+<div><h3>PV</h3><h1 id="nbPV">0</h1></div></div>
 
-                <div class="card">
-                    <i class="fa-solid fa-building blue"></i>
-                    <div>
-                        <h3>Entreprises</h3>
-                        <h1 id="nbEntreprises">0</h1>
-                        <p>Enregistrées</p>
-                    </div>
-                </div>
+<div class="card"><i class="fa-solid fa-users cyan"></i>
+<div><h3>Travailleurs</h3><h1 id="nbTravailleurs">0</h1></div></div>
 
-                <div class="card">
-                    <i class="fa-solid fa-clipboard-check green"></i>
-                    <div>
-                        <<h3>Inspections</h3>
-                        <h1 id="nbInspections">0</h1>
-                        <p>Réalisées</p>
-                    </div>
-                </div>
+<div class="card"><i class="fa-solid fa-user-shield dark"></i>
+<div><h3>Inspecteurs</h3><h1 id="nbInspecteurs">0</h1></div></div>
 
-                <div class="card">
-                    <i class="fa-solid fa-triangle-exclamation orange"></i>
-                    <div>
-                        <h3>Infractions</h3>
-                        <h1 id="nbInfractions">0</h1>
-                        <p>Constatées</p>
-                    </div>
-                </div>
+<div class="card"><i class="fa-solid fa-user-tie dark"></i>
+<div><h3>Contrôleurs</h3><h1 id="nbControleurs">0</h1></div></div>
 
-                <div class="card">
-                    <i class="fa-solid fa-file-signature purple"></i>
-                    <div>
-                        <h3>PV rédigés</h3>
-                        <h1 id="nbPV">0</h1>
-                        <p>Générés</p>
-                    </div>
-                </div>
+</div>
 
-                <div class="card">
-                    <i class="fa-solid fa-users cyan"></i>
-                    <div>
-                        <h3>Travailleurs</h3>
-                        <h1 id="nbTravailleurs">0</h1>
-                        <p>Déclarés</p>
-                    </div>
-                </div>
+</section>
 
-                <div class="card">
-                    <i class="fa-solid fa-user-shield dark"></i>
-                    <div>
-                        <h3>Inspecteurs</h3>
-                        <h1 id="nbInspecteurs">0</h1>
-                        <p>Actifs</p>
-                    </div>
+<!-- ACCÈS RAPIDE -->
+<section class="quick-section">
 
-                    <div class="card">
-                       <i class="fa-solid fa-user-tie dark"></i>
-                     <div>
-                         <h3>Contrôleurs</h3>
-                         <h1 id="nbControleurs">0</h1>
-                         <p>Actifs</p>
-                    </div>
-                </div>
-                    
-                </div>
+<h2>ACCÈS RAPIDE</h2>
 
-                <div class="card">
+<div class="quick-grid">
 
+<div class="quick-card">
+<i class="fa-solid fa-building"></i>
+<h3>Entreprises</h3>
+<p>Gestion des entreprises</p>
+<a href="entreprises.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-clipboard-check"></i>
+<h3>Inspections</h3>
+<p>Gestion des inspections</p>
+<a href="inspections.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions</h3>
+<p>Gestion des infractions</p>
+<a href="infractions.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-file-signature"></i>
+<h3>PV</h3>
+<p>Gestion des procès-verbaux</p>
+<a href="pv.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-users"></i>
+<h3>Travailleurs</h3>
+<p>Gestion travailleurs</p>
+<a href="travailleurs.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-user-shield"></i>
+<h3>Inspecteurs</h3>
+<p>Gestion inspecteurs</p>
+<a href="inspecteurs.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-user-tie"></i>
+<h3>Contrôleurs</h3>
+<p>Gestion contrôleurs</p>
+<a href="controleurs.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
+<i class="fa-solid fa-clipboard-list"></i>
+<h3>Fiches</h3>
+<p>Fiches de contrôle</p>
+<a href="fiches.html"><button>Accéder</button></a>
+</div>
+
+<div class="quick-card">
 <i class="fa-solid fa-calculator"></i>
-
-<h3>Décompte Final</h3>
-
-<h1 id="nbDecompte">0</h1>
-
-                            </div>
-
-            </div>
-
-        </section>
-
-        <!-- ================= ACCÈS RAPIDE ================= -->
-
-        <<section class="quick-section">
-
-    <h2>ACCÈS RAPIDE</h2>
-
-    <div class="quick-grid">
-
-        <div class="quick-card">
-            <i class="fa-solid fa-building"></i>
-            <h3>Entreprises</h3>
-            <p>Ajouter, modifier et supprimer les entreprises.</p>
-            <a href="entreprises.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-clipboard-check"></i>
-            <h3>Inspections</h3>
-            <p>Créer et gérer les inspections réalisées.</p>
-            <a href="inspections.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <h3>Infractions</h3>
-            <p>Enregistrer les infractions constatées.</p>
-            <a href="infractions.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-file-signature"></i>
-            <h3>Procès-Verbaux</h3>
-            <p>Créer et gérer les procès-verbaux.</p>
-            <a href="pv.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-users"></i>
-            <h3>Travailleurs</h3>
-            <p>Gestion des travailleurs enregistrés.</p>
-            <a href="travailleurs.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-user-shield"></i>
-            <h3>Inspecteurs</h3>
-            <p>Gestion des inspecteurs du travail.</p>
-            <a href="inspecteurs.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="card">
-            <i class="fa-solid fa-user-tie dark"></i>
-            <div>
-            <h3>Contrôleurs</h3>
-            <h1 id="nbControleurs">0</h1>
-            <p>Actifs</p>
-    </div>
+<h3>Décompte</h3>
+<button onclick="window.location.href='decompte.html'">Accéder</button>
 </div>
-
-        <div class="quick-card">
-            <i class="fa-solid fa-clipboard-list"></i>
-            <h3>Fiches de Contrôle</h3>
-            <p>Créer et consulter les fiches de contrôle.</p>
-            <a href="fiches.html">
-                <button>Accéder</button>
-            </a>
-        </div>
-
-        <div class="quick-card">
-          <i class="fa-solid fa-calculator"></i>
-          <h3>Décompte Final</h3>
-          <p>Calcul automatique du décompte final du travailleur.</p>
-
-                <button
-            onclick="window.location.href='decompte.html'">
-                    Accéder
-             </button>
-        </div>
-
-      </div>
-
-        </section>        
-
-        <!-- ================= DERNIÈRES INSPECTIONS ================= -->
-
-        <section class="inspection-list">
-
-            <h3>DERNIÈRES INSPECTIONS</h3>
-
-            <table>
-
-                <tr>
-                    <td>Société ABC SARL</td>
-                    <td>21/03/2026</td>
-                    <td><span class="success">Conforme</span></td>
-                </tr>
-
-                <tr>
-                    <td>Entreprise XYZ</td>
-                    <td>20/03/2026</td>
-                    <td><span class="danger">Non conforme</span></td>
-                </tr>
-
-                <tr>
-                    <td>ETS MOKILI</td>
-                    <td>19/03/2026</td>
-                    <td><span class="success">Conforme</span></td>
-                </tr>
-
-                <tr>
-                    <td>Société FUTUR SARL</td>
-                    <td>18/03/2026</td>
-                    <td><span class="warning">À corriger</span></td>
-                </tr>
-
-            </table>
-
-        </section>
-
-        <footer>
-
-<div class="footer-content">
-
-<img src="images/logo-igt.png" class="footer-logo">
-
-<h3>Inspection Générale du Travail</h3>
-
-<p>InspecteurBot IA</p>
-
-<hr>
-
-<p style="color:#ffffff;">
-
-Créé Par
-
-<strong style="color:#ffd700;">
-
-Inspecteur Limengo (Pmiller)
-
-</strong>
-
-© 2026
-
-</p>
 
 </div>
 
-        </footer>
+</section>
 
-    </main>
-
+</main>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-
 document.getElementById("dateActuelle").innerHTML =
 new Date().toLocaleString("fr-FR");
 
-new Chart(document.getElementById("inspectionChart"),{
-    type:"line",
-    data:{
-        labels:["Jan","Fév","Mar","Avr","Mai","Juin"],
-        datasets:[{
-            label:"Inspections",
-            data:[180,300,240,450,300,680],
-            fill:true
-        }]
-    }
-});
+function chargerStatistiques(){
 
-new Chart(document.getElementById("infractionChart"),{
-    type:"doughnut",
-    data:{
-        labels:[
-            "Travail dissimulé",
-            "SMIG",
-            "Conditions",
-            "Sécurité",
-            "Autres"
-        ],
-        datasets:[{
-            data:[38,24,18,12,8]
-        }]
-    }
-});
+const get = (k)=> JSON.parse(localStorage.getItem(k)) || [];
 
-</script>
+document.getElementById("nbEntreprises").textContent = get("entreprises").length;
+document.getElementById("nbInspections").textContent = get("inspections").length;
+document.getElementById("nbInfractions").textContent = get("infractions").length;
+document.getElementById("nbPV").textContent = get("pv").length;
+document.getElementById("nbTravailleurs").textContent = get("travailleurs").length;
+document.getElementById("nbInspecteurs").textContent = get("inspecteurs").length;
+document.getElementById("nbControleurs").textContent = get("controleurs").length;
 
-<script>
-function chargerStatistiques() {
-
-    const entreprises =
-        JSON.parse(localStorage.getItem("entreprises")) || [];
-
-    const inspections =
-        JSON.parse(localStorage.getItem("inspections")) || [];
-
-    const infractions =
-        JSON.parse(localStorage.getItem("infractions")) || [];
-
-    const pv =
-        JSON.parse(localStorage.getItem("pv")) || [];
-
-    const travailleurs =
-        JSON.parse(localStorage.getItem("travailleurs")) || [];
-
-    const inspecteurs =
-        JSON.parse(localStorage.getItem("inspecteurs")) || [];
-
-    const controleurs =
-        JSON.parse(localStorage.getItem("controleurs")) || [];
-
-    document.getElementById("nbEntreprises").textContent =
-        entreprises.length;
-
-    document.getElementById("nbInspections").textContent =
-        inspections.length;
-
-    document.getElementById("nbInfractions").textContent =
-        infractions.length;
-
-    document.getElementById("nbPV").textContent =
-        pv.length;
-
-    document.getElementById("nbTravailleurs").textContent =
-        travailleurs.length;
-
-    document.getElementById("nbInspecteurs").textContent =
-        inspecteurs.length;
-
-    document.getElementById("nbControleurs").textContent =
-        controleurs.length;
 }
 
 chargerStatistiques();
 </script>
-    
+
 </body>
-    </html>
+</html>
 
 
 
