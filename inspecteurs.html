@@ -1,1 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion des Inspecteurs</title>
 
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+<body>
+
+<div class="main-content">
+
+<section class="dashboard-section">
+
+<h2>
+<i class="fa-solid fa-user-shield"></i>
+GESTION DES INSPECTEURS
+</h2>
+
+<div class="chart-box">
+
+<h3>Inspecteurs du Travail</h3>
+
+<p>
+Les Inspecteurs du Travail sont autorisés à pénétrer librement dans les établissements,
+procéder à tous contrôles et enquêtes, consulter les documents légaux,
+dresser des procès-verbaux d'infraction, conseiller les employeurs et travailleurs,
+et ordonner des mesures de sécurité conformément au Code du Travail de la RDC.
+</p>
+
+</div>
+
+<div class="chart-box">
+
+<h3>ÉQUIPE POUR LA MISSION</h3>
+
+<form id="formInspecteur">
+
+<input type="date"
+id="debut"
+required>
+
+<input type="text"
+id="inspecteurs"
+placeholder="Noms des Inspecteurs"
+required>
+
+<input type="text"
+id="chef"
+placeholder="Chef de Mission"
+required>
+
+<input type="text"
+id="entreprise"
+placeholder="Entreprise à visiter"
+required>
+
+<input type="text"
+id="mission"
+placeholder="Type de mission"
+required>
+
+<input type="date"
+id="fin"
+required>
+
+<button type="submit">
+Enregistrer
+</button>
+
+</form>
+
+</div>
+
+<div class="inspection-list">
+
+<h3>Liste des Missions</h3>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Début</th>
+<th>Inspecteurs</th>
+<th>Chef</th>
+<th>Entreprise</th>
+<th>Mission</th>
+<th>Clôture</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="tableInspecteurs">
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</div>
+
+<script>
+
+let inspecteurs =
+JSON.parse(localStorage.getItem("inspecteurs")) || [];
+
+function afficher(){
+
+let html="";
+
+inspecteurs.forEach((i,index)=>{
+
+html += `
+<tr>
+
+<td>${i.debut}</td>
+<td>${i.inspecteurs}</td>
+<td>${i.chef}</td>
+<td>${i.entreprise}</td>
+<td>${i.mission}</td>
+<td>${i.fin}</td>
+
+<td>
+<button onclick="supprimer(${index})">
+Supprimer
+</button>
+</td>
+
+</tr>
+`;
+});
+
+document.getElementById(
+"tableInspecteurs"
+).innerHTML = html;
+
+}
+
+document.getElementById(
+"formInspecteur"
+).addEventListener(
+"submit",
+function(e){
+
+e.preventDefault();
+
+inspecteurs.push({
+
+debut:
+document.getElementById("debut").value,
+
+inspecteurs:
+document.getElementById("inspecteurs").value,
+
+chef:
+document.getElementById("chef").value,
+
+entreprise:
+document.getElementById("entreprise").value,
+
+mission:
+document.getElementById("mission").value,
+
+fin:
+document.getElementById("fin").value
+
+});
+
+localStorage.setItem(
+"inspecteurs",
+JSON.stringify(inspecteurs)
+);
+
+this.reset();
+
+afficher();
+
+});
+
+function supprimer(index){
+
+inspecteurs.splice(index,1);
+
+localStorage.setItem(
+"inspecteurs",
+JSON.stringify(inspecteurs)
+);
+
+afficher();
+
+}
+
+afficher();
+
+</script>
+
+</body>
+</html>
