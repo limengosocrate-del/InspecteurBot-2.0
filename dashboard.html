@@ -6,26 +6,37 @@
 <title>InspecteurBot RDC | Tableau de Bord</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
+<style>
+.banner-image, #slideshow{
+    width:100%;
+    height:320px;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+.small-text{
+    font-size:12px;
+}
+
+.footer-content{
+    padding:8px 0;
+    line-height:1.4;
+}
+</style>
 </head>
 
 <body>
 
 <div class="dashboard-layout">
 
-<!-- ================= MENU LATÉRAL ================= -->
+<!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
-
-<img src="images/batiment-igt.jpg"
-style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
-
-<img src="images/logo-igt.png" style="width:70px;display:block;margin:0 auto 10px auto;">
+<img src="images/photos/logo-igt.png" style="width:70px;display:block;margin:auto;">
 <h3>MENU PRINCIPAL</h3>
 </div>
 
@@ -35,14 +46,10 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 <li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
 <li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
 <li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa-solid fa-landmark"></i> IGT</a></li>
 <li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
-<li><a href="#"><i class="fa-solid fa-calculator"></i> Décompte Final</a></li>
-<li><a href="#"><i class="fa-solid fa-robot"></i> Assistant IA</a></li>
-<li><a href="#"><i class="fa-solid fa-chart-column"></i> Statistiques</a></li>
-<li><a href="#"><i class="fa-solid fa-folder-open"></i> Archives</a></li>
-<li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
-<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
 </ul>
 
 <div class="logout">
@@ -51,45 +58,37 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 </aside>
 
-<!-- ================= CONTENU ================= -->
+<!-- ================= MAIN ================= -->
 <main class="main-content">
 
-<!-- ================= BANNIÈRE ================= -->
+<!-- ================= BANNER ================= -->
 <section class="banner">
 
-<img id="bannerImage" class="banner-image">
+<img id="slideshow" src="images/photos/image1.jpg" alt="Photos IGT">
 
 <div class="banner-overlay"></div>
 
 <div class="banner-content">
 
 <div class="banner-left">
-<img src="images/logo-igt.png">
+<img src="images/photos/logo-igt.png">
 
 <div>
 <h1>InspecteurBot RDC</h1>
-<h3>INSPECTION GENERALE DU TRAVAIL</h3>
-
-<p id="messageRotatif"></p>
-
+<h3>Inspection Générale du Travail</h3>
 </div>
 </div>
 
 <div class="banner-right">
 
-<div class="top-box">
+<div class="top-box small-text">
 <i class="fa-solid fa-calendar-days"></i>
 <span id="dateActuelle"></span>
 </div>
 
-<div class="top-box">
+<div class="top-box small-text">
 <i class="fa-solid fa-clock"></i>
 <span id="heureActuelle"></span>
-</div>
-
-<div class="top-box">
-<i class="fa-solid fa-bell"></i>
-<span>5</span>
 </div>
 
 </div>
@@ -97,82 +96,30 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 </div>
 </section>
 
-<!-- ================= TABLEAU DE BORD ================= -->
+<!-- ================= DASHBOARD ================= -->
 <section class="dashboard-section">
 
 <h2>TABLEAU DE BORD INTELLIGENT</h2>
 
 <div class="notification-box">
 <i class="fa-solid fa-lightbulb"></i>
-<p id="notificationMessage">Bienvenue Inspecteur 👋</p>
-</div>
-
-<div class="stats-grid">
-
-<div class="card">
-<i class="fa-solid fa-building"></i>
-<h3>Entreprises</h3>
-<h1 id="nbEntreprises">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-clipboard-check"></i>
-<h3>Inspections</h3>
-<h1 id="nbInspections">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-triangle-exclamation"></i>
-<h3>Infractions</h3>
-<h1 id="nbInfractions">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-file-signature"></i>
-<h3>PV</h3>
-<h1 id="nbPV">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-users"></i>
-<h3>Travailleurs</h3>
-<h1 id="nbTravailleurs">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-user-shield"></i>
-<h3>Inspecteurs</h3>
-<h1 id="nbInspecteurs">0</h1>
-</div>
-
-<div class="card">
-<i class="fa-solid fa-user-tie"></i>
-<h3>Contrôleurs</h3>
-<h1 id="nbControleurs">0</h1>
-</div>
-
+<p id="notificationMessage"></p>
 </div>
 
 </section>
 
+<!-- ================= FOOTER ================= -->
 <footer>
 
 <div class="footer-content">
 
-<img src="images/logo-igt.png" class="footer-logo">
-
 <h3>Inspection Générale du Travail</h3>
-
 <p>InspecteurBot IA</p>
 
 <hr>
 
-<p style="color:#ffffff;">
-Créé Par
-<strong style="color:#ffd700;">
-Inspecteur Limengo (Pmiller)
-</strong>
-© 2026
+<p style="font-size:12px;">
+Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
 
 </div>
@@ -183,119 +130,83 @@ Inspecteur Limengo (Pmiller)
 </div>
 
 <script>
-// DATE + HEURE LIVE
-function updateDateTime(){
-document.getElementById("dateActuelle").innerText =
-new Date().toLocaleDateString("fr-FR");
+// ================= DATE + HEURE =================
+function updateTime(){
+    const now = new Date();
+    document.getElementById("dateActuelle").textContent =
+        now.toLocaleDateString("fr-FR");
 
-document.getElementById("heureActuelle").innerText =
-new Date().toLocaleTimeString("fr-FR");
+    document.getElementById("heureActuelle").textContent =
+        now.toLocaleTimeString("fr-FR");
 }
-setInterval(updateDateTime,1000);
-updateDateTime();
+setInterval(updateTime,1000);
+updateTime();
 
 
-// MESSAGES ROTATIFS (30 messages / 10 sec)
+// ================= MESSAGES ROTATIFS =================
 const messages = [
-"Travailler pour la dignité du peuple 🇨🇩",
-"La justice sociale commence par le travail",
-"Inspection = rigueur + honnêteté",
-"Respect du SMIG obligatoire",
-"Zéro corruption dans le travail",
-"La loi protège le travailleur",
-"L’entreprise doit respecter les normes",
-"Un contrôle sauve des vies",
-"Le travail est une fierté",
-"Patriotisme et discipline",
-"Amour du travail bien fait",
-"Contrôler c’est protéger",
-"Infractions = sanctions",
-"Respect des conditions de travail",
-"Le travail digne pour tous",
-"Une nation forte par le travail",
-"Inspection sans corruption",
-"Les droits du travailleur sont sacrés",
-"Chaque contrôle compte",
-"Travail = développement",
+"Travail, discipline et rigueur pour la nation",
+"Inspection = protection des travailleurs",
+"Zéro corruption",
+"Respect du Code du Travail",
+"Justice sociale",
+"Travail digne pour tous",
+"Paix sociale",
+"Contrôle strict des entreprises",
+"Stop aux abus",
+"Sécurité au travail",
+"Développement national",
+"Respect mutuel",
+"Travail légal",
+"Inspection moderne",
+"Égalité au travail",
+"Justice et transparence",
+"Protection des travailleurs",
+"Entreprise responsable",
 "Rigueur et discipline",
-"Zéro abus patronal",
-"Un travailleur respecté = productif",
-"Inspection responsable",
-"Justice dans les entreprises",
-"Paix sociale par le travail",
-"Organisation et discipline",
-"Respect des contrats",
-"Éthique professionnelle",
-"Force de la nation = travailleurs"
+"Amélioration continue",
+"Travail sans exploitation",
+"État de droit",
+"Inspection efficace",
+"Bonnes conditions de travail",
+"Dialogue social",
+"Contrôle permanent",
+"Justice économique",
+"Travail sécurisé",
+"Protection sociale",
+"Développement durable",
+"Zéro injustice",
+"Travail organisé",
+"Paix dans les entreprises",
+"Respect des lois",
+"Confiance sociale",
+"Inspection forte",
+"Travail équitable",
+"Nation forte",
+"Économie stable",
+"Progrès social"
 ];
 
 let i = 0;
 setInterval(()=>{
-document.getElementById("messageRotatif").innerText = messages[i];
-i = (i+1) % messages.length;
+    document.getElementById("notificationMessage").textContent =
+        messages[i];
+    i = (i + 1) % messages.length;
 },10000);
 
-document.getElementById("messageRotatif").innerText = messages[0];
 
+// ================= SLIDESHOW =================
+let img = 1;
 
-// SLIDESHOW 15 IMAGES (8 sec)
-const images = [
-"images/batiment-igt.jpg",
-"images/1.jpg",
-"images/2.jpg",
-"images/3.jpg",
-"images/4.jpg",
-"images/5.jpg",
-"images/6.jpg",
-"images/7.jpg",
-"images/8.jpg",
-"images/9.jpg",
-"images/10.jpg",
-"images/11.jpg",
-"images/12.jpg",
-"images/13.jpg",
-"images/14.jpg"
-];
+setInterval(()=>{
+    img++;
+    if(img > 20) img = 1;
 
-let imgIndex = 0;
+    document.getElementById("slideshow").src =
+        "images/photos/image" + img + ".jpg";
+},9000);
 
-function changeImage(){
-document.getElementById("bannerImage").src = images[imgIndex];
-imgIndex = (imgIndex + 1) % images.length;
-}
-
-setInterval(changeImage,8000);
-changeImage();
-
-
-// STATS LOCALSTORAGE
-function chargerStatistiques(){
-
-const entreprises = JSON.parse(localStorage.getItem("entreprises")) || [];
-const inspections = JSON.parse(localStorage.getItem("inspections")) || [];
-const infractions = JSON.parse(localStorage.getItem("infractions")) || [];
-const pv = JSON.parse(localStorage.getItem("pv")) || [];
-const travailleurs = JSON.parse(localStorage.getItem("travailleurs")) || [];
-const inspecteurs = JSON.parse(localStorage.getItem("inspecteurs")) || [];
-const controleurs = JSON.parse(localStorage.getItem("controleurs")) || [];
-
-document.getElementById("nbEntreprises").innerText = entreprises.length;
-document.getElementById("nbInspections").innerText = inspections.length;
-document.getElementById("nbInfractions").innerText = infractions.length;
-document.getElementById("nbPV").innerText = pv.length;
-document.getElementById("nbTravailleurs").innerText = travailleurs.length;
-document.getElementById("nbInspecteurs").innerText = inspecteurs.length;
-document.getElementById("nbControleurs").innerText = controleurs.length;
-}
-
-chargerStatistiques();
 </script>
 
 </body>
     </html>
-
-
-        
-
-
-                        
