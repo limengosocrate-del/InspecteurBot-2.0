@@ -213,7 +213,7 @@ Bienvenue Inspecteur 👋
                     <i class="fa-solid fa-building blue"></i>
                     <div>
                         <h3>Entreprises</h3>
-                        <h1>0</h1>
+                        <h1 id="nbEntreprises">0</h1>
                         <p>Enregistrées</p>
                     </div>
                 </div>
@@ -221,8 +221,8 @@ Bienvenue Inspecteur 👋
                 <div class="card">
                     <i class="fa-solid fa-clipboard-check green"></i>
                     <div>
-                        <h3>Inspections</h3>
-                        <h1>0</h1>
+                        <<h3>Inspections</h3>
+                        <h1 id="nbInspections">0</h1>
                         <p>Réalisées</p>
                     </div>
                 </div>
@@ -231,7 +231,7 @@ Bienvenue Inspecteur 👋
                     <i class="fa-solid fa-triangle-exclamation orange"></i>
                     <div>
                         <h3>Infractions</h3>
-                        <h1>0</h1>
+                        <h1 id="nbInfractions">0</h1>
                         <p>Constatées</p>
                     </div>
                 </div>
@@ -240,7 +240,7 @@ Bienvenue Inspecteur 👋
                     <i class="fa-solid fa-file-signature purple"></i>
                     <div>
                         <h3>PV rédigés</h3>
-                        <h1>0</h1>
+                        <h1 id="nbPV">0</h1>
                         <p>Générés</p>
                     </div>
                 </div>
@@ -249,7 +249,7 @@ Bienvenue Inspecteur 👋
                     <i class="fa-solid fa-users cyan"></i>
                     <div>
                         <h3>Travailleurs</h3>
-                        <h1>0</h1>
+                        <h1 id="nbTravailleurs">0</h1>
                         <p>Déclarés</p>
                     </div>
                 </div>
@@ -258,7 +258,7 @@ Bienvenue Inspecteur 👋
                     <i class="fa-solid fa-user-shield dark"></i>
                     <div>
                         <h3>Inspecteurs</h3>
-                        <h1>0</h1>
+                        <h1 id="nbInspecteurs">0</h1>
                         <p>Actifs</p>
                     </div>
                 </div>
@@ -403,7 +403,7 @@ Bienvenue Inspecteur 👋
 
         </section>
 
-        <<footer>
+        <footer>
 
 <div class="footer-content">
 
@@ -472,6 +472,49 @@ new Chart(document.getElementById("infractionChart"),{
     }
 });
 
+</script>
+
+<script>
+function chargerStatistiques() {
+
+    const entreprises =
+        JSON.parse(localStorage.getItem("entreprises")) || [];
+
+    const inspections =
+        JSON.parse(localStorage.getItem("inspections")) || [];
+
+    const infractions =
+        JSON.parse(localStorage.getItem("infractions")) || [];
+
+    const pv =
+        JSON.parse(localStorage.getItem("pv")) || [];
+
+    const travailleurs =
+        JSON.parse(localStorage.getItem("travailleurs")) || [];
+
+    const inspecteurs =
+        JSON.parse(localStorage.getItem("inspecteurs")) || [];
+
+    document.getElementById("nbEntreprises").textContent =
+        entreprises.length;
+
+    document.getElementById("nbInspections").textContent =
+        inspections.length;
+
+    document.getElementById("nbInfractions").textContent =
+        infractions.length;
+
+    document.getElementById("nbPV").textContent =
+        pv.length;
+
+    document.getElementById("nbTravailleurs").textContent =
+        travailleurs.length;
+
+    document.getElementById("nbInspecteurs").textContent =
+        inspecteurs.length;
+}
+
+chargerStatistiques();
 </script>
     
 </body>
