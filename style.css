@@ -1143,4 +1143,24 @@ body{
 .quick-card svg {
     color: #22c55e !important;
 }
+
+.chart-box p{
+    font-size:17px;
+    line-height:1.9;
+    color:#1f2937;
+}
+
+.chart-box h3{
+    color:#041c5c;
+    margin-top:20px;
+    margin-bottom:10px;
+    font-size:22px;
+}
+
+.chart-box{
+    background:#ffffff;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+      }
           
