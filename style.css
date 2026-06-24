@@ -1163,4 +1163,82 @@ body{
     border-radius:25px;
     box-shadow:0 10px 30px rgba(0,0,0,.08);
       }
+
+/* =================================
+   STYLE UNIFORME DES PAGES INTERNES
+================================= */
+
+.page-box,
+.chart-box,
+.form-box,
+.table-box,
+.content-box{
+    background:#ffffff;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    margin-bottom:30px;
+}
+
+.page-box h2,
+.page-box h3,
+.chart-box h2,
+.chart-box h3,
+.form-box h2,
+.form-box h3,
+.table-box h2,
+.table-box h3{
+    color:#041c5c;
+    margin-top:20px;
+    margin-bottom:15px;
+    font-size:22px;
+}
+
+.page-box p,
+.chart-box p,
+.form-box p,
+.table-box p,
+.content-box p{
+    font-size:17px;
+    line-height:1.9;
+    color:#1f2937;
+}
+
+/* Formulaires */
+.page-box input,
+.page-box select,
+.page-box textarea,
+.form-box input,
+.form-box select,
+.form-box textarea{
+    width:100%;
+    padding:15px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    margin-top:10px;
+    margin-bottom:20px;
+    font-size:16px;
+}
+
+/* Boutons */
+.page-box button,
+.form-box button,
+.table-box button{
+    background:#0b52d6;
+    color:#fff;
+    border:none;
+    padding:14px 30px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.page-box button:hover,
+.form-box button:hover,
+.table-box button:hover{
+    background:#083ea5;
+    transform:translateY(-3px);
+}
           
