@@ -13,32 +13,24 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 rel="stylesheet">
 
 <style>
-
-/* rotation slogan + date */
-#notificationMessage{
-    font-size:18px;
-    transition:all .5s ease;
-    min-height:40px;
-}
-
-/* bannière slideshow */
-.banner-image {
+.banner-image{
     width:100%;
     height:320px;
     object-fit:cover;
-    border-radius:18px;
+    transition:opacity 1s ease-in-out;
 }
 
-/* footer plus compact */
-footer .footer-content{
+.footer-content{
     padding:10px 0;
-    line-height:1.2;
 }
 
-footer hr{
-    margin:6px 0;
+.footer-content hr{
+    margin:5px 0;
 }
 
+.top-box span{
+    font-size:13px;
+}
 </style>
 
 </head>
@@ -47,7 +39,8 @@ footer hr{
 
 <div class="dashboard-layout">
 
-<!-- ================= MENU ================= -->
+<!-- ================= MENU LATÉRAL ================= -->
+
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
@@ -67,22 +60,29 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 <li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
 <li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
 <li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa-solid fa-landmark"></i> IGT</a></li>
 <li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
-<li><a href="#"><i class="fa-solid fa-calculator"></i> Décompte Final</a></li>
-<li><a href="#"><i class="fa-solid fa-robot"></i> IA</a></li>
 <li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
+<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
 </ul>
+
+<div class="logout">
+<a href="index.html">
+<i class="fa-solid fa-power-off"></i>
+Déconnexion
+</a>
+</div>
 
 </aside>
 
 <!-- ================= CONTENU ================= -->
+
 <main class="main-content">
 
 <!-- ================= BANNIÈRE ================= -->
+
 <section class="banner">
 
-<img id="bannerSlide" class="banner-image" src="images/photos-igt/1.jpg">
+<img id="bannerImg" class="banner-image" src="images/photos_igt/1.jpg">
 
 <div class="banner-overlay"></div>
 
@@ -93,8 +93,14 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 <img src="images/logo-igt.png">
 
 <div>
+
 <h1>InspecteurBot RDC</h1>
 <h3>INSPECTION GENERALE DU TRAVAIL</h3>
+
+<p id="notificationMessage">
+Bienvenue Inspecteur 👋
+</p>
+
 </div>
 
 </div>
@@ -108,7 +114,7 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <div class="top-box">
 <i class="fa-solid fa-user"></i>
-<span id="igttxt">I.G.T - Inspecteur Général du Travail</span>
+<span>I.G.T. - Inspecteur Général du Travail</span>
 </div>
 
 <div class="top-box">
@@ -123,30 +129,55 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 </section>
 
 <!-- ================= TABLEAU ================= -->
+
 <section class="dashboard-section">
 
 <h2>TABLEAU DE BORD INTELLIGENT</h2>
 
-<div class="notification-box">
-<i class="fa-solid fa-lightbulb"></i>
-<p id="notificationMessage">Bienvenue Inspecteur 👋</p>
-</div>
-
 <div class="stats-grid">
 
-<div class="card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><h1 id="nbEntreprises">0</h1></div>
-<div class="card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><h1 id="nbInspections">0</h1></div>
-<div class="card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><h1 id="nbInfractions">0</h1></div>
-<div class="card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><h1 id="nbPV">0</h1></div>
-<div class="card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><h1 id="nbTravailleurs">0</h1></div>
-<div class="card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><h1 id="nbInspecteurs">0</h1></div>
-<div class="card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><h1 id="nbControleurs">0</h1></div>
+<div class="card">
+<i class="fa-solid fa-building"></i>
+<h3>Entreprises</h3>
+<h1 id="nbEntreprises">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-clipboard-check"></i>
+<h3>Inspections</h3>
+<h1 id="nbInspections">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions</h3>
+<h1 id="nbInfractions">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-users"></i>
+<h3>Travailleurs</h3>
+<h1 id="nbTravailleurs">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-user-shield"></i>
+<h3>Inspecteurs</h3>
+<h1 id="nbInspecteurs">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-user-tie"></i>
+<h3>Contrôleurs</h3>
+<h1 id="nbControleurs">0</h1>
+</div>
 
 </div>
 
 </section>
 
 <!-- ================= FOOTER ================= -->
+
 <footer>
 
 <div class="footer-content">
@@ -159,8 +190,8 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <hr>
 
-<p style="color:#ffffff;">
-Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> © 2026
+<p>
+Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
 
 </div>
@@ -171,101 +202,90 @@ Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> 
 </div>
 
 <!-- ================= SCRIPT ================= -->
+
 <script>
 
-/* ===== DATE LIVE ===== */
-function updateDate(){
+/* DATE */
 document.getElementById("dateActuelle").innerHTML =
 new Date().toLocaleString("fr-FR");
-}
-setInterval(updateDate,1000);
-updateDate();
 
-/* ===== SLOGANS ROTATIFS ===== */
-const slogans = [
-"Travailler pour la dignité",
-"La justice sociale avant tout",
-"Inspection rigoureuse et équitable",
-"Respect du Code du Travail",
-"Lutte contre les infractions",
-"Protéger les travailleurs",
-"Promouvoir l’emploi digne",
-"Contrôle sans corruption",
-"Amour de la patrie",
-"Rigueur au travail",
-"Inspection et transparence",
-"Zéro tolérance aux abus",
-"Développement du Congo",
-"Travail et discipline",
-"Justice pour tous",
-"Inspection moderne",
-"Éthique et responsabilité",
-"Sécurité au travail",
-"Dialogue social",
-"Respect des normes",
-"Travail bien fait",
-"Service public fort",
-"Engagement total",
-"Contrôle efficace",
-"Protection sociale",
-"Travail sans exploitation",
-"Ordre et discipline",
-"Inspection intelligente",
-"Respect des lois",
-"Amélioration continue",
-"Travail sécurisé",
-"Justice et équité",
-"Développement durable",
-"Travail propre",
-"Zéro corruption",
-"Patriotisme actif",
-"Respect mutuel",
-"Paix sociale",
-"Travail responsable",
-"Nation forte"
-];
-
-let i=0;
-setInterval(()=>{
-document.getElementById("notificationMessage").innerText = slogans[i];
-i = (i+1)%slogans.length;
-},10000);
-
-/* ===== SLIDESHOW IMAGE ===== */
-const images = [];
-for(let i=1;i<=20;i++){
-images.push(`images/photos-igt/${i}.jpg`);
-}
-
-let s=0;
-setInterval(()=>{
-document.getElementById("bannerSlide").src = images[s];
-s = (s+1)%images.length;
-},9000);
-
-/* ===== STATISTIQUES ===== */
+/* STATISTIQUES */
 function chargerStatistiques(){
 
-const entreprises = JSON.parse(localStorage.getItem("entreprises"))||[];
-const inspections = JSON.parse(localStorage.getItem("inspections"))||[];
-const infractions = JSON.parse(localStorage.getItem("infractions"))||[];
-const pv = JSON.parse(localStorage.getItem("pv"))||[];
-const travailleurs = JSON.parse(localStorage.getItem("travailleurs"))||[];
-const inspecteurs = JSON.parse(localStorage.getItem("inspecteurs"))||[];
-const controleurs = JSON.parse(localStorage.getItem("controleurs"))||[];
+const entreprises = JSON.parse(localStorage.getItem("entreprises")) || [];
+const inspections = JSON.parse(localStorage.getItem("inspections")) || [];
+const infractions = JSON.parse(localStorage.getItem("infractions")) || [];
+const travailleurs = JSON.parse(localStorage.getItem("travailleurs")) || [];
+const inspecteurs = JSON.parse(localStorage.getItem("inspecteurs")) || [];
+const controleurs = JSON.parse(localStorage.getItem("controleurs")) || [];
 
-document.getElementById("nbEntreprises").innerText = entreprises.length;
-document.getElementById("nbInspections").innerText = inspections.length;
-document.getElementById("nbInfractions").innerText = infractions.length;
-document.getElementById("nbPV").innerText = pv.length;
-document.getElementById("nbTravailleurs").innerText = travailleurs.length;
-document.getElementById("nbInspecteurs").innerText = inspecteurs.length;
-document.getElementById("nbControleurs").innerText = controleurs.length;
+document.getElementById("nbEntreprises").textContent = entreprises.length;
+document.getElementById("nbInspections").textContent = inspections.length;
+document.getElementById("nbInfractions").textContent = infractions.length;
+document.getElementById("nbTravailleurs").textContent = travailleurs.length;
+document.getElementById("nbInspecteurs").textContent = inspecteurs.length;
+document.getElementById("nbControleurs").textContent = controleurs.length;
 
 }
 chargerStatistiques();
 
+/* ================= SLIDER IMAGES ================= */
+const images = [];
+for(let i=1;i<=20;i++){
+images.push(`images/photos_igt/${i}.jpg`);
+}
+
+let imgIndex = 0;
+
+setInterval(()=>{
+const img = document.getElementById("bannerImg");
+img.style.opacity = 0.3;
+
+setTimeout(()=>{
+img.src = images[imgIndex];
+img.style.opacity = 1;
+imgIndex = (imgIndex+1)%images.length;
+},500);
+
+},9000);
+
+/* ================= SLOGANS ================= */
+const slogans = [
+"Travail et dignité",
+"Justice sociale",
+"Inspection rigoureuse",
+"Respect du Code du Travail",
+"Amour de la patrie",
+"Zéro corruption",
+"Travail bien fait",
+"Développement du Congo",
+"Rigueur et discipline"
+];
+
+let i = 0;
+
+/* VOIX IA */
+function parler(text){
+const msg = new SpeechSynthesisUtterance(text);
+msg.lang = "fr-FR";
+msg.rate = 1;
+msg.pitch = 1;
+window.speechSynthesis.speak(msg);
+}
+
+setInterval(()=>{
+const text = slogans[i];
+
+document.getElementById("notificationMessage").innerText = text;
+
+/* lecture voix IA */
+parler(text);
+
+i = (i+1)%slogans.length;
+
+},10000);
+
 </script>
 
 </body>
-                    </html>
+    </html>
