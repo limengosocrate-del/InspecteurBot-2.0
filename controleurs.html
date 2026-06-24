@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Contrôleurs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<h1>Gestion des Contrôleurs</h1>
+
+<input type="text" id="nom" placeholder="Nom du contrôleur">
+<button onclick="ajouterControleur()">
+Ajouter
+</button>
+
+<h3>Total : <span id="total">0</span></h3>
+
+<table id="liste"></table>
+
+<script>
+
+let controleurs =
+JSON.parse(localStorage.getItem("controleurs")) || [];
+
+function afficher(){
+
+    let table =
+    document.getElementById("liste");
+
+    table.innerHTML = "";
+
+    controleurs.forEach((c,i)=>{
+
+        table.innerHTML += `
+        <tr>
+            <td>${c.nom}</td>
+            <td>
+                <button onclick="supprimer(${i})">
+                Supprimer
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    document.getElementById("total").textContent =
+    controleurs.length;
+}
+
+function ajouterControleur(){
+
+    let nom =
+    document.getElementById("nom").value;
+
+    if(nom==="") return;
+
+    controleurs.push({
+        nom:nom
+    });
+
+    localStorage.setItem(
+        "controleurs",
+        JSON.stringify(controleurs)
+    );
+
+    document.getElementById("nom").value = "";
+
+    afficher();
+}
+
+function supprimer(i){
+
+    controleurs.splice(i,1);
+
+    localStorage.setItem(
+        "controleurs",
+        JSON.stringify(controleurs)
+    );
+
+    afficher();
+}
+
+afficher();
+
+</script>
+
+</body>
+  </html>
