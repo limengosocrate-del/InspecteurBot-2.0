@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion des Inspections</title>
+</head>
+<body>
+
+<h1>Gestion des Inspections</h1>
+
+<input id="entreprise" placeholder="Entreprise">
+<input id="date" type="date">
+<input id="inspecteur" placeholder="Inspecteur">
+<input id="type" placeholder="Type d'inspection">
+
+<button onclick="ajouterInspection()">
+Enregistrer
+</button>
+
+<hr>
+
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>N°</th>
+<th>Entreprise</th>
+<th>Date</th>
+<th>Inspecteur</th>
+<th>Type</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="listeInspections">
+</tbody>
+</table>
+
+<script>
+
+let inspections =
+JSON.parse(localStorage.getItem("inspections")) || [];
+
+function afficherInspections(){
+
+    let html="";
+
+    inspections.forEach((i,index)=>{
+
+        html += `
+        <tr>
+        <td>${index+1}</td>
+        <td>${i.entreprise}</td>
+        <td>${i.date}</td>
+        <td>${i.inspecteur}</td>
+        <td>${i.type}</td>
+
+        <td>
+        <button
+        onclick="supprimerInspection(${index})">
+        Supprimer
+        </button>
+        </td>
+
+        </tr>`;
+    });
+
+    document.getElementById(
+        "listeInspections"
+    ).innerHTML = html;
+}
+
+function ajouterInspection(){
+
+    inspections.push({
+
+        entreprise:
+        document.getElementById(
+        "entreprise").value,
+
+        date:
+        document.getElementById(
+        "date").value,
+
+        inspecteur:
+        document.getElementById(
+        "inspecteur").value,
+
+        type:
+        document.getElementById(
+        "type").value
+    });
+
+    localStorage.setItem(
+        "inspections",
+        JSON.stringify(inspections)
+    );
+
+    afficherInspections();
+}
+
+function supprimerInspection(index){
+
+    inspections.splice(index,1);
+
+    localStorage.setItem(
+        "inspections",
+        JSON.stringify(inspections)
+    );
+
+    afficherInspections();
+}
+
+afficherInspections();
+
+</script>
+
+</body>
+  </html>
