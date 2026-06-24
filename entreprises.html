@@ -1,103 +1,90 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Gestion des Entreprises</title>
 
-<style>
-body{
-    font-family:Poppins,sans-serif;
-    background:#edf2f9;
-    padding:30px;
-}
+<link rel="stylesheet" href="style.css">
 
-.container{
-    max-width:1200px;
-    margin:auto;
-}
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-.card{
-    background:#fff;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    margin-bottom:30px;
-}
-
-h1{
-    color:#041c5c;
-    margin-bottom:25px;
-}
-
-input{
-    width:100%;
-    padding:15px;
-    border:1px solid #ddd;
-    border-radius:12px;
-    margin-bottom:15px;
-}
-
-button{
-    border:none;
-    background:#0b52d6;
-    color:#fff;
-    padding:15px 30px;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,
-td{
-    padding:15px;
-    border-bottom:1px solid #ddd;
-    text-align:left;
-}
-
-.delete{
-    background:#e21b23;
-}
-</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="main-content">
 
-<div class="card">
+<section class="dashboard-section">
 
-<h1>Gestion des Entreprises</h1>
+<h2>
+<i class="fa-solid fa-building"></i>
+GESTION DES ENTREPRISES
+</h2>
 
-<input type="text" id="nom" placeholder="Nom de l'entreprise">
+<div class="chart-box">
 
-<input type="text" id="rccm" placeholder="RCCM">
+<h3>Nouvelle Entreprise</h3>
 
-<input type="text" id="secteur" placeholder="Secteur d'activité">
+<form id="formEntreprise">
 
-<input type="text" id="adresse" placeholder="Adresse">
+<input
+type="text"
+id="nom"
+placeholder="Nom de l'entreprise"
+required>
 
-<input type="text" id="telephone" placeholder="Téléphone">
+<input
+type="text"
+id="rccm"
+placeholder="Numéro RCCM">
 
-<input type="number" id="travailleurs"
+<input
+type="text"
+id="secteur"
+placeholder="Secteur d'activité">
+
+<input
+type="text"
+id="adresse"
+placeholder="Adresse complète">
+
+<input
+type="text"
+id="telephone"
+placeholder="Téléphone">
+
+<input
+type="number"
+id="travailleurs"
 placeholder="Nombre de travailleurs">
 
-<button onclick="ajouterEntreprise()">
-Enregistrer
+<button type="submit">
+
+<i class="fa-solid fa-floppy-disk"></i>
+Enregistrer l'entreprise
+
 </button>
+
+</form>
 
 </div>
 
-<div class="card">
+<div class="inspection-list">
 
-<h1>Liste des Entreprises</h1>
+<h3>
+<i class="fa-solid fa-list"></i>
+Liste des Entreprises
+</h3>
 
 <table>
 
 <thead>
+
 <tr>
 <th>N°</th>
 <th>Entreprise</th>
@@ -106,112 +93,140 @@ Enregistrer
 <th>Travailleurs</th>
 <th>Action</th>
 </tr>
+
 </thead>
 
 <tbody id="listeEntreprises">
+
 </tbody>
 
 </table>
 
 </div>
 
+</section>
+
 </div>
 
 <script>
 
 let entreprises =
-JSON.parse(localStorage.getItem("entreprises")) || [];
+JSON.parse(
+localStorage.getItem("entreprises")
+) || [];
 
 function afficherEntreprises(){
 
-    let html = "";
+let html = "";
 
-    entreprises.forEach((e,index)=>{
+entreprises.forEach((e,index)=>{
 
-        html += `
-        <tr>
+html += `
+<tr>
 
-        <td>${index+1}</td>
-        <td>${e.nom}</td>
-        <td>${e.rccm}</td>
-        <td>${e.secteur}</td>
-        <td>${e.travailleurs}</td>
+<td>${index + 1}</td>
 
-        <td>
-        <button class="delete"
-        onclick="supprimerEntreprise(${index})">
-        Supprimer
-        </button>
-        </td>
+<td>${e.nom}</td>
 
-        </tr>
-        `;
-    });
+<td>${e.rccm}</td>
 
-    document.getElementById(
-        "listeEntreprises"
-    ).innerHTML = html;
+<td>${e.secteur}</td>
+
+<td>${e.travailleurs}</td>
+
+<td>
+
+<button
+onclick="supprimerEntreprise(${index})">
+
+<i class="fa-solid fa-trash"></i>
+Supprimer
+
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+document.getElementById(
+"listeEntreprises"
+).innerHTML = html;
+
 }
 
-function ajouterEntreprise(){
+document.getElementById(
+"formEntreprise"
+).addEventListener(
+"submit",
+function(e){
 
-    let nom =
-    document.getElementById("nom").value;
+e.preventDefault();
 
-    let rccm =
-    document.getElementById("rccm").value;
+entreprises.push({
 
-    let secteur =
-    document.getElementById("secteur").value;
+nom:
+document.getElementById(
+"nom"
+).value,
 
-    let adresse =
-    document.getElementById("adresse").value;
+rccm:
+document.getElementById(
+"rccm"
+).value,
 
-    let telephone =
-    document.getElementById("telephone").value;
+secteur:
+document.getElementById(
+"secteur"
+).value,
 
-    let travailleurs =
-    document.getElementById("travailleurs").value;
+adresse:
+document.getElementById(
+"adresse"
+).value,
 
-    if(nom===""){
-        alert("Entrez le nom de l'entreprise");
-        return;
-    }
+telephone:
+document.getElementById(
+"telephone"
+).value,
 
-    entreprises.push({
-        nom,
-        rccm,
-        secteur,
-        adresse,
-        telephone,
-        travailleurs
-    });
+travailleurs:
+document.getElementById(
+"travailleurs"
+).value
 
-    localStorage.setItem(
-        "entreprises",
-        JSON.stringify(entreprises)
-    );
+});
 
-    afficherEntreprises();
+localStorage.setItem(
+"entreprises",
+JSON.stringify(entreprises)
+);
 
-    document.getElementById("nom").value="";
-    document.getElementById("rccm").value="";
-    document.getElementById("secteur").value="";
-    document.getElementById("adresse").value="";
-    document.getElementById("telephone").value="";
-    document.getElementById("travailleurs").value="";
-}
+this.reset();
+
+afficherEntreprises();
+
+});
 
 function supprimerEntreprise(index){
 
-    entreprises.splice(index,1);
+if(confirm(
+"Supprimer cette entreprise ?"
+)){
 
-    localStorage.setItem(
-        "entreprises",
-        JSON.stringify(entreprises)
-    );
+entreprises.splice(index,1);
 
-    afficherEntreprises();
+localStorage.setItem(
+"entreprises",
+JSON.stringify(entreprises)
+);
+
+afficherEntreprises();
+
+}
+
 }
 
 afficherEntreprises();
@@ -219,4 +234,4 @@ afficherEntreprises();
 </script>
 
 </body>
-  </html>
+    </html>
