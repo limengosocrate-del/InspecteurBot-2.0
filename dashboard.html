@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Dashboard V2</title>
+<title>InspecteurBot RDC | Tableau de Bord</title>
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet"
@@ -11,55 +11,38 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-/* ===== NOTIFICATION STYLE ===== */
-#notificationMessage{
-    transition:0.5s;
-    font-weight:600;
-}
-
-/* MOBILE FIX */
-@media (max-width:768px){
-.dashboard-layout{flex-direction:column;}
-.sidebar{width:100%;}
-.stats-grid{grid-template-columns:1fr;}
-.quick-grid{grid-template-columns:1fr;}
-.banner-content{flex-direction:column;text-align:center;}
-}
-</style>
-
 </head>
 
 <body>
 
-<script>
-/* ================= LOGIN PROTECTION ================= */
-if(localStorage.getItem("auth") !== "ok"){
-    window.location.href = "login.html";
-}
-</script>
-
 <div class="dashboard-layout">
 
-<!-- ================= SIDEBAR ================= -->
+<!-- ================= MENU LATÉRAL ================= -->
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
+
 <img src="images/batiment-igt.jpg"
 style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
-<img src="images/logo-igt.png" style="width:70px;">
+
+<img src="images/logo-igt.png" style="width:70px;display:block;margin:0 auto 10px auto;">
 <h3>MENU PRINCIPAL</h3>
 </div>
 
 <ul>
 <li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
-<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
-<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches</a></li>
+<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
+<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
+<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
+<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa-solid fa-landmark"></i> IGT</a></li>
+<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
+<li><a href="#"><i class="fa-solid fa-calculator"></i> Décompte Final</a></li>
+<li><a href="#"><i class="fa-solid fa-robot"></i> Assistant IA</a></li>
+<li><a href="#"><i class="fa-solid fa-chart-column"></i> Statistiques</a></li>
+<li><a href="#"><i class="fa-solid fa-folder-open"></i> Archives</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Utilisateurs</a></li>
+<li><a href="#"><i class="fa-solid fa-gear"></i> Paramètres</a></li>
 </ul>
 
 <div class="logout">
@@ -68,10 +51,10 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 </aside>
 
-<!-- ================= MAIN ================= -->
+<!-- ================= CONTENU ================= -->
 <main class="main-content">
 
-<!-- ================= BANNER ================= -->
+<!-- ================= BANNIÈRE ================= -->
 <section class="banner">
 
 <img id="bannerImage" class="banner-image">
@@ -86,9 +69,10 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 <div>
 <h1>InspecteurBot RDC</h1>
 <h3>INSPECTION GENERALE DU TRAVAIL</h3>
-<p id="messageRotatif"></p>
-</div>
 
+<p id="messageRotatif"></p>
+
+</div>
 </div>
 
 <div class="banner-right">
@@ -113,7 +97,7 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 </div>
 </section>
 
-<!-- ================= DASHBOARD ================= -->
+<!-- ================= TABLEAU DE BORD ================= -->
 <section class="dashboard-section">
 
 <h2>TABLEAU DE BORD INTELLIGENT</h2>
@@ -123,28 +107,54 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 <p id="notificationMessage">Bienvenue Inspecteur 👋</p>
 </div>
 
-<!-- GRAPHIQUES -->
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-<canvas id="chart1"></canvas>
-<canvas id="chart2"></canvas>
-</div>
-
-<!-- STATS -->
 <div class="stats-grid">
 
-<div class="card"><h3>Entreprises</h3><h1 id="nbEntreprises">0</h1></div>
-<div class="card"><h3>Inspections</h3><h1 id="nbInspections">0</h1></div>
-<div class="card"><h3>Infractions</h3><h1 id="nbInfractions">0</h1></div>
-<div class="card"><h3>PV</h3><h1 id="nbPV">0</h1></div>
-<div class="card"><h3>Travailleurs</h3><h1 id="nbTravailleurs">0</h1></div>
-<div class="card"><h3>Inspecteurs</h3><h1 id="nbInspecteurs">0</h1></div>
-<div class="card"><h3>Contrôleurs</h3><h1 id="nbControleurs">0</h1></div>
+<div class="card">
+<i class="fa-solid fa-building"></i>
+<h3>Entreprises</h3>
+<h1 id="nbEntreprises">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-clipboard-check"></i>
+<h3>Inspections</h3>
+<h1 id="nbInspections">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions</h3>
+<h1 id="nbInfractions">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-file-signature"></i>
+<h3>PV</h3>
+<h1 id="nbPV">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-users"></i>
+<h3>Travailleurs</h3>
+<h1 id="nbTravailleurs">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-user-shield"></i>
+<h3>Inspecteurs</h3>
+<h1 id="nbInspecteurs">0</h1>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-user-tie"></i>
+<h3>Contrôleurs</h3>
+<h1 id="nbControleurs">0</h1>
+</div>
 
 </div>
 
 </section>
 
-<!-- ================= FOOTER ================= -->
 <footer>
 
 <div class="footer-content">
@@ -157,8 +167,12 @@ style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom
 
 <hr>
 
-<p style="color:#fff;">
-Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> © 2026
+<p style="color:#ffffff;">
+Créé Par
+<strong style="color:#ffd700;">
+Inspecteur Limengo (Pmiller)
+</strong>
+© 2026
 </p>
 
 </div>
@@ -168,123 +182,113 @@ Créé Par <strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong> 
 </main>
 </div>
 
-<!-- ================= SCRIPT ================= -->
 <script>
-
-/* ===== DATE + HEURE ===== */
-function updateTime(){
+// DATE + HEURE LIVE
+function updateDateTime(){
 document.getElementById("dateActuelle").innerText =
 new Date().toLocaleDateString("fr-FR");
 
 document.getElementById("heureActuelle").innerText =
 new Date().toLocaleTimeString("fr-FR");
 }
-setInterval(updateTime,1000);
-updateTime();
+setInterval(updateDateTime,1000);
+updateDateTime();
 
 
-/* ===== MESSAGES ROTATIFS ===== */
+// MESSAGES ROTATIFS (30 messages / 10 sec)
 const messages = [
-"Travail = dignité 🇨🇩",
-"Justice sociale pour tous",
-"Rigueur dans les inspections",
-"Zéro corruption",
-"Respect du travailleur",
-"Patriotisme et discipline",
-"Inspection = protection",
-"Travail bien fait = nation forte",
+"Travailler pour la dignité du peuple 🇨🇩",
+"La justice sociale commence par le travail",
+"Inspection = rigueur + honnêteté",
 "Respect du SMIG obligatoire",
-"Paix sociale par le travail"
+"Zéro corruption dans le travail",
+"La loi protège le travailleur",
+"L’entreprise doit respecter les normes",
+"Un contrôle sauve des vies",
+"Le travail est une fierté",
+"Patriotisme et discipline",
+"Amour du travail bien fait",
+"Contrôler c’est protéger",
+"Infractions = sanctions",
+"Respect des conditions de travail",
+"Le travail digne pour tous",
+"Une nation forte par le travail",
+"Inspection sans corruption",
+"Les droits du travailleur sont sacrés",
+"Chaque contrôle compte",
+"Travail = développement",
+"Rigueur et discipline",
+"Zéro abus patronal",
+"Un travailleur respecté = productif",
+"Inspection responsable",
+"Justice dans les entreprises",
+"Paix sociale par le travail",
+"Organisation et discipline",
+"Respect des contrats",
+"Éthique professionnelle",
+"Force de la nation = travailleurs"
 ];
 
-let m=0;
+let i = 0;
 setInterval(()=>{
-document.getElementById("messageRotatif").innerText = messages[m];
-m=(m+1)%messages.length;
+document.getElementById("messageRotatif").innerText = messages[i];
+i = (i+1) % messages.length;
 },10000);
+
 document.getElementById("messageRotatif").innerText = messages[0];
 
 
-/* ===== SLIDESHOW ===== */
-const images=[
+// SLIDESHOW 15 IMAGES (8 sec)
+const images = [
 "images/batiment-igt.jpg",
 "images/1.jpg",
 "images/2.jpg",
 "images/3.jpg",
-"images/4.jpg"
+"images/4.jpg",
+"images/5.jpg",
+"images/6.jpg",
+"images/7.jpg",
+"images/8.jpg",
+"images/9.jpg",
+"images/10.jpg",
+"images/11.jpg",
+"images/12.jpg",
+"images/13.jpg",
+"images/14.jpg"
 ];
 
-let i=0;
-function slide(){
-document.getElementById("bannerImage").src=images[i];
-i=(i+1)%images.length;
-}
-setInterval(slide,8000);
-slide();
+let imgIndex = 0;
 
-
-/* ===== NOTIFICATION ===== */
-function notify(msg){
-document.getElementById("notificationMessage").innerText=msg;
+function changeImage(){
+document.getElementById("bannerImage").src = images[imgIndex];
+imgIndex = (imgIndex + 1) % images.length;
 }
 
+setInterval(changeImage,8000);
+changeImage();
 
-/* ===== STATS ===== */
-function loadStats(){
 
-const get = (key)=>JSON.parse(localStorage.getItem(key))||[];
+// STATS LOCALSTORAGE
+function chargerStatistiques(){
 
-document.getElementById("nbEntreprises").innerText=get("entreprises").length;
-document.getElementById("nbInspections").innerText=get("inspections").length;
-document.getElementById("nbInfractions").innerText=get("infractions").length;
-document.getElementById("nbPV").innerText=get("pv").length;
-document.getElementById("nbTravailleurs").innerText=get("travailleurs").length;
-document.getElementById("nbInspecteurs").innerText=get("inspecteurs").length;
-document.getElementById("nbControleurs").innerText=get("controleurs").length;
+const entreprises = JSON.parse(localStorage.getItem("entreprises")) || [];
+const inspections = JSON.parse(localStorage.getItem("inspections")) || [];
+const infractions = JSON.parse(localStorage.getItem("infractions")) || [];
+const pv = JSON.parse(localStorage.getItem("pv")) || [];
+const travailleurs = JSON.parse(localStorage.getItem("travailleurs")) || [];
+const inspecteurs = JSON.parse(localStorage.getItem("inspecteurs")) || [];
+const controleurs = JSON.parse(localStorage.getItem("controleurs")) || [];
 
+document.getElementById("nbEntreprises").innerText = entreprises.length;
+document.getElementById("nbInspections").innerText = inspections.length;
+document.getElementById("nbInfractions").innerText = infractions.length;
+document.getElementById("nbPV").innerText = pv.length;
+document.getElementById("nbTravailleurs").innerText = travailleurs.length;
+document.getElementById("nbInspecteurs").innerText = inspecteurs.length;
+document.getElementById("nbControleurs").innerText = controleurs.length;
 }
-loadStats();
 
-
-/* ===== CHARTS ===== */
-new Chart(document.getElementById("chart1"),{
-type:"bar",
-data:{
-labels:["Entreprises","Inspections","Infractions"],
-datasets:[{
-data:[
-JSON.parse(localStorage.getItem("entreprises")||"[]").length,
-JSON.parse(localStorage.getItem("inspections")||"[]").length,
-JSON.parse(localStorage.getItem("infractions")||"[]").length
-]
-}]
-}
-});
-
-new Chart(document.getElementById("chart2"),{
-type:"doughnut",
-data:{
-labels:["PV","Travailleurs","Inspecteurs"],
-datasets:[{
-data:[
-JSON.parse(localStorage.getItem("pv")||"[]").length,
-JSON.parse(localStorage.getItem("travailleurs")||"[]").length,
-JSON.parse(localStorage.getItem("inspecteurs")||"[]").length
-]
-}]
-}
-});
-
-
-/* ===== AUTO BACKUP ===== */
-setInterval(()=>{
-localStorage.setItem("backup",JSON.stringify({
-entreprises:localStorage.getItem("entreprises"),
-inspections:localStorage.getItem("inspections"),
-infractions:localStorage.getItem("infractions")
-}));
-},10000);
-
+chargerStatistiques();
 </script>
 
 </body>
