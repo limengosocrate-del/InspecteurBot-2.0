@@ -3,11 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Procès-Verbaux</title>
+<title>Procès-Verbaux | InspecteurBot RDC</title>
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+.chart-box p{
+    font-size:17px;
+    line-height:1.9;
+    color:#1f2937;
+}
+
+.chart-box h3{
+    color:#041c5c;
+    margin-top:20px;
+    margin-bottom:15px;
+    font-size:22px;
+}
+
+.chart-box{
+    background:#ffffff;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.chart-box input,
+.chart-box select{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:16px;
+    margin-bottom:20px;
+}
+
+.chart-box button{
+    border:none;
+    background:#0b52d6;
+    color:#fff;
+    padding:14px 35px;
+    border-radius:12px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.chart-box button:hover{
+    background:#083ea5;
+}
+
+.inspection-list{
+    background:#fff;
+    padding:35px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    margin-top:35px;
+    overflow:auto;
+}
+
+.inspection-list table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.inspection-list th,
+.inspection-list td{
+    border-bottom:1px solid #eee;
+    padding:15px;
+    text-align:left;
+}
+
+.inspection-list th{
+    color:#041c5c;
+}
+
+.supprimer{
+    background:#e11d48;
+    color:#fff;
+    border:none;
+    padding:8px 16px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.supprimer:hover{
+    background:#be123c;
+}
+
+</style>
+
 </head>
 <body>
 
@@ -22,34 +109,36 @@ PROCÈS-VERBAUX
 
 <div class="chart-box">
 
-<h3>Nouveau Procès-Verbal</h3>
+<h3>Gestion des Procès-Verbaux</h3>
+
+<p>
+Cette rubrique permet d'enregistrer et d'archiver les différents
+procès-verbaux établis par l'Inspection Générale du Travail
+lors des missions de contrôle, d'enquête et de conciliation.
+Chaque procès-verbal comporte un numéro, une date,
+le nom de l'entreprise concernée et le type de procès-verbal établi.
+</p>
+
+<br>
 
 <form id="formPV">
 
 <input
 type="text"
 id="numeroPV"
-placeholder="Numéro du PV"
+placeholder="Numéro du Procès-Verbal"
 required>
-
-<br><br>
 
 <input
 type="date"
 id="datePV"
 required>
 
-<br><br>
-
 <input
 type="text"
 id="entreprisePV"
 placeholder="Nom de l'entreprise"
 required>
-
-<br><br>
-
-<label>Type de Procès-Verbal</label>
 
 <select id="typePV">
 
@@ -66,7 +155,11 @@ Procès-verbal constat d'obstruction
 </option>
 
 <option>
-Procès-verbal d'audition
+Procès-verbal de contrôle
+</option>
+
+<option>
+Procès-verbal de constat
 </option>
 
 <option>
@@ -78,11 +171,15 @@ Procès-verbal de conciliation
 </option>
 
 <option>
-Procès-verbal de contrôle
+Procès-verbal d'audition
 </option>
 
 <option>
-Procès-verbal de constat
+Procès-verbal de saisie de documents
+</option>
+
+<option>
+Procès-verbal d'enquête
 </option>
 
 <option>
@@ -91,21 +188,21 @@ Autre type de procès-verbal
 
 </select>
 
-<br><br>
-
 <button type="submit">
-Enregistrer
+<i class="fa-solid fa-floppy-disk"></i>
+ Enregistrer
 </button>
 
 </form>
 
 </div>
 
-<br>
-
 <div class="inspection-list">
 
-<h3>Liste des Procès-Verbaux</h3>
+<h3>
+<i class="fa-solid fa-table"></i>
+Liste des Procès-Verbaux
+</h3>
 
 <table>
 
@@ -158,14 +255,11 @@ html += `
 <td>${p.type}</td>
 
 <td>
-
 <button
+class="supprimer"
 onclick="supprimerPV(${index})">
-
 Supprimer
-
 </button>
-
 </td>
 
 </tr>
@@ -237,6 +331,7 @@ JSON.stringify(pv)
 afficherPV();
 
 }
+
 }
 
 afficherPV();
