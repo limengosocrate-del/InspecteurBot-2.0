@@ -13,8 +13,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 rel="stylesheet">
 
 <style>
-/* ================= WHATSAPP NOTIFICATIONS ================= */
 
+/* ================= WHATSAPP NOTIFICATIONS ================= */
 #notif-container{
     position: fixed;
     bottom: 20px;
@@ -26,23 +26,17 @@ rel="stylesheet">
 }
 
 .whatsapp-notif{
-    background: #25D366;
     color: white;
-    padding: 12px 18px;
-    border-radius: 12px;
-    min-width: 220px;
-    max-width: 300px;
-    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    min-width: 200px;
+    max-width: 280px;
+    font-size: 13px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
-    gap: 10px;
-
+    gap: 8px;
     animation: slideIn 0.4s ease, fadeOut 0.5s ease 4.5s forwards;
-}
-
-.whatsapp-notif i{
-    font-size: 18px;
 }
 
 @keyframes slideIn{
@@ -53,6 +47,55 @@ rel="stylesheet">
 @keyframes fadeOut{
     to{opacity:0; transform: translateX(120%);}
 }
+
+/* ================= SLIDESHOW ================= */
+.slideshow{
+    width:100%;
+    height:260px;
+    position:relative;
+    overflow:hidden;
+    border-radius:18px;
+}
+
+.slideshow img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    position:absolute;
+    opacity:0;
+    transition: opacity 1s ease;
+}
+
+/* ================= QUICK CENTER ================= */
+.quick-grid{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+}
+
+.quick-card{
+    text-align:center;
+}
+
+/* ================= TITLE SMALL ================= */
+.banner-content h1{
+    font-size:24px;
+}
+
+.banner-content h3{
+    font-size:16px;
+    color:#1db954;
+}
+
+/* MOTIVATION TEXT */
+#motivation{
+    margin-top:8px;
+    font-size:14px;
+    color:#1db954;
+    font-weight:500;
+}
+
 </style>
 
 </head>
@@ -61,7 +104,7 @@ rel="stylesheet">
 
 <div class="dashboard-layout">
 
-<!-- ================= MENU LATÉRAL ================= -->
+<!-- ================= MENU ================= -->
 <aside class="sidebar">
 
 <div class="sidebar-logo" style="text-align:center;">
@@ -77,40 +120,36 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <ul>
 <li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
-<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
-<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
-<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
-<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
-<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
+<li><a href="#">Accueil</a></li>
+<li><a href="#">Procès-Verbaux</a></li>
+<li><a href="#">Code du Travail</a></li>
+<li><a href="#">Infractions</a></li>
+<li><a href="#">Fiches de Contrôle</a></li>
+<li><a href="#">Travailleurs</a></li>
+<li><a href="#">Inspecteurs</a></li>
+<li><a href="#">Contrôleurs</a></li>
 <li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
 </ul>
 
 </aside>
 
-<!-- ================= CONTENU ================= -->
+<!-- ================= CONTENT ================= -->
 <main class="main-content">
 
-<!-- ================= BANNIÈRE ================= -->
+<!-- ================= BANNER SLIDESHOW ================= -->
 <section class="banner">
 
-<img src="images/batiment-igt.jpg" class="banner-image">
+<div class="slideshow" id="slideshow"></div>
 <div class="banner-overlay"></div>
 
 <div class="banner-content">
-
-<div class="banner-left">
-
-<img src="images/logo-igt.png">
 
 <div>
 
 <h1>InspecteurBot RDC</h1>
 <h3>INSPECTION GENERALE DU TRAVAIL</h3>
 
-</div>
+<div id="motivation">Motivation...</div>
 
 </div>
 
@@ -129,6 +168,7 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 </div>
 
 </div>
+
 </section>
 
 <!-- ================= ACCÈS RAPIDE ================= -->
@@ -138,47 +178,13 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <div class="quick-grid">
 
-<div class="quick-card">
-<i class="fa-solid fa-building"></i>
-<h3>Entreprises</h3>
-<a href="entreprises.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-clipboard-check"></i>
-<h3>Inspections</h3>
-<a href="inspections.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-triangle-exclamation"></i>
-<h3>Infractions</h3>
-<a href="infractions.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-file-signature"></i>
-<h3>PV</h3>
-<a href="pv.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-users"></i>
-<h3>Travailleurs</h3>
-<a href="travailleurs.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-user-shield"></i>
-<h3>Inspecteurs</h3>
-<a href="inspecteurs.html"><button>Accéder</button></a>
-</div>
-
-<div class="quick-card">
-<i class="fa-solid fa-user-tie"></i>
-<h3>Contrôleurs</h3>
-<a href="controleurs.html"><button>Accéder</button></a>
-</div>
+<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3></div>
+<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3></div>
+<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3></div>
+<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3></div>
+<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3></div>
+<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3></div>
+<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3></div>
 
 </div>
 
@@ -199,9 +205,7 @@ style="width:70px;display:block;margin:0 auto 10px auto;">
 
 <p style="color:#ffffff;">
 Créé Par
-<strong style="color:#ffd700;">
-Inspecteur Limengo (Pmiller)
-</strong>
+<strong style="color:#ffd700;">Inspecteur Limengo (Pmiller)</strong>
 © 2026
 </p>
 
@@ -217,70 +221,101 @@ Inspecteur Limengo (Pmiller)
 
 <script>
 
-// date + heure dynamique
+/* ================= HEURE ================= */
 function updateTime(){
     const now = new Date();
-
     document.getElementById("heure").innerHTML =
     now.toLocaleTimeString("fr-FR");
-
     document.getElementById("dateActuelle").innerHTML =
     now.toLocaleDateString("fr-FR");
 }
 setInterval(updateTime,1000);
 updateTime();
 
-// notifications WhatsApp style
-function showNotification(message){
-
-    const container = document.getElementById("notif-container");
-
-    const notif = document.createElement("div");
-    notif.className = "whatsapp-notif";
-
-    notif.innerHTML = `
-        <i class="fa-brands fa-whatsapp"></i>
-        <span>${message}</span>
-    `;
-
-    container.appendChild(notif);
-
-    setTimeout(()=>notif.remove(),5000);
+/* ================= SLIDESHOW 20 IMAGES ================= */
+const images = [];
+for(let i=1;i<=20;i++){
+    images.push(`images/photos_igt/img${i}.jpg`);
 }
 
-// messages automatiques (40 messages rotatifs)
-const messages = [
-"Bienvenue Inspecteur 👋",
-"Nouvelle inspection possible aujourd'hui",
-"Rappel : vérifier les entreprises",
-"Attention aux infractions ⚠️",
-"Travail et discipline 💼",
-"Contrôle en cours...",
-"Inspection générale active",
+const slideshow = document.getElementById("slideshow");
+
+let index = 0;
+
+function showSlide(){
+    slideshow.innerHTML = "";
+
+    const img = document.createElement("img");
+    img.src = images[index];
+    img.style.opacity = 1;
+
+    slideshow.appendChild(img);
+
+    index++;
+    if(index >= images.length) index = 0;
+}
+
+setInterval(showSlide,9000);
+showSlide();
+
+/* ================= MOTIVATION ROTATIVE ================= */
+const phrases = [
+"Travaille avec discipline et honneur 💼",
+"La rigueur est la clé du succès ⚖️",
+"Aimer son pays, c'est servir avec loyauté 🇨🇩",
+"Chaque inspection construit la justice",
+"Le travail bien fait parle toujours",
 "Respect du code du travail 📜",
-"Mission en préparation...",
-"Rapports disponibles 📊",
-"Analyse des données...",
-"Alertes système activées",
-"Bonne journée Inspecteur ☀️",
-"Focus sur la sécurité",
-"Nouvelle mission assignée",
-"Contrôleurs en activité",
-"Inspecteurs sur terrain",
-"Suivi des travailleurs",
-"Audit en cours",
-"Rapport en attente"
+"La dignité du travailleur est sacrée",
+"Contrôler, c’est protéger la nation",
+"Un inspecteur juste construit un pays fort",
+"La corruption détruit, la rigueur construit"
 ];
 
-let i = 0;
+let p = 0;
 
 setInterval(()=>{
-    showNotification(messages[i]);
-    i++;
-    if(i >= messages.length) i = 0;
-}, 10000);
+    document.getElementById("motivation").innerText = phrases[p];
+    p++;
+    if(p >= phrases.length) p = 0;
+},8000);
+
+/* ================= WHATSAPP NOTIFICATIONS ================= */
+function showNotification(msg){
+
+    const colors = ["#25D366","#128C7E","#34B7F1","#075E54"];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    const div = document.createElement("div");
+    div.className = "whatsapp-notif";
+    div.style.background = color;
+
+    div.innerHTML = `<i class="fa-brands fa-whatsapp"></i>${msg}`;
+
+    document.getElementById("notif-container").appendChild(div);
+
+    setTimeout(()=>div.remove(),5000);
+}
+
+/* messages auto */
+const messages = [
+"Nouvelle inspection en cours",
+"Rapport disponible",
+"Attention aux infractions",
+"Mission active",
+"Contrôleurs mobilisés",
+"Inspecteurs sur terrain"
+];
+
+let m = 0;
+
+setInterval(()=>{
+    showNotification(messages[m]);
+    m++;
+    if(m>=messages.length) m=0;
+},10000);
 
 </script>
 
 </body>
-    </html>
+</html>
