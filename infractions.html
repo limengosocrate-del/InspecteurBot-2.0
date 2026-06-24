@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Gestion des Infractions</title>
+</head>
+<body>
+
+<h1>Gestion des Infractions</h1>
+
+<input id="entreprise"
+placeholder="Entreprise">
+
+<input id="infraction"
+placeholder="Type d'infraction">
+
+<input id="sanction"
+placeholder="Sanction">
+
+<button onclick="ajouterInfraction()">
+Enregistrer
+</button>
+
+<hr>
+
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>N°</th>
+<th>Entreprise</th>
+<th>Infraction</th>
+<th>Sanction</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="listeInfractions">
+</tbody>
+</table>
+
+<script>
+
+let infractions =
+JSON.parse(localStorage.getItem(
+"infractions")) || [];
+
+function afficherInfractions(){
+
+    let html="";
+
+    infractions.forEach((i,index)=>{
+
+        html += `
+        <tr>
+
+        <td>${index+1}</td>
+        <td>${i.entreprise}</td>
+        <td>${i.infraction}</td>
+        <td>${i.sanction}</td>
+
+        <td>
+        <button
+        onclick="supprimerInfraction(${index})">
+        Supprimer
+        </button>
+        </td>
+
+        </tr>`;
+    });
+
+    document.getElementById(
+    "listeInfractions").innerHTML = html;
+}
+
+function ajouterInfraction(){
+
+    infractions.push({
+
+        entreprise:
+        document.getElementById(
+        "entreprise").value,
+
+        infraction:
+        document.getElementById(
+        "infraction").value,
+
+        sanction:
+        document.getElementById(
+        "sanction").value
+    });
+
+    localStorage.setItem(
+        "infractions",
+        JSON.stringify(infractions)
+    );
+
+    afficherInfractions();
+}
+
+function supprimerInfraction(index){
+
+    infractions.splice(index,1);
+
+    localStorage.setItem(
+        "infractions",
+        JSON.stringify(infractions)
+    );
+
+    afficherInfractions();
+}
+
+afficherInfractions();
+
+</script>
+
+</body>
+</html>
