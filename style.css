@@ -1259,4 +1259,41 @@ img{
         font-size:17px !important;
     }
 }
+
+/* MENU PLEINE LARGEUR */
+.sidebar,
+.sidebar-container,
+.sidebar-wrapper,
+.menu-container,
+.menu-principal{
+    width:100vw !important;
+    max-width:none !important;
+    min-width:100vw !important;
+    box-sizing:border-box !important;
+    margin:0 !important;
+    padding-left:20px !important;
+    padding-right:20px !important;
+}
+
+/* Évite les espaces à droite */
+html,
+body{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+}
+
+/* Menu */
+.sidebar ul{
+    width:100% !important;
+}
+
+.sidebar ul li{
+    width:100% !important;
+}
+
+.sidebar ul li a{
+    width:100% !important;
+    box-sizing:border-box !important;
+}
           
