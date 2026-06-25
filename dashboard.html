@@ -3,135 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC PRO</title>
+<title>InspecteurBot RDC | Dashboard</title>
 
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= GLOBAL (DEZOOM PAGE) ================= */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins;
-}
-
+/* ===== GLOBAL ===== */
 body{
-    background:#eef3fb;
-    transform:scale(0.95); /* 🔥 DEZOOM GLOBAL */
-    transform-origin:top;
+    margin:0;
+    font-family:Poppins;
+    background:#edf2f9;
 }
 
-/* ================= LAYOUT ================= */
-.dashboard{
-    display:flex;
-}
-
-/* ================= SIDEBAR ================= */
-.sidebar{
-    width:260px;
-    height:100vh;
-    position:fixed;
-    background:#061a44;
-    color:white;
-    padding:15px;
-}
-
-.sidebar img{
+/* ===== SLIDER FULL WIDTH ===== */
+.banner{
     width:100%;
-    border-radius:12px;
-    margin-bottom:10px;
-}
-
-.sidebar ul{
-    list-style:none;
-}
-
-.sidebar ul li a{
-    display:block;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-    border-radius:8px;
-}
-
-.sidebar ul li a:hover{
-    background:#0b4bd4;
-}
-
-/* ================= MAIN ================= */
-.main{
-    margin-left:260px;
-    width:100%;
-}
-
-/* ================= SLIDER FULL WIDTH ================= */
-.slider{
-    width:100%;
-    height:450px;
+    height:320px;
     position:relative;
     overflow:hidden;
 }
 
-.slider img{
-    position:absolute;
+.slider{
     width:100%;
     height:100%;
-    object-fit:cover; /* 🔥 propre sans déformation */
+    position:absolute;
+}
+
+.slider img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    position:absolute;
     opacity:0;
-    transition:1s;
+    transition:opacity 1s ease;
 }
 
 .slider img.active{
     opacity:1;
 }
 
-/* ================= MOTIVATION BAR ================= */
+/* ===== MOTIVATION ===== */
 .motivation{
-    background:#0b4bd4;
+    background:#0b3d91;
     color:white;
     text-align:center;
     padding:12px;
-    font-size:15px;
+    font-size:14px;
 }
 
-/* ================= STATS ================= */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    padding:20px;
+/* ===== MENU INDEX (SOUS SLIDER) ===== */
+.menu-index{
+    background:#041c5c;
+    padding:15px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
 }
 
-.card{
-    background:white;
+.menu-index a{
+    color:white;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.1);
+    font-size:14px;
+}
+
+.menu-index a:hover{
+    background:#0b52d6;
+}
+
+/* ===== ACCES RAPIDE ===== */
+.quick-section{
     padding:20px;
-    border-radius:15px;
     text-align:center;
 }
 
-/* ================= QUICK ACCESS ================= */
-.quick{
-    padding:20px;
-}
-
-.grid{
+.quick-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:15px;
+    margin-top:15px;
 }
 
-.box{
+.quick-card{
     background:white;
     padding:20px;
     border-radius:15px;
-    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* ================= NOTIF WHATSAPP ================= */
-#notif{
+/* ===== NOTIFICATIONS ===== */
+#notif-container{
     position:fixed;
     bottom:20px;
     right:20px;
@@ -140,33 +107,18 @@ body{
     gap:10px;
 }
 
-.note{
+.notif{
     background:#25D366;
     color:white;
-    padding:12px;
+    padding:10px;
     border-radius:10px;
     font-size:13px;
-    animation:slideUp 0.5s ease, fade 5s forwards;
+    animation:slideUp 0.5s ease;
 }
 
 @keyframes slideUp{
-    from{transform:translateY(30px);opacity:0;}
+    from{transform:translateY(100%);opacity:0;}
     to{transform:translateY(0);opacity:1;}
-}
-
-@keyframes fade{
-    80%{opacity:1;}
-    100%{opacity:0;}
-}
-
-/* ================= MOTIVATION LIST ================= */
-.motivation-list{
-    padding:15px;
-    background:#ffffff;
-    margin:10px;
-    border-radius:15px;
-    max-height:120px;
-    overflow:hidden;
 }
 
 </style>
@@ -174,114 +126,107 @@ body{
 
 <body>
 
-<div class="dashboard">
+<!-- ================= SLIDER ================= -->
+<section class="banner">
 
-<!-- ================= SIDEBAR ================= -->
-<div class="sidebar">
-<img src="images/photos_igt/1.jpg">
-
-<ul>
-<li><a href="#">Tableau de bord</a></li>
-<li><a href="#">Entreprises</a></li>
-<li><a href="#">Inspections</a></li>
-<li><a href="#">Infractions</a></li>
-<li><a href="#">Travailleurs</a></li>
-</ul>
-
-</div>
-
-<!-- ================= MAIN ================= -->
-<div class="main">
-
-<!-- SLIDER FULL WIDTH -->
-<div class="slider">
+<div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
 <img src="images/photos_igt/4.jpg">
 <img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 </div>
 
-<!-- WHATSAPP BIENVENUE -->
-<div id="notif"></div>
+</section>
 
-<!-- MOTIVATION BAR -->
-<div class="motivation" id="motivation">
-Bienvenue Inspecteur 👋
-</div>
-
-<!-- 40 PHRASES SOUS SLIDER -->
-<div class="motivation-list" id="motivationList">
+<!-- ================= MOTIVATION ================= -->
+<div class="motivation">
+<span id="motivationText"></span>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-<div class="card">Entreprises<br><b>1248</b></div>
-<div class="card">Inspections<br><b>532</b></div>
-<div class="card">Infractions<br><b>189</b></div>
-<div class="card">Travailleurs<br><b>12845</b></div>
+<!-- ================= MENU INDEX (DEPLACÉ ICI) ================= -->
+<nav class="menu-index">
+
+<a href="#"><i class="fa fa-home"></i> Tableau de bord</a>
+<a href="#"><i class="fa fa-building"></i> Entreprises</a>
+<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
+<a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
+<a href="#"><i class="fa fa-users"></i> Travailleurs</a>
+<a href="#" style="background:red;"><i class="fa fa-power-off"></i> Déconnexion</a>
+
+</nav>
+
+<!-- ================= ACCES RAPIDE ================= -->
+<section class="quick-section">
+
+<h2>ACCÈS RAPIDE</h2>
+
+<div class="quick-grid">
+
+<div class="quick-card">Entreprises</div>
+<div class="quick-card">Inspections</div>
+<div class="quick-card">Infractions</div>
+<div class="quick-card">PV</div>
+<div class="quick-card">Travailleurs</div>
+<div class="quick-card">Inspecteurs</div>
+
 </div>
 
-<!-- QUICK ACCESS -->
-<div class="quick">
-<div class="grid">
-<div class="box">Entreprises</div>
-<div class="box">Inspections</div>
-<div class="box">Infractions</div>
-<div class="box">PV</div>
-</div>
-</div>
+</section>
 
-</div>
-</div>
+<!-- ================= NOTIFS ================= -->
+<div id="notif-container"></div>
 
 <script>
 
-/* ================= SLIDER ================= */
-let i=0;
-const slides=document.querySelectorAll(".slider img");
+/* SLIDER */
+let i = 0;
+const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
-slides[i].classList.remove("active");
-i=(i+1)%slides.length;
-slides[i].classList.add("active");
-},4000);
+    slides[i].classList.remove("active");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("active");
+},10000);
 
-/* ================= WHATSAPP WELCOME ================= */
-function welcome(){
-let n=document.createElement("div");
-n.className="note";
-n.innerText="👋 Bienvenue Inspecteur sur InspecteurBot RDC";
-document.getElementById("notif").appendChild(n);
-setTimeout(()=>n.remove(),6000);
-}
-welcome();
+/* MOTIVATION 40 PHRASES */
+const msg = Array.from({length:40},(_,i)=>
+"Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
+);
 
-/* ================= MOTIVATION ROTATION ================= */
-const msgs=[
-"Le travail construit la nation",
-"La discipline mène au succès",
-"Inspecter protège les travailleurs",
-"Respect du code du travail",
-"Justice et rigueur",
-"Chaque mission compte",
-"Motivation 7","Motivation 8","Motivation 9","Motivation 10",
-"Motivation 11","Motivation 12","Motivation 13","Motivation 14","Motivation 15",
-"Motivation 16","Motivation 17","Motivation 18","Motivation 19","Motivation 20",
-"Motivation 21","Motivation 22","Motivation 23","Motivation 24","Motivation 25",
-"Motivation 26","Motivation 27","Motivation 28","Motivation 29","Motivation 30",
-"Motivation 31","Motivation 32","Motivation 33","Motivation 34","Motivation 35",
-"Motivation 36","Motivation 37","Motivation 38","Motivation 39","Motivation 40"
-];
-
-let m=0;
+let m = 0;
 setInterval(()=>{
-document.getElementById("motivation").innerText=msgs[m];
-document.getElementById("motivationList").innerText=msgs.join(" • ");
-m=(m+1)%msgs.length;
-},4000);
+    document.getElementById("motivationText").innerText = msg[m];
+    m = (m + 1) % msg.length;
+},5000);
+
+/* NOTIFICATIONS */
+const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
+
+setInterval(()=>{
+    const box=document.createElement("div");
+    box.className="notif";
+    box.innerText=notif[Math.floor(Math.random()*notif.length)];
+    document.getElementById("notif-container").appendChild(box);
+    setTimeout(()=>box.remove(),5000);
+},10000);
 
 </script>
 
 </body>
-    </html>
+</html>
