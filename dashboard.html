@@ -3,170 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC PRO</title>
+<title>InspecteurBot RDC | Dashboard</title>
 
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= GLOBAL (DEZOOM PAGE) ================= */
-*{
+/* ================= RESET ZOOM ================= */
+body{
     margin:0;
     padding:0;
-    box-sizing:border-box;
-    font-family:Poppins;
-}
-
-body{
-    background:#eef3fb;
-    transform:scale(0.95); /* 🔥 DEZOOM GLOBAL */
-    transform-origin:top;
+    overflow-x:hidden;
 }
 
 /* ================= LAYOUT ================= */
-.dashboard{
+.dashboard-layout{
     display:flex;
+    min-height:100vh;
 }
 
 /* ================= SIDEBAR ================= */
 .sidebar{
     width:260px;
-    height:100vh;
+    background:#041c5c;
+    color:#fff;
     position:fixed;
-    background:#061a44;
-    color:white;
-    padding:15px;
-}
-
-.sidebar img{
-    width:100%;
-    border-radius:12px;
-    margin-bottom:10px;
-}
-
-.sidebar ul{
-    list-style:none;
-}
-
-.sidebar ul li a{
-    display:block;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-    border-radius:8px;
-}
-
-.sidebar ul li a:hover{
-    background:#0b4bd4;
+    height:100%;
+    overflow-y:auto;
 }
 
 /* ================= MAIN ================= */
-.main{
+.main-content{
+    flex:1;
     margin-left:260px;
-    width:100%;
+    padding:15px;
 }
 
-/* ================= SLIDER FULL WIDTH ================= */
-.slider{
+/* ================= SLIDER FULL WIDTH RECTANGLE ================= */
+.banner{
     width:100%;
-    height:450px;
+    height:320px; /* RECTANGLE */
     position:relative;
     overflow:hidden;
+    border-radius:18px;
+    margin-bottom:10px;
+}
+
+.slider{
+    width:100%;
+    height:100%;
+    position:absolute;
 }
 
 .slider img{
-    position:absolute;
     width:100%;
     height:100%;
-    object-fit:cover; /* 🔥 propre sans déformation */
+    object-fit:cover;
+    position:absolute;
     opacity:0;
-    transition:1s;
+    transition:opacity 1s ease;
 }
 
 .slider img.active{
     opacity:1;
 }
 
-/* ================= MOTIVATION BAR ================= */
-.motivation{
-    background:#0b4bd4;
-    color:white;
-    text-align:center;
-    padding:12px;
-    font-size:15px;
-}
-
-/* ================= STATS ================= */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    padding:20px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
-}
-
-/* ================= QUICK ACCESS ================= */
-.quick{
-    padding:20px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-
-.box{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
-}
-
-/* ================= NOTIF WHATSAPP ================= */
-#notif{
+/* ================= WHATSAPP NOTIF (MONTE DU BAS VERS HAUT) ================= */
+#notif-container{
     position:fixed;
     bottom:20px;
     right:20px;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:8px;
+    z-index:9999;
 }
 
-.note{
+.notif{
     background:#25D366;
     color:white;
-    padding:12px;
+    padding:10px 14px;
     border-radius:10px;
     font-size:13px;
-    animation:slideUp 0.5s ease, fade 5s forwards;
+    animation:slideUp 0.5s ease, fade 0.5s ease 4.5s forwards;
 }
 
+/* MONTE */
 @keyframes slideUp{
-    from{transform:translateY(30px);opacity:0;}
+    from{transform:translateY(120%);opacity:0;}
     to{transform:translateY(0);opacity:1;}
 }
 
 @keyframes fade{
-    80%{opacity:1;}
-    100%{opacity:0;}
+    to{opacity:0;transform:translateY(120%);}
 }
 
-/* ================= MOTIVATION LIST ================= */
-.motivation-list{
-    padding:15px;
-    background:#ffffff;
-    margin:10px;
+/* ================= MOTIVATION SOUS SLIDER ================= */
+.motivation-bar{
+    background:#0b3d91;
+    color:white;
+    text-align:center;
+    padding:12px;
+    font-size:14px;
+    margin-bottom:15px;
+}
+
+/* ================= ACCÈS RAPIDE ================= */
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+.quick-card{
+    background:#fff;
+    padding:20px;
     border-radius:15px;
-    max-height:120px;
-    overflow:hidden;
+    text-align:center;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .sidebar{
+        position:relative;
+        width:100%;
+    }
+    .main-content{
+        margin-left:0;
+    }
+    .banner{
+        height:220px;
+    }
 }
 
 </style>
@@ -174,114 +143,161 @@ body{
 
 <body>
 
-<div class="dashboard">
+<div class="dashboard-layout">
 
 <!-- ================= SIDEBAR ================= -->
-<div class="sidebar">
-<img src="images/photos_igt/1.jpg">
+<aside class="sidebar">
+    <div style="text-align:center;padding:15px;">
+        <h3>MENU PRINCIPAL</h3>
+    </div>
 
-<ul>
-<li><a href="#">Tableau de bord</a></li>
-<li><a href="#">Entreprises</a></li>
-<li><a href="#">Inspections</a></li>
-<li><a href="#">Infractions</a></li>
-<li><a href="#">Travailleurs</a></li>
-</ul>
-
-</div>
+    <ul style="list-style:none;padding:0;">
+        <li><a href="#">Tableau de bord</a></li>
+        <li><a href="#">Entreprises</a></li>
+        <li><a href="#">Inspections</a></li>
+        <li><a href="#">Infractions</a></li>
+        <li><a href="#">Travailleurs</a></li>
+        <li><a href="#">Déconnexion</a></li>
+    </ul>
+</aside>
 
 <!-- ================= MAIN ================= -->
-<div class="main">
+<main class="main-content">
 
-<!-- SLIDER FULL WIDTH -->
-<div class="slider">
+<!-- ================= SLIDER ================= -->
+<section class="banner">
+
+<div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
 <img src="images/photos_igt/4.jpg">
 <img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 </div>
 
-<!-- WHATSAPP BIENVENUE -->
-<div id="notif"></div>
+</section>
 
-<!-- MOTIVATION BAR -->
-<div class="motivation" id="motivation">
-Bienvenue Inspecteur 👋
-</div>
-
-<!-- 40 PHRASES SOUS SLIDER -->
-<div class="motivation-list" id="motivationList">
+<!-- ================= MOTIVATION 40 PHRASES ================= -->
+<div class="motivation-bar">
+<span id="motivationText"></span>
 </div>
 
-<!-- STATS -->
-<div class="stats">
-<div class="card">Entreprises<br><b>1248</b></div>
-<div class="card">Inspections<br><b>532</b></div>
-<div class="card">Infractions<br><b>189</b></div>
-<div class="card">Travailleurs<br><b>12845</b></div>
-</div>
+<!-- ================= ACCÈS RAPIDE ================= -->
+<section class="quick-section">
 
-<!-- QUICK ACCESS -->
-<div class="quick">
-<div class="grid">
-<div class="box">Entreprises</div>
-<div class="box">Inspections</div>
-<div class="box">Infractions</div>
-<div class="box">PV</div>
-</div>
-</div>
+<div class="quick-grid">
+
+<div class="quick-card">Entreprises</div>
+<div class="quick-card">Inspections</div>
+<div class="quick-card">Infractions</div>
+<div class="quick-card">PV</div>
+<div class="quick-card">Travailleurs</div>
+<div class="quick-card">Inspecteurs</div>
+<div class="quick-card">Contrôleurs</div>
 
 </div>
+
+</section>
+
+</main>
 </div>
+
+<!-- ================= NOTIFICATIONS WHATSAPP ================= -->
+<div id="notif-container"></div>
 
 <script>
 
 /* ================= SLIDER ================= */
-let i=0;
-const slides=document.querySelectorAll(".slider img");
+let i = 0;
+const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
-slides[i].classList.remove("active");
-i=(i+1)%slides.length;
-slides[i].classList.add("active");
-},4000);
+    slides[i].classList.remove("active");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("active");
+}, 10000);
 
-/* ================= WHATSAPP WELCOME ================= */
-function welcome(){
-let n=document.createElement("div");
-n.className="note";
-n.innerText="👋 Bienvenue Inspecteur sur InspecteurBot RDC";
-document.getElementById("notif").appendChild(n);
-setTimeout(()=>n.remove(),6000);
-}
-welcome();
-
-/* ================= MOTIVATION ROTATION ================= */
-const msgs=[
-"Le travail construit la nation",
+/* ================= 40 MOTIVATIONS ================= */
+const msgs = [
+"Le travail construit la nation 🇨🇩",
 "La discipline mène au succès",
-"Inspecter protège les travailleurs",
-"Respect du code du travail",
-"Justice et rigueur",
+"Inspecter c’est protéger",
 "Chaque mission compte",
-"Motivation 7","Motivation 8","Motivation 9","Motivation 10",
-"Motivation 11","Motivation 12","Motivation 13","Motivation 14","Motivation 15",
-"Motivation 16","Motivation 17","Motivation 18","Motivation 19","Motivation 20",
-"Motivation 21","Motivation 22","Motivation 23","Motivation 24","Motivation 25",
-"Motivation 26","Motivation 27","Motivation 28","Motivation 29","Motivation 30",
-"Motivation 31","Motivation 32","Motivation 33","Motivation 34","Motivation 35",
-"Motivation 36","Motivation 37","Motivation 38","Motivation 39","Motivation 40"
+"Justice sociale pour tous",
+"L’avenir dépend du travail",
+"Respect du code du travail",
+"Motivation et courage",
+"Organisation et rigueur",
+"Un bon inspecteur change tout",
+"Travail = réussite",
+"Confiance et discipline",
+"Contrôle efficace",
+"Sécurité avant tout",
+"Respect des normes",
+"Engagement total",
+"Travail bien fait",
+"Professionnalisme",
+"Fiabilité",
+"Responsabilité",
+"Excellence",
+"Détermination",
+"Focus",
+"Performance",
+"Éthique",
+"Force du travail",
+"Vision",
+"Leadership",
+"Respect",
+"Justice",
+"Travail d’équipe",
+"Progrès",
+"Succès",
+"Croissance",
+"Stabilité",
+"Dévouement",
+"Impact positif",
+"Transformation",
+"Innovation",
+"Fierté nationale"
 ];
 
-let m=0;
+let m = 0;
+
 setInterval(()=>{
-document.getElementById("motivation").innerText=msgs[m];
-document.getElementById("motivationList").innerText=msgs.join(" • ");
-m=(m+1)%msgs.length;
-},4000);
+    document.getElementById("motivationText").innerText = msgs[m];
+    m = (m + 1) % msgs.length;
+}, 4000);
+
+/* ================= WHATSAPP NOTIF ================= */
+function notif(msg){
+    const box = document.createElement("div");
+    box.className="notif";
+    box.innerText=msg;
+    document.getElementById("notif-container").appendChild(box);
+
+    setTimeout(()=>box.remove(),5000);
+}
+
+setInterval(()=>{
+    notif("Bienvenue Inspecteur 👋");
+},10000);
 
 </script>
 
 </body>
-  </html>
+</html>
