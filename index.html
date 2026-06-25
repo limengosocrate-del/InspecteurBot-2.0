@@ -1,265 +1,296 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InspecteurBot RDC | Inspection Générale du Travail</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InspecteurBot RDC</title>
 
-    <meta name="description"
-        content="Plateforme numérique de l'Inspection Générale du Travail de la République Démocratique du Congo">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/png" href="./images/logo-igt.png">
-    <link rel="stylesheet" href="./style.css">
+<style>
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+body{
+    background:#eef3fb;
+}
+
+/* ================= LAYOUT ================= */
+.dashboard{
+    display:flex;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+    width:260px;
+    background:#061a44;
+    color:white;
+    height:100vh;
+    position:fixed;
+    padding:15px;
+    overflow-y:auto;
+}
+
+.sidebar img{
+    width:100%;
+    border-radius:12px;
+    margin-bottom:10px;
+}
+
+.sidebar h3{
+    text-align:center;
+    margin:10px 0;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li a{
+    display:flex;
+    gap:10px;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+.sidebar ul li a:hover{
+    background:#0b4bd4;
+}
+
+/* ================= MAIN ================= */
+.main{
+    margin-left:260px;
+    width:100%;
+    padding:20px;
+}
+
+/* ================= SLIDER ================= */
+.slider{
+    position:relative;
+    height:300px;
+    overflow:hidden;
+    border-radius:20px;
+}
+
+.slider img{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:1s;
+}
+
+.slider img.active{
+    opacity:1;
+}
+
+/* ================= STATS ================= */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ================= MOTIVATION ================= */
+.motivation{
+    margin-top:15px;
+    background:#0b4bd4;
+    color:white;
+    padding:10px;
+    text-align:center;
+    border-radius:10px;
+}
+
+/* ================= QUICK ACCESS ================= */
+.quick{
+    margin-top:20px;
+}
+
+.quick h2{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.box i{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+/* ================= NOTIF ================= */
+#notif{
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.note{
+    background:#25D366;
+    color:white;
+    padding:10px;
+    border-radius:10px;
+    font-size:13px;
+    animation:fade 5s forwards;
+}
+
+@keyframes fade{
+    0%{transform:translateX(100%);opacity:0;}
+    10%{transform:translateX(0);opacity:1;}
+    80%{opacity:1;}
+    100%{opacity:0;transform:translateX(100%);}
+}
+
+/* ================= FOOTER ================= */
+footer{
+    margin-top:30px;
+    text-align:center;
+    font-size:13px;
+    color:#444;
+}
+
+</style>
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
+<div class="dashboard">
 
-    <nav class="top-navbar">
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
 
-        <div class="nav-logo">
-            <img src="./images/logo-igt.png" alt="Logo IGT">
+<img src="images/photos_igt/1.jpg">
+<h3>MENU PRINCIPAL</h3>
 
-            <div>
-                <h2>InspecteurBot RDC</h2>
-                <p>Inspection Générale du Travail</p>
-            </div>
-        </div>
+<ul>
+<li><a href="#"><i class="fa fa-home"></i> Tableau de bord</a></li>
+<li><a href="#"><i class="fa fa-building"></i> Entreprises</a></li>
+<li><a href="#"><i class="fa fa-clipboard"></i> Inspections</a></li>
+<li><a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa fa-users"></i> Travailleurs</a></li>
+<li><a href="#"><i class="fa fa-right-from-bracket"></i> Déconnexion</a></li>
+</ul>
 
-        <ul>
+</div>
 
-            <li>
-                <a href="./index.html">
-                    <i class="fa-solid fa-house"></i>
-                    Accueil
-                </a>
-            </li>
+<!-- ================= MAIN ================= -->
+<div class="main">
 
-            <li>
-                <a href="./login.html">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Connexion
-                </a>
-            </li>
+<!-- SLIDER -->
+<div class="slider">
+<img src="images/photos_igt/1.jpg" class="active">
+<img src="images/photos_igt/2.jpg">
+<img src="images/photos_igt/3.jpg">
+<img src="images/photos_igt/4.jpg">
+<img src="images/photos_igt/5.jpg">
+</div>
 
-            <li>
-                <a href="./register.html">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Inscription
-                </a>
-            </li>
+<!-- STATS -->
+<div class="stats">
+<div class="card">Entreprises<br><b>1248</b></div>
+<div class="card">Inspections<br><b>532</b></div>
+<div class="card">Infractions<br><b>189</b></div>
+</div>
 
-            <li>
-                <a href="./dashboard.html">
-                    <i class="fa-solid fa-chart-line"></i>
-                    Plateforme
-                </a>
-            </li>
+<!-- MOTIVATION -->
+<div class="motivation" id="motivation">
+La discipline mène au succès
+</div>
 
-        </ul>
+<!-- QUICK ACCESS -->
+<div class="quick">
+<h2>ACCÈS RAPIDE</h2>
 
-    </nav>
+<div class="grid">
+<div class="box"><i class="fa fa-building"></i><br>Entreprises</div>
+<div class="box"><i class="fa fa-clipboard"></i><br>Inspections</div>
+<div class="box"><i class="fa fa-triangle-exclamation"></i><br>Infractions</div>
+<div class="box"><i class="fa fa-users"></i><br>Travailleurs</div>
+</div>
+</div>
 
-    <!-- HERO -->
+<!-- FOOTER -->
+<footer>
+Inspection Générale du Travail - InspecteurBot RDC © 2026
+</footer>
 
-    <header class="hero">
+</div>
+</div>
 
-        <img src="./images/batiment-igt.jpg"
-            class="hero-image"
-            alt="Bâtiment IGT">
+<!-- NOTIFICATIONS -->
+<div id="notif"></div>
 
-        <div class="hero-overlay"></div>
+<script>
 
-        <img src="./images/logo-igt.png"
-            class="logo-watermark"
-            alt="Logo IGT">
+/* SLIDER */
+let i=0;
+const slides=document.querySelectorAll(".slider img");
 
-        <div class="hero-content">
+setInterval(()=>{
+slides[i].classList.remove("active");
+i=(i+1)%slides.length;
+slides[i].classList.add("active");
+},4000);
 
-            <img src="./images/logo-igt.png"
-                class="logo"
-                alt="Logo IGT">
+/* MOTIVATION */
+const msgs=[
+"La discipline mène au succès",
+"Le travail construit la nation",
+"Inspecter c’est protéger",
+"Respect du travail"
+];
 
-            <h1>INSPECTEURBOT RDC</h1>
+let m=0;
+setInterval(()=>{
+document.getElementById("motivation").innerText=msgs[m];
+m=(m+1)%msgs.length;
+},5000);
 
-            <h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
+/* NOTIFICATIONS */
+const notif=["Nouvelle inspection","Rapport disponible","Mission active"];
 
-            <p>
-                Plateforme numérique de gestion des inspections,
-                des entreprises, des infractions et des
-                procès-verbaux de la République Démocratique du Congo.
-            </p>
-
-            <div class="hero-buttons">
-
-                <a href="./login.html" class="btn-start">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Connexion
-                </a>
-
-                <a href="./register.html" class="btn-start">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Inscription
-                </a>
-
-            </div>
-
-        </div>
-
-    </header>
-
-    <!-- CITATION -->
-
-    <section class="notification">
-
-        <div class="notification-box">
-
-            <i class="fa-solid fa-lightbulb"></i>
-
-            <p>
-                « Travailler pour la dignité, la justice sociale
-                et le développement de la République Démocratique du Congo. »
-            </p>
-
-        </div>
-
-    </section>
-
-    <!-- FONCTIONNALITÉS -->
-
-    <section class="main-menu">
-
-        <h2>
-            <i class="fa-solid fa-table-cells-large"></i>
-            NOS PRINCIPALES FONCTIONNALITÉS
-        </h2>
-
-        <div class="menu-grid">
-
-            <div class="menu-card">
-                <i class="fa-solid fa-building"></i>
-                <h3>Entreprises</h3>
-                <p>
-                    Enregistrement et suivi des entreprises inspectées
-                    sur toute l'étendue du territoire.
-                </p>
-            </div>
-
-            <div class="menu-card">
-                <i class="fa-solid fa-clipboard-check"></i>
-                <h3>Inspections</h3>
-                <p>
-                    Planification et gestion intelligente
-                    des missions d'inspection.
-                </p>
-            </div>
-
-            <div class="menu-card">
-                <i class="fa-solid fa-file-signature"></i>
-                <h3>Procès-Verbaux</h3>
-                <p>
-                    Création automatique et archivage
-                    des procès-verbaux.
-                </p>
-            </div>
-
-            <div class="menu-card">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <h3>Infractions</h3>
-                <p>
-                    Consultation des infractions,
-                    sanctions et amendes prévues.
-                </p>
-            </div>
-
-            <div class="menu-card">
-                <i class="fa-solid fa-scale-balanced"></i>
-                <h3>Code du Travail</h3>
-                <p>
-                    Recherche rapide des articles
-                    et dispositions légales.
-                </p>
-            </div>
-
-            <div class="menu-card">
-                <i class="fa-solid fa-robot"></i>
-                <h3>Assistant IA</h3>
-                <p>
-                    Un assistant intelligent capable
-                    d'aider les inspecteurs dans leurs missions.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- STATISTIQUES -->
-
-    <script>
-
-document.getElementById("nbEntreprises").textContent =
-JSON.parse(localStorage.getItem("entreprises") || "[]").length;
-
-document.getElementById("nbInspections").textContent =
-JSON.parse(localStorage.getItem("inspections") || "[]").length;
-
-document.getElementById("nbInfractions").textContent =
-JSON.parse(localStorage.getItem("infractions") || "[]").length;
-
-document.getElementById("nbPV").textContent =
-JSON.parse(localStorage.getItem("pv") || "[]").length;
-
-document.getElementById("nbTravailleurs").textContent =
-JSON.parse(localStorage.getItem("travailleurs") || "[]").length;
-
-let inspecteurs =
-JSON.parse(localStorage.getItem("inspecteurs") || "[]");
-
-document.getElementById("nbInspecteurs").textContent =
-inspecteurs.filter(
-i => i.statut === "Actif"
-).length;
+setInterval(()=>{
+let n=document.createElement("div");
+n.className="note";
+n.innerText=notif[Math.floor(Math.random()*notif.length)];
+document.getElementById("notif").appendChild(n);
+setTimeout(()=>n.remove(),5000);
+},7000);
 
 </script>
 
-    </section>
-
-    <!-- FOOTER -->
-
-    <footer class="footer">
-
-        <img src="./images/logo-igt.png"
-            class="footer-logo"
-            alt="Logo IGT">
-
-        <h3>Inspection Générale du Travail</h3>
-
-        <p>InspecteurBot RDC</p>
-
-        <p>
-            Plateforme numérique des Inspecteurs du Travail
-            de la République Démocratique du Congo.
-        </p>
-
-        <hr>
-
-        <p>
-            Créé Par
-            <strong>Inspecteur Limengo (Pmiller)</strong>
-            © 2026
-        </p>
-
-    </footer>
-
 </body>
-                </html>                              
-
-
+  </html>
