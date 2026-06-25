@@ -84,11 +84,11 @@ background:#0b52d6;
 padding:15px;    
 }    
     
-.quick-grid{    
-display:grid;    
-grid-template-columns:repeat(2,1fr);    
-gap:10px;    
-}    
+.quick-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+} 
     
 .quick-card{    
 background:#fff;    
@@ -258,15 +258,201 @@ border:1px solid rgba(255,255,255,0.2);
 </div>    
     
 <!-- MENU -->    
-<nav class="menu-index">    
-<a href="#"><i class="fa fa-home"></i> Dashboard</a>    
-<a href="#"><i class="fa fa-building"></i> Entreprises</a>    
-<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>    
-<a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>    
-<a href="#"><i class="fa fa-users"></i> Travailleurs</a>    
-<a href="#"><i class="fa fa-file"></i> PV</a>    
-<a href="#"><i class="fa fa-scale-balanced"></i> Code</a>    
-</nav>    
+<nav class="menu-index">
+
+<a href="dashboard.html">
+<i class="fa fa-home"></i>
+<span>Dashboard</span>
+</a>
+
+<a href="entreprises.html">
+<i class="fa fa-building"></i>
+<span>Entreprises</span>
+</a>
+
+<a href="inspections.html">
+<i class="fa fa-clipboard-check"></i>
+<span>Inspections</span>
+</a>
+
+<a href="fiche-controle.html">
+<i class="fa fa-list-check"></i>
+<span>Fiche Contrôle</span>
+</a>
+
+<a href="pv.html">
+<i class="fa fa-file-signature"></i>
+<span>PV</span>
+</a>
+
+<a href="infractions.html">
+<i class="fa fa-triangle-exclamation"></i>
+<span>Infractions</span>
+</a>
+
+<a href="sanctions.html">
+<i class="fa fa-gavel"></i>
+<span>Sanctions</span>
+</a>
+
+<a href="code-travail.html">
+<i class="fa fa-scale-balanced"></i>
+<span>Code du Travail</span>
+</a>
+
+<a href="inspecteurs.html">
+<i class="fa fa-user-tie"></i>
+<span>Inspecteurs</span>
+</a>
+
+<a href="archives.html">
+<i class="fa fa-box-archive"></i>
+<span>Archives</span>
+</a>
+
+<a href="igt.html">
+<i class="fa fa-landmark"></i>
+<span>IGT RDC</span>
+</a>
+
+</nav>
+
+<section class="quick-section">
+
+<h2 style="text-align:center;color:#ffffff;margin-bottom:20px;">
+🤖 Assistant Intelligent InspecteurBot IA
+</h2>
+
+<div class="quick-card" style="margin-bottom:20px;">
+
+<h3 style="margin-bottom:15px;">
+<i class="fa fa-robot"></i>
+Assistant IA
+</h3>
+
+<form>
+
+<input type="text"
+placeholder="Exemple : Rechercher l'article sur le licenciement">
+
+<button type="button">
+<i class="fa fa-magnifying-glass"></i>
+Rechercher
+</button>
+
+</form>
+
+</div>
+
+<div class="quick-grid">
+
+<a href="code-travail.html" class="quick-card">
+<i class="fa fa-magnifying-glass"></i>
+<h3>Recherche Article</h3>
+<p>Recherche intelligente du Code du Travail.</p>
+</a>
+
+<a href="pv.html" class="quick-card">
+<i class="fa fa-file-signature"></i>
+<h3>Élaborer un PV</h3>
+<p>Création automatique des procès-verbaux.</p>
+</a>
+
+<a href="decompte-final.html" class="quick-card">
+<i class="fa fa-calculator"></i>
+<h3>Décompte Final</h3>
+<p>Calcul automatique des droits des travailleurs.</p>
+</a>
+
+<a href="inspecteurs.html" class="quick-card">
+<i class="fa fa-user-tie"></i>
+<h3>Inspecteurs</h3>
+<p>Gestion des inspecteurs et contrôleurs.</p>
+</a>
+
+<a href="planification.html" class="quick-card">
+<i class="fa fa-calendar-days"></i>
+<h3>Planification</h3>
+<p>Organisation des inspections.</p>
+</a>
+
+<a href="entreprises.html" class="quick-card">
+<i class="fa fa-building"></i>
+<h3>Entreprises</h3>
+<p>Gestion numérique des entreprises.</p>
+</a>
+
+<a href="infractions.html" class="quick-card">
+<i class="fa fa-triangle-exclamation"></i>
+<h3>Détecter une Infraction</h3>
+<p>L'IA identifie les infractions possibles.</p>
+</a>
+
+<a href="rapport-ia.html" class="quick-card">
+<i class="fa fa-file-lines"></i>
+<h3>Rapport IA</h3>
+<p>Génération automatique des rapports.</p>
+</a>
+
+<a href="assistant-juridique.html" class="quick-card">
+<i class="fa fa-scale-balanced"></i>
+<h3>Conseiller Juridique IA</h3>
+<p>Questions-réponses juridiques intelligentes.</p>
+</a>
+
+<a href="dashboard.html" class="quick-card">
+<i class="fa fa-chart-pie"></i>
+<h3>Analyse IA</h3>
+<p>Analyse des risques et statistiques.</p>
+</a>
+
+<a href="notifications.html" class="quick-card">
+<i class="fa fa-bell"></i>
+<h3>Notifications IA</h3>
+<p>Alertes et rappels automatiques.</p>
+</a>
+
+<a href="#" class="quick-card">
+<i class="fa fa-microphone"></i>
+<h3>Assistant Vocal</h3>
+<p>Recherche et commandes vocales.</p>
+</a>
+
+</div>
+
+<div class="quick-card">
+<i class="fa fa-lightbulb"></i>
+<h3>Suggestions IA</h3>
+<p>
+L'IA propose automatiquement les articles de loi applicables et les sanctions.
+</p>
+</div>
+
+<div class="quick-card">
+<i class="fa fa-chart-line"></i>
+<h3>Analyse Prédictive</h3>
+<p>
+Identification des entreprises à risque et prévision des infractions.
+</p>
+</div>
+
+<div class="quick-card">
+<i class="fa fa-file-circle-check"></i>
+<h3>Rédaction Automatique</h3>
+<p>
+Création automatique des rapports, PV et convocations.
+</p>
+</div>
+
+<div class="quick-card">
+<i class="fa fa-brain"></i>
+<h3>Inspecteur IA</h3>
+<p>
+L'assistant peut suggérer les actions à entreprendre pendant une inspection.
+</p>
+</div>
+
+</section>
                 
 <!-- FOOTER -->    
 <footer class="footer">
