@@ -3,294 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC</title>
+<title>InspecteurBot RDC | Dashboard</title>
 
+<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins,sans-serif;
-}
-
+/* ================= GLOBAL ZOOM FIX ================= */
 body{
-    background:#eef3fb;
+    transform: scale(0.98);
+    transform-origin: top;
+    background:#edf2f9;
 }
 
 /* ================= LAYOUT ================= */
-.dashboard{
+.dashboard-layout{
     display:flex;
 }
 
 /* ================= SIDEBAR ================= */
 .sidebar{
     width:260px;
-    background:#061a44;
-    color:white;
-    height:100vh;
+    background:#041c5c;
+    color:#fff;
     position:fixed;
-    padding:15px;
+    height:100%;
     overflow-y:auto;
 }
 
-.sidebar img{
-    width:100%;
-    border-radius:12px;
-    margin-bottom:10px;
-}
-
-.sidebar h3{
-    text-align:center;
-    margin:10px 0;
-}
-
-.sidebar ul{
-    list-style:none;
-}
-
-.sidebar ul li a{
-    display:flex;
-    gap:10px;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-    border-radius:8px;
-}
-
-.sidebar ul li a:hover{
-    background:#0b4bd4;
-}
-
 /* ================= MAIN ================= */
-.main{
+.main-content{
     margin-left:260px;
     width:100%;
     padding:20px;
 }
 
-/* ================= SLIDER ================= */
-.slider{
+/* ================= FULL WIDTH SLIDER ================= */
+.banner{
+    width:100%;
+    height:320px;
     position:relative;
-    height:300px;
     overflow:hidden;
     border-radius:20px;
+    margin-bottom:10px;
+}
+
+.slider{
+    width:100%;
+    height:100%;
+    position:absolute;
 }
 
 .slider img{
-    position:absolute;
     width:100%;
     height:100%;
     object-fit:cover;
+    position:absolute;
     opacity:0;
-    transition:1s;
+    transition:opacity 1s ease;
 }
 
 .slider img.active{
     opacity:1;
 }
 
-/* ================= STATS ================= */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-    margin-top:20px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-/* ================= MOTIVATION ================= */
+/* ================= MOTIVATION BAR ================= */
 .motivation{
-    margin-top:15px;
-    background:#0b4bd4;
-    color:white;
-    padding:10px;
+    background:#0b3d91;
+    color:#fff;
     text-align:center;
-    border-radius:10px;
+    padding:10px;
+    font-size:14px;
+    margin-bottom:20px;
 }
 
 /* ================= QUICK ACCESS ================= */
-.quick{
-    margin-top:20px;
-}
-
-.quick h2{
-    text-align:center;
-    margin-bottom:15px;
-}
-
-.grid{
+.quick-grid{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
     gap:15px;
 }
 
-.box{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-.box i{
-    font-size:30px;
-    margin-bottom:10px;
-}
-
-/* ================= NOTIF ================= */
-#notif{
+/* ================= WHATSAPP NOTIF (SLIDE UP) ================= */
+#notif-container{
     position:fixed;
-    bottom:15px;
-    right:15px;
+    bottom:20px;
+    right:20px;
     display:flex;
     flex-direction:column;
     gap:10px;
+    z-index:9999;
 }
 
-.note{
+.notif{
     background:#25D366;
-    color:white;
-    padding:10px;
+    color:#fff;
+    padding:10px 14px;
     border-radius:10px;
     font-size:13px;
-    animation:fade 5s forwards;
+    animation:slideUp 0.5s ease, fade 0.5s ease 4.5s forwards;
+}
+
+@keyframes slideUp{
+    from{transform:translateY(100%);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
 }
 
 @keyframes fade{
-    0%{transform:translateX(100%);opacity:0;}
-    10%{transform:translateX(0);opacity:1;}
-    80%{opacity:1;}
-    100%{opacity:0;transform:translateX(100%);}
-}
-
-/* ================= FOOTER ================= */
-footer{
-    margin-top:30px;
-    text-align:center;
-    font-size:13px;
-    color:#444;
+    to{opacity:0;transform:translateY(50px);}
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="dashboard-layout">
 
-<!-- ================= SIDEBAR ================= -->
-<div class="sidebar">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<h3 style="text-align:center;padding:15px;">MENU PRINCIPAL</h3>
 
-<img src="images/photos_igt/1.jpg">
-<h3>MENU PRINCIPAL</h3>
-
-<ul>
+<ul style="list-style:none;padding:0;">
 <li><a href="#"><i class="fa fa-home"></i> Tableau de bord</a></li>
 <li><a href="#"><i class="fa fa-building"></i> Entreprises</a></li>
 <li><a href="#"><i class="fa fa-clipboard"></i> Inspections</a></li>
 <li><a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a></li>
 <li><a href="#"><i class="fa fa-users"></i> Travailleurs</a></li>
-<li><a href="#"><i class="fa fa-right-from-bracket"></i> Déconnexion</a></li>
+<li><a href="#" style="color:red;"><i class="fa fa-power-off"></i> Déconnexion</a></li>
 </ul>
 
-</div>
+</aside>
 
-<!-- ================= MAIN ================= -->
-<div class="main">
+<!-- MAIN -->
+<main class="main-content">
 
-<!-- SLIDER -->
-<div class="slider">
+<!-- SLIDER FULL WIDTH -->
+<section class="banner">
+
+<div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
 <img src="images/photos_igt/4.jpg">
 <img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 </div>
 
-<!-- STATS -->
-<div class="stats">
-<div class="card">Entreprises<br><b>1248</b></div>
-<div class="card">Inspections<br><b>532</b></div>
-<div class="card">Infractions<br><b>189</b></div>
-</div>
+</section>
 
-<!-- MOTIVATION -->
-<div class="motivation" id="motivation">
-La discipline mène au succès
+<!-- MOTIVATION 40 PHRASES -->
+<div class="motivation">
+<span id="motivationText"></span>
 </div>
 
 <!-- QUICK ACCESS -->
-<div class="quick">
-<h2>ACCÈS RAPIDE</h2>
+<section>
+<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
 
-<div class="grid">
-<div class="box"><i class="fa fa-building"></i><br>Entreprises</div>
-<div class="box"><i class="fa fa-clipboard"></i><br>Inspections</div>
-<div class="box"><i class="fa fa-triangle-exclamation"></i><br>Infractions</div>
-<div class="box"><i class="fa fa-users"></i><br>Travailleurs</div>
-</div>
-</div>
+<div class="quick-grid">
 
-<!-- FOOTER -->
-<footer>
-Inspection Générale du Travail - InspecteurBot RDC © 2026
-</footer>
+<div>Entreprises</div>
+<div>Inspections</div>
+<div>Infractions</div>
+<div>PV</div>
+<div>Travailleurs</div>
+<div>Inspecteurs</div>
 
 </div>
+
+</section>
+
+</main>
+
 </div>
 
-<!-- NOTIFICATIONS -->
-<div id="notif"></div>
+<!-- NOTIF -->
+<div id="notif-container"></div>
 
 <script>
 
-/* SLIDER */
-let i=0;
-const slides=document.querySelectorAll(".slider img");
+/* SLIDER 10s */
+let i = 0;
+const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
-slides[i].classList.remove("active");
-i=(i+1)%slides.length;
-slides[i].classList.add("active");
-},4000);
+    slides[i].classList.remove("active");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("active");
+},10000);
 
-/* MOTIVATION */
-const msgs=[
-"La discipline mène au succès",
-"Le travail construit la nation",
-"Inspecter c’est protéger",
-"Respect du travail"
-];
+/* MOTIVATION 40 phrases */
+const msg = Array.from({length:40},(_,i)=>"Motivation "+(i+1));
 
 let m=0;
 setInterval(()=>{
-document.getElementById("motivation").innerText=msgs[m];
-m=(m+1)%msgs.length;
+    document.getElementById("motivationText").innerText = msg[m];
+    m=(m+1)%msg.length;
 },5000);
 
-/* NOTIFICATIONS */
-const notif=["Nouvelle inspection","Rapport disponible","Mission active"];
+/* WHATSAPP NOTIF */
+const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
 
 setInterval(()=>{
-let n=document.createElement("div");
-n.className="note";
-n.innerText=notif[Math.floor(Math.random()*notif.length)];
-document.getElementById("notif").appendChild(n);
-setTimeout(()=>n.remove(),5000);
-},7000);
+    const box=document.createElement("div");
+    box.className="notif";
+    box.innerText=notif[Math.floor(Math.random()*notif.length)];
+    document.getElementById("notif-container").appendChild(box);
+    setTimeout(()=>box.remove(),5000);
+},10000);
 
 </script>
 
 </body>
-  </html>
+                    </html>
