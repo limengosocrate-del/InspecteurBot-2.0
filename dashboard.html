@@ -1,261 +1,148 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>InspecteurBot RDC | Dashboard</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<style>
-
-/* GLOBAL */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Poppins;
-}
-
-body{
-    background:#041c5c;
-    color:white;
-}
-
-/* SLIDER */
-.banner{
-    width:100%;
-    height:240px;
-    overflow:hidden;
-    position:relative;
-}
-
-.slider img{
-    width:100%;
-    height:240px;
-    object-fit:cover;
-    position:absolute;
-    opacity:0;
-    transition:1s;
-}
-
-.slider img.active{
-    opacity:1;
-}
-
-/* MOTIVATION */
-.motivation{
-    background:#0b3d91;
-    text-align:center;
-    padding:10px;
-    font-size:13px;
-}
-
-/* MENU */
-.menu-index{
-    background:#061a44;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:8px;
-    padding:10px;
-}
-
-.menu-index a{
-    color:white;
-    text-decoration:none;
-    padding:8px 12px;
-    background:rgba(255,255,255,0.08);
-    border-radius:8px;
-    font-size:13px;
-}
-
-.menu-index a:hover{
-    background:#0b52d6;
-}
-
-/* QUICK */
-.quick-section{
-    padding:15px;
-}
-
-.quick-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-}
-
-.quick-card{
-    background:white;
-    color:black;
-    padding:15px;
-    border-radius:12px;
-}
-
-/* STATS */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    padding:15px;
-}
-
-.stat{
-    background:white;
-    color:black;
-    padding:15px;
-    border-radius:12px;
-    text-align:center;
-}
-
-/* NOTIF */
-#notif{
-    position:fixed;
-    right:10px;
-    bottom:10px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.msg{
-    background:#25D366;
-    color:white;
-    padding:8px 12px;
-    border-radius:10px;
-    font-size:12px;
-}
-
-/* FOOTER EXACT */
-footer{
-    background:#041c5c;
-    color:#fff;
-    text-align:center;
-    padding:50px 20px;
-}
-
-.footer-logo{
-    width:90px;
-    margin:auto;
-    margin-bottom:20px;
-}
-
-footer hr{
-    margin:25px auto;
-    width:300px;
-    border:1px solid rgba(255,255,255,.2);
-}
-
-</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
-<!-- SLIDER -->
+<!-- ================= SLIDER ================= -->
 <section class="banner">
+
 <div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
 </div>
+
 </section>
 
-<!-- MOTIVATION -->
+<!-- ================= MOTIVATION ================= -->
 <div class="motivation">
 <span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- MENU -->
+<!-- ================= MENU ================= -->
 <nav class="menu-index">
 
-<a href="#"><i class="fa fa-home"></i> Tableau de bord</a>
+<a href="#"><i class="fa fa-home"></i> Dashboard</a>
 <a href="#"><i class="fa fa-building"></i> Entreprises</a>
 <a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
 <a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
 <a href="#"><i class="fa fa-users"></i> Travailleurs</a>
 <a href="#"><i class="fa fa-file"></i> PV</a>
-<a href="#"><i class="fa fa-scale-balanced"></i> Code du Travail</a>
 
 </nav>
 
-<!-- QUICK -->
+<!-- ================= QUICK ================= -->
 <section class="quick-section">
+
 <div class="quick-grid">
+
 <div class="quick-card">Entreprises</div>
 <div class="quick-card">Inspections</div>
 <div class="quick-card">Infractions</div>
 <div class="quick-card">Travailleurs</div>
+
 </div>
+
 </section>
 
-<!-- STATS -->
+<!-- ================= STATS ================= -->
 <section class="stats">
+
 <div class="stat">Entreprises <br><b>1248</b></div>
 <div class="stat">Inspections <br><b>532</b></div>
 <div class="stat">Infractions <br><b>189</b></div>
 <div class="stat">PV <br><b>317</b></div>
+
 </section>
 
-<!-- NOTIF -->
+<!-- ================= NOTIFICATIONS ================= -->
 <div id="notif"></div>
 
-<!-- FOOTER (AJOUT EXACT) -->
+<!-- ================= FOOTER ================= -->
 <footer>
-
-<div class="footer-content">
 
 <img src="images/logo-igt.png" class="footer-logo">
 
-<h3>
-Inspection Générale du Travail
-</h3>
+<h3>Inspection Générale du Travail</h3>
 
-<p>
-InspecteurBot IA
-</p>
+<p>InspecteurBot IA</p>
 
-<p>
-Assistant Intelligent des Inspecteurs du Travail
-</p>
+<p>Assistant Intelligent des Inspecteurs du Travail</p>
 
 <hr>
 
 <p>
-Créé par
-<strong>
-Inspecteur Limengo (Pmiller)
-</strong>
-© 2026
+Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
-
-</div>
 
 </footer>
 
+<!-- ================= JS ================= -->
 <script>
+/* SLIDER */
+let slides = document.querySelectorAll(".slider img");
+let index = 0;
 
-const msg = Array.from({length:40},(_,i)=>
-"Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
-);
+setInterval(() => {
 
-let m=0;
-setInterval(()=>{
-    document.getElementById("motivationText").innerText=msg[m];
-    m=(m+1)%msg.length;
-},3000);
+slides[index].classList.remove("active");
 
-const notif=["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
+index = (index + 1) % slides.length;
 
-setInterval(()=>{
-    let box=document.createElement("div");
-    box.className="msg";
-    box.innerText=notif[Math.floor(Math.random()*notif.length)];
-    document.getElementById("notif").appendChild(box);
-    setTimeout(()=>box.remove(),4000);
-},6000);
+slides[index].classList.add("active");
+
+}, 4000);
+
+/* MOTIVATION */
+const messages = [
+"Le travail construit la nation 🇨🇩",
+"L'intégrité est la base de l'inspection",
+"Chaque mission compte",
+"Respect du Code du Travail",
+"Protéger les travailleurs"
+];
+
+setInterval(() => {
+
+document.getElementById("motivationText").innerText =
+messages[Math.floor(Math.random() * messages.length)];
+
+}, 3000);
+
+/* NOTIFICATIONS */
+const notif = [
+"Bienvenue 👋",
+"Mission active",
+"Inspection en cours",
+"Rapport prêt"
+];
+
+setInterval(() => {
+
+let box = document.createElement("div");
+box.className = "msg";
+box.innerText = notif[Math.floor(Math.random() * notif.length)];
+
+document.getElementById("notif").appendChild(box);
+
+setTimeout(() => box.remove(), 4000);
+
+}, 6000);
 
 </script>
 
 </body>
-</html>
+    </html>
