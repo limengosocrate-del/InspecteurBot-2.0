@@ -1,236 +1,828 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Dashboard</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<title>InspecteurBot IA | Inspection Générale du Travail</title>
+
+<meta name="description" content="Assistant Intelligent des Inspecteurs du Travail">
+
+<meta name="author" content="Inspecteur Limengo (Pmiller)">
+
+<link rel="icon" href="images/logo-igt.png">
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-
-/* ================= GLOBAL ZOOM FIX ================= */
-body{
-    transform: scale(0.98);
-    transform-origin: top;
-    background:#edf2f9;
-}
-
-/* ================= LAYOUT ================= */
-.dashboard-layout{
-    display:flex;
-}
-
-/* ================= SIDEBAR ================= */
-.sidebar{
-    width:260px;
-    background:#041c5c;
-    color:#fff;
-    position:fixed;
-    height:100%;
-    overflow-y:auto;
-}
-
-/* ================= MAIN ================= */
-.main-content{
-    margin-left:260px;
-    width:100%;
-    padding:20px;
-}
-
-/* ================= FULL WIDTH SLIDER ================= */
-.banner{
-    width:100%;
-    height:320px;
-    position:relative;
-    overflow:hidden;
-    border-radius:20px;
-    margin-bottom:10px;
-}
-
-.slider{
-    width:100%;
-    height:100%;
-    position:absolute;
-}
-
-.slider img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    position:absolute;
-    opacity:0;
-    transition:opacity 1s ease;
-}
-
-.slider img.active{
-    opacity:1;
-}
-
-/* ================= MOTIVATION BAR ================= */
-.motivation{
-    background:#0b3d91;
-    color:#fff;
-    text-align:center;
-    padding:10px;
-    font-size:14px;
-    margin-bottom:20px;
-}
-
-/* ================= QUICK ACCESS ================= */
-.quick-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
-}
-
-/* ================= WHATSAPP NOTIF (SLIDE UP) ================= */
-#notif-container{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    z-index:9999;
-}
-
-.notif{
-    background:#25D366;
-    color:#fff;
-    padding:10px 14px;
-    border-radius:10px;
-    font-size:13px;
-    animation:slideUp 0.5s ease, fade 0.5s ease 4.5s forwards;
-}
-
-@keyframes slideUp{
-    from{transform:translateY(100%);opacity:0;}
-    to{transform:translateY(0);opacity:1;}
-}
-
-@keyframes fade{
-    to{opacity:0;transform:translateY(50px);}
-}
-
-</style>
 
 </head>
 
 <body>
 
-<div class="dashboard-layout">
+<nav class="top-navbar">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-<h3 style="text-align:center;padding:15px;">MENU PRINCIPAL</h3>
+<div class="nav-logo">
 
-<ul style="list-style:none;padding:0;">
-<li><a href="#"><i class="fa fa-home"></i> Tableau de bord</a></li>
-<li><a href="#"><i class="fa fa-building"></i> Entreprises</a></li>
-<li><a href="#"><i class="fa fa-clipboard"></i> Inspections</a></li>
-<li><a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa fa-users"></i> Travailleurs</a></li>
-<li><a href="#" style="color:red;"><i class="fa fa-power-off"></i> Déconnexion</a></li>
+<img src="images/logo-igt.png" alt="IGT">
+
+<span>InspecteurBot IA</span>
+
+</div>
+
+<ul>
+
+<li><a href="index.html">Accueil</a></li>
+
+<li><a href="login.html">Connexion</a></li>
+
+<li><a href="register.html">Inscription</a></li>
+
+<li><a href="dashboard.html">Dashboard</a></li>
+
 </ul>
 
-</aside>
+</nav>
 
-<!-- MAIN -->
-<main class="main-content">
+<!-- ===========================
+     CHARGEMENT
+=========================== -->
 
-<!-- SLIDER FULL WIDTH -->
-<section class="banner">
+<div id="loader">
 
-<div class="slider" id="slider">
-<img src="images/photos_igt/1.jpg" class="active">
-<img src="images/photos_igt/2.jpg">
-<img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
-<img src="images/photos_igt/5.jpg">
-<img src="images/photos_igt/6.jpg">
-<img src="images/photos_igt/7.jpg">
-<img src="images/photos_igt/8.jpg">
-<img src="images/photos_igt/9.jpg">
-<img src="images/photos_igt/10.jpg">
-<img src="images/photos_igt/11.jpg">
-<img src="images/photos_igt/12.jpg">
-<img src="images/photos_igt/13.jpg">
-<img src="images/photos_igt/14.jpg">
-<img src="images/photos_igt/15.jpg">
-<img src="images/photos_igt/16.jpg">
-<img src="images/photos_igt/17.jpg">
-<img src="images/photos_igt/18.jpg">
-<img src="images/photos_igt/19.jpg">
-<img src="images/photos_igt/20.jpg">
+<div class="loader-content">
+
+<img src="images/logo-igt.png" class="loader-logo">
+
+<h2>INSPECTEURBOT IA</h2>
+
+<p>Inspection Générale du Travail</p>
+
+<div class="spinner"></div>
+
+</div>
+
+</div>
+
+<!-- ===========================
+     EN-TÊTE
+=========================== -->
+
+<header class="hero">
+
+<img src="images/batiment-igt.jpg"
+class="hero-image">
+
+<div class="hero-overlay"></div>
+
+<img src="images/logo-igt.png"
+class="logo-watermark">
+
+<div class="hero-content">
+
+<img src="images/logo-igt.png"
+class="logo">
+
+<h1>INSPECTEURBOT IA</h1>
+
+<h3>Inspection Générale du Travail</h3>
+
+<p>
+
+Assistant Intelligent des Inspecteurs du Travail
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="login.html" class="btn btn-login">
+    <i class="fa-solid fa-right-to-bracket"></i>
+    Connexion
+</a>
+
+<a href="register.html" class="btn btn-register">
+    <i class="fa-solid fa-user-plus"></i>
+    Inscription
+</a>
+
+</div>
+
+<div class="start-now">
+
+<a href="login.html" class="btn-start">
+
+<i class="fa-solid fa-rocket"></i>
+
+Commencer maintenant
+
+</a>
+
+</div>  
+
+</div>
+
+</header>
+
+<!-- ===========================
+     CITATIONS
+=========================== -->
+
+<section id="notification">
+
+<div class="notification-box">
+
+<i class="fa-solid fa-lightbulb"></i>
+
+<p id="notification-text">
+
+"La justice sociale commence par le respect du Code du Travail."
+
+</p>
+
 </div>
 
 </section>
 
-<!-- MOTIVATION 40 PHRASES -->
-<div class="motivation">
-<span id="motivationText"></span>
+<!-- ===========================
+     TABLEAU DE BORD
+=========================== -->
+
+<section class="dashboard">
+
+<h2>
+
+<i class="fa-solid fa-chart-line"></i>
+
+Tableau de Bord Intelligent
+
+</h2>
+
+<div class="dashboard-cards">
+
+<div class="card">
+
+<i class="fa-solid fa-building"></i>
+
+<h3>Entreprises</h3>
+
+<h1 id="nbEntreprise">0</h1>
+
 </div>
 
-<!-- QUICK ACCESS -->
-<section>
-<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
+<div class="card">
+
+<i class="fa-solid fa-file-circle-check"></i>
+
+<h3>Inspections</h3>
+
+<h1 id="nbInspection">0</h1>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+<h3>Infractions</h3>
+
+<h1 id="nbInfraction">0</h1>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-file-signature"></i>
+
+<h3>PV rédigés</h3>
+
+<h1 id="nbPv">0</h1>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<h3>Travailleurs</h3>
+
+<h1 id="nbTravailleurs">0</h1>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-user-shield"></i>
+
+<h3>Inspecteurs</h3>
+
+<h1 id="nbInspecteurs">0</h1>
+
+</div>
+
+</div>
+
+<!-- ===========================
+     GRAPHIQUES
+=========================== -->
+
+<div class="dashboard-grid">
+
+<div class="graph-box">
+
+<h3>
+
+<i class="fa-solid fa-chart-pie"></i>
+
+Répartition des Infractions
+
+</h3>
+
+<canvas id="pieChart"></canvas>
+
+</div>
+
+<div class="graph-box">
+
+<h3>
+
+<i class="fa-solid fa-chart-column"></i>
+
+Statistiques Mensuelles
+
+</h3>
+
+<canvas id="barChart"></canvas>
+
+</div>
+
+</div>
+
+<!-- ===========================
+     DERNIÈRES INSPECTIONS
+=========================== -->
+
+<div class="last-inspections">
+
+<h3>
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+Dernières inspections
+
+</h3>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Entreprise</th>
+
+<th>Date</th>
+
+<th>État</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>Société ABC SARL</td>
+
+<td>21/05/2026</td>
+
+<td class="ok">Conforme</td>
+
+</tr>
+
+<tr>
+
+<td>Entreprise XYZ</td>
+
+<td>20/05/2026</td>
+
+<td class="danger">Non conforme</td>
+
+</tr>
+
+<tr>
+
+<td>ETS MOKILI</td>
+
+<td>19/05/2026</td>
+
+<td class="warning">À corriger</td>
+
+</tr>
+
+<tr>
+
+<td>FUTUR SARL</td>
+
+<td>18/05/2026</td>
+
+<td class="ok">Conforme</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+    </section>
+
+<!-- ===========================
+     MENU PRINCIPAL
+=========================== -->
+
+<section class="main-menu">
+
+<h2>
+
+<i class="fa-solid fa-table-cells-large"></i>
+
+Menu Principal
+
+</h2>
+
+<div class="menu-grid">
+
+<div class="menu-card">
+<i class="fa-solid fa-house"></i>
+<h3>Accueil</h3>
+<p>Page principale de l'application.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-clipboard-check"></i>
+<h3>Fiches F01 à F07</h3>
+<p>Gestion des fiches d'inspection.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-file-lines"></i>
+<h3>Fiches S01 à S03</h3>
+<p>Suivi des procédures spéciales.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-building-columns"></i>
+<h3>ONEM</h3>
+<p>Documents et déclarations.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-file-signature"></i>
+<h3>Procès-Verbaux</h3>
+<p>Création automatique des PV par IA.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-scale-balanced"></i>
+<h3>Code du Travail</h3>
+<p>Consultation rapide des articles.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-triangle-exclamation"></i>
+<h3>Infractions</h3>
+<p>Articles, sanctions et amendes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-robot"></i>
+<h3>Assistant IA</h3>
+<p>Poser une question à InspecteurBot.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-chart-column"></i>
+<h3>Statistiques</h3>
+<p>Rapports et analyses intelligentes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-folder-open"></i>
+<h3>Archives</h3>
+<p>Consultation des anciens dossiers.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-users"></i>
+<h3>Utilisateurs</h3>
+<p>Gestion des comptes.</p>
+</div>
+
+<div class="menu-card">
+<i class="fa-solid fa-gear"></i>
+<h3>Paramètres</h3>
+<p>Configuration générale.</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     DOSSIER INFRACTIONS
+=========================== -->
+
+<section class="infractions">
+
+<h2>
+
+<i class="fa-solid fa-gavel"></i>
+
+Infractions, Sanctions et Amendes
+
+</h2>
+
+<div class="infractions-grid">
+
+<div class="inf-card">
+
+<h3>Absence de contrat de travail</h3>
+
+<p>
+Article : À compléter selon le Code du Travail.
+</p>
+
+<p>
+Sanction : Selon les dispositions légales.
+</p>
+
+<p>
+Amende : Prévue par la loi.
+</p>
+
+<button>Voir les détails</button>
+
+</div>
+
+<div class="inf-card">
+
+<h3>Travail des enfants</h3>
+
+<p>
+Article : Code du Travail.
+</p>
+
+<p>
+Sanction prévue.
+</p>
+
+<p>
+Amende applicable.
+</p>
+
+<button>Voir les détails</button>
+
+</div>
+
+<div class="inf-card">
+
+<h3>Non-paiement du salaire</h3>
+
+<p>
+Article concerné.
+</p>
+
+<p>
+Sanction.
+</p>
+
+<p>
+Amende.
+</p>
+
+<button>Voir les détails</button>
+
+</div>
+
+<div class="inf-card">
+
+<h3>Heures supplémentaires illégales</h3>
+
+<p>
+Articles concernés.
+</p>
+
+<p>
+Sanction prévue.
+</p>
+
+<p>
+Montant de l'amende.
+</p>
+
+<button>Voir les détails</button>
+
+</div>
+
+<div class="inf-card">
+
+<h3>Hygiène et Sécurité</h3>
+
+<p>
+Infractions liées à la sécurité au travail.
+</p>
+
+<button>Consulter</button>
+
+</div>
+
+<div class="inf-card">
+
+<h3>Liberté syndicale</h3>
+
+<p>
+Infractions prévues par la législation.
+</p>
+
+<button>Consulter</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     ASSISTANT IA
+=========================== -->
+
+<section class="assistant">
+
+<h2>
+
+<i class="fa-solid fa-robot"></i>
+
+InspecteurBot IA
+
+</h2>
+
+<div class="assistant-box">
+
+<p>
+
+Bonjour Inspecteur 👋
+
+Je peux vous aider à :
+
+</p>
+
+<ul>
+
+<li>Rédiger un Procès-Verbal.</li>
+
+<li>Rechercher un article du Code du Travail.</li>
+
+<li>Calculer une amende.</li>
+
+<li>Trouver une infraction.</li>
+
+<li>Préparer une mission d'inspection.</li>
+
+<li>Analyser un dossier.</li>
+
+<li>Produire un rapport automatique.</li>
+
+</ul>
+
+<input
+type="text"
+placeholder="Posez votre question à InspecteurBot...">
+
+<button>
+
+<i class="fa-solid fa-paper-plane"></i>
+
+Envoyer
+
+</button>
+
+</div>
+
+</section>
+
+  <!-- ===========================
+     ACTUALITÉS IGT
+=========================== -->
+
+<section class="news-section">
+
+<h2>
+
+<i class="fa-solid fa-newspaper"></i>
+
+Actualités de l'Inspection Générale du Travail
+
+</h2>
+
+<div class="news-container">
+
+<div class="news-card">
+
+<i class="fa-solid fa-bullhorn"></i>
+
+<h3>Nouvelle Circulaire</h3>
+
+<p>
+
+Les inspecteurs sont invités à appliquer les nouvelles directives lors des contrôles.
+
+</p>
+
+</div>
+
+<div class="news-card">
+
+<i class="fa-solid fa-calendar-days"></i>
+
+<h3>Programme des Missions</h3>
+
+<p>
+
+Consultez les missions planifiées pour cette semaine.
+
+</p>
+
+</div>
+
+<div class="news-card">
+
+<i class="fa-solid fa-graduation-cap"></i>
+
+<h3>Formation Continue</h3>
+
+<p>
+
+Une nouvelle formation sur les procédures d'inspection sera bientôt disponible.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===========================
+     RACCOURCIS RAPIDES
+=========================== -->
+
+<section class="quick-access">
+
+<h2>
+
+<i class="fa-solid fa-bolt"></i>
+
+Accès Rapide
+
+</h2>
 
 <div class="quick-grid">
 
-<div>Entreprises</div>
-<div>Inspections</div>
-<div>Infractions</div>
-<div>PV</div>
-<div>Travailleurs</div>
-<div>Inspecteurs</div>
+<button class="quick-btn">
+
+<i class="fa-solid fa-file-circle-plus"></i>
+
+Nouvelle Inspection
+
+</button>
+
+<button class="quick-btn">
+
+<i class="fa-solid fa-file-signature"></i>
+
+Créer un PV
+
+</button>
+
+<button class="quick-btn">
+
+<i class="fa-solid fa-book"></i>
+
+Consulter le Code
+
+</button>
+
+<button class="quick-btn">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+Nouvelle Infraction
+
+</button>
+
+<button class="quick-btn">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Recherche
+
+</button>
+
+<button class="quick-btn">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Statistiques
+
+</button>
 
 </div>
 
 </section>
 
-</main>
+<!-- ===========================
+     NOTIFICATIONS INTELLIGENTES
+=========================== -->
+
+<section class="smart-notification">
+
+<div id="smartMessage">
+
+💡 Bienvenue sur InspecteurBot IA.
 
 </div>
 
-<!-- NOTIF -->
-<div id="notif-container"></div>
+</section>
 
-<script>
+<!-- ===========================
+     BOUTON FLOTTANT IA
+=========================== -->
 
-/* SLIDER 10s */
-let i = 0;
-const slides = document.querySelectorAll("#slider img");
+<button id="floatingAI">
 
-setInterval(()=>{
-    slides[i].classList.remove("active");
-    i = (i + 1) % slides.length;
-    slides[i].classList.add("active");
-},10000);
+<i class="fa-solid fa-robot"></i>
 
-/* MOTIVATION 40 phrases */
-const msg = Array.from({length:40},(_,i)=>"Motivation "+(i+1));
+</button>
 
-let m=0;
-setInterval(()=>{
-    document.getElementById("motivationText").innerText = msg[m];
-    m=(m+1)%msg.length;
-},5000);
+<!-- ===========================
+     PIED DE PAGE
+=========================== -->
 
-/* WHATSAPP NOTIF */
-const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
+<footer>
 
-setInterval(()=>{
-    const box=document.createElement("div");
-    box.className="notif";
-    box.innerText=notif[Math.floor(Math.random()*notif.length)];
-    document.getElementById("notif-container").appendChild(box);
-    setTimeout(()=>box.remove(),5000);
-},10000);
+<div class="footer-content">
 
-</script>
+<img src="images/logo-igt.png" class="footer-logo">
+
+<h3>
+
+Inspection Générale du Travail
+
+</h3>
+
+<p>
+
+InspecteurBot IA
+
+</p>
+
+<p>
+
+Assistant Intelligent des Inspecteurs du Travail
+
+</p>
+
+<hr>
+
+<p>
+
+Créé par
+
+<strong>
+
+Inspecteur Limengo (Pmiller)
+
+</strong>
+
+© 2026
+
+</p>
+
+</div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="app.js"></script>
 
 </body>
-                    </html>
+
+</html>  
+    
