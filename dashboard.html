@@ -22,7 +22,7 @@ body{
     background:#edf2f9;
 }
 
-/* ================= HEADER IMAGE ================= */
+/* ================= HEADER IMAGE (SLIDER CONSERVÉ) ================= */
 .header-img{
     width:100%;
     height:200px;
@@ -47,33 +47,44 @@ body{
     margin-top:10px;
     font-weight:700;
     color:#041c5c;
-    font-size:20px;
+    font-size:18px;
 }
 
-/* ================= MENU ================= */
+/* ================= MOTIVATION ================= */
+.motivation{
+    margin:10px 15px;
+    background:#0b3d91;
+    color:white;
+    padding:8px;
+    border-radius:10px;
+    text-align:center;
+    font-size:12px;
+}
+
+/* ================= MENU PRINCIPAL (REDESIGN + CONTENU ANCIEN INDEX) ================= */
 .menu{
-    padding:15px;
+    padding:12px 15px;
 }
 
 .menu h3{
-    margin:15px 0;
+    margin:10px 0;
     color:#041c5c;
-    text-align:left;
-    font-size:14px;
+    font-size:13px;
 }
 
 .menu a{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:10px;
     text-decoration:none;
     background:#fff;
-    padding:14px;
-    margin-bottom:10px;
-    border-radius:12px;
+    padding:12px;
+    margin-bottom:8px;
+    border-radius:10px;
     color:#041c5c;
     font-weight:500;
-    box-shadow:0 5px 12px rgba(0,0,0,0.05);
+    box-shadow:0 3px 10px rgba(0,0,0,0.06);
+    font-size:14px;
 }
 
 .menu a i{
@@ -90,26 +101,16 @@ body{
     color:white;
 }
 
-/* ================= MOTIVATION ================= */
-.motivation{
-    margin:10px 15px;
-    background:#0b3d91;
-    color:white;
-    padding:10px;
-    border-radius:12px;
-    text-align:center;
-    font-size:13px;
-}
-
-/* ================= ACCÈS RAPIDE ================= */
+/* ================= ACCES RAPIDE ================= */
 .quick{
-    padding:15px;
+    padding:12px 15px;
 }
 
 .quick h3{
     text-align:center;
     margin-bottom:10px;
     color:#041c5c;
+    font-size:14px;
 }
 
 .grid{
@@ -120,16 +121,17 @@ body{
 
 .card{
     background:white;
-    padding:15px;
-    border-radius:15px;
+    padding:12px;
+    border-radius:12px;
     text-align:center;
-    box-shadow:0 5px 12px rgba(0,0,0,0.06);
+    box-shadow:0 3px 10px rgba(0,0,0,0.05);
+    font-size:13px;
 }
 
 .card i{
-    font-size:22px;
+    font-size:20px;
     color:#0b52d6;
-    margin-bottom:8px;
+    margin-bottom:6px;
 }
 
 /* ================= NOTIF ================= */
@@ -145,9 +147,9 @@ body{
 .msg{
     background:#25D366;
     color:white;
-    padding:8px 12px;
-    border-radius:10px;
-    font-size:12px;
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:11px;
     animation:up .4s ease;
 }
 
@@ -161,34 +163,42 @@ body{
 
 <body>
 
-<!-- IMAGE HEADER -->
+<!-- ================= IMAGE HEADER (SLIDER CONSERVÉ) ================= -->
 <img src="images/photos_igt/1.jpg" class="header-img">
 
 <!-- LOGO -->
 <img src="images/logo-igt.png" class="logo">
 
 <!-- TITLE -->
-<div class="title">MENU PRINCIPAL</div>
+<div class="title">INSPECTEURBOT RDC</div>
 
 <!-- MOTIVATION -->
 <div class="motivation">
 <span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- MENU -->
+<!-- ================= MENU (ANCIEN INDEX INTÉGRÉ COMPLET) ================= -->
 <div class="menu">
 
 <h3>MENU PRINCIPAL</h3>
 
-<a class="active" href="#"><i class="fa fa-home"></i> Tableau de bord</a>
+<a class="active" href="#"><i class="fa fa-home"></i> Accueil / Tableau de bord</a>
 <a href="#"><i class="fa fa-building"></i> Entreprises</a>
-<a href="#"><i class="fa fa-clipboard"></i> Procès-Verbaux</a>
+<a href="#"><i class="fa fa-clipboard-check"></i> Fiches F01 à F07</a>
+<a href="#"><i class="fa fa-file-lines"></i> Fiches S01 à S03</a>
+<a href="#"><i class="fa fa-building-columns"></i> ONEM</a>
+<a href="#"><i class="fa fa-file-signature"></i> Procès-Verbaux</a>
 <a href="#"><i class="fa fa-scale-balanced"></i> Code du Travail</a>
 <a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
+<a href="#"><i class="fa fa-robot"></i> Assistant IA</a>
+<a href="#"><i class="fa fa-chart-column"></i> Statistiques</a>
+<a href="#"><i class="fa fa-folder-open"></i> Archives</a>
+<a href="#"><i class="fa fa-users"></i> Utilisateurs</a>
+<a href="#"><i class="fa fa-gear"></i> Paramètres</a>
 
 </div>
 
-<!-- ACCÈS RAPIDE -->
+<!-- ================= ACCES RAPIDE (UNIFORMISÉ) ================= -->
 <div class="quick">
 
 <h3>ACCÈS RAPIDE</h3>
@@ -198,7 +208,10 @@ body{
 <div class="card"><i class="fa fa-building"></i><p>Entreprises</p></div>
 <div class="card"><i class="fa fa-clipboard"></i><p>Inspections</p></div>
 <div class="card"><i class="fa fa-triangle-exclamation"></i><p>Infractions</p></div>
-<div class="card"><i class="fa fa-users"></i><p>Travailleurs</p></div>
+<div class="card"><i class="fa fa-file-signature"></i><p>PV</p></div>
+
+<div class="card"><i class="fa fa-book"></i><p>Code du Travail</p></div>
+<div class="card"><i class="fa fa-search"></i><p>Recherche</p></div>
 
 </div>
 
@@ -220,7 +233,7 @@ setInterval(()=>{
     m=(m+1)%msg.length;
 },4000);
 
-/* NOTIF WHATSAPP */
+/* NOTIFICATIONS */
 const notif = ["Bienvenue 👋","Inspection active","Rapport prêt","Mission en cours"];
 
 setInterval(()=>{
@@ -234,4 +247,4 @@ setInterval(()=>{
 </script>
 
 </body>
-    </html>
+                </html>
