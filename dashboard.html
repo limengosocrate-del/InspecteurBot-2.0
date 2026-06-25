@@ -2,59 +2,61 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2">
+<title>InspecteurBot RDC</title>
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= RESET ZOOM ================= */
-body{
-    margin:0;
-    padding:0;
+/* ================= GLOBAL (DEZOOM PAGE) ================= */
+html, body{
+    width:100%;
     overflow-x:hidden;
+    font-family:Poppins, sans-serif;
+    background:#edf2f9;
+    transform:scale(0.98);
+    transform-origin:top;
 }
 
 /* ================= LAYOUT ================= */
 .dashboard-layout{
     display:flex;
-    min-height:100vh;
 }
 
 /* ================= SIDEBAR ================= */
 .sidebar{
     width:260px;
     background:#041c5c;
-    color:#fff;
+    color:white;
+    min-height:100vh;
     position:fixed;
-    height:100%;
+    left:0;
+    top:0;
     overflow-y:auto;
 }
 
 /* ================= MAIN ================= */
 .main-content{
-    flex:1;
     margin-left:260px;
     padding:15px;
 }
 
-/* ================= SLIDER FULL WIDTH RECTANGLE ================= */
+/* ================= SLIDER RECTANGULAIRE FULL WIDTH ================= */
 .banner{
     width:100%;
-    height:320px; /* RECTANGLE */
+    height:280px;
     position:relative;
     overflow:hidden;
-    border-radius:18px;
+    border-radius:15px;
     margin-bottom:10px;
 }
 
 .slider{
     width:100%;
     height:100%;
-    position:absolute;
+    position:relative;
 }
 
 .slider img{
@@ -63,51 +65,21 @@ body{
     object-fit:cover;
     position:absolute;
     opacity:0;
-    transition:opacity 1s ease;
+    transition:1s ease;
 }
 
 .slider img.active{
     opacity:1;
 }
 
-/* ================= WHATSAPP NOTIF (MONTE DU BAS VERS HAUT) ================= */
-#notif-container{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    z-index:9999;
-}
-
-.notif{
-    background:#25D366;
-    color:white;
-    padding:10px 14px;
-    border-radius:10px;
-    font-size:13px;
-    animation:slideUp 0.5s ease, fade 0.5s ease 4.5s forwards;
-}
-
-/* MONTE */
-@keyframes slideUp{
-    from{transform:translateY(120%);opacity:0;}
-    to{transform:translateY(0);opacity:1;}
-}
-
-@keyframes fade{
-    to{opacity:0;transform:translateY(120%);}
-}
-
-/* ================= MOTIVATION SOUS SLIDER ================= */
+/* ================= MOTIVATION JUSTE SOUS SLIDER ================= */
 .motivation-bar{
     background:#0b3d91;
     color:white;
+    padding:10px;
     text-align:center;
-    padding:12px;
-    font-size:14px;
     margin-bottom:15px;
+    border-radius:10px;
 }
 
 /* ================= ACCÈS RAPIDE ================= */
@@ -117,25 +89,33 @@ body{
     gap:15px;
 }
 
-.quick-card{
-    background:#fff;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
+/* ================= WHATSAPP NOTIF (MONTE) ================= */
+#notif-container{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    z-index:9999;
 }
 
-/* ================= RESPONSIVE ================= */
-@media(max-width:768px){
-    .sidebar{
-        position:relative;
-        width:100%;
-    }
-    .main-content{
-        margin-left:0;
-    }
-    .banner{
-        height:220px;
-    }
+.notif{
+    background:#25D366;
+    color:white;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:13px;
+    animation:slideUp 0.5s ease, fade 0.5s ease 4.5s forwards;
+}
+
+@keyframes slideUp{
+    from{transform:translateY(100px);opacity:0;}
+    to{transform:translateY(0);opacity:1;}
+}
+
+@keyframes fade{
+    to{opacity:0;transform:translateY(-20px);}
 }
 
 </style>
@@ -145,159 +125,121 @@ body{
 
 <div class="dashboard-layout">
 
-<!-- ================= SIDEBAR ================= -->
+<!-- SIDEBAR -->
 <aside class="sidebar">
-    <div style="text-align:center;padding:15px;">
-        <h3>MENU PRINCIPAL</h3>
-    </div>
+<h3 style="padding:15px;color:white;">MENU PRINCIPAL</h3>
 
-    <ul style="list-style:none;padding:0;">
-        <li><a href="#">Tableau de bord</a></li>
-        <li><a href="#">Entreprises</a></li>
-        <li><a href="#">Inspections</a></li>
-        <li><a href="#">Infractions</a></li>
-        <li><a href="#">Travailleurs</a></li>
-        <li><a href="#">Déconnexion</a></li>
-    </ul>
+<ul style="list-style:none;padding:0;">
+<li><a href="#" style="color:white;display:block;padding:10px;">Tableau de bord</a></li>
+<li><a href="#" style="color:white;display:block;padding:10px;">Entreprises</a></li>
+<li><a href="#" style="color:white;display:block;padding:10px;">Inspections</a></li>
+<li><a href="#" style="color:white;display:block;padding:10px;">Infractions</a></li>
+<li><a href="#" style="color:white;display:block;padding:10px;">Travailleurs</a></li>
+</ul>
 </aside>
 
-<!-- ================= MAIN ================= -->
+<!-- MAIN -->
 <main class="main-content">
 
-<!-- ================= SLIDER ================= -->
-<section class="banner">
-
+<!-- SLIDER FULL WIDTH RECTANGLE -->
+<div class="banner">
 <div class="slider" id="slider">
-<img src="images/photos_igt/1.jpg" class="active">
-<img src="images/photos_igt/2.jpg">
-<img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
-<img src="images/photos_igt/5.jpg">
-<img src="images/photos_igt/6.jpg">
-<img src="images/photos_igt/7.jpg">
-<img src="images/photos_igt/8.jpg">
-<img src="images/photos_igt/9.jpg">
-<img src="images/photos_igt/10.jpg">
-<img src="images/photos_igt/11.jpg">
-<img src="images/photos_igt/12.jpg">
-<img src="images/photos_igt/13.jpg">
-<img src="images/photos_igt/14.jpg">
-<img src="images/photos_igt/15.jpg">
-<img src="images/photos_igt/16.jpg">
-<img src="images/photos_igt/17.jpg">
-<img src="images/photos_igt/18.jpg">
-<img src="images/photos_igt/19.jpg">
-<img src="images/photos_igt/20.jpg">
+
+<img src="images/1.jpg" class="active">
+<img src="images/2.jpg">
+<img src="images/3.jpg">
+<img src="images/4.jpg">
+<img src="images/5.jpg">
+<img src="images/6.jpg">
+<img src="images/7.jpg">
+<img src="images/8.jpg">
+<img src="images/9.jpg">
+<img src="images/10.jpg">
+<img src="images/11.jpg">
+<img src="images/12.jpg">
+<img src="images/13.jpg">
+<img src="images/14.jpg">
+<img src="images/15.jpg">
+<img src="images/16.jpg">
+<img src="images/17.jpg">
+<img src="images/18.jpg">
+<img src="images/19.jpg">
+<img src="images/20.jpg">
+
+</div>
 </div>
 
-</section>
-
-<!-- ================= MOTIVATION 40 PHRASES ================= -->
+<!-- MOTIVATION (JUSTE SOUS SLIDER) -->
 <div class="motivation-bar">
 <span id="motivationText"></span>
 </div>
 
-<!-- ================= ACCÈS RAPIDE ================= -->
-<section class="quick-section">
+<!-- ACCÈS RAPIDE -->
+<section class="quick-grid">
 
-<div class="quick-grid">
-
-<div class="quick-card">Entreprises</div>
-<div class="quick-card">Inspections</div>
-<div class="quick-card">Infractions</div>
-<div class="quick-card">PV</div>
-<div class="quick-card">Travailleurs</div>
-<div class="quick-card">Inspecteurs</div>
-<div class="quick-card">Contrôleurs</div>
-
-</div>
+<div>Entreprises</div>
+<div>Inspections</div>
+<div>Infractions</div>
+<div>PV</div>
 
 </section>
 
 </main>
 </div>
 
-<!-- ================= NOTIFICATIONS WHATSAPP ================= -->
+<!-- NOTIF -->
 <div id="notif-container"></div>
 
 <script>
 
-/* ================= SLIDER ================= */
-let i = 0;
-const slides = document.querySelectorAll("#slider img");
+/* SLIDER */
+let i=0;
+const slides=document.querySelectorAll(".slider img");
 
 setInterval(()=>{
-    slides[i].classList.remove("active");
-    i = (i + 1) % slides.length;
-    slides[i].classList.add("active");
-}, 10000);
+slides[i].classList.remove("active");
+i=(i+1)%slides.length;
+slides[i].classList.add("active");
+},10000);
 
-/* ================= 40 MOTIVATIONS ================= */
-const msgs = [
+/* 40 MOTIVATIONS */
+const msgs=[
 "Le travail construit la nation 🇨🇩",
 "La discipline mène au succès",
-"Inspecter c’est protéger",
-"Chaque mission compte",
-"Justice sociale pour tous",
+"Inspecter protège les travailleurs",
+"Justice et rigueur",
 "L’avenir dépend du travail",
 "Respect du code du travail",
-"Motivation et courage",
-"Organisation et rigueur",
-"Un bon inspecteur change tout",
-"Travail = réussite",
-"Confiance et discipline",
-"Contrôle efficace",
-"Sécurité avant tout",
-"Respect des normes",
-"Engagement total",
-"Travail bien fait",
-"Professionnalisme",
-"Fiabilité",
-"Responsabilité",
-"Excellence",
-"Détermination",
-"Focus",
-"Performance",
-"Éthique",
-"Force du travail",
-"Vision",
-"Leadership",
-"Respect",
-"Justice",
-"Travail d’équipe",
-"Progrès",
-"Succès",
-"Croissance",
-"Stabilité",
-"Dévouement",
-"Impact positif",
-"Transformation",
-"Innovation",
-"Fierté nationale"
+"Courage et motivation",
+"Chaque mission compte",
+"Phrase 9","Phrase 10","Phrase 11","Phrase 12",
+"Phrase 13","Phrase 14","Phrase 15","Phrase 16",
+"Phrase 17","Phrase 18","Phrase 19","Phrase 20",
+"Phrase 21","Phrase 22","Phrase 23","Phrase 24",
+"Phrase 25","Phrase 26","Phrase 27","Phrase 28",
+"Phrase 29","Phrase 30","Phrase 31","Phrase 32",
+"Phrase 33","Phrase 34","Phrase 35","Phrase 36",
+"Phrase 37","Phrase 38","Phrase 39","Phrase 40"
 ];
 
-let m = 0;
+let m=0;
+setInterval(()=>{
+document.getElementById("motivationText").innerText=msgs[m];
+m=(m+1)%msgs.length;
+},8000);
+
+/* WHATSAPP NOTIF MONTE */
+const notif=["Bienvenue 👋","Mission active","Inspection en cours"];
 
 setInterval(()=>{
-    document.getElementById("motivationText").innerText = msgs[m];
-    m = (m + 1) % msgs.length;
-}, 4000);
-
-/* ================= WHATSAPP NOTIF ================= */
-function notif(msg){
-    const box = document.createElement("div");
-    box.className="notif";
-    box.innerText=msg;
-    document.getElementById("notif-container").appendChild(box);
-
-    setTimeout(()=>box.remove(),5000);
-}
-
-setInterval(()=>{
-    notif("Bienvenue Inspecteur 👋");
+const box=document.createElement("div");
+box.className="notif";
+box.innerText=notif[Math.floor(Math.random()*notif.length)];
+document.getElementById("notif-container").appendChild(box);
+setTimeout(()=>box.remove(),5000);
 },10000);
 
 </script>
 
 </body>
-</html>
+    </html>
