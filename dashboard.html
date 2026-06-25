@@ -19,20 +19,21 @@
 }
 
 body{
-    background:#edf2f9;
+    background:#041c5c; /* 🔵 BLEU GLOBAL */
+    color:white;
 }
 
 /* ================= SLIDER ================= */
 .banner{
     width:100%;
-    height:260px;
+    height:240px;
     overflow:hidden;
     position:relative;
 }
 
 .slider img{
     width:100%;
-    height:260px;
+    height:240px;
     object-fit:cover;
     position:absolute;
     opacity:0;
@@ -43,18 +44,17 @@ body{
     opacity:1;
 }
 
-/* ================= MOTIVATION ================= */
+/* ================= MOTIVATION (EN HAUT MENU) ================= */
 .motivation{
     background:#0b3d91;
-    color:white;
     text-align:center;
     padding:10px;
     font-size:13px;
 }
 
-/* ================= MENU INDEX (FUSION INDEX) ================= */
+/* ================= MENU ================= */
 .menu-index{
-    background:#041c5c;
+    background:#061a44;
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
@@ -89,12 +89,12 @@ body{
 
 .quick-card{
     background:white;
+    color:black;
     padding:15px;
     border-radius:12px;
-    box-shadow:0 5px 10px rgba(0,0,0,0.08);
 }
 
-/* ================= DASHBOARD STATS ================= */
+/* ================= STATS ================= */
 .stats{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -104,42 +104,10 @@ body{
 
 .stat{
     background:white;
+    color:black;
     padding:15px;
     border-radius:12px;
     text-align:center;
-    box-shadow:0 5px 10px rgba(0,0,0,0.06);
-}
-
-/* ================= ASSISTANT ================= */
-.assistant{
-    margin:15px;
-    background:white;
-    padding:15px;
-    border-radius:12px;
-}
-
-/* ================= NEWS ================= */
-.news{
-    padding:15px;
-}
-
-.news-card{
-    background:white;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:12px;
-}
-
-/* ================= INFRACTIONS ================= */
-.infraction{
-    padding:15px;
-}
-
-.inf-card{
-    background:white;
-    padding:12px;
-    margin-bottom:10px;
-    border-radius:12px;
 }
 
 /* ================= NOTIF ================= */
@@ -162,10 +130,29 @@ body{
 
 /* ================= FOOTER ================= */
 footer{
+    background:#02102d;
     text-align:center;
     padding:20px;
+    margin-top:20px;
+}
+
+.footer-content img{
+    width:80px;
+    margin-bottom:10px;
+}
+
+footer h3{
+    margin:5px 0;
+}
+
+footer p{
     font-size:13px;
-    color:#333;
+    margin:3px 0;
+}
+
+hr{
+    margin:10px 0;
+    border:0.5px solid rgba(255,255,255,0.2);
 }
 
 </style>
@@ -179,100 +166,87 @@ footer{
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
 </div>
 </section>
 
-<!-- ================= MOTIVATION ================= -->
+<!-- ================= MOTIVATION (EN HAUT MENU) ================= -->
 <div class="motivation">
 <span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- ================= MENU INDEX COMPLET ================= -->
+<!-- ================= MENU ================= -->
 <nav class="menu-index">
 
-<a href="#"><i class="fa fa-home"></i> Accueil</a>
-<a href="#"><i class="fa fa-right-to-bracket"></i> Connexion</a>
-<a href="#"><i class="fa fa-user-plus"></i> Inscription</a>
-<a href="#"><i class="fa fa-chart-line"></i> Dashboard</a>
-
-<a href="#"><i class="fa fa-clipboard-check"></i> Fiches F01-F07</a>
-<a href="#"><i class="fa fa-file-lines"></i> Fiches S01-S03</a>
-<a href="#"><i class="fa fa-building-columns"></i> ONEM</a>
-<a href="#"><i class="fa fa-file-signature"></i> PV</a>
-
-<a href="#"><i class="fa fa-scale-balanced"></i> Code du Travail</a>
+<a href="#"><i class="fa fa-home"></i> Tableau de bord</a>
+<a href="#"><i class="fa fa-building"></i> Entreprises</a>
+<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
 <a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
-<a href="#"><i class="fa fa-robot"></i> Assistant IA</a>
-<a href="#"><i class="fa fa-chart-column"></i> Statistiques</a>
-
-<a href="#"><i class="fa fa-folder-open"></i> Archives</a>
-<a href="#"><i class="fa fa-users"></i> Utilisateurs</a>
-<a href="#"><i class="fa fa-gear"></i> Paramètres</a>
+<a href="#"><i class="fa fa-users"></i> Travailleurs</a>
+<a href="#"><i class="fa fa-file"></i> PV</a>
+<a href="#"><i class="fa fa-scale-balanced"></i> Code du Travail</a>
 
 </nav>
 
-<!-- ================= STATS ================= -->
-<section class="stats">
-<div class="stat">Entreprises<br><b>1248</b></div>
-<div class="stat">Inspections<br><b>532</b></div>
-<div class="stat">Infractions<br><b>189</b></div>
-<div class="stat">PV<br><b>317</b></div>
-</section>
-
-<!-- ================= QUICK ACCESS ================= -->
+<!-- ================= QUICK ================= -->
 <section class="quick-section">
-<h3>ACCÈS RAPIDE</h3>
+
 <div class="quick-grid">
 <div class="quick-card">Entreprises</div>
 <div class="quick-card">Inspections</div>
 <div class="quick-card">Infractions</div>
 <div class="quick-card">Travailleurs</div>
 </div>
+
 </section>
 
-<!-- ================= ASSISTANT ================= -->
-<div class="assistant">
-<h3>InspecteurBot IA</h3>
-<p>Bonjour 👋 Posez votre question ici</p>
-</div>
-
-<!-- ================= NEWS ================= -->
-<div class="news">
-<div class="news-card">Nouvelle directive inspection</div>
-<div class="news-card">Programme des missions</div>
-<div class="news-card">Formation inspecteurs</div>
-</div>
-
-<!-- ================= INFRACTIONS ================= -->
-<div class="infraction">
-<div class="inf-card">Absence de contrat</div>
-<div class="inf-card">Travail des enfants</div>
-<div class="inf-card">Non paiement salaire</div>
-</div>
+<!-- ================= STATS ================= -->
+<section class="stats">
+<div class="stat">Entreprises <br><b>1248</b></div>
+<div class="stat">Inspections <br><b>532</b></div>
+<div class="stat">Infractions <br><b>189</b></div>
+<div class="stat">PV <br><b>317</b></div>
+</section>
 
 <!-- ================= NOTIF ================= -->
 <div id="notif"></div>
 
-<!-- ================= FOOTER ================= -->
+<!-- ================= FOOTER EXACT ================= -->
 <footer>
-Créé par <b>Inspecteur Limengo (Pmiller)</b> © 2026
+
+<div class="footer-content">
+
+<img src="images/logo-igt.png" class="footer-logo">
+
+<h3>
+Inspection Générale du Travail
+</h3>
+
+<p>
+InspecteurBot IA
+</p>
+
+<p>
+Assistant Intelligent des Inspecteurs du Travail
+</p>
+
+<hr>
+
+<p>
+Créé par
+<strong>
+Inspecteur Limengo (Pmiller)
+</strong>
+© 2026
+</p>
+
+</div>
+
 </footer>
 
 <script>
 
-/* SLIDER */
-let i=0;
-const slides=document.querySelectorAll("#slider img");
-
-setInterval(()=>{
-    slides[i].classList.remove("active");
-    i=(i+1)%slides.length;
-    slides[i].classList.add("active");
-},4000);
-
-/* MOTIVATION 40 PHRASES */
-const msg=Array.from({length:40},(_,i)=>
+/* MOTIVATION 40 */
+const msg = Array.from({length:40},(_,i)=>
 "Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
 );
 
@@ -283,7 +257,7 @@ setInterval(()=>{
 },3000);
 
 /* NOTIF */
-const notif=["Bienvenue 👋","Inspection active","Rapport prêt","Mission en cours"];
+const notif=["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
 
 setInterval(()=>{
     let box=document.createElement("div");
@@ -296,4 +270,4 @@ setInterval(()=>{
 </script>
 
 </body>
-</html>
+    </html>
