@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Dashboard</title>
+<title>InspecteurBot RDC</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= GLOBAL ================= */
+/* ================= BASE ================= */
 *{
     margin:0;
     padding:0;
@@ -20,116 +20,139 @@
 
 body{
     background:#edf2f9;
-    transform:scale(0.97);
-    transform-origin:top;
 }
 
-/* ================= SLIDER RÉDUIT ================= */
-.banner{
+/* ================= HEADER IMAGE ================= */
+.header-img{
     width:100%;
-    height:220px; /* ↓ réduit */
-    position:relative;
-    overflow:hidden;
-}
-
-.slider{
-    width:100%;
-    height:100%;
-    position:absolute;
-}
-
-.slider img{
-    width:100%;
-    height:100%;
+    height:200px;
     object-fit:cover;
-    position:absolute;
-    opacity:0;
-    transition:opacity 1s ease;
+    border-radius:0 0 20px 20px;
 }
 
-.slider img.active{
-    opacity:1;
+/* ================= LOGO ================= */
+.logo{
+    width:80px;
+    margin:auto;
+    margin-top:-40px;
+    background:white;
+    border-radius:50%;
+    padding:5px;
+    display:block;
+}
+
+/* ================= TITLE ================= */
+.title{
+    text-align:center;
+    margin-top:10px;
+    font-weight:700;
+    color:#041c5c;
+    font-size:20px;
+}
+
+/* ================= MENU ================= */
+.menu{
+    padding:15px;
+}
+
+.menu h3{
+    margin:15px 0;
+    color:#041c5c;
+    text-align:left;
+    font-size:14px;
+}
+
+.menu a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    background:#fff;
+    padding:14px;
+    margin-bottom:10px;
+    border-radius:12px;
+    color:#041c5c;
+    font-weight:500;
+    box-shadow:0 5px 12px rgba(0,0,0,0.05);
+}
+
+.menu a i{
+    width:20px;
+    color:#0b52d6;
+}
+
+.menu a.active{
+    background:#0b52d6;
+    color:white;
+}
+
+.menu a.active i{
+    color:white;
 }
 
 /* ================= MOTIVATION ================= */
 .motivation{
+    margin:10px 15px;
     background:#0b3d91;
     color:white;
+    padding:10px;
+    border-radius:12px;
     text-align:center;
-    padding:8px;
     font-size:13px;
-}
-
-/* ================= MENU INDEX SOUS SLIDER ================= */
-.menu-index{
-    background:#041c5c;
-    padding:8px; /* ↓ réduit */
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:6px;
-}
-
-.menu-index a{
-    color:white;
-    text-decoration:none;
-    padding:7px 10px;
-    border-radius:6px;
-    background:rgba(255,255,255,0.12);
-    font-size:13px;
-}
-
-.menu-index a:hover{
-    background:#0b52d6;
 }
 
 /* ================= ACCÈS RAPIDE ================= */
-.quick-section{
-    padding:12px; /* ↓ réduit */
+.quick{
+    padding:15px;
+}
+
+.quick h3{
     text-align:center;
-}
-
-.quick-section h2{
-    font-size:18px;
     margin-bottom:10px;
+    color:#041c5c;
 }
 
-.quick-grid{
+.grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    grid-template-columns:repeat(2,1fr);
     gap:10px;
 }
 
-.quick-card{
+.card{
     background:white;
-    padding:14px; /* ↓ réduit */
-    border-radius:12px;
-    box-shadow:0 5px 12px rgba(0,0,0,0.08);
-    font-size:13px;
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 12px rgba(0,0,0,0.06);
 }
 
-/* ================= NOTIFS ================= */
-#notif-container{
+.card i{
+    font-size:22px;
+    color:#0b52d6;
+    margin-bottom:8px;
+}
+
+/* ================= NOTIF ================= */
+#notif{
     position:fixed;
     bottom:15px;
     right:15px;
     display:flex;
     flex-direction:column;
     gap:8px;
-    z-index:9999;
 }
 
-.notif{
+.msg{
     background:#25D366;
     color:white;
-    padding:8px 10px;
-    border-radius:8px;
+    padding:8px 12px;
+    border-radius:10px;
     font-size:12px;
-    animation:slideUp .5s ease;
+    animation:up .4s ease;
 }
 
-@keyframes slideUp{
-    from{transform:translateY(100%);opacity:0;}
+@keyframes up{
+    from{transform:translateY(50px);opacity:0;}
     to{transform:translateY(0);opacity:1;}
 }
 
@@ -138,107 +161,77 @@ body{
 
 <body>
 
-<!-- ================= SLIDER ================= -->
-<section class="banner">
+<!-- IMAGE HEADER -->
+<img src="images/photos_igt/1.jpg" class="header-img">
 
-<div class="slider" id="slider">
-<img src="images/photos_igt/1.jpg" class="active">
-<img src="images/photos_igt/2.jpg">
-<img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
-<img src="images/photos_igt/5.jpg">
-<img src="images/photos_igt/6.jpg">
-<img src="images/photos_igt/7.jpg">
-<img src="images/photos_igt/8.jpg">
-<img src="images/photos_igt/9.jpg">
-<img src="images/photos_igt/10.jpg">
-<img src="images/photos_igt/11.jpg">
-<img src="images/photos_igt/12.jpg">
-<img src="images/photos_igt/13.jpg">
-<img src="images/photos_igt/14.jpg">
-<img src="images/photos_igt/15.jpg">
-<img src="images/photos_igt/16.jpg">
-<img src="images/photos_igt/17.jpg">
-<img src="images/photos_igt/18.jpg">
-<img src="images/photos_igt/19.jpg">
-<img src="images/photos_igt/20.jpg">
-</div>
+<!-- LOGO -->
+<img src="images/logo-igt.png" class="logo">
 
-</section>
+<!-- TITLE -->
+<div class="title">MENU PRINCIPAL</div>
 
-<!-- ================= MOTIVATION ================= -->
+<!-- MOTIVATION -->
 <div class="motivation">
-<span id="motivationText"></span>
+<span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- ================= MENU INDEX ================= -->
-<nav class="menu-index">
+<!-- MENU -->
+<div class="menu">
 
-<a href="#"><i class="fa fa-home"></i> Dashboard</a>
+<h3>MENU PRINCIPAL</h3>
+
+<a class="active" href="#"><i class="fa fa-home"></i> Tableau de bord</a>
 <a href="#"><i class="fa fa-building"></i> Entreprises</a>
-<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
+<a href="#"><i class="fa fa-clipboard"></i> Procès-Verbaux</a>
+<a href="#"><i class="fa fa-scale-balanced"></i> Code du Travail</a>
 <a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
-<a href="#"><i class="fa fa-users"></i> Travailleurs</a>
-<a href="#" style="background:#e11d48;"><i class="fa fa-power-off"></i> Déconnexion</a>
-
-</nav>
-
-<!-- ================= ACCÈS RAPIDE ================= -->
-<section class="quick-section">
-
-<h2>ACCÈS RAPIDE</h2>
-
-<div class="quick-grid">
-
-<div class="quick-card"><i class="fa fa-building"></i> Entreprises</div>
-<div class="quick-card"><i class="fa fa-clipboard"></i> Inspections</div>
-<div class="quick-card"><i class="fa fa-triangle-exclamation"></i> Infractions</div>
-<div class="quick-card"><i class="fa fa-file"></i> PV</div>
-<div class="quick-card"><i class="fa fa-users"></i> Travailleurs</div>
-<div class="quick-card"><i class="fa fa-user-shield"></i> Inspecteurs</div>
 
 </div>
 
-</section>
+<!-- ACCÈS RAPIDE -->
+<div class="quick">
 
-<!-- ================= NOTIFICATIONS ================= -->
-<div id="notif-container"></div>
+<h3>ACCÈS RAPIDE</h3>
+
+<div class="grid">
+
+<div class="card"><i class="fa fa-building"></i><p>Entreprises</p></div>
+<div class="card"><i class="fa fa-clipboard"></i><p>Inspections</p></div>
+<div class="card"><i class="fa fa-triangle-exclamation"></i><p>Infractions</p></div>
+<div class="card"><i class="fa fa-users"></i><p>Travailleurs</p></div>
+
+</div>
+
+</div>
+
+<!-- NOTIF -->
+<div id="notif"></div>
 
 <script>
 
-/* SLIDER */
-let i = 0;
-const slides = document.querySelectorAll("#slider img");
-
-setInterval(()=>{
-    slides[i].classList.remove("active");
-    i = (i + 1) % slides.length;
-    slides[i].classList.add("active");
-},9000);
-
 /* 40 MOTIVATIONS */
 const msg = Array.from({length:40},(_,i)=>
-"Le travail construit la nation 🇨🇩 • Motivation "+(i+1)
+"Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
 );
 
-let m = 0;
+let m=0;
 setInterval(()=>{
     document.getElementById("motivationText").innerText = msg[m];
-    m = (m + 1) % msg.length;
+    m=(m+1)%msg.length;
 },4000);
 
-/* NOTIFS WHATSAPP */
-const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
+/* NOTIF WHATSAPP */
+const notif = ["Bienvenue 👋","Inspection active","Rapport prêt","Mission en cours"];
 
 setInterval(()=>{
-    const box = document.createElement("div");
-    box.className = "notif";
-    box.innerText = notif[Math.floor(Math.random()*notif.length)];
-    document.getElementById("notif-container").appendChild(box);
+    let box=document.createElement("div");
+    box.className="msg";
+    box.innerText=notif[Math.floor(Math.random()*notif.length)];
+    document.getElementById("notif").appendChild(box);
     setTimeout(()=>box.remove(),4000);
 },8000);
 
 </script>
 
 </body>
-</html>
+                    </html>
