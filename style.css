@@ -1291,3 +1291,62 @@ body{
 
 }
    
+.quick-card{
+background:#ffffff;
+padding:20px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.12);
+text-align:center;
+text-decoration:none;
+color:#000;
+transition:.3s;
+}
+
+.quick-card:hover{
+transform:translateY(-8px);
+}
+
+.quick-card i{
+font-size:35px;
+color:#0b52d6;
+margin-bottom:15px;
+}
+
+.quick-card h3{
+color:#041c5c;
+margin-bottom:10px;
+font-size:18px;
+}
+
+.quick-card p{
+color:#666;
+font-size:14px;
+line-height:1.7;
+}
+
+.quick-card form{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.quick-card input{
+padding:15px;
+border:1px solid #ddd;
+border-radius:12px;
+outline:none;
+}
+
+.quick-card button{
+padding:15px;
+border:none;
+border-radius:12px;
+background:#0b52d6;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+}
+
+.quick-card button:hover{
+background:#083ea5;
+}
