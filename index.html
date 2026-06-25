@@ -1,264 +1,198 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InspecteurBot RDC | Inspection Générale du Travail</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InspecteurBot RDC | Plateforme</title>
 
-    <meta name="description"
-        content="Plateforme numérique de l'Inspection Générale du Travail de la République Démocratique du Congo">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/png" href="./images/logo-igt.png">
-    <link rel="stylesheet" href="./style.css">
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
+<div class="dashboard-layout">
 
-    <nav class="top-navbar">
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
 
-        <div class="nav-logo">
-            <img src="./images/logo-igt.png" alt="Logo IGT">
+<div class="sidebar-logo" style="text-align:center;">
 
-            <div>
-                <h2>InspecteurBot RDC</h2>
-                <p>Inspection Générale du Travail</p>
-            </div>
-        </div>
+<img src="images/batiment-igt.jpg"
+style="width:100%;height:220px;object-fit:cover;border-radius:18px;margin-bottom:15px;">
 
-        <ul>
+<h3>MENU PRINCIPAL</h3>
+</div>
 
-            <li>
-                <a href="./index.html">
-                    <i class="fa-solid fa-house"></i>
-                    Accueil
-                </a>
-            </li>
+<!-- MENU UNIQUE (sans doublon) -->
+<ul>
+<li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+<li><a href="entreprises.html"><i class="fa-solid fa-building"></i> Entreprises</a></li>
+<li><a href="inspections.html"><i class="fa-solid fa-clipboard-check"></i> Inspections</a></li>
+<li><a href="infractions.html"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="pv.html"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
+<li><a href="travailleurs.html"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
+<li><a href="inspecteurs.html"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
+<li><a href="controleurs.html"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
+<li><a href="fiches.html"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
+<li><a href="decompte.html"><i class="fa-solid fa-calculator"></i> Décompte Final</a></li>
+<li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
+</ul>
 
-            <li>
-                <a href="./login.html">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Connexion
-                </a>
-            </li>
+<!-- ================= 40 MESSAGES MOTIVATION ================= -->
+<div style="margin-top:20px;color:white;font-size:13px;line-height:1.5;">
+<p id="motivationBox">Bienvenue Inspecteur 👋</p>
+</div>
 
-            <li>
-                <a href="./register.html">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Inscription
-                </a>
-            </li>
+</aside>
 
-            <li>
-                <a href="./dashboard.html">
-                    <i class="fa-solid fa-chart-line"></i>
-                    Plateforme
-                </a>
-            </li>
+<!-- ================= CONTENU ================= -->
+<main class="main-content">
 
-        </ul>
+<!-- ================= BANNIÈRE (IGT LOGO SUPPRIMÉ COMME DEMANDÉ) ================= -->
+<section class="banner">
 
-    </nav>
+<img src="images/batiment-igt.jpg" class="banner-image">
 
-    <!-- HERO -->
+<div class="banner-overlay"></div>
 
-    <header class="hero">
+<div class="banner-content">
 
-        <img src="./images/batiment-igt.jpg"
-            class="hero-image"
-            alt="Bâtiment IGT">
+<div class="banner-left">
 
-        <div class="hero-overlay"></div>
+<!-- LOGO IGT SUPPRIMÉ ICI -->
+<h1>InspecteurBot RDC</h1>
+<h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
 
-        <img src="./images/logo-igt.png"
-            class="logo-watermark"
-            alt="Logo IGT">
+</div>
 
-        <div class="hero-content">
+</div>
 
-            <img src="./images/logo-igt.png"
-                class="logo"
-                alt="Logo IGT">
+</section>
 
-            <h1>INSPECTEURBOT RDC</h1>
+<!-- ================= STATISTIQUES DASHBOARD ================= -->
+<section class="dashboard-section">
 
-            <h3>INSPECTION GÉNÉRALE DU TRAVAIL</h3>
+<h2>TABLEAU DE BORD</h2>
 
-            <p>
-                Plateforme numérique de gestion des inspections,
-                des entreprises, des infractions et des
-                procès-verbaux de la République Démocratique du Congo.
-            </p>
+<div class="stats-grid">
 
-            <div class="hero-buttons">
+<div class="card"><i class="fa-solid fa-building blue"></i><div><h3>Entreprises</h3><h1 id="nbEntreprises">0</h1></div></div>
 
-                <a href="./login.html" class="btn-start">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Connexion
-                </a>
+<div class="card"><i class="fa-solid fa-clipboard-check green"></i><div><h3>Inspections</h3><h1 id="nbInspections">0</h1></div></div>
 
-                <a href="./register.html" class="btn-start">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Inscription
-                </a>
+<div class="card"><i class="fa-solid fa-triangle-exclamation orange"></i><div><h3>Infractions</h3><h1 id="nbInfractions">0</h1></div></div>
 
-            </div>
+<div class="card"><i class="fa-solid fa-file-signature purple"></i><div><h3>PV</h3><h1 id="nbPV">0</h1></div></div>
 
-        </div>
+<div class="card"><i class="fa-solid fa-users cyan"></i><div><h3>Travailleurs</h3><h1 id="nbTravailleurs">0</h1></div></div>
 
-    </header>
+<div class="card"><i class="fa-solid fa-user-shield dark"></i><div><h3>Inspecteurs</h3><h1 id="nbInspecteurs">0</h1></div></div>
 
-    <!-- CITATION -->
+<div class="card"><i class="fa-solid fa-user-tie dark"></i><div><h3>Contrôleurs</h3><h1 id="nbControleurs">0</h1></div></div>
 
-    <section class="notification">
+</div>
 
-        <div class="notification-box">
+</section>
 
-            <i class="fa-solid fa-lightbulb"></i>
+<!-- ================= ACCÈS RAPIDE (UNIQUE - SANS DOUBLON) ================= -->
+<section class="quick-section">
 
-            <p>
-                « Travailler pour la dignité, la justice sociale
-                et le développement de la République Démocratique du Congo. »
-            </p>
+<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
 
-        </div>
+<div class="quick-grid">
 
-    </section>
+<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><a href="entreprises.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><a href="inspections.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><a href="infractions.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><a href="pv.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><a href="travailleurs.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><a href="inspecteurs.html"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><a href="controleurs.html"><button>Accéder</button></a></div>
 
-    <!-- FONCTIONNALITÉS -->
+</div>
 
-    <section class="main-menu">
+</section>
 
-        <h2>
-            <i class="fa-solid fa-table-cells-large"></i>
-            NOS PRINCIPALES FONCTIONNALITÉS
-        </h2>
+<!-- ================= FOOTER RÉDUIT ================= -->
+<footer>
 
-        <div class="menu-grid">
+<div class="footer-content">
 
-            <div class="menu-card">
-                <i class="fa-solid fa-building"></i>
-                <h3>Entreprises</h3>
-                <p>
-                    Enregistrement et suivi des entreprises inspectées
-                    sur toute l'étendue du territoire.
-                </p>
-            </div>
+<img src="images/logo-igt.png" style="width:50px;">
 
-            <div class="menu-card">
-                <i class="fa-solid fa-clipboard-check"></i>
-                <h3>Inspections</h3>
-                <p>
-                    Planification et gestion intelligente
-                    des missions d'inspection.
-                </p>
-            </div>
+<h3>Inspection Générale du Travail</h3>
 
-            <div class="menu-card">
-                <i class="fa-solid fa-file-signature"></i>
-                <h3>Procès-Verbaux</h3>
-                <p>
-                    Création automatique et archivage
-                    des procès-verbaux.
-                </p>
-            </div>
+<p>InspecteurBot IA</p>
 
-            <div class="menu-card">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <h3>Infractions</h3>
-                <p>
-                    Consultation des infractions,
-                    sanctions et amendes prévues.
-                </p>
-            </div>
+<hr>
 
-            <div class="menu-card">
-                <i class="fa-solid fa-scale-balanced"></i>
-                <h3>Code du Travail</h3>
-                <p>
-                    Recherche rapide des articles
-                    et dispositions légales.
-                </p>
-            </div>
+<p>Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026</p>
 
-            <div class="menu-card">
-                <i class="fa-solid fa-robot"></i>
-                <h3>Assistant IA</h3>
-                <p>
-                    Un assistant intelligent capable
-                    d'aider les inspecteurs dans leurs missions.
-                </p>
-            </div>
+</div>
 
-        </div>
+</footer>
 
-    </section>
+</main>
 
-    <!-- STATISTIQUES -->
+</div>
 
-    <script>
+<!-- ================= SCRIPT MOTIVATION 40 PHRASES ================= -->
+<script>
 
-document.getElementById("nbEntreprises").textContent =
-JSON.parse(localStorage.getItem("entreprises") || "[]").length;
+const messages = [
+"Le travail construit la nation 🇨🇩",
+"La discipline fait la force d’un inspecteur",
+"Respect du code du travail obligatoire",
+"Chaque inspection protège un citoyen",
+"La rigueur change les sociétés",
+"Le Congo avance avec le travail",
+"Inspecter c’est protéger",
+"Justice sociale et travail bien fait",
+"Motivation et engagement",
+"Mission de contrôle en cours",
+"Chaque entreprise doit respecter la loi",
+"Travail = dignité",
+"Inspection = responsabilité",
+"Confiance et transparence",
+"Le progrès vient du travail sérieux",
+"Un bon inspecteur est rigoureux",
+"Les travailleurs méritent protection",
+"Zéro tolérance aux abus",
+"Contrôle et discipline",
+"Le travail bien fait paie toujours",
+"Engagement total",
+"Respect des normes",
+"Protection sociale",
+"Justice au travail",
+"Responsabilité professionnelle",
+"Éthique et rigueur",
+"Développement national",
+"Inspection active",
+"Travail sérieux obligatoire",
+"Chaque mission compte",
+"Organisation et discipline",
+"Sécurité avant tout",
+"Travail et dignité humaine",
+"Contrôle efficace",
+"Amour du travail",
+"Patrie et engagement",
+"Respect mutuel",
+"Inspection permanente",
+"Excellence au travail",
+"Vision et progrès"
+];
 
-document.getElementById("nbInspections").textContent =
-JSON.parse(localStorage.getItem("inspections") || "[]").length;
+let i = 0;
 
-document.getElementById("nbInfractions").textContent =
-JSON.parse(localStorage.getItem("infractions") || "[]").length;
-
-document.getElementById("nbPV").textContent =
-JSON.parse(localStorage.getItem("pv") || "[]").length;
-
-document.getElementById("nbTravailleurs").textContent =
-JSON.parse(localStorage.getItem("travailleurs") || "[]").length;
-
-let inspecteurs =
-JSON.parse(localStorage.getItem("inspecteurs") || "[]");
-
-document.getElementById("nbInspecteurs").textContent =
-inspecteurs.filter(
-i => i.statut === "Actif"
-).length;
+setInterval(()=>{
+document.getElementById("motivationBox").innerText = messages[i];
+i = (i + 1) % messages.length;
+}, 8000);
 
 </script>
 
-    </section>
-
-    <!-- FOOTER -->
-
-    <footer class="footer">
-
-        <img src="./images/logo-igt.png"
-            class="footer-logo"
-            alt="Logo IGT">
-
-        <h3>Inspection Générale du Travail</h3>
-
-        <p>InspecteurBot RDC</p>
-
-        <p>
-            Plateforme numérique des Inspecteurs du Travail
-            de la République Démocratique du Congo.
-        </p>
-
-        <hr>
-
-        <p>
-            Créé Par
-            <strong>Inspecteur Limengo (Pmiller)</strong>
-            © 2026
-        </p>
-
-    </footer>
-
 </body>
-                </html>                              
-                     
+  </html>
