@@ -6,19 +6,24 @@
 <title>InspecteurBot RDC | Tableau de Bord</title>
 
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
 /* ================= SLIDER ================= */
 .banner{
     position:relative;
-    height:0px;
-    overflow:hidden;display:none;
+    height:320px;
+    overflow:hidden;
+}
+
+.slider{
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
 }
 
 .slider img{
@@ -32,29 +37,30 @@ rel="stylesheet">
 
 .slider img.active{opacity:1;}
 
-/* ================= TIME ================= */
+/* TIME (minimal transparent top right) */
 .time-box{
     position:absolute;
     top:10px;
-    right:15px;
-    background:rgba(0,0,0,0.4);
+    right:10px;
+    background:rgba(0,0,0,0.25);
     padding:6px 10px;
     border-radius:10px;
-    color:white;
+    color:#fff;
     font-size:13px;
     text-align:right;
+    backdrop-filter: blur(6px);
 }
 
-/* ================= MOTIVATION ================= */
+/* MOTIVATION */
 .motivation{
     background:#0b3d91;
     color:white;
     text-align:center;
-    padding:8px;
-    font-size:13px;
+    padding:10px;
+    font-size:14px;
 }
 
-/* ================= WHATSAPP NOTIF ================= */
+/* WHATSAPP NOTIF */
 #notif-container{
     position:fixed;
     bottom:15px;
@@ -71,7 +77,7 @@ rel="stylesheet">
     border-radius:10px;
     font-size:12px;
     min-width:180px;
-    max-width:250px;
+    max-width:260px;
     animation:slide 0.4s ease, fade 0.5s ease 4.5s forwards;
 }
 
@@ -84,7 +90,19 @@ rel="stylesheet">
     to{opacity:0;transform:translateX(120%);}
 }
 
-/* ================= FOOTER SMALL ================= */
+/* QUICK ACCESS CENTER */
+.quick-section h2{
+    text-align:center;
+}
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:16px;
+    justify-content:center;
+}
+
+/* FOOTER SMALL */
 footer{
     padding:8px 0;
 }
@@ -92,8 +110,7 @@ footer h3{font-size:13px;}
 footer p{font-size:11px;}
 
 </style>
-
-<style>#clock,.clock,.datetime,.date-time{background:transparent!important;top:0!important}.quick-access,.acces-rapide{margin-top:10px!important}.quick-access .cards,.quick-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px}</style></head>
+</head>
 
 <body>
 
@@ -101,30 +118,8 @@ footer p{font-size:11px;}
 
 <!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
-
 <div class="sidebar-logo" style="text-align:center;">
-<div class="slider" id="sidebarSlider" style="width:100%;height:200px;position:relative;overflow:hidden;border-radius:18px;margin-bottom:10px;">
-<img src="images/photos_igt/1.jpg" class="active">
-<img src="images/photos_igt/2.jpg">
-<img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
-<img src="images/photos_igt/5.jpg">
-<img src="images/photos_igt/6.jpg">
-<img src="images/photos_igt/7.jpg">
-<img src="images/photos_igt/8.jpg">
-<img src="images/photos_igt/9.jpg">
-<img src="images/photos_igt/10.jpg">
-<img src="images/photos_igt/11.jpg">
-<img src="images/photos_igt/12.jpg">
-<img src="images/photos_igt/13.jpg">
-<img src="images/photos_igt/14.jpg">
-<img src="images/photos_igt/15.jpg">
-<img src="images/photos_igt/16.jpg">
-<img src="images/photos_igt/17.jpg">
-<img src="images/photos_igt/18.jpg">
-<img src="images/photos_igt/19.jpg">
-<img src="images/photos_igt/20.jpg">
-</div>
+
 <h3>MENU PRINCIPAL</h3>
 </div>
 
@@ -145,15 +140,17 @@ footer p{font-size:11px;}
 
 <!-- ================= MAIN ================= -->
 <main class="main-content">
-<div class="time-box" style="position:relative;display:block;margin:10px 0 10px auto;width:max-content;"> <div id="heure"></div><div id="date"></div></div>
 
-<!-- ================= SLIDER ================= -->
+<!-- ================= BANNER SLIDER ================= -->
 <section class="banner">
 
 <div class="slider" id="slider">
 
-<img src="images/photos_igt/1.jpg" class="active">
-<img src="images/photos_igt/2.jpg">
+<!-- IMAGES UPLOADED -->
+<img src="/mnt/data/1001864298.jpg" class="active">
+<img src="/mnt/data/1001863899.jpg">
+
+<!-- 18 IMAGES SUPPLÉMENTAIRES -->
 <img src="images/photos_igt/3.jpg">
 <img src="images/photos_igt/4.jpg">
 <img src="images/photos_igt/5.jpg">
@@ -175,7 +172,7 @@ footer p{font-size:11px;}
 
 </div>
 
-<!-- TIME TOP -->
+<!-- TIME TOP RIGHT -->
 <div class="time-box">
 <div id="heure"></div>
 <div id="date"></div>
@@ -183,7 +180,7 @@ footer p{font-size:11px;}
 
 </section>
 
-<!-- ================= MOTIVATION ================= -->
+<!-- ================= MOTIVATION 40 PHRASES ================= -->
 <div class="motivation">
 <span id="motivationText"></span>
 </div>
@@ -191,7 +188,7 @@ footer p{font-size:11px;}
 <!-- ================= ACCÈS RAPIDE ================= -->
 <section class="quick-section">
 
-<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
+<h2>ACCÈS RAPIDE</h2>
 
 <div class="quick-grid">
 
@@ -212,10 +209,7 @@ footer p{font-size:11px;}
 
 <div class="footer-content">
 
-<img src="images/logo-igt.png" class="footer-logo" style="width:35px;">
-
 <h3>Inspection Générale du Travail</h3>
-
 <p>InspecteurBot IA</p>
 
 <hr>
@@ -231,7 +225,7 @@ Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </main>
 </div>
 
-<!-- ================= NOTIFS ================= -->
+<!-- ================= NOTIFICATIONS ================= -->
 <div id="notif-container"></div>
 
 <script>
@@ -245,7 +239,7 @@ function update(){
 setInterval(update,1000);
 update();
 
-/* SLIDER 10s */
+/* SLIDER */
 let i = 0;
 const slides = document.querySelectorAll("#slider img");
 
@@ -253,19 +247,50 @@ setInterval(()=>{
     slides[i].classList.remove("active");
     i = (i+1)%slides.length;
     slides[i].classList.add("active");
-},9000);
+},10000);
 
-/* MOTIVATION */
+/* 40 MOTIVATION PHRASES */
 const msgs = [
-"Le travail construit la nation 🇨🇩","La discipline mène au succès","Inspecter, c’est protéger","Justice sociale et rigueur","L’avenir dépend du travail","Respect du code du travail","Motivation et courage 💼","Chaque mission compte","Phrase motivante 9","Phrase motivante 10","Phrase motivante 11","Phrase motivante 12","Phrase motivante 13","Phrase motivante 14","Phrase motivante 15","Phrase motivante 16","Phrase motivante 17","Phrase motivante 18","Phrase motivante 19","Phrase motivante 20","Phrase motivante 21","Phrase motivante 22","Phrase motivante 23","Phrase motivante 24","Phrase motivante 25","Phrase motivante 26","Phrase motivante 27","Phrase motivante 28","Phrase motivante 29","Phrase motivante 30","Phrase motivante 31","Phrase motivante 32","Phrase motivante 33","Phrase motivante 34","Phrase motivante 35","Phrase motivante 36","Phrase motivante 37","Phrase motivante 38","Phrase motivante 39","Phrase motivante 40",
 "Le travail construit la nation 🇨🇩",
 "La discipline mène au succès",
-"Inspecter, c’est protéger",
-"Justice sociale et rigueur",
+"Inspecter protège les travailleurs",
+"Justice et rigueur pour tous",
+"Chaque mission compte",
 "L’avenir dépend du travail",
 "Respect du code du travail",
-"Motivation et courage 💼",
-"Chaque mission compte"
+"Courage et détermination",
+"Travail sérieux = résultats",
+"Confiance et professionnalisme",
+"Motivation quotidienne",
+"Protéger les employés",
+"Amour de la patrie",
+"Inspection efficace",
+"Conscience professionnelle",
+"République forte par le travail",
+"Zéro négligence",
+"Chaque contrôle améliore la société",
+"Engagement total",
+"Travail bien fait",
+"Rigueur et discipline",
+"Service public",
+"Responsabilité",
+"Éthique professionnelle",
+"Justice sociale",
+"Développement national",
+"Respect des règles",
+"Travail honnête",
+"Inspection active",
+"Résultat positif",
+"Professionnalisme",
+"Mission accomplie",
+"Confiance",
+"Leadership",
+"Engagement",
+"Solidarité",
+"Performance",
+"Travail d’équipe",
+"Excellence",
+"Innovation"
 ];
 
 let m = 0;
@@ -274,8 +299,8 @@ setInterval(()=>{
     m = (m+1)%msgs.length;
 },8000);
 
-/* NOTIFICATIONS */
-const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt","Travail sérieux 💼"];
+/* NOTIF WHATSAPP */
+const notif = ["Mission active","Inspection en cours","Rapport prêt","Bienvenue 👋","Travail sérieux"];
 
 function show(){
     const box = document.createElement("div");
@@ -287,12 +312,8 @@ function show(){
 }
 
 setInterval(show,10000);
-let s=0;const ss=document.querySelectorAll("#sidebarSlider img");
-setInterval(()=>{ss[s].classList.remove("active");s=(s+1)%ss.length;ss[s].classList.add("active");},9000);
-
 
 </script>
 
 </body>
-    </html>
-    
+</html>
