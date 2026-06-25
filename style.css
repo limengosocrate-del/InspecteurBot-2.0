@@ -719,7 +719,7 @@ body{
     color:#0b52d6;
 }
 
-..menu-index{
+.menu-index{
 background:#1f2937;
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -728,7 +728,6 @@ padding:25px;
 justify-items:center;
 }
 
-.menu-index a{
 .menu-index a{
 width:95px;
 text-decoration:none;
@@ -740,7 +739,6 @@ gap:10px;
 padding:5px;
 }
 
-.menu-index a i{
 .menu-index a i{
 width:62px;
 height:62px;
@@ -1356,68 +1354,91 @@ cursor:pointer;
 background:#083ea5;
 }
 
-
- .quick-section{
-padding:25px;
-background:#111827;
-border-radius:30px;
-margin:25px;
+.quick-section{
+    padding:30px;
+    background:#111827;
+    border-radius:30px;
+    margin:20px;
 }
 
 .quick-section h2{
-color:#ffffff !important;
-}
-
- .quick-card::before{
-content:"";
-position:absolute;
-top:-100%;
-left:-100%;
-width:250%;
-height:250%;
-background:linear-gradient(
-45deg,
-transparent,
-rgba(255,255,255,.08),
-transparent
-);
-transform:rotate(45deg);
-transition:1s;
-}
-
-.quick-card:hover::before{
-top:100%;
-left:100%;
-}
-
-.quick-card:hover{
-transform:translateY(-12px) scale(1.03);
-box-shadow:0 20px 40px rgba(0,0,0,.45);
-}
-
-.quick-card i{
-font-size:40px;
-color:#60a5fa;
-margin-bottom:15px;
-transition:.4s;
-}
-
-.quick-card:hover i{
-transform:rotate(15deg) scale(1.2);
-color:#93c5fd;
- }
-
- @keyframes apparition{
-0%{
-opacity:0;
-transform:translateY(40px);
-}
-100%{
-opacity:1;
-transform:translateY(0);
-}
+    color:#ffffff !important;
 }
 
 .quick-card{
-animation:apparition .8s ease;
+    background:#1f2937;
+    color:#ffffff;
+    padding:25px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.30);
+    transition:.4s;
+    position:relative;
+    overflow:hidden;
 }
+
+.quick-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+
+.quick-card::before{
+    content:"";
+    position:absolute;
+    top:-120%;
+    left:-120%;
+    width:250%;
+    height:250%;
+    background:linear-gradient(
+        transparent,
+        rgba(255,255,255,.15),
+        transparent
+    );
+    transform:rotate(45deg);
+    transition:.8s;
+}
+
+.quick-card:hover::before{
+    top:-20%;
+    left:-20%;
+}
+
+.quick-card i{
+    font-size:38px;
+    color:#3b82f6;
+    margin-bottom:15px;
+    transition:.4s;
+}
+
+.quick-card:hover i{
+    transform:scale(1.2) rotate(10deg);
+}
+
+.quick-card h3{
+    color:#ffffff;
+    margin-bottom:12px;
+}
+
+.quick-card p{
+    color:#d1d5db;
+    line-height:1.8;
+}
+
+.quick-card button{
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#2563eb;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:.4s;
+}
+
+.quick-card button:hover{
+    transform:translateY(-5px) scale(1.05);
+    background:#3b82f6;
+    box-shadow:0 12px 30px rgba(59,130,246,.45);
+ }
+
+<div class="datetime-box">
