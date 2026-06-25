@@ -1,4 +1,4 @@
-/*=================================
+ /*=================================
       INSPECTEURBOT RDC
       STYLE DASHBOARD
 ==================================*/
@@ -698,53 +698,49 @@ body{
     color:#0b52d6;
 }
 
-/* MENU */
-
-.main-menu{
-    padding:70px 20px;
-}
-
-.main-menu h2{
-    text-align:center;
-    color:#142c7a;
-    margin-bottom:40px;
-}
-
-.menu-grid{
+.menu-index{
+    background:#061a44;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:25px;
-    max-width:1300px;
-    margin:auto;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    padding:20px;
+    justify-items:center;
 }
 
-.menu-card{
-    background:#fff;
-    padding:35px;
+.menu-index a{
+    width:78px;
+    text-decoration:none;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    background:none;
+    padding:0;
+}
+
+.menu-index a i{
+    width:60px;
+    height:60px;
+    background:rgba(255,255,255,.12);
     border-radius:20px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
     transition:.3s;
 }
 
-.menu-card:hover{
-    transform:translateY(-10px);
+.menu-index a span{
+    font-size:12px;
+    text-align:center;
 }
 
-.menu-card i{
-    font-size:50px;
-    color:#0b52d6;
-    margin-bottom:20px;
-}
-
-.menu-card h3{
-    color:#142c7a;
-    margin-bottom:15px;
-}
-
-.menu-card p{
-    line-height:1.7;
-    color:#666;
+.menu-index a:active i,
+.menu-index a:hover i{
+    background:#0b52d6;
+    transform:scale(1.08);
 }
 
 /* SECTION ASSISTANT */
@@ -1242,4 +1238,35 @@ body{
     transform:translateY(-3px);
 }
 
+/* Heure et date dans le slider */
+.banner{
+    position:relative;
+}
+
+.banner-time{
+    position:absolute;
+    top:15px;
+    right:15px;
+    z-index:20;
+    text-align:right;
+    background:rgba(0,0,0,.35);
+    backdrop-filter:blur(8px);
+    padding:10px 14px;
+    border-radius:14px;
+}
+
+#clock{
+    font-size:22px;
+    font-weight:700;
+    color:#fff;
+    line-height:1;
+}
+
+#date{
+    font-size:11px;
+    color:#e5e7eb;
+    margin-top:4px;
+
+
+}
    
