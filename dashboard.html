@@ -3,227 +3,296 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Dashboard</title>
+<title>InspecteurBot RDC PRO</title>
 
-<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ===== SLIDER ===== */
-.banner{
-    position:relative;
-    height:300px;
-    overflow:hidden;
+/* ================= GLOBAL ================= */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
+body{background:#eef3fb;}
+
+/* ================= LOGIN ================= */
+.login{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(120deg,#061a44,#0b4bd4);
 }
 
+.login-box{
+    background:#fff;
+    padding:40px;
+    border-radius:20px;
+    width:350px;
+    text-align:center;
+}
+
+.login-box h2{
+    margin-bottom:20px;
+}
+
+.login-box input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:10px;
+}
+
+.login-box button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#0b4bd4;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* ================= DASHBOARD ================= */
+.dashboard{
+    display:none;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#061a44;
+    color:white;
+    position:fixed;
+    padding:15px;
+}
+
+.sidebar img{width:100%;border-radius:12px;margin-bottom:10px;}
+
+.sidebar ul{list-style:none;margin-top:20px;}
+.sidebar ul li a{
+    display:block;
+    padding:12px;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+.sidebar ul li a:hover{background:#0b4bd4;}
+
+/* MAIN */
+.main{
+    margin-left:250px;
+    padding:20px;
+}
+
+/* SLIDER */
+.slider{
+    height:280px;
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+}
 .slider img{
     position:absolute;
     width:100%;
     height:100%;
     object-fit:cover;
     opacity:0;
-    transition:1s ease;
+    transition:1s;
 }
-
 .slider img.active{opacity:1;}
 
-/* ===== TIME TOP ===== */
-.time-box{
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:rgba(0,0,0,0.5);
-    color:white;
-    padding:6px 10px;
-    border-radius:8px;
-    font-size:14px;
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-top:20px;
 }
-
-/* ===== MOTIVATION ===== */
-.motivation{
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
     text-align:center;
-    padding:8px;
-    background:#0b3d91;
-    color:white;
-    font-size:14px;
 }
 
-/* ===== NOTIFS ===== */
-#notif-container{
+/* ACCES RAPIDE */
+.quick{
+    margin-top:20px;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+.box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+/* MOTIVATION */
+.motivation{
+    margin-top:15px;
+    background:#0b4bd4;
+    color:white;
+    padding:10px;
+    border-radius:10px;
+    text-align:center;
+}
+
+/* NOTIF */
+#notif{
     position:fixed;
     bottom:15px;
     right:15px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    z-index:9999;
 }
-
-.notif{
-    padding:8px 12px;
+.note{
+    background:#25D366;
+    padding:10px;
     border-radius:10px;
     color:white;
-    font-size:12px;
-    animation:fade 5s;
+    margin-top:10px;
 }
 
-@keyframes fade{
-    0%{opacity:1;}
-    100%{opacity:0;transform:translateX(100px);}
+/* BUTTON */
+.logout{
+    background:red;
+    color:white;
+    padding:10px;
+    text-align:center;
+    border-radius:10px;
+    margin-top:20px;
+    cursor:pointer;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="dashboard-layout">
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-
-<div style="text-align:center;">
-<h3>MENU PRINCIPAL</h3>
+<!-- ================= LOGIN ================= -->
+<div class="login" id="loginPage">
+    <div class="login-box">
+        <h2>InspecteurBot RDC</h2>
+        <input type="text" id="user" placeholder="Utilisateur">
+        <input type="password" id="pass" placeholder="Mot de passe">
+        <button onclick="login()">Connexion</button>
+    </div>
 </div>
 
+<!-- ================= DASHBOARD ================= -->
+<div class="dashboard" id="dashboard">
+
+<div class="sidebar">
+
+<img src="images/photos_igt/1.jpg">
+
 <ul>
-<li><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
-<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
-<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
-<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
-<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
-<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
-<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
-<li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
+<li><a href="#"><i class="fa fa-home"></i> Tableau de bord</a></li>
+<li><a href="#">Entreprises</a></li>
+<li><a href="#">Inspections</a></li>
+<li><a href="#">Infractions</a></li>
+<li><a href="#">Travailleurs</a></li>
 </ul>
 
-</aside>
+<div class="logout" onclick="logout()">Déconnexion</div>
 
-<!-- MAIN -->
-<main class="main-content">
+</div>
+
+<div class="main">
 
 <!-- SLIDER -->
-<section class="banner">
-
-<div class="slider" id="slider">
-
+<div class="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
-<img src="images/photos_igt/4.jpg">
-<img src="images/photos_igt/5.jpg">
-<img src="images/photos_igt/6.jpg">
-<img src="images/photos_igt/7.jpg">
-<img src="images/photos_igt/8.jpg">
-<img src="images/photos_igt/9.jpg">
-<img src="images/photos_igt/10.jpg">
-<img src="images/photos_igt/11.jpg">
-<img src="images/photos_igt/12.jpg">
-<img src="images/photos_igt/13.jpg">
-<img src="images/photos_igt/14.jpg">
-<img src="images/photos_igt/15.jpg">
-<img src="images/photos_igt/16.jpg">
-<img src="images/photos_igt/17.jpg">
-<img src="images/photos_igt/18.jpg">
-<img src="images/photos_igt/19.jpg">
-<img src="images/photos_igt/20.jpg">
+</div>
+
+<!-- STATS -->
+<div class="stats">
+<div class="card">Entreprises<br><b>1248</b></div>
+<div class="card">Inspections<br><b>532</b></div>
+<div class="card">Infractions<br><b>189</b></div>
+<div class="card">Travailleurs<br><b>12845</b></div>
+</div>
+
+<!-- MOTIVATION -->
+<div class="motivation" id="motivation">
+Le travail construit la nation
+</div>
+
+<!-- QUICK -->
+<div class="quick">
+<h2>Accès rapide</h2>
+<div class="grid">
+<div class="box">Entreprises</div>
+<div class="box">Inspections</div>
+<div class="box">Infractions</div>
+<div class="box">PV</div>
+</div>
+</div>
 
 </div>
 
-<!-- TIME -->
-<div class="time-box">
-<div id="heure"></div>
-<div id="date"></div>
 </div>
 
-</section>
-
-<!-- MOTIVATION 40 PHRASES -->
-<div class="motivation">
-<span id="motivationText"></span>
-</div>
-
-<!-- ACCÈS RAPIDE -->
-<section class="quick-section">
-
-<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
-
-<div class="quick-grid">
-
-<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3></div>
-<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3></div>
-<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3></div>
-<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3></div>
-<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3></div>
-<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3></div>
-
-</div>
-
-</section>
-
-<!-- FOOTER -->
-<footer style="padding:10px;text-align:center;">
-<p>Inspection Générale du Travail</p>
-<p>Créé par Inspecteur Limengo (Pmiller) © 2026</p>
-</footer>
-
-</main>
-</div>
-
-<!-- NOTIFS -->
-<div id="notif-container"></div>
+<!-- NOTIF -->
+<div id="notif"></div>
 
 <script>
 
-/* TIME */
-function update(){
-const d=new Date();
-document.getElementById("heure").innerText=d.toLocaleTimeString("fr-FR");
-document.getElementById("date").innerText=d.toLocaleDateString("fr-FR");
+/* LOGIN SIMPLE */
+function login(){
+    let u=document.getElementById("user").value;
+    let p=document.getElementById("pass").value;
+
+    if(u=="admin" && p=="1234"){
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("dashboard").style.display="block";
+    }else{
+        alert("Erreur connexion");
+    }
 }
-setInterval(update,1000);update();
+
+function logout(){
+    location.reload();
+}
 
 /* SLIDER */
 let i=0;
-const slides=document.querySelectorAll("#slider img");
+const slides=document.querySelectorAll(".slider img");
+
 setInterval(()=>{
 slides[i].classList.remove("active");
 i=(i+1)%slides.length;
 slides[i].classList.add("active");
-},10000);
+},4000);
 
-/* 40 MESSAGES */
-const msgs=[
-"Travail et discipline","Inspection active","Justice sociale","Courage Inspecteur",
-"Mission en cours","Contrôle terrain","Respect du travail","Sécurité avant tout",
-"Motivation 9","Motivation 10","Motivation 11","Motivation 12","Motivation 13","Motivation 14",
-"Motivation 15","Motivation 16","Motivation 17","Motivation 18","Motivation 19","Motivation 20",
-"Motivation 21","Motivation 22","Motivation 23","Motivation 24","Motivation 25","Motivation 26",
-"Motivation 27","Motivation 28","Motivation 29","Motivation 30","Motivation 31","Motivation 32",
-"Motivation 33","Motivation 34","Motivation 35","Motivation 36","Motivation 37","Motivation 38",
-"Motivation 39","Motivation 40"
+/* MOTIVATION */
+const msg=[
+"Le travail construit la nation",
+"La discipline mène au succès",
+"Inspecter protège les travailleurs",
+"Justice sociale"
 ];
 
 let m=0;
 setInterval(()=>{
-document.getElementById("motivationText").innerText=msgs[m];
-m=(m+1)%msgs.length;
-},8000);
+document.getElementById("motivation").innerText=msg[m];
+m=(m+1)%msg.length;
+},5000);
 
-/* NOTIFS */
-const notif=["Inspection en cours","Mission active","Rapport prêt","Travail sérieux"];
+/* NOTIF */
 setInterval(()=>{
-const box=document.createElement("div");
-box.className="notif";
-box.style.background=["#25D366","#128C7E","#FF9800","#2196F3"][Math.floor(Math.random()*4)];
-box.innerText=notif[Math.floor(Math.random()*notif.length)];
-document.getElementById("notif-container").appendChild(box);
-setTimeout(()=>box.remove(),5000);
-},10000);
+let n=document.createElement("div");
+n.className="note";
+n.innerText="Nouvelle activité";
+document.getElementById("notif").appendChild(n);
+setTimeout(()=>n.remove(),4000);
+},7000);
 
 </script>
 
