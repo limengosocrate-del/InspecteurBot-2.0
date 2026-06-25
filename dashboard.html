@@ -10,7 +10,7 @@
 
 <style>
 
-/* ================= GLOBAL ================= */
+/* GLOBAL */
 *{
     margin:0;
     padding:0;
@@ -19,11 +19,11 @@
 }
 
 body{
-    background:#041c5c; /* 🔵 BLEU GLOBAL */
+    background:#041c5c;
     color:white;
 }
 
-/* ================= SLIDER ================= */
+/* SLIDER */
 .banner{
     width:100%;
     height:240px;
@@ -44,7 +44,7 @@ body{
     opacity:1;
 }
 
-/* ================= MOTIVATION (EN HAUT MENU) ================= */
+/* MOTIVATION */
 .motivation{
     background:#0b3d91;
     text-align:center;
@@ -52,7 +52,7 @@ body{
     font-size:13px;
 }
 
-/* ================= MENU ================= */
+/* MENU */
 .menu-index{
     background:#061a44;
     display:flex;
@@ -75,10 +75,9 @@ body{
     background:#0b52d6;
 }
 
-/* ================= QUICK ACCESS ================= */
+/* QUICK */
 .quick-section{
     padding:15px;
-    text-align:center;
 }
 
 .quick-grid{
@@ -94,7 +93,7 @@ body{
     border-radius:12px;
 }
 
-/* ================= STATS ================= */
+/* STATS */
 .stats{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -110,7 +109,7 @@ body{
     text-align:center;
 }
 
-/* ================= NOTIF ================= */
+/* NOTIF */
 #notif{
     position:fixed;
     right:10px;
@@ -128,31 +127,24 @@ body{
     font-size:12px;
 }
 
-/* ================= FOOTER ================= */
+/* FOOTER EXACT */
 footer{
-    background:#02102d;
+    background:#041c5c;
+    color:#fff;
     text-align:center;
-    padding:20px;
-    margin-top:20px;
+    padding:50px 20px;
 }
 
-.footer-content img{
-    width:80px;
-    margin-bottom:10px;
+.footer-logo{
+    width:90px;
+    margin:auto;
+    margin-bottom:20px;
 }
 
-footer h3{
-    margin:5px 0;
-}
-
-footer p{
-    font-size:13px;
-    margin:3px 0;
-}
-
-hr{
-    margin:10px 0;
-    border:0.5px solid rgba(255,255,255,0.2);
+footer hr{
+    margin:25px auto;
+    width:300px;
+    border:1px solid rgba(255,255,255,.2);
 }
 
 </style>
@@ -160,7 +152,7 @@ hr{
 
 <body>
 
-<!-- ================= SLIDER ================= -->
+<!-- SLIDER -->
 <section class="banner">
 <div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
@@ -169,12 +161,12 @@ hr{
 </div>
 </section>
 
-<!-- ================= MOTIVATION (EN HAUT MENU) ================= -->
+<!-- MOTIVATION -->
 <div class="motivation">
 <span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- ================= MENU ================= -->
+<!-- MENU -->
 <nav class="menu-index">
 
 <a href="#"><i class="fa fa-home"></i> Tableau de bord</a>
@@ -187,19 +179,17 @@ hr{
 
 </nav>
 
-<!-- ================= QUICK ================= -->
+<!-- QUICK -->
 <section class="quick-section">
-
 <div class="quick-grid">
 <div class="quick-card">Entreprises</div>
 <div class="quick-card">Inspections</div>
 <div class="quick-card">Infractions</div>
 <div class="quick-card">Travailleurs</div>
 </div>
-
 </section>
 
-<!-- ================= STATS ================= -->
+<!-- STATS -->
 <section class="stats">
 <div class="stat">Entreprises <br><b>1248</b></div>
 <div class="stat">Inspections <br><b>532</b></div>
@@ -207,10 +197,10 @@ hr{
 <div class="stat">PV <br><b>317</b></div>
 </section>
 
-<!-- ================= NOTIF ================= -->
+<!-- NOTIF -->
 <div id="notif"></div>
 
-<!-- ================= FOOTER EXACT ================= -->
+<!-- FOOTER (AJOUT EXACT) -->
 <footer>
 
 <div class="footer-content">
@@ -245,7 +235,6 @@ Inspecteur Limengo (Pmiller)
 
 <script>
 
-/* MOTIVATION 40 */
 const msg = Array.from({length:40},(_,i)=>
 "Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
 );
@@ -256,7 +245,6 @@ setInterval(()=>{
     m=(m+1)%msg.length;
 },3000);
 
-/* NOTIF */
 const notif=["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
 
 setInterval(()=>{
@@ -270,4 +258,4 @@ setInterval(()=>{
 </script>
 
 </body>
-    </html>
+</html>
