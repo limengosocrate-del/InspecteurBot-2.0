@@ -7,29 +7,59 @@
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ===== GLOBAL ===== */
+/* ================= GLOBAL ================= */
 body{
     margin:0;
-    font-family:Poppins;
     background:#edf2f9;
+    font-family:Poppins, sans-serif;
 }
 
-/* ===== SLIDER FULL WIDTH ===== */
+/* ================= LAYOUT ================= */
+.dashboard-layout{
+    display:flex;
+}
+
+/* ================= SIDEBAR (réduit) ================= */
+.sidebar{
+    width:240px;
+    background:#041c5c;
+    color:#fff;
+    position:fixed;
+    height:100%;
+    overflow-y:auto;
+    padding:10px;
+}
+
+.sidebar h3{
+    font-size:14px;
+    padding:10px;
+}
+
+.sidebar ul li a{
+    padding:10px 12px;
+    font-size:13px;
+    display:flex;
+    gap:10px;
+}
+
+/* ================= MAIN ================= */
+.main-content{
+    margin-left:240px;
+    width:100%;
+    padding:12px;
+}
+
+/* ================= SLIDER (moins haut) ================= */
 .banner{
     width:100%;
-    height:320px;
+    height:200px; /* 🔥 réduit */
     position:relative;
     overflow:hidden;
-}
-
-.slider{
-    width:100%;
-    height:100%;
-    position:absolute;
+    border-radius:15px;
+    margin-bottom:8px;
 }
 
 .slider img{
@@ -45,75 +75,51 @@ body{
     opacity:1;
 }
 
-/* ===== MOTIVATION ===== */
+/* ================= MOTIVATION ================= */
 .motivation{
     background:#0b3d91;
-    color:white;
+    color:#fff;
     text-align:center;
-    padding:12px;
-    font-size:14px;
+    padding:6px;
+    font-size:13px;
+    margin-bottom:10px;
+    border-radius:10px;
 }
 
-/* ===== MENU INDEX (SOUS SLIDER) ===== */
-.menu-index{
-    background:#041c5c;
-    padding:15px;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
-}
-
-.menu-index a{
-    color:white;
-    text-decoration:none;
-    padding:10px 15px;
-    border-radius:8px;
-    background:rgba(255,255,255,0.1);
-    font-size:14px;
-}
-
-.menu-index a:hover{
-    background:#0b52d6;
-}
-
-/* ===== ACCES RAPIDE ===== */
-.quick-section{
-    padding:20px;
-    text-align:center;
-}
-
+/* ================= STATS + QUICK ACCESS ================= */
+.stats-grid,
 .quick-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:15px;
-    margin-top:15px;
+    gap:10px; /* 🔥 réduit */
 }
 
-.quick-card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+/* cards plus compactes */
+.quick-grid div{
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
+    text-align:center;
+    font-size:13px;
 }
 
-/* ===== NOTIFICATIONS ===== */
+/* ================= NOTIF WHATSAPP ================= */
 #notif-container{
     position:fixed;
-    bottom:20px;
-    right:20px;
+    bottom:10px;
+    right:10px;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:6px;
 }
 
 .notif{
     background:#25D366;
-    color:white;
-    padding:10px;
-    border-radius:10px;
-    font-size:13px;
-    animation:slideUp 0.5s ease;
+    color:#fff;
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:12px;
+    animation:slideUp .4s ease, fade .5s ease 4.5s forwards;
 }
 
 @keyframes slideUp{
@@ -121,14 +127,39 @@ body{
     to{transform:translateY(0);opacity:1;}
 }
 
+@keyframes fade{
+    to{opacity:0;}
+}
+
 </style>
+
 </head>
 
 <body>
 
-<!-- ================= SLIDER ================= -->
-<section class="banner">
+<div class="dashboard-layout">
 
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+<h3>MENU PRINCIPAL</h3>
+
+<ul style="list-style:none;padding:0;margin:0;">
+<li><a href="#"><i class="fa fa-home"></i> Tableau</a></li>
+<li><a href="#"><i class="fa fa-building"></i> Entreprises</a></li>
+<li><a href="#"><i class="fa fa-clipboard"></i> Inspections</a></li>
+<li><a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa fa-users"></i> Travailleurs</a></li>
+<li><a href="#" style="color:red;"><i class="fa fa-power-off"></i> Déconnexion</a></li>
+</ul>
+
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+
+<!-- SLIDER -->
+<section class="banner">
 <div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
@@ -151,82 +182,70 @@ body{
 <img src="images/photos_igt/19.jpg">
 <img src="images/photos_igt/20.jpg">
 </div>
-
 </section>
 
-<!-- ================= MOTIVATION ================= -->
+<!-- MOTIVATION -->
 <div class="motivation">
 <span id="motivationText"></span>
 </div>
 
-<!-- ================= MENU INDEX (DEPLACÉ ICI) ================= -->
-<nav class="menu-index">
+<!-- STATS -->
+<div class="stats-grid">
+<div>Entreprises</div>
+<div>Inspections</div>
+<div>Infractions</div>
+</div>
 
-<a href="#"><i class="fa fa-home"></i> Tableau de bord</a>
-<a href="#"><i class="fa fa-building"></i> Entreprises</a>
-<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
-<a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
-<a href="#"><i class="fa fa-users"></i> Travailleurs</a>
-<a href="#" style="background:red;"><i class="fa fa-power-off"></i> Déconnexion</a>
-
-</nav>
-
-<!-- ================= ACCES RAPIDE ================= -->
-<section class="quick-section">
-
-<h2>ACCÈS RAPIDE</h2>
+<!-- ACCÈS RAPIDE -->
+<h3 style="text-align:center;margin:10px 0;">ACCÈS RAPIDE</h3>
 
 <div class="quick-grid">
+<div>Entreprises</div>
+<div>Inspections</div>
+<div>Infractions</div>
+<div>Travailleurs</div>
+<div>Inspecteurs</div>
+<div>PV</div>
+</div>
 
-<div class="quick-card">Entreprises</div>
-<div class="quick-card">Inspections</div>
-<div class="quick-card">Infractions</div>
-<div class="quick-card">PV</div>
-<div class="quick-card">Travailleurs</div>
-<div class="quick-card">Inspecteurs</div>
+</main>
 
 </div>
 
-</section>
-
-<!-- ================= NOTIFS ================= -->
+<!-- NOTIF -->
 <div id="notif-container"></div>
 
 <script>
 
 /* SLIDER */
-let i = 0;
-const slides = document.querySelectorAll("#slider img");
+let i=0;
+const slides=document.querySelectorAll("#slider img");
 
 setInterval(()=>{
     slides[i].classList.remove("active");
-    i = (i + 1) % slides.length;
+    i=(i+1)%slides.length;
     slides[i].classList.add("active");
-},10000);
+},8000);
 
-/* MOTIVATION 40 PHRASES */
-const msg = Array.from({length:40},(_,i)=>
-"Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
-);
+/* MOTIVATION */
+const msg=Array.from({length:40},(_,i)=>"Motivation "+(i+1));
+let m=0;
 
-let m = 0;
 setInterval(()=>{
-    document.getElementById("motivationText").innerText = msg[m];
-    m = (m + 1) % msg.length;
-},5000);
+    document.getElementById("motivationText").innerText=msg[m];
+    m=(m+1)%msg.length;
+},4000);
 
-/* NOTIFICATIONS */
-const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
-
+/* NOTIF */
 setInterval(()=>{
     const box=document.createElement("div");
     box.className="notif";
-    box.innerText=notif[Math.floor(Math.random()*notif.length)];
+    box.innerText="WhatsApp ✔ Notification";
     document.getElementById("notif-container").appendChild(box);
-    setTimeout(()=>box.remove(),5000);
-},10000);
+    setTimeout(()=>box.remove(),4000);
+},9000);
 
 </script>
 
 </body>
-</html>
+    </html>
