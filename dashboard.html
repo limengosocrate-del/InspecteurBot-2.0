@@ -3,169 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC PRO</title>
+<title>InspecteurBot RDC PRO MAX</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= GLOBAL ================= */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
-body{background:#eef3fb;}
-
-/* ================= LOGIN ================= */
-.login{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(120deg,#061a44,#0b4bd4);
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins;
 }
 
-.login-box{
-    background:#fff;
-    padding:40px;
-    border-radius:20px;
-    width:350px;
-    text-align:center;
+body{
+background:#eef3fb;
+overflow-x:hidden;
 }
 
-.login-box h2{
-    margin-bottom:20px;
-}
-
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #ccc;
-    border-radius:10px;
-}
-
-.login-box button{
-    width:100%;
-    padding:12px;
-    border:none;
-    background:#0b4bd4;
-    color:white;
-    border-radius:10px;
-    cursor:pointer;
-}
-
-/* ================= DASHBOARD ================= */
+/* ================= LAYOUT ================= */
 .dashboard{
-    display:none;
+display:flex;
 }
 
-/* SIDEBAR */
+/* ================= SIDEBAR ================= */
 .sidebar{
-    width:250px;
-    height:100vh;
-    background:#061a44;
-    color:white;
-    position:fixed;
-    padding:15px;
+width:260px;
+height:100vh;
+position:fixed;
+background:#061a44;
+color:white;
+padding:15px;
+overflow-y:auto;
 }
 
-.sidebar img{width:100%;border-radius:12px;margin-bottom:10px;}
+.sidebar img{
+width:100%;
+border-radius:12px;
+margin-bottom:10px;
+}
 
-.sidebar ul{list-style:none;margin-top:20px;}
+.sidebar ul{
+list-style:none;
+}
+
 .sidebar ul li a{
-    display:block;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-    border-radius:8px;
+display:flex;
+gap:10px;
+padding:12px;
+color:white;
+text-decoration:none;
+border-radius:8px;
 }
-.sidebar ul li a:hover{background:#0b4bd4;}
 
-/* MAIN */
+.sidebar ul li a:hover{
+background:#0b4bd4;
+}
+
+/* ================= MAIN ================= */
 .main{
-    margin-left:250px;
-    padding:20px;
+margin-left:260px;
+width:100%;
 }
 
-/* SLIDER */
+/* ================= SLIDER FULL WIDTH FIX ================= */
 .slider{
-    height:280px;
-    position:relative;
-    overflow:hidden;
-    border-radius:20px;
+position:relative;
+width:100%;
+height:480px; /* 🔥 plus grand */
+overflow:hidden;
+border-radius:0;
 }
+
 .slider img{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    opacity:0;
-    transition:1s;
+position:absolute;
+width:100%;
+height:100%;
+object-fit:contain; /* 🔥 STOP ZOOM */
+background:#061a44;
+opacity:0;
+transition:1s;
 }
-.slider img.active{opacity:1;}
 
-/* STATS */
+.slider img.active{
+opacity:1;
+}
+
+/* overlay pro */
+.slider::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.7));
+z-index:2;
+}
+
+/* ================= STATS ================= */
 .stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-top:20px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+padding:20px;
 }
+
 .card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
+background:white;
+padding:20px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* ACCES RAPIDE */
-.quick{
-    margin-top:20px;
-}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-.box{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    text-align:center;
-}
-
-/* MOTIVATION */
+/* ================= MOTIVATION ================= */
 .motivation{
-    margin-top:15px;
-    background:#0b4bd4;
-    color:white;
-    padding:10px;
-    border-radius:10px;
-    text-align:center;
+background:#0b4bd4;
+color:white;
+text-align:center;
+padding:10px;
+margin:10px;
+border-radius:10px;
 }
 
-/* NOTIF */
+/* ================= ACCES RAPIDE ================= */
+.quick{
+padding:20px;
+}
+
+.quick h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:15px;
+text-align:center;
+}
+
+/* ================= NOTIFICATIONS ================= */
 #notif{
-    position:fixed;
-    bottom:15px;
-    right:15px;
-}
-.note{
-    background:#25D366;
-    padding:10px;
-    border-radius:10px;
-    color:white;
-    margin-top:10px;
+position:fixed;
+bottom:15px;
+right:15px;
+z-index:9999;
 }
 
-/* BUTTON */
-.logout{
-    background:red;
-    color:white;
-    padding:10px;
-    text-align:center;
-    border-radius:10px;
-    margin-top:20px;
-    cursor:pointer;
+.note{
+background:#25D366;
+padding:10px;
+border-radius:10px;
+color:white;
+margin-top:10px;
+animation:fade 5s forwards;
+}
+
+@keyframes fade{
+0%{transform:translateX(100%);opacity:0;}
+10%{transform:translateX(0);opacity:1;}
+100%{opacity:0;transform:translateX(100%);}
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+.sidebar{display:none;}
+.main{margin-left:0;}
+.stats{grid-template-columns:repeat(2,1fr);}
+.grid{grid-template-columns:repeat(2,1fr);}
 }
 
 </style>
@@ -173,19 +185,9 @@ body{background:#eef3fb;}
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div class="login" id="loginPage">
-    <div class="login-box">
-        <h2>InspecteurBot RDC</h2>
-        <input type="text" id="user" placeholder="Utilisateur">
-        <input type="password" id="pass" placeholder="Mot de passe">
-        <button onclick="login()">Connexion</button>
-    </div>
-</div>
+<div class="dashboard">
 
-<!-- ================= DASHBOARD ================= -->
-<div class="dashboard" id="dashboard">
-
+<!-- SIDEBAR -->
 <div class="sidebar">
 
 <img src="images/photos_igt/1.jpg">
@@ -198,17 +200,33 @@ body{background:#eef3fb;}
 <li><a href="#">Travailleurs</a></li>
 </ul>
 
-<div class="logout" onclick="logout()">Déconnexion</div>
-
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
-<!-- SLIDER -->
+<!-- SLIDER FULL WIDTH -->
 <div class="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
+<img src="images/photos_igt/4.jpg">
+<img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 </div>
 
 <!-- STATS -->
@@ -224,19 +242,18 @@ body{background:#eef3fb;}
 Le travail construit la nation
 </div>
 
-<!-- QUICK -->
+<!-- ACCES RAPIDE -->
 <div class="quick">
-<h2>Accès rapide</h2>
+<h2>ACCÈS RAPIDE</h2>
 <div class="grid">
 <div class="box">Entreprises</div>
 <div class="box">Inspections</div>
 <div class="box">Infractions</div>
-<div class="box">PV</div>
+<div class="box">Travailleurs</div>
 </div>
 </div>
 
 </div>
-
 </div>
 
 <!-- NOTIF -->
@@ -244,24 +261,7 @@ Le travail construit la nation
 
 <script>
 
-/* LOGIN SIMPLE */
-function login(){
-    let u=document.getElementById("user").value;
-    let p=document.getElementById("pass").value;
-
-    if(u=="admin" && p=="1234"){
-        document.getElementById("loginPage").style.display="none";
-        document.getElementById("dashboard").style.display="block";
-    }else{
-        alert("Erreur connexion");
-    }
-}
-
-function logout(){
-    location.reload();
-}
-
-/* SLIDER */
+/* SLIDER 10s */
 let i=0;
 const slides=document.querySelectorAll(".slider img");
 
@@ -269,32 +269,32 @@ setInterval(()=>{
 slides[i].classList.remove("active");
 i=(i+1)%slides.length;
 slides[i].classList.add("active");
-},4000);
+},10000);
 
 /* MOTIVATION */
 const msg=[
 "Le travail construit la nation",
 "La discipline mène au succès",
 "Inspecter protège les travailleurs",
-"Justice sociale"
+"Respect du travail"
 ];
 
 let m=0;
 setInterval(()=>{
 document.getElementById("motivation").innerText=msg[m];
 m=(m+1)%msg.length;
-},5000);
+},6000);
 
-/* NOTIF */
+/* NOTIFICATIONS */
 setInterval(()=>{
 let n=document.createElement("div");
 n.className="note";
-n.innerText="Nouvelle activité";
+n.innerText="Nouvelle activité détectée";
 document.getElementById("notif").appendChild(n);
-setTimeout(()=>n.remove(),4000);
-},7000);
+setTimeout(()=>n.remove(),5000);
+},8000);
 
 </script>
 
 </body>
-    </html>
+</html>
