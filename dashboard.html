@@ -1,64 +1,259 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>InspecteurBot RDC | Dashboard</title>
 
-<link rel="stylesheet" href="style.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+
+/* ================= GLOBAL ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#041c5c;
+color:#fff;
+}
+
+/* ================= SLIDER ================= */
+.banner{
+width:100%;
+height:260px;
+overflow:hidden;
+position:relative;
+}
+
+.slider img{
+width:100%;
+height:260px;
+object-fit:cover;
+position:absolute;
+opacity:0;
+transition:1s ease;
+}
+
+.slider img.active{
+opacity:1;
+}
+
+/* ================= MOTIVATION ================= */
+.motivation{
+background:#0b3d91;
+text-align:center;
+padding:10px;
+font-size:13px;
+}
+
+/* ================= MENU ================= */
+.menu-index{
+background:#061a44;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:8px;
+padding:10px;
+}
+
+.menu-index a{
+color:#fff;
+text-decoration:none;
+padding:8px 12px;
+background:rgba(255,255,255,0.08);
+border-radius:8px;
+font-size:13px;
+transition:.3s;
+}
+
+.menu-index a:hover{
+background:#0b52d6;
+}
+
+/* ================= QUICK ================= */
+.quick-section{
+padding:15px;
+}
+
+.quick-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.quick-card{
+background:#fff;
+color:#000;
+padding:15px;
+border-radius:12px;
+text-align:center;
+}
+
+.quick-card i{
+font-size:22px;
+color:#0b52d6;
+margin-bottom:8px;
+}
+
+/* ================= STATS ================= */
+.stats{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+padding:15px;
+}
+
+.stat{
+background:#fff;
+color:#000;
+padding:15px;
+border-radius:12px;
+text-align:center;
+}
+
+/* ================= ACTIVITÉS ================= */
+.activity{
+margin:15px;
+background:#fff;
+color:#000;
+padding:15px;
+border-radius:12px;
+}
+
+.activity h3{
+margin-bottom:10px;
+color:#0b52d6;
+}
+
+.activity ul{
+list-style:none;
+}
+
+.activity ul li{
+padding:8px 0;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+/* ================= NOTIF ================= */
+#notif{
+position:fixed;
+right:10px;
+bottom:10px;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.msg{
+background:#25D366;
+color:#fff;
+padding:8px 12px;
+border-radius:10px;
+font-size:12px;
+}
+
+/* ================= FOOTER ================= */
+footer{
+background:#041c5c;
+text-align:center;
+padding:40px 20px;
+}
+
+.footer-logo{
+width:80px;
+margin-bottom:10px;
+}
+
+footer hr{
+margin:20px auto;
+width:250px;
+border:1px solid rgba(255,255,255,0.2);
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- ================= SLIDER ================= -->
+<!-- SLIDER 20 IMAGES -->
 <section class="banner">
-
 <div class="slider" id="slider">
+
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
-</div>
+<img src="images/photos_igt/4.jpg">
+<img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 
+</div>
 </section>
 
-<!-- ================= MOTIVATION ================= -->
+<!-- MOTIVATION -->
 <div class="motivation">
 <span id="motivationText">Le travail construit la nation 🇨🇩</span>
 </div>
 
-<!-- ================= MENU ================= -->
+<!-- MENU -->
 <nav class="menu-index">
-
 <a href="#"><i class="fa fa-home"></i> Dashboard</a>
 <a href="#"><i class="fa fa-building"></i> Entreprises</a>
 <a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
 <a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
 <a href="#"><i class="fa fa-users"></i> Travailleurs</a>
 <a href="#"><i class="fa fa-file"></i> PV</a>
-
+<a href="#"><i class="fa fa-scale-balanced"></i> Code</a>
 </nav>
 
-<!-- ================= QUICK ================= -->
+<!-- QUICK -->
 <section class="quick-section">
-
 <div class="quick-grid">
 
-<div class="quick-card">Entreprises</div>
-<div class="quick-card">Inspections</div>
-<div class="quick-card">Infractions</div>
-<div class="quick-card">Travailleurs</div>
-
+<div class="quick-card">
+<i class="fa fa-building"></i>
+<p>Entreprises</p>
 </div>
 
+<div class="quick-card">
+<i class="fa fa-clipboard"></i>
+<p>Inspections</p>
+</div>
+
+<div class="quick-card">
+<i class="fa fa-triangle-exclamation"></i>
+<p>Infractions</p>
+</div>
+
+<div class="quick-card">
+<i class="fa fa-users"></i>
+<p>Travailleurs</p>
+</div>
+
+</div>
 </section>
 
-<!-- ================= STATS ================= -->
+<!-- STATS -->
 <section class="stats">
 
 <div class="stat">Entreprises <br><b>1248</b></div>
@@ -68,79 +263,62 @@
 
 </section>
 
-<!-- ================= NOTIFICATIONS ================= -->
+<!-- ACTIVITÉS -->
+<div class="activity">
+<h3>Activités récentes</h3>
+<ul>
+<li>✔ Inspection terminée - Kinshasa</li>
+<li>✔ Nouvelle entreprise enregistrée</li>
+<li>⚠ Infraction détectée - Lubumbashi</li>
+<li>✔ Rapport PV généré</li>
+</ul>
+</div>
+
+<!-- NOTIF -->
 <div id="notif"></div>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 <footer>
-
 <img src="images/logo-igt.png" class="footer-logo">
-
 <h3>Inspection Générale du Travail</h3>
-
 <p>InspecteurBot IA</p>
-
-<p>Assistant Intelligent des Inspecteurs du Travail</p>
-
 <hr>
-
-<p>
-Créé par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
-</p>
-
+<p>© 2026 - Inspecteur Limengo (Pmiller)</p>
 </footer>
 
-<!-- ================= JS ================= -->
 <script>
-/* SLIDER */
-let slides = document.querySelectorAll(".slider img");
+
+/* ================= SLIDER 20 IMAGES ================= */
+let images = document.querySelectorAll(".slider img");
 let index = 0;
 
 setInterval(() => {
-
-slides[index].classList.remove("active");
-
-index = (index + 1) % slides.length;
-
-slides[index].classList.add("active");
-
-}, 4000);
-
-/* MOTIVATION */
-const messages = [
-"Le travail construit la nation 🇨🇩",
-"L'intégrité est la base de l'inspection",
-"Chaque mission compte",
-"Respect du Code du Travail",
-"Protéger les travailleurs"
-];
-
-setInterval(() => {
-
-document.getElementById("motivationText").innerText =
-messages[Math.floor(Math.random() * messages.length)];
-
+images[index].classList.remove("active");
+index = (index + 1) % images.length;
+images[index].classList.add("active");
 }, 3000);
 
-/* NOTIFICATIONS */
-const notif = [
-"Bienvenue 👋",
-"Mission active",
-"Inspection en cours",
-"Rapport prêt"
-];
+/* ================= MOTIVATION ================= */
+const msg = Array.from({length:40},(_,i)=>
+"Le travail construit la nation 🇨🇩 - Motivation "+(i+1)
+);
 
-setInterval(() => {
+let m=0;
+setInterval(()=>{
+document.getElementById("motivationText").innerText=msg[m];
+m=(m+1)%msg.length;
+},3000);
 
-let box = document.createElement("div");
-box.className = "msg";
-box.innerText = notif[Math.floor(Math.random() * notif.length)];
+/* ================= NOTIFICATIONS ================= */
+const notif=["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
 
+setInterval(()=>{
+let box=document.createElement("div");
+box.className="msg";
+box.innerText=notif[Math.floor(Math.random()*notif.length)];
 document.getElementById("notif").appendChild(box);
-
-setTimeout(() => box.remove(), 4000);
-
-}, 6000);
+setTimeout(()=>box.remove(),4000);
+},6000);
 
 </script>
 
