@@ -3,27 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InspecteurBot RDC | Tableau de Bord</title>
+<title>InspecteurBot RDC | Dashboard</title>
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-/* ================= SLIDER ================= */
+/* ===== SLIDER ===== */
 .banner{
     position:relative;
-    height:320px;
+    height:300px;
     overflow:hidden;
-}
-
-.slider{
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
-    left:0;
 }
 
 .slider img{
@@ -32,99 +23,73 @@
     height:100%;
     object-fit:cover;
     opacity:0;
-    transition:opacity 1s ease;
+    transition:1s ease;
 }
 
 .slider img.active{opacity:1;}
 
-/* TIME (minimal transparent top right) */
+/* ===== TIME TOP ===== */
 .time-box{
     position:absolute;
     top:10px;
     right:10px;
-    background:rgba(0,0,0,0.25);
-    padding:6px 10px;
-    border-radius:10px;
-    color:#fff;
-    font-size:13px;
-    text-align:right;
-    backdrop-filter: blur(6px);
-}
-
-/* MOTIVATION */
-.motivation{
-    background:#0b3d91;
+    background:rgba(0,0,0,0.5);
     color:white;
-    text-align:center;
-    padding:10px;
+    padding:6px 10px;
+    border-radius:8px;
     font-size:14px;
 }
 
-/* WHATSAPP NOTIF */
+/* ===== MOTIVATION ===== */
+.motivation{
+    text-align:center;
+    padding:8px;
+    background:#0b3d91;
+    color:white;
+    font-size:14px;
+}
+
+/* ===== NOTIFS ===== */
 #notif-container{
     position:fixed;
     bottom:15px;
     right:15px;
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:8px;
     z-index:9999;
 }
 
 .notif{
-    color:#fff;
     padding:8px 12px;
     border-radius:10px;
+    color:white;
     font-size:12px;
-    min-width:180px;
-    max-width:260px;
-    animation:slide 0.4s ease, fade 0.5s ease 4.5s forwards;
-}
-
-@keyframes slide{
-    from{transform:translateX(120%);opacity:0;}
-    to{transform:translateX(0);opacity:1;}
+    animation:fade 5s;
 }
 
 @keyframes fade{
-    to{opacity:0;transform:translateX(120%);}
+    0%{opacity:1;}
+    100%{opacity:0;transform:translateX(100px);}
 }
-
-/* QUICK ACCESS CENTER */
-.quick-section h2{
-    text-align:center;
-}
-
-.quick-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:16px;
-    justify-content:center;
-}
-
-/* FOOTER SMALL */
-footer{
-    padding:8px 0;
-}
-footer h3{font-size:13px;}
-footer p{font-size:11px;}
 
 </style>
+
 </head>
 
 <body>
 
 <div class="dashboard-layout">
 
-<!-- ================= SIDEBAR ================= -->
+<!-- SIDEBAR -->
 <aside class="sidebar">
-<div class="sidebar-logo" style="text-align:center;">
 
+<div style="text-align:center;">
 <h3>MENU PRINCIPAL</h3>
 </div>
 
 <ul>
-<li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+<li><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
 <li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
 <li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
 <li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
@@ -138,19 +103,16 @@ footer p{font-size:11px;}
 
 </aside>
 
-<!-- ================= MAIN ================= -->
+<!-- MAIN -->
 <main class="main-content">
 
-<!-- ================= BANNER SLIDER ================= -->
+<!-- SLIDER -->
 <section class="banner">
 
 <div class="slider" id="slider">
 
-<!-- IMAGES UPLOADED -->
-<img src="/mnt/data/1001864298.jpg" class="active">
-<img src="/mnt/data/1001863899.jpg">
-
-<!-- 18 IMAGES SUPPLÉMENTAIRES -->
+<img src="images/photos_igt/1.jpg" class="active">
+<img src="images/photos_igt/2.jpg">
 <img src="images/photos_igt/3.jpg">
 <img src="images/photos_igt/4.jpg">
 <img src="images/photos_igt/5.jpg">
@@ -172,7 +134,7 @@ footer p{font-size:11px;}
 
 </div>
 
-<!-- TIME TOP RIGHT -->
+<!-- TIME -->
 <div class="time-box">
 <div id="heure"></div>
 <div id="date"></div>
@@ -180,140 +142,90 @@ footer p{font-size:11px;}
 
 </section>
 
-<!-- ================= MOTIVATION 40 PHRASES ================= -->
+<!-- MOTIVATION 40 PHRASES -->
 <div class="motivation">
 <span id="motivationText"></span>
 </div>
 
-<!-- ================= ACCÈS RAPIDE ================= -->
+<!-- ACCÈS RAPIDE -->
 <section class="quick-section">
 
-<h2>ACCÈS RAPIDE</h2>
+<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
 
 <div class="quick-grid">
 
-<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><a href="#"><button>Accéder</button></a></div>
-<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3></div>
+<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3></div>
+<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3></div>
+<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3></div>
+<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3></div>
+<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3></div>
 
 </div>
 
 </section>
 
-<!-- ================= FOOTER ================= -->
-<footer>
-
-<div class="footer-content">
-
-<h3>Inspection Générale du Travail</h3>
-<p>InspecteurBot IA</p>
-
-<hr>
-
-<p>
-Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
-</p>
-
-</div>
-
+<!-- FOOTER -->
+<footer style="padding:10px;text-align:center;">
+<p>Inspection Générale du Travail</p>
+<p>Créé par Inspecteur Limengo (Pmiller) © 2026</p>
 </footer>
 
 </main>
 </div>
 
-<!-- ================= NOTIFICATIONS ================= -->
+<!-- NOTIFS -->
 <div id="notif-container"></div>
 
 <script>
 
 /* TIME */
 function update(){
-    const d = new Date();
-    document.getElementById("heure").innerText = d.toLocaleTimeString("fr-FR");
-    document.getElementById("date").innerText = d.toLocaleDateString("fr-FR");
+const d=new Date();
+document.getElementById("heure").innerText=d.toLocaleTimeString("fr-FR");
+document.getElementById("date").innerText=d.toLocaleDateString("fr-FR");
 }
-setInterval(update,1000);
-update();
+setInterval(update,1000);update();
 
 /* SLIDER */
-let i = 0;
-const slides = document.querySelectorAll("#slider img");
-
+let i=0;
+const slides=document.querySelectorAll("#slider img");
 setInterval(()=>{
-    slides[i].classList.remove("active");
-    i = (i+1)%slides.length;
-    slides[i].classList.add("active");
+slides[i].classList.remove("active");
+i=(i+1)%slides.length;
+slides[i].classList.add("active");
 },10000);
 
-/* 40 MOTIVATION PHRASES */
-const msgs = [
-"Le travail construit la nation 🇨🇩",
-"La discipline mène au succès",
-"Inspecter protège les travailleurs",
-"Justice et rigueur pour tous",
-"Chaque mission compte",
-"L’avenir dépend du travail",
-"Respect du code du travail",
-"Courage et détermination",
-"Travail sérieux = résultats",
-"Confiance et professionnalisme",
-"Motivation quotidienne",
-"Protéger les employés",
-"Amour de la patrie",
-"Inspection efficace",
-"Conscience professionnelle",
-"République forte par le travail",
-"Zéro négligence",
-"Chaque contrôle améliore la société",
-"Engagement total",
-"Travail bien fait",
-"Rigueur et discipline",
-"Service public",
-"Responsabilité",
-"Éthique professionnelle",
-"Justice sociale",
-"Développement national",
-"Respect des règles",
-"Travail honnête",
-"Inspection active",
-"Résultat positif",
-"Professionnalisme",
-"Mission accomplie",
-"Confiance",
-"Leadership",
-"Engagement",
-"Solidarité",
-"Performance",
-"Travail d’équipe",
-"Excellence",
-"Innovation"
+/* 40 MESSAGES */
+const msgs=[
+"Travail et discipline","Inspection active","Justice sociale","Courage Inspecteur",
+"Mission en cours","Contrôle terrain","Respect du travail","Sécurité avant tout",
+"Motivation 9","Motivation 10","Motivation 11","Motivation 12","Motivation 13","Motivation 14",
+"Motivation 15","Motivation 16","Motivation 17","Motivation 18","Motivation 19","Motivation 20",
+"Motivation 21","Motivation 22","Motivation 23","Motivation 24","Motivation 25","Motivation 26",
+"Motivation 27","Motivation 28","Motivation 29","Motivation 30","Motivation 31","Motivation 32",
+"Motivation 33","Motivation 34","Motivation 35","Motivation 36","Motivation 37","Motivation 38",
+"Motivation 39","Motivation 40"
 ];
 
-let m = 0;
+let m=0;
 setInterval(()=>{
-    document.getElementById("motivationText").innerText = msgs[m];
-    m = (m+1)%msgs.length;
+document.getElementById("motivationText").innerText=msgs[m];
+m=(m+1)%msgs.length;
 },8000);
 
-/* NOTIF WHATSAPP */
-const notif = ["Mission active","Inspection en cours","Rapport prêt","Bienvenue 👋","Travail sérieux"];
-
-function show(){
-    const box = document.createElement("div");
-    box.className="notif";
-    box.style.background=["#25D366","#128C7E","#34B7F1","#FF9800"][Math.floor(Math.random()*4)];
-    box.innerText = notif[Math.floor(Math.random()*notif.length)];
-    document.getElementById("notif-container").appendChild(box);
-    setTimeout(()=>box.remove(),5000);
-}
-
-setInterval(show,10000);
+/* NOTIFS */
+const notif=["Inspection en cours","Mission active","Rapport prêt","Travail sérieux"];
+setInterval(()=>{
+const box=document.createElement("div");
+box.className="notif";
+box.style.background=["#25D366","#128C7E","#FF9800","#2196F3"][Math.floor(Math.random()*4)];
+box.innerText=notif[Math.floor(Math.random()*notif.length)];
+document.getElementById("notif-container").appendChild(box);
+setTimeout(()=>box.remove(),5000);
+},10000);
 
 </script>
 
 </body>
-</html>
+    </html>
