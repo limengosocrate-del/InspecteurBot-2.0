@@ -5,61 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>InspecteurBot RDC | Dashboard</title>
 
-<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
 /* ================= GLOBAL ================= */
-body{
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins;
+}
+
+body{
     background:#edf2f9;
-    font-family:Poppins, sans-serif;
+    transform:scale(0.97);
+    transform-origin:top;
 }
 
-/* ================= LAYOUT ================= */
-.dashboard-layout{
-    display:flex;
-}
-
-/* ================= SIDEBAR (réduit) ================= */
-.sidebar{
-    width:240px;
-    background:#041c5c;
-    color:#fff;
-    position:fixed;
-    height:100%;
-    overflow-y:auto;
-    padding:10px;
-}
-
-.sidebar h3{
-    font-size:14px;
-    padding:10px;
-}
-
-.sidebar ul li a{
-    padding:10px 12px;
-    font-size:13px;
-    display:flex;
-    gap:10px;
-}
-
-/* ================= MAIN ================= */
-.main-content{
-    margin-left:240px;
-    width:100%;
-    padding:12px;
-}
-
-/* ================= SLIDER (moins haut) ================= */
+/* ================= SLIDER RÉDUIT ================= */
 .banner{
     width:100%;
-    height:200px; /* 🔥 réduit */
+    height:220px; /* ↓ réduit */
     position:relative;
     overflow:hidden;
-    border-radius:15px;
-    margin-bottom:8px;
+}
+
+.slider{
+    width:100%;
+    height:100%;
+    position:absolute;
 }
 
 .slider img{
@@ -78,48 +54,78 @@ body{
 /* ================= MOTIVATION ================= */
 .motivation{
     background:#0b3d91;
-    color:#fff;
+    color:white;
     text-align:center;
-    padding:6px;
+    padding:8px;
     font-size:13px;
-    margin-bottom:10px;
-    border-radius:10px;
 }
 
-/* ================= STATS + QUICK ACCESS ================= */
-.stats-grid,
+/* ================= MENU INDEX SOUS SLIDER ================= */
+.menu-index{
+    background:#041c5c;
+    padding:8px; /* ↓ réduit */
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+}
+
+.menu-index a{
+    color:white;
+    text-decoration:none;
+    padding:7px 10px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.12);
+    font-size:13px;
+}
+
+.menu-index a:hover{
+    background:#0b52d6;
+}
+
+/* ================= ACCÈS RAPIDE ================= */
+.quick-section{
+    padding:12px; /* ↓ réduit */
+    text-align:center;
+}
+
+.quick-section h2{
+    font-size:18px;
+    margin-bottom:10px;
+}
+
 .quick-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:10px; /* 🔥 réduit */
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:10px;
 }
 
-/* cards plus compactes */
-.quick-grid div{
-    background:#fff;
-    padding:10px;
+.quick-card{
+    background:white;
+    padding:14px; /* ↓ réduit */
     border-radius:12px;
-    text-align:center;
+    box-shadow:0 5px 12px rgba(0,0,0,0.08);
     font-size:13px;
 }
 
-/* ================= NOTIF WHATSAPP ================= */
+/* ================= NOTIFS ================= */
 #notif-container{
     position:fixed;
-    bottom:10px;
-    right:10px;
+    bottom:15px;
+    right:15px;
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:8px;
+    z-index:9999;
 }
 
 .notif{
     background:#25D366;
-    color:#fff;
+    color:white;
     padding:8px 10px;
     border-radius:8px;
     font-size:12px;
-    animation:slideUp .4s ease, fade .5s ease 4.5s forwards;
+    animation:slideUp .5s ease;
 }
 
 @keyframes slideUp{
@@ -127,39 +133,14 @@ body{
     to{transform:translateY(0);opacity:1;}
 }
 
-@keyframes fade{
-    to{opacity:0;}
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="dashboard-layout">
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-
-<h3>MENU PRINCIPAL</h3>
-
-<ul style="list-style:none;padding:0;margin:0;">
-<li><a href="#"><i class="fa fa-home"></i> Tableau</a></li>
-<li><a href="#"><i class="fa fa-building"></i> Entreprises</a></li>
-<li><a href="#"><i class="fa fa-clipboard"></i> Inspections</a></li>
-<li><a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a></li>
-<li><a href="#"><i class="fa fa-users"></i> Travailleurs</a></li>
-<li><a href="#" style="color:red;"><i class="fa fa-power-off"></i> Déconnexion</a></li>
-</ul>
-
-</aside>
-
-<!-- MAIN -->
-<main class="main-content">
-
-<!-- SLIDER -->
+<!-- ================= SLIDER ================= -->
 <section class="banner">
+
 <div class="slider" id="slider">
 <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
@@ -182,70 +163,82 @@ body{
 <img src="images/photos_igt/19.jpg">
 <img src="images/photos_igt/20.jpg">
 </div>
+
 </section>
 
-<!-- MOTIVATION -->
+<!-- ================= MOTIVATION ================= -->
 <div class="motivation">
 <span id="motivationText"></span>
 </div>
 
-<!-- STATS -->
-<div class="stats-grid">
-<div>Entreprises</div>
-<div>Inspections</div>
-<div>Infractions</div>
-</div>
+<!-- ================= MENU INDEX ================= -->
+<nav class="menu-index">
 
-<!-- ACCÈS RAPIDE -->
-<h3 style="text-align:center;margin:10px 0;">ACCÈS RAPIDE</h3>
+<a href="#"><i class="fa fa-home"></i> Dashboard</a>
+<a href="#"><i class="fa fa-building"></i> Entreprises</a>
+<a href="#"><i class="fa fa-clipboard"></i> Inspections</a>
+<a href="#"><i class="fa fa-triangle-exclamation"></i> Infractions</a>
+<a href="#"><i class="fa fa-users"></i> Travailleurs</a>
+<a href="#" style="background:#e11d48;"><i class="fa fa-power-off"></i> Déconnexion</a>
+
+</nav>
+
+<!-- ================= ACCÈS RAPIDE ================= -->
+<section class="quick-section">
+
+<h2>ACCÈS RAPIDE</h2>
 
 <div class="quick-grid">
-<div>Entreprises</div>
-<div>Inspections</div>
-<div>Infractions</div>
-<div>Travailleurs</div>
-<div>Inspecteurs</div>
-<div>PV</div>
-</div>
 
-</main>
+<div class="quick-card"><i class="fa fa-building"></i> Entreprises</div>
+<div class="quick-card"><i class="fa fa-clipboard"></i> Inspections</div>
+<div class="quick-card"><i class="fa fa-triangle-exclamation"></i> Infractions</div>
+<div class="quick-card"><i class="fa fa-file"></i> PV</div>
+<div class="quick-card"><i class="fa fa-users"></i> Travailleurs</div>
+<div class="quick-card"><i class="fa fa-user-shield"></i> Inspecteurs</div>
 
 </div>
 
-<!-- NOTIF -->
+</section>
+
+<!-- ================= NOTIFICATIONS ================= -->
 <div id="notif-container"></div>
 
 <script>
 
 /* SLIDER */
-let i=0;
-const slides=document.querySelectorAll("#slider img");
+let i = 0;
+const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
     slides[i].classList.remove("active");
-    i=(i+1)%slides.length;
+    i = (i + 1) % slides.length;
     slides[i].classList.add("active");
-},8000);
+},9000);
 
-/* MOTIVATION */
-const msg=Array.from({length:40},(_,i)=>"Motivation "+(i+1));
-let m=0;
+/* 40 MOTIVATIONS */
+const msg = Array.from({length:40},(_,i)=>
+"Le travail construit la nation 🇨🇩 • Motivation "+(i+1)
+);
 
+let m = 0;
 setInterval(()=>{
-    document.getElementById("motivationText").innerText=msg[m];
-    m=(m+1)%msg.length;
+    document.getElementById("motivationText").innerText = msg[m];
+    m = (m + 1) % msg.length;
 },4000);
 
-/* NOTIF */
+/* NOTIFS WHATSAPP */
+const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt"];
+
 setInterval(()=>{
-    const box=document.createElement("div");
-    box.className="notif";
-    box.innerText="WhatsApp ✔ Notification";
+    const box = document.createElement("div");
+    box.className = "notif";
+    box.innerText = notif[Math.floor(Math.random()*notif.length)];
     document.getElementById("notif-container").appendChild(box);
     setTimeout(()=>box.remove(),4000);
-},9000);
+},8000);
 
 </script>
 
 </body>
-    </html>
+</html>
