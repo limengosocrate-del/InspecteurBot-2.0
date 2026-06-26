@@ -35,8 +35,8 @@ color:#fff;
 
 .datetime-box{
     position:absolute;
-    top:15px;
-    right:15px;
+    top:4px;
+    right:12px;
 
     padding:0;
 
@@ -52,32 +52,40 @@ color:#fff;
 }
 
 #clock{
-font-size:34px;
-font-weight:700;
-color:#FFD700;
-text-shadow:0 0 12px rgba(255,215,0,.8);
+    font-size:28px;
+    font-weight:700;
+    line-height:1;
+    color:#FFD700;
+    text-shadow:0 0 10px rgba(255,215,0,.8);
+    margin-bottom:1px;
 }
 
 #day{
-font-size:15px;
-color:#ffffff;
-margin-top:2px;
+    font-size:13px;
+    color:#ffffff;
+    line-height:1;
+    margin:0;
 }
 
 #date{
-font-size:15px;
-color:#ffffff;
+    font-size:13px;
+    color:#dfeaff;
+    line-height:1;
+    margin-top:1px;
 }
 
 #weather{
-margin-top:3px;
-font-size:16px;
-color:#FFD700;
+    margin-top:2px;
+    font-size:14px;
+    color:#FFD700;
+    line-height:1;
 }
 
 #city{
-font-size:14px;
-color:#ffffff;
+    font-size:12px;
+    color:#ffffff;
+    margin-top:1px;
+    line-height:1;
 }
     
 .slider img{
@@ -113,17 +121,33 @@ padding:20px;
 background:linear-gradient(180deg,#03153d,#02102f);
 }
 
-.menu-index a:hover{
+.menu-index a{
 
-transform:translateY(-6px);
+position:relative;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+height:105px;
+
+background:linear-gradient(180deg,#07285d,#03183c);
+
+border:1.5px solid rgba(255,255,255,.30);
+
+border-radius:22px;
+
+text-decoration:none;
+
+color:#ffffff;
 
 box-shadow:
+0 0 8px rgba(255,215,0,.18);
 
-0 0 12px rgba(255,215,0,.45),
+transition:.35s;
 
-0 0 24px rgba(255,215,0,.20);
-
-border-color:#FFD700;
+overflow:hidden;
 
 }
 
@@ -135,11 +159,15 @@ transition:.35s;
 
 }
 
-.menu-index a:hover i{
+.menu-index a:hover{
 
-transform:scale(1.18);
+transform:translateY(-6px);
 
-text-shadow:0 0 10px gold;
+border-color:rgba(255,255,255,.75);
+
+box-shadow:
+0 0 14px rgba(255,215,0,.40),
+0 0 26px rgba(255,215,0,.18);
 
 }
 
@@ -160,9 +188,28 @@ box-shadow:
 }
 
 .menu-index i{
+
 font-size:30px;
+
 margin-bottom:10px;
-transition:.4s;
+
+color:#FFD700;
+
+text-shadow:0 0 6px rgba(255,215,0,.45);
+
+transition:.35s;
+
+}
+
+.menu-index span{
+
+color:#ffffff;
+
+font-weight:600;
+
+text-shadow:
+0 0 2px rgba(255,255,255,.45);
+
 }
 
 .menu-index a:hover i,
