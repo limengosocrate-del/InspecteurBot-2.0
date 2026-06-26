@@ -2,7 +2,9 @@
 <html lang="fr">    
 <head>    
 <meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>InspecteurBot RDC | Dashboard</title>    
     
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">    
@@ -128,27 +130,20 @@ box-shadow:0 0 35px rgba(0,220,255,.8);
     }
     
 /* ================= QUICK ================= */    
-.quick-section{    
+.quick-section{
+padding:20px;
+}
+
 .quick-card{
-
 background:linear-gradient(145deg,#07204d,#0a2b70);
-
 border-radius:22px;
-
 padding:25px;
-
 text-align:center;
-
 color:#fff;
-
 transition:.4s;
-
 box-shadow:0 0 18px rgba(0,180,255,.25);
-
 overflow:hidden;
-
 position:relative;
-
 }
 
 .quick-card{
@@ -338,13 +333,13 @@ border-top:1px solid rgba(255,255,255,.1);
 }
 
 .footer-logo{
-width:42px;
-height:42px;
-object-fit:contain;
 display:block;
-margin:auto;
-margin-bottom:10px;
-
+width:70px;
+max-width:70px;
+height:auto;
+margin:0 auto 15px;
+object-fit:contain;
+    
 }
 
 footer h3{
@@ -373,6 +368,11 @@ margin:18px auto;
 
 border:.5px solid rgba(255,255,255,.15);
 
+footer img{
+max-width:70px !important;
+height:auto !important;
+                          }
+
 }
 
 .quick-grid{
@@ -381,10 +381,9 @@ border:.5px solid rgba(255,255,255,.15);
     gap:20px;
     margin-top:25px;
     }
-    
+
 </style>    
 </head>    
-    
 <body>    
     
 <!-- SLIDER 57 IMAGES -->    
