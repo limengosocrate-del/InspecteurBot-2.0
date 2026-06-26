@@ -57,35 +57,27 @@ opacity:1;
     
 /* ================= MENU ================= */    
 .menu-index{    
-.menu-card{
-    background:#123d9c;
-    color:white;
-    padding:18px;
-    border-radius:18px;
-    text-decoration:none;
-    text-align:center;
-    font-weight:600;
-
-    transition:0.4s;
-    animation:fadeUp .7s ease;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
-
-.menu-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 12px 25px rgba(0,0,0,.3);
-}
-
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(30px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
+background:#061a44;    
+display:flex;    
+flex-wrap:wrap;    
+justify-content:center;    
+gap:8px;    
+padding:10px;    
+}    
+    
+.menu-index a{    
+color:#fff;    
+text-decoration:none;    
+padding:8px 12px;    
+background:rgba(255,255,255,0.08);    
+border-radius:8px;    
+font-size:13px;    
+transition:.3s;    
+}    
+    
+.menu-index a:hover{    
+background:#0b52d6;    
+}    
     
 /* ================= QUICK ================= */    
 .quick-section{    
@@ -111,24 +103,6 @@ font-size:22px;
 color:#0b52d6;    
 margin-bottom:8px;    
 }    
-
-.premium-card{
-    background:#ffffff;
-    border-radius:25px;
-    padding:25px;
-    margin:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-
-    transition:.4s;
-}
-
-.premium-card:hover{
-    transform:scale(1.03);
-}
-
-.premium-card:nth-child(even){
-    background:#f3f5f7;
-}
     
 /* ================= STATS ================= */    
 .stats{    
@@ -286,53 +260,60 @@ border:1px solid rgba(255,255,255,0.2);
 <!-- MENU -->    
 <nav class="menu-index">
 
-<a href="dashboard.html" class="menu-card">
-        🏠 Dashboard
-    </a>
+<a href="dashboard.html">
+<i class="fa fa-home"></i>
+<span>Dashboard</span>
+</a>
 
-    <a href="entreprises.html" class="menu-card">
-        🏢 Entreprises
-    </a>
+<a href="entreprises.html">
+<i class="fa fa-building"></i>
+<span>Entreprises</span>
+</a>
 
-    <a href="inspecteurs.html" class="menu-card">
-        👨‍💼 Inspecteurs
-    </a>
+<a href="inspections.html">
+<i class="fa fa-clipboard-check"></i>
+<span>Inspections</span>
+</a>
 
-    <a href="inspections.html" class="menu-card">
-        🔍 Inspections
-    </a>
+<a href="fiche-controle.html">
+<i class="fa fa-list-check"></i>
+<span>Fiche Contrôle</span>
+</a>
 
-    <a href="fiche.html" class="menu-card">
-        📋 Fiche Contrôle
-    </a>
+<a href="pv.html">
+<i class="fa fa-file-signature"></i>
+<span>PV</span>
+</a>
 
-    <a href="pv.html" class="menu-card">
-        📑 Procès-Verbal
-    </a>
+<a href="infractions.html">
+<i class="fa fa-triangle-exclamation"></i>
+<span>Infractions</span>
+</a>
 
-    <a href="infractions.html" class="menu-card">
-        ⚖️ Infractions
-    </a>
+<a href="sanctions.html">
+<i class="fa fa-gavel"></i>
+<span>Sanctions</span>
+</a>
 
-    <a href="sanctions.html" class="menu-card">
-        🔨 Sanctions
-    </a>
+<a href="code-travail.html">
+<i class="fa fa-scale-balanced"></i>
+<span>Code du Travail</span>
+</a>
 
-    <a href="code.html" class="menu-card">
-        📚 Code du Travail
-    </a>
+<a href="inspecteurs.html">
+<i class="fa fa-user-tie"></i>
+<span>Inspecteurs</span>
+</a>
 
-    <a href="archives.html" class="menu-card">
-        🗄️ Archives
-    </a>
+<a href="archives.html">
+<i class="fa fa-box-archive"></i>
+<span>Archives</span>
+</a>
 
-    <a href="assistant.html" class="menu-card">
-        🤖 Assistant IA
-    </a>
-
-    <a href="igt.html" class="menu-card">
-        🏛️ IGT RDC
-    </a>
+<a href="igt.html">
+<i class="fa fa-landmark"></i>
+<span>IGT RDC</span>
+</a>
 
 </nav>
 
@@ -471,8 +452,6 @@ L'assistant peut suggérer les actions à entreprendre pendant une inspection.
 </p>
 </div>
 
-<div class="ai-card premium-card">
-
 </section>
                 
 <!-- FOOTER -->    
@@ -578,4 +557,6 @@ setInterval(updateDateTime, 1000);
     
 </body>    
     </html>    
+    
+    
     
