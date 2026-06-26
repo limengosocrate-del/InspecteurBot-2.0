@@ -103,53 +103,29 @@ Créer un compte
 
 <form id="registerForm">
 
-<input
-type="text"
-id="fullname"
-placeholder="Nom complet"
-required>
+<input type="text" id="fullname" placeholder="Nom complet" required>
 
-<br><br>
+<input type="text" id="matricule" placeholder="Numéro matricule" required>
 
-<input
-type="email"
-id="email"
-placeholder="Adresse e-mail"
-required>
+<input type="email" id="email" placeholder="Adresse e-mail" required>
 
-<br><br>
+<input type="tel"
+       id="phone"
+       placeholder="+243XXXXXXXXX"
+       pattern="\+243[0-9]{9}"
+       required>
 
-<input
-type="text"
-id="fonction"
-placeholder="Fonction (Inspecteur, Contrôleur, Agent...)"
-required>
+<input type="text" id="province" placeholder="Province" required>
 
-<br><br>
+<input type="text" id="commune" placeholder="Commune ou Secteur" required>
 
-<input
-type="text"
-id="province"
-placeholder="Province ou Direction"
-required>
+<input type="text" id="direction" placeholder="Direction" required>
 
-<br><br>
+<input type="text" id="fonction" placeholder="Fonction" required>
 
-<input
-type="password"
-id="password"
-placeholder="Mot de passe"
-required>
+<input type="password" id="password" placeholder="Mot de passe" required>
 
-<br><br>
-
-<input
-type="password"
-id="confirmPassword"
-placeholder="Confirmer le mot de passe"
-required>
-
-<br><br>
+<input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required>
 
 <button type="submit">
 
@@ -166,6 +142,13 @@ Créer mon compte
 <br>
 
 <p>
+
+<p id="registerMessage"
+style="
+margin-top:15px;
+font-weight:600;
+text-align:center;">
+</p>
 
 Vous avez déjà un compte ?
 
@@ -352,6 +335,18 @@ document
     const password =
         document.getElementById("password").value;
 
+    const telephone =
+        document.getElementById("telephone").value;
+
+    const matricule =
+         document.getElementById("matricule").value;
+
+    const commune =
+        document.getElementById("commune").value;
+
+    const direction =
+         document.getElementById("direction").value;
+
     const confirmPassword =
         document.getElementById("confirmPassword").value;
 
@@ -368,28 +363,32 @@ document
     }
 
     const user = {
-        fullname,
-        email,
-        fonction,
-        province,
-        password
-    };
+    fullname,
+    email,
+    telephone,
+    matricule,
+    fonction,
+    province,
+    commune,
+    direction,
+    password
+};
 
     localStorage.setItem(
-        "inspecteurbot_user",
-        JSON.stringify(user)
-    );
+    "inspecteurbot_user",
+    JSON.stringify(user)
+);
 
-    document.getElementById("registerMessage")
-    .innerHTML =
-    "✅ Compte créé avec succès.";
+document.getElementById("registerMessage")
+.innerHTML =
+"✅ Compte créé avec succès";
 
-    document.getElementById("registerMessage")
-    .style.color = "green";
+document.getElementById("registerMessage")
+.style.color = "green";
 
-    setTimeout(() => {
-        window.location.href = "./login.html";
-    }, 1500);
+setTimeout(() => {
+    window.location.href = "./login.html";
+}, 2000);
 
 });
 
