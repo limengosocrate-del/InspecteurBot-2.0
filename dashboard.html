@@ -65,19 +65,30 @@ gap:8px;
 padding:10px;    
 }    
     
-.menu-index a{    
-color:#fff;    
-text-decoration:none;    
-padding:8px 12px;    
-background:rgba(255,255,255,0.08);    
-border-radius:8px;    
-font-size:13px;    
-transition:.3s;    
-}    
-    
-.menu-index a:hover{    
-background:#0b52d6;    
-}    
+.menu-index a{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+width:95px;
+height:95px;
+background:linear-gradient(135deg,#0b52d6,#00b4ff);
+border-radius:20px;
+color:white;
+text-decoration:none;
+transition:.4s;
+box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+.menu-index a:hover{
+transform:translateY(-8px) rotate(2deg);
+box-shadow:0 12px 25px rgba(0,180,255,.5);
+}
+
+.menu-index i{
+font-size:28px;
+margin-bottom:8px;
+}
     
 /* ================= QUICK ================= */    
 .quick-section{    
@@ -160,7 +171,53 @@ color:#fff;
 padding:8px 12px;    
 border-radius:10px;    
 font-size:12px;    
-}    
+} 
+
+ .ai-box{
+background:linear-gradient(
+135deg,
+#001f5c,
+#0038a8,
+#00aaff
+);
+padding:25px;
+border-radius:25px;
+box-shadow:0 0 25px rgba(0,170,255,.4);
+animation:pulse 3s infinite;
+color:white;
+}
+
+@keyframes pulse{
+0%{
+box-shadow:0 0 10px rgba(0,170,255,.2);
+}
+50%{
+box-shadow:0 0 40px rgba(0,170,255,.8);
+}
+100%{
+box-shadow:0 0 10px rgba(0,170,255,.2);
+}
+}
+
+.ai-box input{
+width:100%;
+padding:15px;
+border:none;
+border-radius:50px;
+margin-bottom:15px;
+font-size:15px;
+}
+
+.ai-box button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:50px;
+background:#00d4ff;
+color:white;
+font-weight:700;
+cursor:pointer;
+}   
     
 /* ================= FOOTER ================= */    
 footer{    
@@ -317,6 +374,8 @@ border:1px solid rgba(255,255,255,0.2);
 
 </nav>
 
+ 🤖 Assistant Intelligent InspecteurBot IA   
+    
 <section class="quick-section">
 
 <h2 style="text-align:center;color:#ffffff;margin-bottom:20px;">
@@ -324,20 +383,21 @@ border:1px solid rgba(255,255,255,0.2);
 </h2>
 
 <div class="quick-card" style="margin-bottom:20px;">
+<div class="ai-box">
 
-<h3 style="margin-bottom:15px;">
-<i class="fa fa-robot"></i>
-Assistant IA
-</h3>
+<h2 style="text-align:center;margin-bottom:20px;">
+🤖 InspecteurBot IA
+</h2>
 
 <form>
 
-<input type="text"
-placeholder="Exemple : Rechercher l'article sur le licenciement">
+<input
+type="text"
+placeholder="Posez votre question à l'IA...">
 
 <button type="button">
 <i class="fa fa-magnifying-glass"></i>
-Rechercher
+ Rechercher
 </button>
 
 </form>
