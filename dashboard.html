@@ -521,9 +521,9 @@ height:auto !important;
 <span>Utilisateur</span>
 </a>
 
-<a href="logout.html">
-<i class="fa fa-right-from-bracket"></i>
-<span>Déconnexion</span>
+<a href="#" onclick="logout()">
+    <i class="fa fa-right-from-bracket"></i>
+    <span>Déconnexion</span>
 </a>
 </nav>
  
@@ -691,7 +691,11 @@ L'assistant peut suggérer les actions à entreprendre pendant une inspection.
 
     </footer>
     
-<script>    
+<script>
+
+if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "index.html";
+}
     
 /* ================= SLIDER 20 IMAGES ================= */    
 let images = document.querySelectorAll(".slider img");    
@@ -763,8 +767,18 @@ function updateDateTime(){
 
 updateDateTime();
 setInterval(updateDateTime, 1000);  
+
+function logout() {
+
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("currentUser");
+
+    window.location.href = "index.html";
+
+}
     
-</script>    
+</script>
+
     
 </body>    
     </html>    
