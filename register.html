@@ -101,10 +101,11 @@ color:#222;
 Créer un compte
 </h2>
 
-<form action="./login.html">
+<form id="registerForm">
 
 <input
 type="text"
+id="fullname"
 placeholder="Nom complet"
 required>
 
@@ -112,6 +113,7 @@ required>
 
 <input
 type="email"
+id="email"
 placeholder="Adresse e-mail"
 required>
 
@@ -119,6 +121,7 @@ required>
 
 <input
 type="text"
+id="fonction"
 placeholder="Fonction (Inspecteur, Contrôleur, Agent...)"
 required>
 
@@ -126,6 +129,7 @@ required>
 
 <input
 type="text"
+id="province"
 placeholder="Province ou Direction"
 required>
 
@@ -133,6 +137,7 @@ required>
 
 <input
 type="password"
+id="password"
 placeholder="Mot de passe"
 required>
 
@@ -140,6 +145,7 @@ required>
 
 <input
 type="password"
+id="confirmPassword"
 placeholder="Confirmer le mot de passe"
 required>
 
@@ -152,6 +158,8 @@ required>
 Créer mon compte
 
 </button>
+
+<p id="registerMessage"></p>
 
 </form>
 
@@ -320,6 +328,72 @@ Créé Par
 </p>
 
 </footer>
+
+<script>
+
+document
+.getElementById("registerForm")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const fullname =
+        document.getElementById("fullname").value;
+
+    const email =
+        document.getElementById("email").value;
+
+    const fonction =
+        document.getElementById("fonction").value;
+
+    const province =
+        document.getElementById("province").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    if(password !== confirmPassword){
+
+        document.getElementById("registerMessage")
+        .innerHTML =
+        "❌ Les mots de passe ne correspondent pas.";
+
+        document.getElementById("registerMessage")
+        .style.color = "red";
+
+        return;
+    }
+
+    const user = {
+        fullname,
+        email,
+        fonction,
+        province,
+        password
+    };
+
+    localStorage.setItem(
+        "inspecteurbot_user",
+        JSON.stringify(user)
+    );
+
+    document.getElementById("registerMessage")
+    .innerHTML =
+    "✅ Compte créé avec succès.";
+
+    document.getElementById("registerMessage")
+    .style.color = "green";
+
+    setTimeout(() => {
+        window.location.href = "./login.html";
+    }, 1500);
+
+});
+
+</script>
 
 </body>
   </html>
