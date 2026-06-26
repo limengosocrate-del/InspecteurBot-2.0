@@ -89,15 +89,7 @@ animation:glow 2.5s infinite alternate;
 }
 
 .menu-index a::before{
-content:"";
-position:absolute;
-top:-120%;
-left:-60%;
-width:60%;
-height:320%;
-background:rgba(255,255,255,.35);
-transform:rotate(25deg);
-transition:.6s;
+display:none;
 }
 
 .menu-index a:hover::before,
@@ -168,43 +160,48 @@ position:relative;
 }
 
 .quick-card::before{
+.quick-card{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+min-height:170px;
 
-content:"";
+background:linear-gradient(145deg,#004bff,#00bfff);
 
-position:absolute;
+border-radius:25px;
 
-top:-150%;
+color:#fff;
+text-decoration:none;
 
-left:-50%;
-
-width:50%;
-
-height:350%;
-
-background:rgba(255,255,255,.25);
-
-transform:rotate(25deg);
-
-transition:.7s;
-
-}
-
-.quick-card:hover::before{
-
-left:150%;
-
-}
-
-.quick-card:hover{
-
-transform:translateY(-10px) scale(1.04);
+transition:.35s;
 
 box-shadow:
+0 0 18px rgba(0,180,255,.35);
 
-0 0 25px #00cfff,
+cursor:pointer;
+}
 
-0 0 55px rgba(0,200,255,.5);
+.quick-card:hover,
+.quick-card:active{
 
+transform:
+translateY(-8px)
+scale(1.06);
+
+box-shadow:
+0 0 35px #00d4ff;
+}
+
+.quick-card i{
+font-size:42px;
+margin-bottom:15px;
+color:white;
+transition:.35s;
+}
+
+.quick-card:hover i{
+transform:scale(1.2) rotate(8deg);
 }
 
 .quick-card i{
@@ -351,22 +348,63 @@ cursor:pointer;
 }   
     
 /* ================= FOOTER ================= */    
-footer{    
-background:#041c5c;    
-text-align:center;    
-padding:40px 20px;    
-}    
-    
-.footer-logo{    
-width:80px;    
-margin-bottom:10px;    
-}    
-    
-footer hr{    
-margin:20px auto;    
-width:250px;    
-border:1px solid rgba(255,255,255,0.2);    
-}    
+footer{
+
+background:#02163f;
+
+padding:35px 20px;
+
+text-align:center;
+
+margin-top:40px;
+
+border-top:1px solid rgba(255,255,255,.1);
+
+}
+
+.footer-logo{
+
+width:70px;
+
+height:70px;
+
+object-fit:contain;
+
+display:block;
+
+margin:auto;
+
+margin-bottom:15px;
+
+}
+
+footer h3{
+
+font-size:21px;
+
+margin-bottom:8px;
+
+}
+
+footer p{
+
+font-size:14px;
+
+line-height:1.7;
+
+color:#d5e8ff;
+
+}
+
+footer hr{
+
+width:220px;
+
+margin:18px auto;
+
+border:.5px solid rgba(255,255,255,.15);
+
+}
     
 </style>    
 </head>    
