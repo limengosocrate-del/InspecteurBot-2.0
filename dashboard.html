@@ -56,64 +56,190 @@ opacity:1;
 }
     
 /* ================= MENU ================= */    
-.menu-index{    
-background:#061a44;    
-display:flex;    
-flex-wrap:wrap;    
-justify-content:center;    
-gap:8px;    
-padding:10px;    
-}    
-    
-.menu-index a{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-width:95px;
-height:95px;
-background:linear-gradient(135deg,#0b52d6,#00b4ff);
-border-radius:20px;
-color:white;
-text-decoration:none;
-transition:.4s;
-box-shadow:0 5px 15px rgba(0,0,0,.3);
+.menu-index{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+gap:18px;
+padding:20px;
+background:linear-gradient(180deg,#03153d,#02102f);
 }
 
-.menu-index a:hover{
-transform:translateY(-8px) rotate(2deg);
-box-shadow:0 12px 25px rgba(0,180,255,.5);
+.menu-index a{
+position:relative;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:105px;
+border-radius:22px;
+overflow:hidden;
+text-decoration:none;
+color:#fff;
+font-weight:600;
+font-size:13px;
+
+background:linear-gradient(145deg,#0056ff,#00c6ff);
+
+box-shadow:
+0 0 18px rgba(0,190,255,.45),
+0 8px 25px rgba(0,0,0,.35);
+
+transition:.35s;
+animation:glow 2.5s infinite alternate;
+}
+
+.menu-index a::before{
+content:"";
+position:absolute;
+top:-120%;
+left:-60%;
+width:60%;
+height:320%;
+background:rgba(255,255,255,.35);
+transform:rotate(25deg);
+transition:.6s;
+}
+
+.menu-index a:hover::before,
+.menu-index a:active::before{
+left:140%;
+}
+
+.menu-index a:hover,
+.menu-index a:active{
+
+transform:
+translateY(-8px)
+scale(1.08);
+
+box-shadow:
+0 0 35px #00d9ff,
+0 0 60px #009dff;
 }
 
 .menu-index i{
-font-size:28px;
-margin-bottom:8px;
+font-size:30px;
+margin-bottom:10px;
+transition:.4s;
 }
+
+.menu-index a:hover i,
+.menu-index a:active i{
+
+transform:
+scale(1.25)
+rotate(8deg);
+}
+
+@keyframes glow{
+
+0%{
+box-shadow:0 0 12px rgba(0,180,255,.3);
+}
+
+100%{
+box-shadow:0 0 35px rgba(0,220,255,.8);
+}
+
+    }
     
 /* ================= QUICK ================= */    
 .quick-section{    
-padding:15px;    
-}    
-    
-.quick-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
-} 
-    
-.quick-card{    
-background:#fff;    
-color:#000;    
-padding:15px;    
-border-radius:12px;    
-text-align:center;    
-}    
-    
-.quick-card i{    
-font-size:22px;    
-color:#0b52d6;    
-margin-bottom:8px;    
-}    
+.quick-card{
+
+background:linear-gradient(145deg,#07204d,#0a2b70);
+
+border-radius:22px;
+
+padding:25px;
+
+text-align:center;
+
+color:#fff;
+
+transition:.4s;
+
+box-shadow:0 0 18px rgba(0,180,255,.25);
+
+overflow:hidden;
+
+position:relative;
+
+}
+
+.quick-card::before{
+
+content:"";
+
+position:absolute;
+
+top:-150%;
+
+left:-50%;
+
+width:50%;
+
+height:350%;
+
+background:rgba(255,255,255,.25);
+
+transform:rotate(25deg);
+
+transition:.7s;
+
+}
+
+.quick-card:hover::before{
+
+left:150%;
+
+}
+
+.quick-card:hover{
+
+transform:translateY(-10px) scale(1.04);
+
+box-shadow:
+
+0 0 25px #00cfff,
+
+0 0 55px rgba(0,200,255,.5);
+
+}
+
+.quick-card i{
+
+font-size:42px;
+
+margin-bottom:15px;
+
+color:#37d8ff;
+
+transition:.4s;
+
+}
+
+.quick-card:hover i{
+
+transform:rotate(10deg) scale(1.25);
+
+color:#7ffcff;
+
+}
+
+.quick-card h3{
+
+color:white;
+
+margin-bottom:10px;
+
+}
+
+.quick-card p{
+
+color:#d8ebff;
+
+}
     
 /* ================= STATS ================= */    
 .stats{    
@@ -173,18 +299,23 @@ border-radius:10px;
 font-size:12px;    
 } 
 
- .ai-box{
-background:linear-gradient(
-135deg,
-#001f5c,
-#0038a8,
-#00aaff
-);
-padding:25px;
-border-radius:25px;
-box-shadow:0 0 25px rgba(0,170,255,.4);
-animation:pulse 3s infinite;
-color:white;
+.ai-box{
+
+background:
+linear-gradient(135deg,
+#001740,
+#00318b,
+#00aaff);
+
+border-radius:30px;
+
+padding:30px;
+
+animation:pulse 2.8s infinite;
+
+box-shadow:
+0 0 25px rgba(0,190,255,.5);
+
 }
 
 @keyframes pulse{
@@ -372,6 +503,15 @@ border:1px solid rgba(255,255,255,0.2);
 <span>IGT RDC</span>
 </a>
 
+<a href="profil.html">
+<i class="fa fa-user-circle"></i>
+<span>Utilisateur</span>
+</a>
+
+<a href="logout.html">
+<i class="fa fa-right-from-bracket"></i>
+<span>Déconnexion</span>
+</a>
 </nav>
  
 <section class="quick-section">
