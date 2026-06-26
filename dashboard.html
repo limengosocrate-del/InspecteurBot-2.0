@@ -32,6 +32,51 @@ color:#fff;
     overflow:hidden;
     position:relative;
 }
+
+.datetime-box{
+    position:absolute;
+    top:18px;
+    right:18px;
+    padding:12px 15px;
+    border-radius:20px;
+    background:rgba(8,20,60,.18);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,215,0,.35);
+    box-shadow:0 0 18px rgba(255,215,0,.25);
+    text-align:right;
+    z-index:999;
+}
+
+#clock{
+    font-size:30px;
+    color:#FFD700;
+    font-weight:700;
+    line-height:1;
+}
+
+#day{
+    font-size:14px;
+    color:#fff;
+    line-height:1.1;
+}
+
+#date{
+    font-size:13px;
+    color:#dbe7ff;
+    line-height:1.1;
+}
+
+#weather{
+    margin-top:4px;
+    color:#FFD700;
+    font-size:16px;
+}
+
+#city{
+    font-size:13px;
+    color:#fff;
+}
     
 .slider img{
     width:100%;
@@ -389,9 +434,22 @@ height:auto !important;
 <!-- SLIDER 57 IMAGES -->    
 <section class="banner">
 <div class="datetime-box">
-    <div id="clock">10:05</div>
-    <div id="date">24 Juin 2026</div>
+
+    <div id="clock">20:45</div>
+
+    <div id="day">Vendredi</div>
+
+    <div id="date">26 Juin 2026</div>
+
+    <div id="weather">
+        <i class="fa-solid fa-cloud-sun"></i>
+        <span id="temperature">26°C</span>
     </div>
+
+    <div id="city">Kinshasa</div>
+
+</div>
+
 <div class="slider" id="slider">
     <img src="images/photos_igt/1.jpg" class="active">
 <img src="images/photos_igt/2.jpg">
