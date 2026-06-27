@@ -1026,3 +1026,62 @@ body.dark-theme .theme-btn{
         border-color .35s,
         box-shadow .35s;
      }   
+/* ==========================
+   VERSION MOBILE
+========================== */
+
+@media (max-width:768px){
+
+body{
+    padding:10px;
+}
+
+.container{
+    width:100%;
+    padding:15px;
+}
+
+header{
+    text-align:center;
+}
+
+.logo{
+    width:140px;
+    max-width:90%;
+    height:auto;
+}
+
+h1{
+    font-size:28px;
+}
+
+h2{
+    font-size:22px;
+}
+
+input[type="text"]{
+    width:100%;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    margin-top:10px;
+}
+
+.categories{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.categories button{
+    flex:1 1 45%;
+}
+
+.article-card{
+    width:100%;
+    margin-bottom:15px;
+}
+
+    }
