@@ -5,26 +5,20 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
+<meta
+name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>InspecteurBot RDC | Code du Travail</title>
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
 
-<link rel="stylesheet"
-href="css/code-travail.css">
+<link rel="stylesheet" href="css/code-travail.css">
 
 </head>
 
@@ -32,16 +26,17 @@ href="css/code-travail.css">
 
 <div class="container">
 
-<!--=========================================
+<!--=================================================
 HEADER
-==========================================-->
+==================================================-->
 
 <header class="top-header">
 
 <div class="logo-box">
 
-<img src="images/logo-igt.png"
-alt="IGT RDC">
+<img
+src="images/logo-igt.png"
+alt="Logo IGT">
 
 </div>
 
@@ -62,7 +57,6 @@ Inspection Générale du Travail
 <p>
 
 Bibliothèque Juridique Intelligente
-InspecteurBot IA
 
 </p>
 
@@ -80,169 +74,423 @@ InspecteurBot IA
 
 <i class="fa-solid fa-cloud-sun"></i>
 
-<span id="temperature"></span>
+<span id="temperature">
+26°C
+</span>
 
 </div>
 
-<div id="city"></div>
+<div id="city">
+
+Kinshasa
+
+</div>
 
 </div>
 
 </header>
 
-<!--=========================================
-BARRE IA
-==========================================-->
+<!--=================================================
+PARTIE 2
+RECHERCHE INTELLIGENTE IA
+==================================================-->
 
 <section class="search-section">
 
-<input
-type="text"
-id="searchInput"
-placeholder="Rechercher un article, un mot-clé ou poser une question...">
+    <h2>
+        <i class="fa-solid fa-robot"></i>
+        Assistant Juridique IA
+    </h2>
 
-<button id="searchBtn">
+    <p>
+        Recherchez un article du Code du Travail par numéro,
+        par mot-clé ou posez directement votre question.
+    </p>
 
-<i class="fa-solid fa-magnifying-glass"></i>
+    <div class="search-box">
 
-</button>
+        <input
+            type="text"
+            id="rechercheArticle"
+            placeholder="Exemple : Article 62, licenciement, salaire, congé annuel...">
 
-</section>
+        <button
+            id="btnRecherche"
+            title="Rechercher">
 
-<!--=========================================
-STATISTIQUES
-==========================================-->
+            <i class="fa-solid fa-magnifying-glass"></i>
 
-<section class="stats">
+        </button>
 
-<div class="card">
+    </div>
 
-<i class="fa-solid fa-book"></i>
+    <!-- Suggestions rapides -->
 
-<h2 id="totalArticles">0</h2>
+    <div class="suggestions">
 
-<p>Articles</p>
+        <button onclick="rechercheRapide('Contrat de travail')">
+            📄 Contrat
+        </button>
 
-</div>
+        <button onclick="rechercheRapide('Salaire')">
+            💰 Salaire
+        </button>
 
-<div class="card">
+        <button onclick="rechercheRapide('Congé annuel')">
+            🏖️ Congés
+        </button>
 
-<i class="fa-solid fa-folder-open"></i>
+        <button onclick="rechercheRapide('Licenciement')">
+            ⚖️ Licenciement
+        </button>
 
-<h2 id="totalChapitres">0</h2>
+        <button onclick="rechercheRapide('Durée du travail')">
+            ⏰ Temps de travail
+        </button>
 
-<p>Chapitres</p>
+        <button onclick="rechercheRapide('Inspection du Travail')">
+            👷 Inspection
+        </button>
 
-</div>
+        <button onclick="rechercheRapide('Sécurité sociale')">
+            🦺 Sécurité
+        </button>
 
-<div class="card">
+        <button onclick="rechercheRapide('Sanctions')">
+            🚨 Sanctions
+        </button>
 
-<i class="fa-solid fa-scale-balanced"></i>
-
-<h2 id="totalSections">0</h2>
-
-<p>Sections</p>
-
-</div>
-
-<div class="card">
-
-<i class="fa-solid fa-robot"></i>
-
-<h2>IA</h2>
-
-<p>Assistant Juridique</p>
-
-</div>
-
-</section>
-
-<!--=========================================
-RÉSULTATS IA
-==========================================-->
-
-<section class="result-section">
-
-<h2>
-
-<i class="fa-solid fa-brain"></i>
-
-Assistant Juridique IA
-
-</h2>
-
-<div id="resultats">
-
-Bienvenue dans la bibliothèque du Code du Travail.
-
-</div>
+    </div>
 
 </section>
 
-<!--=========================================
-LISTE DES ARTICLES
-==========================================-->
+  <!--=================================================
+PARTIE 3
+CATÉGORIES DU CODE DU TRAVAIL
+==================================================-->
 
-<section class="table-section">
+<section class="categories">
 
-<h2>
+    <div class="category-card" onclick="ouvrirCategorie('contrat')">
 
-<i class="fa-solid fa-book-open"></i>
+        <i class="fa-solid fa-file-signature"></i>
 
-Code du Travail
+        <h3>Contrat de Travail</h3>
 
-</h2>
+        <p>
+            Formation, exécution, suspension et fin
+            du contrat de travail.
+        </p>
 
-<div id="listeArticles">
+        <span class="badge">
+            Articles
+        </span>
 
-</div>
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('salaire')">
+
+        <i class="fa-solid fa-money-bill-wave"></i>
+
+        <h3>Salaire</h3>
+
+        <p>
+            Salaire, primes, indemnités,
+            paiement et protection.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('conges')">
+
+        <i class="fa-solid fa-umbrella-beach"></i>
+
+        <h3>Congés</h3>
+
+        <p>
+            Congé annuel, maternité,
+            maladie et absences.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('temps')">
+
+        <i class="fa-solid fa-clock"></i>
+
+        <h3>Temps de Travail</h3>
+
+        <p>
+            Durée légale,
+            heures supplémentaires
+            et repos.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('licenciement')">
+
+        <i class="fa-solid fa-scale-balanced"></i>
+
+        <h3>Licenciement</h3>
+
+        <p>
+            Procédures,
+            préavis,
+            indemnités
+            et recours.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('inspection')">
+
+        <i class="fa-solid fa-user-shield"></i>
+
+        <h3>Inspection du Travail</h3>
+
+        <p>
+            Missions,
+            pouvoirs,
+            contrôles
+            et procès-verbaux.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('securite')">
+
+        <i class="fa-solid fa-helmet-safety"></i>
+
+        <h3>Santé & Sécurité</h3>
+
+        <p>
+            Protection des travailleurs,
+            hygiène,
+            prévention
+            des risques.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('sanctions')">
+
+        <i class="fa-solid fa-gavel"></i>
+
+        <h3>Infractions & Sanctions</h3>
+
+        <p>
+            Infractions,
+            amendes,
+            sanctions administratives
+            et pénales.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
 
 </section>
 
-<!--=========================================
+<!--=================================================
+PARTIE 4
+AFFICHAGE DES ARTICLES DU CODE DU TRAVAIL
+==================================================-->
+
+<section class="article-section">
+
+    <h2>
+        <i class="fa-solid fa-book-open"></i>
+        Consultation des Articles
+    </h2>
+
+    <div class="article-card fade">
+
+        <div class="article-number" id="numeroArticle">
+
+            Article 1
+
+        </div>
+
+        <div class="article-title" id="titreArticle">
+
+            Objet du Code du Travail
+
+        </div>
+
+        <div class="article-content" id="contenuArticle">
+
+            Sélectionnez une catégorie ou utilisez la recherche
+            intelligente afin d'afficher les articles du Code du
+            Travail de la République Démocratique du Congo.
+
+        </div>
+
+        <div class="article-actions">
+
+            <button onclick="articlePrecedent()">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Précédent
+
+            </button>
+
+            <button onclick="copierArticle()">
+
+                <i class="fa-solid fa-copy"></i>
+
+                Copier
+
+            </button>
+
+            <button onclick="parlerArticle()">
+
+                <i class="fa-solid fa-volume-high"></i>
+
+                Écouter
+
+            </button>
+
+            <button onclick="expliquerIA()">
+
+                <i class="fa-solid fa-robot"></i>
+
+                Expliquer avec l'IA
+
+            </button>
+
+            <button onclick="articleSuivant()">
+
+                Suivant
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!--=================================================
+RÉPONSE DE L'ASSISTANT IA
+==================================================-->
+
+<section class="ai-result" id="zoneIA">
+
+    <h3>
+
+        🤖 InspecteurBot IA
+
+    </h3>
+
+    <p id="reponseIA">
+
+        Bonjour 👋
+
+        Je suis votre assistant juridique.
+
+        Recherchez un article ou cliquez sur
+        <strong>« Expliquer avec l'IA »</strong> pour obtenir
+        une explication simple, les obligations de l'employeur,
+        les droits du travailleur ainsi que les références
+        aux articles du Code du Travail.
+
+    </p>
+
+</section>
+
+ <!--=================================================
+PARTIE 5
 FOOTER
-==========================================-->
+==================================================-->
 
 <footer>
 
-<img
-src="images/logo-igt.png"
-alt="IGT">
+    <img
+        src="images/logo-igt.png"
+        alt="Logo IGT">
 
-<h3>
+    <h3>
+        Inspection Générale du Travail
+    </h3>
 
-Inspection Générale du Travail
+    <p>
+        InspecteurBot RDC
+    </p>
 
-</h3>
+    <p>
+        Bibliothèque juridique intelligente destinée aux
+        Inspecteurs et Contrôleurs du Travail de la
+        République Démocratique du Congo.
+    </p>
 
-<p>
+    <hr>
 
-InspecteurBot RDC
+    <p>
 
-</p>
+        Développé par
 
-<p>
+        <strong>
 
-Bibliothèque Juridique Intelligente
+            Inspecteur Limengo (Pmiller)
 
-</p>
+        </strong>
 
-<hr>
+    </p>
 
-<p>
+    <p>
 
-Développé par
-<strong>Inspecteur Limengo (Pmiller)</strong>
+        © 2026 - Tous droits réservés
 
-</p>
+    </p>
 
 </footer>
 
-</div>
+<!--=================================================
+BOUTON RETOUR EN HAUT
+==================================================-->
+
+<button id="btnTop">
+
+<i class="fa-solid fa-arrow-up"></i>
+
+</button>
+
+<!--=================================================
+JAVASCRIPT
+==================================================-->
 
 <script src="js/code-travail.js"></script>
 
 </body>
-
-  </html>
-
+</html> 
+  
