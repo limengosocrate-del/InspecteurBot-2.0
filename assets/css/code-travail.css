@@ -918,3 +918,68 @@ color:#000;
 }
 
   }
+
+/* ===========================
+   MODE CLAIR / MODE SOMBRE
+=========================== */
+
+body{
+    transition: background-color .35s ease,color .35s ease;
+}
+
+/* Mode clair */
+
+body.light-theme{
+    background:#f5f7fb;
+    color:#222;
+}
+
+/* Mode sombre */
+
+body.dark-theme{
+    background:#121212;
+    color:#f5f5f5;
+}
+
+/* Cartes */
+
+body.dark-theme .card,
+body.dark-theme .resultat,
+body.dark-theme .article-card,
+body.dark-theme .modal-content,
+body.dark-theme .container{
+    background:#1f1f1f;
+    color:#fff;
+    border-color:#333;
+}
+
+/* Champs */
+
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select{
+    background:#2b2b2b;
+    color:#fff;
+    border:1px solid #555;
+}
+
+/* Boutons */
+
+body.dark-theme button{
+    background:#0d6efd;
+    color:white;
+}
+
+/* Liens */
+
+body.dark-theme a{
+    color:#66b2ff;
+}
+
+/* Footer */
+
+body.dark-theme footer{
+    background:#1b1b1b;
+    color:white;
+}        
+        
