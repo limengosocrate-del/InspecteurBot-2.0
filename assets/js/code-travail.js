@@ -1797,6 +1797,677 @@ console.log(
 
 );
 
+/*=========================================================
+INSPECTEURBOT IA
+MODULE CODE DU TRAVAIL
+PARTIE 9.1
+CONSEILLER JURIDIQUE IA
+=========================================================*/
 
+/*=========================================================
+DOMAINES JURIDIQUES
+=========================================================*/
+
+const domainesJuridiques = {
+
+    contrat : [
+        "contrat",
+        "engagement",
+        "cdd",
+        "cdi"
+    ],
+
+    licenciement : [
+        "licenciement",
+        "renvoi",
+        "rupture",
+        "préavis"
+    ],
+
+    salaire : [
+        "salaire",
+        "prime",
+        "paie",
+        "rémunération"
+    ],
+
+    conge : [
+        "congé",
+        "repos",
+        "vacances",
+        "permission"
+    ],
+
+    discipline : [
+        "faute",
+        "sanction",
+        "discipline",
+        "avertissement"
+    ],
+
+    securite : [
+        "accident",
+        "sécurité",
+        "hygiène",
+        "maladie"
+    ]
+
+};
+
+/*=========================================================
+IDENTIFICATION DU DOMAINE
+=========================================================*/
+
+function identifierDomaine(question){
+
+    question = nettoyerTexte(question);
+
+    let domaine = "général";
+
+    let meilleurScore = 0;
+
+    Object.keys(domainesJuridiques)
+
+    .forEach(function(cle){
+
+        let score = 0;
+
+        domainesJuridiques[cle]
+
+        .forEach(function(mot){
+
+            if(question.includes(
+
+                nettoyerTexte(mot)
+
+            )){
+
+                score++;
+
+            }
+
+        });
+
+        if(score > meilleurScore){
+
+            meilleurScore = score;
+
+            domaine = cle;
+
+        }
+
+    });
+
+    return domaine;
+
+}
+
+/*=========================================================
+AVIS JURIDIQUE
+=========================================================*/
+
+function genererAvisJuridique(question){
+
+    const domaine =
+
+    identifierDomaine(question);
+
+    const article =
+
+    articlesFiltres.length ?
+
+    articlesFiltres[0] : null;
+
+    let message = "";
+
+    switch(domaine){
+
+        case "licenciement":
+
+            message =
+
+            "Votre situation concerne probablement la rupture du contrat de travail.";
+
+        break;
+
+        case "contrat":
+
+            message =
+
+            "Votre question
+
+ /*=========================================================
+INSPECTEURBOT IA
+MODULE CODE DU TRAVAIL
+PARTIE 9.2
+ANALYSE DES INFRACTIONS
+=========================================================*/
+
+/*=========================================================
+BASE DES INFRACTIONS
+=========================================================*/
+
+const baseInfractions = {
+
+    salaire : {
+
+        mots : [
+
+            "salaire",
+
+            "paie",
+
+            "rémunération",
+
+            "prime"
+
+        ],
+
+        gravite : "Élevée",
+
+        recommandation :
+
+        "Vérifier les bulletins de paie, les preuves de paiement et les registres de rémunération."
+
+    },
+
+    licenciement : {
+
+        mots : [
+
+            "licenciement",
+
+            "renvoi",
+
+            "préavis",
+
+            "rupture"
+
+        ],
+
+        gravite : "Élevée",
+
+        recommandation :
+
+        "Contrôler le respect de la procédure de licenciement et des délais de préavis."
+
+    },
+
+    securite : {
+
+        mots : [
+
+            "accident",
+
+            "sécurité",
+
+            "hygiène",
+
+            "protection"
+
+        ],
+
+        gravite : "Très élevée",
+
+        recommandation :
+
+        "Vérifier immédiatement les équipements de protection et les mesures de sécurité."
+
+    },
+
+    conge : {
+
+        mots : [
+
+            "congé",
+
+            "vacances",
+
+            "repos"
+
+        ],
+
+        gravite : "Moyenne",
+
+        recommandation :
+
+        "Contrôler les droits aux congés et les registres du personnel."
+
+    }
+
+};
+
+/*=========================================================
+ANALYSE DES INFRACTIONS
+=========================================================*/
+
+function analyserInfractions(question){
+
+    question = nettoyerTexte(question);
+
+    let resultat = [];
+
+    Object.keys(baseInfractions)
+
+    .forEach(function(type){
+
+        const infraction = baseInfractions[type];
+
+        infraction.mots.forEach(function(mot){
+
+            if(question.includes(
+
+                nettoyerTexte(mot)
+
+            )){
+
+                resultat.push({
+
+                    type : type,
+
+                    gravite :
+
+                    infraction.gravite,
+
+                    recommandation :
+
+                    infraction.recommandation
+
+                });
+
+            }
+
+        });
+
+        /*=========================================================
+INSPECTEURBOT IA
+MODULE CODE DU TRAVAIL
+PARTIE 9.3
+CORRESPONDANCE DES ARTICLES
+=========================================================*/
+
+/*=========================================================
+RECHERCHE DES ARTICLES PERTINENTS
+=========================================================*/
+
+function rechercherArticlesPertinents(question){
+
+    question = nettoyerTexte(question);
+
+    let resultats = [];
+
+    articles.forEach(function(article){
+
+        let score = 0;
+
+        const contenu = nettoyerTexte(
+
+            JSON.stringify(article)
+
+        );
+
+        question.split(" ").forEach(function(mot){
+
+            if(
+
+                mot.length > 2 &&
+
+                contenu.includes(mot)
+
+            ){
+
+                score += 10;
+
+            }
+
+        });
+
+        if(score > 0){
+
+            resultats.push({
+
+                article: article,
+
+                score: score
+
+            });
+
+        }
+
+    });
+
+    resultats.sort(function(a,b){
+
+        return b.score-a.score;
+
+    });
+
+    return resultats;
+
+}
+
+/*=========================================================
+AFFICHAGE DES ARTICLES CONSEILLÉS
+=========================================================*/
+
+function afficherArticlesConseilles(question){
+
+    const liste =
+
+    rechercherArticlesPertinents(question);
+
+    if(!interfaceCode.resultat){
+
+        return;
+
+    }
+
+    if(liste.length===0){
+
+        interfaceCode.resultat.innerHTML=
+
+        `
+
+        <div class="ia-message">
+
+            Aucun article pertinent trouvé.
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+    let html =
+
+    `
+
+    <div class="articles-conseilles">
+
+        <h2>
+
+            Articles recommandés
+
+        </h2>
+
+    `;
+
+    liste.slice(0,5)
+
+    .forEach(function(item){
+
+        html +=
+
+        `
+
+        <div class="article-ia">
+
+            <h3>
+
+                Article
+
+                ${item.article.numero}
+
+            </h3>
+
+            <h4>
+
+                ${item.article.titre}
+
+            </h4>
+
+            <p>
+
+                Score IA :
+
+                <strong>
+
+                ${item.score}
+
+                </strong>
+
+            </p>
+
+            <button
+
+                onclick="ouvrirArticle('${item.article.numero}')"
+
+            >
+
+                Consulter
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    html +=
+
+    `
+
+    </div>
+
+    `;
+
+    interfaceCode.resultat.innerHTML =
+
+    html;
+
+}
+
+/*=========================================================
+ANALYSE COMPLÈTE IA
+=========================================================*/
+
+function analyseCompleteIA(question){
+
+    analyserDossier(question);
+
+    afficherArticlesConseilles(question);
+
+}
+
+console.log(
+
+"Correspondance intelligente des articles activée."
+
+);
+
+/*=========================================================
+INSPECTEURBOT IA
+PARTIE 9.4A
+RAPPORT JURIDIQUE IA
+=========================================================*/
+
+/*=========================================================
+DATE DU RAPPORT
+=========================================================*/
+
+function obtenirDateRapport(){
+
+    const maintenant = new Date();
+
+    return maintenant.toLocaleDateString(
+
+        "fr-FR",
+
+        {
+
+            day:"2-digit",
+
+            month:"2-digit",
+
+            year:"numeric"
+
+        }
+
+    );
+
+}
+
+/*=========================================================
+HEURE DU RAPPORT
+=========================================================*/
+
+function obtenirHeureRapport(){
+
+    const maintenant = new Date();
+
+    return maintenant.toLocaleTimeString(
+
+        "fr-FR"
+
+    );
+
+}
+
+/*=========================================================
+NIVEAU DE PRIORITÉ
+=========================================================*/
+
+function determinerPriorite(){
+
+    if(articlesFiltres.length>=10){
+
+        return{
+
+            niveau:"Très élevée",
+
+            etoiles:"★★★★★"
+
+        };
+
+    }
+
+    if(articlesFiltres.length>=5){
+
+        return{
+
+            niveau:"Élevée",
+
+            etoiles:"★★★★☆"
+
+        };
+
+    }
+
+    if(articlesFiltres.length>=3){
+
+        return{
+
+            niveau:"Moyenne",
+
+            etoiles:"★★★☆☆"
+
+        };
+
+    }
+
+    return{
+
+        niveau:"Faible",
+
+        etoiles:"★★☆☆☆"
+
+    };
+
+}
+
+/*=========================================================
+RÉSUMÉ DES ARTICLES
+=========================================================*/
+
+function genererResumeArticles(){
+
+    let texte="";
+
+    articlesFiltres
+
+    .slice(0,5)
+
+    .forEach(function(article){
+
+        texte+=
+
+        "Article "
+
+        +article.numero+
+
+        " : "
+
+        +article.titre+
+
+        "\n";
+
+    });
+
+    return texte;
+
+}
+
+/*=========================================================
+RÉCUPÉRATION DU DOMAINE
+=========================================================*/
+
+function recupererDomaine(question){
+
+    return identifierDomaine(
+
+        question
+
+    );
+
+}
+
+/*=========================================================
+PRÉPARATION DU RAPPORT
+=========================================================*/
+
+function preparerRapport(question){
+
+    const priorite=
+
+    determinerPriorite();
+
+    return{
+
+        date:
+
+        obtenirDateRapport(),
+
+        heure:
+
+        obtenirHeureRapport(),
+
+        domaine:
+
+        recupererDomaine(question),
+
+        priorite:
+
+        priorite,
+
+        articles:
+
+        genererResumeArticles()
+
+    };
+
+}
+
+console.log(
+
+"Rapport juridique IA prêt."
+
+);      
+
+        
+
+              
 
     
