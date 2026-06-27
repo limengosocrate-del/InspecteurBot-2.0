@@ -59,11 +59,29 @@ setInterval(updateDateTime,1000);
 document.getElementById("temperature").innerHTML = "26°C";
 document.getElementById("city").innerHTML = "Kinshasa";
 
-/* ========= NOM INSPECTEUR ========= */
+/* ========= INSPECTEUR / CONTRÔLEUR ========= */
 
-document.getElementById("nomInspecteur").innerHTML =
-localStorage.getItem("currentUser") || "Inspecteur";
+const nomUtilisateur =
+localStorage.getItem("currentUser") ||
+"Inspecteur / Contrôleur";
 
+const champInspecteur =
+document.getElementById("nomInspecteur");
+
+if(champInspecteur){
+
+champInspecteur.value = nomUtilisateur;
+
+}
+
+const footerInspecteur =
+document.getElementById("nomInspecteurFooter");
+
+if(footerInspecteur){
+
+footerInspecteur.innerHTML = nomUtilisateur;
+
+}
 /* ========= BASE DE DONNÉES ========= */
 
 let entreprises =
@@ -174,8 +192,7 @@ document.getElementById("statut").value,
 observation:
 document.getElementById("observation").value,
 
-inspecteur:
-localStorage.getItem("currentUser") || "Inspecteur"
+inspecteur: nomUtilisateur
 
 };
 
