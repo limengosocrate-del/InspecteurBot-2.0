@@ -61,26 +61,25 @@ document.getElementById("city").innerHTML = "Kinshasa";
 
 /* ========= INSPECTEUR / CONTRÔLEUR ========= */
 
+localStorage.removeItem("currentUser");
+
 const nomUtilisateur = "";
 
 const champInspecteur =
 document.getElementById("nomInspecteur");
 
 if(champInspecteur){
-
-champInspecteur.value = "";
-
+    champInspecteur.value = "";
 }
 
 const footerInspecteur =
 document.getElementById("nomInspecteurFooter");
 
 if(footerInspecteur){
-
-footerInspecteur.innerHTML =
-"Nom de l'Inspecteur / Contrôleur";
-
+    footerInspecteur.innerHTML =
+    "Nom de l'Inspecteur / Contrôleur";
 }
+
 /* ========= BASE DE DONNÉES ========= */
 
 let entreprises =
@@ -438,18 +437,16 @@ notification("🗑️ Entreprise supprimée avec succès.");
 
 function viderFormulaire(){
 
-document.getElementById("entrepriseForm").reset();
+    document.getElementById("entrepriseForm").reset();
 
-window.scrollTo({
+    document.getElementById("nomInspecteur").value = "";
 
-top:0,
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 
-behavior:"smooth"
-
-});
-
-notification("🆕 Nouveau formulaire prêt.");
-
+    notification("🆕 Nouveau formulaire prêt.");
 }
 
 /* ==========================================
