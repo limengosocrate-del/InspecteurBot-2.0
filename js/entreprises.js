@@ -83,7 +83,10 @@ e.preventDefault();
 
 const entreprise={
 
+dateCreation:new Date().toLocaleDateString("fr-FR"),
 id:Date.now(),
+
+numero:"IGT-"+Date.now(),
 
 nom:
 document.getElementById("nom").value,
@@ -133,6 +136,16 @@ document.getElementById("observation").value,
 inspecteur:
 localStorage.getItem("currentUser")
 
+const existe = entreprises.find(e=>e.rccm===entreprise.rccm);
+
+if(existe){
+
+notification("⚠ Cette entreprise existe déjà.");
+
+return;
+
+}
+
 };
 
 entreprises.push(entreprise);
@@ -142,13 +155,38 @@ localStorage.setItem(
 JSON.stringify(entreprises)
 );
 
-alert("Entreprise enregistrée avec succès.");
+notification("✅ Entreprise enregistrée avec succès.");
 
 form.reset();
 
 afficherEntreprises();
 
 });
+
+function notification(message){
+
+const notif=document.createElement("div");
+
+notif.className="msg";
+
+notif.innerHTML=message;
+
+document.body.appendChild(notif);
+
+setTimeout(()=>{
+notif.remove();
+},3000);
+
+}
+
+window.onbeforeunload=function(){
+
+localStorage.setItem(
+"entreprises",
+JSON.stringify(entreprises)
+);
+
+};
 
 /* ==========================================
    AFFICHAGE DES ENTREPRISES
@@ -217,8 +255,6 @@ actives;
 
 document.getElementById("entrepriseSuspendue").innerHTML =
 suspendues;
-
-}
 
 /* ==========================================
    RECHERCHE INSTANTANÉE
