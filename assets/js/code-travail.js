@@ -2466,8 +2466,50 @@ console.log(
 
 );      
 
-        
+/*====================================
+ MODE CLAIR / SOMBRE PROFESSIONNEL
+====================================*/
 
-              
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
 
-    
+function appliquerTheme(theme){
+
+    document.body.classList.remove("light-theme","dark-theme");
+    document.body.classList.add(theme);
+
+    if(theme==="dark-theme"){
+        themeIcon.textContent="☀️";
+    }else{
+        themeIcon.textContent="🌙";
+    }
+
+    localStorage.setItem("theme",theme);
+
+}
+
+const themeSauvegarde=localStorage.getItem("theme");
+
+if(themeSauvegarde){
+
+    appliquerTheme(themeSauvegarde);
+
+}else{
+
+    appliquerTheme("light-theme");
+
+}
+
+themeToggle.addEventListener("click",()=>{
+
+    if(document.body.classList.contains("light-theme")){
+
+        appliquerTheme("dark-theme");
+
+    }else{
+
+        appliquerTheme("light-theme");
+
+    }
+
+});
