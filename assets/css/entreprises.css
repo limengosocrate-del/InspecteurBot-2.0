@@ -33,50 +33,39 @@ HEADER
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:20px;
-    padding:20px;
-    margin-bottom:25px;
-    border-radius:22px;
-    background:linear-gradient(135deg,#041c5c,#062d78);
-    border:1px solid rgba(255,215,0,.25);
-    box-shadow:0 0 20px rgba(255,215,0,.20);
+    gap:12px;
+    padding:15px;
+    margin-bottom:18px;
+    border-radius:20px;
 }
-
 .logo-box{
     flex-shrink:0;
 }
 
 .logo-box img{
-    width:90px;
-    height:90px;
-    object-fit:contain;
-}
+    width:65px;
+    height:65px;
+};
 
 .title-box{
-    flex:1;
-    text-align:center;
-}
-
 .title-box h1{
-    color:#FFD700;
-    font-size:28px;
-    font-weight:700;
+    font-size:20px;
+    line-height:1.3;
 }
 
 .title-box h2{
-    font-size:18px;
-    margin-top:5px;
+    font-size:15px;
+    margin-top:4px;
 }
 
 .title-box h3{
-    font-size:16px;
-    margin-top:5px;
+    font-size:14px;
+    margin-top:3px;
 }
 
 .title-box p{
-    margin-top:8px;
-    color:#dce8ff;
-    font-size:14px;
+    font-size:13px;
+    margin-top:5px;
 }
 
 .datetime-box{
@@ -84,20 +73,17 @@ HEADER
 }
 
 #clock{
-    font-size:28px;
-    font-weight:bold;
-    color:#FFD700;
+    font-size:22px;
 }
 
 #day,
 #date,
 #city{
-    font-size:14px;
+    font-size:12px;
 }
 
 #weather{
-    margin-top:6px;
-    color:#FFD700;
+    font-size:18px;
 }
 
 /*=================================================
@@ -394,34 +380,66 @@ footer p{
 
 @media(max-width:768px){
 
-    .top-header{
-        flex-direction:column;
-        text-align:center;
-    }
+.container{
+    width:97%;
+    padding:10px;
+}
 
-    .datetime-box{
-        text-align:center;
-    }
+.top-header{
+    flex-direction:column;
+    gap:10px;
+    padding:15px;
+}
 
-    .stats{
-        grid-template-columns:1fr;
-    }
+.logo-box img{
+    width:60px;
+    height:60px;
+}
 
-    #entrepriseForm{
-        grid-template-columns:1fr;
-    }
+.title-box h1{
+    font-size:18px;
+}
 
-    .actions{
-        flex-direction:column;
-    }
+.title-box h2{
+    font-size:14px;
+}
 
-    .actions button{
-        width:100%;
-    }
+.title-box h3{
+    font-size:13px;
+}
 
-    table{
-        min-width:800px;
-    }
+.title-box p{
+    font-size:12px;
+}
+
+#clock{
+    font-size:20px;
+}
+
+.datetime-box{
+    text-align:center;
+}
+
+.stats{
+    grid-template-columns:1fr;
+}
+
+#entrepriseForm{
+    grid-template-columns:1fr;
+}
+
+.actions{
+    flex-direction:column;
+}
+
+.actions button{
+    width:100%;
+}
+
+table{
+    min-width:750px;
+}
+
 }
 
 @media print{
