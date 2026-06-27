@@ -1,287 +1,479 @@
-/* ==========================================
-   INSPECTEURBOT RDC
-   ENTREPRISES.JS
-   PARTIE 1
-========================================== */
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 1
+ Initialisation Générale
+ Version Professionnelle 2026
+=========================================================*/
 
-/* ========= HORLOGE ========= */
+"use strict";
+
+/*=========================================================
+ HORLOGE - DATE - HEURE
+=========================================================*/
 
 function updateDateTime(){
 
-const now = new Date();
+    const maintenant = new Date();
 
-const jours = [
-"Dimanche",
-"Lundi",
-"Mardi",
-"Mercredi",
-"Jeudi",
-"Vendredi",
-"Samedi"
-];
+    const jours = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
 
-const mois = [
-"Janvier",
-"Février",
-"Mars",
-"Avril",
-"Mai",
-"Juin",
-"Juillet",
-"Août",
-"Septembre",
-"Octobre",
-"Novembre",
-"Décembre"
-];
+    const mois = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ];
 
-document.getElementById("clock").innerHTML =
-now.toLocaleTimeString("fr-FR",{
-hour:"2-digit",
-minute:"2-digit"
-});
+    const heure =
+    maintenant.toLocaleTimeString("fr-FR",{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
 
-document.getElementById("day").innerHTML =
-jours[now.getDay()];
+    document.getElementById("clock").textContent = heure;
 
-document.getElementById("date").innerHTML =
-now.getDate()+" "+
-mois[now.getMonth()]+" "+
-now.getFullYear();
+    document.getElementById("day").textContent =
+    jours[maintenant.getDay()];
+
+    document.getElementById("date").textContent =
+    maintenant.getDate()+" "+
+    mois[maintenant.getMonth()]+" "+
+    maintenant.getFullYear();
 
 }
 
 updateDateTime();
+
 setInterval(updateDateTime,1000);
 
-/* ========= METEO ========= */
+/*=========================================================
+ METEO
+=========================================================*/
 
-document.getElementById("temperature").innerHTML = "26°C";
-document.getElementById("city").innerHTML = "Kinshasa";
+document.getElementById("temperature").textContent="26°C";
 
-/* ========= INSPECTEUR / CONTRÔLEUR ========= */
+document.getElementById("city").textContent="Kinshasa";
 
-const nomUtilisateur =
-localStorage.getItem("currentUser") ||
-"Inspecteur / Contrôleur";
-
-const champInspecteur =
-document.getElementById("nomInspecteur");
-
-if(champInspecteur){
-
-champInspecteur.value = nomUtilisateur;
-
-}
-
-const footerInspecteur =
-document.getElementById("nomInspecteurFooter");
-
-if(footerInspecteur){
-
-footerInspecteur.innerHTML = nomUtilisateur;
-
-}
-/* ========= BASE DE DONNÉES ========= */
+/*=========================================================
+ BASE DE DONNÉES
+=========================================================*/
 
 let entreprises =
 JSON.parse(localStorage.getItem("entreprises")) || [];
 
-/* ========= NOTIFICATION ========= */
+/*=========================================================
+ NOTIFICATION
+=========================================================*/
 
-function notification(message){
+function notification(message,type="success"){
 
-const notif = document.createElement("div");
+    const boite =
+    document.createElement("div");
 
-notif.className = "msg";
+    boite.className="msg";
 
-notif.innerHTML = message;
+    boite.innerHTML=message;
 
-document.body.appendChild(notif);
+    if(type==="error"){
 
-setTimeout(function(){
+        boite.style.background="#d63031";
 
-notif.remove();
+    }
 
-},3000);
+    if(type==="warning"){
+
+        boite.style.background="#f39c12";
+
+    }
+
+    document.body.appendChild(boite);
+
+    setTimeout(function(){
+
+        boite.remove();
+
+    },3000);
 
 }
 
-/* ========= FORMULAIRE ========= */
+/*=========================================================
+ SAUVEGARDE AUTOMATIQUE
+=========================================================*/
 
-const form =
+function sauvegarder(){
+
+    localStorage.setItem(
+        "entreprises",
+        JSON.stringify(entreprises)
+    );
+
+}
+
+window.addEventListener("beforeunload",sauvegarder);
+
+/*=========================================================
+ OUTILS
+=========================================================*/
+
+function genererNumero(){
+
+    return "IGT-"+Date.now();
+
+}
+
+function dateAujourdhui(){
+
+    return new Date().toLocaleDateString("fr-FR");
+
+}
+
+/*=========================================================
+ VÉRIFICATION DES ÉLÉMENTS HTML
+=========================================================*/
+
+const formulaire =
 document.getElementById("entrepriseForm");
 
-form.addEventListener("submit",function(e){
+const tableau =
+document.getElementById("tableEntreprise");
+
+const recherche =
+document.getElementById("search");
+
+/*=========================================================
+ FIN PARTIE 1
+=========================================================*/
+
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 2
+ Gestion du Formulaire Entreprise
+=========================================================*/
+
+/*=========================================================
+ ENREGISTREMENT D'UNE ENTREPRISE
+=========================================================*/
+
+if(formulaire){
+
+formulaire.addEventListener("submit",enregistrerEntreprise);
+
+}
+
+function enregistrerEntreprise(e){
 
 e.preventDefault();
 
-/* ===== Vérification RCCM ===== */
+/*==========================
+ RÉCUPÉRATION DES CHAMPS
+==========================*/
 
-const rccm =
-document.getElementById("rccm").value.trim();
+const entreprise={
 
-const existe =
-entreprises.find(function(item){
+id:Date.now(),
 
-return item.rccm === rccm;
+numero:genererNumero(),
 
-});
+dateCreation:dateAujourdhui(),
 
-if(existe){
+nom:document.getElementById("nom").value.trim(),
 
-notification("⚠ Cette entreprise existe déjà.");
+rccm:document.getElementById("rccm").value.trim(),
+
+idnat:document.getElementById("idnat").value.trim(),
+
+impot:document.getElementById("impot").value.trim(),
+
+cnss:document.getElementById("cnss").value.trim(),
+
+directeur:document.getElementById("directeur").value.trim(),
+
+travailleurs:Number(document.getElementById("travailleurs").value)||0,
+
+telephone:document.getElementById("telephone").value.trim(),
+
+email:document.getElementById("email").value.trim(),
+
+province:document.getElementById("province").value.trim(),
+
+ville:document.getElementById("ville").value.trim(),
+
+adresse:document.getElementById("adresse").value.trim(),
+
+secteur:document.getElementById("secteur").value,
+
+statut:document.getElementById("statut").value,
+
+observation:document.getElementById("observation").value.trim()
+
+};
+
+/*==========================
+ VALIDATION
+==========================*/
+
+if(entreprise.nom===""){
+
+notification("Veuillez saisir le nom de l'entreprise.","warning");
 
 return;
 
 }
 
-/* ===== Création de l'entreprise ===== */
+if(entreprise.province===""){
 
-const entreprise = {
+notification("Veuillez saisir la province.","warning");
 
-id: Date.now(),
+return;
 
-numero: "IGT-"+Date.now(),
+}
 
-dateCreation:
-new Date().toLocaleDateString("fr-FR"),
+/*==========================
+ RCCM UNIQUE
+==========================*/
 
-nom:
-document.getElementById("nom").value,
+const existe=entreprises.find(function(item){
 
-rccm:
-document.getElementById("rccm").value,
-
-idnat:
-document.getElementById("idnat").value,
-
-impot:
-document.getElementById("impot").value,
-
-cnss:
-document.getElementById("cnss").value,
-
-directeur:
-document.getElementById("directeur").value,
-
-travailleurs:
-document.getElementById("travailleurs").value,
-
-telephone:
-document.getElementById("telephone").value,
-
-email:
-document.getElementById("email").value,
-
-province:
-document.getElementById("province").value,
-
-ville:
-document.getElementById("ville").value,
-
-adresse:
-document.getElementById("adresse").value,
-
-secteur:
-document.getElementById("secteur").value,
-
-statut:
-document.getElementById("statut").value,
-
-observation:
-document.getElementById("observation").value,
-
-inspecteur: nomUtilisateur
-
-};
-
-entreprises.push(entreprise);
-
-localStorage.setItem(
-"entreprises",
-JSON.stringify(entreprises)
-);
-
-notification("✅ Entreprise enregistrée avec succès.");
-
-form.reset();
-
-afficherEntreprises();
+return item.rccm!=="" &&
+item.rccm===entreprise.rccm;
 
 });
 
-/* ========= SAUVEGARDE ========= */
+if(existe){
 
-window.onbeforeunload = function(){
+notification("Cette entreprise existe déjà.","error");
 
-localStorage.setItem(
-"entreprises",
-JSON.stringify(entreprises)
+return;
 
-);
+}
 
-};
+/*==========================
+ ENREGISTREMENT
+==========================*/
 
-/* ==========================================
-   AFFICHAGE DES ENTREPRISES
-========================================== */
+entreprises.push(entreprise);
+
+sauvegarder();
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+notification("Entreprise enregistrée avec succès.");
+
+viderFormulaire();
+
+}
+
+/*=========================================================
+ NOUVEAU FORMULAIRE
+=========================================================*/
+
+function viderFormulaire(){
+
+formulaire.reset();
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+/*=========================================================
+ MODIFIER UNE ENTREPRISE
+=========================================================*/
+
+function modifierEntreprise(id){
+
+const entreprise=
+
+entreprises.find(function(item){
+
+return item.id===id;
+
+});
+
+if(!entreprise){
+
+return;
+
+}
+
+document.getElementById("nom").value=entreprise.nom;
+document.getElementById("rccm").value=entreprise.rccm;
+document.getElementById("idnat").value=entreprise.idnat;
+document.getElementById("impot").value=entreprise.impot;
+document.getElementById("cnss").value=entreprise.cnss;
+document.getElementById("directeur").value=entreprise.directeur;
+document.getElementById("travailleurs").value=entreprise.travailleurs;
+document.getElementById("telephone").value=entreprise.telephone;
+document.getElementById("email").value=entreprise.email;
+document.getElementById("province").value=entreprise.province;
+document.getElementById("ville").value=entreprise.ville;
+document.getElementById("adresse").value=entreprise.adresse;
+document.getElementById("secteur").value=entreprise.secteur;
+document.getElementById("statut").value=entreprise.statut;
+document.getElementById("observation").value=entreprise.observation;
+
+entreprises=
+
+entreprises.filter(function(item){
+
+return item.id!==id;
+
+});
+
+sauvegarder();
+
+afficherEntreprises();
+
+notification("Modification en cours...");
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+/*=========================================================
+ SUPPRIMER UNE ENTREPRISE
+=========================================================*/
+
+function supprimerEntreprise(id){
+
+if(!confirm("Voulez-vous supprimer cette entreprise ?")){
+
+return;
+
+}
+
+entreprises=
+
+entreprises.filter(function(item){
+
+return item.id!==id;
+
+});
+
+sauvegarder();
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+notification("Entreprise supprimée.");
+
+}
+
+/*=========================================================
+ FIN PARTIE 2
+=========================================================*/
+
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 3
+ Tableau - Statistiques - Recherche
+ Version Professionnelle 2026
+=========================================================*/
+
+/*=========================================================
+ AFFICHAGE DES ENTREPRISES
+=========================================================*/
 
 function afficherEntreprises(liste = entreprises){
 
-const table =
-document.getElementById("tableEntreprise");
-
-table.innerHTML = "";
-
-let totalTravailleurs = 0;
-let actives = 0;
-let suspendues = 0;
-
-liste.forEach(function(e){
-
-totalTravailleurs +=
-Number(e.travailleurs || 0);
-
-if(e.statut === "Active"){
-
-actives++;
-
+if(!tableau){
+return;
 }
 
-if(e.statut === "Suspendue"){
+tableau.innerHTML="";
 
-suspendues++;
+if(liste.length===0){
 
-}
-
-table.innerHTML += `
+tableau.innerHTML=`
 
 <tr>
 
-<td>${e.numero}</td>
+<td colspan="6" style="text-align:center;padding:30px;">
 
-<td>${e.nom}</td>
+Aucune entreprise enregistrée.
 
-<td>${e.province}</td>
+</td>
 
-<td>${e.secteur}</td>
+</tr>
 
-<td>${e.travailleurs}</td>
+`;
 
-<td>${e.statut}</td>
+return;
+
+}
+
+liste.forEach(function(entreprise,index){
+
+tableau.innerHTML+=`
+
+<tr>
+
+<td>${index+1}</td>
+
+<td>${entreprise.nom}</td>
+
+<td>${entreprise.province}</td>
+
+<td>${entreprise.secteur}</td>
 
 <td>
 
-<button onclick="modifierEntreprise(${e.id})">
+<span class="badge">
 
-<i class="fa fa-pen"></i>
+${entreprise.statut}
+
+</span>
+
+</td>
+
+<td>
+
+<button
+onclick="modifierEntreprise(${entreprise.id})"
+title="Modifier">
+
+<i class="fa-solid fa-pen"></i>
 
 </button>
 
-<button onclick="supprimerEntreprise(${e.id})">
+<button
+onclick="supprimerEntreprise(${entreprise.id})"
+title="Supprimer">
 
-<i class="fa fa-trash"></i>
+<i class="fa-solid fa-trash"></i>
 
 </button>
 
@@ -293,50 +485,83 @@ table.innerHTML += `
 
 });
 
-/* ========= STATISTIQUES ========= */
+}
 
-document.getElementById("totalEntreprise").innerHTML =
-liste.length;
+/*=========================================================
+ STATISTIQUES
+=========================================================*/
 
-document.getElementById("totalTravailleurs").innerHTML =
+function actualiserStatistiques(){
+
+let totalEntreprise=entreprises.length;
+
+let totalTravailleurs=0;
+
+let actives=0;
+
+let suspendues=0;
+
+entreprises.forEach(function(item){
+
+totalTravailleurs+=Number(item.travailleurs)||0;
+
+if(item.statut==="Active"){
+
+actives++;
+
+}
+
+if(item.statut==="Suspendue"){
+
+suspendues++;
+
+}
+
+});
+
+document.getElementById("totalEntreprise").textContent=
+totalEntreprise;
+
+document.getElementById("totalTravailleurs").textContent=
 totalTravailleurs;
 
-document.getElementById("entrepriseActive").innerHTML =
+document.getElementById("entrepriseActive").textContent=
 actives;
 
-document.getElementById("entrepriseSuspendue").innerHTML =
+document.getElementById("entrepriseSuspendue").textContent=
 suspendues;
 
 }
 
-/* ==========================================
-   RECHERCHE INSTANTANÉE
-========================================== */
-
-const recherche =
-document.getElementById("search");
+/*=========================================================
+ RECHERCHE INSTANTANÉE
+=========================================================*/
 
 if(recherche){
 
 recherche.addEventListener("keyup",function(){
 
-const texte =
-this.value.toLowerCase();
+const texte=this.value
+.toLowerCase()
+.trim();
 
-const resultat =
-entreprises.filter(function(e){
+const resultat=
+
+entreprises.filter(function(item){
 
 return(
 
-e.nom.toLowerCase().includes(texte) ||
+item.nom.toLowerCase().includes(texte)||
 
-e.province.toLowerCase().includes(texte) ||
+item.province.toLowerCase().includes(texte)||
 
-e.ville.toLowerCase().includes(texte) ||
+item.ville.toLowerCase().includes(texte)||
 
-e.directeur.toLowerCase().includes(texte) ||
+item.directeur.toLowerCase().includes(texte)||
 
-e.secteur.toLowerCase().includes(texte)
+item.secteur.toLowerCase().includes(texte)||
+
+item.statut.toLowerCase().includes(texte)
 
 );
 
@@ -348,114 +573,66 @@ afficherEntreprises(resultat);
 
 }
 
-/* ==========================================
-   CHARGEMENT INITIAL
-========================================== */
+/*=========================================================
+ TRI ALPHABÉTIQUE
+=========================================================*/
 
-afficherEntreprises();
+function trierEntreprises(){
 
-/* ==========================================
-   MODIFIER UNE ENTREPRISE
-========================================== */
+entreprises.sort(function(a,b){
 
-function modifierEntreprise(id){
-
-const entreprise =
-entreprises.find(e => e.id === id);
-
-if(!entreprise){
-
-return;
-
-}
-
-document.getElementById("nom").value = entreprise.nom;
-document.getElementById("rccm").value = entreprise.rccm;
-document.getElementById("idnat").value = entreprise.idnat;
-document.getElementById("impot").value = entreprise.impot;
-document.getElementById("cnss").value = entreprise.cnss;
-document.getElementById("directeur").value = entreprise.directeur;
-document.getElementById("travailleurs").value = entreprise.travailleurs;
-document.getElementById("telephone").value = entreprise.telephone;
-document.getElementById("email").value = entreprise.email;
-document.getElementById("province").value = entreprise.province;
-document.getElementById("ville").value = entreprise.ville;
-document.getElementById("adresse").value = entreprise.adresse;
-document.getElementById("secteur").value = entreprise.secteur;
-document.getElementById("statut").value = entreprise.statut;
-document.getElementById("observation").value = entreprise.observation;
-
-entreprises =
-entreprises.filter(e => e.id !== id);
-
-localStorage.setItem(
-"entreprises",
-JSON.stringify(entreprises)
-);
-
-afficherEntreprises();
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
+return a.nom.localeCompare(b.nom);
 
 });
 
-notification("✏️ Modification en cours...");
-
-}
-
-/* ==========================================
-   SUPPRIMER UNE ENTREPRISE
-========================================== */
-
-function supprimerEntreprise(id){
-
-if(!confirm("Voulez-vous vraiment supprimer cette entreprise ?")){
-
-return;
-
-}
-
-entreprises =
-entreprises.filter(e => e.id !== id);
-
-localStorage.setItem(
-"entreprises",
-JSON.stringify(entreprises)
-);
+sauvegarder();
 
 afficherEntreprises();
 
-notification("🗑️ Entreprise supprimée avec succès.");
+}
+
+/*=========================================================
+ ACTUALISATION
+=========================================================*/
+
+function actualiser(){
+
+entreprises=
+
+JSON.parse(
+
+localStorage.getItem("entreprises")
+
+)||[];
+
+afficherEntreprises();
+
+actualiserStatistiques();
 
 }
 
-/* ==========================================
-   NOUVEAU FORMULAIRE
-========================================== */
+/*=========================================================
+ CHARGEMENT INITIAL
+=========================================================*/
 
-function viderFormulaire(){
+actualiser();
 
-document.getElementById("entrepriseForm").reset();
+/*=========================================================
+ FIN PARTIE 3
+=========================================================*/
 
-window.scrollTo({
 
-top:0,
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 4
+ Impression - Export - Sauvegarde
+ Version Professionnelle 2026
+=========================================================*/
 
-behavior:"smooth"
-
-});
-
-notification("🆕 Nouveau formulaire prêt.");
-
-}
-
-/* ==========================================
-   IMPRESSION
-========================================== */
+/*=========================================================
+ IMPRESSION
+=========================================================*/
 
 function imprimerEntreprise(){
 
@@ -463,68 +640,325 @@ window.print();
 
 }
 
-/* ==========================================
-   EXPORT PDF
-========================================== */
+/*=========================================================
+ EXPORT PDF
+=========================================================*/
 
 function exporterPDF(){
 
-notification("📄 Export PDF disponible dans la prochaine version.");
+notification(
+"📄 Export PDF disponible dans la prochaine mise à jour."
+);
 
 }
 
-/* ==========================================
-   EXPORT EXCEL
-========================================== */
+/*=========================================================
+ EXPORT EXCEL
+=========================================================*/
 
 function exporterExcel(){
 
-notification("📊 Export Excel disponible dans la prochaine version.");
+notification(
+"📊 Export Excel disponible dans la prochaine mise à jour."
+);
 
 }
 
-/* ==========================================
-   QR CODE
-========================================== */
+/*=========================================================
+ GÉNÉRATION QR CODE
+=========================================================*/
 
 function genererQRCode(){
 
-notification("📱 QR Code disponible dans la prochaine version.");
+notification(
+"📱 Génération du QR Code disponible prochainement."
+);
 
 }
 
-/* ==========================================
-   EXPORT JSON
-========================================== */
+/*=========================================================
+ EXPORT JSON
+=========================================================*/
 
-function sauvegarderJSON(){
+function exporterJSON(){
 
-const data =
-JSON.stringify(entreprises,null,2);
+const donnees=
+JSON.stringify(
+entreprises,
+null,
+2
+);
 
-const blob =
-new Blob([data],{
+const blob=
+new Blob(
+[donnees],
+{
 type:"application/json"
-});
+}
+);
 
-const lien =
+const lien=
 document.createElement("a");
 
-lien.href =
+lien.href=
 URL.createObjectURL(blob);
 
-lien.download =
-"Entreprises_IGT.json";
+lien.download=
+"Entreprises_IGT_RDC.json";
 
 lien.click();
 
-notification("✅ Sauvegarde terminée.");
+notification(
+"✅ Sauvegarde JSON terminée."
+);
 
 }
 
-/* ==========================================
-   NOMBRE TOTAL
-========================================== */
+/*=========================================================
+ IMPORT JSON
+=========================================================*/
+
+function importerJSON(fichier){
+
+const lecteur=
+new FileReader();
+
+lecteur.onload=function(e){
+
+try{
+
+entreprises=
+JSON.parse(e.target.result);
+
+sauvegarder();
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+notification(
+"✅ Données importées avec succès."
+);
+
+}catch{
+
+notification(
+"❌ Fichier JSON invalide.",
+"error"
+);
+
+}
+
+};
+
+lecteur.readAsText(fichier);
+
+}
+
+/*=========================================================
+ ACTUALISER LES DONNÉES
+=========================================================*/
+
+function actualiserDonnees(){
+
+entreprises=
+JSON.parse(
+localStorage.getItem("entreprises")
+)||[];
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+notification(
+"🔄 Données actualisées."
+);
+
+}
+
+/*=========================================================
+ SUPPRIMER TOUTES LES ENTREPRISES
+=========================================================*/
+
+function supprimerToutesLesEntreprises(){
+
+if(!confirm(
+"Voulez-vous supprimer toutes les entreprises ?"
+)){
+
+return;
+
+}
+
+entreprises=[];
+
+sauvegarder();
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+notification(
+"🗑️ Toutes les entreprises ont été supprimées."
+);
+
+}
+
+/*=========================================================
+ ACTUALISATION AUTOMATIQUE
+=========================================================*/
+
+window.addEventListener(
+
+"storage",
+
+function(){
+
+actualiserDonnees();
+
+}
+
+);
+
+/*=========================================================
+ FIN PARTIE 4
+=========================================================*/
+
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 5
+ Fonctions Utilitaires
+ Version Professionnelle 2026
+=========================================================*/
+
+/*=========================================================
+ SAUVEGARDE DES DONNÉES
+=========================================================*/
+
+function sauvegarder(){
+
+localStorage.setItem(
+
+"entreprises",
+
+JSON.stringify(entreprises)
+
+);
+
+}
+
+/*=========================================================
+ GÉNÉRATION DU NUMÉRO IGT
+=========================================================*/
+
+function genererNumero(){
+
+const numero=
+
+entreprises.length+1;
+
+return "IGT-"+
+
+String(numero)
+
+.padStart(5,"0");
+
+}
+
+/*=========================================================
+ DATE DU JOUR
+=========================================================*/
+
+function dateAujourdhui(){
+
+const maintenant=
+
+new Date();
+
+return maintenant
+
+.toLocaleDateString(
+
+"fr-FR"
+
+);
+
+}
+
+/*=========================================================
+ NOTIFICATION
+=========================================================*/
+
+function notification(
+
+message,
+
+type="success"
+
+){
+
+const ancienne=
+
+document.querySelector(".msg");
+
+if(ancienne){
+
+ancienne.remove();
+
+}
+
+const boite=
+
+document.createElement("div");
+
+boite.className="msg";
+
+if(type==="error"){
+
+boite.style.background="#d32f2f";
+
+}
+
+if(type==="warning"){
+
+boite.style.background="#ff9800";
+
+}
+
+if(type==="success"){
+
+boite.style.background="#198754";
+
+}
+
+boite.innerHTML=message;
+
+document.body.appendChild(boite);
+
+setTimeout(function(){
+
+boite.remove();
+
+},3000);
+
+}
+
+/*=========================================================
+ FORMAT NOMBRE
+=========================================================*/
+
+function formatNombre(nombre){
+
+return Number(nombre)
+
+.toLocaleString("fr-FR");
+
+}
+
+/*=========================================================
+ TOTAL DES ENTREPRISES
+=========================================================*/
 
 function totalEntreprises(){
 
@@ -532,17 +966,19 @@ return entreprises.length;
 
 }
 
-/* ==========================================
-   TOTAL TRAVAILLEURS
-========================================== */
+/*=========================================================
+ TOTAL DES TRAVAILLEURS
+=========================================================*/
 
 function totalTravailleurs(){
 
-let total = 0;
+let total=0;
 
-entreprises.forEach(function(e){
+entreprises.forEach(function(item){
 
-total += Number(e.travailleurs || 0);
+total+=
+
+Number(item.travailleurs)||0;
 
 });
 
@@ -550,110 +986,277 @@ return total;
 
 }
 
-/* ==========================================
-   ENTREPRISES ACTIVES
-========================================== */
+/*=========================================================
+ TOTAL ACTIVES
+=========================================================*/
 
 function totalActives(){
 
-return entreprises.filter(function(e){
+return entreprises.filter(
 
-return e.statut === "Active";
+function(item){
 
-}).length;
+return item.statut==="Active";
 
 }
 
-/* ==========================================
-   ENTREPRISES SUSPENDUES
-========================================== */
+).length;
+
+}
+
+/*=========================================================
+ TOTAL SUSPENDUES
+=========================================================*/
 
 function totalSuspendues(){
 
-return entreprises.filter(function(e){
+return entreprises.filter(
 
-return e.statut === "Suspendue";
+function(item){
 
-}).length;
-
-}
-
-/* ==========================================
-   ACTUALISATION DES CARTES
-========================================== */
-
-function actualiserStatistiques(){
-
-document.getElementById("totalEntreprise").innerHTML =
-totalEntreprises();
-
-document.getElementById("totalTravailleurs").innerHTML =
-totalTravailleurs();
-
-document.getElementById("entrepriseActive").innerHTML =
-totalActives();
-
-document.getElementById("entrepriseSuspendue").innerHTML =
-totalSuspendues();
+return item.statut==="Suspendue";
 
 }
 
-actualiserStatistiques();
-
-/* ==========================================
-   VERSION
-========================================== */
-
-console.log(
-"InspecteurBot RDC - Entreprises v1.0 chargé avec succès."
-);
-
-/* ==========================================
-   PARTIE 5
-   EXPORTS PROFESSIONNELS
-========================================== */
-
-/* ========= EXPORT PDF ========= */
-
-function exporterPDF(){
-
-notification("📄 Fonction PDF en préparation.");
+).length;
 
 }
 
-/* ========= EXPORT EXCEL ========= */
+/*=========================================================
+ RAFRAÎCHISSEMENT COMPLET
+=========================================================*/
 
-function exporterExcel(){
-
-notification("📊 Fonction Excel en préparation.");
-
-}
-
-/* ========= QR CODE ========= */
-
-function genererQRCode(){
-
-notification("📱 Fonction QR Code en préparation.");
-
-}
-
-/* ========= IMPRESSION ========= */
-
-function imprimerEntreprise(){
-
-window.print();
-
-}
-
-/* ========= RAFRAÎCHIR ========= */
-
-function actualiser(){
-
-entreprises =
-JSON.parse(localStorage.getItem("entreprises")) || [];
+function rafraichir(){
 
 afficherEntreprises();
 
-notification("🔄 Données actualisées.");
+actualiserStatistiques();
 
-  }
+}
+
+/*=========================================================
+ VERSION
+=========================================================*/
+
+console.log(
+
+"InspecteurBot RDC",
+
+"Version Professionnelle 2026",
+
+"Module Entreprises chargé avec succès."
+
+);
+
+/*=========================================================
+ FIN PARTIE 5
+=========================================================*/
+
+/*=========================================================
+ INSPECTEURBOT RDC
+ ENTREPRISES.JS
+ PARTIE 6
+ Initialisation Finale
+ Version Professionnelle 2026
+=========================================================*/
+
+/*=========================================================
+ CHARGEMENT INITIAL
+=========================================================*/
+
+document.addEventListener("DOMContentLoaded",function(){
+
+/* Chargement des données */
+
+entreprises=
+
+JSON.parse(
+
+localStorage.getItem("entreprises")
+
+)||[];
+
+/* Affichage */
+
+afficherEntreprises();
+
+actualiserStatistiques();
+
+/* Heure */
+
+updateDateTime();
+
+setInterval(updateDateTime,1000);
+
+/*=========================================================
+ BOUTON NOUVEAU
+=========================================================*/
+
+const boutonNouveau=
+
+document.querySelector(
+
+'button[onclick="viderFormulaire()"]'
+
+);
+
+if(boutonNouveau){
+
+boutonNouveau.addEventListener(
+
+"click",
+
+function(){
+
+viderFormulaire();
+
+}
+
+);
+
+}
+
+/*=========================================================
+ RECHERCHE
+=========================================================*/
+
+if(recherche){
+
+recherche.addEventListener(
+
+"input",
+
+function(){
+
+const texte=
+
+this.value
+
+.toLowerCase()
+
+.trim();
+
+const resultat=
+
+entreprises.filter(function(item){
+
+return(
+
+item.nom.toLowerCase().includes(texte)||
+
+item.province.toLowerCase().includes(texte)||
+
+item.ville.toLowerCase().includes(texte)||
+
+item.directeur.toLowerCase().includes(texte)||
+
+item.secteur.toLowerCase().includes(texte)||
+
+item.statut.toLowerCase().includes(texte)
+
+);
+
+});
+
+afficherEntreprises(resultat);
+
+}
+
+);
+
+}
+
+/*=========================================================
+ MESSAGE DE BIENVENUE
+=========================================================*/
+
+notification(
+
+"Bienvenue dans le module Gestion des Entreprises."
+
+);
+
+});
+
+/*=========================================================
+ SAUVEGARDE AVANT FERMETURE
+=========================================================*/
+
+window.addEventListener(
+
+"beforeunload",
+
+function(){
+
+sauvegarder();
+
+}
+
+);
+
+/*=========================================================
+ GESTION DES ERREURS
+=========================================================*/
+
+window.onerror=function(){
+
+notification(
+
+"Une erreur est survenue.",
+
+"error"
+
+);
+
+};
+
+/*=========================================================
+ RAFRAÎCHISSEMENT AUTOMATIQUE
+=========================================================*/
+
+setInterval(function(){
+
+actualiserStatistiques();
+
+},5000);
+
+/*=========================================================
+ FIN DU FICHIER
+=========================================================*/
+
+console.log(
+
+"========================================"
+
+);
+
+console.log(
+
+" InspecteurBot RDC"
+
+);
+
+console.log(
+
+" Module : Gestion des Entreprises"
+
+);
+
+console.log(
+
+" Version : Professionnelle 2026"
+
+);
+
+console.log(
+
+" Statut : Chargé avec succès"
+
+);
+
+console.log(
+
+"========================================"
+
+);
+
