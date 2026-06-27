@@ -1018,3 +1018,11 @@ body.dark-theme .theme-btn{
     background:#ffc107;
     color:#222;
     }
+
+ *{
+    transition:
+        background-color .35s,
+        color .35s,
+        border-color .35s,
+        box-shadow .35s;
+     }   
