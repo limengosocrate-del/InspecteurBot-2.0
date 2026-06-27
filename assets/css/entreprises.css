@@ -160,15 +160,42 @@ STATISTIQUES + RECHERCHE
     outline:none;
 }
 
-.search-section button{
-    width:60px;
-    height:56px;
+.search-section{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin:30px auto;
+    max-width:700px;
+}
+
+.search-section input{
+    width:100%;
+    max-width:550px;
+    padding:14px 20px;
     border:none;
     border-radius:16px;
+    background:#ffffff;
+    color:#041c5c;
+    font-size:16px;
+    outline:none;
+}
+
+.search-section button{
+    width:55px;
+    height:50px;
+    border:none;
+    border-radius:14px;
     background:#FFD700;
     color:#041c5c;
-    font-size:20px;
+    font-size:18px;
     cursor:pointer;
+    transition:.3s;
+}
+
+.search-section button:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px rgba(255,215,0,.45);
 }
 
 /*=================================================
