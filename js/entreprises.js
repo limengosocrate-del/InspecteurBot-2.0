@@ -61,16 +61,14 @@ document.getElementById("city").innerHTML = "Kinshasa";
 
 /* ========= INSPECTEUR / CONTRÔLEUR ========= */
 
-const nomUtilisateur =
-localStorage.getItem("currentUser") ||
-"Inspecteur / Contrôleur";
+const nomUtilisateur = "";
 
 const champInspecteur =
 document.getElementById("nomInspecteur");
 
 if(champInspecteur){
 
-champInspecteur.value = nomUtilisateur;
+champInspecteur.value = "";
 
 }
 
@@ -79,7 +77,8 @@ document.getElementById("nomInspecteurFooter");
 
 if(footerInspecteur){
 
-footerInspecteur.innerHTML = nomUtilisateur;
+footerInspecteur.innerHTML =
+"Nom de l'Inspecteur / Contrôleur";
 
 }
 /* ========= BASE DE DONNÉES ========= */
