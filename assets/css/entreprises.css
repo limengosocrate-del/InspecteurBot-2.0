@@ -1,7 +1,7 @@
 /*=================================================
 INSPECTEURBOT RDC
 ENTREPRISES.CSS
-Version 1.0
+PARTIE 1
 ==================================================*/
 
 *{
@@ -18,747 +18,146 @@ body{
     line-height:1.6;
 }
 
-/*=================================================
-CONTENEUR PRINCIPAL
-==================================================*/
+/*========================
+CONTENEUR
+========================*/
 
 .container{
     width:95%;
-    max-width:1200px;
+    max-width:1300px;
     margin:auto;
     padding:20px;
 }
 
-/*=================================================
+/*========================
 EN-TÊTE
-==================================================*/
+========================*/
 
-header{
-
-    background:linear-gradient(135deg,#041c5c,#062d78);
-
-    border-radius:22px;
-
-    padding:20px;
+.top-header{
 
     display:flex;
-
-    align-items:center;
 
     justify-content:space-between;
 
+    align-items:center;
+
     gap:20px;
+
+    padding:20px;
 
     margin-bottom:25px;
 
+    border-radius:22px;
+
+    background:linear-gradient(135deg,#041c5c,#062d78);
+
     border:1px solid rgba(255,215,0,.25);
 
-    box-shadow:0 0 18px rgba(255,215,0,.18);
+    box-shadow:0 0 20px rgba(255,215,0,.20);
 
 }
 
-.header-left{
+/*========================
+LOGO
+========================*/
 
-    display:flex;
+.logo-box{
 
-    align-items:center;
-
-    gap:18px;
+    flex-shrink:0;
 
 }
 
-.header-left img{
+.logo-box img{
 
-    width:75px;
+    width:90px;
 
-    height:75px;
+    height:90px;
 
     object-fit:contain;
 
 }
 
-.header-title h1{
+/*========================
+TITRES
+========================*/
+
+.title-box{
+
+    flex:1;
+
+    text-align:center;
+
+}
+
+.title-box h1{
+
+    color:#FFD700;
 
     font-size:28px;
-
-    color:#FFD700;
-
-    margin-bottom:4px;
-
-}
-
-.header-title h2{
-
-    font-size:18px;
-
-    color:#ffffff;
-
-    font-weight:500;
-
-}
-
-.header-title p{
-
-    font-size:14px;
-
-    color:#dbe7ff;
-
-}
-
-/*=================================================
-FORMULAIRE ENTREPRISE
-==================================================*/
-
-.form-section{
-
-    background:linear-gradient(135deg,#06245e,#0b3b8f);
-
-    border-radius:22px;
-
-    padding:25px;
-
-    margin-bottom:25px;
-
-    border:1px solid rgba(255,215,0,.20);
-
-    box-shadow:0 0 18px rgba(255,215,0,.15);
-
-}
-
-.form-section h2{
-
-    text-align:center;
-
-    color:#FFD700;
-
-    font-size:24px;
-
-    margin-bottom:25px;
-
-}
-
-.form-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
-    gap:18px;
-
-}
-
-.form-group{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-.form-group label{
-
-    color:#FFD700;
-
-    font-size:15px;
-
-    font-weight:600;
-
-    margin-bottom:8px;
-
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea{
-
-    width:100%;
-
-    padding:14px;
-
-    border-radius:14px;
-
-    border:1px solid rgba(255,215,0,.20);
-
-    background:#ffffff;
-
-    color:#041c5c;
-
-    font-size:15px;
-
-    transition:.3s;
-
-}
-
-.form-group textarea{
-
-    resize:vertical;
-
-    min-height:90px;
-
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-
-    outline:none;
-
-    border:2px solid #FFD700;
-
-    box-shadow:0 0 12px rgba(255,215,0,.35);
-
-}
-
-/*=================================================
-BOUTONS D'ACTIONS
-==================================================*/
-
-.actions{
-
-    display:flex;
-
-    justify-content:center;
-
-    flex-wrap:wrap;
-
-    gap:15px;
-
-    margin:30px 0;
-
-}
-
-.actions button{
-
-    min-width:170px;
-
-    padding:15px 22px;
-
-    border:none;
-
-    border-radius:18px;
-
-    cursor:pointer;
-
-    font-size:15px;
-
-    font-weight:600;
-
-    color:#FFD700;
-
-    background:linear-gradient(135deg,#082b73,#041c5c);
-
-    border:1px solid rgba(255,215,0,.35);
-
-    box-shadow:
-    0 0 10px rgba(255,215,0,.18);
-
-    transition:.35s;
-
-}
-
-.actions button i{
-
-    margin-right:8px;
-
-    font-size:17px;
-
-}
-
-.actions button:hover{
-
-    transform:translateY(-4px);
-
-    background:linear-gradient(135deg,#0b3d99,#06245e);
-
-    box-shadow:
-    0 0 18px rgba(255,215,0,.45);
-
-}
-
-/*=================================================
-BOUTONS ENREGISTRER / ANNULER
-==================================================*/
-
-.btn-save{
-
-    background:linear-gradient(135deg,#0a4aa5,#06245e)!important;
-
-}
-
-.btn-reset{
-
-    background:linear-gradient(135deg,#555,#2f2f2f)!important;
-
-
-/*=================================================
-TABLEAU DES ENTREPRISES
-==================================================*/
-
-.table-section{
-
-    background:linear-gradient(135deg,#06245e,#0b3b8f);
-
-    border-radius:22px;
-
-    padding:25px;
-
-    margin-top:30px;
-
-    overflow-x:auto;
-
-    border:1px solid rgba(255,215,0,.20);
-
-    box-shadow:0 0 18px rgba(255,215,0,.15);
-
-}
-
-.table-section h2{
-
-    text-align:center;
-
-    color:#FFD700;
-
-    font-size:24px;
-
-    margin-bottom:20px;
-
-}
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-}
-
-thead{
-
-    background:#FFD700;
-
-}
-
-thead th{
-
-    color:#041c5c;
-
-    font-size:15px;
-
-    padding:16px;
-
-    text-align:center;
 
     font-weight:700;
 
 }
 
-tbody td{
+.title-box h2{
 
-    padding:15px;
+    font-size:18px;
 
-    text-align:center;
+    margin-top:5px;
 
-    background:#0a2f79;
+}
 
-    color:#ffffff;
+.title-box h3{
+
+    font-size:16px;
+
+    margin-top:5px;
+
+}
+
+.title-box p{
+
+    margin-top:8px;
+
+    color:#dce8ff;
 
     font-size:14px;
 
-    border-bottom:1px solid rgba(255,255,255,.08);
+}
 
-    transition:.3s;
+/*========================
+DATE ET HEURE
+========================*/
+
+.datetime-box{
+
+    text-align:right;
 
 }
 
-tbody tr:nth-child(even) td{
+#clock{
 
-    background:#0b367f;
+    font-size:28px;
 
-}
+    font-weight:bold;
 
-tbody tr:hover td{
-
-    background:#1450b0;
+    color:#FFD700;
 
 }
 
-/*=================================================
-BOUTONS DANS LE TABLEAU
-==================================================*/
-
-.table-actions{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:8px;
-
-}
-
-.table-actions button{
-
-    width:42px;
-
-    height:42px;
-
-    border:none;
-
-    border-radius:12px;
-
-    cursor:pointer;
-
-    transition:.3s;
-
-    font-size:16px;
-
-}
-
-.table-actions .edit{
-
-    background:#FFD700;
-
-    color:#041c5c;
-
-}
-
-.table-actions .delete{
-
-    background:#d62828;
-
-    color:#ffffff;
-
-}
-
-.table-actions .view{
-
-    background:#0aa7ff;
-
-    color:#ffffff;
-
-}
-
-.table-actions button:hover{
-
-    transform:scale(1.10);
-
-    box-shadow:0 0 15px rgba(255,215,0,.45);
-
-  }
-
-/*=================================================
-BARRE DE RECHERCHE
-==================================================*/
-
-.search-section{
-
-    margin:25px 0;
-
-    display:flex;
-
-    justify-content:center;
-
-}
-
-.search-section input{
-
-    width:100%;
-    max-width:500px;
-
-    padding:15px 20px;
-
-    border:none;
-
-    border-radius:40px;
-
-    background:#ffffff;
-
-    color:#041c5c;
-
-    font-size:16px;
-
-    border:2px solid rgba(255,215,0,.25);
-
-    transition:.3s;
-
-}
-
-.search-section input:focus{
-
-    outline:none;
-
-    border-color:#FFD700;
-
-    box-shadow:0 0 15px rgba(255,215,0,.35);
-
-}
-
-/*=================================================
-RESPONSIVE TELEPHONE
-==================================================*/
-
-@media(max-width:768px){
-
-header{
-
-    flex-direction:column;
-
-    text-align:center;
-
-}
-
-.header-left{
-
-    flex-direction:column;
-
-}
-
-.header-title h1{
-
-    font-size:22px;
-
-}
-
-.header-title h2{
-
-    font-size:16px;
-
-}
-
-.form-grid{
-
-    grid-template-columns:1fr;
-
-}
-
-.actions{
-
-    flex-direction:column;
-
-}
-
-.actions button{
-
-    width:100%;
-
-}
-
-table{
-
-    min-width:900px;
-
-}
-
-}
-
-/*=================================================
-IMPRESSION
-==================================================*/
-
-@media print{
-
-body{
-
-    background:white;
-
-    color:black;
-
-}
-
-header,
-footer,
-.actions,
-.search-section{
-
-    display:none;
-
-}
-
-.form-section,
-.table-section{
-
-    background:white;
-
-    color:black;
-
-    box-shadow:none;
-
-    border:none;
-
-}
-
-table{
-
-    width:100%;
-
-    font-size:12px;
-
-}
-
-thead{
-
-    background:#dddddd !important;
-
-}
-
-thead th{
-
-    color:#000 !important;
-
-}
-
-tbody td{
-
-    color:#000 !important;
-
-    background:white !important;
-
-}
-
-  }
-
-/*=================================================
-SCROLLBAR PERSONNALISÉE
-==================================================*/
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-    height:10px;
-
-}
-
-::-webkit-scrollbar-track{
-
-    background:#041c5c;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:linear-gradient(#FFD700,#caa300);
-
-    border-radius:20px;
-
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:#FFD700;
-
-}
-
-/*=================================================
-ANIMATIONS
-==================================================*/
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-        transform:translateY(20px);
-
-    }
-
-    to{
-
-        opacity:1;
-        transform:translateY(0);
-
-    }
-
-}
-
-@keyframes zoomIn{
-
-    from{
-
-        opacity:0;
-        transform:scale(.95);
-
-    }
-
-    to{
-
-        opacity:1;
-        transform:scale(1);
-
-    }
-
-}
-
-.form-section,
-.table-section,
-.actions{
-
-    animation:fadeIn .6s ease;
-
-}
-
-header{
-
-    animation:zoomIn .5s ease;
-
-}
-
-/*=================================================
-EFFETS AU SURVOL
-==================================================*/
-
-.form-section:hover,
-.table-section:hover{
-
-    box-shadow:
-    0 0 22px rgba(255,215,0,.22);
-
-    transition:.35s;
-
-}
-
-input:hover,
-select:hover,
-textarea:hover{
-
-    border-color:#FFD700;
-
-}
-
-/*=================================================
-PIED DE PAGE
-==================================================*/
-
-footer{
-
-    margin-top:35px;
-
-    padding:20px;
-
-    text-align:center;
-
-    color:#dbe7ff;
+#day,
+#date,
+#city{
 
     font-size:14px;
 
-    border-top:1px solid rgba(255,255,255,.12);
+}
+
+#weather{
+
+    margin-top:6px;
+
+    color:#FFD700;
 
 }
 
-footer img{
-
-    width:70px;
-
-    margin-bottom:10px;
-
-}
-
-/*=================================================
-FIN DU FICHIER
-ENTREPRISES.CSS
-InspecteurBot RDC
-==================================================*/
