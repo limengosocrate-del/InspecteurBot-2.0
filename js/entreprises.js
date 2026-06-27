@@ -1,15 +1,16 @@
 /* ==========================================
    INSPECTEURBOT RDC
    ENTREPRISES.JS
+   PARTIE 1
 ========================================== */
 
 /* ========= HORLOGE ========= */
 
 function updateDateTime(){
 
-const now=new Date();
+const now = new Date();
 
-const jours=[
+const jours = [
 "Dimanche",
 "Lundi",
 "Mardi",
@@ -19,7 +20,7 @@ const jours=[
 "Samedi"
 ];
 
-const mois=[
+const mois = [
 "Janvier",
 "Février",
 "Mars",
@@ -34,16 +35,16 @@ const mois=[
 "Décembre"
 ];
 
-document.getElementById("clock").innerHTML=
+document.getElementById("clock").innerHTML =
 now.toLocaleTimeString("fr-FR",{
 hour:"2-digit",
 minute:"2-digit"
 });
 
-document.getElementById("day").innerHTML=
+document.getElementById("day").innerHTML =
 jours[now.getDay()];
 
-document.getElementById("date").innerHTML=
+document.getElementById("date").innerHTML =
 now.getDate()+" "+
 mois[now.getMonth()]+" "+
 now.getFullYear();
@@ -51,42 +52,82 @@ now.getFullYear();
 }
 
 updateDateTime();
-
 setInterval(updateDateTime,1000);
 
 /* ========= METEO ========= */
 
-document.getElementById("temperature").innerHTML="26°C";
-document.getElementById("city").innerHTML="Kinshasa";
+document.getElementById("temperature").innerHTML = "26°C";
+document.getElementById("city").innerHTML = "Kinshasa";
 
 /* ========= NOM INSPECTEUR ========= */
 
-document.getElementById("nomInspecteur").innerHTML=
-localStorage.getItem("currentUser")
-||"Inspecteur";
+document.getElementById("nomInspecteur").innerHTML =
+localStorage.getItem("currentUser") || "Inspecteur";
 
-/* ========= BASE ========= */
+/* ========= BASE DE DONNÉES ========= */
 
-let entreprises=
-JSON.parse(
-localStorage.getItem("entreprises")
-)||[];
+let entreprises =
+JSON.parse(localStorage.getItem("entreprises")) || [];
 
-/* ========= ENREGISTREMENT ========= */
+/* ========= NOTIFICATION ========= */
 
-const form=
+function notification(message){
+
+const notif = document.createElement("div");
+
+notif.className = "msg";
+
+notif.innerHTML = message;
+
+document.body.appendChild(notif);
+
+setTimeout(function(){
+
+notif.remove();
+
+},3000);
+
+}
+
+/* ========= FORMULAIRE ========= */
+
+const form =
 document.getElementById("entrepriseForm");
 
 form.addEventListener("submit",function(e){
 
 e.preventDefault();
 
-const entreprise={
+/* ===== Vérification RCCM ===== */
 
-dateCreation:new Date().toLocaleDateString("fr-FR"),
-id:Date.now(),
+const rccm =
+document.getElementById("rccm").value.trim();
 
-numero:"IGT-"+Date.now(),
+const existe =
+entreprises.find(function(item){
+
+return item.rccm === rccm;
+
+});
+
+if(existe){
+
+notification("⚠ Cette entreprise existe déjà.");
+
+return;
+
+}
+
+/* ===== Création de l'entreprise ===== */
+
+const entreprise = {
+
+id: Date.now(),
+
+numero: "IGT-"+Date.now(),
+
+dateCreation:
+new Date().toLocaleDateString("fr-FR"),
 
 nom:
 document.getElementById("nom").value,
@@ -134,17 +175,7 @@ observation:
 document.getElementById("observation").value,
 
 inspecteur:
-localStorage.getItem("currentUser")
-
-const existe = entreprises.find(e=>e.rccm===entreprise.rccm);
-
-if(existe){
-
-notification("⚠ Cette entreprise existe déjà.");
-
-return;
-
-}
+localStorage.getItem("currentUser") || "Inspecteur"
 
 };
 
@@ -163,27 +194,14 @@ afficherEntreprises();
 
 });
 
-function notification(message){
+/* ========= SAUVEGARDE ========= */
 
-const notif=document.createElement("div");
-
-notif.className="msg";
-
-notif.innerHTML=message;
-
-document.body.appendChild(notif);
-
-setTimeout(()=>{
-notif.remove();
-},3000);
-
-}
-
-window.onbeforeunload=function(){
+window.onbeforeunload = function(){
 
 localStorage.setItem(
 "entreprises",
 JSON.stringify(entreprises)
+
 );
 
 };
@@ -203,22 +221,36 @@ let totalTravailleurs = 0;
 let actives = 0;
 let suspendues = 0;
 
-liste.forEach((e)=>{
+liste.forEach(function(e){
 
-totalTravailleurs += Number(e.travailleurs || 0);
+totalTravailleurs +=
+Number(e.travailleurs || 0);
 
-if(e.statut==="Active") actives++;
-if(e.statut==="Suspendue") suspendues++;
+if(e.statut === "Active"){
+
+actives++;
+
+}
+
+if(e.statut === "Suspendue"){
+
+suspendues++;
+
+}
 
 table.innerHTML += `
 
 <tr>
+
+<td>${e.numero}</td>
 
 <td>${e.nom}</td>
 
 <td>${e.province}</td>
 
 <td>${e.secteur}</td>
+
+<td>${e.travailleurs}</td>
 
 <td>${e.statut}</td>
 
@@ -244,6 +276,8 @@ table.innerHTML += `
 
 });
 
+/* ========= STATISTIQUES ========= */
+
 document.getElementById("totalEntreprise").innerHTML =
 liste.length;
 
@@ -256,12 +290,18 @@ actives;
 document.getElementById("entrepriseSuspendue").innerHTML =
 suspendues;
 
+}
+
 /* ==========================================
    RECHERCHE INSTANTANÉE
 ========================================== */
 
-document.getElementById("search")
-.addEventListener("keyup",function(){
+const recherche =
+document.getElementById("search");
+
+if(recherche){
+
+recherche.addEventListener("keyup",function(){
 
 const texte =
 this.value.toLowerCase();
@@ -269,7 +309,7 @@ this.value.toLowerCase();
 const resultat =
 entreprises.filter(function(e){
 
-return (
+return(
 
 e.nom.toLowerCase().includes(texte) ||
 
@@ -289,6 +329,8 @@ afficherEntreprises(resultat);
 
 });
 
+}
+
 /* ==========================================
    CHARGEMENT INITIAL
 ========================================== */
@@ -301,9 +343,14 @@ afficherEntreprises();
 
 function modifierEntreprise(id){
 
-const entreprise = entreprises.find(e => e.id === id);
+const entreprise =
+entreprises.find(e => e.id === id);
 
-if(!entreprise) return;
+if(!entreprise){
+
+return;
+
+}
 
 document.getElementById("nom").value = entreprise.nom;
 document.getElementById("rccm").value = entreprise.rccm;
@@ -321,7 +368,8 @@ document.getElementById("secteur").value = entreprise.secteur;
 document.getElementById("statut").value = entreprise.statut;
 document.getElementById("observation").value = entreprise.observation;
 
-entreprises = entreprises.filter(e => e.id !== id);
+entreprises =
+entreprises.filter(e => e.id !== id);
 
 localStorage.setItem(
 "entreprises",
@@ -331,9 +379,14 @@ JSON.stringify(entreprises)
 afficherEntreprises();
 
 window.scrollTo({
+
 top:0,
+
 behavior:"smooth"
+
 });
+
+notification("✏️ Modification en cours...");
 
 }
 
@@ -343,13 +396,14 @@ behavior:"smooth"
 
 function supprimerEntreprise(id){
 
-if(!confirm("Voulez-vous supprimer cette entreprise ?")){
+if(!confirm("Voulez-vous vraiment supprimer cette entreprise ?")){
 
 return;
 
 }
 
-entreprises = entreprises.filter(e => e.id !== id);
+entreprises =
+entreprises.filter(e => e.id !== id);
 
 localStorage.setItem(
 "entreprises",
@@ -358,20 +412,32 @@ JSON.stringify(entreprises)
 
 afficherEntreprises();
 
+notification("🗑️ Entreprise supprimée avec succès.");
+
 }
 
 /* ==========================================
-   VIDER LE FORMULAIRE
+   NOUVEAU FORMULAIRE
 ========================================== */
 
 function viderFormulaire(){
 
 document.getElementById("entrepriseForm").reset();
 
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+notification("🆕 Nouveau formulaire prêt.");
+
 }
 
 /* ==========================================
-   IMPRESSION (préparation)
+   IMPRESSION
 ========================================== */
 
 function imprimerEntreprise(){
@@ -381,31 +447,196 @@ window.print();
 }
 
 /* ==========================================
-   EXPORT PDF (préparation)
+   EXPORT PDF
 ========================================== */
 
 function exporterPDF(){
 
-alert("Le module PDF sera ajouté dans la prochaine version.");
+notification("📄 Export PDF disponible dans la prochaine version.");
 
 }
 
 /* ==========================================
-   EXPORT EXCEL (préparation)
+   EXPORT EXCEL
 ========================================== */
 
 function exporterExcel(){
 
-alert("Le module Excel sera ajouté dans la prochaine version.");
+notification("📊 Export Excel disponible dans la prochaine version.");
 
 }
 
 /* ==========================================
-   QR CODE (préparation)
+   QR CODE
 ========================================== */
 
 function genererQRCode(){
 
-alert("Le QR Code sera ajouté dans la prochaine version.");
+notification("📱 QR Code disponible dans la prochaine version.");
+
+}
+
+/* ==========================================
+   EXPORT JSON
+========================================== */
+
+function sauvegarderJSON(){
+
+const data =
+JSON.stringify(entreprises,null,2);
+
+const blob =
+new Blob([data],{
+type:"application/json"
+});
+
+const lien =
+document.createElement("a");
+
+lien.href =
+URL.createObjectURL(blob);
+
+lien.download =
+"Entreprises_IGT.json";
+
+lien.click();
+
+notification("✅ Sauvegarde terminée.");
+
+}
+
+/* ==========================================
+   NOMBRE TOTAL
+========================================== */
+
+function totalEntreprises(){
+
+return entreprises.length;
+
+}
+
+/* ==========================================
+   TOTAL TRAVAILLEURS
+========================================== */
+
+function totalTravailleurs(){
+
+let total = 0;
+
+entreprises.forEach(function(e){
+
+total += Number(e.travailleurs || 0);
+
+});
+
+return total;
+
+}
+
+/* ==========================================
+   ENTREPRISES ACTIVES
+========================================== */
+
+function totalActives(){
+
+return entreprises.filter(function(e){
+
+return e.statut === "Active";
+
+}).length;
+
+}
+
+/* ==========================================
+   ENTREPRISES SUSPENDUES
+========================================== */
+
+function totalSuspendues(){
+
+return entreprises.filter(function(e){
+
+return e.statut === "Suspendue";
+
+}).length;
+
+}
+
+/* ==========================================
+   ACTUALISATION DES CARTES
+========================================== */
+
+function actualiserStatistiques(){
+
+document.getElementById("totalEntreprise").innerHTML =
+totalEntreprises();
+
+document.getElementById("totalTravailleurs").innerHTML =
+totalTravailleurs();
+
+document.getElementById("entrepriseActive").innerHTML =
+totalActives();
+
+document.getElementById("entrepriseSuspendue").innerHTML =
+totalSuspendues();
+
+}
+
+actualiserStatistiques();
+
+/* ==========================================
+   VERSION
+========================================== */
+
+console.log(
+"InspecteurBot RDC - Entreprises v1.0 chargé avec succès."
+);
+
+/* ==========================================
+   PARTIE 5
+   EXPORTS PROFESSIONNELS
+========================================== */
+
+/* ========= EXPORT PDF ========= */
+
+function exporterPDF(){
+
+notification("📄 Fonction PDF en préparation.");
+
+}
+
+/* ========= EXPORT EXCEL ========= */
+
+function exporterExcel(){
+
+notification("📊 Fonction Excel en préparation.");
+
+}
+
+/* ========= QR CODE ========= */
+
+function genererQRCode(){
+
+notification("📱 Fonction QR Code en préparation.");
+
+}
+
+/* ========= IMPRESSION ========= */
+
+function imprimerEntreprise(){
+
+window.print();
+
+}
+
+/* ========= RAFRAÎCHIR ========= */
+
+function actualiser(){
+
+entreprises =
+JSON.parse(localStorage.getItem("entreprises")) || [];
+
+afficherEntreprises();
+
+notification("🔄 Données actualisées.");
 
 }
