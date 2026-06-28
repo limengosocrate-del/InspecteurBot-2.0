@@ -2626,3 +2626,224 @@ console.log(
 "Intégration IA terminée."
 
 );
+
+/*=========================================================
+INSPECTEURBOT IA
+SEARCH.JS
+PARTIE 10
+OPTIMISATION ET FINALISATION
+Version 4.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+CACHE DE RECHERCHE
+=========================================================*/
+
+const CacheRecherche=new Map();
+
+/*=========================================================
+OBTENIR LE CACHE
+=========================================================*/
+
+function obtenirCache(question){
+
+return CacheRecherche.get(
+
+normaliserTexte(question)
+
+);
+
+}
+
+/*=========================================================
+ENREGISTRER LE CACHE
+=========================================================*/
+
+function enregistrerCache(
+
+question,
+
+resultats
+
+){
+
+CacheRecherche.set(
+
+normaliserTexte(question),
+
+resultats
+
+);
+
+}
+
+/*=========================================================
+VIDER LE CACHE
+=========================================================*/
+
+function viderCacheRecherche(){
+
+CacheRecherche.clear();
+
+}
+
+/*=========================================================
+STATISTIQUES
+=========================================================*/
+
+function statistiquesSearch(){
+
+return{
+
+version:SearchIA.version,
+
+etat:etatRecherche,
+
+articles:nombreArticles(),
+
+historique:historiqueRecherche.length,
+
+favoris:obtenirFavoris().length,
+
+cache:CacheRecherche.size,
+
+langue:langueRecherche()
+
+};
+
+}
+
+/*=========================================================
+AFFICHER LES STATISTIQUES
+=========================================================*/
+
+function afficherStatistiquesSearch(){
+
+console.group(
+
+"Search.js"
+
+);
+
+console.table(
+
+statistiquesSearch()
+
+);
+
+console.groupEnd();
+
+}
+
+/*=========================================================
+RÉINITIALISER LE MOTEUR
+=========================================================*/
+
+function reinitialiserSearch(){
+
+viderCacheRecherche();
+
+viderHistorique();
+
+dernierResultat=[];
+
+definirEtatRecherche(
+
+EtatRecherche.PRET
+
+);
+
+console.log(
+
+"Moteur de recherche réinitialisé."
+
+);
+
+}
+
+/*=========================================================
+TEST GÉNÉRAL
+=========================================================*/
+
+function testerSearch(){
+
+console.log(
+
+"===== TEST SEARCH ====="
+
+);
+
+console.log(
+
+statistiquesSearch()
+
+);
+
+console.log(
+
+"======================="
+
+);
+
+}
+
+/*=========================================================
+MAINTENANCE
+=========================================================*/
+
+function maintenanceSearch(){
+
+console.log(
+
+"Maintenance Search.js..."
+
+);
+
+afficherStatistiquesSearch();
+
+}
+
+/*=========================================================
+INITIALISATION
+=========================================================*/
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+function(){
+
+maintenanceSearch();
+
+});
+
+console.log(
+
+"======================================"
+
+);
+
+console.log(
+
+"InspecteurBot IA"
+
+);
+
+console.log(
+
+"Search.js Version 4.0"
+
+);
+
+console.log(
+
+"Moteur de recherche prêt."
+
+);
+
+console.log(
+
+"======================================"
+);
