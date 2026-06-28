@@ -1,78 +1,169 @@
-/*====================================================
+/*=========================================================
  INSPECTEURBOT IA RDC
- vectorSearch.js
- Moteur de recherche intelligent
-====================================================*/
+ VECTOR SEARCH
+ Version 3.0
+=========================================================*/
+
+"use strict";
 
 class VectorSearch {
 
-    constructor() {
-        this.articles = [];
+    constructor(){
+
+        this.documents=[];
+
     }
 
-    setData(data) {
-        this.articles = Array.isArray(data) ? data : [];
+    charger(documents){
+
+        if(Array.isArray(documents)){
+
+            this.documents=documents;
+
+        }
+
     }
 
-    normalize(text) {
-        return (text || "")
-            .toString()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim();
+    nettoyer(texte){
+
+        return String(texte || "")
+
+        .toLowerCase()
+
+        .normalize("NFD")
+
+        .replace(/[\u0300-\u036f]/g,"")
+
+        .replace(/[^\w\s]/g," ")
+
+        .replace(/\s+/g," ")
+
+        .trim();
+
     }
 
-    score(article, query) {
+    decouper(texte){
 
-        const q = this.normalize(query);
+        return this.nettoyer(texte)
 
-        let score = 0;
+        .split(" ")
 
-        const numero = this.normalize(article.numero);
-        const titre = this.normalize(article.titre);
-        const contenu = this.normalize(article.contenu);
+        .filter(mot=>mot.length>2);
 
-        if (numero.includes(q))
-            score += 100;
+    }
 
-        if (titre.includes(q))
-            score += 60;
+    calculerScore(article,mots){
 
-        if (contenu.includes(q))
-            score += 30;
+        let score=0;
 
-        const mots = q.split(/\s+/);
+        const numero=this.nettoyer(article.numero);
 
-        mots.forEach(mot => {
+        const titre=this.nettoyer(article.titre);
 
-            if (titre.includes(mot))
-                score += 15;
+        const contenu=this.nettoyer(article.contenu);
 
-            if (contenu.includes(mot))
-                score += 8;
+        mots.forEach(mot=>{
+
+            if(numero===mot)
+
+                score+=100;
+
+            if(numero.includes(mot))
+
+                score+=80;
+
+            if(titre.includes(mot))
+
+                score+=40;
+
+            if(contenu.includes(mot))
+
+                score+=15;
 
         });
 
         return score;
+
     }
 
-    search(query) {
+    rechercher(question){
 
-        if (!query || query.trim() === "")
-            return [];
+        const mots=this.decouper(question);
 
-        return this.articles
-            .map(article => ({
-                article,
-                score: this.score(article, query)
-            }))
-            .filter(item => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .map(item => item.article);
+        let resultat=[];
+
+        this.documents.forEach(article=>{
+
+            const score=this.calculerScore(article,mots);
+
+            if(score>0){
+
+                resultat.push({
+
+                    ...article,
+
+                    scoreIA:score
+
+                });
+
+            }
+
+        });
+
+        resultat.sort((a,b)=>b.scoreIA-a.scoreIA);
+
+        return resultat;
+
+    }
+
+    rechercherNumero(numero){
+
+        return this.documents.find(article=>
+
+            String(article.numero)===String(numero)
+
+        );
+
+    }
+
+    rechercherTitre(titre){
+
+        titre=this.nettoyer(titre);
+
+        return this.documents.filter(article=>
+
+            this.nettoyer(article.titre)
+
+            .includes(titre)
+
+        );
+
+    }
+
+    rechercherMotCle(mot){
+
+        mot=this.nettoyer(mot);
+
+        return this.documents.filter(article=>{
+
+            return this.nettoyer(
+
+                article.contenu
+
+            ).includes(mot);
+
+        });
+
+    }
+
+    total(){
+
+        return this.documents.length;
 
     }
 
 }
 
-window.vectorSearch = new VectorSearch();
+window.vectorSearch=new VectorSearch();
+
+console.log("✅ VectorSearch chargé.");
