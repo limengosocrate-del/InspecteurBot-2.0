@@ -225,7 +225,7 @@ CONFIGURATION DES DONNÉES
 
 const BaseCodeTravail = {
 
-    fichier: "data/code-travail.json",
+    fichier: "assets/data/code-travail.json",
 
     charge: false,
 
