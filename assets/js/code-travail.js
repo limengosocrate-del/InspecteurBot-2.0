@@ -1,22 +1,22 @@
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 1
-INITIALISATION GÉNÉRALE
-Version 2.0
+ INSPECTEURBOT IA RDC
+ MODULE : CODE DU TRAVAIL
+ Version : 3.0 Professionnelle
+ Développeur : InspecteurBot IA
+ Compatible : Android - iPhone - iPad - PC
 =========================================================*/
 
 "use strict";
 
 /*=========================================================
-CONFIGURATION
+ CONFIGURATION GÉNÉRALE
 =========================================================*/
 
-const CodeTravail = {
-
-    version: "2.0",
+const APP = {
 
     nom: "InspecteurBot IA",
+
+    version: "3.0",
 
     pays: "République Démocratique du Congo",
 
@@ -24,71 +24,102 @@ const CodeTravail = {
 
     auteur: "InspecteurBot IA",
 
-    modeIA: true
+    json: "assets/data/code-travail.json",
+
+    theme: "light",
+
+    modeIA: true,
+
+    debug: true
 
 };
 
 /*=========================================================
-BASES DE DONNÉES
+ BASE DE DONNÉES
 =========================================================*/
 
 let articles = [];
-
 let articlesFiltres = [];
-
 let favoris = [];
-
 let historiqueRecherche = [];
-
 let dernierArticle = null;
-
 let derniereRecherche = "";
 
 /*=========================================================
-RÉFÉRENCES HTML
+ ÉTAT DE L'APPLICATION
 =========================================================*/
 
-const interfaceCode = {
+const Etat = {
 
-    recherche:
+    charge: false,
 
-        document.getElementById("rechercheArticle"),
+    totalArticles: 0,
 
-    resultat:
+    dateChargement: null,
 
-        document.getElementById("resultatsRecherche"),
-
-    compteur:
-
-        document.getElementById("nombreResultats"),
-
-    categorie:
-
-        document.getElementById("listeCategories"),
-
-    contenu:
-
-        document.getElementById("contenuArticle"),
-
-    resume:
-
-        document.getElementById("resumeIA"),
-
-    explication:
-
-        document.getElementById("explicationIA")
+    rechercheEnCours: false
 
 };
 
 /*=========================================================
-HORLOGE
+ ÉLÉMENTS HTML
+=========================================================*/
+
+const UI = {
+
+    recherche: document.getElementById("rechercheArticle"),
+
+    boutonRecherche: document.getElementById("btnRecherche"),
+
+    resultat: document.getElementById("resultatsRecherche"),
+
+    compteur: document.getElementById("nombreResultats"),
+
+    contenu: document.getElementById("contenuArticle"),
+
+    numero: document.getElementById("numeroArticle"),
+
+    titre: document.getElementById("titreArticle"),
+
+    resume: document.getElementById("resumeIA"),
+
+    explication: document.getElementById("explicationIA"),
+
+    heure: document.getElementById("heureActuelle"),
+
+    theme: document.getElementById("themeToggle"),
+
+    themeIcon: document.getElementById("themeIcon")
+
+};
+
+/*=========================================================
+ NOTIFICATIONS
+=========================================================*/
+
+function notifier(message,type="info"){
+
+    console.log(
+
+        "["+type.toUpperCase()+"]",
+
+        message
+
+    );
+
+}
+
+/*=========================================================
+ HORLOGE TEMPS RÉEL
 =========================================================*/
 
 function mettreAJourHorloge(){
 
-    const maintenant = new Date();
+    if(!UI.heure) return;
 
-    const heure = maintenant.toLocaleTimeString(
+    UI.heure.textContent =
+
+    new Date().toLocaleTimeString(
 
         "fr-FR",
 
@@ -104,17 +135,7 @@ function mettreAJourHorloge(){
 
     );
 
-    const zone = document.getElementById("heureActuelle");
-
-    if(zone){
-
-        zone.textContent = heure;
-
-    }
-
 }
-
-mettreAJourHorloge();
 
 setInterval(
 
@@ -124,51 +145,29 @@ setInterval(
 
 );
 
-/*=========================================================
-NOTIFICATIONS
-=========================================================*/
-
-function notification(message,type="info"){
-
-    console.log(
-
-        "["+
-
-        type.toUpperCase()+
-
-        "] " +
-
-        message
-
-    );
-
-}
+mettreAJourHorloge();
 
 /*=========================================================
-CHARGEMENT
+ INITIALISATION
 =========================================================*/
 
 window.addEventListener(
 
-    "load",
+    "DOMContentLoaded",
 
     function(){
 
-        notification(
+        notifier(
 
-            "Module Code du Travail initialisé."
+            APP.nom+
 
-        );
+            " "+
 
-        notification(
+            APP.version+
 
-            "Initialisation de l'Assistant IA..."
+            " démarré.",
 
-        );
-
-        notification(
-
-            "Chargement des composants..."
+            "success"
 
         );
 
@@ -178,124 +177,85 @@ window.addEventListener(
 
 console.log(
 
-"=========================================="
+"===================================="
 
 );
 
-console.log(
+console.log(APP.nom);
 
-"InspecteurBot IA"
+console.log("Version :",APP.version);
 
-);
+console.log("Mode IA :",APP.modeIA);
 
-console.log(
-
-"Module : Code du Travail"
-
-);
-
-console.log(
-
-"Version : "+CodeTravail.version
-
-);
-
-console.log(
-
-"Mode IA : ACTIVÉ"
-
-);
-
-console.log(
-
-"=========================================="
-
-);
+console.log("====================================");
 
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 2
-CHARGEMENT INTELLIGENT DES ARTICLES
+ INSPECTEURBOT IA RDC
+ PARTIE 2
+ CHARGEMENT INTELLIGENT DU CODE DU TRAVAIL
 =========================================================*/
 
 /*=========================================================
-CONFIGURATION DES DONNÉES
+ CHARGEMENT DE LA BASE JURIDIQUE
 =========================================================*/
 
-const BaseCodeTravail = {
-
-    fichier: "assets/data/code-travail.json",
-
-    charge: false,
-
-    totalArticles: 0,
-
-    dateChargement: null
-
-};
-
-/*=========================================================
-INDEX IA
-=========================================================*/
-
-let indexIA = new Map();
-
-/*=========================================================
-CHARGEMENT DU CODE DU TRAVAIL
-=========================================================*/
-
-async function chargerCodeTravail(){
+async function chargerBaseJuridique(){
 
     try{
 
-        notification(
+        notifier("Chargement du Code du Travail...","info");
 
-            "Chargement du Code du Travail..."
+        if(window.rag){
 
-        );
+            articles = await window.rag.charger();
 
-        const reponse = await fetch(
+        }else{
 
-            BaseCodeTravail.fichier
+            const reponse = await fetch(APP.json);
 
-        );
+            if(!reponse.ok){
 
-        if(!reponse.ok){
+                throw new Error("Impossible de charger le fichier JSON.");
 
-            throw new Error(
+            }
 
-                "Impossible de charger la base de données."
-
-            );
+            articles = await reponse.json();
 
         }
 
-        articles = await reponse.json();
+        if(!Array.isArray(articles)){
+
+            throw new Error("Base juridique invalide.");
+
+        }
 
         articlesFiltres = [...articles];
 
-        BaseCodeTravail.totalArticles = articles.length;
+        Etat.charge = true;
 
-        BaseCodeTravail.charge = true;
+        Etat.totalArticles = articles.length;
 
-        BaseCodeTravail.dateChargement = new Date();
+        Etat.dateChargement = new Date();
 
-        indexerArticles();
+        if(window.vectorSearch){
 
-        notification(
+            window.vectorSearch.charger(articles);
 
-            articles.length+
+        }
 
-            " articles chargés.",
+        mettreAJourCompteur();
+
+        afficherMessageAccueil();
+
+        notifier(
+
+            Etat.totalArticles+
+
+            " articles chargés avec succès.",
 
             "success"
 
         );
-
-        mettreAJourCompteur();
-
-        afficherAccueil();
 
     }
 
@@ -303,106 +263,81 @@ async function chargerCodeTravail(){
 
         console.error(erreur);
 
-        notification(
+        notifier(
 
-            "Erreur de chargement du Code du Travail.",
+            "Erreur lors du chargement du Code du Travail.",
 
             "error"
 
         );
 
+        afficherErreurChargement();
+
     }
 
 }
 
 /*=========================================================
-INDEXATION IA
-=========================================================*/
-
-function indexerArticles(){
-
-    indexIA.clear();
-
-    articles.forEach(function(article){
-
-        const texte = (
-
-            (article.numero || "") +
-
-            " " +
-
-            (article.titre || "") +
-
-            " " +
-
-            (article.contenu || "")
-
-        ).toLowerCase();
-
-        indexIA.set(
-
-            article.numero,
-
-            texte
-
-        );
-
-    });
-
-}
-
-/*=========================================================
-MISE À JOUR DU COMPTEUR
+ COMPTEUR
 =========================================================*/
 
 function mettreAJourCompteur(){
 
-    if(interfaceCode.compteur){
-
-        interfaceCode.compteur.textContent =
-
-            BaseCodeTravail.totalArticles+
-
-            " articles";
-
-    }
-
-}
-
-/*=========================================================
-PAGE D'ACCUEIL
-=========================================================*/
-
-function afficherAccueil(){
-
-    if(!interfaceCode.resultat){
+    if(!UI.compteur){
 
         return;
 
     }
 
-    interfaceCode.resultat.innerHTML =
+    UI.compteur.textContent =
 
-    `
+        Etat.totalArticles+
+
+        " articles disponibles";
+
+}
+
+/*=========================================================
+ PAGE D'ACCUEIL
+=========================================================*/
+
+function afficherMessageAccueil(){
+
+    if(!UI.resultat){
+
+        return;
+
+    }
+
+    UI.resultat.innerHTML = `
+
     <div class="accueil-code">
 
         <h2>
-            Code du Travail RDC
+
+            ⚖️ InspecteurBot IA
+
         </h2>
 
         <p>
 
-            ${BaseCodeTravail.totalArticles}
-
-            articles disponibles.
+            Base juridique chargée avec succès.
 
         </p>
 
         <p>
 
-            Utilisez la recherche intelligente
-            d'InspecteurBot IA pour trouver
-            rapidement un article.
+            <strong>${Etat.totalArticles}</strong>
+
+            articles du Code du Travail sont disponibles.
+
+        </p>
+
+        <p>
+
+            Saisissez un numéro d'article,
+
+            un mot-clé ou une question juridique.
 
         </p>
 
@@ -413,157 +348,194 @@ function afficherAccueil(){
 }
 
 /*=========================================================
-VÉRIFICATION
+ ERREUR DE CHARGEMENT
 =========================================================*/
 
-function baseChargee(){
+function afficherErreurChargement(){
 
-    return BaseCodeTravail.charge;
+    if(!UI.resultat){
+
+        return;
+
+    }
+
+    UI.resultat.innerHTML = `
+
+    <div class="erreur-base">
+
+        <h2>
+
+            ❌ Erreur
+
+        </h2>
+
+        <p>
+
+            Impossible de charger le Code du Travail.
+
+        </p>
+
+        <p>
+
+            Vérifiez le fichier :
+
+            <strong>
+
+            ${APP.json}
+
+            </strong>
+
+        </p>
+
+    </div>
+
+    `;
 
 }
 
 /*=========================================================
-DÉMARRAGE
+ VÉRIFICATION
+=========================================================*/
+
+function baseChargee(){
+
+    return Etat.charge;
+
+}
+
+/*=========================================================
+ DÉMARRAGE AUTOMATIQUE
 =========================================================*/
 
 window.addEventListener(
 
-    "load",
+    "DOMContentLoaded",
 
-    function(){
+    async function(){
 
-        chargerCodeTravail();
+        await chargerBaseJuridique();
 
     }
 
 );
 
+console.log("✅ Partie 2 chargée.");
+
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 3
-MOTEUR DE RECHERCHE IA
+ INSPECTEURBOT IA RDC
+ PARTIE 3
+ MOTEUR DE RECHERCHE IA
+ Version 3.0
 =========================================================*/
 
 /*=========================================================
-DICTIONNAIRE IA
+ DICTIONNAIRE DES SYNONYMES
 =========================================================*/
 
-const dictionnaireIA = {
+const DictionnaireIA={
 
-    licenciement : [
+    licenciement:[
         "licenciement",
         "renvoi",
         "rupture",
         "préavis",
-        "faute lourde",
-        "résiliation"
+        "congédiement"
     ],
 
-    salaire : [
+    salaire:[
         "salaire",
-        "rémunération",
+        "paie",
         "prime",
         "indemnité",
-        "paie"
+        "rémunération"
     ],
 
-    contrat : [
+    contrat:[
         "contrat",
-        "engagement",
-        "cdd",
         "cdi",
+        "cdd",
+        "engagement",
         "clause"
     ],
 
-    femme : [
-        "grossesse",
-        "maternité",
-        "femme",
-        "enceinte"
-    ],
-
-    congé : [
+    conge:[
         "congé",
-        "vacances",
         "repos",
+        "vacances",
         "permission"
     ],
 
-    apprentissage : [
-        "apprenti",
-        "apprentissage",
-        "maître",
-        "formation"
+    femme:[
+        "grossesse",
+        "maternité",
+        "enceinte",
+        "femme"
+    ],
+
+    accident:[
+        "accident",
+        "sécurité",
+        "hygiène",
+        "protection"
     ]
 
 };
 
 /*=========================================================
-NORMALISATION
+ NORMALISATION
 =========================================================*/
 
 function nettoyerTexte(texte){
 
-    return texte
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g,"")
-        .trim();
+    return String(texte||"")
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g,"")
+
+    .replace(/[^\w\s]/g," ")
+
+    .replace(/\s+/g," ")
+
+    .trim();
 
 }
 
 /*=========================================================
-CALCUL DE PERTINENCE
+ DÉVELOPPEMENT DE LA RECHERCHE
 =========================================================*/
 
-function calculerScore(article,recherche){
+function developperRecherche(question){
 
-    let score = 0;
+    let mots=
 
-    const texte = nettoyerTexte(
+    nettoyerTexte(question)
 
-        JSON.stringify(article)
+    .split(" ")
 
-    );
+    .filter(m=>m.length>2);
 
-    recherche.forEach(function(mot){
+    Object.values(DictionnaireIA)
 
-        if(texte.includes(mot)){
+    .forEach(liste=>{
 
-            score += 10;
+        liste.forEach(mot=>{
 
-        }
+            if(mots.includes(
 
-    });
+                nettoyerTexte(mot)
 
-    return score;
+            )){
 
-}
+                mots=[
 
-/*=========================================================
-EXTENSION IA
-=========================================================*/
+                    ...mots,
 
-function developperRecherche(texte){
+                    ...liste
 
-    let liste = [];
-
-    texte = nettoyerTexte(texte);
-
-    liste.push(texte);
-
-    Object.keys(dictionnaireIA).forEach(function(cle){
-
-        dictionnaireIA[cle].forEach(function(mot){
-
-            if(texte.includes(mot)){
-
-                liste = liste.concat(
-
-                    dictionnaireIA[cle]
-
-                );
+                ];
 
             }
 
@@ -571,264 +543,97 @@ function developperRecherche(texte){
 
     });
 
-    return [...new Set(liste)];
+    return [...new Set(mots)];
 
 }
 
 /*=========================================================
-RECHERCHE IA
+ RECHERCHE IA
 =========================================================*/
 
-function rechercheIA(question){
+async function rechercheIA(question){
 
-    if(!baseChargee()){
-
-        notification(
-
-            "Base du Code du Travail non chargée.",
-
-            "error"
-
-        );
+    if(!question){
 
         return;
 
     }
 
-    derniereRecherche = question;
+    if(!Etat.charge){
 
-    historiqueRecherche.push(question);
+        await chargerBaseJuridique();
 
-    const mots = developperRecherche(question);
+    }
 
-    let resultat = [];
+    derniereRecherche=question;
 
-    articles.forEach(function(article){
+    historiqueRecherche.unshift(question);
 
-        const score = calculerScore(
+    historiqueRecherche=
 
-            article,
+    historiqueRecherche.slice(0,30);
 
-            mots
+    const mots=
+
+    developperRecherche(question);
+
+    let resultat=[];
+
+    if(window.vectorSearch){
+
+        resultat=
+
+        window.vectorSearch.rechercher(
+
+            mots.join(" ")
 
         );
 
-        if(score>0){
+    }else{
 
-            article.scoreIA = score;
+        resultat=
 
-            resultat.push(article);
+        articles.filter(article=>{
 
-        }
+            const texte=
 
-    });
+            nettoyerTexte(
 
-    resultat.sort(function(a,b){
+                JSON.stringify(article)
 
-        return b.scoreIA-a.scoreIA;
+            );
 
-    });
+            return mots.some(
 
-    articlesFiltres = resultat;
+                mot=>texte.includes(mot)
+
+            );
+
+        });
+
+    }
+
+    articlesFiltres=resultat;
+
+    mettreAJourCompteurRecherche();
 
     afficherArticles(resultat);
 
-        }
+    genererReponseIA(question);
 
-/*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 4
-AFFICHAGE DES ARTICLES
-=========================================================*/
-
-/*=========================================================
-AFFICHAGE PRINCIPAL
-=========================================================*/
-
-function afficherArticles(liste){
-
-    if(!interfaceCode.resultat){
-
-        return;
-
-    }
-
-    interfaceCode.resultat.innerHTML="";
-
-    if(liste.length===0){
-
-        interfaceCode.resultat.innerHTML=
-
-        `
-        <div class="aucun-resultat">
-
-            <h2>Aucun résultat trouvé</h2>
-
-            <p>
-
-                Essayez un autre mot-clé.
-
-            </p>
-
-        </div>
-        `;
-
-        return;
-
-    }
-
-    liste.forEach(function(article){
-
-        interfaceCode.resultat.appendChild(
-
-            creerCarteArticle(article)
-
-        );
-
-    });
-
-    mettreAJourCompteur();
+    allerAuxResultats();
 
 }
 
 /*=========================================================
-CRÉATION D'UNE CARTE
+ COMPTEUR
 =========================================================*/
 
-function creerCarteArticle(article){
+function mettreAJourCompteurRecherche(){
 
-    const carte=document.createElement("div");
+    if(UI.compteur){
 
-    carte.className="carte-article";
-
-    carte.dataset.numero=article.numero;
-
-    carte.innerHTML=
-
-    `
-
-    <div class="entete-article">
-
-        <span class="numero">
-
-            Article ${article.numero}
-
-        </span>
-
-        <span class="score">
-
-            IA : ${article.scoreIA || 100} %
-
-        </span>
-
-    </div>
-
-    <h3>
-
-        ${article.titre}
-
-    </h3>
-
-    <p>
-
-        ${article.contenu}
-
-    </p>
-
-    <div class="actions">
-
-        <button
-            onclick="ouvrirArticle('${article.numero}')">
-
-            Lire
-
-        </button>
-
-        <button
-            onclick="ajouterFavori('${article.numero}')">
-
-            Favori
-
-        </button>
-
-        <button
-            onclick="copierArticle('${article.numero}')">
-
-            Copier
-
-        </button>
-
-        <button
-            onclick="imprimerArticle('${article.numero}')">
-
-            Imprimer
-
-        </button>
-
-        <button
-            onclick="resumeIA('${article.numero}')">
-
-            Résumé IA
-
-        </button>
-
-        <button
-            onclick="expliquerArticle('${article.numero}')">
-
-            Expliquer IA
-
-        </button>
-
-    </div>
-
-    `;
-
-    return carte;
-
-}
-
-/*=========================================================
-OUVRIR UN ARTICLE
-=========================================================*/
-
-function ouvrirArticle(numero){
-
-    const article=
-
-    articles.find(function(a){
-
-        return String(a.numero)===String(numero);
-
-    });
-
-    if(!article){
-
-        return;
-
-    }
-
-    dernierArticle=article;
-
-    notification(
-
-        "Article "+numero+" ouvert.",
-
-        "success"
-
-    );
-
-}
-
-/*=========================================================
-MISE À JOUR DU COMPTEUR
-=========================================================*/
-
-function mettreAJourCompteur(){
-
-    if(interfaceCode.compteur){
-
-        interfaceCode.compteur.textContent=
+        UI.compteur.textContent=
 
         articlesFiltres.length+
 
@@ -839,505 +644,36 @@ function mettreAJourCompteur(){
 }
 
 /*=========================================================
-DÉFILEMENT AUTOMATIQUE
+ BOUTON RECHERCHER
 =========================================================*/
 
-function allerAuxResultats(){
+if(UI.boutonRecherche){
 
-    if(interfaceCode.resultat){
+    UI.boutonRecherche.addEventListener(
 
-        interfaceCode.resultat.scrollIntoView({
+        "click",
 
-            behavior:"smooth"
+        function(){
 
-        });
+            rechercheIA(
 
-    }
+                UI.recherche.value
 
-}
+            );
 
-/*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 5
-FAVORIS - HISTORIQUE - SAUVEGARDE
-=========================================================*/
-
-/*=========================================================
-CHARGER LES FAVORIS
-=========================================================*/
-
-function chargerFavoris(){
-
-    const donnees = localStorage.getItem("IBIA_FAVORIS");
-
-    if(donnees){
-
-        favoris = JSON.parse(donnees);
-
-    }
-
-}
-
-/*=========================================================
-SAUVEGARDER LES FAVORIS
-=========================================================*/
-
-function sauvegarderFavoris(){
-
-    localStorage.setItem(
-
-        "IBIA_FAVORIS",
-
-        JSON.stringify(favoris)
+        }
 
     );
 
 }
 
 /*=========================================================
-AJOUTER AUX FAVORIS
+ TOUCHE ENTRÉE
 =========================================================*/
 
-function ajouterFavori(numero){
+if(UI.recherche){
 
-    if(favoris.includes(numero)){
-
-        notification(
-
-            "Article déjà dans les favoris."
-
-        );
-
-        return;
-
-    }
-
-    favoris.push(numero);
-
-    sauvegarderFavoris();
-
-    notification(
-
-        "Article "+numero+
-
-        " ajouté aux favoris.",
-
-        "success"
-
-    );
-
-}
-
-/*=========================================================
-SUPPRIMER UN FAVORI
-=========================================================*/
-
-function supprimerFavori(numero){
-
-    favoris = favoris.filter(function(item){
-
-        return item != numero;
-
-    });
-
-    sauvegarderFavoris();
-
-    notification(
-
-        "Favori supprimé."
-
-    );
-
-}
-
-/*=========================================================
-AFFICHER LES FAVORIS
-=========================================================*/
-
-function afficherFavoris(){
-
-    const liste = articles.filter(function(article){
-
-        return favoris.includes(
-
-            String(article.numero)
-
-        );
-
-    });
-
-    articlesFiltres = liste;
-
-    afficherArticles(liste);
-
-}
-
-/*=========================================================
-SAUVEGARDE HISTORIQUE
-=========================================================*/
-
-function sauvegarderHistorique(){
-
-    localStorage.setItem(
-
-        "IBIA_HISTORIQUE",
-
-        JSON.stringify(
-
-            historiqueRecherche
-
-        )
-
-    );
-
-}
-
-/*=========================================================
-CHARGER HISTORIQUE
-=========================================================*/
-
-function chargerHistorique(){
-
-    const donnees = localStorage.getItem(
-
-        "IBIA_HISTORIQUE"
-
-    );
-
-    if(donnees){
-
-        historiqueRecherche =
-
-        JSON.parse(donnees);
-
-    }
-
-}
-
-/*=========================================================
-AJOUT HISTORIQUE
-=========================================================*/
-
-function ajouterHistorique(texte){
-
-    if(
-
-        texte.trim()===""
-
-    ){
-
-        return;
-
-    }
-
-    historiqueRecherche.unshift(
-
-        texte
-
-    );
-
-    historiqueRecherche =
-
-    historiqueRecherche.slice(
-
-        0,
-
-        20
-
-    );
-
-    sauvegarderHistorique();
-
-}
-
-/*=========================================================
-VIDER HISTORIQUE
-=========================================================*/
-
-function viderHistorique(){
-
-    historiqueRecherche=[];
-
-    sauvegarderHistorique();
-
-    notification(
-
-        "Historique vidé."
-
-    );
-
-}
-
-/*=========================================================
-INITIALISATION
-=========================================================*/
-
-chargerFavoris();
-
-chargerHistorique();
-
-/*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 6
-ASSISTANT IA JURIDIQUE
-=========================================================*/
-
-/*=========================================================
-ANALYSE DE LA QUESTION
-=========================================================*/
-
-function analyserQuestionIA(question){
-
-    if(!question){
-
-        return;
-
-    }
-
-    question = nettoyerTexte(question);
-
-    rechercheIA(question);
-
-    genererReponseIA(question);
-
-}
-
-/*=========================================================
-GÉNÉRATION DE LA RÉPONSE
-=========================================================*/
-
-function genererReponseIA(question){
-
-    if(!interfaceCode.resume){
-
-        return;
-
-    }
-
-    if(articlesFiltres.length===0){
-
-        interfaceCode.resume.innerHTML=
-
-        `
-        <div class="ia-message">
-
-            Aucun article du Code du Travail
-            ne correspond à votre question.
-
-        </div>
-        `;
-
-        return;
-
-    }
-
-    let article = articlesFiltres[0];
-
-    interfaceCode.resume.innerHTML=
-
-    `
-
-    <div class="ia-message">
-
-        <h3>
-
-            Réponse d'InspecteurBot IA
-
-        </h3>
-
-        <p>
-
-            Votre question concerne :
-
-            <strong>
-
-            ${question}
-
-            </strong>
-
-        </p>
-
-        <p>
-
-            L'article le plus pertinent est
-
-            l'Article
-
-            <strong>
-
-            ${article.numero}
-
-            </strong>
-
-            intitulé
-
-            <strong>
-
-            ${article.titre}
-
-            </strong>.
-
-        </p>
-
-        <p>
-
-            Consultez également les autres
-
-            articles proposés ci-dessous.
-
-        </p>
-
-    </div>
-
-    `;
-
-}
-
-/*=========================================================
-EXPLICATION SIMPLE
-=========================================================*/
-
-function expliquerArticle(numero){
-
-    const article = articles.find(function(a){
-
-        return String(a.numero)===String(numero);
-
-    });
-
-    if(!article){
-
-        return;
-
-    }
-
-    if(!interfaceCode.explication){
-
-        return;
-
-    }
-
-    interfaceCode.explication.innerHTML=
-
-    `
-
-    <div class="explication-ia">
-
-        <h3>
-
-            Explication IA
-
-        </h3>
-
-        <p>
-
-            Cet article traite principalement de
-
-            <strong>
-
-            ${article.titre}
-
-            </strong>.
-
-        </p>
-
-        <p>
-
-            En langage simple,
-
-            cet article fixe les règles que
-
-            doivent respecter les travailleurs
-
-            et les employeurs concernant
-
-            ce sujet.
-
-        </p>
-
-    </div>
-
-    `;
-
-}
-
-/*=========================================================
-RÉSUMÉ IA
-=========================================================*/
-
-function resumeIA(numero){
-
-    const article = articles.find(function(a){
-
-        return String(a.numero)===String(numero);
-
-    });
-
-    if(!article){
-
-        return;
-
-    }
-
-    if(!interfaceCode.resume){
-
-        return;
-
-    }
-
-    interfaceCode.resume.innerHTML=
-
-    `
-
-    <div class="resume-ia">
-
-        <h3>
-
-            Résumé IA
-
-        </h3>
-
-        <p>
-
-            ${article.contenu.substring(0,400)}...
-
-        </p>
-
-    </div>
-
-    `;
-
-}
-
-/*=========================================================
-LANCER L'ASSISTANT IA
-=========================================================*/
-
-function lancerAssistantIA(){
-
-    if(!interfaceCode.recherche){
-
-        return;
-
-    }
-
-    const question=
-
-    interfaceCode.recherche.value;
-
-    analyserQuestionIA(question);
-
-}
-
-/*=========================================================
-TOUCHE ENTRÉE
-=========================================================*/
-
-if(interfaceCode.recherche){
-
-    interfaceCode.recherche.addEventListener(
+    UI.recherche.addEventListener(
 
         "keydown",
 
@@ -1345,7 +681,13 @@ if(interfaceCode.recherche){
 
             if(e.key==="Enter"){
 
-                lancerAssistantIA();
+                e.preventDefault();
+
+                rechercheIA(
+
+                    UI.recherche.value
+
+                );
 
             }
 
@@ -1355,526 +697,417 @@ if(interfaceCode.recherche){
 
 }
 
-console.log(
-
-"Assistant IA juridique activé."
-
-);
-
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 7
-COPIE - IMPRESSION - PARTAGE - EXPORT
+ SUGGESTIONS IA
 =========================================================*/
 
-/*=========================================================
-COPIER UN ARTICLE
-=========================================================*/
+function suggestionsIA(texte){
 
-async function copierArticle(numero){
+    texte=
 
-    const article = articles.find(function(a){
+    nettoyerTexte(texte);
 
-        return String(a.numero)===String(numero);
+    if(texte.length<2){
+
+        return [];
+
+    }
+
+    let suggestions=[];
+
+    Object.keys(DictionnaireIA)
+
+    .forEach(cle=>{
+
+        if(cle.startsWith(texte)){
+
+            suggestions.push(cle);
+
+        }
 
     });
 
-    if(!article){
+    return suggestions;
 
-        notification("Article introuvable.","error");
+}
+
+console.log("✅ Partie 3 - Moteur de recherche IA chargé.");
+
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ PARTIE 4
+ AFFICHAGE INTELLIGENT DES ARTICLES
+ Version 3.0
+=========================================================*/
+
+/*=========================================================
+ AFFICHAGE DES RÉSULTATS
+=========================================================*/
+
+function afficherArticles(liste){
+
+    if(!UI.resultat){
+        return;
+    }
+
+    UI.resultat.innerHTML="";
+
+    if(!liste || liste.length===0){
+
+        UI.resultat.innerHTML=`
+
+        <div class="aucun-resultat">
+
+            <h2>🔍 Aucun résultat</h2>
+
+            <p>
+
+                Aucun article ne correspond à votre recherche.
+
+            </p>
+
+        </div>
+
+        `;
 
         return;
 
     }
 
-    const texte =
+    liste.forEach(article=>{
 
-`Code du Travail RDC
+        UI.resultat.appendChild(
 
-Article ${article.numero}
-
-${article.titre}
-
-${article.contenu}`;
-
-    try{
-
-        await navigator.clipboard.writeText(texte);
-
-        notification(
-
-            "Article copié dans le presse-papiers.",
-
-            "success"
+            creerCarteArticle(article)
 
         );
 
-    }
-
-    catch(e){
-
-        notification(
-
-            "Impossible de copier l'article.",
-
-            "error"
-
-        );
-
-    }
+    });
 
 }
 
 /*=========================================================
-IMPRESSION
+ CARTE D'ARTICLE
 =========================================================*/
 
-function imprimerArticle(numero){
+function creerCarteArticle(article){
 
-    const article = articles.find(function(a){
+    const carte=document.createElement("div");
 
-        return String(a.numero)===String(numero);
+    carte.className="carte-article";
 
-    });
+    carte.dataset.numero=article.numero;
 
-    if(!article){
+    const score=article.scoreIA || 100;
 
-        return;
+    carte.innerHTML=`
 
-    }
+        <div class="carte-entete">
 
-    const fenetre = window.open("","PRINT");
+            <span class="badge-article">
 
-    fenetre.document.write(
+                Article ${article.numero}
 
-    `
+            </span>
 
-    <html>
+            <span class="badge-score">
 
-    <head>
+                ${score}% IA
 
-        <title>
+            </span>
 
-        Article ${article.numero}
-
-        </title>
-
-    </head>
-
-    <body>
-
-        <h2>
-
-        Code du Travail RDC
-
-        </h2>
+        </div>
 
         <h3>
 
-        Article ${article.numero}
+            ${article.titre}
 
         </h3>
 
-        <h4>
-
-        ${article.titre}
-
-        </h4>
-
         <p>
 
-        ${article.contenu}
+            ${tronquerTexte(article.contenu,300)}
 
         </p>
 
-    </body>
+        <div class="actions-article">
 
-    </html>
+            <button onclick="ouvrirArticle('${article.numero}')">
 
-    `
+                📖 Lire
 
-    );
+            </button>
 
-    fenetre.document.close();
+            <button onclick="resumeIA('${article.numero}')">
 
-    fenetre.focus();
+                🤖 Résumé IA
 
-    fenetre.print();
+            </button>
 
-    fenetre.close();
+            <button onclick="expliquerArticle('${article.numero}')">
+
+                💡 Expliquer
+
+            </button>
+
+            <button onclick="ajouterFavori('${article.numero}')">
+
+                ⭐ Favori
+
+            </button>
+
+            <button onclick="copierArticle('${article.numero}')">
+
+                📋 Copier
+
+            </button>
+
+            <button onclick="imprimerArticle('${article.numero}')">
+
+                🖨️ Imprimer
+
+            </button>
+
+            <button onclick="partagerArticle('${article.numero}')">
+
+                📤 Partager
+
+            </button>
+
+        </div>
+
+    `;
+
+    return carte;
 
 }
 
 /*=========================================================
-PARTAGE
+ OUVRIR L'ARTICLE
 =========================================================*/
 
-async function partagerArticle(numero){
+function ouvrirArticle(numero){
 
-    const article = articles.find(function(a){
+    const article=articles.find(a=>
 
-        return String(a.numero)===String(numero);
+        String(a.numero)===String(numero)
 
-    });
+    );
 
     if(!article){
+
+        notifier("Article introuvable.","error");
 
         return;
 
     }
 
-    if(navigator.share){
+    dernierArticle=article;
 
-        try{
+    if(UI.numero){
 
-            await navigator.share({
+        UI.numero.textContent=
 
-                title:
-
-                "Article "+article.numero,
-
-                text:
-
-                article.titre+
-
-                "\n\n"+
-
-                article.contenu
-
-            });
-
-        }
-
-        catch(e){
-
-            console.log(e);
-
-        }
+        "Article "+article.numero;
 
     }
 
-    else{
+    if(UI.titre){
 
-        copierArticle(numero);
+        UI.titre.textContent=
+
+        article.titre;
 
     }
 
-}
+    if(UI.contenu){
 
-/*=========================================================
-EXPORT PDF
-=========================================================*/
+        UI.contenu.innerHTML=
 
-function exporterPDF(numero){
+        article.contenu;
 
-    notification(
-
-        "Le module PDF sera activé après l'intégration de jsPDF.",
-
-        "info"
-
-    );
-
-}
-
-/*=========================================================
-APERÇU
-=========================================================*/
-
-function apercuArticle(numero){
-
-    ouvrirArticle(numero);
+    }
 
     allerAuxResultats();
 
 }
 
-console.log(
-
-"Module Impression / Copie / Partage chargé."
-
-);
-
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 8
-MODE INSPECTEUR IA
+ TEXTE COURT
 =========================================================*/
 
-/*=========================================================
-MOTS VIDES
-=========================================================*/
-
-const motsVides = [
-
-    "le","la","les","un","une","des",
-
-    "de","du","dans","sur","pour",
-
-    "avec","par","et","ou","au","aux",
-
-    "je","tu","il","elle","nous","vous",
-
-    "ils","elles","mon","ma","mes"
-
-];
-
-/*=========================================================
-EXTRACTION DES MOTS IMPORTANTS
-=========================================================*/
-
-function extraireMotsImportants(texte){
-
-    return nettoyerTexte(texte)
-
-    .split(" ")
-
-    .filter(function(mot){
-
-        return mot.length>2 &&
-
-        !motsVides.includes(mot);
-
-    });
-
-}
-
-/*=========================================================
-ANALYSE DE LA SITUATION
-=========================================================*/
-
-function analyserSituation(texte){
+function tronquerTexte(texte,longueur=300){
 
     if(!texte){
 
-        notification(
+        return "";
 
-            "Veuillez saisir une situation.",
+    }
 
-            "error"
+    if(texte.length<=longueur){
+
+        return texte;
+
+    }
+
+    return texte.substring(0,longueur)+"...";
+
+}
+
+/*=========================================================
+ DÉFILEMENT AUTOMATIQUE
+=========================================================*/
+
+function allerAuxResultats(){
+
+    if(UI.resultat){
+
+        UI.resultat.scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"start"
+
+        });
+
+    }
+
+}
+
+/*=========================================================
+ ARTICLE SUIVANT
+=========================================================*/
+
+function articleSuivant(){
+
+    if(!dernierArticle){
+
+        return;
+
+    }
+
+    const index=articles.findIndex(a=>
+
+        String(a.numero)===
+
+        String(dernierArticle.numero)
+
+    );
+
+    if(index<articles.length-1){
+
+        ouvrirArticle(
+
+            articles[index+1].numero
 
         );
 
-        return;
-
     }
-
-    const mots =
-
-    extraireMotsImportants(texte);
-
-    rechercheIA(
-
-        mots.join(" ")
-
-    );
-
-    genererAnalyseIA(
-
-        texte,
-
-        mots
-
-    );
 
 }
 
 /*=========================================================
-GÉNÉRATION DE L'ANALYSE
+ ARTICLE PRÉCÉDENT
 =========================================================*/
 
-function genererAnalyseIA(texte,mots){
+function articlePrecedent(){
 
-    if(!interfaceCode.resume){
+    if(!dernierArticle){
 
         return;
 
     }
 
-    interfaceCode.resume.innerHTML =
+    const index=articles.findIndex(a=>
 
-    `
+        String(a.numero)===
 
-    <div class="analyse-ia">
-
-        <h2>
-
-            Analyse InspecteurBot IA
-
-        </h2>
-
-        <p>
-
-            Situation analysée :
-
-        </p>
-
-        <blockquote>
-
-            ${texte}
-
-        </blockquote>
-
-        <p>
-
-            Mots-clés détectés :
-
-            <strong>
-
-            ${mots.join(", ")}
-
-            </strong>
-
-        </p>
-
-        <p>
-
-            Les articles affichés ci-dessous
-
-            sont les plus pertinents pour
-
-            cette situation.
-
-        </p>
-
-    </div>
-
-    `;
-
-}
-
-/*=========================================================
-SUGGESTIONS IA
-=========================================================*/
-
-function suggestionsIA(){
-
-    return [
-
-        "Licenciement",
-
-        "Contrat",
-
-        "Congé",
-
-        "Salaire",
-
-        "Faute lourde",
-
-        "Préavis",
-
-        "Temps de travail",
-
-        "Accident du travail",
-
-        "Apprentissage",
-
-        "Discipline"
-
-    ];
-
-}
-
-/*=========================================================
-AFFICHER LES SUGGESTIONS
-=========================================================*/
-
-function afficherSuggestions(){
-
-    console.log(
-
-        suggestionsIA()
+        String(dernierArticle.numero)
 
     );
 
+    if(index>0){
+
+        ouvrirArticle(
+
+            articles[index-1].numero
+
+        );
+
+    }
+
 }
 
-console.log(
-
-"Mode Inspecteur IA chargé."
-
-);
+console.log("✅ Partie 4 - Affichage intelligent chargé.");
 
 /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 9.1
-CONSEILLER JURIDIQUE IA
+ INSPECTEURBOT IA RDC
+ PARTIE 5
+ ASSISTANT JURIDIQUE IA
+ Version 3.0 Professionnelle
 =========================================================*/
 
 /*=========================================================
-DOMAINES JURIDIQUES
+ DOMAINES JURIDIQUES
 =========================================================*/
 
-const domainesJuridiques = {
+const DomainesIA={
 
-    contrat : [
-        "contrat",
-        "engagement",
-        "cdd",
-        "cdi"
+    contrat:[
+        "contrat","cdi","cdd","engagement",
+        "embauche","clause"
     ],
 
-    licenciement : [
-        "licenciement",
-        "renvoi",
-        "rupture",
-        "préavis"
+    licenciement:[
+        "licenciement","renvoi","rupture",
+        "préavis","faute"
     ],
 
-    salaire : [
-        "salaire",
-        "prime",
-        "paie",
-        "rémunération"
+    salaire:[
+        "salaire","paie","prime",
+        "indemnité","rémunération"
     ],
 
-    conge : [
-        "congé",
-        "repos",
-        "vacances",
+    conge:[
+        "congé","repos","vacances",
         "permission"
     ],
 
-    discipline : [
-        "faute",
-        "sanction",
-        "discipline",
-        "avertissement"
+    accident:[
+        "accident","sécurité",
+        "hygiène","maladie",
+        "protection"
     ],
 
-    securite : [
-        "accident",
-        "sécurité",
-        "hygiène",
-        "maladie"
+    discipline:[
+        "discipline","sanction",
+        "avertissement",
+        "blâme"
     ]
 
 };
 
 /*=========================================================
-IDENTIFICATION DU DOMAINE
+ IDENTIFICATION DU DOMAINE
 =========================================================*/
 
 function identifierDomaine(question){
 
-    question = nettoyerTexte(question);
+    question=nettoyerTexte(question);
 
-    let domaine = "général";
+    let domaine="général";
 
-    let meilleurScore = 0;
+    let meilleurScore=0;
 
-    Object.keys(domainesJuridiques)
+    Object.keys(DomainesIA)
 
-    .forEach(function(cle){
+    .forEach(cle=>{
 
-        let score = 0;
+        let score=0;
 
-        domainesJuridiques[cle]
+        DomainesIA[cle]
 
-        .forEach(function(mot){
+        .forEach(mot=>{
 
             if(question.includes(
 
@@ -1888,11 +1121,11 @@ function identifierDomaine(question){
 
         });
 
-        if(score > meilleurScore){
+        if(score>meilleurScore){
 
-            meilleurScore = score;
+            meilleurScore=score;
 
-            domaine = cle;
+            domaine=cle;
 
         }
 
@@ -1903,232 +1136,785 @@ function identifierDomaine(question){
 }
 
 /*=========================================================
-AVIS JURIDIQUE
+ GÉNÉRATION DE LA RÉPONSE IA
 =========================================================*/
 
-function genererAvisJuridique(question){
+function genererReponseIA(question){
 
-    const domaine =
+    if(!UI.resume){
+
+        return;
+
+    }
+
+    if(articlesFiltres.length===0){
+
+        UI.resume.innerHTML=`
+
+        <div class="ia-message erreur">
+
+            <h3>
+
+                🤖 InspecteurBot IA
+
+            </h3>
+
+            <p>
+
+                Aucun article pertinent trouvé.
+
+            </p>
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+    const domaine=
 
     identifierDomaine(question);
 
-    const article =
+    const article=
 
-    articlesFiltres.length ?
+    articlesFiltres[0];
 
-    articlesFiltres[0] : null;
+    UI.resume.innerHTML=`
 
-    let message = "";
+    <div class="ia-message">
 
-    switch(domaine){
+        <h2>
 
-        case "licenciement":
+            🤖 InspecteurBot IA
 
-            message =
+        </h2>
 
-            "Votre situation concerne probablement la rupture du contrat de travail.";
+        <p>
 
-        break;
+            <strong>
 
-        case "contrat":
+            Domaine détecté :
 
-            message =
+            </strong>
 
-            "Votre question
+            ${domaine}
 
- /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 9.2
-ANALYSE DES INFRACTIONS
-=========================================================*/
+        </p>
+
+        <p>
+
+            <strong>
+
+            Article conseillé :
+
+            </strong>
+
+            ${article.numero}
+
+        </p>
+
+        <p>
+
+            <strong>
+
+            Titre :
+
+            </strong>
+
+            ${article.titre}
+
+        </p>
+
+        <p>
+
+            Votre recherche semble concerner
+
+            ce domaine du Code du Travail.
+
+            Consultez également les autres
+
+            résultats proposés.
+
+        </p>
+
+    </div>
+
+    `;
+
+}
 
 /*=========================================================
-BASE DES INFRACTIONS
+ EXPLICATION IA
 =========================================================*/
 
-const baseInfractions = {
+function expliquerArticle(numero){
 
-    salaire : {
+    const article=
 
-        mots : [
+    articles.find(a=>
 
-            "salaire",
+        String(a.numero)===
 
-            "paie",
+        String(numero)
 
-            "rémunération",
+    );
 
-            "prime"
+    if(!article){
 
-        ],
+        return;
 
-        gravite : "Élevée",
+    }
 
-        recommandation :
+    if(!UI.explication){
 
-        "Vérifier les bulletins de paie, les preuves de paiement et les registres de rémunération."
+        return;
+
+    }
+
+    UI.explication.innerHTML=`
+
+    <div class="explication-ia">
+
+        <h2>
+
+            💡 Explication IA
+
+        </h2>
+
+        <p>
+
+            <strong>
+
+            ${article.titre}
+
+            </strong>
+
+        </p>
+
+        <p>
+
+            Cet article définit les obligations
+
+            des employeurs et des travailleurs.
+
+            Il doit être interprété avec les
+
+            autres dispositions du Code du Travail.
+
+        </p>
+
+    </div>
+
+    `;
+
+}
+
+/*=========================================================
+ RÉSUMÉ IA
+=========================================================*/
+
+function resumeIA(numero){
+
+    const article=
+
+    articles.find(a=>
+
+        String(a.numero)===
+
+        String(numero)
+
+    );
+
+    if(!article){
+
+        return;
+
+    }
+
+    if(!UI.resume){
+
+        return;
+
+    }
+
+    let texte=
+
+    article.contenu;
+
+    if(texte.length>450){
+
+        texte=
+
+        texte.substring(0,450)+"...";
+
+    }
+
+    UI.resume.innerHTML=`
+
+    <div class="resume-ia">
+
+        <h2>
+
+            📑 Résumé IA
+
+        </h2>
+
+        <p>
+
+            ${texte}
+
+        </p>
+
+    </div>
+
+    `;
+
+}
+
+/*=========================================================
+ ANALYSE D'UNE SITUATION
+=========================================================*/
+
+function analyserSituationIA(situation){
+
+    if(!situation){
+
+        return;
+
+    }
+
+    rechercheIA(situation);
+
+}
+
+/*=========================================================
+ QUESTIONS FRÉQUENTES
+=========================================================*/
+
+const QuestionsIA=[
+
+"Licenciement abusif",
+
+"Contrat de travail",
+
+"Salaire impayé",
+
+"Congé annuel",
+
+"Heures supplémentaires",
+
+"Faute lourde",
+
+"Accident du travail",
+
+"Inspection du travail",
+
+"Travail des femmes",
+
+"Travail des enfants"
+
+];
+
+/*=========================================================
+ AFFICHAGE DES QUESTIONS
+=========================================================*/
+
+function afficherQuestionsIA(){
+
+    console.table(
+
+        QuestionsIA
+
+    );
+
+}
+
+console.log("✅ Partie 5 - Assistant juridique IA chargé.");
+
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ PARTIE 6
+ FAVORIS - HISTORIQUE - STATISTIQUES
+ Version 3.0 Professionnelle
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+ CLÉS DE SAUVEGARDE
+=========================================================*/
+
+const STOCKAGE={
+
+    favoris:"IBIA_FAVORIS",
+
+    historique:"IBIA_HISTORIQUE",
+
+    statistiques:"IBIA_STATS"
+
+};
+
+/*=========================================================
+ CHARGER FAVORIS
+=========================================================*/
+
+function chargerFavoris(){
+
+    try{
+
+        favoris=JSON.parse(
+
+            localStorage.getItem(
+
+                STOCKAGE.favoris
+
+            )
+
+        ) || [];
+
+    }
+
+    catch(e){
+
+        favoris=[];
+
+    }
+
+}
+
+/*=========================================================
+ SAUVEGARDER FAVORIS
+=========================================================*/
+
+function sauvegarderFavoris(){
+
+    localStorage.setItem(
+
+        STOCKAGE.favoris,
+
+        JSON.stringify(favoris)
+
+    );
+
+}
+
+/*=========================================================
+ AJOUTER FAVORI
+=========================================================*/
+
+function ajouterFavori(numero){
+
+    numero=String(numero);
+
+    if(favoris.includes(numero)){
+
+        notifier(
+
+            "Article déjà enregistré.",
+
+            "info"
+
+        );
+
+        return;
+
+    }
+
+    favoris.push(numero);
+
+    sauvegarderFavoris();
+
+    notifier(
+
+        "⭐ Favori ajouté.",
+
+        "success"
+
+    );
+
+}
+
+/*=========================================================
+ SUPPRIMER FAVORI
+=========================================================*/
+
+function supprimerFavori(numero){
+
+    numero=String(numero);
+
+    favoris=favoris.filter(
+
+        item=>item!==numero
+
+    );
+
+    sauvegarderFavoris();
+
+    notifier(
+
+        "Favori supprimé.",
+
+        "success"
+
+    );
+
+}
+
+/*=========================================================
+ AFFICHER FAVORIS
+=========================================================*/
+
+function afficherFavoris(){
+
+    const liste=
+
+    articles.filter(article=>
+
+        favoris.includes(
+
+            String(article.numero)
+
+        )
+
+    );
+
+    afficherArticles(liste);
+
+}
+
+/*=========================================================
+ HISTORIQUE
+=========================================================*/
+
+function chargerHistorique(){
+
+    try{
+
+        historiqueRecherche=
+
+        JSON.parse(
+
+            localStorage.getItem(
+
+                STOCKAGE.historique
+
+            )
+
+        ) || [];
+
+    }
+
+    catch(e){
+
+        historiqueRecherche=[];
+
+    }
+
+}
+
+function sauvegarderHistorique(){
+
+    localStorage.setItem(
+
+        STOCKAGE.historique,
+
+        JSON.stringify(
+
+            historiqueRecherche
+
+        )
+
+    );
+
+}
+
+function ajouterHistorique(texte){
+
+    if(!texte){
+
+        return;
+
+    }
+
+    historiqueRecherche.unshift(texte);
+
+    historiqueRecherche=[
+
+        ...new Set(
+
+            historiqueRecherche
+
+        )
+
+    ];
+
+    historiqueRecherche=
+
+    historiqueRecherche.slice(0,30);
+
+    sauvegarderHistorique();
+
+}
+
+/*=========================================================
+ AFFICHER HISTORIQUE
+=========================================================*/
+
+function afficherHistorique(){
+
+    console.table(
+
+        historiqueRecherche
+
+    );
+
+}
+
+/*=========================================================
+ VIDER HISTORIQUE
+=========================================================*/
+
+function viderHistorique(){
+
+    historiqueRecherche=[];
+
+    sauvegarderHistorique();
+
+    notifier(
+
+        "Historique supprimé.",
+
+        "success"
+
+    );
+
+}
+
+/*=========================================================
+ STATISTIQUES
+=========================================================*/
+
+let statistiques={
+
+    recherches:0,
+
+    articlesOuverts:0,
+
+    favoris:0,
+
+    derniereUtilisation:null
+
+};
+
+function chargerStatistiques(){
+
+    try{
+
+        statistiques=
+
+        JSON.parse(
+
+            localStorage.getItem(
+
+                STOCKAGE.statistiques
+
+            )
+
+        ) || statistiques;
+
+    }
+
+    catch(e){
+
+    }
+
+}
+
+function sauvegarderStatistiques(){
+
+    statistiques.favoris=
+
+    favoris.length;
+
+    statistiques.derniereUtilisation=
+
+    new Date().toLocaleString(
+
+        "fr-FR"
+
+    );
+
+    localStorage.setItem(
+
+        STOCKAGE.statistiques,
+
+        JSON.stringify(
+
+            statistiques
+
+        )
+
+    );
+
+}
+
+function incrementerRecherche(){
+
+    statistiques.recherches++;
+
+    sauvegarderStatistiques();
+
+}
+
+function incrementerArticle(){
+
+    statistiques.articlesOuverts++;
+
+    sauvegarderStatistiques();
+
+}
+
+/*=========================================================
+ TABLEAU DE BORD
+=========================================================*/
+
+function afficherStatistiques(){
+
+    console.table(statistiques);
+
+}
+
+/*=========================================================
+ INITIALISATION
+=========================================================*/
+
+chargerFavoris();
+
+chargerHistorique();
+
+chargerStatistiques();
+
+console.log(
+
+"✅ Partie 6 - Favoris, Historique et Statistiques chargés."
+
+);
+
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ PARTIE 7
+ MODE INSPECTEUR PRO
+ Version 3.0 Professionnelle
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+ BASE DES INFRACTIONS
+=========================================================*/
+
+const BaseInfractions={
+
+    salaire:{
+
+        gravite:"Élevée",
+
+        couleur:"#e53935",
+
+        documents:[
+            "Bulletins de paie",
+            "Registre de paie",
+            "Contrat de travail"
+        ]
 
     },
 
-    licenciement : {
+    licenciement:{
 
-        mots : [
+        gravite:"Très élevée",
 
-            "licenciement",
+        couleur:"#c62828",
 
-            "renvoi",
-
-            "préavis",
-
-            "rupture"
-
-        ],
-
-        gravite : "Élevée",
-
-        recommandation :
-
-        "Contrôler le respect de la procédure de licenciement et des délais de préavis."
+        documents:[
+            "Lettre de licenciement",
+            "Préavis",
+            "Contrat"
+        ]
 
     },
 
-    securite : {
+    contrat:{
 
-        mots : [
+        gravite:"Moyenne",
 
-            "accident",
+        couleur:"#fb8c00",
 
-            "sécurité",
-
-            "hygiène",
-
-            "protection"
-
-        ],
-
-        gravite : "Très élevée",
-
-        recommandation :
-
-        "Vérifier immédiatement les équipements de protection et les mesures de sécurité."
+        documents:[
+            "Contrat signé",
+            "Avenants",
+            "Registre du personnel"
+        ]
 
     },
 
-    conge : {
+    accident:{
 
-        mots : [
+        gravite:"Critique",
 
-            "congé",
+        couleur:"#8e24aa",
 
-            "vacances",
+        documents:[
+            "Déclaration d'accident",
+            "Rapport médical",
+            "Registre sécurité"
+        ]
 
-            "repos"
+    },
 
-        ],
+    conge:{
 
-        gravite : "Moyenne",
+        gravite:"Moyenne",
 
-        recommandation :
+        couleur:"#43a047",
 
-        "Contrôler les droits aux congés et les registres du personnel."
+        documents:[
+            "Planning des congés",
+            "Registre du personnel"
+        ]
 
     }
 
 };
 
 /*=========================================================
-ANALYSE DES INFRACTIONS
+ ANALYSE D'UNE SITUATION
 =========================================================*/
 
-function analyserInfractions(question){
+function analyserDossier(situation){
 
-    question = nettoyerTexte(question);
+    if(!situation){
 
-    let resultat = [];
+        return;
 
-    Object.keys(baseInfractions)
+    }
 
-    .forEach(function(type){
+    const texte=nettoyerTexte(situation);
 
-        const infraction = baseInfractions[type];
+    let resultat=[];
 
-        infraction.mots.forEach(function(mot){
+    Object.keys(BaseInfractions)
 
-            if(question.includes(
+    .forEach(type=>{
 
-                nettoyerTexte(mot)
+        if(texte.includes(type)){
 
-            )){
+            resultat.push({
 
-                resultat.push({
+                type:type,
 
-                    type : type,
-
-                    gravite :
-
-                    infraction.gravite,
-
-                    recommandation :
-
-                    infraction.recommandation
-
-                });
-
-            }
-
-        });
-
-        /*=========================================================
-INSPECTEURBOT IA
-MODULE CODE DU TRAVAIL
-PARTIE 9.3
-CORRESPONDANCE DES ARTICLES
-=========================================================*/
-
-/*=========================================================
-RECHERCHE DES ARTICLES PERTINENTS
-=========================================================*/
-
-function rechercherArticlesPertinents(question){
-
-    question = nettoyerTexte(question);
-
-    let resultats = [];
-
-    articles.forEach(function(article){
-
-        let score = 0;
-
-        const contenu = nettoyerTexte(
-
-            JSON.stringify(article)
-
-        );
-
-        question.split(" ").forEach(function(mot){
-
-            if(
-
-                mot.length > 2 &&
-
-                contenu.includes(mot)
-
-            ){
-
-                score += 10;
-
-            }
-
-        });
-
-        if(score > 0){
-
-            resultats.push({
-
-                article: article,
-
-                score: score
+                infos:BaseInfractions[type]
 
             });
 
@@ -2136,109 +1922,107 @@ function rechercherArticlesPertinents(question){
 
     });
 
-    resultats.sort(function(a,b){
+    afficherRapportInspecteur(
 
-        return b.score-a.score;
+        situation,
 
-    });
+        resultat
 
-    return resultats;
+    );
 
 }
 
 /*=========================================================
-AFFICHAGE DES ARTICLES CONSEILLÉS
+ RAPPORT INSPECTEUR
 =========================================================*/
 
-function afficherArticlesConseilles(question){
+function afficherRapportInspecteur(
 
-    const liste =
+    situation,
 
-    rechercherArticlesPertinents(question);
+    infractions
 
-    if(!interfaceCode.resultat){
+){
 
-        return;
-
-    }
-
-    if(liste.length===0){
-
-        interfaceCode.resultat.innerHTML=
-
-        `
-
-        <div class="ia-message">
-
-            Aucun article pertinent trouvé.
-
-        </div>
-
-        `;
+    if(!UI.resume){
 
         return;
 
     }
 
-    let html =
+    let html=`
 
-    `
+    <div class="rapport-inspecteur">
 
-    <div class="articles-conseilles">
+    <h2>
 
-        <h2>
+    🕵️ Rapport Inspecteur IA
 
-            Articles recommandés
+    </h2>
 
-        </h2>
+    <p>
+
+    <strong>Situation :</strong>
+
+    ${situation}
+
+    </p>
 
     `;
 
-    liste.slice(0,5)
+    if(infractions.length===0){
 
-    .forEach(function(item){
+        html+=`
 
-        html +=
+        <p>
 
-        `
+        Aucune infraction détectée.
 
-        <div class="article-ia">
+        </p>
 
-            <h3>
+        `;
 
-                Article
+    }
 
-                ${item.article.numero}
+    infractions.forEach(item=>{
 
-            </h3>
+        html+=`
 
-            <h4>
+        <div class="bloc-infraction">
 
-                ${item.article.titre}
+        <h3>
 
-            </h4>
+        ${item.type.toUpperCase()}
 
-            <p>
+        </h3>
 
-                Score IA :
+        <p>
 
-                <strong>
+        Gravité :
 
-                ${item.score}
+        <strong>
 
-                </strong>
+        ${item.infos.gravite}
 
-            </p>
+        </strong>
 
-            <button
+        </p>
 
-                onclick="ouvrirArticle('${item.article.numero}')"
+        <p>
 
-            >
+        Documents à contrôler :
 
-                Consulter
+        </p>
 
-            </button>
+        <ul>
+
+        ${item.infos.documents
+
+        .map(doc=>"<li>"+doc+"</li>")
+
+        .join("")}
+
+        </ul>
 
         </div>
 
@@ -2246,53 +2030,347 @@ function afficherArticlesConseilles(question){
 
     });
 
-    html +=
-
-    `
+    html+=`
 
     </div>
 
     `;
 
-    interfaceCode.resultat.innerHTML =
-
-    html;
+    UI.resume.innerHTML=html;
 
 }
 
 /*=========================================================
-ANALYSE COMPLÈTE IA
+ CHECK-LIST INSPECTION
 =========================================================*/
 
-function analyseCompleteIA(question){
+function genererChecklist(){
 
-    analyserDossier(question);
+    return[
 
-    afficherArticlesConseilles(question);
+        "Contrat de travail",
+
+        "Registre du personnel",
+
+        "Bulletins de paie",
+
+        "Horaires de travail",
+
+        "Congés",
+
+        "Affiliation CNSS",
+
+        "Règlement intérieur",
+
+        "Santé et sécurité",
+
+        "Équipements de protection",
+
+        "Déclarations d'accident"
+
+    ];
+
+}
+
+/*=========================================================
+ AFFICHER CHECK-LIST
+=========================================================*/
+
+function afficherChecklist(){
+
+    console.table(
+
+        genererChecklist()
+
+    );
+
+}
+
+/*=========================================================
+ QUESTIONS À POSER
+=========================================================*/
+
+function questionsInspection(){
+
+    return[
+
+        "Depuis quand dure la situation ?",
+
+        "Existe-t-il un contrat écrit ?",
+
+        "Les salaires sont-ils payés ?",
+
+        "Le préavis a-t-il été respecté ?",
+
+        "Les cotisations sociales sont-elles versées ?",
+
+        "Les heures supplémentaires sont-elles rémunérées ?",
+
+        "Les travailleurs disposent-ils d'EPI ?",
+
+        "Le registre du personnel est-il disponible ?"
+
+    ];
+
+}
+
+/*=========================================================
+ AFFICHER QUESTIONS
+=========================================================*/
+
+function afficherQuestionsInspection(){
+
+    console.table(
+
+        questionsInspection()
+
+    );
 
 }
 
 console.log(
 
-"Correspondance intelligente des articles activée."
+"✅ Partie 7 - Mode Inspecteur Pro chargé."
 
 );
 
 /*=========================================================
-INSPECTEURBOT IA
-PARTIE 9.4A
-RAPPORT JURIDIQUE IA
+ INSPECTEURBOT IA RDC
+ PARTIE 8
+ ASSISTANT CONVERSATIONNEL IA
+ Version 3.0 Professionnelle
 =========================================================*/
 
+"use strict";
+
 /*=========================================================
-DATE DU RAPPORT
+ QUESTIONS FRÉQUENTES
+=========================================================*/
+
+const BaseConnaissancesIA=[
+
+{
+question:"licenciement",
+reponse:"Le licenciement doit respecter les dispositions du Code du Travail. Vérifiez la procédure, le motif, le préavis et les indemnités."
+},
+
+{
+question:"contrat",
+reponse:"Le contrat de travail doit préciser les fonctions, la rémunération, la durée et les obligations des parties."
+},
+
+{
+question:"salaire",
+reponse:"Le salaire doit être payé régulièrement. Vérifiez les bulletins de paie, le registre de paie et les preuves de paiement."
+},
+
+{
+question:"heures supplémentaires",
+reponse:"Les heures supplémentaires doivent être autorisées et rémunérées conformément au Code du Travail."
+},
+
+{
+question:"congé",
+reponse:"Le travailleur bénéficie d'un droit au congé annuel selon les conditions prévues par la loi."
+},
+
+{
+question:"accident",
+reponse:"En cas d'accident du travail, l'employeur doit déclarer l'accident et protéger le travailleur."
+}
+
+];
+
+/*=========================================================
+ CHERCHER UNE RÉPONSE
+=========================================================*/
+
+function rechercherReponseIA(question){
+
+    question=nettoyerTexte(question);
+
+    for(const item of BaseConnaissancesIA){
+
+        if(question.includes(
+
+            nettoyerTexte(item.question)
+
+        )){
+
+            return item.reponse;
+
+        }
+
+    }
+
+    return "Aucune réponse directe trouvée. Consultez les articles proposés ci-dessous.";
+
+}
+
+/*=========================================================
+ ASSISTANT IA
+=========================================================*/
+
+function discuterAvecIA(question){
+
+    if(!question){
+
+        return;
+
+    }
+
+    rechercheIA(question);
+
+    const reponse=
+
+    rechercherReponseIA(question);
+
+    afficherConversationIA(
+
+        question,
+
+        reponse
+
+    );
+
+}
+
+/*=========================================================
+ AFFICHAGE DE LA CONVERSATION
+=========================================================*/
+
+function afficherConversationIA(question,reponse){
+
+    if(!UI.resume){
+
+        return;
+
+    }
+
+    UI.resume.innerHTML=`
+
+    <div class="conversation-ia">
+
+        <div class="message-utilisateur">
+
+            <h3>
+
+            👤 Inspecteur
+
+            </h3>
+
+            <p>
+
+            ${question}
+
+            </p>
+
+        </div>
+
+        <div class="message-ia">
+
+            <h3>
+
+            🤖 InspecteurBot IA
+
+            </h3>
+
+            <p>
+
+            ${reponse}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+/*=========================================================
+ SUGGESTIONS AUTOMATIQUES
+=========================================================*/
+
+function obtenirSuggestionsIA(){
+
+    return [
+
+        "Licenciement abusif",
+
+        "Contrat de travail",
+
+        "Salaire impayé",
+
+        "Heures supplémentaires",
+
+        "Congé annuel",
+
+        "Accident du travail",
+
+        "Inspection",
+
+        "Préavis",
+
+        "Faute lourde",
+
+        "Travail des femmes",
+
+        "Travail des enfants",
+
+        "Apprentissage"
+
+    ];
+
+}
+
+/*=========================================================
+ AFFICHER LES SUGGESTIONS
+=========================================================*/
+
+function afficherSuggestionsIA(){
+
+    console.table(
+
+        obtenirSuggestionsIA()
+
+    );
+
+}
+
+/*=========================================================
+ ANALYSE RAPIDE
+=========================================================*/
+
+function analyseRapide(question){
+
+    discuterAvecIA(question);
+
+}
+
+console.log(
+
+"✅ Partie 8 - Assistant Conversationnel IA chargé."
+
+);
+
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ PARTIE 9
+ RAPPORT JURIDIQUE IA PROFESSIONNEL
+ Version 3.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+ DATE ET HEURE
 =========================================================*/
 
 function obtenirDateRapport(){
 
-    const maintenant = new Date();
-
-    return maintenant.toLocaleDateString(
+    return new Date().toLocaleDateString(
 
         "fr-FR",
 
@@ -2310,15 +2388,9 @@ function obtenirDateRapport(){
 
 }
 
-/*=========================================================
-HEURE DU RAPPORT
-=========================================================*/
-
 function obtenirHeureRapport(){
 
-    const maintenant = new Date();
-
-    return maintenant.toLocaleTimeString(
+    return new Date().toLocaleTimeString(
 
         "fr-FR"
 
@@ -2327,16 +2399,18 @@ function obtenirHeureRapport(){
 }
 
 /*=========================================================
-NIVEAU DE PRIORITÉ
+ NIVEAU DE RISQUE
 =========================================================*/
 
-function determinerPriorite(){
+function determinerNiveauRisque(){
 
     if(articlesFiltres.length>=10){
 
         return{
 
-            niveau:"Très élevée",
+            niveau:"Très élevé",
+
+            couleur:"#d32f2f",
 
             etoiles:"★★★★★"
 
@@ -2348,7 +2422,9 @@ function determinerPriorite(){
 
         return{
 
-            niveau:"Élevée",
+            niveau:"Élevé",
+
+            couleur:"#f57c00",
 
             etoiles:"★★★★☆"
 
@@ -2360,7 +2436,9 @@ function determinerPriorite(){
 
         return{
 
-            niveau:"Moyenne",
+            niveau:"Moyen",
+
+            couleur:"#fbc02d",
 
             etoiles:"★★★☆☆"
 
@@ -2372,6 +2450,8 @@ function determinerPriorite(){
 
         niveau:"Faible",
 
+        couleur:"#43a047",
+
         etoiles:"★★☆☆☆"
 
     };
@@ -2379,7 +2459,7 @@ function determinerPriorite(){
 }
 
 /*=========================================================
-RÉSUMÉ DES ARTICLES
+ RÉSUMÉ DES ARTICLES
 =========================================================*/
 
 function genererResumeArticles(){
@@ -2390,11 +2470,11 @@ function genererResumeArticles(){
 
     .slice(0,5)
 
-    .forEach(function(article){
+    .forEach(article=>{
 
         texte+=
 
-        "Article "
+        "• Article "
 
         +article.numero+
 
@@ -2411,105 +2491,502 @@ function genererResumeArticles(){
 }
 
 /*=========================================================
-RÉCUPÉRATION DU DOMAINE
+ RAPPORT COMPLET
 =========================================================*/
 
-function recupererDomaine(question){
+function genererRapportJuridique(question){
 
-    return identifierDomaine(
+    const risque=
 
-        question
+    determinerNiveauRisque();
 
-    );
+    const domaine=
+
+    identifierDomaine(question);
+
+    let rapport=`
+
+<div class="rapport-juridique">
+
+<h2>
+
+📑 Rapport Juridique IA
+
+</h2>
+
+<p>
+
+<strong>Date :</strong>
+
+${obtenirDateRapport()}
+
+</p>
+
+<p>
+
+<strong>Heure :</strong>
+
+${obtenirHeureRapport()}
+
+</p>
+
+<p>
+
+<strong>Domaine :</strong>
+
+${domaine}
+
+</p>
+
+<p>
+
+<strong>Niveau de risque :</strong>
+
+<span style="color:${risque.couleur}">
+
+${risque.niveau}
+
+${risque.etoiles}
+
+</span>
+
+</p>
+
+<p>
+
+<strong>Question analysée :</strong>
+
+${question}
+
+</p>
+
+<h3>
+
+Articles recommandés
+
+</h3>
+
+<pre>
+
+${genererResumeArticles()}
+
+</pre>
+
+<h3>
+
+Conclusion IA
+
+</h3>
+
+<p>
+
+Les articles ci-dessus semblent être les plus pertinents.
+
+Une vérification des documents de l'entreprise est recommandée avant toute décision.
+
+</p>
+
+</div>
+
+`;
+
+    if(UI.resume){
+
+        UI.resume.innerHTML=
+
+        rapport;
+
+    }
 
 }
 
 /*=========================================================
-PRÉPARATION DU RAPPORT
+ EXPORT TEXTE
 =========================================================*/
 
-function preparerRapport(question){
+function exporterRapportTXT(){
 
-    const priorite=
+    const texte=
 
-    determinerPriorite();
+    UI.resume
 
-    return{
+    ?UI.resume.innerText
 
-        date:
+    :"";
 
-        obtenirDateRapport(),
+    const blob=new Blob(
 
-        heure:
+        [texte],
 
-        obtenirHeureRapport(),
+        {
 
-        domaine:
+            type:"text/plain"
 
-        recupererDomaine(question),
+        }
 
-        priorite:
+    );
 
-        priorite,
+    const lien=
 
-        articles:
+    document.createElement("a");
 
-        genererResumeArticles()
+    lien.href=
 
-    };
+    URL.createObjectURL(blob);
+
+    lien.download=
+
+    "Rapport_InspecteurBot.txt";
+
+    lien.click();
+
+}
+
+/*=========================================================
+ IMPRESSION
+=========================================================*/
+
+function imprimerRapport(){
+
+    window.print();
+
+}
+
+/*=========================================================
+ PARTAGE MOBILE
+=========================================================*/
+
+async function partagerRapport(){
+
+    if(!navigator.share){
+
+        return;
+
+    }
+
+    await navigator.share({
+
+        title:
+
+        "Rapport InspecteurBot IA",
+
+        text:
+
+        UI.resume.innerText
+
+    });
+
+}
+
+/*=========================================================
+ ANALYSE COMPLÈTE
+=========================================================*/
+
+function lancerAnalyseComplete(question){
+
+    rechercheIA(question);
+
+    analyserDossier(question);
+
+    genererRapportJuridique(question);
 
 }
 
 console.log(
 
-"Rapport juridique IA prêt."
+"✅ Partie 9 - Rapport Juridique IA chargé."
 
-);      
+);
 
-/*====================================
- MODE CLAIR / SOMBRE PROFESSIONNEL
-====================================*/
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ PARTIE 10
+ COPILOTE D'INSPECTION IA
+ Version 3.0 Professionnelle
+=========================================================*/
 
-const themeToggle = document.getElementById("themeToggle");
-const themeIcon = document.getElementById("themeIcon");
+"use strict";
 
-function appliquerTheme(theme){
+/*=========================================================
+ GÉNÉRATION D'UN DOSSIER D'INSPECTION
+=========================================================*/
 
-    document.body.classList.remove("light-theme","dark-theme");
-    document.body.classList.add(theme);
+function genererDossierInspection(question){
 
-    if(theme==="dark-theme"){
-        themeIcon.textContent="☀️";
-    }else{
-        themeIcon.textContent="🌙";
-    }
+    const dossier={
 
-    localStorage.setItem("theme",theme);
+        numero:"IGT-"+Date.now(),
+
+        date:new Date().toLocaleDateString("fr-FR"),
+
+        heure:new Date().toLocaleTimeString("fr-FR"),
+
+        inspecteur:"InspecteurBot IA",
+
+        situation:question,
+
+        domaine:identifierDomaine(question),
+
+        articles:articlesFiltres.slice(0,10)
+
+    };
+
+    return dossier;
 
 }
 
-const themeSauvegarde=localStorage.getItem("theme");
+/*=========================================================
+ PROCÈS-VERBAL IA
+=========================================================*/
 
-if(themeSauvegarde){
+function genererProcesVerbal(question){
 
-    appliquerTheme(themeSauvegarde);
+    const dossier=
 
-}else{
+    genererDossierInspection(question);
 
-    appliquerTheme("light-theme");
+    let texte=
+
+`PROCÈS-VERBAL D'INSPECTION
+
+Numéro : ${dossier.numero}
+
+Date : ${dossier.date}
+
+Heure : ${dossier.heure}
+
+Situation constatée :
+
+${question}
+
+Domaine :
+
+${dossier.domaine}
+
+Articles recommandés :
+
+`;
+
+    dossier.articles.forEach(article=>{
+
+        texte+=
+
+        "Article "+
+
+        article.numero+
+
+        " - "+
+
+        article.titre+
+
+        "\n";
+
+    });
+
+    texte+=`
+
+Conclusion :
+
+Une inspection approfondie est recommandée.
+
+Inspecteur :
+
+InspecteurBot IA
+
+`;
+
+    return texte;
 
 }
 
-themeToggle.addEventListener("click",()=>{
+/*=========================================================
+ MISE EN DEMEURE
+=========================================================*/
 
-    if(document.body.classList.contains("light-theme")){
+function genererMiseEnDemeure(question){
 
-        appliquerTheme("dark-theme");
+    return`
 
-    }else{
+MISE EN DEMEURE
 
-        appliquerTheme("light-theme");
+Après analyse de la situation :
+
+${question}
+
+Il est demandé à l'employeur de se conformer aux dispositions du Code du Travail dans les meilleurs délais.
+
+InspecteurBot IA.
+
+`;
+
+}
+
+/*=========================================================
+ RECOMMANDATIONS IA
+=========================================================*/
+
+function recommandationsIA(question){
+
+    return[
+
+        "Vérifier les contrats de travail.",
+
+        "Contrôler les bulletins de paie.",
+
+        "Examiner le registre du personnel.",
+
+        "Contrôler les horaires.",
+
+        "Vérifier les cotisations sociales.",
+
+        "Examiner les congés.",
+
+        "Contrôler les équipements de protection.",
+
+        "Interroger les travailleurs.",
+
+        "Interroger l'employeur.",
+
+        "Consulter les articles proposés."
+
+    ];
+
+}
+
+/*=========================================================
+ AFFICHAGE COMPLET
+=========================================================*/
+
+function afficherCopiloteIA(question){
+
+    if(!UI.resume){
+
+        return;
 
     }
 
-});
+    const pv=
+
+    genererProcesVerbal(question);
+
+    const recommandations=
+
+    recommandationsIA(question);
+
+    UI.resume.innerHTML=`
+
+<div class="copilote-ia">
+
+<h2>
+
+🧠 Copilote d'Inspection IA
+
+</h2>
+
+<h3>
+
+📄 Procès-Verbal
+
+</h3>
+
+<pre>
+
+${pv}
+
+</pre>
+
+<h3>
+
+✅ Recommandations
+
+</h3>
+
+<ul>
+
+${recommandations
+
+.map(item=>"<li>"+item+"</li>")
+
+.join("")}
+
+</ul>
+
+</div>
+
+`;
+
+}
+
+/*=========================================================
+ EXPORT JSON
+=========================================================*/
+
+function exporterDossierJSON(question){
+
+    const dossier=
+
+    genererDossierInspection(question);
+
+    const blob=new Blob(
+
+        [
+
+        JSON.stringify(
+
+            dossier,
+
+            null,
+
+            2
+
+        )
+
+        ],
+
+        {
+
+            type:"application/json"
+
+        }
+
+    );
+
+    const lien=
+
+    document.createElement("a");
+
+    lien.href=
+
+    URL.createObjectURL(blob);
+
+    lien.download=
+
+    "Dossier_Inspection.json";
+
+    lien.click();
+
+}
+
+/*=========================================================
+ ANALYSE COMPLÈTE
+=========================================================*/
+
+function analyserInspection(question){
+
+    rechercheIA(question);
+
+    analyserDossier(question);
+
+    genererRapportJuridique(question);
+
+    afficherCopiloteIA(question);
+
+}
+
+console.log("✅ Partie 10 - Copilote d'Inspection IA chargé.");
+
+
+
+
+
+
