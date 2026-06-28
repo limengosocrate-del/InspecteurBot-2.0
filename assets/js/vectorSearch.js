@@ -1,36 +1,61 @@
-/*==================================================
-INSPECTEURBOT IA RDC
-VECTOR SEARCH OFFLINE V2.0
-Fonctionne avec code-travail.js
-==================================================*/
+/*=========================================================
+ INSPECTEURBOT IA RDC
+ VECTOR SEARCH V4.0
+ Compatible avec code-travail.json
+=========================================================*/
 
 "use strict";
 
-/*
-Le fichier assets/data/code-travail.js
-doit contenir :
+let CODE_TRAVAIL = [];
+let INDEX_READY = false;
 
-const CODE_TRAVAIL = [
-   {...},
-   {...}
-];
-*/
+/*=========================================================
+CHARGEMENT
+=========================================================*/
 
-const ARTICLES = Array.isArray(CODE_TRAVAIL)
-    ? CODE_TRAVAIL
-    : [];
+async function loadCodeTravail(){
 
-console.log("Articles chargés :", ARTICLES.length);
+    if(INDEX_READY) return CODE_TRAVAIL;
 
-/*=========================================
-NETTOYAGE TEXTE
-=========================================*/
+    try{
 
-function normalizeText(text){
+        const response = await fetch("assets/code-travail.json");
+
+        if(!response.ok)
+            throw new Error("Impossible de charger code-travail.json");
+
+        CODE_TRAVAIL = await response.json();
+
+        INDEX_READY = true;
+
+        console.log(
+            "✅ Code du Travail chargé :",
+            CODE_TRAVAIL.length,
+            "articles"
+        );
+
+        return CODE_TRAVAIL;
+
+    }catch(e){
+
+        console.error(e);
+
+        return [];
+
+    }
+
+}
+
+/*=========================================================
+NORMALISATION
+=========================================================*/
+
+function normalize(text){
 
     if(!text) return "";
 
     return text
+        .toString()
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g,"")
@@ -40,39 +65,59 @@ function normalizeText(text){
 
 }
 
-/*=========================================
-TOKENISATION
-=========================================*/
-
-function tokenize(text){
-
-    return normalizeText(text).split(" ");
-
-}
-
-/*=========================================
-SCORE
-=========================================*/
+/*=========================================================
+CALCUL DU SCORE
+=========================================================*/
 
 function computeScore(article,query){
 
-    const q=tokenize(query);
-
-    const contenu=
-        normalizeText(
-            article.numero+" "+
-            article.titre+" "+
-            article.contenu
-        );
-
     let score=0;
 
-    q.forEach(word=>{
+    const q=normalize(query);
+
+    const numero=normalize(article.numero);
+
+    const titre=normalize(article.titre);
+
+    const categorie=normalize(article.categorie);
+
+    const contenu=normalize(article.contenu);
+
+    const mots=(article.motsCles||[])
+        .join(" ");
+
+    const keywords=normalize(mots);
+
+    if(numero===q)
+        score+=500;
+
+    if(numero.includes(q))
+        score+=250;
+
+    if(titre.includes(q))
+        score+=150;
+
+    if(categorie.includes(q))
+        score+=80;
+
+    if(keywords.includes(q))
+        score+=120;
+
+    if(contenu.includes(q))
+        score+=60;
+
+    q.split(" ").forEach(word=>{
 
         if(word.length<2) return;
 
+        if(titre.includes(word))
+            score+=20;
+
+        if(keywords.includes(word))
+            score+=15;
+
         if(contenu.includes(word))
-            score++;
+            score+=8;
 
     });
 
@@ -80,27 +125,29 @@ function computeScore(article,query){
 
 }
 
-/*=========================================
+/*=========================================================
 RECHERCHE
-=========================================*/
+=========================================================*/
 
-function vectorSearch(query,limit=10){
+async function vectorSearch(query,limit=10){
+
+    await loadCodeTravail();
 
     if(!query) return [];
 
-    const resultats=[];
+    const results=[];
 
-    ARTICLES.forEach(article=>{
+    CODE_TRAVAIL.forEach(article=>{
 
         const score=computeScore(article,query);
 
         if(score>0){
 
-            resultats.push({
+            results.push({
 
-                article,
+                score,
 
-                score
+                article
 
             });
 
@@ -108,34 +155,15 @@ function vectorSearch(query,limit=10){
 
     });
 
-    resultats.sort((a,b)=>b.score-a.score);
+    results.sort((a,b)=>b.score-a.score);
 
-    return resultats.slice(0,limit);
-
-}
-
-/*=========================================
-ARTICLE PAR NUMERO
-=========================================*/
-
-function getArticle(numero){
-
-    return ARTICLES.find(a=>{
-
-        return normalizeText(a.numero)===normalizeText(numero);
-
-    });
+    return results.slice(0,limit);
 
 }
 
-/*=========================================
-EXPORT GLOBAL
-=========================================*/
+/*=========================================================
+EXPORT
+=========================================================*/
 
 window.vectorSearch=vectorSearch;
-
-window.getArticle=getArticle;
-
-window.CODE_TRAVAIL_DATA=ARTICLES;
-
-
+window.loadCodeTravail=loadCodeTravail;
