@@ -1258,3 +1258,940 @@ console.log(
 "Reconnaissance vocale IA chargée."
 );
 
+/*=========================================================
+INSPECTEURBOT IA
+MODULE MULTILINGUE
+PARTIE 7
+SYNTHÈSE VOCALE IA
+Version 1.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+CONFIGURATION
+=========================================================*/
+
+let synthese = window.speechSynthesis;
+
+let voixDisponibles = [];
+
+/*=========================================================
+CHARGEMENT DES VOIX
+=========================================================*/
+
+function chargerVoix(){
+
+    voixDisponibles = synthese.getVoices();
+
+    console.log(
+
+        "Voix disponibles :",
+
+        voixDisponibles.length
+
+    );
+
+}
+
+if(synthese){
+
+    chargerVoix();
+
+    speechSynthesis.onvoiceschanged = chargerVoix;
+
+}
+
+/*=========================================================
+LANGUE DE LECTURE
+=========================================================*/
+
+function codeVoix(){
+
+    const langues = {
+
+        fr:"fr",
+
+        ln:"fr",
+
+        sw:"sw",
+
+        kg:"fr",
+
+        lu:"fr",
+
+        en:"en",
+
+        pt:"pt"
+
+    };
+
+    return langues[LanguesIA.langueActive] || "fr";
+
+}
+
+/*=========================================================
+CHOIX DE LA VOIX
+=========================================================*/
+
+function obtenirVoix(){
+
+    const langue = codeVoix();
+
+    for(const voix of voixDisponibles){
+
+        if(
+
+            voix.lang
+
+            .toLowerCase()
+
+            .startsWith(langue)
+
+        ){
+
+            return voix;
+
+        }
+
+    }
+
+    return null;
+
+}
+
+/*=========================================================
+LECTURE VOCALE
+=========================================================*/
+
+function parlerIA(texte){
+
+    if(
+
+        !LanguesIA.syntheseVocale ||
+
+        !window.speechSynthesis
+
+    ){
+
+        return;
+
+    }
+
+    speechSynthesis.cancel();
+
+    const lecture =
+
+    new SpeechSynthesisUtterance(
+
+        texte
+
+    );
+
+    lecture.lang = codeVoix();
+
+    lecture.rate = 1;
+
+    lecture.pitch = 1;
+
+    const voix = obtenirVoix();
+
+    if(voix){
+
+        lecture.voice = voix;
+
+    }
+
+    speechSynthesis.speak(lecture);
+
+}
+
+/*=========================================================
+ARRÊTER LA LECTURE
+=========================================================*/
+
+function arreterLecture(){
+
+    speechSynthesis.cancel();
+
+}
+
+/*=========================================================
+LECTURE D'UNE RÉPONSE IA
+=========================================================*/
+
+function lireReponseIA(reponse){
+
+    console.log(
+
+        "Lecture IA :",
+
+        reponse
+
+    );
+
+    parlerIA(reponse);
+
+}
+
+/*=========================================================
+LECTURE DU CONSEIL JURIDIQUE
+=========================================================*/
+
+function lireConseil(question){
+
+    const conseil =
+
+    conseilIA(question);
+
+    lireReponseIA(conseil);
+
+}
+
+/*=========================================================
+BOUTON HAUT-PARLEUR
+=========================================================*/
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+function(){
+
+const bouton =
+
+document.getElementById(
+
+"btnLecture"
+
+);
+
+if(bouton){
+
+bouton.addEventListener(
+
+"click",
+
+function(){
+
+const zone =
+
+document.getElementById(
+
+"resultatRecherche"
+
+);
+
+if(zone){
+
+lireReponseIA(
+
+zone.innerText
+
+);
+
+}
+
+});
+
+}
+
+}
+
+);
+
+console.log(
+
+"Synthèse vocale IA chargée."
+
+);
+
+/*=========================================================
+INSPECTEURBOT IA
+MODULE MULTILINGUE
+PARTIE 8
+MODE TRADUCTION TERRAIN
+Version 1.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+PHRASES JURIDIQUES COURANTES
+=========================================================*/
+
+const traductionTerrain = {
+
+preavis:{
+fr:"Le travailleur a droit à un préavis.",
+ln:"Mosali azali na lotomo ya kozwa preavis.",
+sw:"Mfanyakazi ana haki ya kupewa notisi kabla ya kuachishwa kazi.",
+kg:"Musadi kele na nswa ya kuzwa preavis.",
+lu:"Mufanyi wa mudimu udi ne bukenji bwa preavis.",
+en:"The employee is entitled to a notice period.",
+pt:"O trabalhador tem direito ao aviso prévio."
+},
+
+contrat:{
+fr:"Veuillez présenter votre contrat de travail.",
+ln:"Svp lakisa contrat na yo ya mosala.",
+sw:"Tafadhali wasilisha mkataba wako wa kazi.",
+kg:"Lakisa kontrá na nge ya kisalu.",
+lu:"Lekela kontrat weba wa mudimu.",
+en:"Please present your employment contract.",
+pt:"Apresente o seu contrato de trabalho."
+},
+
+salaire:{
+fr:"Le salaire doit être payé régulièrement.",
+ln:"Lifuti esengeli kofutama mbala na mbala.",
+sw:"Mshahara lazima ulipwe kwa wakati.",
+kg:"Mfutu fweti futama mbala nyonso.",
+lu:"Difutu didi ne bua kufutibua pa ntangu.",
+en:"The salary must be paid regularly.",
+pt:"O salário deve ser pago regularmente."
+},
+
+inspection:{
+fr:"Nous effectuons une inspection du travail.",
+ln:"Tozali kosala inspection ya mosala.",
+sw:"Tunafanya ukaguzi wa kazi.",
+kg:"Beto ke sala inspection ya kisalu.",
+lu:"Tudi tusala bukengeshi bwa mudimu.",
+en:"We are carrying out a labour inspection.",
+pt:"Estamos realizando uma inspeção do trabalho."
+}
+
+};
+
+/*=========================================================
+TRADUIRE UNE PHRASE
+=========================================================*/
+
+function traduireTerrain(concept,langue){
+
+if(
+
+traductionTerrain[concept] &&
+
+traductionTerrain[concept][langue]
+
+){
+
+return traductionTerrain[concept][langue];
+
+}
+
+return concept;
+
+}
+
+/*=========================================================
+TRADUIRE DEPUIS LE FRANÇAIS
+=========================================================*/
+
+function traduireDepuisFrancais(texte,langue){
+
+const concepts=Object.keys(traductionTerrain);
+
+for(const concept of concepts){
+
+if(
+
+texte.toLowerCase()
+
+.includes(
+
+traductionTerrain[concept].fr
+
+.toLowerCase()
+
+)
+
+){
+
+return traductionTerrain[concept][langue];
+
+}
+
+}
+
+return texte;
+
+}
+
+/*=========================================================
+TRADUIRE VERS LE FRANÇAIS
+=========================================================*/
+
+function traduireVersFrancais(texte){
+
+const concepts=Object.keys(traductionTerrain);
+
+for(const concept of concepts){
+
+const langues=
+
+traductionTerrain[concept];
+
+for(const code in langues){
+
+if(
+
+texte.toLowerCase()
+
+===
+
+langues[code]
+
+.toLowerCase()
+
+){
+
+return langues.fr;
+
+}
+
+}
+
+}
+
+return texte;
+
+}
+
+/*=========================================================
+AFFICHAGE
+=========================================================*/
+
+function afficherTraductionTerrain(
+
+concept,
+
+langue
+
+){
+
+const resultat=
+
+traduireTerrain(
+
+concept,
+
+langue
+
+);
+
+console.log(
+
+"🌍 Traduction :",resultat
+
+);
+
+return resultat;
+
+}
+
+/*=========================================================
+LECTURE AUTOMATIQUE
+=========================================================*/
+
+function parlerTerrain(
+
+concept,
+
+langue
+
+){
+
+const phrase=
+
+traduireTerrain(
+
+concept,
+
+langue
+
+);
+
+parlerIA(
+
+phrase
+
+);
+
+}
+
+/*=========================================================
+INITIALISATION
+=========================================================*/
+
+console.log(
+
+"Mode Traduction Terrain activé."
+
+);
+
+console.log(
+
+"InspecteurBot peut dialoguer en plusieurs langues."
+
+);
+
+/*=========================================================
+INSPECTEURBOT IA
+MODULE MULTILINGUE
+PARTIE 9
+TRADUCTION INTELLIGENTE DES QUESTIONS
+Version 1.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+NETTOYAGE DU TEXTE
+=========================================================*/
+
+function nettoyerQuestion(question){
+
+    if(!question){
+
+        return "";
+
+    }
+
+    return normaliserTexte(question)
+
+    .replace(/[?!.,;:()"]/g," ")
+
+    .replace(/\s+/g," ")
+
+    .trim();
+
+}
+
+/*=========================================================
+EXTRACTION DES MOTS
+=========================================================*/
+
+function extraireMots(question){
+
+    return nettoyerQuestion(question)
+
+    .split(" ")
+
+    .filter(function(mot){
+
+        return mot.length>1;
+
+    });
+
+}
+
+/*=========================================================
+TRADUCTION D'UNE QUESTION
+=========================================================*/
+
+function traduireQuestion(question){
+
+    const mots=
+
+    extraireMots(question);
+
+    let resultat=[];
+
+    mots.forEach(function(mot){
+
+        const concept=
+
+        rechercherConcept(mot);
+
+        resultat.push(concept);
+
+    });
+
+    return resultat.join(" ");
+
+}
+
+/*=========================================================
+TRADUCTION VERS UNE LANGUE
+=========================================================*/
+
+function traduireQuestionVers(
+
+question,
+
+langue
+
+){
+
+    const concepts=
+
+    traduireQuestion(question)
+
+    .split(" ");
+
+    let resultat=[];
+
+    concepts.forEach(function(concept){
+
+        resultat.push(
+
+            traduireConcept(
+
+                concept,
+
+                langue
+
+            )
+
+        );
+
+    });
+
+    return resultat.join(" ");
+
+}
+
+/*=========================================================
+QUESTION NORMALISÉE
+=========================================================*/
+
+function normaliserQuestionIA(question){
+
+    return{
+
+        originale:question,
+
+        langue:
+
+        detecterLangue(question),
+
+        recherche:
+
+        traduireQuestion(question),
+
+        concepts:
+
+        extraireConcepts(question)
+
+    };
+
+}
+
+/*=========================================================
+QUESTION POUR LE MOTEUR IA
+=========================================================*/
+
+function preparerQuestionIA(question){
+
+    const analyse=
+
+    normaliserQuestionIA(question);
+
+    console.group(
+
+        "Question IA"
+
+    );
+
+    console.log(
+
+        "Originale :",
+
+        analyse.originale
+
+    );
+
+    console.log(
+
+        "Langue :",
+
+        nomLangue(
+
+            analyse.langue
+
+        )
+
+    );
+
+    console.log(
+
+        "Recherche :",
+
+        analyse.recherche
+
+    );
+
+    console.log(
+
+        "Concepts :",
+
+        analyse.concepts
+
+    );
+
+    console.groupEnd();
+
+    return analyse;
+
+}
+
+/*=========================================================
+AFFICHAGE
+=========================================================*/
+
+function afficherTraductionQuestion(
+
+question,
+
+langue
+
+){
+
+    const resultat=
+
+    traduireQuestionVers(
+
+        question,
+
+        langue
+
+    );
+
+    console.log(
+
+        "Question traduite :",
+
+        resultat
+
+    );
+
+    return resultat;
+
+}
+
+/*=========================================================
+INITIALISATION
+=========================================================*/
+
+console.log(
+
+"Traducteur intelligent des questions chargé."
+
+);
+
+/*=========================================================
+INSPECTEURBOT IA
+MODULE MULTILINGUE
+PARTIE 10
+MOTEUR DE CONVERSATION IA
+Version 1.0
+=========================================================*/
+
+"use strict";
+
+/*=========================================================
+SALUTATIONS
+=========================================================*/
+
+const conversationIA={
+
+bonjour:{
+fr:"Bonjour Inspecteur. Comment puis-je vous aider ?",
+ln:"Mbote Inspecteur. Ndenge nini nakoki kosalisa yo ?",
+sw:"Habari Mkaguzi. Ninawezaje kukusaidia ?",
+kg:"Mbote Inspecteur. Mono lenda sadisa nge nki ?",
+lu:"Moyo Mukengeshi. Ndi mufwanyine kukwambila cinyi ?",
+en:"Hello Inspector. How can I help you?",
+pt:"Olá Inspetor. Como posso ajudá-lo?"
+},
+
+merci:{
+fr:"Je vous en prie.",
+ln:"Ezali eloko te.",
+sw:"Karibu.",
+kg:"Kiese.",
+lu:"Mbingu.",
+en:"You're welcome.",
+pt:"De nada."
+},
+
+aurevoir:{
+fr:"Au revoir et bonne inspection.",
+ln:"Tokomonana. Inspection malamu.",
+sw:"Kwaheri na ukaguzi mwema.",
+kg:"Tambula malembe.",
+lu:"Sala bimpe.",
+en:"Goodbye and have a good inspection.",
+pt:"Adeus e boa inspeção."
+}
+
+};
+
+/*=========================================================
+CHERCHER UNE RÉPONSE
+=========================================================*/
+
+function reponseConversation(cle){
+
+const langue=
+
+LanguesIA.langueActive;
+
+if(
+
+conversationIA[cle] &&
+
+conversationIA[cle][langue]
+
+){
+
+return conversationIA[cle][langue];
+
+}
+
+return conversationIA[cle].fr;
+
+}
+
+/*=========================================================
+ANALYSE DE LA QUESTION
+=========================================================*/
+
+function analyserConversation(question){
+
+const texte=
+
+normaliserTexte(question);
+
+if(
+
+texte.includes("bonjour") ||
+
+texte.includes("mbote") ||
+
+texte.includes("habari") ||
+
+texte.includes("hello") ||
+
+texte.includes("olá") ||
+
+texte.includes("ola")
+
+){
+
+return reponseConversation(
+
+"bonjour"
+
+);
+
+}
+
+if(
+
+texte.includes("merci") ||
+
+texte.includes("thank") ||
+
+texte.includes("asante")
+
+){
+
+return reponseConversation(
+
+"merci"
+
+);
+
+}
+
+if(
+
+texte.includes("au revoir") ||
+
+texte.includes("bye") ||
+
+texte.includes("adieu") ||
+
+texte.includes("kwaheri")
+
+){
+
+return reponseConversation(
+
+"aurevoir"
+
+);
+
+}
+
+return null;
+
+}
+
+/*=========================================================
+RÉPONDRE
+=========================================================*/
+
+function discuterIA(question){
+
+const reponse=
+
+analyserConversation(question);
+
+if(reponse){
+
+parlerIA(reponse);
+
+return reponse;
+
+}
+
+return null;
+
+}
+
+/*=========================================================
+INTÉGRATION
+=========================================================*/
+
+function traiterConversation(question){
+
+const dialogue=
+
+discuterIA(question);
+
+if(dialogue){
+
+return{
+
+type:"conversation",
+
+reponse:dialogue
+
+};
+
+}
+
+return{
+
+type:"juridique",
+
+reponse:null
+
+};
+
+}
+
+/*=========================================================
+INITIALISATION
+=========================================================*/
+
+console.log(
+
+"Moteur de conversation IA chargé."
+
+);
