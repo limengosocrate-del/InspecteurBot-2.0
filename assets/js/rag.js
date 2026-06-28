@@ -13,8 +13,7 @@ async function chargerArticles() {
 
     try {
 
-        const response = await fetch("assets/data/code-travail.json");
-
+        const response = await fetch("assets/code-travail.json");
         ARTICLES = await response.json();
 
         console.log("Articles chargés :", ARTICLES.length);
