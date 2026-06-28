@@ -663,14 +663,24 @@ height:auto;
 
 <form>
 
-<input
-type="text"
-placeholder="Posez votre question à l'IA...">
+<form id="searchForm">
 
-<button type="button">
+<input
+id="searchInput"
+type="text"
+placeholder="Exemple : Rechercher l'article sur le licenciement..."
+autocomplete="off">
+
+<button
+type="button"
+id="searchBtn">
 <i class="fa fa-magnifying-glass"></i>
- Rechercher
+Rechercher
 </button>
+
+</form>
+
+<div id="searchResults" class="search-results"></div>
 
 </form>
 
@@ -899,10 +909,12 @@ function logout() {
 }
     
 </script>
-
+<script src="assets/js/vectorSearch.js"></script>
+<script src="assets/js/rag.js"></script>
+<script src="assets/js/search.js"></script>
     
 </body>    
-    </html>    
+ </html>    
     
     
     
