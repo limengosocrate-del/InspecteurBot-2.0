@@ -1,203 +1,286 @@
 /*=================================================
 PARTIE 1
-RESET + BODY + CONTAINER
+RESET • VARIABLES • BODY
 ==================================================*/
-
-/*========== RESET ==========*/
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family:'Poppins',sans-serif;
-    transition:
-        background-color .35s,
-        color .35s,
-        border-color .35s,
-        box-shadow .35s,
-        transform .30s;
 }
 
-html{
-    scroll-behavior:smooth;
-}
+:root{
 
-/*========== BODY ==========*/
+    --bleu:#041c5c;
+    --bleu2:#0b3b8f;
+    --bleu3:#123f97;
+
+    --or:#FFD700;
+
+    --blanc:#ffffff;
+
+    --texte:#dbe8ff;
+
+    --card:linear-gradient(135deg,#06245e,#0b3b8f);
+
+    --header:linear-gradient(145deg,#0a2b73,#123f97);
+
+    --ombre:0 12px 30px rgba(0,0,0,.35);
+
+    --bordure:1px solid rgba(255,215,0,.22);
+
+}
 
 body{
-    background:#041c5c;
-    color:#ffffff;
-    font-size:16px;
-    line-height:1.6;
-    min-height:100vh;
-    overflow-x:hidden;
-}
 
-/*========== CONTAINER ==========*/
+    background:var(--bleu);
+
+    color:var(--blanc);
+
+    font-size:16px;
+
+    line-height:1.6;
+
+}
 
 .container{
+
     width:95%;
-    max-width:1300px;
-    margin:0 auto;
+
+    max-width:1350px;
+
+    margin:auto;
+
     padding:20px;
+
 }
 
-/*========== LIENS ==========*/
+/*=============================
+LIENS
+=============================*/
 
 a{
-    color:inherit;
+
     text-decoration:none;
+
+    color:inherit;
+
 }
 
-/*========== IMAGES ==========*/
+/*=============================
+IMAGES
+=============================*/
 
 img{
+
     max-width:100%;
-    height:auto;
+
     display:block;
+
 }
 
-/*========== BOUTONS ==========*/
+/*=============================
+BOUTONS
+=============================*/
 
 button{
+
     font-family:inherit;
+
     cursor:pointer;
+
+    transition:.30s;
+
 }
 
-/*========== CHAMPS ==========*/
+/*=============================
+INPUTS
+=============================*/
 
 input,
 textarea,
 select{
+
     font-family:inherit;
-    font-size:15px;
+
     outline:none;
-}
 
-/*========== BARRE DE DÉFILEMENT ==========*/
-
-::-webkit-scrollbar{
-    width:10px;
-}
-
-::-webkit-scrollbar-track{
-    background:#031638;
-}
-
-::-webkit-scrollbar-thumb{
-    background:#FFD700;
-    border-radius:20px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-    background:#e6c200;
-}
-
-/*========== SÉLECTION DU TEXTE ==========*/
-
-::selection{
-    background:#FFD700;
-    color:#041c5c;
-}
-
-/*========== PLACEHOLDER ==========*/
-
-::placeholder{
-    color:#777;  
-}
+    }
 
 /*=================================================
 PARTIE 2
 HEADER PROFESSIONNEL
 ==================================================*/
 
-/*========== HEADER ==========*/
-
 .top-header{
-    background:linear-gradient(145deg,#0a2b73,#123f97);
-    border:1px solid rgba(255,215,0,.25);
+
+    background:var(--header);
+
+    border:var(--bordure);
+
     border-radius:28px;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
-    padding:30px 20px;
+
+    box-shadow:var(--ombre);
+
+    padding:30px 25px;
+
     margin-bottom:30px;
-    text-align:center;
 
     display:flex;
-    flex-direction:column;
+
+    justify-content:space-between;
+
     align-items:center;
-    justify-content:center;
 
-    position:relative;
-    overflow:hidden;
-}
+    gap:25px;
 
-/* Effet lumineux */
-
-.top-header::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:280px;
-
-    height:280px;
-
-    background:rgba(255,215,0,.06);
-
-    border-radius:50%;
-
-    top:-120px;
-
-    right:-120px;
-
-    pointer-events:none;
+    flex-wrap:wrap;
 
 }
 
-.top-header::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:220px;
-
-    height:220px;
-
-    background:rgba(255,255,255,.04);
-
-    border-radius:50%;
-
-    bottom:-120px;
-
-    left:-100px;
-
-    pointer-events:none;
-
-}
-
-/*========== LOGO ==========*/
+/*=================================
+LOGO
+=================================*/
 
 .logo-box{
 
-    position:relative;
+    width:90px;
 
-    z-index:2;
-
-    margin-bottom:20px;
+    flex-shrink:0;
 
 }
 
 .logo-box img{
 
-    width:95px;
+    width:90px;
 
-    height:95px;
+    height:90px;
 
     object-fit:contain;
 
-    filter:drop-shadow(0 0 12px rgba(255,215,0,.35));
+}
+
+/*=================================
+TITRES
+=================================*/
+
+.title-box{
+
+    flex:1;
+
+    text-align:center;
+
+}
+
+.title-box h1{
+
+    color:var(--or);
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+}
+
+.title-box h2{
+
+    font-size:22px;
+
+    font-weight:600;
+
+    color:var(--blanc);
+
+    margin-bottom:6px;
+
+}
+
+.title-box h3{
+
+    font-size:18px;
+
+    font-weight:500;
+
+    color:var(--texte);
+
+    margin-bottom:8px;
+
+}
+
+.title-box p{
+
+    font-size:15px;
+
+    color:var(--texte);
+
+}
+
+/*=================================
+DATE & HEURE
+=================================*/
+
+.datetime-box{
+
+    min-width:170px;
+
+    text-align:right;
+
+}
+
+#clock{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:var(--or);
+
+}
+
+#day{
+
+    font-size:16px;
+
+    margin-top:5px;
+
+}
+
+#date{
+
+    font-size:15px;
+
+    color:var(--texte);
+
+}
+
+#weather{
+
+    margin-top:10px;
+
+    color:var(--or);
+
+    font-size:20px;
+
+}
+
+#city{
+
+    font-size:14px;
+
+    color:var(--texte);
+
+}
+
+/*=================================
+EFFETS
+=================================*/
+
+.top-header:hover{
+
+    box-shadow:
+        0 0 25px rgba(255,215,0,.25);
 
     transition:.35s;
 
@@ -205,143 +288,313 @@ HEADER PROFESSIONNEL
 
 .logo-box img:hover{
 
-    transform:scale(1.08) rotate(3deg);
+    transform:rotate(6deg) scale(1.05);
 
-}
-
-/*========== TITRES ==========*/
-
-.title-box{
-
-    position:relative;
-
-    z-index:2;
-
-    width:100%;
+    transition:.35s;
 
 }
 
 .title-box h1{
 
-    color:#FFD700;
-
-    font-size:34px;
-
-    font-weight:700;
-
-    line-height:1.3;
-
-    margin-bottom:15px;
+    text-shadow:
+        0 0 10px rgba(255,215,0,.35);
 
 }
 
-.title-box h2{
+/*=================================================
+PARTIE 3
+ASSISTANT IA + RECHERCHE
+==================================================*/
 
-    color:#ffffff;
+/*=================================
+CARTE IA
+=================================*/
 
-    font-size:22px;
+.ai-section{
 
-    font-weight:600;
+    background:var(--card);
 
-    margin-bottom:10px;
+    border:var(--bordure);
 
-}
+    border-radius:28px;
 
-.title-box h3{
+    padding:30px;
 
-    color:#ffffff;
+    margin-bottom:30px;
 
-    font-size:18px;
-
-    font-weight:600;
-
-    margin-bottom:10px;
-
-}
-
-.title-box p{
-
-    color:#dce8ff;
-
-    font-size:17px;
-
-    line-height:1.8;
-
-    max-width:900px;
-
-    margin:auto;
+    box-shadow:var(--ombre);
 
 }
 
-/*========== DATE & HEURE ==========*/
-
-.datetime-box{
-
-    position:relative;
-
-    z-index:2;
-
-    margin-top:30px;
+.ai-section h2{
 
     text-align:center;
 
-}
+    color:var(--or);
 
-#clock{
+    font-size:28px;
 
-    font-size:54px;
-
-    font-weight:700;
-
-    color:#FFD700;
-
-    letter-spacing:2px;
+    margin-bottom:12px;
 
 }
 
-#day{
+.ai-section p{
 
-    margin-top:10px;
+    text-align:center;
+
+    color:var(--texte);
+
+    margin-bottom:25px;
+
+    font-size:15px;
+
+}
+
+/*=================================
+BARRE DE RECHERCHE
+=================================*/
+
+.search-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    max-width:900px;
+
+    margin:0 auto;
+
+}
+
+.search-box input{
+
+    flex:1;
+
+    height:60px;
+
+    padding:0 22px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#ffffff;
+
+    color:#041c5c;
+
+    font-size:17px;
+
+    box-shadow:0 0 12px rgba(255,255,255,.12);
+
+}
+
+.search-box input::placeholder{
+
+    color:#666;
+
+}
+
+.search-box input:focus{
+
+    box-shadow:0 0 18px rgba(255,215,0,.45);
+
+}
+
+/*=================================
+BOUTON IA
+=================================*/
+
+.search-box button{
+
+    width:65px;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,#FFD700,#d4af37);
+
+    color:#041c5c;
 
     font-size:22px;
 
-    color:#ffffff;
+    font-weight:bold;
 
 }
 
-#date{
+.search-box button:hover{
 
-    margin-top:5px;
+    transform:scale(1.05);
 
-    font-size:19px;
-
-    color:#dce8ff;
+    box-shadow:0 0 18px rgba(255,215,0,.50);
 
 }
 
-#weather{
+/*=================================
+MESSAGE IA
+=================================*/
 
-    margin-top:18px;
+.ai-info{
 
-    font-size:32px;
+    margin-top:25px;
 
-    color:#FFD700;
+    padding:18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,215,0,.18);
+
+    color:var(--texte);
+
+    text-align:center;
+
+    font-size:15px;
+
+    line-height:1.7;
 
 }
 
-#city{
+/*=================================================
+PARTIE 4
+LIVRES • TITRES • CHAPITRES • ARTICLES
+==================================================*/
 
-    margin-top:8px;
+/*=================================
+GRILLE DES CARTES
+=================================*/
 
-    font-size:20px;
+.cards{
 
-    color:#ffffff;
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+    gap:22px;
+
+    margin-top:30px;
 
 }
 
-/*========== BADGE EN LIGNE ==========*/
+/*=================================
+CARTE
+=================================*/
 
-.header-badge{
+.card{
+
+    background:var(--card);
+
+    border:var(--bordure);
+
+    border-radius:22px;
+
+    padding:22px;
+
+    box-shadow:var(--ombre);
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:
+        0 0 25px rgba(255,215,0,.30);
+
+}
+
+/*=================================
+EFFET LUMIÈRE
+=================================*/
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:60%;
+
+    height:100%;
+
+    background:rgba(255,255,255,.15);
+
+    transform:skewX(-25deg);
+
+    transition:.8s;
+
+}
+
+.card:hover::before{
+
+    left:180%;
+
+}
+
+/*=================================
+ICÔNE
+=================================*/
+
+.card i{
+
+    font-size:42px;
+
+    color:var(--or);
+
+    margin-bottom:18px;
+
+}
+
+/*=================================
+TITRE
+=================================*/
+
+.card h3{
+
+    font-size:22px;
+
+    color:var(--or);
+
+    margin-bottom:12px;
+
+}
+
+/*=================================
+DESCRIPTION
+=================================*/
+
+.card p{
+
+    color:var(--texte);
+
+    font-size:15px;
+
+    line-height:1.7;
+
+}
+
+/*=================================
+BADGE
+=================================*/
+
+.badge{
 
     display:inline-block;
 
@@ -351,300 +604,460 @@ HEADER PROFESSIONNEL
 
     border-radius:30px;
 
-    background:rgba(255,215,0,.15);
+    background:rgba(255,215,0,.18);
 
-    border:1px solid rgba(255,215,0,.35);
+    color:var(--or);
 
-    color:#FFD700;
-
-    font-size:14px;
+    font-size:13px;
 
     font-weight:600;
 
-}
-
-/*========== ANIMATION ==========*/
-
-@keyframes pulseGlow{
-
-    0%{
-
-        transform:scale(1);
-
-    }
-
-    50%{
-
-        transform:scale(1.03);
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-    }
-
-}
-
-.logo-box img{
-
-    animation:pulseGlow 4s infinite;
+    border:1px solid rgba(255,215,0,.30);
 
 }
 
 /*=================================================
-PARTIE 3
-RECHERCHE INTELLIGENTE + STATISTIQUES
+PARTIE 5
+CONSULTATION D'UN ARTICLE
 ==================================================*/
 
-/*========== SECTION RECHERCHE ==========*/
+/*=================================
+FENÊTRE DE RÉSULTAT
+=================================*/
 
-.search-section{
-    background:linear-gradient(145deg,#0a2b73,#123f97);
-    border:1px solid rgba(255,215,0,.20);
-    border-radius:24px;
-    padding:30px;
-    margin:30px 0;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-}
+.result-section{
 
-.search-section h2{
-    text-align:center;
-    color:#FFD700;
-    font-size:30px;
-    margin-bottom:12px;
-}
-
-.search-section p{
-    text-align:center;
-    color:#dce8ff;
-    font-size:16px;
-    margin-bottom:25px;
-}
-
-/*========== BARRE DE RECHERCHE ==========*/
-
-.search-box{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    max-width:850px;
-    margin:auto;
-}
-
-.search-box input{
-    flex:1;
-    height:58px;
-    padding:0 20px;
-    border:none;
-    border-radius:18px;
-    background:#ffffff;
-    color:#041c5c;
-    font-size:16px;
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
-}
-
-.search-box input:focus{
-    box-shadow:0 0 15px rgba(255,215,0,.45);
-}
-
-.search-box button{
-    width:60px;
-    height:58px;
-    border:none;
-    border-radius:18px;
-    background:linear-gradient(135deg,#FFD700,#d4af37);
-    color:#041c5c;
-    font-size:22px;
-    cursor:pointer;
-}
-
-.search-box button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 20px rgba(255,215,0,.40);
-}
-
-/*========== SUGGESTIONS ==========*/
-
-.suggestions{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:25px;
-}
-
-.suggestions button{
-    padding:10px 18px;
-    border:none;
-    border-radius:30px;
-    background:#082b73;
-    color:#ffffff;
-    border:1px solid rgba(255,215,0,.20);
-    cursor:pointer;
-}
-
-.suggestions button:hover{
-    background:#FFD700;
-    color:#041c5c;
-}
-
-/*========== STATISTIQUES ==========*/
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
     margin-top:35px;
+
+    background:var(--card);
+
+    border:var(--bordure);
+
+    border-radius:28px;
+
+    padding:30px;
+
+    box-shadow:var(--ombre);
+
 }
 
-.stat-card{
-    background:linear-gradient(145deg,#0a2b73,#123f97);
-    border-radius:22px;
+/*=================================
+TITRE
+=================================*/
+
+.result-section h2{
+
+    text-align:center;
+
+    color:var(--or);
+
+    font-size:28px;
+
+    margin-bottom:25px;
+
+}
+
+/*=================================
+BLOC ARTICLE
+=================================*/
+
+.article-box{
+
+    background:rgba(255,255,255,.06);
+
     border:1px solid rgba(255,215,0,.20);
-    padding:25px;
-    text-align:center;
-    box-shadow:0 8px 20px rgba(0,0,0,.20);
+
+    border-radius:20px;
+
+    padding:22px;
+
+    margin-bottom:20px;
+
 }
 
-.stat-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 0 20px rgba(255,215,0,.30);
-}
+.article-box h3{
 
-.stat-card i{
-    font-size:42px;
-    color:#FFD700;
-    margin-bottom:15px;
-}
+    color:var(--or);
 
-.stat-card h3{
-    font-size:34px;
-    color:#FFD700;
-    margin-bottom:8px;
-}
+    font-size:22px;
 
-/*=================================================
-PARTIE 4
-CATÉGORIES DU CODE DU TRAVAIL
-==================================================*/
-
-/*========== SECTION CATÉGORIES ==========*/
-
-.categories-section{
-    margin:35px 0;
-}
-
-.categories-section h2{
-    text-align:center;
-    color:#FFD700;
-    font-size:30px;
     margin-bottom:12px;
+
 }
 
-.categories-section p{
-    text-align:center;
-    color:#dce8ff;
-    font-size:16px;
-    margin-bottom:30px;
+.article-box p{
+
+    color:var(--texte);
+
+    text-align:justify;
+
+    line-height:1.9;
+
+    font-size:15px;
+
 }
 
-/*========== GRILLE ==========*/
+/*=================================
+EXPLICATION IA
+=================================*/
 
-.categories{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:22px;
-}
+.ia-box{
 
-/*========== CARTE ==========*/
+    margin-top:25px;
 
-.category-card{
-    background:linear-gradient(145deg,#0a2b73,#123f97);
-    border-radius:22px;
-    border:1px solid rgba(255,215,0,.20);
-    padding:28px 22px;
-    text-align:center;
-    cursor:pointer;
-    transition:.35s;
-    box-shadow:0 8px 20px rgba(0,0,0,.20);
-    position:relative;
-    overflow:hidden;
-}
-
-/* Effet lumineux */
-
-.category-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:-70px;
-
-    right:-70px;
-
-    width:150px;
-
-    height:150px;
-
-    border-radius:50%;
+    padding:22px;
 
     background:rgba(255,215,0,.08);
 
-}
+    border-left:6px solid var(--or);
 
-/*========== SURVOL ==========*/
-
-.category-card:hover{
-
-    transform:translateY(-8px);
-
-    border-color:#FFD700;
-
-    box-shadow:0 0 25px rgba(255,215,0,.35);
+    border-radius:18px;
 
 }
 
-/*========== ICÔNE ==========*/
+.ia-box h3{
 
-.category-card i{
-
-    font-size:50px;
-
-    color:#FFD700;
-
-    margin-bottom:18px;
-
-}
-
-/*========== TITRE ==========*/
-
-.category-card h3{
-
-    color:#FFD700;
-
-    font-size:22px;
+    color:var(--or);
 
     margin-bottom:12px;
 
 }
 
-/*========== DESCRIPTION ==========*/
+.ia-box p{
 
-.category-card p{
-
-    color:#dce8ff;
-
-    font-size:15px;
+    color:var(--texte);
 
     line-height:1.8;
 
 }
 
-/*========== BADGE ==========*/
+/*=================================
+SANCTIONS
+=================================*/
 
+.sanction-box{
 
+    margin-top:20px;
 
+    padding:20px;
+
+    border-radius:18px;
+
+    background:rgba(255,80,80,.10);
+
+    border-left:6px solid #ff4d4d;
+
+}
+
+.sanction-box h3{
+
+    color:#ff6666;
+
+    margin-bottom:10px;
+
+}
+
+.sanction-box p{
+
+    color:#ffe6e6;
+
+    line-height:1.8;
+
+}
+
+/*=================================
+RÉFÉRENCES
+=================================*/
+
+.reference-box{
+
+    margin-top:20px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:rgba(0,170,255,.10);
+
+    border-left:6px solid #00cfff;
+
+}
+
+.reference-box h3{
+
+    color:#00d9ff;
+
+    margin-bottom:10px;
+
+}
+
+.reference-box ul{
+
+    margin-left:20px;
+
+}
+
+.reference-box li{
+
+    margin:8px 0;
+
+    color:var(--texte);
+
+}
+
+/*=================================
+BOUTONS
+=================================*/
+
+.result-actions{
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+
+    margin-top:30px;
+
+}
+
+.result-actions button{
+
+    min-width:190px;
+
+    padding:15px 25px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,#082b73,#041c5c);
+
+    color:var(--or);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.30s;
+
+}
+
+.result-actions button:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 0 18px rgba(255,215,0,.35);
+
+}
+
+/*=================================================
+PARTIE 6
+FOOTER • RESPONSIVE • IMPRESSION
+==================================================*/
+
+/*=================================
+FOOTER
+=================================*/
+
+footer{
+
+    margin-top:40px;
+
+    padding:35px 25px;
+
+    background:linear-gradient(145deg,#031638,#041c5c);
+
+    border-top:2px solid rgba(255,215,0,.25);
+
+    text-align:center;
+
+}
+
+footer img{
+
+    width:75px;
+
+    height:75px;
+
+    object-fit:contain;
+
+    margin:0 auto 15px;
+
+}
+
+footer h3{
+
+    color:var(--or);
+
+    font-size:22px;
+
+    margin-bottom:10px;
+
+}
+
+footer p{
+
+    color:var(--texte);
+
+    margin-top:8px;
+
+    line-height:1.8;
+
+}
+
+footer hr{
+
+    width:220px;
+
+    margin:18px auto;
+
+    border:none;
+
+    border-top:1px solid rgba(255,215,0,.25);
+
+}
+
+#nomInspecteurFooter{
+
+    color:var(--or);
+
+    font-weight:700;
+
+}
+
+/*=================================
+NOTIFICATION
+=================================*/
+
+.msg{
+
+    position:fixed;
+
+    right:20px;
+
+    bottom:20px;
+
+    background:#16a34a;
+
+    color:#fff;
+
+    padding:14px 20px;
+
+    border-radius:15px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+
+    z-index:9999;
+
+    animation:fadeIn .4s ease;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*=================================
+RESPONSIVE
+=================================*/
+
+@media(max-width:768px){
+
+.container{
+
+    width:96%;
+
+    padding:12px;
+
+}
+
+.top-header{
+
+    flex-direction:column;
+
+    text-align:center;
+
+    gap:20px;
+
+}
+
+.logo-box img{
+
+    width:70px;
+
+    height:70px;
+
+}
+
+.title-box h1{
+
+    font-size:24px;
+
+}
+
+.title-box h2{
+
+    font-size:18px;
+
+}
+
+.title-box h3{
+
+    font-size:16px;
+
+}
+
+.title-box p{
+
+    font-size:14px;
+
+}
+
+.datetime-box{
+
+    text-align:center;
+
+}
+
+#clock{
+
+    font-size:34px;
+
+}
+
+.search-box{
+
+    flex-direction:column;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+}
+
+.search-box button{
+
+    width:100
