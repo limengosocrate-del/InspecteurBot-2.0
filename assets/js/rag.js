@@ -1,159 +1,152 @@
-/*==================================================
- INSPECTEURBOT IA RDC
- RAG OFFLINE V3.0
- Fonctionne sans Internet
-==================================================*/
-
-"use strict";
-
 /*=========================================
-RÉPONSE IA
-=========================================*/
+ INSPECTEURBOT IA
+ RAG ENGINE V2.0
+==========================================*/
 
-function generateAnswer(question){
+let ARTICLES = [];
 
-    if(!question || question.trim()===""){
+/* Chargement des articles */
 
-        return{
-            success:false,
-            message:"Veuillez saisir une question."
-        };
+async function chargerArticles() {
+
+    if (ARTICLES.length > 0) return ARTICLES;
+
+    try {
+
+        const response = await fetch("assets/data/code-travail.json");
+
+        ARTICLES = await response.json();
+
+        console.log("Articles chargés :", ARTICLES.length);
+
+        return ARTICLES;
+
+    } catch (e) {
+
+        console.error("Erreur chargement JSON :", e);
+
+        return [];
 
     }
-
-    const resultats=vectorSearch(question,5);
-
-    if(resultats.length===0){
-
-        return{
-
-            success:false,
-
-            message:
-            "Aucun article du Code du Travail ne correspond à votre recherche."
-
-        };
-
-    }
-
-    const meilleur=resultats[0].article;
-
-    return{
-
-        success:true,
-
-        article:meilleur,
-
-        autres:resultats.slice(1)
-
-    };
 
 }
 
-/*=========================================
-HTML
-=========================================*/
+/* Normalisation */
 
-function createAnswerHTML(data){
+function normaliser(texte) {
 
-    if(!data.success){
+    return texte
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
 
-        return`
+}
 
-        <div class="ai-error">
+/* Recherche intelligente */
 
-        ❌ ${data.message}
+async function ragSearch(question) {
 
+    await chargerArticles();
+
+    if (ARTICLES.length === 0) {
+
+        return `
+        <div class="result-card">
+            <h3>Aucune donnée</h3>
+            <p>Le fichier code-travail.json est vide.</p>
         </div>
-
         `;
 
     }
 
-    let html=`
+    const recherche = normaliser(question);
 
-    <div class="ia-card">
+    let resultat = [];
 
-        <h2>🤖 InspecteurBot IA</h2>
+    ARTICLES.forEach(article => {
 
-        <div class="article-number">
+        const numero = normaliser(article.numero || "");
+        const titre = normaliser(article.titre || "");
+        const contenu = normaliser(article.contenu || "");
 
-            ${data.article.numero}
+        let score = 0;
 
-        </div>
+        if (numero.includes(recherche))
+            score += 100;
 
-        <h3>
+        if (titre.includes(recherche))
+            score += 60;
 
-            ${data.article.titre}
+        if (contenu.includes(recherche))
+            score += 40;
 
-        </h3>
+        recherche.split(" ").forEach(mot => {
 
-        <p>
+            if (titre.includes(mot))
+                score += 15;
 
-            ${data.article.contenu}
-
-        </p>
-
-    `;
-
-    if(data.autres.length){
-
-        html+=`
-
-        <hr>
-
-        <h4>
-
-        Articles également pertinents
-
-        </h4>
-
-        <ul>
-
-        `;
-
-        data.autres.forEach(r=>{
-
-            html+=`
-
-            <li>
-
-            <strong>
-
-            ${r.article.numero}
-
-            </strong>
-
-            — ${r.article.titre}
-
-            </li>
-
-            `;
+            if (contenu.includes(mot))
+                score += 10;
 
         });
 
-        html+="</ul>";
+        if (score > 0) {
+
+            resultat.push({
+                score,
+                article
+            });
+
+        }
+
+    });
+
+    resultat.sort((a,b)=>b.score-a.score);
+
+    if(resultat.length===0){
+
+        return `
+        <div class="result-card">
+
+            <h3>Aucun résultat</h3>
+
+            <p>
+            Aucun article trouvé pour :
+            <strong>${question}</strong>
+            </p>
+
+        </div>
+        `;
 
     }
 
-    html+="</div>";
+    let html="";
+
+    resultat.slice(0,5).forEach(item=>{
+
+        html+=`
+
+<div class="article-card">
+
+<div class="article-number">
+${item.article.numero}
+</div>
+
+<h3 class="article-title">
+${item.article.titre}
+</h3>
+
+<div class="article-content">
+${item.article.contenu}
+</div>
+
+</div>
+
+`;
+
+    });
 
     return html;
 
-}
-
-/*=========================================
-QUESTION IA
-=========================================*/
-
-function askIA(question){
-
-    return createAnswerHTML(
-
-        generateAnswer(question)
-
-    );
-
-}
-
-window.askIA=askIA;
+       }
