@@ -661,44 +661,24 @@ height:auto;
 🤖 InspecteurBot IA
 </h2>
 
-<form>
-
 <form id="searchForm">
 
-<input
-id="searchInput"
-type="text"
-placeholder="Exemple : Rechercher l'article sur le licenciement..."
-autocomplete="off">
+    <input
+        id="searchInput"
+        type="text"
+        placeholder="Exemple : Rechercher l'article sur le licenciement..."
+        autocomplete="off">
 
-<button
-type="button"
-id="searchBtn">
-<i class="fa fa-magnifying-glass"></i>
-Rechercher
-</button>
-
-</form>
-
-<div id="searchResults" class="search-results"></div>
-
-<input
-id="searchInput"
-type="text"
-placeholder="Exemple : Rechercher l'article sur le licenciement..."
-autocomplete="off">
-
-<button
-type="button"
-id="searchBtn">
-<i class="fa fa-magnifying-glass"></i>
-Rechercher
-</button>
+    <button
+        type="button"
+        id="searchBtn">
+        <i class="fa fa-magnifying-glass"></i>
+        Rechercher
+    </button>
 
 </form>
 
 <div id="searchResults" class="search-results"></div>
-
 </form>
 
 </div>
@@ -929,6 +909,26 @@ function logout() {
 <script src="assets/js/rag.js"></script>
 <script src="assets/js/search.js"></script>
 <script>
+<script>
+
+if (localStorage.getItem("isLoggedIn") !== "true") {
+    window.location.href = "index.html";
+}
+
+function logout() {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("currentUser");
+    window.location.href = "index.html";
+}
+
+</script>
+
+<script src="assets/js/vectorSearch.js"></script>
+<script src="assets/js/rag.js"></script>
+<script src="assets/js/search.js"></script>
+
+<script>
+
 console.log("Dashboard chargé");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -942,6 +942,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
 </script>
-</body>    
- </html>        
+
+</body>
+</html>
