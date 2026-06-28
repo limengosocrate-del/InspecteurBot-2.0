@@ -1,30 +1,34 @@
-/*====================================================
+/*=========================================================
  INSPECTEURBOT IA RDC
- search.js
- Gestion de la recherche intelligente
-====================================================*/
+ SEARCH.JS
+ Gestionnaire de recherche
+ Version 3.0
+=========================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+"use strict";
 
-    const input =
-        document.getElementById("rechercheArticle") ||
-        document.getElementById("searchInput");
+document.addEventListener("DOMContentLoaded",function(){
 
-    const button =
-        document.getElementById("btnRecherche") ||
-        document.getElementById("searchBtn");
+    const champ=document.getElementById("rechercheArticle");
+    const bouton=document.getElementById("btnRecherche");
 
-    if (!input || !button) return;
+    if(!champ){
+        return;
+    }
 
-    button.addEventListener("click", rechercher);
+    if(bouton){
 
-    input.addEventListener("keypress", function(e) {
+        bouton.addEventListener("click",lancerRecherche);
 
-        if (e.key === "Enter") {
+    }
+
+    champ.addEventListener("keydown",function(e){
+
+        if(e.key==="Enter"){
 
             e.preventDefault();
 
-            rechercher();
+            lancerRecherche();
 
         }
 
@@ -32,122 +36,100 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function rechercher() {
+async function lancerRecherche(){
 
-    const input =
-        document.getElementById("rechercheArticle") ||
-        document.getElementById("searchInput");
+    const champ=document.getElementById("rechercheArticle");
 
-    if (!input) return;
+    if(!champ){
+        return;
+    }
 
-    const question = input.value.trim();
+    const question=champ.value.trim();
 
-    if (question === "") {
+    if(question===""){
 
-        alert("Veuillez saisir votre recherche.");
+        alert("Veuillez saisir une recherche.");
+
+        champ.focus();
 
         return;
 
     }
 
-    const resultats = window.rag.rechercher(question);
+    if(window.rag && !window.rag.estCharge){
 
-    afficherResultats(resultats);
-
-}
-
-function afficherResultats(resultats) {
-
-    /* ===== Page Code du Travail ===== */
-
-    if (document.getElementById("numeroArticle")) {
-
-        if (resultats.length === 0) {
-
-            document.getElementById("numeroArticle").innerHTML = "";
-
-            document.getElementById("titreArticle").innerHTML =
-                "Aucun résultat";
-
-            document.getElementById("contenuArticle").innerHTML =
-                "Aucun article ne correspond à votre recherche.";
-
-            return;
-
-        }
-
-        const article = resultats[0];
-
-        document.getElementById("numeroArticle").innerHTML =
-            article.numero || "";
-
-        document.getElementById("titreArticle").innerHTML =
-            article.titre || "";
-
-        document.getElementById("contenuArticle").innerHTML =
-            article.contenu || "";
-
-        const ia = document.getElementById("reponseIA");
-
-        if (ia) {
-
-            ia.innerHTML =
-                "J'ai trouvé <strong>" +
-                resultats.length +
-                "</strong> article(s) correspondant à votre recherche.";
-
-        }
+        await window.rag.charger();
 
     }
 
-    /* ===== Dashboard ===== */
+    const resultats=window.rag.rechercher(question);
 
-    const zone = document.getElementById("searchResults");
-
-    if (!zone) return;
-
-    zone.innerHTML = "";
-
-    if (resultats.length === 0) {
-
-        zone.innerHTML =
-            "<div class='result-card'><h3>Aucun résultat</h3><p>Essayez un autre mot-clé.</p></div>";
-
-        return;
-
-    }
-
-    resultats.forEach(article => {
-
-        zone.innerHTML += `
-
-        <div class="result-card">
-
-            <h3>${article.numero}</h3>
-
-            <strong>${article.titre}</strong>
-
-            <p>${article.contenu}</p>
-
-        </div>
-
-        `;
-
-    });
+    afficherResultatsRecherche(resultats,question);
 
 }
 
-/* Suggestions rapides */
+function afficherResultatsRecherche(resultats,question){
 
-function rechercheRapide(texte) {
+    if(typeof articles!=="undefined"){
 
-    const input =
-        document.getElementById("rechercheArticle");
+        articlesFiltres=resultats;
 
-    if (!input) return;
+    }
 
-    input.value = texte;
+    if(typeof afficherArticles==="function"){
 
-    rechercher();
+        afficherArticles(resultats);
 
-  }
+    }
+
+    if(typeof genererReponseIA==="function"){
+
+        genererReponseIA(question);
+
+    }
+
+    if(typeof allerAuxResultats==="function"){
+
+        allerAuxResultats();
+
+    }
+
+}
+
+function rechercherArticle(numero){
+
+    if(!window.rag){
+
+        return null;
+
+    }
+
+    return window.rag.rechercherNumero(numero);
+
+}
+
+function rechercherParTitre(titre){
+
+    if(!window.rag){
+
+        return [];
+
+    }
+
+    return window.rag.rechercherTitre(titre);
+
+}
+
+function rechercherParMotCle(mot){
+
+    if(!window.rag){
+
+        return [];
+
+    }
+
+    return window.rag.rechercherMotCle(mot);
+
+}
+
+console.log("✅ Search.js chargé.");
