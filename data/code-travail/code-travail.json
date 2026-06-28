@@ -1,1 +1,178 @@
+[
+  {
+    "id": "art001",
+    "numero": 1,
+    "titre": "Champ d'application",
+    "categorie": "Dispositions générales",
+    "motsCles": ["champ d'application", "travail", "employeur", "travailleur"],
+    "contenu": "(Loi n° 16/010 du 15 juillet 2016 modifiant et complétante la Loi n° 015-2002 portant Code du travail)
 
+Le présent code est applicable à tous les travailleurs et à tous les employeurs, y compris ceux des entreprises publiques exerçant leur activité professionnelle sur l’étendue de la République Démocratique du Congo, quels que soient la race, le sexe, l’état civil, la religion, l’opinion politique, l’ascendance nationale, l’origine sociale, la nationalité des parties, la nature des prestations, la rémunération ou le lieu de conclusion du contrat, dès lors que ce dernier s’exécute en République Démocratique du Congo. Il s’applique également aux travailleurs des services publics de l’État engagés par le contrat de travail.
+
+Il ne s’applique aux marins et bateliers de navigation intérieure qu’en cas de silence des règlements particuliers qui les concernent ou lorsque ces règlements et ceux régis par les statuts particuliers s’y réfèrent expressément.
+
+Sont exclus du champ d’application de la présente loi:
+
+Les magistrats, les juges consulaires des Tribunaux de commerce et les juges assesseurs des Tribunaux du travail;
+Les agents de carrière des Services publics de l’État régis par le statut général;
+Les agents et fonctionnaires de carrière des Services publics de l’État régis par des statuts particuliers;
+Les éléments des Forces armées de la République Démocratique du Congo, de la Police nationale congolaise et du Service national.."
+  },
+  {
+    "id": "art002",
+    "numero": 2,
+    "titre": "Droit au travail",
+    "categorie": "Dispositions générales",
+    "motsCles": ["droit au travail", "travail forcé"],
+    "contenu": "Le travail est pour chacun un droit et un devoir. Il constitue une obligation morale pour tous ceux qui n’en sont pas empêchés par l’âge ou l’inaptitude au travail constatée par un médecin.
+
+Le travail forcé ou obligatoire est interdit.
+
+Tombe également sous le coup de l’interdiction, tout travail ou service exigé d’un individu sous menace d’une peine quelconque et pour lequel ledit individu ne s’est pas offert de plein gré.."
+  },
+  {
+    "id": "art003",
+    "numero": 3,
+    "titre": "Pires formes de travail des enfants",
+    "categorie": "Protection des enfants",
+    "motsCles": ["enfant", "travail", "protection"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 3 du Code du travail."
+  },
+  {
+    "id": "art004",
+    "numero": 4,
+    "titre": "Comité national de lutte contre les pires formes de travail des enfants",
+    "categorie": "Protection des enfants",
+    "motsCles": ["comité", "enfants"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 4 du Code du travail."
+  },
+  {
+    "id": "art005",
+    "numero": 5,
+    "titre": "Organisation du Comité national",
+    "categorie": "Protection des enfants",
+    "motsCles": ["organisation", "comité"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 5 du Code du travail."
+  },
+  {
+    "id": "art006",
+    "numero": 6,
+    "titre": "Capacité de contracter",
+    "categorie": "Dispositions générales",
+    "motsCles": ["capacité", "contrat"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 6 du Code du travail."
+  },
+  {
+    "id": "art007",
+    "numero": 7,
+    "titre": "Définitions",
+    "categorie": "Dispositions générales",
+    "motsCles": ["définitions"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 7 du Code du travail."
+  },
+  {
+    "id": "art008",
+    "numero": 8,
+    "titre": "Formation professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["formation"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 8 du Code du travail."
+  },
+  {
+    "id": "art009",
+    "numero": 9,
+    "titre": "Politique de formation professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["politique", "formation"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 9 du Code du travail."
+  },
+  {
+    "id": "art010",
+    "numero": 10,
+    "titre": "Exécution de la politique de formation",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["formation"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 10 du Code du travail."
+  },
+
+  {
+    "id": "art011",
+    "numero": 11,
+    "titre": "Institut National de Préparation Professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 11 du Code du travail."
+  },
+  {
+    "id": "art012",
+    "numero": 12,
+    "titre": "Mission de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 12 du Code du travail."
+  },
+  {
+    "id": "art013",
+    "numero": 13,
+    "titre": "Attributions de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 13 du Code du travail."
+  },
+  {
+    "id": "art014",
+    "numero": 14,
+    "titre": "Tutelle de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 14 du Code du travail."
+  },
+  {
+    "id": "art015",
+    "numero": 15,
+    "titre": "Ressources de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 15 du Code du travail."
+  },
+  {
+    "id": "art016",
+    "numero": 16,
+    "titre": "Recouvrement des cotisations",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["cotisations"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 16 du Code du travail."
+  },
+  {
+    "id": "art017",
+    "numero": 17,
+    "titre": "Maintien des dispositions antérieures",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["dispositions"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 17 du Code du travail."
+  },
+  {
+    "id": "art018",
+    "numero": 18,
+    "titre": "Conditions pour recevoir des apprentis",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprentissage"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 18 du Code du travail."
+  },
+  {
+    "id": "art019",
+    "numero": 19,
+    "titre": "Forme du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprentissage"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 19 du Code du travail."
+  },
+  {
+    "id": "art020",
+    "numero": 20,
+    "titre": "Mentions du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["contrat"],
+    "contenu": "✍️ Collez ici le texte intégral de l'article 20 du Code du travail."
+  }
+    ]
