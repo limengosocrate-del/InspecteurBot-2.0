@@ -9,24 +9,47 @@ let ARTICLES = [];
 
 async function chargerArticles() {
 
-    if (ARTICLES.length > 0) return ARTICLES;
-
-    try {
-
-        const response = await fetch("assets/code-travail.json");
-        ARTICLES = await response.json();
-
-        console.log("Articles chargés :", ARTICLES.length);
-
+    if (ARTICLES.length > 0) {
         return ARTICLES;
+    }
 
-    } catch (e) {
+    const chemins = [
+        "assets/data/code-travail.json",
+        "./assets/data/code-travail.json",
+        "../assets/data/code-travail.json"
+    ];
 
-        console.error("Erreur chargement JSON :", e);
+    for (const chemin of chemins) {
 
-        return [];
+        try {
+
+            const response = await fetch(chemin);
+
+            if (response.ok) {
+
+                ARTICLES = await response.json();
+
+                console.log("✅ Articles chargés :", ARTICLES.length);
+
+                return ARTICLES;
+
+            }
+
+        } catch (e) {
+
+            console.log("Chemin non trouvé :", chemin);
+
+        }
 
     }
+
+    console.error("❌ Impossible de charger code-travail.json");
+
+    ARTICLES = [];
+
+    return ARTICLES;
+
+}
 
 }
 
