@@ -1,50 +1,126 @@
-/*====================================================
+/*=========================================================
  INSPECTEURBOT IA RDC
- rag.js
- Chargement intelligent du Code du Travail
-====================================================*/
+ RAG.JS
+ Retrieval Augmented Generation
+ Version 3.0
+=========================================================*/
 
-class RAG {
+"use strict";
 
-    constructor() {
-        this.data = [];
+class RAG{
+
+    constructor(){
+
+        this.articles=[];
+
+        this.estCharge=false;
+
     }
 
-    async load() {
+    async charger(){
 
-        try {
+        try{
 
-            const response = await fetch("assets/data/code-travail.json");
+            console.log("Chargement du Code du Travail...");
 
-            this.data = await response.json();
+            const reponse=await fetch("assets/data/code-travail.json");
 
-            if (window.vectorSearch) {
-                window.vectorSearch.setData(this.data);
+            if(!reponse.ok){
+
+                throw new Error("Impossible de charger code-travail.json");
+
             }
 
-            console.log("✅ Code du Travail chargé :", this.data.length, "articles");
+            this.articles=await reponse.json();
 
-        } catch (e) {
+            this.estCharge=true;
 
-            console.error("Erreur de chargement :", e);
+            if(window.vectorSearch){
+
+                window.vectorSearch.charger(this.articles);
+
+            }
+
+            console.log(
+
+                "✅",
+
+                this.articles.length,
+
+                "articles chargés."
+
+            );
+
+            return this.articles;
+
+        }
+
+        catch(erreur){
+
+            console.error(erreur);
+
+            return [];
 
         }
 
     }
 
-    rechercher(question) {
+    rechercher(question){
 
-        if (!window.vectorSearch)
+        if(!this.estCharge){
+
+            console.warn(
+
+                "Base de données non chargée."
+
+            );
+
             return [];
 
-        return window.vectorSearch.search(question);
+        }
+
+        return window.vectorSearch.rechercher(question);
+
+    }
+
+    rechercherNumero(numero){
+
+        return window.vectorSearch.rechercherNumero(numero);
+
+    }
+
+    rechercherTitre(titre){
+
+        return window.vectorSearch.rechercherTitre(titre);
+
+    }
+
+    rechercherMotCle(mot){
+
+        return window.vectorSearch.rechercherMotCle(mot);
+
+    }
+
+    totalArticles(){
+
+        return this.articles.length;
 
     }
 
 }
 
-window.rag = new RAG();
+window.rag=new RAG();
 
-window.addEventListener("DOMContentLoaded", () => {
-    window.rag.load();
-});
+window.addEventListener(
+
+    "DOMContentLoaded",
+
+    async()=>{
+
+        await window.rag.charger();
+
+    }
+
+);
+
+console.log("✅ RAG chargé.");
