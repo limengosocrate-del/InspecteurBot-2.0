@@ -1,7 +1,7 @@
 /*=========================================================
  INSPECTEURBOT IA RDC
  MODULE : CODE DU TRAVAIL
- Version : 4.0
+ Version : 4.1
  Développeur : Inspecteur Limengo (Pmiller)
 =========================================================*/
 
@@ -15,13 +15,15 @@ const APP = {
 
     nom: "InspecteurBot IA",
 
-    version: "4.0",
+    version: "4.1",
 
     pays: "République Démocratique du Congo",
 
     langue: "fr",
 
     fichierJSON: "assets/data/code-travail.json",
+
+    modeIA: true,
 
     debug: true
 
@@ -88,7 +90,7 @@ const UI = {
 };
 
 /*=========================================================
- INITIALISATION DES ÉLÉMENTS
+ INITIALISER L'INTERFACE
 =========================================================*/
 
 function initialiserInterface(){
@@ -123,13 +125,49 @@ function initialiserInterface(){
  NOTIFICATION
 =========================================================*/
 
-function notifier(message){
+function notifier(message,type="info"){
 
     if(APP.debug){
 
-        console.log("[InspecteurBot] " + message);
+        console.log("[" + type.toUpperCase() + "] " + message);
 
     }
+
+}
+
+/*=========================================================
+ FONCTIONS UTILES
+=========================================================*/
+
+function tronquerTexte(texte,longueur=250){
+
+    texte = String(texte || "");
+
+    if(texte.length <= longueur){
+
+        return texte;
+
+    }
+
+    return texte.substring(0,longueur) + "...";
+
+}
+
+function nettoyerTexte(texte){
+
+    return String(texte || "")
+
+        .toLowerCase()
+
+        .normalize("NFD")
+
+        .replace(/[\u0300-\u036f]/g,"")
+
+        .replace(/[^\w\s]/g," ")
+
+        .replace(/\s+/g," ")
+
+        .trim();
 
 }
 
@@ -137,32 +175,32 @@ function notifier(message){
  DÉMARRAGE
 =========================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",async()=>{
 
     initialiserInterface();
 
-    notifier("Application démarrée.");
+    notifier("Interface initialisée.","success");
 
 });
 
 /*=========================================================
  PARTIE 2
- CHARGEMENT DU CODE DU TRAVAIL
+ CHARGEMENT DE LA BASE JURIDIQUE
 =========================================================*/
 
 /*=========================================================
- CHARGER LE FICHIER JSON
+ CHARGER LE CODE DU TRAVAIL
 =========================================================*/
 
-async function chargerBaseJuridique() {
+async function chargerBaseJuridique(){
 
-    try {
+    try{
 
-        notifier("Chargement de la base juridique...");
+        notifier("Chargement du Code du Travail...","info");
 
         const reponse = await fetch(APP.fichierJSON);
 
-        if (!reponse.ok) {
+        if(!reponse.ok){
 
             throw new Error("Impossible de charger le fichier JSON.");
 
@@ -170,7 +208,7 @@ async function chargerBaseJuridique() {
 
         articles = await reponse.json();
 
-        if (!Array.isArray(articles)) {
+        if(!Array.isArray(articles)){
 
             throw new Error("Le fichier JSON est invalide.");
 
@@ -180,20 +218,23 @@ async function chargerBaseJuridique() {
 
         Etat.baseChargee = true;
 
-        notifier(articles.length + " articles chargés.");
+        notifier(
+            articles.length + " articles chargés.",
+            "success"
+        );
 
         afficherAccueil();
 
     }
 
-    catch (erreur) {
+    catch(erreur){
 
         console.error(erreur);
 
         Etat.baseChargee = false;
 
         afficherErreur(
-            "Impossible de charger le Code du Travail."
+            "Impossible de charger le fichier Code du Travail."
         );
 
     }
@@ -204,78 +245,96 @@ async function chargerBaseJuridique() {
  PAGE D'ACCUEIL
 =========================================================*/
 
-function afficherAccueil() {
+function afficherAccueil(){
 
-    if (!UI.zoneIA) return;
+    if(!UI.zoneIA){
+
+        return;
+
+    }
 
     UI.zoneIA.innerHTML = `
 
-        <h3>🤖 InspecteurBot IA</h3>
+        <div class="accueil-code">
 
-        <p>
+            <h2>⚖️ InspecteurBot IA</h2>
 
-            ✅ Base juridique chargée avec succès.
+            <p>
 
-        </p>
+                Base juridique chargée avec succès.
 
-        <p>
+            </p>
 
-            <strong>${articles.length}</strong>
+            <p>
 
-            articles du Code du Travail sont disponibles.
+                <strong>${articles.length}</strong>
+                articles disponibles.
 
-        </p>
+            </p>
 
-        <p>
+            <p>
 
-            Recherchez un article par numéro,
+                Recherchez un article par numéro,
+                mot-clé ou posez directement
+                une question juridique.
 
-            mot-clé ou posez directement une question.
+            </p>
 
-        </p>
+        </div>
 
     `;
 
 }
 
 /*=========================================================
- ERREUR
+ MESSAGE D'ERREUR
 =========================================================*/
 
-function afficherErreur(message) {
+function afficherErreur(message){
 
-    if (!UI.zoneIA) return;
+    if(!UI.zoneIA){
+
+        return;
+
+    }
 
     UI.zoneIA.innerHTML = `
 
-        <h3>❌ Erreur</h3>
+        <div class="erreur-code">
 
-        <p>${message}</p>
+            <h2>❌ Erreur</h2>
+
+            <p>${message}</p>
+
+        </div>
 
     `;
 
 }
 
 /*=========================================================
- VÉRIFICATION
+ VÉRIFIER SI LA BASE EST CHARGÉE
 =========================================================*/
 
-function baseChargee() {
+function baseChargee(){
 
     return Etat.baseChargee;
 
 }
 
 /*=========================================================
- CHARGEMENT AUTOMATIQUE
+ DÉMARRAGE AUTOMATIQUE
 =========================================================*/
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded",async()=>{
+
+    initialiserInterface();
 
     await chargerBaseJuridique();
 
-});
+    notifier("Application prête.","success");
 
+});
 
 /*=========================================================
  PARTIE 3
@@ -283,12 +342,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 =========================================================*/
 
 /*=========================================================
- RECHERCHE D'UN ARTICLE
+ RECHERCHER DES ARTICLES
 =========================================================*/
 
-function rechercherArticles(texte) {
+function rechercherArticles(texte){
 
-    if (!Etat.baseChargee) {
+    if(!Etat.baseChargee){
 
         afficherErreur("La base juridique n'est pas encore chargée.");
 
@@ -296,9 +355,9 @@ function rechercherArticles(texte) {
 
     }
 
-    texte = texte.trim().toLowerCase();
+    texte = nettoyerTexte(texte);
 
-    if (texte === "") {
+    if(texte===""){
 
         afficherAccueil();
 
@@ -306,17 +365,30 @@ function rechercherArticles(texte) {
 
     }
 
-    articlesFiltres = articles.filter(article => {
+    historique.unshift(texte);
 
-        return (
+    historique=[...new Set(historique)];
 
-            String(article.numero).toLowerCase().includes(texte) ||
+    historique=historique.slice(0,20);
 
-            String(article.titre).toLowerCase().includes(texte) ||
+    localStorage.setItem(
+        "historiqueRecherche",
+        JSON.stringify(historique)
+    );
 
-            String(article.contenu).toLowerCase().includes(texte)
+    articlesFiltres = articles.filter(article=>{
+
+        const contenu = nettoyerTexte(
+
+            article.numero + " " +
+
+            article.titre + " " +
+
+            article.contenu
 
         );
+
+        return contenu.includes(texte);
 
     });
 
@@ -328,17 +400,29 @@ function rechercherArticles(texte) {
  AFFICHER LES RÉSULTATS
 =========================================================*/
 
-function afficherResultats() {
+function afficherResultats(){
 
-    if (!UI.zoneIA) return;
+    if(!UI.zoneIA){
 
-    if (articlesFiltres.length === 0) {
+        return;
 
-        UI.zoneIA.innerHTML = `
+    }
 
-            <h3>🤖 InspecteurBot IA</h3>
+    if(articlesFiltres.length===0){
 
-            <p>Aucun article trouvé.</p>
+        UI.zoneIA.innerHTML=`
+
+            <div class="aucun-resultat">
+
+                <h2>🔍 Aucun résultat</h2>
+
+                <p>
+
+                    Aucun article trouvé.
+
+                </p>
+
+            </div>
 
         `;
 
@@ -346,29 +430,21 @@ function afficherResultats() {
 
     }
 
-    let html = `
+    UI.zoneIA.innerHTML="";
 
-        <h3>
+    articlesFiltres.forEach(article=>{
 
-            ${articlesFiltres.length}
+        const carte=document.createElement("div");
 
-            résultat(s)
+        carte.className="result-card";
 
-        </h3>
+        carte.innerHTML=`
 
-    `;
-
-    articlesFiltres.forEach(article => {
-
-        html += `
-
-        <div class="result-card">
-
-            <h4>
+            <h3>
 
                 Article ${article.numero}
 
-            </h4>
+            </h3>
 
             <strong>
 
@@ -378,55 +454,58 @@ function afficherResultats() {
 
             <p>
 
-                ${article.contenu.substring(0,200)}...
+                ${tronquerTexte(article.contenu,220)}
 
             </p>
 
-            <button onclick="ouvrirArticle('${article.numero}')">
+            <button
+                onclick="ouvrirArticle('${article.numero}')">
 
                 📖 Lire l'article
 
             </button>
 
-        </div>
-
         `;
 
-    });
-
-    UI.zoneIA.innerHTML = html;
-
-}
-
-/*=========================================================
- BOUTON RECHERCHER
-=========================================================*/
-
-if (UI.boutonRecherche) {
-
-    UI.boutonRecherche.addEventListener("click", () => {
-
-        rechercherArticles(UI.recherche.value);
+        UI.zoneIA.appendChild(carte);
 
     });
 
 }
 
 /*=========================================================
- TOUCHE ENTRÉE
+ ÉVÈNEMENTS
 =========================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+function initialiserRecherche(){
 
-    if (UI.recherche) {
+    if(UI.boutonRecherche){
 
-        UI.recherche.addEventListener("keydown", e => {
+        UI.boutonRecherche.addEventListener("click",()=>{
 
-            if (e.key === "Enter") {
+            rechercherArticles(
+
+                UI.recherche.value
+
+            );
+
+        });
+
+    }
+
+    if(UI.recherche){
+
+        UI.recherche.addEventListener("keydown",(e)=>{
+
+            if(e.key==="Enter"){
 
                 e.preventDefault();
 
-                rechercherArticles(UI.recherche.value);
+                rechercherArticles(
+
+                    UI.recherche.value
+
+                );
 
             }
 
@@ -434,24 +513,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+}
+
+/*=========================================================
+ INITIALISATION
+=========================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    initialiserRecherche();
+
 });
 
 /*=========================================================
  PARTIE 4
- OUVERTURE ET NAVIGATION DES ARTICLES
+ OUVERTURE ET GESTION DES ARTICLES
+ Version 4.1
 =========================================================*/
 
 /*=========================================================
  OUVRIR UN ARTICLE
 =========================================================*/
 
-function ouvrirArticle(numero) {
+function ouvrirArticle(numero){
 
     const article = articles.find(a =>
         String(a.numero) === String(numero)
     );
 
-    if (!article) {
+    if(!article){
 
         afficherErreur("Article introuvable.");
 
@@ -465,32 +555,60 @@ function ouvrirArticle(numero) {
         String(a.numero) === String(numero)
     );
 
-    if (UI.numeroArticle)
+    if(UI.numeroArticle){
+
         UI.numeroArticle.textContent =
-            "Article " + article.numero;
+        "Article " + article.numero;
 
-    if (UI.titreArticle)
+    }
+
+    if(UI.titreArticle){
+
         UI.titreArticle.textContent =
-            article.titre;
+        article.titre;
 
-    if (UI.contenuArticle)
+    }
+
+    if(UI.contenuArticle){
+
         UI.contenuArticle.innerHTML =
-            article.contenu;
+        article.contenu;
 
-    if (UI.reponseIA) {
+    }
+
+    if(UI.reponseIA){
 
         UI.reponseIA.innerHTML = `
-            Article affiché avec succès.<br><br>
-            Cliquez sur <strong>« Expliquer avec l'IA »</strong>
-            pour obtenir une explication simplifiée.
+
+        <h3>🤖 InspecteurBot IA</h3>
+
+        <p>
+
+        Article chargé avec succès.
+
+        Cliquez sur
+
+        <strong>Expliquer avec l'IA</strong>
+
+        pour obtenir une explication simplifiée.
+
+        </p>
+
         `;
 
     }
 
-    document.querySelector(".article-section")
-        ?.scrollIntoView({
-            behavior: "smooth"
+    const section = document.querySelector(".article-section");
+
+    if(section){
+
+        section.scrollIntoView({
+
+            behavior:"smooth"
+
         });
+
+    }
 
 }
 
@@ -498,18 +616,26 @@ function ouvrirArticle(numero) {
  ARTICLE SUIVANT
 =========================================================*/
 
-function articleSuivant() {
+function articleSuivant(){
 
-    if (indexArticle < 0)
+    if(indexArticle < 0){
+
         return;
 
-    if (indexArticle >= articles.length - 1)
+    }
+
+    if(indexArticle >= articles.length - 1){
+
         return;
+
+    }
 
     indexArticle++;
 
     ouvrirArticle(
+
         articles[indexArticle].numero
+
     );
 
 }
@@ -518,15 +644,20 @@ function articleSuivant() {
  ARTICLE PRÉCÉDENT
 =========================================================*/
 
-function articlePrecedent() {
+function articlePrecedent(){
 
-    if (indexArticle <= 0)
+    if(indexArticle <= 0){
+
         return;
+
+    }
 
     indexArticle--;
 
     ouvrirArticle(
+
         articles[indexArticle].numero
+
     );
 
 }
@@ -535,14 +666,18 @@ function articlePrecedent() {
  COPIER L'ARTICLE
 =========================================================*/
 
-function copierArticle() {
+async function copierArticle(){
 
-    if (!dernierArticle)
+    if(!dernierArticle){
+
         return;
+
+    }
 
     const texte =
 
         "Article " +
+
         dernierArticle.numero +
 
         "\n\n" +
@@ -553,13 +688,23 @@ function copierArticle() {
 
         dernierArticle.contenu;
 
-    navigator.clipboard.writeText(texte);
+    try{
 
-    if (UI.reponseIA) {
+        await navigator.clipboard.writeText(texte);
 
-        UI.reponseIA.innerHTML = `
-            ✅ Article copié dans le presse-papiers.
-        `;
+        if(UI.reponseIA){
+
+            UI.reponseIA.innerHTML =
+
+            "✅ Article copié dans le presse-papiers.";
+
+        }
+
+    }
+
+    catch{
+
+        alert(texte);
 
     }
 
@@ -569,7 +714,13 @@ function copierArticle() {
  IMPRIMER
 =========================================================*/
 
-function imprimerArticle() {
+function imprimerArticle(){
+
+    if(!dernierArticle){
+
+        return;
+
+    }
 
     window.print();
 
@@ -579,14 +730,18 @@ function imprimerArticle() {
  PARTAGER
 =========================================================*/
 
-async function partagerArticle() {
+async function partagerArticle(){
 
-    if (!dernierArticle)
+    if(!dernierArticle){
+
         return;
+
+    }
 
     const texte =
 
         "Article " +
+
         dernierArticle.numero +
 
         "\n\n" +
@@ -597,17 +752,29 @@ async function partagerArticle() {
 
         dernierArticle.contenu;
 
-    if (navigator.share) {
+    if(navigator.share){
 
-        await navigator.share({
+        try{
 
-            title: "Code du Travail RDC",
+            await navigator.share({
 
-            text: texte
+                title:"Code du Travail RDC",
 
-        });
+                text:texte
 
-    } else {
+            });
+
+        }
+
+        catch(e){
+
+            console.log(e);
+
+        }
+
+    }
+
+    else{
 
         copierArticle();
 
@@ -616,33 +783,87 @@ async function partagerArticle() {
 }
 
 /*=========================================================
- PARTIE 5
- IA - LECTURE VOCALE - FAVORIS
+ ALLER AU PREMIER ARTICLE
 =========================================================*/
 
-/*=========================================================
- EXPLIQUER AVEC L'IA
-=========================================================*/
+function premierArticle(){
 
-async function expliquerIA() {
-
-    if (!dernierArticle) {
-
-        UI.reponseIA.innerHTML = `
-            <h3>🤖 InspecteurBot IA</h3>
-            <p>Veuillez d'abord ouvrir un article.</p>
-        `;
+    if(articles.length===0){
 
         return;
 
     }
 
-    UI.reponseIA.innerHTML = `
-        <h3>🤖 InspecteurBot IA</h3>
-        <p>⏳ Analyse en cours...</p>
-    `;
+    ouvrirArticle(
 
-    const question = `
+        articles[0].numero
+
+    );
+
+}
+
+/*=========================================================
+ ALLER AU DERNIER ARTICLE
+=========================================================*/
+
+function dernierArticleListe(){
+
+    if(articles.length===0){
+
+        return;
+
+    }
+
+    ouvrirArticle(
+
+        articles[articles.length-1].numero
+
+    );
+
+}
+
+console.log("✅ Partie 4 chargée.");
+
+/*=========================================================
+ PARTIE 5
+ IA • MICROPHONE • LECTURE • FAVORIS
+ Version 4.1
+=========================================================*/
+
+/*=========================================================
+ EXPLIQUER L'ARTICLE AVEC L'IA
+=========================================================*/
+
+async function expliquerIA(){
+
+    if(!dernierArticle){
+
+        if(UI.reponseIA){
+
+            UI.reponseIA.innerHTML=`
+                <h3>🤖 InspecteurBot IA</h3>
+                <p>Veuillez ouvrir un article.</p>
+            `;
+        }
+
+        return;
+
+    }
+
+    if(UI.reponseIA){
+
+        UI.reponseIA.innerHTML=`
+            <h3>🤖 InspecteurBot IA</h3>
+            <p>⏳ Analyse de l'article...</p>
+        `;
+    }
+
+    try{
+
+        if(typeof demanderIA==="function"){
+
+            const question=`
+
 Explique simplement cet article du Code du Travail de la RDC.
 
 Article ${dernierArticle.numero}
@@ -652,13 +873,70 @@ ${dernierArticle.titre}
 
 Texte :
 ${dernierArticle.contenu}
+
 `;
 
-    const reponse = await demanderIA(question);
+            const reponse=await demanderIA(question);
 
-    UI.reponseIA.innerHTML = `
-        <h3>🤖 InspecteurBot IA</h3>
-        <p>${String(reponse).replace(/\n/g,"<br>")}</p>
+            UI.reponseIA.innerHTML=`
+                <h3>🤖 InspecteurBot IA</h3>
+                <p>${String(reponse).replace(/\n/g,"<br>")}</p>
+            `;
+
+        }else{
+
+            UI.reponseIA.innerHTML=`
+                <h3>🤖 InspecteurBot IA</h3>
+
+                <p>
+
+                L'article <strong>${dernierArticle.numero}</strong>
+                est correctement chargé.
+
+                Le module IA externe n'est pas encore connecté.
+
+                </p>
+            `;
+
+        }
+
+    }
+
+    catch(e){
+
+        console.error(e);
+
+        UI.reponseIA.innerHTML=`
+            <h3>❌ Erreur IA</h3>
+            <p>Impossible d'obtenir une réponse.</p>
+        `;
+
+    }
+
+}
+
+/*=========================================================
+ RÉSUMÉ RAPIDE
+=========================================================*/
+
+function resumeArticle(){
+
+    if(!dernierArticle){
+
+        return;
+
+    }
+
+    UI.reponseIA.innerHTML=`
+
+    <h3>📝 Résumé</h3>
+
+    <p>
+
+    ${tronquerTexte(dernierArticle.contenu,500)}
+
+    </p>
+
     `;
 
 }
@@ -667,34 +945,49 @@ ${dernierArticle.contenu}
  LECTURE VOCALE
 =========================================================*/
 
-function parlerArticle() {
+function parlerArticle(){
 
-    if (!dernierArticle)
+    if(!dernierArticle){
+
         return;
+
+    }
 
     speechSynthesis.cancel();
 
-    const texte =
+    const texte=
 
-        "Article " +
+        "Article "+
 
-        dernierArticle.numero +
+        dernierArticle.numero+
 
-        ". " +
+        ". "+
 
-        dernierArticle.titre +
+        dernierArticle.titre+
 
-        ". " +
+        ". "+
 
         dernierArticle.contenu;
 
-    const lecture = new SpeechSynthesisUtterance(texte);
+    const lecture=new SpeechSynthesisUtterance(texte);
 
-    lecture.lang = "fr-FR";
+    lecture.lang="fr-FR";
 
-    lecture.rate = 1;
+    lecture.rate=1;
+
+    lecture.pitch=1;
 
     speechSynthesis.speak(lecture);
+
+}
+
+/*=========================================================
+ ARRÊTER LA LECTURE
+=========================================================*/
+
+function arreterLecture(){
+
+    speechSynthesis.cancel();
 
 }
 
@@ -702,16 +995,27 @@ function parlerArticle() {
  FAVORIS
 =========================================================*/
 
-function ajouterFavori() {
+function ajouterFavori(){
 
-    if (!dernierArticle)
+    if(!dernierArticle){
+
         return;
 
-    if (favoris.find(a => a.numero == dernierArticle.numero)) {
+    }
 
-        UI.reponseIA.innerHTML = `
-        ⭐ Cet article est déjà enregistré.
-        `;
+    const existe=favoris.find(a=>
+
+        String(a.numero)===
+
+        String(dernierArticle.numero)
+
+    );
+
+    if(existe){
+
+        UI.reponseIA.innerHTML=
+
+        "⭐ Article déjà enregistré.";
 
         return;
 
@@ -727,23 +1031,29 @@ function ajouterFavori() {
 
     );
 
-    UI.reponseIA.innerHTML = `
-        ⭐ Article ajouté aux favoris.
-    `;
+    UI.reponseIA.innerHTML=
+
+    "⭐ Article ajouté aux favoris.";
 
 }
 
 /*=========================================================
- CHARGER LES FAVORIS
+ CHARGER FAVORIS
 =========================================================*/
 
-function chargerFavoris() {
+function chargerFavoris(){
 
-    const data = localStorage.getItem("favorisCodeTravail");
+    const data=
 
-    if (data) {
+    localStorage.getItem(
 
-        favoris = JSON.parse(data);
+        "favorisCodeTravail"
+
+    );
+
+    if(data){
+
+        favoris=JSON.parse(data);
 
     }
 
@@ -753,76 +1063,141 @@ function chargerFavoris() {
  MICROPHONE
 =========================================================*/
 
-if ("webkitSpeechRecognition" in window ||
-    "SpeechRecognition" in window) {
+function initialiserMicrophone(){
 
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
+    if(
 
-    const recognition = new SpeechRecognition();
+        !("webkitSpeechRecognition" in window) &&
 
-    recognition.lang = "fr-FR";
+        !("SpeechRecognition" in window)
 
-    recognition.interimResults = false;
+    ){
 
-    recognition.continuous = false;
-
-    if (UI.btnMicro) {
-
-        UI.btnMicro.addEventListener("click", () => {
-
-            recognition.start();
-
-        });
+        return;
 
     }
 
-    recognition.onresult = (event) => {
+    const SpeechRecognition=
 
-        const texte = event.results[0][0].transcript;
+        window.SpeechRecognition ||
 
-        UI.recherche.value = texte;
+        window.webkitSpeechRecognition;
+
+    const recognition=
+
+        new SpeechRecognition();
+
+    recognition.lang="fr-FR";
+
+    recognition.continuous=false;
+
+    recognition.interimResults=false;
+
+    recognition.onresult=(event)=>{
+
+        const texte=
+
+        event.results[0][0].transcript;
+
+        if(UI.recherche){
+
+            UI.recherche.value=texte;
+
+        }
 
         rechercherArticles(texte);
 
     };
 
+    recognition.onerror=(e)=>{
+
+        console.log(e);
+
+    };
+
+    if(UI.btnMicro){
+
+        UI.btnMicro.addEventListener(
+
+            "click",
+
+            ()=>{
+
+                recognition.start();
+
+            }
+
+        );
+
+    }
+
 }
 
 /*=========================================================
- CHARGEMENT DES FAVORIS
+ INITIALISATION
 =========================================================*/
 
-chargerFavoris();
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    ()=>{
+
+        chargerFavoris();
+
+        initialiserMicrophone();
+
+    }
+
+);
 
 console.log("✅ Partie 5 chargée.");
 
 /*=========================================================
  PARTIE 6
  FINALISATION DE L'APPLICATION
+ Version 4.1
 =========================================================*/
 
 /*=========================================================
  HORLOGE
 =========================================================*/
 
-function mettreAJourHorloge() {
+function mettreAJourHorloge(){
 
-    if (!UI.horloge) return;
+    if(!UI.horloge){
 
-    UI.horloge.textContent = new Date().toLocaleTimeString(
-        "fr-FR",
-        {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        }
-    );
+        return;
+
+    }
+
+    UI.horloge.textContent=
+
+        new Date().toLocaleTimeString(
+
+            "fr-FR",
+
+            {
+
+                hour:"2-digit",
+
+                minute:"2-digit",
+
+                second:"2-digit"
+
+            }
+
+        );
 
 }
 
-setInterval(mettreAJourHorloge,1000);
+setInterval(
+
+    mettreAJourHorloge,
+
+    1000
+
+);
 
 mettreAJourHorloge();
 
@@ -830,13 +1205,17 @@ mettreAJourHorloge();
  THÈME CLAIR / SOMBRE
 =========================================================*/
 
-function changerTheme(){
+function appliquerTheme(){
 
-    document.body.classList.toggle("dark-theme");
+    const theme=
 
-    if(document.body.classList.contains("dark-theme")){
+    localStorage.getItem("theme")||
 
-        localStorage.setItem("theme","dark");
+    "light";
+
+    if(theme==="dark"){
+
+        document.body.classList.add("dark-theme");
 
         if(UI.iconTheme){
 
@@ -846,7 +1225,7 @@ function changerTheme(){
 
     }else{
 
-        localStorage.setItem("theme","light");
+        document.body.classList.remove("dark-theme");
 
         if(UI.iconTheme){
 
@@ -858,26 +1237,82 @@ function changerTheme(){
 
 }
 
-if(UI.theme){
+function changerTheme(){
 
-    UI.theme.addEventListener("click",changerTheme);
+    document.body.classList.toggle("dark-theme");
+
+    const sombre=
+
+    document.body.classList.contains("dark-theme");
+
+    localStorage.setItem(
+
+        "theme",
+
+        sombre ? "dark" : "light"
+
+    );
+
+    appliquerTheme();
 
 }
 
-if(localStorage.getItem("theme")==="dark"){
+function initialiserTheme(){
 
-    document.body.classList.add("dark-theme");
+    appliquerTheme();
 
-    if(UI.iconTheme){
+    if(UI.theme){
 
-        UI.iconTheme.textContent="☀️";
+        UI.theme.addEventListener(
+
+            "click",
+
+            changerTheme
+
+        );
 
     }
 
 }
 
 /*=========================================================
- RECHERCHES RAPIDES
+ HISTORIQUE DES RECHERCHES
+=========================================================*/
+
+function chargerHistorique(){
+
+    const data=
+
+    localStorage.getItem(
+
+        "historiqueRecherche"
+
+    );
+
+    if(data){
+
+        historique=
+
+        JSON.parse(data);
+
+    }
+
+}
+
+function viderHistorique(){
+
+    historique=[];
+
+    localStorage.removeItem(
+
+        "historiqueRecherche"
+
+    );
+
+}
+
+/*=========================================================
+ RECHERCHE RAPIDE
 =========================================================*/
 
 function rechercheRapide(texte){
@@ -893,36 +1328,34 @@ function rechercheRapide(texte){
 }
 
 /*=========================================================
- HISTORIQUE
+ BOUTON RETOUR EN HAUT
 =========================================================*/
 
-function ajouterHistorique(texte){
+function retourHaut(){
 
-    if(!texte) return;
+    window.scrollTo({
 
-    historique.unshift(texte);
+        top:0,
 
-    historique=[...new Set(historique)];
+        behavior:"smooth"
 
-    historique=historique.slice(0,20);
-
-    localStorage.setItem(
-
-        "historiqueRecherche",
-
-        JSON.stringify(historique)
-
-    );
+    });
 
 }
 
-const historiqueSauve=
+const btnTop=
 
-localStorage.getItem("historiqueRecherche");
+document.getElementById("btnTop");
 
-if(historiqueSauve){
+if(btnTop){
 
-    historique=JSON.parse(historiqueSauve);
+    btnTop.addEventListener(
+
+        "click",
+
+        retourHaut
+
+    );
 
 }
 
@@ -932,43 +1365,82 @@ if(historiqueSauve){
 
 console.log(
 
-"========================================"
+"===================================="
 
 );
 
 console.log(
 
-APP.nom,
-
-APP.version,
-
-"chargé avec succès"
+APP.nom
 
 );
 
 console.log(
 
-"Articles :",articles.length
+"Version :",APP.version
 
 );
 
 console.log(
 
-"IA :",APP.modeIA
+"Pays :",APP.pays
 
 );
 
 console.log(
 
-"========================================"
+"Mode IA :",APP.modeIA
+
+);
+
+console.log(
+
+"===================================="
+
+);
 
 /*=========================================================
- FIN
+ DÉMARRAGE COMPLET
 =========================================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    async()=>{
+
+        initialiserInterface();
+
+        initialiserRecherche();
+
+        initialiserMicrophone();
+
+        initialiserTheme();
+
+        chargerFavoris();
+
+        chargerHistorique();
+
+        await chargerBaseJuridique();
+
+        notifier(
+
+            "InspecteurBot IA prêt.",
+
+            "success"
+
+        );
+
+    }
+
 );
 
-document.addEventListener("DOMContentLoaded",()=>{
+/*=========================================================
+ FIN DU MODULE
+=========================================================*/
 
-    notifier("InspecteurBot IA prêt.");
+console.log(
 
-});
+"✅ InspecteurBot IA RDC - Code du Travail 4.1 chargé avec succès."
+
+);
