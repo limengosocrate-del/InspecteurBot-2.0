@@ -1315,7 +1315,7 @@ function expliquerArticle(numero){
  EXPLIQUER AVEC L'IA
 =========================================================*/
 
-function expliquerIA() {
+async function expliquerIA() {
 
     if (!dernierArticle) {
 
@@ -1329,20 +1329,24 @@ function expliquerIA() {
 
     document.getElementById("reponseIA").innerHTML = `
         <h3>🤖 InspecteurBot IA</h3>
+        <p>⏳ Analyse de l'article avec Gemini...</p>
+    `;
 
-        <p><strong>${dernierArticle.titre}</strong></p>
+    const question = `
+Explique en français simple cet article du Code du Travail de la RDC.
 
-        <p>
-        Cet article du Code du Travail fixe les droits et les obligations
-        des employeurs et des travailleurs. Il doit être appliqué conformément
-        aux autres dispositions du Code du Travail de la RDC.
-        </p>
+Article ${dernierArticle.numero}
+Titre : ${dernierArticle.titre}
 
-        <p>
-        <strong>Conseil IA :</strong><br>
-        Lors d'une inspection, vérifiez que cet article est effectivement
-        respecté dans l'entreprise avant de prendre une décision.
-        </p>
+Texte :
+${dernierArticle.contenu}
+`;
+
+    const reponse = await demanderGemini(question);
+
+    document.getElementById("reponseIA").innerHTML = `
+        <h3>🤖 InspecteurBot IA</h3>
+        <p>${reponse.replace(/\n/g, "<br>")}</p>
     `;
 }
 
