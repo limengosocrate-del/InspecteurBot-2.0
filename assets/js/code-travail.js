@@ -237,12 +237,6 @@ async function chargerBaseJuridique(){
 
         Etat.dateChargement = new Date();
 
-        if(window.vectorSearch){
-
-            window.vectorSearch.charger(articles);
-
-        }
-
         mettreAJourCompteur();
 
         afficherMessageAccueil();
