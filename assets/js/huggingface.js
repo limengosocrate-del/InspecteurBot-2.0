@@ -3,8 +3,6 @@
  HUGGING FACE API
 =========================================*/
 
-const HF_API_KEY = "";
-
 async function demanderIA(question) {
 
     try {
@@ -22,12 +20,23 @@ async function demanderIA(question) {
             }
         );
 
+        if (!response.ok) {
+            return "Erreur de connexion au serveur IA.";
+        }
+
         const data = await response.json();
 
-        if (Array.isArray(data) && data.length > 0) {
+        // Réponse Hugging Face
+        if (Array.isArray(data) && data.length > 0 && data[0].generated_text) {
             return data[0].generated_text;
         }
 
+        // Réponse personnalisée
+        if (data.reponse) {
+            return data.reponse;
+        }
+
+        // Erreur
         if (data.error) {
             return "Erreur : " + data.error;
         }
@@ -37,8 +46,8 @@ async function demanderIA(question) {
     } catch (e) {
 
         console.error(e);
-        return "Impossible de contacter l'IA.";
+        return "Impossible de contacter InspecteurBot IA.";
 
     }
 
-         }
+}
