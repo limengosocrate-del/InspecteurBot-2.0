@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const input = document.getElementById("rechercheArticle");
     const button = document.getElementById("btnRecherche");
-    const results = document.getElementById("reponseIA");
+    const results = document.getElementById("zoneIA");
 
     if (!input || !button || !results) {
         console.error("Interface de recherche introuvable.");
