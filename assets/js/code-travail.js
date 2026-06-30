@@ -71,9 +71,9 @@ const UI = {
 
     boutonRecherche: document.getElementById("btnRecherche"),
 
-    resultat: document.getElementById("resultatsRecherche"),
+    resultat: document.getElementById("zoneIA"),
 
-    compteur: document.getElementById("nombreResultats"),
+    compteur: null,
 
     contenu: document.getElementById("contenuArticle"),
 
@@ -81,11 +81,11 @@ const UI = {
 
     titre: document.getElementById("titreArticle"),
 
-    resume: document.getElementById("resumeIA"),
+    resume: document.getElementById("reponseIA"),
 
-    explication: document.getElementById("explicationIA"),
+    explication: document.getElementById("reponseIA"),
 
-    heure: document.getElementById("heureActuelle"),
+    heure: document.getElementById("clock"),
 
     theme: document.getElementById("themeToggle"),
 
