@@ -1312,6 +1312,41 @@ function expliquerArticle(numero){
 }
 
 /*=========================================================
+ EXPLIQUER AVEC L'IA
+=========================================================*/
+
+function expliquerIA() {
+
+    if (!dernierArticle) {
+
+        document.getElementById("reponseIA").innerHTML = `
+            <h3>🤖 InspecteurBot IA</h3>
+            <p>Veuillez d'abord ouvrir un article avant de demander une explication.</p>
+        `;
+
+        return;
+    }
+
+    document.getElementById("reponseIA").innerHTML = `
+        <h3>🤖 InspecteurBot IA</h3>
+
+        <p><strong>${dernierArticle.titre}</strong></p>
+
+        <p>
+        Cet article du Code du Travail fixe les droits et les obligations
+        des employeurs et des travailleurs. Il doit être appliqué conformément
+        aux autres dispositions du Code du Travail de la RDC.
+        </p>
+
+        <p>
+        <strong>Conseil IA :</strong><br>
+        Lors d'une inspection, vérifiez que cet article est effectivement
+        respecté dans l'entreprise avant de prendre une décision.
+        </p>
+    `;
+}
+
+/*=========================================================
  RÉSUMÉ IA
 =========================================================*/
 
