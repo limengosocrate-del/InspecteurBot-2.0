@@ -1,1 +1,38 @@
 
+[
+  {
+    "id": "art001",
+    "numero": 1,
+    "titre": "Champ d'application",
+    "motsCles": [
+      "champ",
+      "application",
+      "travail",
+      "employeur",
+      "travailleur"
+    ],
+    "contenu": "Le présent Code du travail est applicable à tous les travailleurs et employeurs exerçant leurs activités en République Démocratique du Congo."
+  },
+  {
+    "id": "art002",
+    "numero": 2,
+    "titre": "Droit au travail",
+    "motsCles": [
+      "travail",
+      "droit",
+      "travail forcé"
+    ],
+    "contenu": "Le travail est un droit et un devoir. Le travail forcé ou obligatoire est interdit."
+  },
+  {
+    "id": "art003",
+    "numero": 3,
+    "titre": "Protection des enfants",
+    "motsCles": [
+      "enfant",
+      "mineur",
+      "protection"
+    ],
+    "contenu": "Les pires formes de travail des enfants sont interdites."
+  }
+]
