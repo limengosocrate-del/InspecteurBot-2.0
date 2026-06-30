@@ -3,7 +3,7 @@
  HUGGING FACE API
 =========================================*/
 
-const HF_API_KEY = "VOTRE_TOKEN_HUGGINGFACE";
+const HF_API_KEY =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;
 
 async function demanderIA(question) {
 
