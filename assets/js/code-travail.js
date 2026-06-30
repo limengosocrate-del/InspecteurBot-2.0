@@ -3036,6 +3036,183 @@ function parlerArticle() {
     speechSynthesis.speak(lecture);
 }
 
+/*=========================================================
+ OUVERTURE DES CATÉGORIES
+=========================================================*/
 
+function ouvrirCategorie(categorie) {
+
+    let mot = "";
+
+    switch(categorie){
+
+        case "contrat":
+            mot = "contrat";
+            break;
+
+        case "salaire":
+            mot = "salaire";
+            break;
+
+        case "conges":
+            mot = "congé";
+            break;
+
+        case "temps":
+            mot = "durée";
+            break;
+
+        case "licenciement":
+            mot = "licenciement";
+            break;
+
+        case "inspection":
+            mot = "inspection";
+            break;
+
+        case "securite":
+            mot = "sécurité";
+            break;
+
+        case "sanctions":
+            mot = "sanction";
+            break;
+
+        default:
+            mot = categorie;
+    }
+
+    document.getElementById("rechercheArticle").value = mot;
+
+    rechercheIA(mot);
+}
+
+/*=========================================================
+ RECHERCHE RAPIDE
+=========================================================*/
+
+function rechercheRapide(mot){
+
+    document.getElementById("rechercheArticle").value = mot;
+
+    rechercheIA(mot);
+
+}
+
+/*=========================================================
+ COPIER L'ARTICLE
+=========================================================*/
+
+function copierArticle() {
+
+    const texte =
+        document.getElementById("numeroArticle").innerText + "\n\n" +
+        document.getElementById("titreArticle").innerText + "\n\n" +
+        document.getElementById("contenuArticle").innerText;
+
+    navigator.clipboard.writeText(texte);
+
+    alert("✅ Article copié dans le presse-papiers.");
+}
+
+/*=========================================================
+ PARTAGER L'ARTICLE
+=========================================================*/
+
+async function partagerArticle() {
+
+    const texte =
+        document.getElementById("numeroArticle").innerText + "\n\n" +
+        document.getElementById("titreArticle").innerText + "\n\n" +
+        document.getElementById("contenuArticle").innerText;
+
+    if (navigator.share) {
+
+        await navigator.share({
+
+            title: "Code du Travail RDC",
+
+            text: texte
+
+        });
+
+    } else {
+
+        copierArticle();
+
+    }
+
+}
+
+/*=========================================================
+ IMPRIMER L'ARTICLE
+=========================================================*/
+
+function imprimerArticle() {
+
+    window.print();
+
+}
+
+/*=========================================================
+ IA JURIDIQUE AVANCÉE
+=========================================================*/
+
+const QuestionsIntelligentes = [
+
+{
+mots:["licencier","femme","enceinte"],
+reponse:"Une travailleuse enceinte bénéficie d'une protection particulière. Vérifiez les dispositions du Code du Travail relatives à la maternité avant toute décision de licenciement."
+},
+
+{
+mots:["congé","annuel"],
+reponse:"Le congé annuel est un droit du travailleur. Consultez les articles relatifs aux congés pour connaître les conditions d'acquisition et la durée."
+},
+
+{
+mots:["heures","supplémentaires"],
+reponse:"Les heures supplémentaires doivent être autorisées et rémunérées conformément au Code du Travail."
+},
+
+{
+mots:["salaire","impayé"],
+reponse:"Le non-paiement du salaire constitue une violation du Code du Travail. Vérifiez les articles concernant la rémunération et les obligations de l'employeur."
+},
+
+{
+mots:["contrat","travail"],
+reponse:"Le contrat de travail fixe les droits et obligations de l'employeur et du travailleur. Vérifiez sa forme et son contenu."
+}
+
+];
+
+function reponseIntelligente(question){
+
+    question = nettoyerTexte(question);
+
+    for(const item of QuestionsIntelligentes){
+
+        const trouve = item.mots.every(mot =>
+            question.includes(nettoyerTexte(mot))
+        );
+
+        if(trouve){
+
+            document.getElementById("reponseIA").innerHTML = `
+                <h3>🤖 InspecteurBot IA</h3>
+                <p>${item.reponse}</p>
+            `;
+
+            return;
+        }
+
+    }
+
+    document.getElementById("reponseIA").innerHTML = `
+        <h3>🤖 InspecteurBot IA</h3>
+        <p>Je n'ai pas trouvé de réponse précise. Consultez les articles affichés ci-dessus.</p>
+    `;
+}
 
 
