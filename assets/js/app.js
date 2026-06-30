@@ -53,17 +53,115 @@ function rechercher(mot) {
 
     mot = mot.toLowerCase().trim();
 
+    if (mot === "") {
+
+        afficher(articles);
+
+        return;
+
+    }
+
     const resultat = articles.filter(article => {
 
+        const mots = (article.motsCles || []).join(" ").toLowerCase();
+
         return (
+
             String(article.numero).includes(mot) ||
+
             article.titre.toLowerCase().includes(mot) ||
+
+            mots.includes(mot) ||
+
             article.contenu.toLowerCase().includes(mot)
+
         );
 
     });
 
     afficher(resultat);
+
+}
+
+/*===========================
+AFFICHAGE
+===========================*/
+
+function afficher(liste) {
+
+    const zone = document.getElementById("resultats");
+
+    zone.innerHTML = "";
+
+    if (liste.length === 0) {
+
+        zone.innerHTML = "<h3>Aucun article trouvé.</h3>";
+
+        return;
+
+    }
+
+    liste.forEach(article => {
+
+        let extrait = article.contenu;
+
+        if (extrait.length > 250) {
+
+            extrait = extrait.substring(0,250) + "...";
+
+        }
+
+        zone.innerHTML += `
+
+        <div class="article">
+
+            <h3>Article ${article.numero}</h3>
+
+            <h4>${article.titre}</h4>
+
+            <p>${extrait}</p>
+
+            <button onclick="ouvrirArticle('${article.id}')">
+
+                📖 Lire l'article
+
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+/*===========================
+OUVRIR ARTICLE
+===========================*/
+
+function ouvrirArticle(id){
+
+    const article = articles.find(a => a.id === id);
+
+    if(!article){
+
+        return;
+
+    }
+
+    alert(
+
+        "Article " + article.numero +
+
+        "\n\n" +
+
+        article.titre +
+
+        "\n\n" +
+
+        article.contenu
+
+    );
 
 }
 
