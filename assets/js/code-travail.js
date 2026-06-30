@@ -1342,18 +1342,20 @@ ${dernierArticle.contenu}
 
     const reponse = await demanderIA(question);
 
-if (!reponse) {
+    if (!reponse) {
+        document.getElementById("reponseIA").innerHTML = `
+            <h3>🤖 InspecteurBot IA</h3>
+            <p>Aucune réponse reçue de l'IA.</p>
+        `;
+        return;
+    }
+
     document.getElementById("reponseIA").innerHTML = `
         <h3>🤖 InspecteurBot IA</h3>
-        <p>Aucune réponse reçue de l'IA.</p>
+        <p>${reponse.replace(/\n/g, "<br>")}</p>
     `;
-    return;
-}
 
-document.getElementById("reponseIA").innerHTML = `
-    <h3>🤖 InspecteurBot IA</h3>
-    <p>${reponse.replace(/\n/g, "<br>")}</p>
-`;
+}
 
 /*=========================================================
  RÉSUMÉ IA
