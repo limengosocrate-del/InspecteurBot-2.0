@@ -1,62 +1,163 @@
-/*=========================================
- INSPECTEURBOT IA
- Search Controller V4.0
-=========================================*/
+/*===========================
+ InspecteurBot RDC
+ search.js
+===========================*/
+
+let articles = [];
+
+/*===========================
+ CHARGER LE JSON
+===========================*/
+
+async function chargerArticles() {
+
+    try {
+
+        const reponse = await fetch("assets/data/code-travail.json");
+
+        articles = await reponse.json();
+
+        afficher(articles);
+
+    } catch (e) {
+
+        document.getElementById("searchResults").innerHTML =
+            "<h3>❌ Impossible de charger le Code du travail.</h3>";
+
+        console.error(e);
+
+    }
+
+}
+
+/*===========================
+ RECHERCHE
+===========================*/
+
+function rechercher() {
+
+    const mot = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    if (mot === "") {
+
+        afficher(articles);
+
+        return;
+
+    }
+
+    const resultat = articles.filter(article => {
+
+        const mots = (article.motsCles || []).join(" ").toLowerCase();
+
+        return (
+
+            String(article.numero).includes(mot) ||
+
+            article.titre.toLowerCase().includes(mot) ||
+
+            article.contenu.toLowerCase().includes(mot) ||
+
+            mots.includes(mot)
+
+        );
+
+    });
+
+    afficher(resultat);
+
+}
+
+/*===========================
+ AFFICHAGE
+===========================*/
+
+function afficher(liste) {
+
+    const zone = document.getElementById("searchResults");
+
+    zone.innerHTML = "";
+
+    if (liste.length === 0) {
+
+        zone.innerHTML = "<h3>Aucun article trouvé.</h3>";
+
+        return;
+
+    }
+
+    liste.forEach(article => {
+
+        zone.innerHTML += `
+
+<div class="article">
+
+<h3>Article ${article.numero}</h3>
+
+<h4>${article.titre}</h4>
+
+<p>${article.contenu}</p>
+
+<button onclick="ouvrirArticle('${article.id}')">
+
+📖 Lire l'article
+
+</button>
+
+</div>
+
+`;
+
+    });
+
+}
+
+/*===========================
+ OUVRIR ARTICLE
+===========================*/
+
+function ouvrirArticle(id) {
+
+    const article = articles.find(a => a.id === id);
+
+    if (!article) return;
+
+    alert(
+        "Article " + article.numero +
+        "\n\n" +
+        article.titre +
+        "\n\n" +
+        article.contenu
+    );
+
+}
+
+/*===========================
+ DÉMARRAGE
+===========================*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const input = document.getElementById("searchInput");
-    const button = document.getElementById("searchBtn");
-    const results = document.getElementById("searchResults");
+    chargerArticles();
 
-    if (!input || !button || !results) {
-        console.error("Interface de recherche introuvable.");
-        return;
-    }
+    document
+        .getElementById("searchBtn")
+        .addEventListener("click", rechercher);
 
-    function afficher(html) {
-        results.innerHTML = html;
-    }
+    document
+        .getElementById("searchInput")
+        .addEventListener("keyup", function(e) {
 
-    async function rechercher() {
+            if (e.key === "Enter") {
 
-        const question = input.value.trim();
+                rechercher();
 
-        if (question === "") {
-            afficher("<p style='color:gold'>Veuillez saisir une question.</p>");
-            return;
-        }
+            }
 
-        afficher("<p>⏳ Recherche en cours...</p>");
-
-        try {
-
-            const resultat = await ragSearch(question);
-
-            afficher(resultat);
-
-        } catch (e) {
-
-            console.error(e);
-
-            afficher("<p style='color:red'>Erreur pendant la recherche.</p>");
-
-        }
-
-    }
-
-    button.addEventListener("click", rechercher);
-
-    input.addEventListener("keydown", function(e){
-
-        if(e.key==="Enter"){
-
-            e.preventDefault();
-
-            rechercher();
-
-        }
-
-    });
+        });
 
 });
