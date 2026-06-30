@@ -1318,18 +1318,16 @@ function expliquerArticle(numero){
 async function expliquerIA() {
 
     if (!dernierArticle) {
-
         document.getElementById("reponseIA").innerHTML = `
             <h3>🤖 InspecteurBot IA</h3>
             <p>Veuillez d'abord ouvrir un article avant de demander une explication.</p>
         `;
-
         return;
     }
 
     document.getElementById("reponseIA").innerHTML = `
         <h3>🤖 InspecteurBot IA</h3>
-        <p>⏳ Analyse de l'article avec Gemini...</p>
+        <p>⏳ Analyse de l'article avec l'IA...</p>
     `;
 
     const question = `
@@ -1342,7 +1340,7 @@ Texte :
 ${dernierArticle.contenu}
 `;
 
-    const reponse = await demanderGemini(question);
+    const reponse = await demanderIA(question);
 
     document.getElementById("reponseIA").innerHTML = `
         <h3>🤖 InspecteurBot IA</h3>
