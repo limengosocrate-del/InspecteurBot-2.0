@@ -5,9 +5,9 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const input = document.getElementById("searchInput");
-    const button = document.getElementById("searchBtn");
-    const results = document.getElementById("searchResults");
+    const input = document.getElementById("rechercheArticle");
+    const button = document.getElementById("btnRecherche");
+    const results = document.getElementById("reponseIA");
 
     if (!input || !button || !results) {
         console.error("Interface de recherche introuvable.");
