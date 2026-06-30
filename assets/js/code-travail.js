@@ -3020,7 +3020,21 @@ function analyserInspection(question){
 
 console.log("✅ Partie 10 - Copilote d'Inspection IA chargé.");
 
+function parlerArticle() {
 
+    const texte =
+        document.getElementById("titreArticle").innerText + ". " +
+        document.getElementById("contenuArticle").innerText;
+
+    const lecture = new SpeechSynthesisUtterance(texte);
+
+    lecture.lang = "fr-FR";
+    lecture.rate = 1;
+    lecture.pitch = 1;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(lecture);
+}
 
 
 
