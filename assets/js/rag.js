@@ -14,10 +14,8 @@ async function chargerArticles() {
     }
 
     const chemins = [
-        "assets/data/code-travail.json",
-        "./assets/data/code-travail.json",
-        "../assets/data/code-travail.json"
-    ];
+        "assets/data/code-travail.json"
+   ];
 
     for (const chemin of chemins) {
 
@@ -28,6 +26,8 @@ async function chargerArticles() {
             if (response.ok) {
 
                 ARTICLES = await response.json();
+
+                console.log(ARTICLES);
 
                 console.log("✅ Articles chargés :", ARTICLES.length);
 
@@ -48,8 +48,6 @@ async function chargerArticles() {
     ARTICLES = [];
 
     return ARTICLES;
-
-}
 
 }
 
