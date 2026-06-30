@@ -1,1626 +1,509 @@
-/*=========================================================
- INSPECTEURBOT IA RDC
- MODULE : CODE DU TRAVAIL
- Version : 4.2
- Développeur : Inspecteur Limengo (Pmiller)
-=========================================================*/
+<!DOCTYPE html>
+<html lang="fr">
 
-"use strict";
+<head>
 
-/*=========================================================
- CONFIGURATION
-=========================================================*/
+<meta charset="UTF-8">
 
-const APP = {
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    nom: "InspecteurBot IA",
+<meta name="description" content="Bibliothèque juridique intelligente de l'Inspection Générale du Travail de la RDC">
+<meta name="theme-color" content="#0b5ed7">
+<meta name="color-scheme" content="light dark">
 
-    version: "4.2",
+<title>InspecteurBot RDC | Code du Travail</title>
 
-    pays: "République Démocratique du Congo",
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    langue: "fr",
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
-    fichierJSON: "assets/data/code-travail.json",
+<link rel="stylesheet" href="css/code-travail.css">
 
-    modeIA: true,
+<link rel="icon" type="image/png" href="images/logo-igt.png">
 
-    debug: true
+</head>
+<body class="light-theme">
 
-};
+<div class="container">
 
-/*=========================================================
- BASE DE DONNÉES
-=========================================================*/
+<!--=================================================
+HEADER
+==================================================-->
 
-let articles = [];
-let articlesFiltres = [];
-let dernierArticle = null;
-let indexArticle = -1;
+<header class="top-header">
 
-let favoris = [];
-let historique = [];
+<div class="logo-box">
 
-/*=========================================================
- ÉTAT DE L'APPLICATION
-=========================================================*/
+<img
+src="images/logo-igt.png"
+alt="Logo IGT">
 
-const Etat = {
+</div>
 
-    baseChargee: false,
-    rechercheEnCours: false,
-    initialisee: false
+<div class="title-box">
 
-};
+<h1>
+CODE DU TRAVAIL
+</h1>
 
-/*=========================================================
- ÉLÉMENTS HTML
-=========================================================*/
+<button id="themeToggle" class="theme-btn" title="Changer le thème" aria-label="Changer le thème">
+    <span id="themeIcon">🌙</span>
+</button>
 
-const UI = {
+<h2>
+République Démocratique du Congo
+</h2>
 
-    recherche: null,
-    boutonRecherche: null,
+<h3>
+Inspection Générale du Travail
+</h3>
 
-    zoneIA: null,
+<p>
 
-    numeroArticle: null,
-    titreArticle: null,
-    contenuArticle: null,
+Bibliothèque Juridique Intelligente
 
-    reponseIA: null,
+</p>
 
-    btnMicro: null,
-    btnLecture: null,
+</div>
 
-    horloge: null,
+<div class="datetime-box">
 
-    theme: null,
-    iconTheme: null
+<div id="clock"></div>
 
-};
+<div id="day"></div>
 
-/*=========================================================
- INITIALISER L'INTERFACE
-=========================================================*/
+<div id="date"></div>
 
-function initialiserInterface(){
+<div id="weather">
 
-    UI.recherche = document.getElementById("rechercheArticle");
+<i class="fa-solid fa-cloud-sun"></i>
 
-    UI.boutonRecherche = document.getElementById("btnRecherche");
+<span id="temperature">
+26°C
+</span>
 
-    UI.zoneIA = document.getElementById("zoneIA");
+</div>
 
-    UI.numeroArticle = document.getElementById("numeroArticle");
+<div id="city">
 
-    UI.titreArticle = document.getElementById("titreArticle");
+Kinshasa
 
-    UI.contenuArticle = document.getElementById("contenuArticle");
+</div>
 
-    UI.reponseIA = document.getElementById("reponseIA");
+</div>
 
-    UI.btnMicro = document.getElementById("btnMicro");
+</header>
 
-    UI.btnLecture = document.getElementById("btnLecture");
+<!--=================================================
+PARTIE 2
+RECHERCHE INTELLIGENTE IA
+==================================================-->
 
-    UI.horloge = document.getElementById("clock");
+<section class="search-section">
 
-    UI.theme = document.getElementById("themeToggle");
+    <h2>
+        <i class="fa-solid fa-robot"></i>
+        Assistant Juridique IA
+    </h2>
 
-    UI.iconTheme = document.getElementById("themeIcon");
+    <p>
+        Recherchez un article du Code du Travail par numéro,
+        par mot-clé ou posez directement votre question.
+    </p>
 
-}
+    <div class="search-box">
 
-/*=========================================================
- NOTIFICATION
-=========================================================*/
+<input
+    type="text"
+    id="rechercheArticle"
+    autocomplete="off"
+    placeholder="Exemple : Article 62, licenciement, salaire, congé annuel...">
 
-function notifier(message, type = "info"){
+<button
+    id="btnRecherche"
+    title="Rechercher"
+    aria-label="Rechercher">
 
-    if(APP.debug){
+            <i class="fa-solid fa-magnifying-glass"></i>
 
-        console.log(
-            "[" + type.toUpperCase() + "]",
-            message
-        );
+        </button>
 
-    }
+    </div>
 
-     }
+    <!-- Suggestions rapides -->
 
-/*=========================================================
- PARTIE 2
- CHARGEMENT DE LA BASE JURIDIQUE
- Version 4.2
-=========================================================*/
+    <div class="suggestions">
 
-/*=========================================================
- OUTILS
-=========================================================*/
+        <button onclick="rechercheRapide('Contrat de travail')">
+            📄 Contrat
+        </button>
 
-function tronquerTexte(texte, longueur = 250){
+        <button onclick="rechercheRapide('Salaire')">
+            💰 Salaire
+        </button>
 
-    texte = String(texte || "");
+        <button onclick="rechercheRapide('Congé annuel')">
+            🏖️ Congés
+        </button>
 
-    if(texte.length <= longueur){
+        <button onclick="rechercheRapide('Licenciement')">
+            ⚖️ Licenciement
+        </button>
 
-        return texte;
+        <button onclick="rechercheRapide('Durée du travail')">
+            ⏰ Temps de travail
+        </button>
 
-    }
+        <button onclick="rechercheRapide('Inspection du Travail')">
+            👷 Inspection
+        </button>
 
-    return texte.substring(0, longueur) + "...";
+        <button onclick="rechercheRapide('Sécurité sociale')">
+            🦺 Sécurité
+        </button>
 
-}
+        <button onclick="rechercheRapide('Sanctions')">
+            🚨 Sanctions
+        </button>
 
-function nettoyerTexte(texte){
+    </div>
 
-    return String(texte || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^\w\s]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+</section>
 
-}
+  <!--=================================================
+PARTIE 3
+CATÉGORIES DU CODE DU TRAVAIL
+==================================================-->
 
-/*=========================================================
- CHARGER LE CODE DU TRAVAIL
-=========================================================*/
+<section class="categories">
 
-async function chargerBaseJuridique(){
+    <div class="category-card" onclick="ouvrirCategorie('contrat')">
 
-    try{
+        <i class="fa-solid fa-file-signature"></i>
 
-        notifier("Chargement de la base juridique...","info");
+        <h3>Contrat de Travail</h3>
 
-        const reponse = await fetch(APP.fichierJSON);
+        <p>
+            Formation, exécution, suspension et fin
+            du contrat de travail.
+        </p>
 
-        if(!reponse.ok){
+        <span class="badge">
+            Articles
+        </span>
 
-            throw new Error("Erreur de chargement du fichier JSON.");
+    </div>
 
-        }
+    <div class="category-card" onclick="ouvrirCategorie('salaire')">
 
-        const donnees = await reponse.json();
+        <i class="fa-solid fa-money-bill-wave"></i>
 
-        if(!Array.isArray(donnees)){
+        <h3>Salaire</h3>
 
-            throw new Error("Le fichier JSON est invalide.");
+        <p>
+            Salaire, primes, indemnités,
+            paiement et protection.
+        </p>
 
-        }
+        <span class="badge">
+            Articles
+        </span>
 
-        articles = donnees;
+    </div>
 
-        articlesFiltres = [...articles];
+    <div class="category-card" onclick="ouvrirCategorie('conges')">
 
-        Etat.baseChargee = true;
+        <i class="fa-solid fa-umbrella-beach"></i>
 
-        notifier(
-            articles.length + " articles chargés.",
-            "success"
-        );
+        <h3>Congés</h3>
 
-        afficherAccueil();
+        <p>
+            Congé annuel, maternité,
+            maladie et absences.
+        </p>
 
-    }
+        <span class="badge">
+            Articles
+        </span>
 
-    catch(erreur){
+    </div>
 
-        console.error(erreur);
+    <div class="category-card" onclick="ouvrirCategorie('temps')">
 
-        Etat.baseChargee = false;
+        <i class="fa-solid fa-clock"></i>
 
-        afficherErreur(
-            "Impossible de charger la base juridique."
-        );
+        <h3>Temps de Travail</h3>
 
-    }
+        <p>
+            Durée légale,
+            heures supplémentaires
+            et repos.
+        </p>
 
-}
+        <span class="badge">
+            Articles
+        </span>
 
-/*=========================================================
- PAGE D'ACCUEIL
-=========================================================*/
+    </div>
 
-function afficherAccueil(){
+    <div class="category-card" onclick="ouvrirCategorie('licenciement')">
 
-    if(!UI.zoneIA){
+        <i class="fa-solid fa-scale-balanced"></i>
 
-        return;
+        <h3>Licenciement</h3>
 
-    }
+        <p>
+            Procédures,
+            préavis,
+            indemnités
+            et recours.
+        </p>
 
-    UI.zoneIA.innerHTML = `
+        <span class="badge">
+            Articles
+        </span>
 
-        <div class="accueil-code">
+    </div>
 
-            <h2>⚖️ InspecteurBot IA RDC</h2>
+    <div class="category-card" onclick="ouvrirCategorie('inspection')">
 
-            <p>
+        <i class="fa-solid fa-user-shield"></i>
 
-                Bienvenue dans le Code du Travail
-                de la République Démocratique du Congo.
+        <h3>Inspection du Travail</h3>
 
-            </p>
+        <p>
+            Missions,
+            pouvoirs,
+            contrôles
+            et procès-verbaux.
+        </p>
 
-            <p>
+        <span class="badge">
+            Articles
+        </span>
 
-                <strong>${articles.length}</strong>
-                articles sont disponibles.
+    </div>
 
-            </p>
+    <div class="category-card" onclick="ouvrirCategorie('securite')">
 
-            <p>
+        <i class="fa-solid fa-helmet-safety"></i>
 
-                Utilisez la barre de recherche
-                pour rechercher un article,
-                un mot-clé ou un numéro.
+        <h3>Santé & Sécurité</h3>
 
-            </p>
+        <p>
+            Protection des travailleurs,
+            hygiène,
+            prévention
+            des risques.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+    <div class="category-card" onclick="ouvrirCategorie('sanctions')">
+
+        <i class="fa-solid fa-gavel"></i>
+
+        <h3>Infractions & Sanctions</h3>
+
+        <p>
+            Infractions,
+            amendes,
+            sanctions administratives
+            et pénales.
+        </p>
+
+        <span class="badge">
+            Articles
+        </span>
+
+    </div>
+
+</section>
+
+<!--=================================================
+PARTIE 4
+AFFICHAGE DES ARTICLES DU CODE DU TRAVAIL
+==================================================-->
+
+<section class="article-section">
+
+    <h2>
+        <i class="fa-solid fa-book-open"></i>
+        Consultation des Articles
+    </h2>
+
+    <div class="article-card fade">
+
+        <div class="article-number" id="numeroArticle">
+
+            Article 1
 
         </div>
 
-    `;
+        <div class="article-title" id="titreArticle">
 
-}
-
-/*=========================================================
- MESSAGE D'ERREUR
-=========================================================*/
-
-function afficherErreur(message){
-
-    if(!UI.zoneIA){
-
-        return;
-
-    }
-
-    UI.zoneIA.innerHTML = `
-
-        <div class="erreur-code">
-
-            <h2>❌ Erreur</h2>
-
-            <p>${message}</p>
+            Objet du Code du Travail
 
         </div>
 
-    `;
+        <div class="article-content" id="contenuArticle">
 
-}
-
-/*=========================================================
- VÉRIFIER SI LA BASE EST CHARGÉE
-=========================================================*/
-
-function baseChargee(){
-
-    return Etat.baseChargee;
-
-}
-
-console.log("✅ Partie 2 chargée.");
-
-/*=========================================================
- PARTIE 3
- MOTEUR DE RECHERCHE
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- RECHERCHER DES ARTICLES
-=========================================================*/
-
-function rechercherArticles(texte){
-
-    if(!Etat.baseChargee){
-
-        afficherErreur(
-            "La base juridique n'est pas encore chargée."
-        );
-
-        return;
-
-    }
-
-    texte = nettoyerTexte(texte);
-
-    if(texte === ""){
-
-        articlesFiltres = [...articles];
-
-        afficherAccueil();
-
-        return;
-
-    }
-
-    historique.unshift(texte);
-
-    historique = [...new Set(historique)];
-
-    historique = historique.slice(0,20);
-
-    localStorage.setItem(
-        "historiqueRecherche",
-        JSON.stringify(historique)
-    );
-
-    articlesFiltres = articles.filter(article=>{
-
-        const numero = nettoyerTexte(article.numero);
-
-        const titre = nettoyerTexte(article.titre);
-
-        const contenu = nettoyerTexte(article.contenu);
-
-        return (
-            numero.includes(texte) ||
-            titre.includes(texte) ||
-            contenu.includes(texte)
-        );
-
-    });
-
-    afficherResultats();
-
-}
-
-/*=========================================================
- AFFICHER LES RÉSULTATS
-=========================================================*/
-
-function afficherResultats(){
-
-    if(!UI.zoneIA){
-
-        return;
-
-    }
-
-    UI.zoneIA.innerHTML = "";
-
-    if(articlesFiltres.length === 0){
-
-        UI.zoneIA.innerHTML = `
-
-        <div class="aucun-resultat">
-
-            <h2>🔍 Aucun résultat</h2>
-
-            <p>
-
-                Aucun article ne correspond
-                à votre recherche.
-
-            </p>
+            Sélectionnez une catégorie ou utilisez la recherche
+            intelligente afin d'afficher les articles du Code du
+            Travail de la République Démocratique du Congo.
 
         </div>
 
-        `;
+        <div class="article-actions">
 
-        return;
+            <button onclick="articlePrecedent()">
 
-    }
+                <i class="fa-solid fa-arrow-left"></i>
 
-    articlesFiltres.forEach(article=>{
-
-        const carte = document.createElement("div");
-
-        carte.className = "result-card";
-
-        carte.innerHTML = `
-
-            <h3>Article ${article.numero}</h3>
-
-            <strong>${article.titre}</strong>
-
-            <p>
-
-                ${tronquerTexte(article.contenu,220)}
-
-            </p>
-
-            <button class="btn-lire">
-
-                📖 Lire l'article
+                Précédent
 
             </button>
 
-        `;
+            <button onclick="copierArticle()">
 
-        carte
-            .querySelector(".btn-lire")
-            .addEventListener(
-                "click",
-                ()=>ouvrirArticle(article.numero)
-            );
+                <i class="fa-solid fa-copy"></i>
 
-        UI.zoneIA.appendChild(carte);
+                Copier
 
-    });
+            </button>
 
-}
+            <button onclick="parlerArticle()">
 
-/*=========================================================
- ÉVÉNEMENTS DE RECHERCHE
-=========================================================*/
+                <i class="fa-solid fa-volume-high"></i>
 
-function initialiserRecherche(){
+                Écouter
 
-    if(UI.boutonRecherche){
+            </button>
 
-        UI.boutonRecherche.onclick = ()=>{
+            <button onclick="expliquerIA()">
 
-            rechercherArticles(
-                UI.recherche.value
-            );
+                <i class="fa-solid fa-robot"></i>
 
-        };
+                Expliquer avec l'IA
 
-    }
+            </button>
 
-    if(UI.recherche){
+            <button onclick="articleSuivant()">
 
-        UI.recherche.addEventListener(
-            "keydown",
-            function(e){
+                Suivant
 
-                if(e.key==="Enter"){
+                <i class="fa-solid fa-arrow-right"></i>
 
-                    e.preventDefault();
+            </button>
 
-                    rechercherArticles(
-                        UI.recherche.value
-                    );
+        </div>
 
-                }
+    </div>
 
-            }
-        );
+</section>
 
-        UI.recherche.addEventListener(
-            "input",
-            function(){
+<!--=================================================
+RÉPONSE DE L'ASSISTANT IA
+==================================================-->
 
-                if(
-                    this.value.trim()===""
-                ){
+<section class="ai-result" id="zoneIA">
 
-                    afficherAccueil();
+    <h3>
 
-                }
+        🤖 InspecteurBot IA
 
-            }
-        );
+    </h3>
 
-    }
+    <p id="reponseIA">
 
-}
+        Bonjour 👋
 
-console.log("✅ Partie 3 chargée.");
+        Je suis votre assistant juridique.
 
-/*=========================================================
- PARTIE 4A
- OUVERTURE ET NAVIGATION DES ARTICLES
- Version 4.2
-=========================================================*/
+        Recherchez un article ou cliquez sur
+        <strong>« Expliquer avec l'IA »</strong> pour obtenir
+        une explication simple, les obligations de l'employeur,
+        les droits du travailleur ainsi que les références
+        aux articles du Code du Travail.
 
-/*=========================================================
- OUVRIR UN ARTICLE
-=========================================================*/
+    </p>
 
-function ouvrirArticle(numero){
+</section>
 
-    const article = articles.find(function(a){
-        return String(a.numero) === String(numero);
-    });
+ <!--=================================================
+PARTIE 5
+FOOTER
+==================================================-->
 
-    if(!article){
+<footer>
 
-        afficherErreur("Article introuvable.");
+    <img
+        src="images/logo-igt.png"
+        alt="Logo IGT">
 
-        return;
+    <h3>
+        Inspection Générale du Travail
+    </h3>
 
-    }
+    <p>
+        InspecteurBot RDC
+    </p>
 
-    dernierArticle = article;
+    <p>
+        Bibliothèque juridique intelligente destinée aux
+        Inspecteurs et Contrôleurs du Travail de la
+        République Démocratique du Congo.
+    </p>
 
-    indexArticle = articles.findIndex(function(a){
-        return String(a.numero) === String(numero);
-    });
+    <hr>
 
-    if(UI.numeroArticle){
-        UI.numeroArticle.textContent =
-            "Article " + article.numero;
-    }
+    <p>
 
-    if(UI.titreArticle){
-        UI.titreArticle.textContent =
-            article.titre || "";
-    }
+        Développé par
 
-    if(UI.contenuArticle){
-        UI.contenuArticle.innerHTML =
-            article.contenu || "";
-    }
+        <strong>
 
-    if(UI.reponseIA){
+            Inspecteur Limengo (Pmiller)
 
-        UI.reponseIA.innerHTML = `
+        </strong>
 
-            <h3>🤖 InspecteurBot IA</h3>
+    </p>
 
-            <p>
+    <p>
 
-                L'article a été chargé avec succès.
+        © 2026 - Tous droits réservés
 
-            </p>
+    </p>
 
-            <p>
+</footer>
 
-                Cliquez sur
-                <strong>Expliquer avec l'IA</strong>
-                pour obtenir une explication.
+<!--=================================================
+BOUTON RETOUR EN HAUT
+==================================================-->
 
-            </p>
+<button id="btnTop">
 
-        `;
+<i class="fa-solid fa-arrow-up"></i>
 
-    }
+</button>
 
-    const section = document.querySelector(".article-section");
+<!--=================================================
+JAVASCRIPT
+==================================================-->
 
-    if(section){
+<script src="assets/js/huggingface.js"></script>
+<script src="assets/js/code-travail.js"></script>
 
-        section.scrollIntoView({
+</body>
+</html> 
 
-            behavior: "smooth",
-            block: "start"
-
-        });
-
-    }
-
-}
-
-/*=========================================================
- ARTICLE PRÉCÉDENT
-=========================================================*/
-
-function articlePrecedent(){
-
-    if(indexArticle <= 0){
-
-        return;
-
-    }
-
-    indexArticle--;
-
-    ouvrirArticle(
-
-        articles[indexArticle].numero
-
-    );
-
-}
-
-/*=========================================================
- ARTICLE SUIVANT
-=========================================================*/
-
-function articleSuivant(){
-
-    if(indexArticle < 0){
-
-        return;
-
-    }
-
-    if(indexArticle >= articles.length - 1){
-
-        return;
-
-    }
-
-    indexArticle++;
-
-    ouvrirArticle(
-
-        articles[indexArticle].numero
-
-    );
-
-}
-
-/*=========================================================
- PREMIER ARTICLE
-=========================================================*/
-
-function premierArticle(){
-
-    if(articles.length === 0){
-
-        return;
-
-    }
-
-    ouvrirArticle(
-
-        articles[0].numero
-
-    );
-
-}
-
-/*=========================================================
- DERNIER ARTICLE
-=========================================================*/
-
-function dernierArticleListe(){
-
-    if(articles.length === 0){
-
-        return;
-
-    }
-
-    ouvrirArticle(
-
-        articles[
-            articles.length - 1
-        ].numero
-
-    );
-
-}
-
-console.log("✅ Partie 4A chargée.");
-
-/*=========================================================
- PARTIE 4B
- COPIER • IMPRIMER • PARTAGER
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- COPIER L'ARTICLE
-=========================================================*/
-
-async function copierArticle(){
-
-    if(!dernierArticle){
-
-        return;
-
-    }
-
-    const texte =
-
-        "Article " +
-        dernierArticle.numero +
-
-        "\n\n" +
-
-        dernierArticle.titre +
-
-        "\n\n" +
-
-        dernierArticle.contenu;
-
-    try{
-
-        await navigator.clipboard.writeText(texte);
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>✅ Copie réussie</h3>
-
-                <p>
-
-                    L'article a été copié
-                    dans le presse-papiers.
-
-                </p>
-
-            `;
-
-        }
-
-    }
-
-    catch(e){
-
-        console.error(e);
-
-        alert(texte);
-
-    }
-
-}
-
-/*=========================================================
- IMPRIMER
-=========================================================*/
-
-function imprimerArticle(){
-
-    if(!dernierArticle){
-
-        return;
-
-    }
-
-    window.print();
-
-}
-
-/*=========================================================
- PARTAGER
-=========================================================*/
-
-async function partagerArticle(){
-
-    if(!dernierArticle){
-
-        return;
-
-    }
-
-    const texte =
-
-        "Article " +
-
-        dernierArticle.numero +
-
-        "\n\n" +
-
-        dernierArticle.titre +
-
-        "\n\n" +
-
-        dernierArticle.contenu;
-
-    if(navigator.share){
-
-        try{
-
-            await navigator.share({
-
-                title:
-                "Code du Travail RDC",
-
-                text: texte
-
-            });
-
-        }
-
-        catch(e){
-
-            console.log(e);
-
-        }
-
-    }
-
-    else{
-
-        copierArticle();
-
-    }
-
-}
-
-/*=========================================================
- EXPORTER LE TEXTE DE L'ARTICLE
-=========================================================*/
-
-function texteArticleActuel(){
-
-    if(!dernierArticle){
-
-        return "";
-
-    }
-
-    return (
-
-        "Article " +
-
-        dernierArticle.numero +
-
-        "\n\n" +
-
-        dernierArticle.titre +
-
-        "\n\n" +
-
-        dernierArticle.contenu
-
-    );
-
-}
-
-console.log("✅ Partie 4B chargée.");
-
-/*=========================================================
- PARTIE 5A
- IA • EXPLICATION • RÉSUMÉ
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- EXPLIQUER L'ARTICLE AVEC L'IA
-=========================================================*/
-
-async function expliquerIA(){
-
-    if(!dernierArticle){
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>🤖 InspecteurBot IA</h3>
-
-                <p>
-
-                    Veuillez d'abord ouvrir un article.
-
-                </p>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    if(UI.reponseIA){
-
-        UI.reponseIA.innerHTML = `
-
-            <h3>🤖 InspecteurBot IA</h3>
-
-            <p>
-
-                ⏳ Analyse de l'article en cours...
-
-            </p>
-
-        `;
-
-    }
-
-    try{
-
-        if(typeof demanderIA === "function"){
-
-            const question = `
-
-Tu es un expert en droit du travail de la République Démocratique du Congo.
-
-Explique simplement l'article suivant.
-
-Article : ${dernierArticle.numero}
-
-Titre :
-${dernierArticle.titre}
-
-Texte :
-${dernierArticle.contenu}
-
-Donne une explication claire, avec des exemples simples lorsque c'est utile.
-
-`;
-
-            const reponse = await demanderIA(question);
-
-            if(UI.reponseIA){
-
-                UI.reponseIA.innerHTML = `
-
-                    <h3>🤖 Explication de l'IA</h3>
-
-                    <p>
-
-                        ${String(reponse).replace(/\n/g,"<br>")}
-
-                    </p>
-
-                `;
-
-            }
-
-        }
-
-        else{
-
-            if(UI.reponseIA){
-
-                UI.reponseIA.innerHTML = `
-
-                    <h3>🤖 InspecteurBot IA</h3>
-
-                    <p>
-
-                        Le module d'intelligence artificielle
-                        n'est pas encore connecté.
-
-                    </p>
-
-                `;
-
-            }
-
-        }
-
-    }
-
-    catch(erreur){
-
-        console.error(erreur);
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>❌ Erreur</h3>
-
-                <p>
-
-                    Impossible d'obtenir une réponse de l'IA.
-
-                </p>
-
-            `;
-
-        }
-
-    }
-
-}
-
-/*=========================================================
- RÉSUMÉ RAPIDE
-=========================================================*/
-
-function resumeArticle(){
-
-    if(!dernierArticle){
-
-        return;
-
-    }
-
-    let contenu = dernierArticle.contenu || "";
-
-    contenu = contenu.replace(/\s+/g," ").trim();
-
-    if(UI.reponseIA){
-
-        UI.reponseIA.innerHTML = `
-
-            <h3>📝 Résumé rapide</h3>
-
-            <p>
-
-                ${tronquerTexte(contenu,500)}
-
-            </p>
-
-        `;
-
-    }
-
-}
-
-console.log("✅ Partie 5A chargée.");
-
-/*=========================================================
- PARTIE 5B
- LECTURE VOCALE
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- LIRE L'ARTICLE
-=========================================================*/
-
-function parlerArticle(){
-
-    if(!dernierArticle){
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>🔊 Lecture vocale</h3>
-
-                <p>
-
-                    Veuillez ouvrir un article.
-
-                </p>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    if(!("speechSynthesis" in window)){
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>❌ Lecture vocale</h3>
-
-                <p>
-
-                    Votre navigateur ne prend pas
-                    en charge la lecture vocale.
-
-                </p>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    speechSynthesis.cancel();
-
-    const texte =
-
-        "Article " +
-
-        dernierArticle.numero +
-
-        ". " +
-
-        dernierArticle.titre +
-
-        ". " +
-
-        dernierArticle.contenu;
-
-    const lecture = new SpeechSynthesisUtterance(texte);
-
-    lecture.lang = "fr-FR";
-
-    lecture.rate = 1;
-
-    lecture.pitch = 1;
-
-    lecture.volume = 1;
-
-    lecture.onstart = function(){
-
-        notifier("Lecture démarrée.","info");
-
-    };
-
-    lecture.onend = function(){
-
-        notifier("Lecture terminée.","success");
-
-    };
-
-    lecture.onerror = function(){
-
-        notifier("Erreur de lecture.","error");
-
-    };
-
-    speechSynthesis.speak(lecture);
-
-}
-
-/*=========================================================
- METTRE EN PAUSE
-=========================================================*/
-
-function pauseLecture(){
-
-    if("speechSynthesis" in window){
-
-        speechSynthesis.pause();
-
-    }
-
-}
-
-/*=========================================================
- REPRENDRE LA LECTURE
-=========================================================*/
-
-function reprendreLecture(){
-
-    if("speechSynthesis" in window){
-
-        speechSynthesis.resume();
-
-    }
-
-}
-
-/*=========================================================
- ARRÊTER LA LECTURE
-=========================================================*/
-
-function arreterLecture(){
-
-    if("speechSynthesis" in window){
-
-        speechSynthesis.cancel();
-
-        notifier("Lecture arrêtée.","info");
-
-    }
-
-}
-
-console.log("✅ Partie 5B chargée.");
-
-/*=========================================================
- PARTIE 5C
- FAVORIS • MICROPHONE • INITIALISATION
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- AJOUTER AUX FAVORIS
-=========================================================*/
-
-function ajouterFavori(){
-
-    if(!dernierArticle){
-
-        return;
-
-    }
-
-    const existe = favoris.find(function(article){
-
-        return String(article.numero) ===
-               String(dernierArticle.numero);
-
-    });
-
-    if(existe){
-
-        if(UI.reponseIA){
-
-            UI.reponseIA.innerHTML = `
-
-                <h3>⭐ Favoris</h3>
-
-                <p>
-
-                    Cet article est déjà enregistré.
-
-                </p>
-
-            `;
-
-        }
-
-        return;
-
-    }
-
-    favoris.push(dernierArticle);
-
-    localStorage.setItem(
-        "favorisCodeTravail",
-        JSON.stringify(favoris)
-    );
-
-    if(UI.reponseIA){
-
-        UI.reponseIA.innerHTML = `
-
-            <h3>⭐ Favoris</h3>
-
-            <p>
-
-                Article ajouté avec succès.
-
-            </p>
-
-        `;
-
-    }
-
-}
-
-/*=========================================================
- CHARGER LES FAVORIS
-=========================================================*/
-
-function chargerFavoris(){
-
-    try{
-
-        const data = localStorage.getItem(
-            "favorisCodeTravail"
-        );
-
-        favoris = data
-            ? JSON.parse(data)
-            : [];
-
-    }
-
-    catch(e){
-
-        favoris = [];
-
-    }
-
-}
-
-/*=========================================================
- MICROPHONE
-=========================================================*/
-
-function initialiserMicrophone(){
-
-    const API =
-
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
-    if(!API){
-
-        notifier(
-            "Reconnaissance vocale indisponible.",
-            "info"
-        );
-
-        return;
-
-    }
-
-    const reconnaissance = new API();
-
-    reconnaissance.lang = "fr-FR";
-
-    reconnaissance.continuous = false;
-
-    reconnaissance.interimResults = false;
-
-    reconnaissance.onresult = function(event){
-
-        const texte =
-            event.results[0][0].transcript;
-
-        if(UI.recherche){
-
-            UI.recherche.value = texte;
-
-        }
-
-        rechercherArticles(texte);
-
-    };
-
-    reconnaissance.onerror = function(e){
-
-        console.error(e);
-
-    };
-
-    if(UI.btnMicro){
-
-        UI.btnMicro.addEventListener(
-
-            "click",
-
-            function(){
-
-                reconnaissance.start();
-
-            }
-
-        );
-
-    }
-
-}
-
-/*=========================================================
- INITIALISATION DES MODULES
-=========================================================*/
-
-function initialiserModules(){
-
-    chargerFavoris();
-
-    initialiserMicrophone();
-
-}
-
-console.log("✅ Partie 5C chargée.");
-
-/*=========================================================
- PARTIE 6A
- HORLOGE • THÈME • HISTORIQUE • RETOUR EN HAUT
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- HORLOGE
-=========================================================*/
-
-function mettreAJourHorloge(){
-
-    if(!UI.horloge){
-
-        return;
-
-    }
-
-    const maintenant = new Date();
-
-    UI.horloge.textContent =
-        maintenant.toLocaleTimeString(
-            "fr-FR",
-            {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            }
-        );
-
-}
-
-/*=========================================================
- THÈME CLAIR / SOMBRE
-=========================================================*/
-
-function appliquerTheme(){
-
-    const theme =
-        localStorage.getItem("theme") || "light";
-
-    if(theme === "dark"){
-
-        document.body.classList.add("dark-theme");
-
-        if(UI.iconTheme){
-
-            UI.iconTheme.textContent = "☀️";
-
-        }
-
-    }else{
-
-        document.body.classList.remove("dark-theme");
-
-        if(UI.iconTheme){
-
-            UI.iconTheme.textContent = "🌙";
-
-        }
-
-    }
-
-}
-
-function changerTheme(){
-
-    document.body.classList.toggle("dark-theme");
-
-    localStorage.setItem(
-
-        "theme",
-
-        document.body.classList.contains("dark-theme")
-            ? "dark"
-            : "light"
-
-    );
-
-    appliquerTheme();
-
-}
-
-function initialiserTheme(){
-
-    appliquerTheme();
-
-    if(UI.theme){
-
-        UI.theme.addEventListener(
-
-            "click",
-
-            changerTheme
-
-        );
-
-    }
-
-}
-
-/*=========================================================
- HISTORIQUE DES RECHERCHES
-=========================================================*/
-
-function chargerHistorique(){
-
-    try{
-
-        const data = localStorage.getItem(
-            "historiqueRecherche"
-        );
-
-        historique = data
-            ? JSON.parse(data)
-            : [];
-
-    }
-
-    catch(e){
-
-        historique = [];
-
-    }
-
-}
-
-function viderHistorique(){
-
-    historique = [];
-
-    localStorage.removeItem(
-        "historiqueRecherche"
-    );
-
-}
-
-/*=========================================================
- RECHERCHE RAPIDE
-=========================================================*/
-
-function rechercheRapide(texte){
-
-    if(UI.recherche){
-
-        UI.recherche.value = texte;
-
-    }
-
-    rechercherArticles(texte);
-
-}
-
-/*=========================================================
- RETOUR EN HAUT
-=========================================================*/
-
-function retourHaut(){
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-}
-
-function initialiserBoutonTop(){
-
-    const bouton = document.getElementById("btnTop");
-
-    if(!bouton){
-
-        return;
-
-    }
-
-    bouton.addEventListener(
-
-        "click",
-
-        retourHaut
-
-    );
-
-}
-
-console.log("✅ Partie 6A chargée.");
-
-/*=========================================================
- PARTIE 6B
- DÉMARRAGE UNIQUE ET FINALISATION
- Version 4.2
-=========================================================*/
-
-/*=========================================================
- DÉMARRAGE UNIQUE DE L'APPLICATION
-=========================================================*/
-
-document.addEventListener("DOMContentLoaded", async function(){
-
-    try{
-
-        notifier("Initialisation de l'application...","info");
-
-        initialiserInterface();
-
-        initialiserRecherche();
-
-        initialiserTheme();
-
-        initialiserMicrophone();
-
-        initialiserBoutonTop();
-
-        chargerFavoris();
-
-        chargerHistorique();
-
-        mettreAJourHorloge();
-
-        setInterval(mettreAJourHorloge,1000);
-
-        await chargerBaseJuridique();
-
-        Etat.initialisee = true;
-
-        notifier(
-            "InspecteurBot IA prêt.",
-            "success"
-        );
-
-    }
-
-    catch(erreur){
-
-        console.error(erreur);
-
-        afficherErreur(
-            "Erreur lors du démarrage de l'application."
-        );
-
-    }
-
-});
-
-/*=========================================================
- INFORMATIONS DE VERSION
-=========================================================*/
-
-console.log("======================================");
-
-console.log(APP.nom);
-
-console.log("Version :", APP.version);
-
-console.log("Pays :", APP.pays);
-
-console.log("Langue :", APP.langue);
-
-console.log("Mode IA :", APP.modeIA ? "Activé" : "Désactivé");
-
-console.log("======================================");
-
-console.log("✅ InspecteurBot IA RDC - Code du Travail 4.2 chargé avec succès.");
+ 
