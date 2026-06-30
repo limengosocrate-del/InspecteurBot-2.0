@@ -1,6 +1,6 @@
-/*=========================================
+ /*=========================================
  INSPECTEURBOT IA
- Search Controller V2.0
+ Search Controller V3.0
 ==========================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,7 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function afficher(message) {
-        results.innerHTML = message;
+        results.innerHTML = `
+            <h3>🤖 InspecteurBot IA</h3>
+            ${message}
+        `;
     }
 
     async function rechercher() {
@@ -23,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const question = input.value.trim();
 
         if (question === "") {
-            afficher("<p style='color:#FFD700'>Veuillez saisir une recherche.</p>");
+            afficher("<p style='color:#FFD700'>Veuillez saisir un mot-clé ou un numéro d'article.</p>");
             return;
         }
 
@@ -33,30 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const reponse = await ragSearch(question);
 
-            if (!reponse || reponse.length === 0) {
+            afficher(reponse);
 
-                afficher(`
-                    <div class="result-card">
-                        <h3>Aucun résultat trouvé</h3>
-                        <p>
-                        Aucun article ne correspond actuellement à votre recherche.
-                        </p>
-                    </div>
-                `);
+        } catch (erreur) {
 
-            } else {
-
-                afficher(reponse);
-
-            }
-
-        } catch (e) {
-
-            console.error(e);
+            console.error(erreur);
 
             afficher(`
                 <div class="result-card">
-                    <h3>Erreur</h3>
+                    <h3>❌ Erreur</h3>
                     <p>Impossible d'effectuer la recherche.</p>
                 </div>
             `);
@@ -65,18 +53,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    // Bouton Rechercher
     button.addEventListener("click", rechercher);
 
-    input.addEventListener("keypress", function(e){
-
-        if(e.key==="Enter"){
-
+    // Touche Entrée
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
             e.preventDefault();
-
             rechercher();
-
         }
-
     });
 
-});
+});   
