@@ -3,7 +3,7 @@
  HUGGING FACE API
 =========================================*/
 
-const HF_API_KEY =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;
+const HF_API_KEY =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;;
 
 async function demanderIA(question) {
 
@@ -14,38 +14,41 @@ async function demanderIA(question) {
             {
                 method: "POST",
                 headers: {
-                    "Authorization": "Bearer " + HF_API_KEY,
+                    Authorization: "Bearer " + HF_API_KEY,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     inputs:
-                        "Tu es InspecteurBot RDC, spécialiste du Code du Travail de la République Démocratique du Congo. Réponds uniquement en français.\n\nQuestion : " + question
+                    "Tu es InspecteurBot RDC. Tu es un spécialiste du Code du Travail de la République Démocratique du Congo. Réponds uniquement en français.\n\n" + question
                 })
             }
         );
 
         const data = await response.json();
 
-        if (Array.isArray(data) && data.length > 0) {
-
-            return data[0].generated_text;
-
-        }
-
         if (data.error) {
-
-            return "Erreur : " + data.error;
-
+            return "❌ " + data.error;
         }
 
-        return "Aucune réponse reçue.";
+        if (Array.isArray(data)) {
+
+            if (data[0].generated_text) {
+                return data[0].generated_text;
+            }
+
+            if (data[0].summary_text) {
+                return data[0].summary_text;
+            }
+        }
+
+        return JSON.stringify(data);
 
     } catch (e) {
 
         console.error(e);
 
-        return "Impossible de contacter l'IA.";
+        return "Impossible de contacter Hugging Face.";
 
     }
 
-}
+             }
