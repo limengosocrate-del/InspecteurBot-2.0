@@ -1,24 +1,21 @@
- /*=========================================
+/*=========================================
  INSPECTEURBOT IA
- Search Controller V3.0
-==========================================*/
+ Search Controller V4.0
+=========================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const input = document.getElementById("rechercheArticle");
-    const button = document.getElementById("btnRecherche");
-    const results = document.getElementById("zoneIA");
+    const input = document.getElementById("searchInput");
+    const button = document.getElementById("searchBtn");
+    const results = document.getElementById("searchResults");
 
     if (!input || !button || !results) {
         console.error("Interface de recherche introuvable.");
         return;
     }
 
-    function afficher(message) {
-        results.innerHTML = `
-            <h3>🤖 InspecteurBot IA</h3>
-            ${message}
-        `;
+    function afficher(html) {
+        results.innerHTML = html;
     }
 
     async function rechercher() {
@@ -26,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const question = input.value.trim();
 
         if (question === "") {
-            afficher("<p style='color:#FFD700'>Veuillez saisir un mot-clé ou un numéro d'article.</p>");
+            afficher("<p style='color:gold'>Veuillez saisir une question.</p>");
             return;
         }
 
@@ -34,34 +31,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const reponse = await ragSearch(question);
+            const resultat = await ragSearch(question);
 
-            afficher(reponse);
+            afficher(resultat);
 
-        } catch (erreur) {
+        } catch (e) {
 
-            console.error(erreur);
+            console.error(e);
 
-            afficher(`
-                <div class="result-card">
-                    <h3>❌ Erreur</h3>
-                    <p>Impossible d'effectuer la recherche.</p>
-                </div>
-            `);
+            afficher("<p style='color:red'>Erreur pendant la recherche.</p>");
 
         }
 
     }
 
-    // Bouton Rechercher
     button.addEventListener("click", rechercher);
 
-    // Touche Entrée
-    input.addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
+    input.addEventListener("keydown", function(e){
+
+        if(e.key==="Enter"){
+
             e.preventDefault();
+
             rechercher();
+
         }
+
     });
 
-});   
+});
