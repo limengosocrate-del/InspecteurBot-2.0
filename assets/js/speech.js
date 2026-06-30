@@ -1,24 +1,26 @@
 /*=========================================
  INSPECTEURBOT IA
- RECONNAISSANCE VOCALE
+ RECONNAISSANCE VOCALE V2.0
 =========================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     const btnMicro = document.getElementById("btnMicro");
     const input = document.getElementById("rechercheArticle");
+    const btnRecherche = document.getElementById("btnRecherche");
 
-    if (!btnMicro || !input) return;
-
-    if (!("webkitSpeechRecognition" in window) &&
-        !("SpeechRecognition" in window)) {
-
-        alert("Votre navigateur ne prend pas en charge la reconnaissance vocale.");
-        return;
-    }
+    if (!btnMicro || !input || !btnRecherche) return;
 
     const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert("La reconnaissance vocale n'est pas prise en charge par votre navigateur.");
+
+        return;
+
+    }
 
     const recognition = new SpeechRecognition();
 
@@ -27,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.interimResults = false;
 
     btnMicro.addEventListener("click", () => {
+
+        btnMicro.innerHTML = "🎙️";
 
         recognition.start();
 
@@ -38,21 +42,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         input.value = texte;
 
-        if (typeof rechercheIA === "function") {
+        btnRecherche.click();
 
-            rechercheIA(texte);
+    };
 
-        } else if (typeof ragSearch === "function") {
+    recognition.onend = () => {
 
-            document.getElementById("btnRecherche").click();
-
-        }
+        btnMicro.innerHTML = "🎤";
 
     };
 
     recognition.onerror = (event) => {
 
         console.log(event.error);
+
+        btnMicro.innerHTML = "🎤";
 
     };
 
