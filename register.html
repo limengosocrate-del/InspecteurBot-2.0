@@ -1,392 +1,465 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inscription | InspecteurBot RDC</title>
+<title>Inscription | InspecteurBot IA RDC</title>
 
-<link rel="icon" type="image/png" href="./images/logo-igt.png">
 
-<link rel="stylesheet" href="./style.css">
+<link rel="icon" href="assets/img/logo.png">
+
+
+<link rel="stylesheet" href="assets/css/style.css">
+
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-rel="stylesheet">
 
 </head>
 
+
 <body>
+
 
 <!-- ================= NAVBAR ================= -->
 
+
 <nav class="top-navbar">
+
 
 <div class="nav-logo">
 
-<img src="./images/logo-igt.png" alt="Logo IGT">
+
+<img src="assets/img/logo.png">
+
 
 <div>
 
-<h2>InspecteurBot RDC</h2>
+<h2>
+InspecteurBot IA RDC
+</h2>
 
-<p>Inspection Générale du Travail</p>
+
+<p>
+Inspection Générale du Travail
+</p>
+
 
 </div>
 
+
 </div>
+
+
 
 <ul>
 
-<li>
-<a href="./index.html">
-<i class="fa-solid fa-house"></i>
-Accueil
-</a>
-</li>
 
 <li>
-<a href="./index.html">
-<i class="fa-solid fa-right-to-bracket"></i>
-Connexion
+
+<a href="index.html">
+
+<i class="fa-solid fa-house"></i>
+
+Accueil
+
 </a>
+
 </li>
+
+
+<li>
+
+<a href="login.html">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+
+Connexion
+
+</a>
+
+</li>
+
 
 </ul>
 
+
 </nav>
 
-<!-- ================= SECTION INSCRIPTION ================= -->
+
+
+
+
+<!-- ================= INSCRIPTION ================= -->
+
 
 <section class="hero">
 
+
 <img
-src="./images/batiment-igt.jpg"
+
+src="assets/img/banner.jpg"
+
 class="hero-image"
-alt="Bâtiment IGT">
+
+
+>
+
 
 <div class="hero-overlay"></div>
 
+
+
+
 <div class="hero-content">
 
+
+
 <img
-src="./images/logo-igt.png"
+
+src="assets/img/logo.png"
+
 class="logo"
-alt="Logo IGT">
 
-<h1>INSCRIPTION</h1>
+>
 
-<h3>Inspection Générale du Travail</h3>
+
+
+<h1>
+
+Créer un compte
+
+</h1>
+
+
+
+<h3>
+
+InspecteurBot IA RDC
+
+</h3>
+
+
 
 <p>
 
-Créez votre compte afin d'accéder à la plateforme
-numérique de l'Inspection Générale du Travail.
+Plateforme numérique d'assistance aux Inspecteurs du Travail de la RDC.
 
 </p>
 
-<div class="assistant-box"
-style="
-max-width:650px;
-margin-top:30px;
-background:rgba(255,255,255,.95);
-color:#222;
-">
 
-<h2 style="color:#005baa; margin-bottom:25px;">
+
+
+<div class="assistant-box">
+
+
+
+<h2>
+
 <i class="fa-solid fa-user-plus"></i>
-Créer un compte
+
+Inscription Agent
+
 </h2>
+
+
+
+
 
 <form id="registerForm">
 
-<input type="text" id="fullname" placeholder="Nom complet" required>
 
-<input type="text" id="matricule" placeholder="Numéro matricule" required>
 
-<input type="email" id="email" placeholder="Adresse e-mail" required>
+<input
 
-<input type="tel"
-       id="phone"
-       placeholder="+243XXXXXXXXX"
-       pattern="\+243[0-9]{9}"
-       required>
+type="text"
 
-<input type="text" id="province" placeholder="Province" required>
+id="fullname"
 
-<input type="text" id="commune" placeholder="Commune ou Secteur" required>
+placeholder="Nom complet"
 
-<input type="text" id="direction" placeholder="Direction" required>
+required>
 
-<input type="text" id="fonction" placeholder="Fonction" required>
 
-<input type="password" id="password" placeholder="Mot de passe" required>
 
-<input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe" required>
+<input
+
+type="text"
+
+id="matricule"
+
+placeholder="Matricule professionnel"
+
+required>
+
+
+
+
+<input
+
+type="email"
+
+id="email"
+
+placeholder="Adresse e-mail"
+
+required>
+
+
+
+
+<input
+
+type="tel"
+
+id="telephone"
+
+placeholder="+243XXXXXXXXX"
+
+required>
+
+
+
+
+<select id="role" required>
+
+
+<option value="">
+Sélectionner votre rôle
+</option>
+
+
+<option value="inspecteur">
+
+Inspecteur du Travail
+
+</option>
+
+
+<option value="opj">
+
+OPJ
+
+</option>
+
+
+<option value="administrateur">
+
+Administrateur
+
+</option>
+
+
+
+</select>
+
+
+
+
+
+<input
+
+type="text"
+
+id="province"
+
+placeholder="Province"
+
+required>
+
+
+
+
+
+<input
+
+type="text"
+
+id="direction"
+
+placeholder="Direction"
+
+required>
+
+
+
+
+
+<input
+
+type="password"
+
+id="password"
+
+placeholder="Mot de passe"
+
+required>
+
+
+
+
+
+<input
+
+type="password"
+
+id="confirmPassword"
+
+placeholder="Confirmer mot de passe"
+
+required>
+
+
+
+
 
 <button type="submit">
 
-<i class="fa-solid fa-user-check"></i>
+
+<i class="fa-solid fa-check"></i>
+
 
 Créer mon compte
 
+
 </button>
+
+
+
 
 <p id="registerMessage"></p>
 
+
+
+
 </form>
 
-<br>
+
+
+
 
 <p>
 
 Vous avez déjà un compte ?
 
-<a
-href="index.html"
-style="
-color:#005baa;
-font-weight:600;
-text-decoration:none;
-">
+<a href="login.html">
+
 Se connecter
+
 </a>
+
 
 </p>
 
-</div>
+
+
 
 </div>
+
+
+</div>
+
+
 
 </section>
 
-<!-- ================= INFORMATIONS ================= -->
+
+
+
+
+<!-- ================= INFORMATION ================= -->
+
 
 <section class="notification">
 
+
 <div class="notification-box">
 
-<i class="fa-solid fa-circle-info"></i>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+
 
 <p>
 
-L'inscription est réservée aux agents,
-inspecteurs et responsables autorisés de
-l'Inspection Générale du Travail.
-Toutes les informations fournies sont protégées
-et utilisées uniquement dans le cadre
-professionnel.
+
+L'accès à InspecteurBot IA RDC est réservé aux utilisateurs autorisés de l'Inspection Générale du Travail.
+
 
 </p>
 
+
 </div>
+
 
 </section>
 
-<!-- ================= AVANTAGES ================= -->
 
-<section class="main-menu">
 
-<h2>
 
-<i class="fa-solid fa-star"></i>
 
-Pourquoi créer un compte ?
-
-</h2>
-
-<div class="menu-grid">
-
-<div class="menu-card">
-
-<i class="fa-solid fa-building"></i>
-
-<h3>Gestion des Entreprises</h3>
-
-<p>
-
-Consulter et gérer les entreprises
-enregistrées.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-clipboard-check"></i>
-
-<h3>Gestion des Inspections</h3>
-
-<p>
-
-Planifier et suivre toutes les missions
-d'inspection.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-file-signature"></i>
-
-<h3>Procès-Verbaux</h3>
-
-<p>
-
-Créer et gérer automatiquement
-les procès-verbaux.
-
-</p>
-
-</div>
-
-<div class="menu-card">
-
-<i class="fa-solid fa-robot"></i>
-
-<h3>Assistant IA</h3>
-
-<p>
-
-Utiliser InspecteurBot RDC pour
-rechercher des informations et générer
-des rapports.
-
-</p>
-
-</div>
-
-</div>
-
-</section>
 
 <!-- ================= FOOTER ================= -->
 
+
 <footer>
 
+
 <img
-src="./images/logo-igt.png"
+
+src="assets/img/logo.png"
+
 class="footer-logo"
-alt="Logo IGT">
+
+
+>
+
 
 <h3>
 
-Inspection Générale du Travail
+InspecteurBot IA RDC
 
 </h3>
 
-<p>
 
-InspecteurBot RDC
-
-</p>
 
 <p>
 
-Plateforme numérique des Inspecteurs du Travail
-de la République Démocratique du Congo.
+Assistant numérique des Inspecteurs du Travail de la RDC.
 
 </p>
+
+
+
 
 <hr>
 
+
 <p>
 
-Créé Par
-<strong>Inspecteur Limengo (Pmiller)</strong>
+Créé par Inspecteur Limengo (Pmiller)
+
 © 2026
 
 </p>
 
+
 </footer>
 
-<script>
 
-document
-.getElementById("registerForm")
-.addEventListener("submit", function(e){
 
-    e.preventDefault();
 
-    const fullname =
-        document.getElementById("fullname").value;
 
-    const email =
-        document.getElementById("email").value;
 
-    const fonction =
-        document.getElementById("fonction").value;
+<script src="assets/js/register.js"></script>
 
-    const province =
-        document.getElementById("province").value;
 
-    const password =
-        document.getElementById("password").value;
-
-    const telephone =
-        document.getElementById("phone").value;
-
-    const matricule =
-         document.getElementById("matricule").value;
-
-    const commune =
-        document.getElementById("commune").value;
-
-    const direction =
-         document.getElementById("direction").value;
-
-    const confirmPassword =
-        document.getElementById("confirmPassword").value;
-
-    if(password !== confirmPassword){
-
-        document.getElementById("registerMessage")
-        .innerHTML =
-        "❌ Les mots de passe ne correspondent pas.";
-
-        document.getElementById("registerMessage")
-        .style.color = "red";
-
-        return;
-    }
-
-    const user = {
-    fullname,
-    email,
-    telephone,
-    matricule,
-    fonction,
-    province,
-    commune,
-    direction,
-    password
-};
-
-    localStorage.setItem(
-    "inspecteurbot_user",
-    JSON.stringify(user)
-);
-
-document.getElementById("registerMessage")
-.innerHTML =
-"✅ Compte créé avec succès";
-
-document.getElementById("registerMessage")
-.style.color = "green";
-
-setTimeout(() => {
-    window.location.href = "./index.html";
-}, 2000);
-
-});
-
-</script>
 
 </body>
-  </html>
-  
+
+       </html>
