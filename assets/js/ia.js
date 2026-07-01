@@ -1,426 +1,313 @@
-"use strict";
-
 /*=========================================================
  INSPECTEURBOT IA RDC
- IA ENGINE V2.0
- RAG + VECTOR SEARCH + TRADUCTION
+ ia.js
+ MOTEUR INTELLIGENCE JURIDIQUE V3.0
+ Compatible :
+ - rag.js
+ - vector-search.js
+ - traduction.js
+ - speech.js
 =========================================================*/
+
+"use strict";
 
 
 /*=========================================================
- CONFIGURATION
+ CONFIGURATION IA
+=========================================================*/
+
+const InspecteurBotIA = {
+
+    version:"3.0",
+
+    nom:"InspecteurBot IA RDC",
+
+    domaine:"Code du Travail RDC",
+
+    actif:true,
+
+    mode:"juridique",
+
+    maxResultats:5,
+
+    historique:true
+
+};
+
+
+/*=========================================================
+ MÉMOIRE IA
 =========================================================*/
 
 
-const IA_CONFIG = {
+let MemoireIA = {
 
-    nom:"InspecteurBot IA",
 
-    version:"2.0",
+    questions:[],
 
-    maxResultats:5
+
+    recherches:0,
+
+
+    reponses:0,
+
+
+    derniersArticles:[]
 
 };
 
 
 
 /*=========================================================
- ANALYSE QUESTION
+ NORMALISATION TEXTE
 =========================================================*/
 
 
-async function analyserQuestionIA(question){
+function nettoyerQuestion(texte){
 
 
-    if(!question || question.trim()===""){
+    if(!texte){
 
-
-        return {
-
-            erreur:true,
-
-            message:
-            "Veuillez saisir une question."
-
-        };
-
+        return "";
 
     }
 
 
+    return texte
 
-    let langue="fr";
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g,"")
+
+    .replace(/[?!.,;:()]/g," ")
+
+    .replace(/\s+/g," ")
+
+    .trim();
 
 
-    if(typeof detecterLangue==="function"){
+}
 
-        langue = detecterLangue(question);
+
+
+/*=========================================================
+ EXTRACTION DES MOTS IMPORTANTS
+=========================================================*/
+
+
+function extraireMotsImportants(question){
+
+
+    const stopWords=[
+
+        "le",
+        "la",
+        "les",
+        "un",
+        "une",
+        "des",
+        "de",
+        "du",
+        "dans",
+        "pour",
+        "avec",
+        "est",
+        "sont",
+        "quel",
+        "quelle",
+        "quelles",
+        "comment",
+        "que",
+        "qui"
+
+    ];
+
+
+
+    return nettoyerQuestion(question)
+
+    .split(" ")
+
+    .filter(mot=>{
+
+        return mot.length>2 && 
+        !stopWords.includes(mot);
+
+    });
+
+
+}
+
+
+
+/*=========================================================
+ ANALYSE DE LA QUESTION
+=========================================================*/
+
+
+function analyserQuestion(question){
+
+
+    const mots = extraireMotsImportants(question);
+
+
+
+    let type="general";
+
+
+    if(
+        mots.includes("licenciement") ||
+        mots.includes("renvoi")
+    ){
+
+        type="licenciement";
 
     }
 
 
+    else if(
 
-    let resultats=[];
+        mots.includes("salaire") ||
+        mots.includes("remuneration")
 
+    ){
 
-
-    /*
-       Recherche vectorielle
-    */
-
-    if(typeof vectorSearch==="function"){
-
-
-        resultats =
-        await vectorSearch(
-
-            question,
-
-            IA_CONFIG.maxResultats
-
-        );
-
+        type="salaire";
 
     }
 
 
+    else if(
 
+        mots.includes("contrat")
 
-    /*
-       Si aucun résultat
-    */
+    ){
 
-    if(resultats.length===0){
-
-
-        return {
-
-
-            erreur:false,
-
-
-            langue:langue,
-
-
-            reponse:
-            messageIA(
-                "aucun",
-                langue
-            ),
-
-
-            articles:[]
-
-
-        };
-
+        type="contrat";
 
     }
 
+
+    else if(
+
+        mots.includes("conge")
+
+    ){
+
+        type="conge";
+
+    }
+
+
+    else if(
+
+        mots.includes("inspection") ||
+        mots.includes("controle")
+
+    ){
+
+        type="inspection";
+
+    }
 
 
 
     return {
 
 
-        erreur:false,
+        question:question,
 
 
-        langue:langue,
+        mots:mots,
 
 
-        articles:resultats,
+        categorie:type,
 
 
-        reponse:
-        genererReponseIA(
-            resultats,
-            langue
-        )
+        date:new Date()
 
 
     };
 
 
-
 }
 
 
 
-
-
 /*=========================================================
- GENERER REPONSE JURIDIQUE
+ SAUVEGARDE HISTORIQUE
 =========================================================*/
 
 
-function genererReponseIA(resultats,langue="fr"){
+function sauvegarderQuestion(question){
 
 
-    let texte="";
+    if(!InspecteurBotIA.historique){
 
-
-    if(langue==="fr"){
-
-
-        texte +=
-        "Analyse juridique basée sur le Code du Travail de la RDC.\n\n";
-
+        return;
 
     }
 
 
-    resultats.forEach((item,index)=>{
+    MemoireIA.questions.push({
 
+        question:question,
 
-        const article=item.article;
-
-
-
-        texte +=
-
-        "📌 Article "
-        +
-        article.numeroArticle
-
-        +
-
-        "\n";
-
-
-
-        texte +=
-
-        article.intitule
-
-        +
-
-        "\n\n";
-
-
-
-        texte +=
-
-        article.contenu.substring(0,400)
-
-        +
-
-        "...\n\n";
-
-
+        date:new Date()
 
     });
 
 
 
-    return texte;
+    localStorage.setItem(
+
+        "inspecteurbot_historique",
+
+        JSON.stringify(MemoireIA.questions)
+
+    );
 
 
 }
 
 
 
-
-
 /*=========================================================
- AFFICHAGE REPONSE
+ CHARGER HISTORIQUE
 =========================================================*/
 
 
-async function executerAssistantIA(){
+function chargerHistoriqueIA(){
 
 
-    const input =
-    document.getElementById(
-        "questionIA"
+    const data=
+
+    localStorage.getItem(
+
+        "inspecteurbot_historique"
+
     );
 
 
 
-    const zone =
-    document.getElementById(
-        "reponseIA"
-    );
+    if(data){
 
 
+        MemoireIA.questions=
 
-    if(!input || !zone)
-
-        return;
-
-
-
-
-    const question =
-    input.value.trim();
-
-
-
-    zone.innerHTML = `
-
-    <div class="result-card">
-
-    <h3>
-    🤖 Analyse en cours...
-    </h3>
-
-    <p>
-    Recherche des dispositions juridiques applicables.
-    </p>
-
-    </div>
-
-    `;
-
-
-
-
-    const resultat =
-    await analyserQuestionIA(question);
-
-
-
-
-    if(resultat.erreur){
-
-
-        zone.innerHTML=
-
-        `
-
-        <div class="result-card">
-
-        <h3>
-        Erreur
-        </h3>
-
-        <p>
-        ${resultat.message}
-        </p>
-
-        </div>
-
-        `;
-
-
-        return;
+        JSON.parse(data);
 
 
     }
 
 
-
-
-
-    zone.innerHTML=
-
-    `
-
-    <div class="result-card">
-
-
-    <h3>
-    ⚖️ Réponse InspecteurBot IA
-    </h3>
-
-
-    <p style="
-    white-space:pre-line;
-    line-height:1.8;
-    ">
-
-    ${resultat.reponse}
-
-    </p>
-
-
-    </div>
-
-
-    `;
-
-
-
-    /*
-       Statistique IA
-    */
-
-
-    if(typeof statistiques!=="undefined"){
-
-
-        statistiques.ia++;
-
-
-        if(
-        typeof mettreAJourStatistiques==="function"
-        ){
-
-            mettreAJourStatistiques();
-
-        }
-
-
-    }
-
-
-
 }
-
-
-
 
 
 /*=========================================================
- MESSAGES TRADUITS
-=========================================================*/
-
-
-function messageIA(cle,langue="fr"){
-
-
-
-if(
-typeof traduireReponse==="function"
-){
-
-
-return traduireReponse(
-
-cle,
-
-langue
-
-);
-
-
-}
-
-
-
-const messages={
-
-
-aucun:
-
-"Aucun article juridique trouvé."
-
-};
-
-
-
-return messages[cle] || "";
-
-
-
-}
-
-
-
-
-
-/*=========================================================
- INITIALISATION BOUTON IA
+ INITIALISATION
 =========================================================*/
 
 
@@ -431,51 +318,46 @@ document.addEventListener(
 ()=>{
 
 
-const bouton =
-
-document.getElementById(
-"btnQuestionIA"
-);
+    chargerHistoriqueIA();
 
 
+    console.log(
 
-if(bouton){
+    "================================="
+
+    );
 
 
-bouton.addEventListener(
+    console.log(
 
-"click",
+    "🤖 InspecteurBot IA RDC"
 
-executerAssistantIA
+    );
 
-);
+
+    console.log(
+
+    "Version",
+
+    InspecteurBotIA.version
+
+    );
+
+
+    console.log(
+
+    "Moteur juridique activé"
+
+    );
+
+
+    console.log(
+
+    "================================="
+
+    );
 
 
 }
 
-
-
-}
-
-);
-
-
-
-
-
-/*=========================================================
- EXPORT
-=========================================================*/
-
-
-window.executerAssistantIA =
-executerAssistantIA;
-
-
-window.analyserQuestionIA =
-analyserQuestionIA;
-
-
-console.log(
-"✅ ia.js InspecteurBot IA RDC V2 chargé"
 );
