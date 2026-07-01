@@ -1,1675 +1,294 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InspecteurBot RDC | Tableau de Bord</title>
 
-<title>InspecteurBot IA RDC | Dashboard</title>
-
-<meta name="description" content="Plateforme intelligente d'assistance aux Inspecteurs du Travail RDC">
-
-<link rel="icon" href="images/logo-igt.png">
-
-
-<!-- ICONES -->
-
-<link rel="stylesheet" 
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-
-<!-- POLICE -->
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
 
+<style>
 
-<!-- NOUVEAU CSS INSPECTEURBOT -->
+/* ================= SLIDER ================= */
+.banner{
+    position:relative;
+    height:0px;
+    overflow:hidden;display:none;
+}
 
-<link rel="stylesheet" href="assets/css/dashboard.css">
+.slider img{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 1s ease;
+}
 
+.slider img.active{opacity:1;}
 
-</head>
+/* ================= TIME ================= */
+.time-box{
+    position:absolute;
+    top:10px;
+    right:15px;
+    background:rgba(0,0,0,0.4);
+    padding:6px 10px;
+    border-radius:10px;
+    color:white;
+    font-size:13px;
+    text-align:right;
+}
 
+/* ================= MOTIVATION ================= */
+.motivation{
+    background:#0b3d91;
+    color:white;
+    text-align:center;
+    padding:8px;
+    font-size:13px;
+}
+
+/* ================= WHATSAPP NOTIF ================= */
+#notif-container{
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    z-index:9999;
+}
+
+.notif{
+    color:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    font-size:12px;
+    min-width:180px;
+    max-width:250px;
+    animation:slide 0.4s ease, fade 0.5s ease 4.5s forwards;
+}
+
+@keyframes slide{
+    from{transform:translateX(120%);opacity:0;}
+    to{transform:translateX(0);opacity:1;}
+}
+
+@keyframes fade{
+    to{opacity:0;transform:translateX(120%);}
+}
+
+/* ================= FOOTER SMALL ================= */
+footer{
+    padding:8px 0;
+}
+footer h3{font-size:13px;}
+footer p{font-size:11px;}
+
+</style>
+
+<style>#clock,.clock,.datetime,.date-time{background:transparent!important;top:0!important}.quick-access,.acces-rapide{margin-top:10px!important}.quick-access .cards,.quick-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px}</style></head>
 
 <body>
 
+<div class="dashboard-layout">
 
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar">
 
-<!-- ==========================================
-     BANNIÈRE PHOTOS IGT + DATE
-========================================== -->
-
-
-<section class="dashboard-banner">
-
-
-<div class="datetime-box">
-
-
-<div id="clock">
-00:00
+<div class="sidebar-logo" style="text-align:center;">
+<div class="slider" id="sidebarSlider" style="width:100%;height:200px;position:relative;overflow:hidden;border-radius:18px;margin-bottom:10px;">
+<img src="images/photos_igt/1.jpg" class="active">
+<img src="images/photos_igt/2.jpg">
+<img src="images/photos_igt/3.jpg">
+<img src="images/photos_igt/4.jpg">
+<img src="images/photos_igt/5.jpg">
+<img src="images/photos_igt/6.jpg">
+<img src="images/photos_igt/7.jpg">
+<img src="images/photos_igt/8.jpg">
+<img src="images/photos_igt/9.jpg">
+<img src="images/photos_igt/10.jpg">
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
+</div>
+<h3>MENU PRINCIPAL</h3>
 </div>
 
+<ul>
+<li class="active"><a href="#"><i class="fa-solid fa-house"></i> Tableau de bord</a></li>
+<li><a href="#"><i class="fa-solid fa-house-user"></i> Accueil</a></li>
+<li><a href="#"><i class="fa-solid fa-file-signature"></i> Procès-Verbaux</a></li>
+<li><a href="#"><i class="fa-solid fa-scale-balanced"></i> Code du Travail</a></li>
+<li><a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Infractions</a></li>
+<li><a href="#"><i class="fa-solid fa-clipboard-list"></i> Fiches de Contrôle</a></li>
+<li><a href="#"><i class="fa-solid fa-users"></i> Travailleurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-shield"></i> Inspecteurs</a></li>
+<li><a href="#"><i class="fa-solid fa-user-tie"></i> Contrôleurs</a></li>
+<li><a href="index.html"><i class="fa-solid fa-power-off"></i> Déconnexion</a></li>
+</ul>
 
-<div id="day">
-Jour
-</div>
+</aside>
 
+<!-- ================= MAIN ================= -->
+<main class="main-content">
+<div class="time-box" style="position:relative;display:block;margin:10px 0 10px auto;width:max-content;"> <div id="heure"></div><div id="date"></div></div>
 
-<div id="date">
-Date
-</div>
-
-
-
-<div id="weather">
-
-<i class="fa-solid fa-cloud-sun"></i>
-
-<span id="temperature">
-26°C
-</span>
-
-</div>
-
-
-
-<div id="city">
-
-Kinshasa RDC
-
-</div>
-
-
-</div>
-
-
-
-
+<!-- ================= SLIDER ================= -->
+<section class="banner">
 
 <div class="slider" id="slider">
 
-
 <img src="images/photos_igt/1.jpg" class="active">
-
 <img src="images/photos_igt/2.jpg">
-
 <img src="images/photos_igt/3.jpg">
-
 <img src="images/photos_igt/4.jpg">
-
 <img src="images/photos_igt/5.jpg">
-
 <img src="images/photos_igt/6.jpg">
-
 <img src="images/photos_igt/7.jpg">
-
 <img src="images/photos_igt/8.jpg">
-
 <img src="images/photos_igt/9.jpg">
-
 <img src="images/photos_igt/10.jpg">
-
+<img src="images/photos_igt/11.jpg">
+<img src="images/photos_igt/12.jpg">
+<img src="images/photos_igt/13.jpg">
+<img src="images/photos_igt/14.jpg">
+<img src="images/photos_igt/15.jpg">
+<img src="images/photos_igt/16.jpg">
+<img src="images/photos_igt/17.jpg">
+<img src="images/photos_igt/18.jpg">
+<img src="images/photos_igt/19.jpg">
+<img src="images/photos_igt/20.jpg">
 
 </div>
 
+<!-- TIME TOP -->
+<div class="time-box">
+<div id="heure"></div>
+<div id="date"></div>
+</div>
 
 </section>
 
-
-
-
-
-<!-- ==========================================
-     MESSAGE MOTIVATION
-========================================== -->
-
-
-<div class="motivation-bar">
-
-
-<span id="motivationText">
-
-Le travail construit la nation 🇨🇩
-
-</span>
-
-
+<!-- ================= MOTIVATION ================= -->
+<div class="motivation">
+<span id="motivationText"></span>
 </div>
 
-
-
-
-
-<!-- ==========================================
-     MENU PRINCIPAL INSPECTEURBOT
-========================================== -->
-
-
-<nav class="main-dashboard-menu">
-
-
-
-<a href="dashboard.html">
-
-<i class="fa fa-home"></i>
-
-<span>
-Dashboard
-</span>
-
-</a>
-
-
-
-
-<a href="entreprises.html">
-
-<i class="fa fa-building"></i>
-
-<span>
-Entreprises
-</span>
-
-</a>
-
-
-
-
-<a href="inspections.html">
-
-<i class="fa fa-clipboard-check"></i>
-
-<span>
-Inspections
-</span>
-
-</a>
-
-
-
-
-<a href="fiche-controle.html">
-
-<i class="fa fa-list-check"></i>
-
-<span>
-Fiche Contrôle
-</span>
-
-</a>
-
-
-
-
-<a href="pv.html">
-
-<i class="fa fa-file-signature"></i>
-
-<span>
-PV
-</span>
-
-</a>
-
-
-
-
-<a href="infractions.html">
-
-<i class="fa fa-triangle-exclamation"></i>
-
-<span>
-Infractions
-</span>
-
-</a>
-
-
-
-
-<a href="sanctions.html">
-
-<i class="fa fa-gavel"></i>
-
-<span>
-Sanctions
-</span>
-
-</a>
-
-
-
-
-<a href="code-travail.html">
-
-<i class="fa fa-scale-balanced"></i>
-
-<span>
-Code du Travail
-</span>
-
-</a>
-
-
-<a href="inspecteurs.html">
-
-<i class="fa fa-user-tie"></i>
-
-<span>
-Inspecteurs
-</span>
-
-</a>
-
-
-
-
-<a href="archives.html">
-
-<i class="fa fa-box-archive"></i>
-
-<span>
-Archives
-</span>
-
-</a>
-
-
-
-
-<a href="igt.html">
-
-<i class="fa fa-landmark"></i>
-
-<span>
-IGT RDC
-</span>
-
-</a>
-
-
-
-
-<a href="profil.html">
-
-<i class="fa fa-user-circle"></i>
-
-<span>
-Profil
-</span>
-
-</a>
-
-
-
-
-<a href="#" onclick="logout()">
-
-<i class="fa fa-right-from-bracket"></i>
-
-<span>
-Déconnexion
-</span>
-
-</a>
-
-
-
-</nav>
-
-
-
-
-
-
-<!-- ==========================================
-     ASSISTANT INSPECTEURBOT IA
-========================================== -->
-
-
-<section class="assistant-section">
-
-
-
-<h2>
-
-🤖 Assistant Intelligent InspecteurBot IA
-
-</h2>
-
-
-
-
-
-<div class="ai-search-box">
-
-
-
-<h3>
-
-InspecteurBot IA
-
-</h3>
-
-
-
-
-<form id="searchForm">
-
-
-<input
-
-id="searchInput"
-
-type="text"
-
-placeholder="Exemple : Quelle est la procédure de licenciement ?"
-
-autocomplete="off"
-
->
-
-
-
-<button
-
-type="button"
-
-id="searchBtn">
-
-
-<i class="fa fa-search"></i>
-
-Interroger l'IA
-
-
-</button>
-
-
-
-</form>
-
-
-
-
-
-<div id="searchResults" class="search-results">
-
-
-<p>
-
-Posez une question juridique ou recherchez un article du Code du Travail RDC.
-
-</p>
-
+<!-- ================= ACCÈS RAPIDE ================= -->
+<section class="quick-section">
+
+<h2 style="text-align:center;">ACCÈS RAPIDE</h2>
+
+<div class="quick-grid">
+
+<div class="quick-card"><i class="fa-solid fa-building"></i><h3>Entreprises</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-clipboard-check"></i><h3>Inspections</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-triangle-exclamation"></i><h3>Infractions</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-file-signature"></i><h3>PV</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-users"></i><h3>Travailleurs</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-shield"></i><h3>Inspecteurs</h3><a href="#"><button>Accéder</button></a></div>
+<div class="quick-card"><i class="fa-solid fa-user-tie"></i><h3>Contrôleurs</h3><a href="#"><button>Accéder</button></a></div>
 
 </div>
-
-
-
-</div>
-
-
 
 </section>
 
+<!-- ================= FOOTER ================= -->
+<footer>
 
+<div class="footer-content">
 
+<img src="images/logo-igt.png" class="footer-logo" style="width:35px;">
 
+<h3>Inspection Générale du Travail</h3>
 
-
-
-<!-- ==========================================
-     MODULES RAPIDES INSPECTEURBOT IA
-========================================== -->
-
-
-<section class="modules-section">
-
-
-
-<div class="modules-grid">
-
-
-
-
-
-<a href="code-travail.html" class="module-card">
-
-
-<i class="fa fa-magnifying-glass"></i>
-
-
-<h3>
-
-Recherche Article
-
-</h3>
-
-
-<p>
-
-Recherche intelligente dans le Code du Travail RDC.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="pv.html" class="module-card">
-
-
-<i class="fa fa-file-signature"></i>
-
-
-<h3>
-
-Élaborer un PV
-
-</h3>
-
-
-<p>
-
-Création assistée des procès-verbaux d'inspection.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="decompte-final.html" class="module-card">
-
-
-<i class="fa fa-calculator"></i>
-
-
-<h3>
-
-Décompte Final
-
-</h3>
-
-
-<p>
-
-Calcul des droits du travailleur.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="inspecteurs.html" class="module-card">
-
-
-<i class="fa fa-user-tie"></i>
-
-
-<h3>
-
-Inspecteurs
-
-</h3>
-
-
-<p>
-
-Gestion des agents et inspecteurs.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="planification.html" class="module-card">
-
-
-<i class="fa fa-calendar-days"></i>
-
-
-<h3>
-
-Planification
-
-</h3>
-
-
-<p>
-
-Organisation des missions d'inspection.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-<a href="entreprises.html" class="module-card">
-
-
-<i class="fa fa-building"></i>
-
-
-<h3>
-
-Entreprises
-
-</h3>
-
-
-<p>
-
-Gestion numérique des entreprises.
-
-</p>
-
-
- </a>
-
-
-<a href="infractions.html" class="module-card">
-
-
-<i class="fa fa-triangle-exclamation"></i>
-
-
-<h3>
-
-Détection Infraction
-
-</h3>
-
-
-<p>
-
-Analyse des violations du Code du Travail.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="rapport-ia.html" class="module-card">
-
-
-<i class="fa fa-file-lines"></i>
-
-
-<h3>
-
-Rapport IA
-
-</h3>
-
-
-<p>
-
-Génération automatique des rapports.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="assistant-juridique.html" class="module-card">
-
-
-<i class="fa fa-scale-balanced"></i>
-
-
-<h3>
-
-Conseiller Juridique IA
-
-</h3>
-
-
-<p>
-
-Questions réponses juridiques.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="analyse.html" class="module-card">
-
-
-<i class="fa fa-chart-pie"></i>
-
-
-<h3>
-
-Analyse IA
-
-</h3>
-
-
-<p>
-
-Statistiques et risques professionnels.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="notifications.html" class="module-card">
-
-
-<i class="fa fa-bell"></i>
-
-
-<h3>
-
-Notifications IA
-
-</h3>
-
-
-<p>
-
-Alertes et rappels automatiques.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="#" onclick="ouvrirVocal()" class="module-card">
-
-
-<i class="fa fa-microphone"></i>
-
-
-<h3>
-
-Assistant Vocal
-
-</h3>
-
-
-<p>
-
-Commande vocale InspecteurBot.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="traduction.html" class="module-card">
-
-
-<i class="fa fa-language"></i>
-
-
-<h3>
-
-Traduction IA
-
-</h3>
-
-
-<p>
-
-Français, Lingala, Swahili, Kikongo, Tshiluba.
-
-</p>
-
-
-</a>
-
-
-
-
-
-
-
-<a href="fiches.html" class="module-card">
-
-
-<i class="fa fa-folder-open"></i>
-
-
-<h3>
-
-Fiches Inspection
-
-</h3>
-
-
-<p>
-
-F01, F02, F03 et formulaires.
-
-</p>
-
-
-</a>
-
-
-
-
-
-</div>
-
-
-
-<!-- ==========================================
-     FONCTIONS AVANCÉES IA
-========================================== -->
-
-
-<div class="advanced-ai-grid">
-
-
-
-
-
-<div class="module-card">
-
-
-<i class="fa fa-lightbulb"></i>
-
-
-<h3>
-
-Suggestions IA
-
-</h3>
-
-
-<p>
-
-InspecteurBot propose automatiquement les articles,
-infractions et mesures applicables.
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="module-card">
-
-
-<i class="fa fa-chart-line"></i>
-
-
-<h3>
-
-Analyse Prédictive
-
-</h3>
-
-
-<p>
-
-Identification des entreprises présentant des risques
-sociaux ou juridiques.
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="module-card">
-
-
-<i class="fa fa-file-circle-check"></i>
-
-
-<h3>
-
-Rédaction Automatique
-
-</h3>
-
-
-<p>
-
-Création assistée des PV, rapports, convocations
-et correspondances.
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="module-card">
-
-
-<i class="fa fa-brain"></i>
-
-
-<h3>
-
-Copilote Inspecteur
-
-</h3>
-
-
-<p>
-
-Assistance pendant les contrôles et missions terrain.
-
-</p>
-
-
-</div>
-
-
-
-</div>
-
-
-
- </section>
-
-
- <!-- ==========================================
-     STATISTIQUES INSPECTEURBOT IA
-========================================== -->
-
-
-<section class="stats-section">
-
-
-<div class="stats-grid">
-
-
-
-
-
-<div class="stats-card">
-
-
-<i class="fa fa-book"></i>
-
-
-<h3>
-
-Articles
-
-</h3>
-
-
-<p id="statArticles">
-
-0 consulté
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="stats-card">
-
-
-<i class="fa fa-search"></i>
-
-
-<h3>
-
-Recherches
-
-</h3>
-
-
-<p id="statRecherche">
-
-0
-
-</p>
-
-
-</div>
-
-
-
-
-
-
-
-<div class="stats-card">
-
-
-<i class="fa fa-robot"></i>
-
-
-<h3>
-
-Questions IA
-
-</h3>
-
-
-<p id="statIA">
-
-0
-
-</p>
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- ==========================================
-     FOOTER INSPECTEURBOT
-========================================== -->
-
-
-<footer class="dashboard-footer">
-
-
-
-<img
-
-src="images/logo-igt.png"
-
-class="footer-logo"
-
-alt="Logo IGT"
-
->
-
-
-
-
-<h3>
-
-Inspection Générale du Travail
-
-</h3>
-
-
-
-
-<p>
-
-InspecteurBot RDC
-
-</p>
-
-
-
-
-<p>
-
-Plateforme numérique intelligente
-des Inspecteurs du Travail
-de la République Démocratique du Congo.
-
-</p>
-
-
-
+<p>InspecteurBot IA</p>
 
 <hr>
 
-
-
-
-
 <p>
-
-Créé par
-
-<strong>
-
-Inspecteur Limengo (Pmiller)
-
-</strong>
-
-
-© 2026
-
+Créé Par <strong>Inspecteur Limengo (Pmiller)</strong> © 2026
 </p>
 
-
-
+</div>
 
 </footer>
 
+</main>
+</div>
 
-
-
-
-
-
-<!-- ==========================================
-     JAVASCRIPT PRINCIPAL
-========================================== -->
-
-
+<!-- ================= NOTIFS ================= -->
+<div id="notif-container"></div>
 
 <script>
 
-
-/* ==========================================
-   PROTECTION SESSION
-========================================== */
-
-
-if(localStorage.getItem("isLoggedIn") !== "true"){
-
-window.location.href="index.html";
-
+/* TIME */
+function update(){
+    const d = new Date();
+    document.getElementById("heure").innerText = d.toLocaleTimeString("fr-FR");
+    document.getElementById("date").innerText = d.toLocaleDateString("fr-FR");
 }
+setInterval(update,1000);
+update();
 
-
-
-
-
-/* ==========================================
-   DECONNEXION
-========================================== */
-
-
-function logout(){
-
-
-localStorage.removeItem("isLoggedIn");
-
-
-localStorage.removeItem("currentUser");
-
-
-window.location.href="index.html";
-
-
-}
-
-
-
-
-
-
-/* ==========================================
-   SLIDER PHOTOS IGT
-========================================== */
-
-
-const images = document.querySelectorAll(".slider img");
-
-
-let imageIndex = 0;
-
-
+/* SLIDER 10s */
+let i = 0;
+const slides = document.querySelectorAll("#slider img");
 
 setInterval(()=>{
-
-
-if(images.length > 0){
-
-
-images[imageIndex].classList.remove("active");
-
-
-
-imageIndex++;
-
-
-
-if(imageIndex >= images.length){
-
-imageIndex = 0;
-
-}
-
-
-
-images[imageIndex].classList.add("active");
-
-
-}
-
-
-
-},4000);
-
-
-
-
-
-
-
-
-/* ==========================================
-   DATE ET HEURE
-========================================== */
-
-
-function updateDateTime(){
-
-
-const maintenant = new Date();
-
-
-
-const heure = document.getElementById("clock");
-
-const jour = document.getElementById("day");
-
-const date = document.getElementById("date");
-
-
-
-
-
-if(heure){
-
-
-heure.innerHTML = maintenant.toLocaleTimeString(
-"fr-FR",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
-);
-
-
-}
-
-
-
-
-
-if(jour){
-
-
-jour.innerHTML = maintenant.toLocaleDateString(
-"fr-FR",
-{
-weekday:"long"
-}
-);
-
-
-}
-
-
-
-
-
-if(date){
-
-
-date.innerHTML = maintenant.toLocaleDateString(
-"fr-FR",
-{
-day:"2-digit",
-month:"long",
-year:"numeric"
-}
-);
-
-
-}
-
-
-}
-
-
-
-
-updateDateTime();
-
-
-setInterval(updateDateTime,1000);
-
-
-<script>
-
-
-/* ==========================================
-   MESSAGES DE MOTIVATION
-========================================== */
-
-
-const motivations = [
-
-
+    slides[i].classList.remove("active");
+    i = (i+1)%slides.length;
+    slides[i].classList.add("active");
+},9000);
+
+/* MOTIVATION */
+const msgs = [
+"Le travail construit la nation 🇨🇩","La discipline mène au succès","Inspecter, c’est protéger","Justice sociale et rigueur","L’avenir dépend du travail","Respect du code du travail","Motivation et courage 💼","Chaque mission compte","Phrase motivante 9","Phrase motivante 10","Phrase motivante 11","Phrase motivante 12","Phrase motivante 13","Phrase motivante 14","Phrase motivante 15","Phrase motivante 16","Phrase motivante 17","Phrase motivante 18","Phrase motivante 19","Phrase motivante 20","Phrase motivante 21","Phrase motivante 22","Phrase motivante 23","Phrase motivante 24","Phrase motivante 25","Phrase motivante 26","Phrase motivante 27","Phrase motivante 28","Phrase motivante 29","Phrase motivante 30","Phrase motivante 31","Phrase motivante 32","Phrase motivante 33","Phrase motivante 34","Phrase motivante 35","Phrase motivante 36","Phrase motivante 37","Phrase motivante 38","Phrase motivante 39","Phrase motivante 40",
 "Le travail construit la nation 🇨🇩",
-
-
-"Chaque inspection protège les travailleurs 🇨🇩",
-
-
-"La justice sociale renforce la paix 🇨🇩",
-
-
-"L'intégrité est la force du service public 🇨🇩",
-
-
-"Protéger les travailleurs est une mission noble 🇨🇩",
-
-
-"Le respect des lois construit l'avenir 🇨🇩"
-
-
+"La discipline mène au succès",
+"Inspecter, c’est protéger",
+"Justice sociale et rigueur",
+"L’avenir dépend du travail",
+"Respect du code du travail",
+"Motivation et courage 💼",
+"Chaque mission compte"
 ];
 
-
-
-let motivationIndex = 0;
-
-
-
+let m = 0;
 setInterval(()=>{
+    document.getElementById("motivationText").innerText = msgs[m];
+    m = (m+1)%msgs.length;
+},8000);
 
+/* NOTIFICATIONS */
+const notif = ["Bienvenue 👋","Mission active","Inspection en cours","Rapport prêt","Travail sérieux 💼"];
 
-const zone = document.getElementById("motivationText");
-
-
-
-if(zone){
-
-
-zone.innerHTML = motivations[motivationIndex];
-
-
-
-motivationIndex++;
-
-
-
-if(motivationIndex >= motivations.length){
-
-
-motivationIndex = 0;
-
-
+function show(){
+    const box = document.createElement("div");
+    box.className="notif";
+    box.style.background=["#25D366","#128C7E","#34B7F1","#FF9800"][Math.floor(Math.random()*4)];
+    box.innerText = notif[Math.floor(Math.random()*notif.length)];
+    document.getElementById("notif-container").appendChild(box);
+    setTimeout(()=>box.remove(),5000);
 }
 
-
-}
-
-
-},4000);
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   RECHERCHE INTELLIGENTE INSPECTEURBOT IA
-========================================== */
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-const bouton = document.getElementById("searchBtn");
-
-const input = document.getElementById("searchInput");
-
-const resultat = document.getElementById("searchResults");
-
-
-
-if(!bouton || !input) return;
-
-
-
-
-
-bouton.addEventListener(
-"click",
-async()=>{
-
-
-
-const question = input.value.trim();
-
-
-
-
-
-if(question === ""){
-
-
-resultat.innerHTML =
-
-"<p>Veuillez écrire une question.</p>";
-
-
-return;
-
-
-}
-
-
-
-
-
-resultat.innerHTML =
-
-"<p>🤖 InspecteurBot IA analyse votre demande...</p>";
-
-
-
-
-
-try{
-
-
-
-
-
-if(typeof ragSearch === "function"){
-
-
-
-const reponse = await ragSearch(question);
-
-
-
-resultat.innerHTML = reponse;
-
-
-
-}
-
-
-
-
-
-
-else if(typeof vectorSearch === "function"){
-
-
-
-const resultats = await vectorSearch(question);
-
-
-
-resultat.innerHTML =
-
-JSON.stringify(
-resultats,
-null,
-2
-);
-
-
-
-}
-
-
-
-
-
-
-else{
-
-
-resultat.innerHTML =
-
-"<p>Base IA non chargée.</p>";
-
-
-}
-
-
-
-
-
-
-
-}
-
-catch(error){
-
-
-console.error(error);
-
-
-
-resultat.innerHTML =
-
-"<p>Une erreur est survenue pendant l'analyse IA.</p>";
-
-
-
-}
-
-
-
-
-
-}
-
-);
-
-
-
-}
-
-);
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   ASSISTANT VOCAL
-========================================== */
-
-
-function ouvrirVocal(){
-
-
-
-if(
-typeof SpeechRecognition !== "undefined"
-||
-typeof webkitSpeechRecognition !== "undefined"
-){
-
-
-
-alert(
-"🎤 Assistant vocal InspecteurBot activé"
-);
-
-
-
-}
-
-else{
-
-
-alert(
-"La reconnaissance vocale n'est pas disponible sur cet appareil."
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   STATISTIQUES
-========================================== */
-
-
-
-let recherches = Number(
-
-localStorage.getItem("recherchesIA")
-|| 0
-
-);
-
-
-
-
-
-const compteurRecherche = 
-document.getElementById("statRecherche");
-
-
-
-if(compteurRecherche){
-
-
-compteurRecherche.innerHTML = recherches;
-
-
-}
-
-
-
-
-
-
-console.log(
-"✅ Dashboard InspecteurBot IA chargé"
-);
-
-
-
-</script>
-
-
-
-
-
-
-
-<!-- ==========================================
-     MODULES JAVASCRIPT INSPECTEURBOT IA
-========================================== -->
+setInterval(show,10000);
+let s=0;const ss=document.querySelectorAll("#sidebarSlider img");
+setInterval(()=>{ss[s].classList.remove("active");s=(s+1)%ss.length;ss[s].classList.add("active");},9000);
 
 
 <script src="assets/data/code-travail.js"></script>
@@ -1691,8 +310,6 @@ console.log(
 
 
 <script src="assets/js/ia.js"></script>
-
-
 
 
 
