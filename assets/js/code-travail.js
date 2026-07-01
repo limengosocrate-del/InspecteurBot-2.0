@@ -225,8 +225,6 @@ function afficherArticles(liste){
 
 }
 
-chargerArticles();
-
 /* ===================================================
    OUVRIR UN ARTICLE
 =================================================== */
