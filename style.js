@@ -1,1094 +1,3308 @@
+/*=================================================
+ INSPECTEURBOT RDC 2026
+ DASHBOARD PREMIUM
+ PARTIE 1
+ RESET + VARIABLES + LAYOUT + SIDEBAR
+==================================================*/
 
-/*=================================
-      INSPECTEURBOT RDC
-      STYLE DASHBOARD
-==================================*/
+
+/*==============================
+ VARIABLES
+==============================*/
+
+:root{
+
+    --bleu-fonce:#041c5c;
+    --bleu:#0b52d6;
+    --bleu-clair:#0077c8;
+    --or:#FFD700;
+    --blanc:#ffffff;
+    --gris:#edf2f9;
+    --rouge:#ce1126;
+    --vert:#1eaa4b;
+
+    --shadow:
+    0 15px 40px rgba(0,0,0,.12);
+
+    --transition:.35s ease;
+
+}
+
+
+/*==============================
+ RESET
+==============================*/
 
 *{
+
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family:'Poppins',sans-serif;
+
 }
+
+
+html{
+
+    scroll-behavior:smooth;
+
+}
+
 
 body{
-    background:#edf2f9;
+
+    background:
+    linear-gradient(
+        135deg,
+        #edf2f9,
+        #dbe7ff
+    );
+
+    color:#142c7a;
+
     overflow-x:hidden;
+
+    line-height:1.6;
+
 }
 
-/*=================================
-      LAYOUT
-==================================*/
+
+img{
+
+    max-width:100%;
+    display:block;
+
+}
+
+
+button{
+
+    cursor:pointer;
+    border:none;
+    font-family:inherit;
+
+}
+
+
+a{
+
+    text-decoration:none;
+
+}
+
+
+
+/*==============================
+ SCROLLBAR
+==============================*/
+
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+
+::-webkit-scrollbar-track{
+
+    background:#041c5c;
+
+}
+
+
+::-webkit-scrollbar-thumb{
+
+    background:var(--or);
+
+    border-radius:30px;
+
+}
+
+
+
+/*==============================
+ LAYOUT GENERAL
+==============================*/
+
 
 .dashboard-layout{
+
     display:flex;
+
     min-height:100vh;
+
 }
 
-/*=================================
-      SIDEBAR
-==================================*/
+
+
+/*==============================
+ SIDEBAR PREMIUM
+==============================*/
+
 
 .sidebar{
+
     width:270px;
-    background:#041c5c;
-    color:#fff;
+
+    height:100vh;
+
     position:fixed;
-    top:0;
+
     left:0;
-    height:100%;
-    padding:20px;
+
+    top:0;
+
+    background:
+
+    linear-gradient(
+        180deg,
+        #041c5c,
+        #08296d
+    );
+
+
+    color:white;
+
+    padding:25px 18px;
+
     overflow-y:auto;
+
+    z-index:1000;
+
+
+    box-shadow:
+
+    8px 0 30px rgba(0,0,0,.18);
+
+
+    transition:var(--transition);
+
 }
+
+
+
+/* Effet lumineux */
+
+
+.sidebar::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-100px;
+
+    right:-100px;
+
+    width:250px;
+
+    height:250px;
+
+    background:
+
+    radial-gradient(
+        circle,
+        rgba(255,215,0,.25),
+        transparent 70%
+    );
+
+
+}
+
+
+
+/* Logo */
+
 
 .sidebar-logo{
+
     text-align:center;
-    margin-bottom:35px;
+
+    margin-bottom:40px;
+
+    position:relative;
+
+    z-index:2;
+
 }
+
+
 
 .sidebar-logo img{
+
     width:90px;
-    margin-bottom:10px;
+
+    height:90px;
+
+    object-fit:contain;
+
+    margin:auto;
+
+    filter:
+
+    drop-shadow(
+        0 0 15px rgba(255,215,0,.7)
+    );
+
+    transition:.4s;
+
 }
+
+
+
+.sidebar-logo img:hover{
+
+    transform:
+
+    scale(1.15)
+    rotate(8deg);
+
+}
+
+
 
 .sidebar-logo h3{
-    font-size:18px;
-    font-weight:600;
+
+    margin-top:12px;
+
+    font-size:19px;
+
+    color:var(--or);
+
+    font-weight:700;
+
 }
+
+
+
+.sidebar-logo p{
+
+    font-size:13px;
+
+    color:#dbe8ff;
+
+}
+
+
+
+/* Menu */
+
 
 .sidebar ul{
+
     list-style:none;
+
+    position:relative;
+
+    z-index:2;
+
 }
+
+
 
 .sidebar ul li{
-    margin-bottom:10px;
+
+    margin-bottom:12px;
+
 }
+
+
 
 .sidebar ul li a{
-    text-decoration:none;
-    color:#fff;
+
     display:flex;
+
     align-items:center;
+
     gap:15px;
+
+
     padding:15px;
-    border-radius:12px;
-    transition:.3s;
+
+    color:white;
+
+    border-radius:15px;
+
+
     font-size:15px;
+
+    transition:var(--transition);
+
 }
+
+
+
+.sidebar ul li a i{
+
+    width:25px;
+
+    font-size:20px;
+
+    color:var(--or);
+
+}
+
+
 
 .sidebar ul li a:hover,
+
+
 .sidebar ul li.active a{
-    background:#0b52d6;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0b52d6,
+        #06245e
+    );
+
+
+    transform:
+
+    translateX(8px);
+
+
+    box-shadow:
+
+    0 8px 25px rgba(0,0,0,.25);
+
+
 }
 
-.sidebar ul li i{
-    width:20px;
-}
+
+
+/* Déconnexion */
+
 
 .logout{
-    margin-top:35px;
+
+    margin-top:40px;
+
 }
+
+
 
 .logout a{
+
+
     display:flex;
+
     justify-content:center;
+
     align-items:center;
+
     gap:12px;
-    background:#e21b23;
-    color:#fff;
-    text-decoration:none;
+
+
     padding:16px;
-    border-radius:12px;
-    font-weight:600;
+
+
+    border-radius:15px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #ce1126,
+        #9d0c1c
+    );
+
+
+    color:white;
+
+    font-weight:700;
+
+
+    transition:.35s;
+
 }
+
+
 
 .logout a:hover{
-    background:#c8141c;
+
+
+    transform:
+
+    translateY(-5px);
+
+
+    box-shadow:
+
+    0 10px 25px rgba(206,17,38,.45);
+
+
 }
 
-/*=================================
-      MAIN CONTENT
-==================================*/
+
+
+/*==============================
+ CONTENU PRINCIPAL
+==============================*/
+
 
 .main-content{
+
+
     flex:1;
+
+
     margin-left:270px;
-    padding:25px;
+
+
+    padding:30px;
+
+
+    animation:
+
+    fadeDashboard .7s ease;
+
+
 }
 
-/*=================================
-      BANNER
-==================================*/
+
+
+@keyframes fadeDashboard{
+
+
+from{
+
+    opacity:0;
+
+    transform:translateY(25px);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+
+}
+
+
+/*=================================================
+ INSPECTEURBOT RDC 2026
+ DASHBOARD PREMIUM
+ PARTIE 2
+ BANNER + STATISTIQUES + ACCÈS RAPIDE
+==================================================*/
+
+
+/*==============================
+ BANNER PROFESSIONNEL
+==============================*/
+
 
 .banner{
+
     position:relative;
-    height:250px;
-    border-radius:25px;
+
+    height:260px;
+
+    border-radius:30px;
+
     overflow:hidden;
-    margin-bottom:30px;
+
+    margin-bottom:35px;
+
+
+    box-shadow:
+
+    0 20px 45px rgba(0,0,0,.18);
+
+
 }
+
+
 
 .banner-image{
+
     width:100%;
+
     height:100%;
+
     object-fit:cover;
+
+
+    transition:.6s;
+
 }
+
+
+
+.banner:hover .banner-image{
+
+    transform:scale(1.05);
+
+}
+
+
 
 .banner-overlay{
+
+
     position:absolute;
+
     inset:0;
-    background:rgba(0,0,0,.45);
+
+
+    background:
+
+    linear-gradient(
+        90deg,
+        rgba(4,28,92,.85),
+        rgba(4,28,92,.45)
+    );
+
+
 }
+
+
 
 .banner-content{
+
+
     position:absolute;
+
     inset:0;
+
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    padding:35px;
-    color:#fff;
+
+
+    padding:40px;
+
+
+    color:white;
+
+
 }
+
+
+
+/* Partie gauche */
+
 
 .banner-left{
+
+
     display:flex;
+
     align-items:center;
-    gap:20px;
+
+    gap:25px;
+
+
 }
+
+
 
 .banner-left img{
-    width:90px;
-    background:#fff;
+
+
+    width:100px;
+
+    height:100px;
+
+
+    background:white;
+
+
+    padding:8px;
+
+
     border-radius:50%;
-    padding:5px;
+
+
+    box-shadow:
+
+    0 0 25px rgba(255,215,0,.6);
+
+
 }
+
+
 
 .banner-left h1{
-    font-size:42px;
-    margin-bottom:10px;
+
+
+    font-size:45px;
+
+    color:#fff;
+
+
+    text-shadow:
+
+    0 5px 20px rgba(0,0,0,.4);
+
+
 }
+
+
 
 .banner-left h3{
-    color:#ffd43b;
-    margin-bottom:12px;
+
+
+    color:var(--or);
+
+    font-size:22px;
+
+
 }
+
+
 
 .banner-left p{
-    max-width:600px;
-    line-height:1.6;
+
+
+    max-width:650px;
+
+    color:#e8f1ff;
+
+
 }
+
+
+
+/* Partie droite */
+
 
 .banner-right{
+
+
     display:flex;
+
     flex-direction:column;
+
     gap:15px;
+
+
 }
+
+
 
 .top-box{
-    background:rgba(255,255,255,.15);
-    backdrop-filter:blur(10px);
-    padding:15px 20px;
-    border-radius:15px;
+
+
     display:flex;
+
     align-items:center;
+
     gap:12px;
+
+
+    padding:18px 22px;
+
+
+    border-radius:18px;
+
+
+    background:
+
+    rgba(255,255,255,.15);
+
+
+    backdrop-filter:
+
+    blur(15px);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.2);
+
+
+    color:white;
+
+
+    animation:
+
+    floatingBox 3s infinite;
+
+
 }
+
+
+
+@keyframes floatingBox{
+
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+
+50%{
+
+transform:translateY(-5px);
+
+}
+
+
+}
+
+
 
 .top-box i{
-    font-size:20px;
+
+    color:var(--or);
+
+    font-size:22px;
+
 }
 
-/*=================================
-      SECTION TITRES
-==================================*/
+
+
+/*==============================
+ TITRES SECTIONS
+==============================*/
+
 
 .dashboard-section h2,
+
 .quick-section h2{
+
+
     color:#142c7a;
-    margin-bottom:25px;
+
+    font-size:30px;
+
+    margin-bottom:30px;
+
+
 }
 
-/*=================================
-      CARDS STATISTIQUES
-==================================*/
+
+
+/*==============================
+ CARTES STATISTIQUES
+==============================*/
+
 
 .stats-grid{
+
+
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:20px;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(240px,1fr)
+    );
+
+
+    gap:25px;
+
+
 }
+
+
 
 .card{
-    background:#fff;
-    border-radius:20px;
-    padding:25px;
+
+
+    background:white;
+
+
+    border-radius:25px;
+
+
+    padding:28px;
+
+
     display:flex;
+
     align-items:center;
-    gap:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.3s;
+
+    gap:22px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+    transition:.4s;
+
+
 }
+
+
+
+.card::before{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:120px;
+
+    height:120px;
+
+
+    right:-40px;
+
+    top:-40px;
+
+
+    background:
+
+    rgba(255,215,0,.15);
+
+
+    border-radius:50%;
+
+
+}
+
+
 
 .card:hover{
-    transform:translateY(-5px);
+
+
+    transform:
+
+    translateY(-10px);
+
+
+    box-shadow:
+
+    0 20px 45px rgba(0,0,0,.20);
+
+
 }
+
+
 
 .card i{
-    width:75px;
-    height:75px;
-    border-radius:18px;
+
+
+    width:80px;
+
+    height:80px;
+
+
+    border-radius:22px;
+
+
     display:flex;
+
     justify-content:center;
+
     align-items:center;
-    color:#fff;
-    font-size:30px;
+
+
+    color:white;
+
+
+    font-size:32px;
+
+
 }
+
+
 
 .card h3{
+
+
     font-size:18px;
+
     margin-bottom:8px;
+
+
+    color:#333;
+
+
 }
+
+
 
 .card h1{
-    font-size:34px;
+
+
+    font-size:36px;
+
+
     color:#142c7a;
+
+
 }
+
+
 
 .card p{
+
+
     color:#777;
+
 }
 
-/* Couleurs */
+
+
+/* Couleurs cartes */
+
 
 .blue{
-    background:#0b52d6;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0b52d6,
+        #06245e
+    );
+
 }
+
+
 
 .green{
-    background:#1eaa4b;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #1eaa4b,
+        #08752d
+    );
+
 }
+
+
 
 .orange{
-    background:#ff9800;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #ff9800,
+        #e65100
+    );
+
 }
+
+
 
 .purple{
-    background:#673ab7;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #673ab7,
+        #311b92
+    );
+
 }
+
+
 
 .cyan{
-    background:#00acc1;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00acc1,
+        #006064
+    );
+
 }
+
+
 
 .dark{
-    background:#08296d;
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #08296d,
+        #041c5c
+    );
+
 }
 
-/*=================================
-      ACCÈS RAPIDE
-==================================*/
+
+
+/*==============================
+ ACCÈS RAPIDE INSPECTION
+==============================*/
+
 
 .quick-section{
-    margin-top:40px;
+
+
+    margin-top:45px;
+
+
 }
+
+
 
 .quick-grid{
+
+
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(280px,1fr)
+    );
+
+
+    gap:25px;
+
+
 }
+
+
 
 .quick-card{
-    background:#fff;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.3s;
+
+
+    background:white;
+
+
+    padding:32px;
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
+    transition:.4s;
+
+
 }
+
+
 
 .quick-card:hover{
-    transform:translateY(-5px);
+
+
+    transform:
+
+    translateY(-10px);
+
+
 }
+
+
 
 .quick-card i{
-    font-size:42px;
-    color:#0b52d6;
+
+
+    font-size:45px;
+
+
+    color:var(--bleu);
+
+
     margin-bottom:20px;
+
+
 }
+
+
 
 .quick-card h3{
+
+
     color:#142c7a;
-    margin-bottom:12px;
+
+    font-size:22px;
+
+
+    margin-bottom:15px;
+
+
 }
+
+
 
 .quick-card p{
+
+
     color:#666;
-    line-height:1.7;
-    margin-bottom:20px;
+
+    line-height:1.8;
+
+
+    margin-bottom:25px;
+
+
 }
+
+
 
 .quick-card button{
-    border:none;
-    background:#0b52d6;
-    color:#fff;
-    padding:12px 30px;
-    border-radius:12px;
-    cursor:pointer;
-    font-weight:600;
+
+
+    padding:14px 30px;
+
+
+    border-radius:15px;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #0b52d6,
+        #06245e
+    );
+
+
+    color:white;
+
+
+    font-weight:700;
+
+
+    transition:.35s;
+
+
 }
+
+
 
 .quick-card button:hover{
-    background:#083ea5;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #FFD700,
+        #ffb300
+    );
+
+
+    color:#041c5c;
+
+
+    transform:
+
+    translateY(-5px);
+
+
 }
 
-/*=================================
-      GRAPHIQUES
-==================================*/
+
+/*=================================================
+ INSPECTEURBOT RDC 2026
+ DASHBOARD PREMIUM
+ PARTIE 3
+ GRAPHIQUES + INSPECTIONS + IA
+==================================================*/
+
+
+/*==============================
+ GRAPHIQUES STATISTIQUES
+==============================*/
+
 
 .charts-section{
+
+
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(450px,1fr));
-    gap:25px;
-    margin-top:40px;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(420px,1fr)
+    );
+
+
+    gap:30px;
+
+
+    margin-top:45px;
+
+
 }
+
+
 
 .chart-box{
-    background:#fff;
+
+
+    background:white;
+
+
     padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
+    transition:.4s;
+
+
 }
+
+
+
+.chart-box:hover{
+
+
+    transform:
+
+    translateY(-8px);
+
+
+}
+
+
 
 .chart-box h3{
+
+
     color:#142c7a;
+
+
+    font-size:22px;
+
+
     margin-bottom:25px;
+
+
 }
+
+
 
 .chart-box canvas{
-    width:100% !important;
-    height:300px !important;
+
+
+    width:100%!important;
+
+
+    height:320px!important;
+
+
 }
 
-/*=================================
-      DERNIÈRES INSPECTIONS
-==================================*/
+
+
+/*==============================
+ LISTE DES INSPECTIONS
+==============================*/
+
 
 .inspection-list{
-    background:#fff;
+
+
+    margin-top:45px;
+
+
+    background:white;
+
+
     padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    margin-top:40px;
+
+
+    border-radius:25px;
+
+
+    box-shadow:
+
+    var(--shadow);
+
+
 }
+
+
 
 .inspection-list h3{
+
+
     color:#142c7a;
+
+
+    font-size:24px;
+
+
     margin-bottom:25px;
+
+
 }
+
+
 
 .inspection-list table{
+
+
     width:100%;
+
+
     border-collapse:collapse;
+
+
 }
+
+
+
+.inspection-list th{
+
+
+    background:#041c5c;
+
+
+    color:white;
+
+
+    padding:15px;
+
+
+    text-align:left;
+
+
+}
+
+
 
 .inspection-list td{
+
+
     padding:18px;
-    border-bottom:1px solid #eee;
+
+
+    border-bottom:
+
+    1px solid #eee;
+
+
 }
+
+
+
+.inspection-list tr:hover{
+
+
+    background:#f5f8ff;
+
+
+}
+
+
+
+/* Statuts */
+
 
 .success{
+
+
     background:#dff5e7;
+
+
     color:#178644;
-    padding:8px 16px;
+
+
+    padding:8px 18px;
+
+
     border-radius:30px;
+
+
+    font-weight:600;
+
+
 }
+
+
 
 .warning{
+
+
     background:#fff0d8;
+
+
     color:#d18200;
-    padding:8px 16px;
+
+
+    padding:8px 18px;
+
+
     border-radius:30px;
+
+
+    font-weight:600;
+
+
 }
+
+
 
 .danger{
+
+
     background:#ffe2e2;
+
+
     color:#cf2222;
-    padding:8px 16px;
+
+
+    padding:8px 18px;
+
+
     border-radius:30px;
+
+
+    font-weight:600;
+
+
 }
 
-/*=================================
-      FOOTER
-==================================*/
+
+
+/*==============================
+ MODULES INTELLIGENCE ARTIFICIELLE
+==============================*/
+
+
+.ai-dashboard{
+
+
+    margin-top:50px;
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(
+        auto-fit,
+        minmax(280px,1fr)
+    );
+
+
+    gap:25px;
+
+
+}
+
+
+
+.ai-card{
+
+
+    padding:30px;
+
+
+    border-radius:25px;
+
+
+    color:white;
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #041c5c,
+        #08296d
+    );
+
+
+    box-shadow:
+
+
+    0 15px 35px rgba(0,0,0,.20);
+
+
+    transition:.4s;
+
+
+    border:
+
+    1px solid rgba(255,215,0,.25);
+
+
+}
+
+
+
+.ai-card:hover{
+
+
+    transform:
+
+    translateY(-10px);
+
+
+    box-shadow:
+
+
+    0 20px 45px rgba(0,0,0,.35);
+
+
+}
+
+
+
+.ai-card i{
+
+
+    font-size:45px;
+
+
+    color:#FFD700;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.ai-card h3{
+
+
+    color:#FFD700;
+
+
+    font-size:22px;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.ai-card p{
+
+
+    color:#dbe8ff;
+
+
+    line-height:1.7;
+
+
+}
+
+
+
+/* Bouton IA */
+
+
+.ai-card button{
+
+
+    margin-top:20px;
+
+
+    padding:13px 25px;
+
+
+    border-radius:15px;
+
+
+    background:#FFD700;
+
+
+    color:#041c5c;
+
+
+    font-weight:700;
+
+
+    transition:.35s;
+
+
+}
+
+
+
+.ai-card button:hover{
+
+
+    transform:
+
+    scale(1.05);
+
+
+    box-shadow:
+
+
+    0 0 20px #FFD700;
+
+
+}
+
+
+
+/*==============================
+ RAPPORT JURIDIQUE IA
+==============================*/
+
+
+.rapport-preview{
+
+
+    margin-top:45px;
+
+
+    padding:35px;
+
+
+    background:
+
+
+    linear-gradient(
+        145deg,
+        #041c5c,
+        #08296d
+    );
+
+
+    border-radius:30px;
+
+
+    color:white;
+
+
+    border:
+
+    1px solid rgba(255,215,0,.25);
+
+
+    box-shadow:
+
+
+    0 20px 45px rgba(0,0,0,.25);
+
+
+}
+
+
+
+.rapport-preview h2{
+
+
+    text-align:center;
+
+
+    color:#FFD700;
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+.rapport-preview .article-reference{
+
+
+    padding:20px;
+
+
+    background:
+
+    rgba(255,255,255,.08);
+
+
+    border-left:
+
+    5px solid #FFD700;
+
+
+    border-radius:15px;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.article-reference strong{
+
+
+    color:#FFD700;
+
+
+}
+
+
+
+/*==============================
+ FOOTER DASHBOARD
+==============================*/
+
 
 .footer{
+
+
+    margin-top:50px;
+
+
+    padding:35px;
+
+
     text-align:center;
-    padding:30px;
-    color:#666;
+
+
+    background:#041c5c;
+
+
+    color:white;
+
+
+    border-radius:30px 30px 0 0;
+
+
 }
 
-/*=================================
-      RESPONSIVE
-==================================*/
 
-@media(max-width:1000px){
+
+.footer img{
+
+
+    width:85px;
+
+
+    margin:auto;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.footer h3{
+
+
+    color:#FFD700;
+
+
+    margin-bottom:10px;
+
+
+}
+
+
+
+/*==============================
+ BOUTON RETOUR HAUT
+==============================*/
+
+
+#btnTop{
+
+
+    position:fixed;
+
+
+    right:25px;
+
+
+    bottom:25px;
+
+
+    width:60px;
+
+
+    height:60px;
+
+
+    border-radius:50%;
+
+
+    background:#FFD700;
+
+
+    color:#041c5c;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+    font-size:24px;
+
+
+    z-index:999;
+
+
+    box-shadow:
+
+
+    0 10px 25px rgba(0,0,0,.25);
+
+
+    transition:.35s;
+
+
+}
+
+
+
+#btnTop:hover{
+
+
+    transform:
+
+    translateY(-8px);
+
+
+    box-shadow:
+
+
+    0 0 25px #FFD700;
+
+
+ }
+
+/*=================================================
+ INSPECTEURBOT RDC 2026
+ DASHBOARD PREMIUM
+ PARTIE 4
+ RESPONSIVE + LOGIN + IMPRESSION
+==================================================*/
+
+
+/*==============================
+ TABLETTES
+==============================*/
+
+
+@media(max-width:1100px){
+
 
     .sidebar{
-        width:100%;
-        position:relative;
-        height:auto;
+
+        width:230px;
+
     }
+
 
     .main-content{
-        margin-left:0;
+
+        margin-left:230px;
+
+        padding:20px;
+
     }
 
-    .dashboard-layout{
-        flex-direction:column;
+
+    .banner-left h1{
+
+        font-size:35px;
+
     }
+
 
     .banner-content{
-        flex-direction:column;
-        justify-content:center;
-        text-align:center;
-        gap:25px;
+
+        padding:25px;
+
     }
 
-    .banner-left{
-        flex-direction:column;
-    }
+
 }
+
+
+
+/*==============================
+ MOBILE
+==============================*/
+
 
 @media(max-width:768px){
 
-    .banner{
-        height:420px;
+
+
+    .dashboard-layout{
+
+
+        flex-direction:column;
+
+
     }
 
-    .charts-section{
-        grid-template-columns:1fr;
+
+
+    .sidebar{
+
+
+        width:100%;
+
+
+        height:auto;
+
+
+        position:relative;
+
+
+        border-radius:0 0 25px 25px;
+
+
     }
+
+
+
+    .main-content{
+
+
+        margin-left:0;
+
+
+        padding:15px;
+
+
+    }
+
+
+
+    .sidebar-logo{
+
+
+        margin-bottom:20px;
+
+
+    }
+
+
+
+    .banner{
+
+
+        height:auto;
+
+
+        min-height:520px;
+
+
+    }
+
+
+
+    .banner-content{
+
+
+        flex-direction:column;
+
+
+        justify-content:center;
+
+
+        text-align:center;
+
+
+        gap:25px;
+
+
+    }
+
+
+
+    .banner-left{
+
+
+        flex-direction:column;
+
+
+    }
+
+
+
+    .banner-left h1{
+
+
+        font-size:28px;
+
+
+    }
+
+
+
+    .banner-left p{
+
+
+        font-size:14px;
+
+
+    }
+
+
+
+    .banner-right{
+
+
+        width:100%;
+
+
+    }
+
+
+
+    .top-box{
+
+
+        justify-content:center;
+
+
+    }
+
+
 
     .stats-grid,
-    .quick-grid{
+
+
+    .quick-grid,
+
+
+    .ai-dashboard,
+
+
+    .charts-section{
+
+
         grid-template-columns:1fr;
+
+
     }
+
+
+
+    .card{
+
+
+        padding:20px;
+
+
+    }
+
+
+
+    .chart-box canvas{
+
+
+        height:250px!important;
+
+
+    }
+
+
 
     .inspection-list{
-        overflow:auto;
+
+
+        overflow-x:auto;
+
+
     }
 
-  }
 
-.card,
-.quick-card,
-.chart-box{
-    transition:.4s;
-}
 
-.card:hover,
-.quick-card:hover,
-.chart-box:hover{
-    transform:translateY(-10px);
-}
+    .inspection-list table{
 
-.sidebar{
-    scrollbar-width:none;
-}
 
-.sidebar::-webkit-scrollbar{
-    display:none;
-}
+        min-width:650px;
 
-.top-box{
-    animation:pulse 2s infinite;
-}
 
-@keyframes pulse{
-
-    0%{
-        transform:scale(1);
     }
 
-    50%{
-        transform:scale(1.03);
+
+
+    .ai-card,
+
+
+    .rapport-preview{
+
+
+        padding:22px;
+
+
     }
 
-    100%{
-        transform:scale(1);
+
+
+    #btnTop{
+
+
+        width:50px;
+
+
+        height:50px;
+
+
+        right:15px;
+
+
+        bottom:15px;
+
+
     }
 
+
 }
 
-.banner{
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+
+/*==============================
+ PETITS SMARTPHONES
+==============================*/
+
+
+@media(max-width:480px){
+
+
+
+    .main-content{
+
+
+        padding:10px;
+
+
+    }
+
+
+
+    .banner-left img{
+
+
+        width:75px;
+
+
+        height:75px;
+
+
+    }
+
+
+
+    .banner-left h1{
+
+
+        font-size:23px;
+
+
+    }
+
+
+
+    .dashboard-section h2,
+
+
+    .quick-section h2{
+
+
+        font-size:24px;
+
+
+    }
+
+
+
+    .card{
+
+
+        flex-direction:column;
+
+
+        text-align:center;
+
+
+    }
+
+
+
+    .card i{
+
+
+        width:65px;
+
+
+        height:65px;
+
+
+    }
+
+
+
+    .quick-card{
+
+
+        padding:22px;
+
+
+    }
+
+
+
 }
 
-.quick-card button{
-    transition:.3s;
-}
 
-.quick-card button:hover{
-    transform:scale(1.05);
-}
 
-.card h1{
-    font-weight:700;
-      }
+/*=================================================
+ ACCUEIL - LOGIN - REGISTER
+==================================================*/
 
-/* =================================
-   ACCUEIL - LOGIN - REGISTER
-================================= */
 
 .top-navbar{
+
+
     background:#041c5c;
-    color:#fff;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+
+
     padding:15px 40px;
-    flex-wrap:wrap;
+
+
+    display:flex;
+
+
+    justify-content:space-between;
+
+
+    align-items:center;
+
+
+    color:white;
+
+
 }
+
+
 
 .nav-logo{
+
+
     display:flex;
+
+
     align-items:center;
+
+
     gap:15px;
+
+
 }
+
+
 
 .nav-logo img{
+
+
     width:60px;
+
+
 }
+
+
 
 .nav-logo h2{
-    font-size:22px;
+
+
+    color:#FFD700;
+
+
 }
 
-.nav-logo p{
-    font-size:14px;
-    opacity:.9;
+
+
+.top-navbar a{
+
+
+    color:white;
+
+
+    transition:.3s;
+
+
 }
 
-.top-navbar ul{
-    list-style:none;
-    display:flex;
-    gap:25px;
-    flex-wrap:wrap;
+
+
+.top-navbar a:hover{
+
+
+    color:#FFD700;
+
+
 }
 
-.top-navbar ul li a{
-    color:#fff;
-    text-decoration:none;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-weight:500;
-}
 
-.top-navbar ul li a:hover{
-    color:#ffd43b;
-}
 
 /* HERO */
 
+
 .hero{
-    position:relative;
+
+
     min-height:90vh;
+
+
+    position:relative;
+
+
     display:flex;
-    justify-content:center;
+
+
     align-items:center;
-    overflow:hidden;
+
+
+    justify-content:center;
+
+
 }
+
+
 
 .hero-image{
+
+
     position:absolute;
+
+
+    inset:0;
+
+
     width:100%;
+
+
     height:100%;
+
+
     object-fit:cover;
+
+
 }
+
+
 
 .hero-overlay{
+
+
     position:absolute;
+
+
     inset:0;
-    background:rgba(0,0,0,.55);
+
+
+    background:rgba(4,28,92,.65);
+
+
 }
+
+
 
 .hero-content{
+
+
     position:relative;
+
+
     z-index:2;
+
+
     text-align:center;
-    color:#fff;
-    padding:40px 20px;
+
+
+    color:white;
+
+
+    padding:30px;
+
+
 }
 
-.logo{
-    width:120px;
-    margin:auto;
-    margin-bottom:25px;
-}
 
-.logo-watermark{
-    position:absolute;
-    width:400px;
-    opacity:.08;
-    z-index:1;
-}
 
 .hero-content h1{
+
+
     font-size:50px;
-    margin-bottom:15px;
+
+
+    color:#FFD700;
+
+
 }
+
+
 
 .hero-content h3{
-    color:#ffd43b;
-    margin-bottom:20px;
+
+
+    margin:20px;
+
+
 }
 
-.hero-content p{
-    max-width:800px;
-    line-height:1.8;
-    margin:auto;
-}
 
-.hero-buttons{
-    margin-top:35px;
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-}
 
 .btn-start{
-    background:#0b52d6;
-    color:#fff;
-    text-decoration:none;
-    padding:15px 30px;
-    border-radius:12px;
-    font-weight:600;
+
+
     display:inline-flex;
+
+
     align-items:center;
+
+
     gap:10px;
-    transition:.3s;
+
+
+    padding:15px 35px;
+
+
+    border-radius:15px;
+
+
+    background:#0b52d6;
+
+
+    color:white;
+
+
+    font-weight:700;
+
+
+    transition:.35s;
+
+
 }
+
+
 
 .btn-start:hover{
-    background:#083ea5;
+
+
+    background:#FFD700;
+
+
+    color:#041c5c;
+
+
     transform:translateY(-5px);
+
+
 }
 
-/* NOTIFICATION */
 
-.notification{
-    padding:50px 20px;
-}
 
-.notification-box{
-    background:#fff;
-    max-width:1000px;
-    margin:auto;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    display:flex;
-    gap:20px;
-    align-items:center;
-}
+/*==============================
+ FORMULAIRES
+==============================*/
 
-.notification-box i{
-    font-size:40px;
-    color:#0b52d6;
-}
 
-/* MENU */
+.auth-box{
 
-.main-menu{
-    padding:70px 20px;
-}
 
-.main-menu h2{
-    text-align:center;
-    color:#142c7a;
-    margin-bottom:40px;
-}
+    max-width:450px;
 
-.menu-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:25px;
-    max-width:1300px;
-    margin:auto;
-}
 
-.menu-card{
-    background:#fff;
+    margin:50px auto;
+
+
+    background:white;
+
+
     padding:35px;
-    border-radius:20px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.3s;
-}
 
-.menu-card:hover{
-    transform:translateY(-10px);
-}
 
-.menu-card i{
-    font-size:50px;
-    color:#0b52d6;
-    margin-bottom:20px;
-}
-
-.menu-card h3{
-    color:#142c7a;
-    margin-bottom:15px;
-}
-
-.menu-card p{
-    line-height:1.7;
-    color:#666;
-}
-
-/* SECTION ASSISTANT */
-
-.assistant{
-    padding:70px 20px;
-    text-align:center;
-}
-
-.assistant h2{
-    color:#142c7a;
-    margin-bottom:30px;
-}
-
-.assistant-box{
-    background:#fff;
-    max-width:900px;
-    margin:auto;
-    padding:40px;
     border-radius:25px;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+
+    box-shadow:var(--shadow);
+
+
 }
 
-/* FOOTER */
 
-footer,
-.footer{
-    background:#041c5c;
-    color:#fff;
+
+.auth-box h2{
+
+
     text-align:center;
-    padding:50px 20px;
+
+
+    color:#142c7a;
+
+
+    margin-bottom:25px;
+
+
 }
 
-.footer-logo{
-    width:90px;
-    margin:auto;
-    margin-bottom:20px;
-}
 
-footer hr,
-.footer hr{
-    margin:25px auto;
-    width:300px;
-    border:1px solid rgba(255,255,255,.2);
-}
-
-/* FORMULAIRES */
 
 form input{
+
+
     width:100%;
+
+
     padding:15px;
-    border:1px solid #ddd;
+
+
     border-radius:12px;
-    outline:none;
-    font-size:15px;
+
+
+    border:1px solid #ddd;
+
+
+    margin-bottom:15px;
+
+
 }
+
+
 
 form input:focus{
+
+
     border-color:#0b52d6;
+
+
+    outline:none;
+
+
 }
+
+
 
 form button{
+
+
     width:100%;
-    border:none;
-    background:#0b52d6;
-    color:#fff;
+
+
     padding:15px;
+
+
     border-radius:12px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:.3s;
+
+
+    background:#0b52d6;
+
+
+    color:white;
+
+
+    font-weight:700;
+
+
 }
+
+
 
 form button:hover{
-    background:#083ea5;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:768px){
-
-    .top-navbar{
-        flex-direction:column;
-        gap:20px;
-        text-align:center;
-    }
-
-    .hero-content h1{
-        font-size:34px;
-    }
-
-    .hero-content h3{
-        font-size:22px;
-    }
-
-    .notification-box{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .assistant-box{
-        padding:25px;
-    }
-
-    .logo-watermark{
-        width:250px;
-    }
-      }
 
 
-/* ===============================
-   VERSION PROFESSIONNELLE RESPONSIVE
-================================== */
+    background:#041c5c;
 
-html{
-    scroll-behavior:smooth;
-}
 
-body{
-    line-height:1.6;
-}
-
-img{
-    max-width:100%;
-    display:block;
-}
-
-/* Navbar */
-.top-navbar{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    box-shadow:0 4px 20px rgba(0,0,0,.12);
-}
-
-.top-navbar ul li a{
-    padding:10px 14px;
-    border-radius:10px;
-    transition:.3s;
-}
-
-.top-navbar ul li a:hover{
-    background:rgba(255,255,255,.12);
-}
-
-/* Cartes */
-.card,
-.menu-card,
-.quick-card,
-.chart-box,
-.notification-box,
-.assistant-box{
-    border-radius:22px;
-}
-
-/* Table responsive */
-.inspection-list{
-    overflow-x:auto;
-}
-
-.inspection-list table{
-    min-width:600px;
-}
-
-/* Tablettes */
-@media (max-width:992px){
-
-    .banner-left h1{
-        font-size:34px;
-    }
-
-    .banner-content{
-        padding:25px;
-    }
-
-    .sidebar{
-        width:100%;
-        position:relative;
-        height:auto;
-    }
-
-    .main-content{
-        margin-left:0;
-    }
-}
-
-/* Téléphones */
-@media (max-width:768px){
-
-    .top-navbar{
-        padding:15px;
-    }
-
-    .top-navbar ul{
-        width:100%;
-        justify-content:center;
-        gap:10px;
-    }
-
-    .hero{
-        min-height:auto;
-        padding:80px 0;
-    }
-
-    .hero-content{
-        padding:25px 15px;
-    }
-
-    .hero-content h1{
-        font-size:30px;
-    }
-
-    .hero-content h3{
-        font-size:20px;
-    }
-
-    .logo{
-        width:90px;
-    }
-
-    .notification-box{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .banner{
-        height:auto;
-        min-height:500px;
-    }
-
-    .banner-content,
-    .banner-left{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .banner-right{
-        width:100%;
-    }
-
-    .top-box{
-        justify-content:center;
-    }
-
-    .card,
-    .quick-card,
-    .menu-card{
-        padding:22px;
-    }
-
-    .stats-grid,
-    .quick-grid,
-    .menu-grid,
-    .charts-section{
-        grid-template-columns:1fr;
-    }
-
-    .btn-start,
-    form button{
-        width:100%;
-        justify-content:center;
-    }
 }
 
 
-/* ===============================
-   VERSION PREMIUM - IGT RDC
-================================== */
 
-/* Couleurs RDC */
-:root{
-    --bleu-rdc:#0077c8;
-    --jaune-rdc:#ffd100;
-    --rouge-rdc:#ce1126;
-}
+/*==============================
+ IMPRESSION RAPPORTS
+==============================*/
 
-/* Boutons améliorés */
-.btn-start,
-.quick-card button{
-    box-shadow:0 8px 20px rgba(0,0,0,.15);
-}
 
-/* Effets cartes */
-.card,
-.quick-card,
-.menu-card,
-.chart-box{
-    transition:all .35s ease;
-}
+@media print{
 
-.card:hover,
-.quick-card:hover,
-.menu-card:hover,
-.chart-box:hover{
-    transform:translateY(-10px);
-    box-shadow:0 15px 35px rgba(0,0,0,.18);
-}
-
-/* Notifications */
-.top-box{
-    border:1px solid rgba(255,255,255,.15);
-}
-
-/* Animation douce */
-@keyframes fadeUp{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.card,
-.quick-card,
-.menu-card{
-    animation:fadeUp .8s ease;
-}
-
-/* Mode sombre automatique */
-@media (prefers-color-scheme: dark){
 
     body{
-        background:#0f172a;
+
+
+        background:white!important;
+
+
+        color:black!important;
+
+
     }
 
-    .card,
-    .quick-card,
-    .menu-card,
-    .chart-box,
-    .notification-box,
-    .assistant-box{
-        background:#1e293b;
-        color:#fff;
+
+
+    .sidebar,
+
+
+    .top-navbar,
+
+
+    .banner,
+
+
+    button,
+
+
+    #btnTop{
+
+
+        display:none!important;
+
+
     }
 
-    .card p,
-    .quick-card p,
-    .menu-card p{
-        color:#d1d5db;
+
+
+    .main-content{
+
+
+        margin:0;
+
+
+        padding:0;
+
+
     }
+
+
+
+    .rapport-preview,
+
+
+    .article-card,
+
+
+    .inspection-list{
+
+
+        background:white!important;
+
+
+        color:black!important;
+
+
+        box-shadow:none;
+
+
+        border:1px solid #ccc;
+
+
+    }
+
+
+
+}
+
+
+/*=================================================
+ INSPECTEURBOT RDC 2026
+ DASHBOARD PREMIUM
+ PARTIE 5
+ FINITIONS PREMIUM + IA + PERFORMANCE
+==================================================*/
+
+
+/*==============================
+ ANIMATIONS GENERALES
+==============================*/
+
+
+.fade-in{
+
+    animation:
+    fadeInPremium .8s ease;
+
+}
+
+
+
+@keyframes fadeInPremium{
+
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateY(25px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateY(0);
+
+    }
+
+
+}
+
+
+
+/*==============================
+ BADGES INSPECTION IA
+==============================*/
+
+
+.badge-ia{
+
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:10px;
+
+
+    padding:10px 20px;
+
+
+    border-radius:30px;
+
+
+    background:
+
+    rgba(255,215,0,.15);
+
+
+    border:
+
+    1px solid rgba(255,215,0,.4);
+
+
+    color:#FFD700;
+
+
+    font-weight:700;
+
+
+}
+
+
+
+.badge-ia::before{
+
+
+    content:"🟢";
+
+
+    animation:
+
+    pulseIA 1.5s infinite;
+
+
+}
+
+
+
+@keyframes pulseIA{
+
+
+    0%{
+
+        transform:scale(.8);
+
+        opacity:.5;
+
+    }
+
+
+    50%{
+
+        transform:scale(1.2);
+
+        opacity:1;
+
+    }
+
+
+    100%{
+
+        transform:scale(.8);
+
+        opacity:.5;
+
+    }
+
+
+}
+
+
+
+/*==============================
+ CARTES JURIDIQUES
+==============================*/
+
+
+.juridique-card{
+
+
+    background:
+
+    linear-gradient(
+        145deg,
+        #041c5c,
+        #08296d
+    );
+
+
+    color:white;
+
+
+    padding:30px;
+
+
+    border-radius:25px;
+
+
+    border:
+
+    1px solid rgba(255,215,0,.25);
+
+
+    box-shadow:
+
+    0 15px 35px rgba(0,0,0,.25);
+
+
+    transition:.4s;
+
+
+}
+
+
+
+.juridique-card:hover{
+
+
+    transform:
+
+    translateY(-8px);
+
+
+    box-shadow:
+
+
+    0 20px 45px rgba(0,0,0,.35);
+
+
+}
+
+
+
+.juridique-card h3{
+
+
+    color:#FFD700;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.juridique-card .article-numero{
+
+
+    display:inline-block;
+
+
+    padding:8px 18px;
+
+
+    border-radius:25px;
+
+
+    background:#FFD700;
+
+
+    color:#041c5c;
+
+
+    font-weight:700;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+/*==============================
+ REPONSE RAG IA
+==============================*/
+
+
+.rag-response{
+
+
+    margin-top:30px;
+
+
+    padding:30px;
+
+
+    background:white;
+
+
+    border-radius:25px;
+
+
+    border-left:
+
+
+    6px solid #FFD700;
+
+
+    box-shadow:
+
+
+    0 15px 35px rgba(0,0,0,.12);
+
+
+}
+
+
+
+.rag-response h3{
+
+
+    color:#142c7a;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+.rag-response p{
+
+
+    line-height:1.9;
+
+
+    text-align:justify;
+
+
+}
+
+
+
+/*==============================
+ NOTIFICATION SYSTEME
+==============================*/
+
+
+.notification-system{
+
+
+    position:fixed;
+
+
+    top:25px;
+
+
+    right:25px;
+
+
+    z-index:2000;
+
+
+}
+
+
+
+.notification-item{
+
+
+    padding:18px 25px;
+
+
+    border-radius:18px;
+
+
+    background:#041c5c;
+
+
+    color:white;
+
+
+    margin-bottom:15px;
+
+
+    box-shadow:
+
+
+    0 10px 30px rgba(0,0,0,.25);
+
+
+    border-left:
+
+
+    5px solid #FFD700;
+
+
+    animation:
+
+    slideNotification .5s ease;
+
+
+}
+
+
+
+@keyframes slideNotification{
+
+
+from{
+
+    opacity:0;
+
+    transform:translateX(50px);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:translateX(0);
+
+}
+
+
+}
+
+
+
+/*==============================
+ MODE SOMBRE APPLICATION
+==============================*/
+
+
+.dark-mode{
+
+
+    background:#020617!important;
+
+    color:white;
+
+
+}
+
+
+
+.dark-mode .card,
+
+
+.dark-mode .quick-card,
+
+
+.dark-mode .chart-box,
+
+
+.dark-mode .inspection-list,
+
+
+.dark-mode .auth-box{
+
+
+    background:#111827;
+
+
+    color:white;
+
+
+}
+
+
+
+.dark-mode h2,
+
+
+.dark-mode h3{
+
+
+    color:#FFD700;
+
+
+}
+
+
+
+/*==============================
+ OPTIMISATION PERFORMANCE
+==============================*/
+
+
+.card,
+
+.quick-card,
+
+.chart-box,
+
+.ai-card,
+
+.juridique-card{
+
+
+    will-change:transform;
+
+
+}
+
+
+
+*{
+
+
+    -webkit-font-smoothing:antialiased;
+
+
+    -moz-osx-font-smoothing:grayscale;
+
+
+}
+
+
+
+/*==============================
+ SUPPORT TABLETTES PAYSAGE
+==============================*/
+
+
+@media
+
+(min-width:769px)
+
+and
+
+(max-width:1200px)
+
+and
+
+(orientation:landscape){
+
+
+
+.banner-content{
+
+
+    gap:20px;
+
+
+}
+
+
+
+.banner-left h1{
+
+
+    font-size:32px;
+
+
+}
+
+
+
+}
+
+
+
+/*==============================
+ SUPPORT ECRANS LARGE
+==============================*/
+
+
+@media(min-width:1600px){
+
+
+
+.main-content{
+
+
+    max-width:1600px;
+
+
+}
+
+
+
+.banner-left h1{
+
+
+    font-size:55px;
+
+
+}
+
+
+
+.card h1{
+
+
+    font-size:42px;
+
+
+}
+
+
+
 }
 
