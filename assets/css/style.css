@@ -1,80 +1,1589 @@
-/* ===========================
-   InspecteurBot RDC
-=========================== */
+/*=========================================
+      INSPECTEURBOT IA RDC
+      DASHBOARD CSS PREMIUM
+      PARTIE 1
+=========================================*/
+
+
+/*=========================================
+        GLOBAL
+=========================================*/
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:'Poppins',sans-serif;
 }
 
-body{
+
+html{
+    scroll-behavior:smooth;
+}
+
+
+body.dashboard-page{
+
     background:#041c5c;
-    color:#ffffff;
-    padding:20px;
+    color:white;
+    overflow-x:hidden;
+
 }
 
-h1{
+
+img{
+
+    max-width:100%;
+    display:block;
+
+}
+
+
+
+/*=========================================
+        BANNER SLIDER
+=========================================*/
+
+
+.banner{
+
+    width:100%;
+    height:330px;
+    position:relative;
+    overflow:hidden;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.35);
+
+}
+
+
+
+.slider{
+
+    width:100%;
+    height:100%;
+
+}
+
+
+
+.slider img{
+
+    position:absolute;
+
+    width:100%;
+    height:330px;
+
+    object-fit:cover;
+
+    opacity:0;
+
+    transition:
+    opacity 1.2s ease,
+    transform 8s ease;
+
+}
+
+
+
+.slider img.active{
+
+    opacity:1;
+
+    transform:scale(1.05);
+
+}
+
+
+
+/* voile sur les images */
+
+.banner::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+    linear-gradient(
+    180deg,
+    rgba(0,0,0,.15),
+    rgba(0,0,0,.55)
+    );
+
+    pointer-events:none;
+
+}
+
+
+
+/*=========================================
+        DATE HEURE MÉTÉO
+=========================================*/
+
+
+.datetime-box{
+
+    position:absolute;
+
+    top:15px;
+    right:20px;
+
+    z-index:20;
+
+    text-align:right;
+
+
+    background:
+    rgba(0,0,0,.35);
+
+
+    padding:15px 18px;
+
+
+    border-radius:20px;
+
+
+    backdrop-filter:blur(10px);
+
+
+    border:
+    1px solid rgba(255,255,255,.2);
+
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.35);
+
+}
+
+
+
+#clock{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#FFD700;
+
+}
+
+
+
+#day,
+#date,
+#city{
+
+    font-size:13px;
+
+    color:#fff;
+
+}
+
+
+
+#weather{
+
+    margin-top:8px;
+
+    color:#FFD700;
+
+    font-weight:600;
+
+}
+
+
+
+/*=========================================
+        MOTIVATION
+=========================================*/
+
+
+.motivation{
+
     text-align:center;
-    margin-bottom:20px;
+
+    padding:14px;
+
+    background:#02102f;
+
+
+    font-size:15px;
+
+
+    font-weight:500;
+
+
+    color:#fff;
+
+
+    border-bottom:
+    1px solid rgba(255,255,255,.1);
+
 }
 
-#searchInput{
-    width:100%;
-    padding:15px;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    margin-bottom:10px;
+
+
+#motivationText{
+
+    color:#FFD700;
+
 }
 
-#searchBtn{
-    width:100%;
-    padding:15px;
-    background:#0d6efd;
+
+
+/*=========================================
+        MENU PRINCIPAL
+=========================================*/
+
+
+.menu-index{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(120px,1fr));
+
+
+    gap:22px;
+
+
+    padding:30px;
+
+
+
+    background:
+
+    linear-gradient(
+    180deg,
+    #03153d,
+    #020c25
+    );
+
+
+}
+
+
+
+/* bouton menu */
+
+
+.menu-index a{
+
+
+    height:125px;
+
+
+    border-radius:25px;
+
+
+    background:
+
+    linear-gradient(
+    145deg,
+    #07327a,
+    #02183d
+    );
+
+
+    border:
+
+    1px solid rgba(255,255,255,.25);
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+
+    text-decoration:none;
+
+
     color:white;
+
+
+
+    transition:.35s;
+
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.45);
+
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+
+.menu-index a::before{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:0;
+
+    height:0;
+
+
+    background:
+    rgba(255,255,255,.15);
+
+
+    border-radius:50%;
+
+
+    transition:.5s;
+
+
+}
+
+
+
+
+
+.menu-index a:hover::before{
+
+
+    width:180px;
+
+    height:180px;
+
+
+}
+
+
+
+.menu-index a:hover{
+
+
+    transform:
+    translateY(-10px);
+
+
+
+    box-shadow:
+
+    0 0 30px #00d9ff;
+
+
+}
+
+
+
+/* icônes menu */
+
+
+.menu-index i{
+
+
+    font-size:34px;
+
+
+    color:#FFD700;
+
+
+    margin-bottom:12px;
+
+
+    z-index:2;
+
+
+}
+
+
+
+.menu-index span{
+
+
+    font-size:14px;
+
+
+    font-weight:600;
+
+
+    text-align:center;
+
+
+    z-index:2;
+
+
+}
+
+
+/*=========================================
+        FIN PARTIE 1
+=========================================*/
+
+
+/*=========================================
+        INSPECTEURBOT IA RDC
+        DASHBOARD CSS PREMIUM
+        PARTIE 2
+=========================================*/
+
+
+/*=========================================
+        SECTION GENERALE
+=========================================*/
+
+
+.quick-section{
+
+    padding:35px;
+
+}
+
+
+
+.quick-section h2{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    color:#ffffff;
+
+    font-size:28px;
+
+}
+
+
+
+/*=========================================
+        ASSISTANT IA
+=========================================*/
+
+
+.ai-box{
+
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #001740,
+    #00318b,
+    #00aaff
+    );
+
+
+    padding:35px;
+
+
+    border-radius:30px;
+
+
+    box-shadow:
+
+    0 0 35px rgba(0,200,255,.45);
+
+
+
+    border:
+
+    1px solid rgba(255,255,255,.2);
+
+
+
+    animation:
+    fadeUp .8s ease;
+
+
+}
+
+
+
+.ai-box h2{
+
+
+    color:#fff;
+
+
+    text-align:center;
+
+
+    margin-bottom:25px;
+
+
+    font-size:30px;
+
+
+}
+
+
+
+/* formulaire IA */
+
+
+.ai-box form{
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+
+}
+
+
+
+.ai-box input{
+
+
+    width:100%;
+
+
+    padding:18px 22px;
+
+
     border:none;
-    border-radius:8px;
+
+
+    outline:none;
+
+
+    border-radius:50px;
+
+
     font-size:16px;
-    cursor:pointer;
-}
 
-#searchBtn:hover{
-    background:#0b5ed7;
-}
 
-#searchResults{
-    margin-top:20px;
-}
-
-.article{
     background:white;
-    color:#000;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:10px;
+
+
 }
 
-.article h3{
-    color:#0d6efd;
-    margin-bottom:8px;
+
+
+.ai-box input:focus{
+
+
+    box-shadow:
+
+    0 0 15px #00d9ff;
+
+
 }
 
-.article h4{
-    margin-bottom:10px;
-}
 
-.article button{
-    margin-top:10px;
-    padding:10px 15px;
-    background:#198754;
-    color:white;
+
+.ai-box button{
+
+
+    width:100%;
+
+
+    padding:17px;
+
+
     border:none;
-    border-radius:6px;
+
+
+    border-radius:50px;
+
+
+    background:#00d4ff;
+
+
+    color:white;
+
+
+    font-size:17px;
+
+
+    font-weight:700;
+
+
     cursor:pointer;
+
+
+    transition:.3s;
+
+
 }
 
-.article button:hover{
-    background:#157347;
+
+
+.ai-box button:hover{
+
+
+    background:#009bd6;
+
+
+    transform:
+    translateY(-4px);
+
+
 }
+
+
+
+/*=========================================
+        RESULTATS IA
+=========================================*/
+
+
+#searchResults,
+.search-results{
+
+
+    margin-top:25px;
+
+
+    background:white;
+
+
+    color:#111;
+
+
+    border-radius:22px;
+
+
+    padding:25px;
+
+
+    min-height:80px;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.2);
+
+
+}
+
+
+
+.article-card{
+
+
+    background:#f5f8ff;
+
+
+    padding:18px;
+
+
+    border-radius:18px;
+
+
+    margin-bottom:15px;
+
+
+    border-left:
+
+    5px solid #00318b;
+
+
+}
+
+
+
+.article-card h3{
+
+
+    color:#00318b;
+
+
+    margin-bottom:10px;
+
+
+}
+
+
+
+/*=========================================
+        GRILLE MODULES IA
+=========================================*/
+
+
+.quick-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+
+    repeat(auto-fit,minmax(230px,1fr));
+
+
+    gap:25px;
+
+
+}
+
+
+
+/*=========================================
+        CARTES MODULES
+=========================================*/
+
+
+.quick-card{
+
+
+    background:
+
+
+    linear-gradient(
+    145deg,
+    #07204d,
+    #0b46a8
+    );
+
+
+
+    padding:30px;
+
+
+    min-height:220px;
+
+
+    border-radius:28px;
+
+
+    color:white;
+
+
+    text-decoration:none;
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+
+    text-align:center;
+
+
+
+    box-shadow:
+
+
+    0 12px 35px rgba(0,0,0,.35);
+
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
+
+
+
+    transition:.4s;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+}
+
+
+
+
+.quick-card::after{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:200px;
+
+
+    height:200px;
+
+
+    background:
+
+    rgba(0,217,255,.15);
+
+
+    border-radius:50%;
+
+
+    top:-100px;
+
+
+    right:-100px;
+
+
+}
+
+
+
+.quick-card:hover{
+
+
+    transform:
+
+
+    translateY(-12px);
+
+
+
+    box-shadow:
+
+
+    0 0 35px #00d9ff;
+
+
+
+}
+
+
+
+/* icônes */
+
+
+.quick-card i{
+
+
+    font-size:45px;
+
+
+    color:#FFD700;
+
+
+    margin-bottom:18px;
+
+
+    z-index:2;
+
+
+}
+
+
+
+.quick-card h3{
+
+
+    font-size:19px;
+
+
+    margin-bottom:12px;
+
+
+    z-index:2;
+
+
+}
+
+
+
+.quick-card p{
+
+
+    color:#dbeeff;
+
+
+    font-size:14px;
+
+
+    line-height:1.7;
+
+
+    z-index:2;
+
+
+}
+
+
+
+/*=========================================
+        STATISTIQUES
+=========================================*/
+
+
+#statArticles,
+#statRecherche,
+#statIA{
+
+
+    color:#FFD700;
+
+
+    font-size:22px;
+
+
+    font-weight:700;
+
+
+}
+
+
+
+/*=========================================
+        ANIMATION
+=========================================*/
+
+
+@keyframes fadeUp{
+
+
+    from{
+
+
+        opacity:0;
+
+
+        transform:
+        translateY(30px);
+
+
+    }
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:
+        translateY(0);
+
+
+    }
+
+
+}
+
+
+/*=========================================
+        FIN PARTIE 2
+=========================================*/
+
+
+/*=========================================
+        INSPECTEURBOT IA RDC
+        DASHBOARD CSS PREMIUM
+        PARTIE 3
+=========================================*/
+
+
+/*=========================================
+        FOOTER
+=========================================*/
+
+
+.footer,
+footer{
+
+
+    background:#02102f;
+
+
+    color:white;
+
+
+    text-align:center;
+
+
+    padding:50px 25px;
+
+
+
+    margin-top:40px;
+
+
+
+    border-top:
+
+
+    1px solid rgba(255,255,255,.15);
+
+
+
+}
+
+
+
+.footer-logo{
+
+
+    width:90px;
+
+
+    margin:0 auto 20px;
+
+
+}
+
+
+
+.footer h3{
+
+
+    color:#FFD700;
+
+
+    margin-bottom:15px;
+
+
+}
+
+
+
+.footer p{
+
+
+    color:#dbeeff;
+
+
+    line-height:1.8;
+
+
+}
+
+
+
+.footer hr{
+
+
+    width:300px;
+
+
+    max-width:80%;
+
+
+    margin:25px auto;
+
+
+    border:
+
+
+    1px solid rgba(255,255,255,.2);
+
+
+}
+
+
+
+/*=========================================
+        ANIMATIONS PREMIUM
+=========================================*/
+
+
+.quick-card,
+.menu-index a,
+.ai-box{
+
+
+    animation:
+
+    fadeUp .7s ease;
+
+
+}
+
+
+
+@keyframes fadeUp{
+
+
+    from{
+
+
+        opacity:0;
+
+
+        transform:
+        translateY(25px);
+
+
+    }
+
+
+    to{
+
+
+        opacity:1;
+
+
+        transform:
+        translateY(0);
+
+
+    }
+
+
+}
+
+
+
+/*=========================================
+        TABLETTES
+=========================================*/
+
+
+@media(max-width:992px){
+
+
+
+    .banner,
+    .slider img{
+
+
+        height:300px;
+
+
+    }
+
+
+
+    .datetime-box{
+
+
+        top:10px;
+
+
+        right:10px;
+
+
+    }
+
+
+
+    #clock{
+
+
+        font-size:24px;
+
+
+    }
+
+
+
+
+    .menu-index{
+
+
+        grid-template-columns:
+
+
+        repeat(4,1fr);
+
+
+        padding:20px;
+
+
+    }
+
+
+
+    .quick-section{
+
+
+        padding:25px;
+
+
+    }
+
+
+
+    .quick-grid{
+
+
+        grid-template-columns:
+
+
+        repeat(2,1fr);
+
+
+    }
+
+
+
+}
+
+
+
+
+/*=========================================
+        TELEPHONES
+=========================================*/
+
+
+@media(max-width:768px){
+
+
+
+    body.dashboard-page{
+
+
+        width:100%;
+
+
+    }
+
+
+
+    .banner,
+    .slider img{
+
+
+        height:260px;
+
+
+    }
+
+
+
+
+    .datetime-box{
+
+
+        top:8px;
+
+
+        right:8px;
+
+
+        padding:10px;
+
+
+        border-radius:15px;
+
+
+    }
+
+
+
+
+    #clock{
+
+
+        font-size:20px;
+
+
+    }
+
+
+
+    #day,
+    #date,
+    #city,
+    #weather{
+
+
+        font-size:11px;
+
+
+    }
+
+
+
+
+    .motivation{
+
+
+        font-size:13px;
+
+
+        padding:12px;
+
+
+    }
+
+
+
+
+    .menu-index{
+
+
+        grid-template-columns:
+
+
+        repeat(3,1fr);
+
+
+        gap:15px;
+
+
+        padding:18px;
+
+
+    }
+
+
+
+
+
+    .menu-index a{
+
+
+        height:105px;
+
+
+        border-radius:20px;
+
+
+    }
+
+
+
+
+    .menu-index i{
+
+
+        font-size:27px;
+
+
+    }
+
+
+
+
+
+    .menu-index span{
+
+
+        font-size:12px;
+
+
+    }
+
+
+
+
+
+    .quick-section{
+
+
+        padding:20px;
+
+
+    }
+
+
+
+
+    .quick-section h2{
+
+
+        font-size:22px;
+
+
+    }
+
+
+
+
+    .ai-box{
+
+
+        padding:22px;
+
+
+        border-radius:25px;
+
+
+    }
+
+
+
+
+
+    .ai-box h2{
+
+
+        font-size:24px;
+
+
+    }
+
+
+
+
+
+    .quick-grid{
+
+
+        grid-template-columns:
+
+
+        1fr;
+
+
+        gap:18px;
+
+
+    }
+
+
+
+
+
+    .quick-card{
+
+
+        min-height:190px;
+
+
+        padding:25px;
+
+
+    }
+
+
+
+
+
+    .quick-card i{
+
+
+        font-size:38px;
+
+
+    }
+
+
+
+
+    .footer{
+
+
+        padding:35px 15px;
+
+
+    }
+
+
+
+
+}
+
+
+
+/*=========================================
+        PETITS TELEPHONES
+=========================================*/
+
+
+@media(max-width:400px){
+
+
+
+    .menu-index{
+
+
+        grid-template-columns:
+
+
+        repeat(2,1fr);
+
+
+    }
+
+
+
+
+
+    .banner,
+    .slider img{
+
+
+        height:230px;
+
+
+    }
+
+
+
+
+    .datetime-box{
+
+
+        transform:scale(.85);
+
+
+        transform-origin:right top;
+
+
+    }
+
+
+
+}
+
+
+
+/*=========================================
+        ACCESSIBILITE
+=========================================*/
+
+
+button,
+a{
+
+
+    -webkit-tap-highlight-color:transparent;
+
+
+}
+
+
+
+::selection{
+
+
+    background:#00d4ff;
+
+
+    color:white;
+
+
+}
+
+
+/*=========================================
+        FIN DASHBOARD CSS
+        INSPECTEURBOT IA RDC
+=========================================*/
+
+
