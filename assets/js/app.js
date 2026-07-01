@@ -5,8 +5,11 @@ CONFIGURATION
 ===========================*/
 
 const APP = {
+
     fichierJSON: "code-travail.json"
+
 };
+
 
 /*===========================
 VARIABLES
@@ -14,46 +17,71 @@ VARIABLES
 
 let articles = [];
 
+let articleActuel = null;
+
+
 /*===========================
 CHARGER LE JSON
 ===========================*/
 
-async function chargerArticles() {
+async function chargerArticles(){
 
-    try {
+    try{
 
         const reponse = await fetch(APP.fichierJSON);
 
-        if (!reponse.ok) {
-            throw new Error("Impossible de charger le fichier JSON");
+
+        if(!reponse.ok){
+
+            throw new Error(
+                "Impossible de charger le fichier JSON"
+            );
+
         }
+
 
         articles = await reponse.json();
 
-        console.log("Articles chargés :", articles.length);
 
-        rechercher("");
+        console.log(
+            "Articles chargés :",
+            articles.length
+        );
 
-    } catch (e) {
+
+        afficher(articles);
+
+
+    }
+
+    catch(e){
 
         console.error(e);
 
+
         document.getElementById("resultats").innerHTML =
-        "<p>Erreur de chargement du Code du travail.</p>";
+
+        "<p>Erreur de chargement du Code du Travail.</p>";
 
     }
 
 }
 
+
+
 /*===========================
-RECHERCHE
+RECHERCHE INTELLIGENTE
+Compatible JSON 2.0
 ===========================*/
 
-function rechercher(mot) {
+
+function rechercher(mot){
+
 
     mot = mot.toLowerCase().trim();
 
-    if (mot === "") {
+
+    if(mot===""){
 
         afficher(articles);
 
@@ -61,154 +89,302 @@ function rechercher(mot) {
 
     }
 
-    const resultat = articles.filter(article => {
 
-        const mots = (article.motsCles || []).join(" ").toLowerCase();
 
-        return (
+    const resultat = articles.filter(article=>{
 
-            String(article.numero).includes(mot) ||
 
-            article.titre.toLowerCase().includes(mot) ||
+        const texte = (
 
-            mots.includes(mot) ||
+            article.numeroArticle +
 
-            article.contenu.toLowerCase().includes(mot)
+            " " +
 
-        );
+            article.titreCode +
+
+            " " +
+
+            article.chapitre +
+
+            " " +
+
+            article.section +
+
+            " " +
+
+            article.intitule +
+
+            " " +
+
+            article.contenu +
+
+            " " +
+
+            (article.motsCles || []).join(" ")
+
+        ).toLowerCase();
+
+
+
+        return texte.includes(mot);
+
+
 
     });
+
+
 
     afficher(resultat);
 
+
+
 }
 
+
+
 /*===========================
-AFFICHAGE
+AFFICHAGE DES ARTICLES
 ===========================*/
 
-function afficher(liste) {
+
+function afficher(liste){
+
 
     const zone = document.getElementById("resultats");
 
-    zone.innerHTML = "";
 
-    if (liste.length === 0) {
+    zone.innerHTML="";
 
-        zone.innerHTML = "<h3>Aucun article trouvé.</h3>";
+
+
+    if(liste.length===0){
+
+
+        zone.innerHTML=
+
+        "<h3>Aucun article trouvé.</h3>";
+
 
         return;
 
+
     }
 
-    liste.forEach(article => {
+
+
+    liste.forEach(article=>{
+
 
         let extrait = article.contenu;
 
-        if (extrait.length > 250) {
 
-            extrait = extrait.substring(0,250) + "...";
+        if(extrait.length > 250){
+
+            extrait =
+
+            extrait.substring(0,250)
+
+            +
+
+            "...";
 
         }
 
+
+
         zone.innerHTML += `
+
 
         <div class="article">
 
-            <h3>Article ${article.numero}</h3>
 
-            <h4>${article.titre}</h4>
+            <h3>
 
-            <p>${extrait}</p>
+            Article ${article.numeroArticle}
+
+            </h3>
+
+
+            <h4>
+
+            ${article.intitule}
+
+            </h4>
+
+
+            <small>
+
+            ${article.titreCode}
+
+            <br>
+
+            ${article.chapitre}
+
+            </small>
+
+
+            <p>
+
+            ${extrait}
+
+            </p>
+
+
 
             <button onclick="ouvrirArticle('${article.id}')">
 
-                📖 Lire l'article
+            📖 Lire l'article
 
             </button>
 
+
         </div>
+
 
         `;
 
+
     });
+
+
 
 }
 
+
+
 /*===========================
-OUVRIR ARTICLE
+OUVRIR UN ARTICLE COMPLET
 ===========================*/
+
 
 function ouvrirArticle(id){
 
-    const article = articles.find(a => a.id === id);
 
-    if(!article){
+    articleActuel = articles.find(
 
-        return;
-
-    }
-
-    alert(
-
-        "Article " + article.numero +
-
-        "\n\n" +
-
-        article.titre +
-
-        "\n\n" +
-
-        article.contenu
+        a=>a.id===id
 
     );
 
-}
 
-/*===========================
-AFFICHAGE
-===========================*/
-
-function afficher(liste) {
-
-    const zone = document.getElementById("resultats");
-
-    zone.innerHTML = "";
-
-    if (liste.length === 0) {
-
-        zone.innerHTML = "<p>Aucun résultat.</p>";
+    if(!articleActuel){
 
         return;
 
     }
 
-    liste.forEach(article => {
 
-        zone.innerHTML += `
 
-        <div class="article">
+    document.getElementById("resultats").innerHTML = `
 
-            <h3>Article ${article.numero}</h3>
 
-            <h4>${article.titre}</h4>
 
-            <p>${article.contenu}</p>
+    <div class="article-complet">
 
-        </div>
 
-        `;
+        <h2>
 
-    });
+        Article ${articleActuel.numeroArticle}
+
+        </h2>
+
+
+
+        <h3>
+
+        ${articleActuel.intitule}
+
+        </h3>
+
+
+
+        <p>
+
+        <b>${articleActuel.titreCode}</b>
+
+        </p>
+
+
+
+        <p>
+
+        <b>${articleActuel.chapitre}</b>
+
+        </p>
+
+
+
+        <hr>
+
+
+
+        <p>
+
+        ${articleActuel.contenu}
+
+        </p>
+
+
+
+        <h4>
+
+        Mots clés
+
+        </h4>
+
+
+        <p>
+
+        ${(articleActuel.motsCles || []).join(", ")}
+
+        </p>
+
+
+
+        <h4>
+
+        Infractions possibles
+
+        </h4>
+
+
+        <p>
+
+        ${(articleActuel.infractions || []).join(", ")}
+
+        </p>
+
+
+
+        <button onclick="afficher(articles)">
+
+        ⬅ Retour
+
+        </button>
+
+
+    </div>
+
+
+
+    `;
+
 
 }
+
+
 
 /*===========================
 BOUTON RECHERCHE
 ===========================*/
 
-document.getElementById("btnRecherche")
-.addEventListener("click", () => {
+
+document
+
+.getElementById("btnRecherche")
+
+.addEventListener("click",()=>{
+
 
     rechercher(
 
@@ -216,25 +392,39 @@ document.getElementById("btnRecherche")
 
     );
 
+
 });
 
+
+
 /*===========================
-TOUCHE ENTRÉE
+ENTRÉE CLAVIER
 ===========================*/
 
-document.getElementById("recherche")
-.addEventListener("keyup", e => {
 
-    if (e.key === "Enter") {
+document
+
+.getElementById("recherche")
+
+.addEventListener("keyup",e=>{
+
+
+    if(e.key==="Enter"){
+
 
         rechercher(e.target.value);
 
+
     }
 
+
 });
+
+
 
 /*===========================
 DÉMARRAGE
 ===========================*/
+
 
 chargerArticles();
