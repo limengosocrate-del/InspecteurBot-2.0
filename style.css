@@ -1,13 +1,7 @@
-/*=========================================
-      INSPECTEURBOT IA RDC
-      DASHBOARD CSS PREMIUM
-      PARTIE 1
-=========================================*/
-
-
-/*=========================================
-        GLOBAL
-=========================================*/
+/*=================================
+      INSPECTEURBOT RDC
+      STYLE DASHBOARD
+==================================*/
 
 *{
     margin:0;
@@ -16,1574 +10,1102 @@
     font-family:'Poppins',sans-serif;
 }
 
+body{
+    background:#edf2f9;
+    overflow-x:hidden;
+}
+
+/*=================================
+      LAYOUT
+==================================*/
+
+.dashboard-layout{
+    display:flex;
+    min-height:100vh;
+}
+
+/*=================================
+      SIDEBAR
+==================================*/
+
+.sidebar{
+    width:270px;
+    background:#041c5c;
+    color:#fff;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100%;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.sidebar-logo{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.sidebar-logo img{
+    width:90px;
+    margin-bottom:10px;
+}
+
+.sidebar-logo h3{
+    font-size:18px;
+    font-weight:600;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    margin-bottom:10px;
+}
+
+.sidebar ul li a{
+    text-decoration:none;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+    border-radius:12px;
+    transition:.3s;
+    font-size:15px;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a{
+    background:#0b52d6;
+}
+
+.sidebar ul li i{
+    width:20px;
+}
+
+.logout{
+    margin-top:35px;
+}
+
+.logout a{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    background:#e21b23;
+    color:#fff;
+    text-decoration:none;
+    padding:16px;
+    border-radius:12px;
+    font-weight:600;
+}
+
+.logout a:hover{
+    background:#c8141c;
+}
+
+/*=================================
+      MAIN CONTENT
+==================================*/
+
+.main-content{
+    flex:1;
+    margin-left:270px;
+    padding:25px;
+}
+
+/*=================================
+      BANNER
+==================================*/
+
+.banner{
+    position:relative;
+    height:250px;
+    border-radius:25px;
+    overflow:hidden;
+    margin-bottom:30px;
+}
+
+.banner-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.banner-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.45);
+}
+
+.banner-content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:35px;
+    color:#fff;
+}
+
+.banner-left{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.banner-left img{
+    width:90px;
+    background:#fff;
+    border-radius:50%;
+    padding:5px;
+}
+
+.banner-left h1{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.banner-left h3{
+    color:#ffd43b;
+    margin-bottom:12px;
+}
+
+.banner-left p{
+    max-width:600px;
+    line-height:1.6;
+}
+
+.banner-right{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.top-box{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+    padding:15px 20px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.top-box i{
+    font-size:20px;
+}
+
+/*=================================
+      SECTION TITRES
+==================================*/
+
+.dashboard-section h2,
+.quick-section h2{
+    color:#142c7a;
+    margin-bottom:25px;
+}
+
+/*=================================
+      CARDS STATISTIQUES
+==================================*/
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card i{
+    width:75px;
+    height:75px;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    font-size:30px;
+}
+
+.card h3{
+    font-size:18px;
+    margin-bottom:8px;
+}
+
+.card h1{
+    font-size:34px;
+    color:#142c7a;
+}
+
+.card p{
+    color:#777;
+}
+
+/* Couleurs */
+
+.blue{
+    background:#0b52d6;
+}
+
+.green{
+    background:#1eaa4b;
+}
+
+.orange{
+    background:#ff9800;
+}
+
+.purple{
+    background:#673ab7;
+}
+
+.cyan{
+    background:#00acc1;
+}
+
+.dark{
+    background:#08296d;
+}
+
+/*=================================
+      ACCÈS RAPIDE
+==================================*/
+
+.quick-section{
+    margin-top:40px;
+}
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.quick-card{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.quick-card:hover{
+    transform:translateY(-5px);
+}
+
+.quick-card i{
+    font-size:42px;
+    color:#0b52d6;
+    margin-bottom:20px;
+}
+
+.quick-card h3{
+    color:#142c7a;
+    margin-bottom:12px;
+}
+
+.quick-card p{
+    color:#666;
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.quick-card button{
+    border:none;
+    background:#0b52d6;
+    color:#fff;
+    padding:12px 30px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.quick-card button:hover{
+    background:#083ea5;
+}
+
+/*=================================
+      GRAPHIQUES
+==================================*/
+
+.charts-section{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(450px,1fr));
+    gap:25px;
+    margin-top:40px;
+}
+
+.chart-box{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.chart-box h3{
+    color:#142c7a;
+    margin-bottom:25px;
+}
+
+.chart-box canvas{
+    width:100% !important;
+    height:300px !important;
+}
+
+/*=================================
+      DERNIÈRES INSPECTIONS
+==================================*/
+
+.inspection-list{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    margin-top:40px;
+}
+
+.inspection-list h3{
+    color:#142c7a;
+    margin-bottom:25px;
+}
+
+.inspection-list table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.inspection-list td{
+    padding:18px;
+    border-bottom:1px solid #eee;
+}
+
+.success{
+    background:#dff5e7;
+    color:#178644;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+.warning{
+    background:#fff0d8;
+    color:#d18200;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+.danger{
+    background:#ffe2e2;
+    color:#cf2222;
+    padding:8px 16px;
+    border-radius:30px;
+}
+
+/*=================================
+      FOOTER
+==================================*/
+
+.footer{
+    text-align:center;
+    padding:30px;
+    color:#666;
+}
+
+/*=================================
+      RESPONSIVE
+==================================*/
+
+@media(max-width:1000px){
+
+    .sidebar{
+        width:100%;
+        position:relative;
+        height:auto;
+    }
+
+    .main-content{
+        margin-left:0;
+    }
+
+    .dashboard-layout{
+        flex-direction:column;
+    }
+
+    .banner-content{
+        flex-direction:column;
+        justify-content:center;
+        text-align:center;
+        gap:25px;
+    }
+
+    .banner-left{
+        flex-direction:column;
+    }
+}
+
+@media(max-width:768px){
+
+    .banner{
+        height:420px;
+    }
+
+    .charts-section{
+        grid-template-columns:1fr;
+    }
+
+    .stats-grid,
+    .quick-grid{
+        grid-template-columns:1fr;
+    }
+
+    .inspection-list{
+        overflow:auto;
+    }
+
+  }
+
+.card,
+.quick-card,
+.chart-box{
+    transition:.4s;
+}
+
+.card:hover,
+.quick-card:hover,
+.chart-box:hover{
+    transform:translateY(-10px);
+}
+
+.sidebar{
+    scrollbar-width:none;
+}
+
+.sidebar::-webkit-scrollbar{
+    display:none;
+}
+
+.top-box{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
+.banner{
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.quick-card button{
+    transition:.3s;
+}
+
+.quick-card button:hover{
+    transform:scale(1.05);
+}
+
+.card h1{
+    font-weight:700;
+      }
+
+/* =================================
+   ACCUEIL - LOGIN - REGISTER
+================================= */
+
+.top-navbar{
+    background:#041c5c;
+    color:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    flex-wrap:wrap;
+}
+
+.nav-logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.nav-logo img{
+    width:60px;
+}
+
+.nav-logo h2{
+    font-size:22px;
+}
+
+.nav-logo p{
+    font-size:14px;
+    opacity:.9;
+}
+
+.top-navbar ul{
+    list-style:none;
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.top-navbar ul li a{
+    color:#fff;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:500;
+}
+
+.top-navbar ul li a:hover{
+    color:#ffd43b;
+}
+
+/* HERO */
+
+.hero{
+    position:relative;
+    min-height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+.hero-image{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.55);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:#fff;
+    padding:40px 20px;
+}
+
+.logo{
+    width:120px;
+    margin:auto;
+    margin-bottom:25px;
+}
+
+.logo-watermark{
+    position:absolute;
+    width:400px;
+    opacity:.08;
+    z-index:1;
+}
+
+.hero-content h1{
+    font-size:50px;
+    margin-bottom:15px;
+}
+
+.hero-content h3{
+    color:#ffd43b;
+    margin-bottom:20px;
+}
+
+.hero-content p{
+    max-width:800px;
+    line-height:1.8;
+    margin:auto;
+}
+
+.hero-buttons{
+    margin-top:35px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.btn-start{
+    background:#0b52d6;
+    color:#fff;
+    text-decoration:none;
+    padding:15px 30px;
+    border-radius:12px;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    transition:.3s;
+}
+
+.btn-start:hover{
+    background:#083ea5;
+    transform:translateY(-5px);
+}
+
+/* NOTIFICATION */
+
+.notification{
+    padding:50px 20px;
+}
+
+.notification-box{
+    background:#fff;
+    max-width:1000px;
+    margin:auto;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+.notification-box i{
+    font-size:40px;
+    color:#0b52d6;
+}
+
+/* MENU */
+
+.main-menu{
+    padding:70px 20px;
+}
+
+.main-menu h2{
+    text-align:center;
+    color:#142c7a;
+    margin-bottom:40px;
+}
+
+.menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:25px;
+    max-width:1300px;
+    margin:auto;
+}
+
+.menu-card{
+    background:#fff;
+    padding:35px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.menu-card:hover{
+    transform:translateY(-10px);
+}
+
+.menu-card i{
+    font-size:50px;
+    color:#0b52d6;
+    margin-bottom:20px;
+}
+
+.menu-card h3{
+    color:#142c7a;
+    margin-bottom:15px;
+}
+
+.menu-card p{
+    line-height:1.7;
+    color:#666;
+}
+
+/* SECTION ASSISTANT */
+
+.assistant{
+    padding:70px 20px;
+    text-align:center;
+}
+
+.assistant h2{
+    color:#142c7a;
+    margin-bottom:30px;
+}
+
+.assistant-box{
+    background:#fff;
+    max-width:900px;
+    margin:auto;
+    padding:40px;
+    border-radius:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* FOOTER */
+
+footer,
+.footer{
+    background:#041c5c;
+    color:#fff;
+    text-align:center;
+    padding:50px 20px;
+}
+
+.footer-logo{
+    width:90px;
+    margin:auto;
+    margin-bottom:20px;
+}
+
+footer hr,
+.footer hr{
+    margin:25px auto;
+    width:300px;
+    border:1px solid rgba(255,255,255,.2);
+}
+
+/* FORMULAIRES */
+
+form input{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    outline:none;
+    font-size:15px;
+}
+
+form input:focus{
+    border-color:#0b52d6;
+}
+
+form button{
+    width:100%;
+    border:none;
+    background:#0b52d6;
+    color:#fff;
+    padding:15px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+form button:hover{
+    background:#083ea5;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+    .top-navbar{
+        flex-direction:column;
+        gap:20px;
+        text-align:center;
+    }
+
+    .hero-content h1{
+        font-size:34px;
+    }
+
+    .hero-content h3{
+        font-size:22px;
+    }
+
+    .notification-box{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .assistant-box{
+        padding:25px;
+    }
+
+    .logo-watermark{
+        width:250px;
+    }
+      }
+
+
+/* ===============================
+   VERSION PROFESSIONNELLE RESPONSIVE
+================================== */
 
 html{
     scroll-behavior:smooth;
 }
 
-
-body.dashboard-page{
-
-    background:#041c5c;
-    color:white;
-    overflow-x:hidden;
-
+body{
+    line-height:1.6;
 }
-
 
 img{
-
     max-width:100%;
     display:block;
-
 }
 
-
-
-/*=========================================
-        BANNER SLIDER
-=========================================*/
-
-
-.banner{
-
-    width:100%;
-    height:330px;
-    position:relative;
-    overflow:hidden;
-
-    box-shadow:
-    0 15px 40px rgba(0,0,0,.35);
-
+/* Navbar */
+.top-navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 4px 20px rgba(0,0,0,.12);
 }
 
-
-
-.slider{
-
-    width:100%;
-    height:100%;
-
-}
-
-
-
-.slider img{
-
-    position:absolute;
-
-    width:100%;
-    height:330px;
-
-    object-fit:cover;
-
-    opacity:0;
-
-    transition:
-    opacity 1.2s ease,
-    transform 8s ease;
-
-}
-
-
-
-.slider img.active{
-
-    opacity:1;
-
-    transform:scale(1.05);
-
-}
-
-
-
-/* voile sur les images */
-
-.banner::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    background:
-    linear-gradient(
-    180deg,
-    rgba(0,0,0,.15),
-    rgba(0,0,0,.55)
-    );
-
-    pointer-events:none;
-
-}
-
-
-
-/*=========================================
-        DATE HEURE MÉTÉO
-=========================================*/
-
-
-.datetime-box{
-
-    position:absolute;
-
-    top:15px;
-    right:20px;
-
-    z-index:20;
-
-    text-align:right;
-
-
-    background:
-    rgba(0,0,0,.35);
-
-
-    padding:15px 18px;
-
-
-    border-radius:20px;
-
-
-    backdrop-filter:blur(10px);
-
-
-    border:
-    1px solid rgba(255,255,255,.2);
-
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.35);
-
-}
-
-
-
-#clock{
-
-    font-size:30px;
-
-    font-weight:700;
-
-    color:#FFD700;
-
-}
-
-
-
-#day,
-#date,
-#city{
-
-    font-size:13px;
-
-    color:#fff;
-
-}
-
-
-
-#weather{
-
-    margin-top:8px;
-
-    color:#FFD700;
-
-    font-weight:600;
-
-}
-
-
-
-/*=========================================
-        MOTIVATION
-=========================================*/
-
-
-.motivation{
-
-    text-align:center;
-
-    padding:14px;
-
-    background:#02102f;
-
-
-    font-size:15px;
-
-
-    font-weight:500;
-
-
-    color:#fff;
-
-
-    border-bottom:
-    1px solid rgba(255,255,255,.1);
-
-}
-
-
-
-#motivationText{
-
-    color:#FFD700;
-
-}
-
-
-
-/*=========================================
-        MENU PRINCIPAL
-=========================================*/
-
-
-.menu-index{
-
-
-    display:grid;
-
-
-    grid-template-columns:
-    repeat(auto-fit,minmax(120px,1fr));
-
-
-    gap:22px;
-
-
-    padding:30px;
-
-
-
-    background:
-
-    linear-gradient(
-    180deg,
-    #03153d,
-    #020c25
-    );
-
-
-}
-
-
-
-/* bouton menu */
-
-
-.menu-index a{
-
-
-    height:125px;
-
-
-    border-radius:25px;
-
-
-    background:
-
-    linear-gradient(
-    145deg,
-    #07327a,
-    #02183d
-    );
-
-
-    border:
-
-    1px solid rgba(255,255,255,.25);
-
-
-
-    display:flex;
-
-
-    flex-direction:column;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-
-    text-decoration:none;
-
-
-    color:white;
-
-
-
-    transition:.35s;
-
-
-
-    box-shadow:
-
-    0 10px 30px rgba(0,0,0,.45);
-
-
-
-    position:relative;
-
-
-    overflow:hidden;
-
-
-}
-
-
-
-
-.menu-index a::before{
-
-
-    content:"";
-
-
-    position:absolute;
-
-
-    width:0;
-
-    height:0;
-
-
-    background:
-    rgba(255,255,255,.15);
-
-
-    border-radius:50%;
-
-
-    transition:.5s;
-
-
-}
-
-
-
-
-
-.menu-index a:hover::before{
-
-
-    width:180px;
-
-    height:180px;
-
-
-}
-
-
-
-.menu-index a:hover{
-
-
-    transform:
-    translateY(-10px);
-
-
-
-    box-shadow:
-
-    0 0 30px #00d9ff;
-
-
-}
-
-
-
-/* icônes menu */
-
-
-.menu-index i{
-
-
-    font-size:34px;
-
-
-    color:#FFD700;
-
-
-    margin-bottom:12px;
-
-
-    z-index:2;
-
-
-}
-
-
-
-.menu-index span{
-
-
-    font-size:14px;
-
-
-    font-weight:600;
-
-
-    text-align:center;
-
-
-    z-index:2;
-
-
-}
-
-
-/*=========================================
-        FIN PARTIE 1
-=========================================*/
-
-
-/*=========================================
-        INSPECTEURBOT IA RDC
-        DASHBOARD CSS PREMIUM
-        PARTIE 2
-=========================================*/
-
-
-/*=========================================
-        SECTION GENERALE
-=========================================*/
-
-
-.quick-section{
-
-    padding:35px;
-
-}
-
-
-
-.quick-section h2{
-
-    text-align:center;
-
-    margin-bottom:30px;
-
-    color:#ffffff;
-
-    font-size:28px;
-
-}
-
-
-
-/*=========================================
-        ASSISTANT IA
-=========================================*/
-
-
-.ai-box{
-
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #001740,
-    #00318b,
-    #00aaff
-    );
-
-
-    padding:35px;
-
-
-    border-radius:30px;
-
-
-    box-shadow:
-
-    0 0 35px rgba(0,200,255,.45);
-
-
-
-    border:
-
-    1px solid rgba(255,255,255,.2);
-
-
-
-    animation:
-    fadeUp .8s ease;
-
-
-}
-
-
-
-.ai-box h2{
-
-
-    color:#fff;
-
-
-    text-align:center;
-
-
-    margin-bottom:25px;
-
-
-    font-size:30px;
-
-
-}
-
-
-
-/* formulaire IA */
-
-
-.ai-box form{
-
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:15px;
-
-
-}
-
-
-
-.ai-box input{
-
-
-    width:100%;
-
-
-    padding:18px 22px;
-
-
-    border:none;
-
-
-    outline:none;
-
-
-    border-radius:50px;
-
-
-    font-size:16px;
-
-
-    background:white;
-
-
-}
-
-
-
-.ai-box input:focus{
-
-
-    box-shadow:
-
-    0 0 15px #00d9ff;
-
-
-}
-
-
-
-.ai-box button{
-
-
-    width:100%;
-
-
-    padding:17px;
-
-
-    border:none;
-
-
-    border-radius:50px;
-
-
-    background:#00d4ff;
-
-
-    color:white;
-
-
-    font-size:17px;
-
-
-    font-weight:700;
-
-
-    cursor:pointer;
-
-
+.top-navbar ul li a{
+    padding:10px 14px;
+    border-radius:10px;
     transition:.3s;
-
-
 }
 
-
-
-.ai-box button:hover{
-
-
-    background:#009bd6;
-
-
-    transform:
-    translateY(-4px);
-
-
+.top-navbar ul li a:hover{
+    background:rgba(255,255,255,.12);
 }
 
-
-
-/*=========================================
-        RESULTATS IA
-=========================================*/
-
-
-#searchResults,
-.search-results{
-
-
-    margin-top:25px;
-
-
-    background:white;
-
-
-    color:#111;
-
-
-    border-radius:22px;
-
-
-    padding:25px;
-
-
-    min-height:80px;
-
-
-    box-shadow:
-
-    0 10px 30px rgba(0,0,0,.2);
-
-
-}
-
-
-
-.article-card{
-
-
-    background:#f5f8ff;
-
-
-    padding:18px;
-
-
-    border-radius:18px;
-
-
-    margin-bottom:15px;
-
-
-    border-left:
-
-    5px solid #00318b;
-
-
-}
-
-
-
-.article-card h3{
-
-
-    color:#00318b;
-
-
-    margin-bottom:10px;
-
-
-}
-
-
-
-/*=========================================
-        GRILLE MODULES IA
-=========================================*/
-
-
-.quick-grid{
-
-
-    display:grid;
-
-
-    grid-template-columns:
-
-
-    repeat(auto-fit,minmax(230px,1fr));
-
-
-    gap:25px;
-
-
-}
-
-
-
-/*=========================================
-        CARTES MODULES
-=========================================*/
-
-
-.quick-card{
-
-
-    background:
-
-
-    linear-gradient(
-    145deg,
-    #07204d,
-    #0b46a8
-    );
-
-
-
-    padding:30px;
-
-
-    min-height:220px;
-
-
-    border-radius:28px;
-
-
-    color:white;
-
-
-    text-decoration:none;
-
-
-
-    display:flex;
-
-
-    flex-direction:column;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-
-    text-align:center;
-
-
-
-    box-shadow:
-
-
-    0 12px 35px rgba(0,0,0,.35);
-
-
-
-    border:
-
-    1px solid rgba(255,255,255,.15);
-
-
-
-    transition:.4s;
-
-
-    position:relative;
-
-
-    overflow:hidden;
-
-
-}
-
-
-
-
-.quick-card::after{
-
-
-    content:"";
-
-
-    position:absolute;
-
-
-    width:200px;
-
-
-    height:200px;
-
-
-    background:
-
-    rgba(0,217,255,.15);
-
-
-    border-radius:50%;
-
-
-    top:-100px;
-
-
-    right:-100px;
-
-
-}
-
-
-
-.quick-card:hover{
-
-
-    transform:
-
-
-    translateY(-12px);
-
-
-
-    box-shadow:
-
-
-    0 0 35px #00d9ff;
-
-
-
-}
-
-
-
-/* icônes */
-
-
-.quick-card i{
-
-
-    font-size:45px;
-
-
-    color:#FFD700;
-
-
-    margin-bottom:18px;
-
-
-    z-index:2;
-
-
-}
-
-
-
-.quick-card h3{
-
-
-    font-size:19px;
-
-
-    margin-bottom:12px;
-
-
-    z-index:2;
-
-
-}
-
-
-
-.quick-card p{
-
-
-    color:#dbeeff;
-
-
-    font-size:14px;
-
-
-    line-height:1.7;
-
-
-    z-index:2;
-
-
-}
-
-
-
-/*=========================================
-        STATISTIQUES
-=========================================*/
-
-
-#statArticles,
-#statRecherche,
-#statIA{
-
-
-    color:#FFD700;
-
-
-    font-size:22px;
-
-
-    font-weight:700;
-
-
-}
-
-
-
-/*=========================================
-        ANIMATION
-=========================================*/
-
-
-@keyframes fadeUp{
-
-
-    from{
-
-
-        opacity:0;
-
-
-        transform:
-        translateY(30px);
-
-
-    }
-
-
-    to{
-
-
-        opacity:1;
-
-
-        transform:
-        translateY(0);
-
-
-    }
-
-
-}
-
-
-/*=========================================
-        FIN PARTIE 2
-=========================================*/
-
-
-/*=========================================
-        INSPECTEURBOT IA RDC
-        DASHBOARD CSS PREMIUM
-        PARTIE 3
-=========================================*/
-
-
-/*=========================================
-        FOOTER
-=========================================*/
-
-
-.footer,
-footer{
-
-
-    background:#02102f;
-
-
-    color:white;
-
-
-    text-align:center;
-
-
-    padding:50px 25px;
-
-
-
-    margin-top:40px;
-
-
-
-    border-top:
-
-
-    1px solid rgba(255,255,255,.15);
-
-
-
-}
-
-
-
-.footer-logo{
-
-
-    width:90px;
-
-
-    margin:0 auto 20px;
-
-
-}
-
-
-
-.footer h3{
-
-
-    color:#FFD700;
-
-
-    margin-bottom:15px;
-
-
-}
-
-
-
-.footer p{
-
-
-    color:#dbeeff;
-
-
-    line-height:1.8;
-
-
-}
-
-
-
-.footer hr{
-
-
-    width:300px;
-
-
-    max-width:80%;
-
-
-    margin:25px auto;
-
-
-    border:
-
-
-    1px solid rgba(255,255,255,.2);
-
-
-}
-
-
-
-/*=========================================
-        ANIMATIONS PREMIUM
-=========================================*/
-
-
+/* Cartes */
+.card,
+.menu-card,
 .quick-card,
-.menu-index a,
-.ai-box{
-
-
-    animation:
-
-    fadeUp .7s ease;
-
-
+.chart-box,
+.notification-box,
+.assistant-box{
+    border-radius:22px;
 }
 
-
-
-@keyframes fadeUp{
-
-
-    from{
-
-
-        opacity:0;
-
-
-        transform:
-        translateY(25px);
-
-
-    }
-
-
-    to{
-
-
-        opacity:1;
-
-
-        transform:
-        translateY(0);
-
-
-    }
-
-
+/* Table responsive */
+.inspection-list{
+    overflow-x:auto;
 }
 
+.inspection-list table{
+    min-width:600px;
+}
 
+/* Tablettes */
+@media (max-width:992px){
 
-/*=========================================
-        TABLETTES
-=========================================*/
-
-
-@media(max-width:992px){
-
-
-
-    .banner,
-    .slider img{
-
-
-        height:300px;
-
-
+    .banner-left h1{
+        font-size:34px;
     }
 
-
-
-    .datetime-box{
-
-
-        top:10px;
-
-
-        right:10px;
-
-
-    }
-
-
-
-    #clock{
-
-
-        font-size:24px;
-
-
-    }
-
-
-
-
-    .menu-index{
-
-
-        grid-template-columns:
-
-
-        repeat(4,1fr);
-
-
-        padding:20px;
-
-
-    }
-
-
-
-    .quick-section{
-
-
+    .banner-content{
         padding:25px;
-
-
     }
 
-
-
-    .quick-grid{
-
-
-        grid-template-columns:
-
-
-        repeat(2,1fr);
-
-
-    }
-
-
-
-}
-
-
-
-
-/*=========================================
-        TELEPHONES
-=========================================*/
-
-
-@media(max-width:768px){
-
-
-
-    body.dashboard-page{
-
-
+    .sidebar{
         width:100%;
-
-
+        position:relative;
+        height:auto;
     }
 
+    .main-content{
+        margin-left:0;
+    }
+}
 
+/* Téléphones */
+@media (max-width:768px){
 
-    .banner,
-    .slider img{
-
-
-        height:260px;
-
-
+    .top-navbar{
+        padding:15px;
     }
 
-
-
-
-    .datetime-box{
-
-
-        top:8px;
-
-
-        right:8px;
-
-
-        padding:10px;
-
-
-        border-radius:15px;
-
-
+    .top-navbar ul{
+        width:100%;
+        justify-content:center;
+        gap:10px;
     }
 
+    .hero{
+        min-height:auto;
+        padding:80px 0;
+    }
 
+    .hero-content{
+        padding:25px 15px;
+    }
 
+    .hero-content h1{
+        font-size:30px;
+    }
 
-    #clock{
-
-
+    .hero-content h3{
         font-size:20px;
-
-
     }
 
-
-
-    #day,
-    #date,
-    #city,
-    #weather{
-
-
-        font-size:11px;
-
-
+    .logo{
+        width:90px;
     }
 
-
-
-
-    .motivation{
-
-
-        font-size:13px;
-
-
-        padding:12px;
-
-
+    .notification-box{
+        flex-direction:column;
+        text-align:center;
     }
 
-
-
-
-    .menu-index{
-
-
-        grid-template-columns:
-
-
-        repeat(3,1fr);
-
-
-        gap:15px;
-
-
-        padding:18px;
-
-
+    .banner{
+        height:auto;
+        min-height:500px;
     }
 
-
-
-
-
-    .menu-index a{
-
-
-        height:105px;
-
-
-        border-radius:20px;
-
-
+    .banner-content,
+    .banner-left{
+        flex-direction:column;
+        text-align:center;
     }
 
-
-
-
-    .menu-index i{
-
-
-        font-size:27px;
-
-
+    .banner-right{
+        width:100%;
     }
 
-
-
-
-
-    .menu-index span{
-
-
-        font-size:12px;
-
-
+    .top-box{
+        justify-content:center;
     }
 
-
-
-
-
-    .quick-section{
-
-
-        padding:20px;
-
-
-    }
-
-
-
-
-    .quick-section h2{
-
-
-        font-size:22px;
-
-
-    }
-
-
-
-
-    .ai-box{
-
-
+    .card,
+    .quick-card,
+    .menu-card{
         padding:22px;
-
-
-        border-radius:25px;
-
-
     }
 
-
-
-
-
-    .ai-box h2{
-
-
-        font-size:24px;
-
-
+    .stats-grid,
+    .quick-grid,
+    .menu-grid,
+    .charts-section{
+        grid-template-columns:1fr;
     }
 
-
-
-
-
-    .quick-grid{
-
-
-        grid-template-columns:
-
-
-        1fr;
-
-
-        gap:18px;
-
-
+    .btn-start,
+    form button{
+        width:100%;
+        justify-content:center;
     }
-
-
-
-
-
-    .quick-card{
-
-
-        min-height:190px;
-
-
-        padding:25px;
-
-
-    }
-
-
-
-
-
-    .quick-card i{
-
-
-        font-size:38px;
-
-
-    }
-
-
-
-
-    .footer{
-
-
-        padding:35px 15px;
-
-
-    }
-
-
-
-
 }
 
 
+/* ===============================
+   VERSION PREMIUM - IGT RDC
+================================== */
 
-/*=========================================
-        PETITS TELEPHONES
-=========================================*/
-
-
-@media(max-width:400px){
-
-
-
-    .menu-index{
-
-
-        grid-template-columns:
-
-
-        repeat(2,1fr);
-
-
-    }
-
-
-
-
-
-    .banner,
-    .slider img{
-
-
-        height:230px;
-
-
-    }
-
-
-
-
-    .datetime-box{
-
-
-        transform:scale(.85);
-
-
-        transform-origin:right top;
-
-
-    }
-
-
-
+/* Couleurs RDC */
+:root{
+    --bleu-rdc:#0077c8;
+    --jaune-rdc:#ffd100;
+    --rouge-rdc:#ce1126;
 }
 
-
-
-/*=========================================
-        ACCESSIBILITE
-=========================================*/
-
-
-button,
-a{
-
-
-    -webkit-tap-highlight-color:transparent;
-
-
+/* Boutons améliorés */
+.btn-start,
+.quick-card button{
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
 }
 
-
-
-::selection{
-
-
-    background:#00d4ff;
-
-
-    color:white;
-
-
+/* Effets cartes */
+.card,
+.quick-card,
+.menu-card,
+.chart-box{
+    transition:all .35s ease;
 }
 
+.card:hover,
+.quick-card:hover,
+.menu-card:hover,
+.chart-box:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
+}
 
-/*=========================================
-        FIN DASHBOARD CSS
-        INSPECTEURBOT IA RDC
-=========================================*/
+/* Notifications */
+.top-box{
+    border:1px solid rgba(255,255,255,.15);
+}
 
+/* Animation douce */
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
 
+.card,
+.quick-card,
+.menu-card{
+    animation:fadeUp .8s ease;
+}
+
+/* Mode sombre automatique */
+@media (prefers-color-scheme: dark){
+
+    body{
+        background:#0f172a;
+    }
+
+    .card,
+    .quick-card,
+    .menu-card,
+    .chart-box,
+    .notification-box,
+    .assistant-box{
+        background:#1e293b;
+        color:#fff;
+    }
+
+    .card p,
+    .quick-card p,
+    .menu-card p{
+        color:#d1d5db;
+    }
+ }
+
+     .hero-image{
+object-fit:cover;
+object-position:center;
+transform:scale(0.85);
+}
+
+.footer{
+background:#001b66;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+.footer strong{
+color:#ffd700;
+      } 
+
+      
