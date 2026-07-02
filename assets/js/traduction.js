@@ -1,564 +1,456 @@
+/*=================================================
+ INSPECTEURBOT RDC
+ traduction.js
+ VERSION 1.0
+ GESTION DES LANGUES
+==================================================*/
+
 "use strict";
 
-/*=========================================================
- INSPECTEURBOT IA RDC
- MODULE TRADUCTION MULTILINGUE
- Version 2.0
-=========================================================*/
+/*=================================================
+ ESPACE DE NOMS
+==================================================*/
 
+window.CodeTravail = window.CodeTravail || {};
+window.CodeTravail.Traduction = {};
 
-/*=========================================================
- CONFIGURATION
-=========================================================*/
+/*=================================================
+ LANGUE PAR DÉFAUT
+==================================================*/
 
+let langueCourante = "fr";
 
-const TraductionIA={
+/*=================================================
+ DICTIONNAIRE
+==================================================*/
 
-version:"2.0",
+const DICTIONNAIRE = {
 
-actif:true,
+    fr: {
 
-langueSource:"fr",
+        recherche: "Recherche Intelligente",
 
-langueCible:"fr",
+        consulter: "Consultation des Articles",
 
-auto:true,
+        assistant: "Assistant Juridique IA",
 
-conserverOriginal:true
+        analyser: "Analyser",
+
+        effacer: "Effacer",
+
+        copier: "Copier",
+
+        partager: "Partager",
+
+        imprimer: "Imprimer",
+
+        favoris: "Favori"
+
+    },
+
+    en: {
+
+        recherche: "Smart Search",
+
+        consulter: "Article Viewer",
+
+        assistant: "AI Legal Assistant",
+
+        analyser: "Analyze",
+
+        effacer: "Clear",
+
+        copier: "Copy",
+
+        partager: "Share",
+
+        imprimer: "Print",
+
+        favoris: "Favorite"
+
+    },
+
+    ln: {
+
+        recherche: "Boluki",
+
+        consulter: "Kotala Article",
+
+        assistant: "Mosungi IA",
+
+        analyser: "Talela",
+
+        effacer: "Longola",
+
+        copier: "Kopi",
+
+        partager: "Kabola",
+
+        imprimer: "Imprimer",
+
+        favoris: "Favori"
+
+    },
+
+    sw: {
+
+        recherche: "Utafutaji",
+
+        consulter: "Soma Makala",
+
+        assistant: "Msaidizi IA",
+
+        analyser: "Chambua",
+
+        effacer: "Futa",
+
+        copier: "Nakili",
+
+        partager: "Shiriki",
+
+        imprimer: "Chapisha",
+
+        favoris: "Pendwa"
+
+    },
+
+    lu: {
+
+        recherche: "Kulonda",
+
+        consulter: "Kubala",
+
+        assistant: "Musadidi IA",
+
+        analyser: "Sangana",
+
+        effacer: "Futa",
+
+        copier: "Kopiya",
+
+        partager: "Kabula",
+
+        imprimer: "Imprima",
+
+        favoris: "Favori"
+
+    },
+
+    kg: {
+
+        recherche: "Sosa",
+
+        consulter: "Tanga",
+
+        assistant: "Nsadisi IA",
+
+        analyser: "Tala",
+
+        effacer: "Katula",
+
+        copier: "Kopa",
+
+        partager: "Kabula",
+
+        imprimer: "Imprimer",
+
+        favoris: "Favori"
+
+    }
 
 };
 
+/*=================================================
+ PARTIE 2
+ CHANGEMENT DE LANGUE
+==================================================*/
 
+/*=================================================
+ APPLIQUER UNE LANGUE
+==================================================*/
 
-/*=========================================================
- LANGUES RDC
-=========================================================*/
+function appliquerLangue(langue = "fr") {
 
+    if (!DICTIONNAIRE[langue]) {
 
-const LanguesIA={
+        langue = "fr";
 
+    }
 
-fr:{
-nom:"Français",
-locale:"fr-FR"
-},
+    langueCourante = langue;
 
+    localStorage.setItem(
 
-ln:{
-nom:"Lingala",
-locale:"ln-CD"
-},
+        "inspecteurbot_langue",
 
+        langue
 
-sw:{
-nom:"Swahili",
-locale:"sw-CD"
-},
+    );
 
+    /*=========================================
+      SYNCHRONISATION AVEC SPEECH.JS
+    =========================================*/
 
-kg:{
-nom:"Kikongo",
-locale:"kg-CD"
-},
+    if (window.CodeTravail.Speech) {
 
+        const langues = {
 
-lu:{
-nom:"Tshiluba",
-locale:"lu-CD"
-},
+            fr: "fr-FR",
 
+            en: "en-GB",
 
-en:{
-nom:"English",
-locale:"en-US"
-},
+            ln: "fr-CD",
 
+            sw: "sw-CD",
 
-pt:{
-nom:"Português",
-locale:"pt-PT"
-}
+            lu: "fr-CD",
 
+            kg: "fr-CD"
 
-};
+        };
 
+        window.CodeTravail.Speech
+            .changerLangue(
 
+                langues[langue] || "fr-FR"
 
+            );
 
+    }
 
-/*=========================================================
- DICTIONNAIRE JURIDIQUE
-=========================================================*/
+    /*=========================================
+      BOUTONS
+    =========================================*/
 
+    document
+        .querySelector("#btnQuestionIA")
+        ?.replaceChildren(
 
-const DictionnaireIA={
+            document.createTextNode(
 
+                DICTIONNAIRE[langue].analyser
 
-contrat:{
+            )
 
-fr:"contrat de travail",
+        );
 
-ln:"kontra ya mosala",
+    document
+        .querySelector("#btnEffacerIA")
+        ?.replaceChildren(
 
-sw:"mkataba wa kazi",
+            document.createTextNode(
 
-kg:"kontra ya kisalu",
+                DICTIONNAIRE[langue].effacer
 
-lu:"kontra wa mudimu",
+            )
 
-en:"employment contract",
+        );
 
-pt:"contrato de trabalho"
+    document
+        .querySelector("#btnCopierIA")
+        ?.replaceChildren(
 
-},
+            document.createTextNode(
 
+                DICTIONNAIRE[langue].copier
 
+            )
 
-travailleur:{
+        );
 
-fr:"travailleur",
+    document
+        .querySelector("#btnPartagerArticle")
+        ?.replaceChildren(
 
-ln:"mosali",
+            document.createTextNode(
 
-sw:"mfanyakazi",
+                DICTIONNAIRE[langue].partager
 
-kg:"musadi",
+            )
 
-lu:"mufanyi wa mudimu",
+        );
 
-en:"worker",
+    document
+        .querySelector("#btnImprimerArticle")
+        ?.replaceChildren(
 
-pt:"trabalhador"
+            document.createTextNode(
 
-},
+                DICTIONNAIRE[langue].imprimer
 
+            )
 
+        );
 
-employeur:{
+    document
+        .querySelector("#btnFavoriArticle")
+        ?.replaceChildren(
 
-fr:"employeur",
+            document.createTextNode(
 
-ln:"patron",
+                DICTIONNAIRE[langue].favoris
 
-sw:"mwajiri",
+            )
 
-kg:"mfumu",
+        );
 
-lu:"patron",
+    window.CodeTravail.Utils
+        ?.afficherNotification(
 
-en:"employer",
+            "Langue : " + langue.toUpperCase()
 
-pt:"empregador"
-
-},
-
-
-
-salaire:{
-
-fr:"salaire",
-
-ln:"lifuti",
-
-sw:"mshahara",
-
-kg:"mfutu",
-
-lu:"difutu",
-
-en:"salary",
-
-pt:"salário"
-
-},
-
-
-
-licenciement:{
-
-fr:"licenciement",
-
-ln:"kobengana na mosala",
-
-sw:"kufukuzwa",
-
-kg:"kubengana",
-
-lu:"kubingisha",
-
-en:"dismissal",
-
-pt:"demissão"
-
-},
-
-
-
-inspection:{
-
-fr:"inspection",
-
-ln:"inspection",
-
-sw:"ukaguzi",
-
-kg:"kukengila",
-
-lu:"mukengeshi",
-
-en:"inspection",
-
-pt:"inspeção"
+        );
 
 }
 
+/*=================================================
+ LANGUE SAUVEGARDÉE
+==================================================*/
 
-};
+function chargerLangue() {
 
+    const langue =
 
+        localStorage.getItem(
 
+            "inspecteurbot_langue"
 
+        ) || "fr";
 
-/*=========================================================
- NORMALISATION
-=========================================================*/
+    const select =
 
+        document.querySelector("#langue");
 
-function normaliserTexte(t){
+    if (select) {
 
-return (t||"")
+        select.value = langue;
 
-.toLowerCase()
+    }
 
-.normalize("NFD")
+    appliquerLangue(langue);
 
-.replace(/[\u0300-\u036f]/g,"")
+     }
 
-.trim();
+/*=================================================
+ PARTIE 3
+ INITIALISATION
+ VERSION FINALE
+==================================================*/
 
-}
+/*=================================================
+ CHANGEMENT DE LANGUE
+==================================================*/
 
+function changerLangue(event) {
 
-
-
-
-/*=========================================================
- CHANGER LANGUE
-=========================================================*/
-
-
-function definirLangue(code){
-
-
-if(LanguesIA[code]){
-
-
-TraductionIA.langueCible=code;
-
+    appliquerLangue(event.target.value);
 
 }
 
+/*=================================================
+ LANGUE ACTUELLE
+==================================================*/
+
+function obtenirLangue() {
+
+    return langueCourante;
 
 }
 
+/*=================================================
+ CODE VOCAL
+==================================================*/
 
+function obtenirCodeVocal() {
 
+    switch (langueCourante) {
 
+        case "en":
+            return "en-GB";
 
-/*=========================================================
- DETECTION SIMPLE
-=========================================================*/
+        case "ln":
+            return "fr-CD";
 
+        case "sw":
+            return "sw-CD";
 
-function detecterLangue(texte){
+        case "lu":
+            return "fr-CD";
 
+        case "kg":
+            return "fr-CD";
 
-texte=normaliserTexte(texte);
+        default:
+            return "fr-FR";
 
-
-
-if(
-texte.includes("mbote") ||
-texte.includes("mosala")
-)
-
-return "ln";
-
-
-
-if(
-texte.includes("habari") ||
-texte.includes("kazi")
-)
-
-return "sw";
-
-
-
-if(
-texte.includes("hello")
-)
-
-return "en";
-
-
-
-return "fr";
-
+    }
 
 }
 
+/*=================================================
+ INITIALISATION
+==================================================*/
 
+function initialiserTraduction() {
 
+    const select =
 
+        document.querySelector("#langue");
 
-/*=========================================================
- RECHERCHE CONCEPT
-=========================================================*/
+    if (select) {
 
+        select.addEventListener(
 
-function trouverConcept(mot){
+            "change",
 
+            changerLangue
 
-mot=normaliserTexte(mot);
+        );
 
+    }
 
+    chargerLangue();
 
-for(let concept in DictionnaireIA){
+    console.log(
 
+        "🌍 traduction.js initialisé."
 
-let langues=DictionnaireIA[concept];
-
-
-
-for(let langue in langues){
-
-
-if(
-
-normaliserTexte(langues[langue])
-
-===mot
-
-)
-
-return concept;
-
-
+    );
 
 }
 
+/*=================================================
+ EXPORT
+==================================================*/
 
-}
+window.CodeTravail.Traduction.initialiser =
+    initialiserTraduction;
 
+window.CodeTravail.Traduction.appliquer =
+    appliquerLangue;
 
+window.CodeTravail.Traduction.obtenirLangue =
+    obtenirLangue;
 
-return null;
+window.CodeTravail.Traduction.obtenirCodeVocal =
+    obtenirCodeVocal;
 
+/*=================================================
+ DÉMARRAGE
+==================================================*/
 
-}
+document.addEventListener(
 
+    "DOMContentLoaded",
 
+    () => {
 
+        initialiserTraduction();
 
-
-/*=========================================================
- TRADUCTION MOTS JURIDIQUES
-=========================================================*/
-
-
-function traduireTexteIA(
-
-texte,
-
-langue="fr"
-
-){
-
-
-let mots=
-
-normaliserTexte(texte)
-
-.split(" ");
-
-
-
-let resultat=[];
-
-
-
-mots.forEach(mot=>{
-
-
-let concept=
-
-trouverConcept(mot);
-
-
-
-if(concept){
-
-
-resultat.push(
-
-DictionnaireIA[concept][langue]
+    }
 
 );
 
-
-}else{
-
-
-resultat.push(mot);
-
-
-}
-
-
-
-});
-
-
-
-return resultat.join(" ");
-
-
-}
-
-
-
-
-
-/*=========================================================
- TRADUCTION REPONSE IA
-=========================================================*/
-
-
-function traduireReponseIA(
-
-reponse,
-
-langue
-
-){
-
-
-return {
-
-
-original:reponse,
-
-
-traduction:
-
-traduireTexteIA(
-
-reponse,
-
-langue
-
-),
-
-
-langue:langue,
-
-
-date:new Date()
-
-
-};
-
-
-}
-
-
-
-
-
-/*=========================================================
- PHRASES TERRAIN INSPECTION
-=========================================================*/
-
-
-const TerrainIA={
-
-
-contrat:{
-
-fr:"Veuillez présenter le contrat de travail.",
-
-ln:"Lakisa kontra ya mosala.",
-
-sw:"Onyesha mkataba wa kazi.",
-
-en:"Show the employment contract."
-
-},
-
-
-registre:{
-
-fr:"Veuillez présenter le registre du personnel.",
-
-ln:"Lakisa registre ya basali.",
-
-sw:"Onyesha daftari la wafanyakazi.",
-
-en:"Show employee register."
-
-}
-
-
-};
-
-
-
-
-
-function phraseTerrain(
-
-cle,
-
-langue="fr"
-
-){
-
-
-return TerrainIA[cle]
-
-?
-TerrainIA[cle][langue] ||
-
-TerrainIA[cle].fr
-
-:
-
-"";
-
-
-}
-
-
-
-
-
-/*=========================================================
- EXPORT GLOBAL
-=========================================================*/
-
-
-window.TraductionIA = TraductionIA;
-
-window.traduireTexteIA = traduireTexteIA;
-
-window.traduireReponseIA = traduireReponseIA;
-
-window.phraseTerrain = phraseTerrain;
-
-window.detecterLangue = detecterLangue;
-
-
-console.log(
-"✅ traduction.js InspecteurBot IA RDC V2 chargé"
-);
+/*=================================================
+ FIN DU FICHIER
+==================================================*/
