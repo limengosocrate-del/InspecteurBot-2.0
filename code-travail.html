@@ -5,16 +5,18 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
 
-<title>InspecteurBot IA RDC | Code du Travail</title>
+<title>
+InspecteurBot IA RDC | Code du Travail
+</title>
 
-<meta name="description"
-content="Consultation intelligente du Code du Travail RDC avec InspecteurBot IA">
+<meta name="theme-color"
+content="#041c5c">
 
-<meta name="theme-color" content="#041c5c">
-
-<link rel="icon" href="assets/img/logo.png">
+<link rel="icon"
+href="assets/img/logo.png">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -22,154 +24,73 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <link rel="stylesheet"
 href="assets/css/style.css">
 
-
 <style>
 
-/* ===============================
-AMELIORATIONS CODE TRAVAIL
-=============================== */
-
-
-.search-area{
-
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
-
-.search-area input{
-
-flex:1;
-
-min-width:260px;
-
-padding:16px;
-
-border-radius:15px;
-
-border:1px solid #ddd;
-
-font-size:16px;
-
-}
-
-
-.search-area button{
-
-padding:15px 25px;
-
-border:none;
-
-border-radius:15px;
-
-background:#041c5c;
-
-color:white;
-
-font-weight:600;
-
-cursor:pointer;
-
-transition:.3s;
-
-}
-
-
-.search-area button:hover{
-
-background:#005baa;
-
-transform:translateY(-3px);
-
-}
-
-
-
-.result-container{
-
-display:grid;
-
-grid-template-columns:
-
-repeat(auto-fit,minmax(320px,1fr));
-
-gap:25px;
-
-}
-
-
-
-.article-card{
-
-background:white;
-
-border-radius:20px;
-
-padding:25px;
-
-color:#222;
-
-box-shadow:
-
-0 10px 25px rgba(0,0,0,.15);
-
-transition:.3s;
-
-}
-
-
-
-.article-card:hover{
-
-transform:translateY(-5px);
-
-}
-
-
-
-.article-card h3{
-
-color:#005baa;
-
-}
-
-
-
-.ai-response{
+body{
 
 background:
 
-linear-gradient(135deg,#041c5c,#0077cc);
-
-padding:25px;
-
-border-radius:25px;
+linear-gradient(
+180deg,
+#021347,
+#072a88,
+#021347);
 
 color:white;
 
-box-shadow:
+}
 
-0 0 25px rgba(0,150,255,.4);
+main{
+
+width:min(1100px,95%);
+margin:auto;
+padding:25px;
 
 }
 
-
-
-.loading{
+.hero{
 
 text-align:center;
-
-padding:30px;
-
-color:#777;
+padding:40px 20px;
 
 }
 
+.hero img{
 
+width:90px;
+margin-bottom:15px;
 
-.action-buttons{
+}
+
+.hero h1{
+
+font-size:42px;
+color:#ffd400;
+
+text-shadow:
+0 0 15px gold;
+
+}
+
+.hero p{
+
+margin-top:15px;
+font-size:20px;
+
+opacity:.95;
+
+}
+
+.search-box{
+
+margin-top:35px;
 
 display:flex;
 
@@ -177,967 +98,269 @@ gap:10px;
 
 flex-wrap:wrap;
 
-margin-top:20px;
+justify-content:center;
 
 }
 
+.search-box input{
 
+flex:1;
 
-.action-buttons button{
+min-width:260px;
+
+padding:18px;
 
 border:none;
 
-padding:12px 18px;
+border-radius:18px;
 
-border-radius:12px;
+font-size:18px;
+
+}
+
+.search-box button{
+
+width:65px;
+
+border:none;
+
+border-radius:18px;
+
+background:#ffd400;
+
+color:#041c5c;
+
+font-size:24px;
 
 cursor:pointer;
 
-font-weight:600;
+transition:.3s;
 
 }
 
+.search-box button:hover{
 
-
-@media(max-width:768px){
-
-.search-area{
-
-flex-direction:column;
+transform:scale(1.05);
 
 }
-
-
-.result-container{
-
-grid-template-columns:1fr;
-
-}
-
-}
-
 
 </style>
 
-
 </head>
-
 
 <body>
 
+<main>
 
-<div class="dashboard-layout">
+<section class="hero">
 
-
-
-<!-- =================================
-SIDEBAR
-================================= -->
-
-
-<aside class="sidebar">
-
-
-<div class="sidebar-logo">
-
-
-<img src="assets/img/logo.png"
-alt="InspecteurBot IA RDC">
-
-
-<h3>
-InspecteurBot IA RDC
-</h3>
-
-
-<p>
-Code du Travail RDC
-</p>
-
-
-</div>
-
-
-
-
-<ul>
-
-
-<li>
-
-<a href="dashboard.html">
-
-<i class="fas fa-home"></i>
-
-<span>
-Accueil
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li class="active">
-
-<a href="code-travail.html">
-
-<i class="fas fa-book"></i>
-
-<span>
-Code du Travail
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li>
-
-<a href="inspection.html">
-
-<i class="fas fa-search"></i>
-
-<span>
-Inspection
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li>
-
-<a href="assistant.html">
-
-<i class="fas fa-robot"></i>
-
-<span>
-Assistant IA
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li>
-
-<a href="rapports.html">
-
-<i class="fas fa-file-lines"></i>
-
-<span>
-Rapports
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li>
-
-<a href="favoris.html">
-
-<i class="fas fa-star"></i>
-
-<span>
-Favoris
-</span>
-
-</a>
-
-</li>
-
-
-
-
-<li>
-
-<a href="parametres.html">
-
-<i class="fas fa-gear"></i>
-
-<span>
-Paramètres
-</span>
-
-</a>
-
-</li>
-
-
-</ul>
-
-
-
-
-<div class="logout">
-
-<a href="index.html">
-
-<i class="fas fa-right-from-bracket"></i>
-
-Déconnexion
-
-</a>
-
-</div>
-
-
-</aside>
-
-
-
-
-
-<!-- =================================
-CONTENU PRINCIPAL
-================================= -->
-
-
-<main class="main-content">
-
-
-
-
-
-<!-- =================================
-BANNIERE
-================================= -->
-
-
-<section class="banner">
-
-
-<img src="assets/img/banner.jpg"
-class="banner-image"
-alt="InspecteurBot RDC">
-
-
-
-<div class="banner-overlay"></div>
-
-
-
-
-<div class="banner-time">
-
-
-<div id="clock">
-
-00:00:00
-
-</div>
-
-
-<div id="date">
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="banner-content">
-
-
-
-<div class="banner-left">
-
-
-<img src="assets/img/logo.png"
-alt="Logo InspecteurBot">
-
-
-
-<div>
-
+<img
+src="assets/img/logo.png"
+alt="InspecteurBot">
 
 <h1>
-
-InspecteurBot IA RDC
-
+📘 Code du Travail RDC
 </h1>
 
-
-
-<h3>
-
-Consultation du Code du Travail RDC
-
-</h3>
-
-
-
 <p>
 
-Recherche intelligente des articles,
-analyse juridique et assistance aux Inspecteurs du Travail.
+Consultez facilement tous les chapitres et articles du Code du Travail de la République Démocratique du Congo.
 
 </p>
 
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="banner-right">
-
-
-
-<div class="top-box">
-
-
-<i class="fas fa-scale-balanced"></i>
-
-
-<div>
-
-
-<strong id="compteurArticles">
-
-0 articles
-
-</strong>
-
-
-<br>
-
-
-<small>
-
-Base juridique
-
-</small>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="top-box">
-
-
-<i class="fas fa-robot"></i>
-
-
-<div>
-
-
-<strong>
-
-InspecteurBot IA
-
-</strong>
-
-
-<br>
-
-
-<small>
-
-Assistant juridique intelligent
-
-</small>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
- </section>
-
- <!-- ==========================================
-RECHERCHE JURIDIQUE INTELLIGENTE
-========================================== -->
-
-
-<section class="page-box">
-
-
-<h2>
-
-<i class="fas fa-magnifying-glass"></i>
-
-Recherche juridique IA
-
-</h2>
-
-
-
-
-<div class="search-area">
-
+<div class="search-box">
 
 <input
-
-type="text"
-
 id="rechercheArticle"
-
-placeholder="Exemple : licenciement, salaire, article 45..."
-
-autocomplete="off">
-
-
+type="text"
+placeholder="Numéro d'article ou mot-clé...">
 
 <button id="btnRecherche">
-
-
 <i class="fas fa-search"></i>
-
-Rechercher
-
-
 </button>
-
-
 
 <button id="btnMicro">
-
-
 <i class="fas fa-microphone"></i>
-
 </button>
 
-
-
-</div>
-
-
-
-
-<p style="margin-top:15px;color:#666;">
-
-
-Recherchez un numéro d'article, un thème juridique ou posez une question en langage naturel.
-
-
-</p>
-
-
-
-
-<div id="historiqueRecherche"
-
-style="margin-top:20px;">
-
+<button id="btnRechercheLecture">
+<i class="fas fa-volume-high"></i>
+</button>
 
 </div>
-
-
 
 </section>
 
+ <!-- =========================
+BARRE DE RECHERCHE
+========================= -->
 
+<section class="search-section">
 
-
-
-
-
-<!-- ==========================================
-CATEGORIES RAPIDES
-========================================== -->
-
-
-<section class="quick-section">
-
-
+<div class="search-card">
 
 <h2>
-
-<i class="fas fa-layer-group"></i>
-
-Thèmes du Code du Travail
-
-
+<i class="fas fa-book-open"></i>
+Code du Travail RDC
 </h2>
 
-
-
-
-<div class="quick-grid">
-
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-file-signature"></i>
-
-
-<h3>
-
-Contrat de travail
-
-</h3>
-
-
 <p>
-
-Engagement, contrat, obligations.
-
+Recherchez un article, un chapitre, un mot-clé ou posez directement votre question.
 </p>
 
+<div class="search-box">
 
+<input
+type="text"
+id="rechercheArticle"
+placeholder="Exemple : salaire, article 45, licenciement...">
 
-<button onclick="ouvrirCategorie('contrat')">
-
-Consulter
-
+<button id="btnRecherche">
+<i class="fas fa-search"></i>
 </button>
 
-
-</div>
-
-
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-money-bill-wave"></i>
-
-
-<h3>
-
-Salaire
-
-</h3>
-
-
-<p>
-
-Rémunération et avantages.
-
-</p>
-
-
-
-<button onclick="ouvrirCategorie('salaire')">
-
-Consulter
-
+<button id="btnMicro">
+<i class="fas fa-microphone"></i>
 </button>
 
-
-</div>
-
-
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-plane"></i>
-
-
-<h3>
-
-Congés
-
-</h3>
-
-
-<p>
-
-Repos et congés annuels.
-
-</p>
-
-
-
-<button onclick="ouvrirCategorie('conges')">
-
-Consulter
-
+<button id="btnLectureRecherche">
+<i class="fas fa-volume-high"></i>
 </button>
 
-
 </div>
 
+<div class="recherche-rapide">
 
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-user-slash"></i>
-
-
-<h3>
-
-Licenciement
-
-</h3>
-
-
-<p>
-
-Rupture du contrat et préavis.
-
-</p>
-
-
-
-<button onclick="ouvrirCategorie('licenciement')">
-
-Consulter
-
+<button onclick="rechercherNumero(1)">
+Article 1
 </button>
 
-
-</div>
-
-
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-clock"></i>
-
-
-<h3>
-
-Temps de travail
-
-</h3>
-
-
-<p>
-
-Durée du travail et horaires.
-
-</p>
-
-
-
-<button onclick="ouvrirCategorie('tempsTravail')">
-
-Consulter
-
+<button onclick="rechercherNumero(10)">
+Article 10
 </button>
 
-
-</div>
-
-
-
-
-
-
-<div class="quick-card">
-
-
-<i class="fas fa-user-shield"></i>
-
-
-<h3>
-
-Inspection
-
-</h3>
-
-
-<p>
-
-Contrôle et missions des Inspecteurs.
-
-</p>
-
-
-
-<button onclick="ouvrirCategorie('inspection')">
-
-Consulter
-
+<button onclick="rechercherNumero(50)">
+Article 50
 </button>
 
+<button onclick="rechercherNumero(100)">
+Article 100
+</button>
+
+<button onclick="rechercherNumero(150)">
+Article 150
+</button>
 
 </div>
 
-
-
 </div>
-
 
 </section>
 
 
+<!-- =========================
+LIVRE JURIDIQUE
+========================= -->
 
+<section class="livre-section">
 
+<div class="livre">
 
+<div class="livre-header">
 
+<span id="numeroArticle">
+Chapitre 1
+</span>
 
-<!-- ==========================================
-RESULTATS
-========================================== -->
-
-
-<section class="charts-section">
-
-
-
-
-
-<div class="chart-box">
-
-
-
-<h3>
-
-<i class="fas fa-book-open"></i>
-
-Articles trouvés
-
-
-</h3>
-
-
-
-
-
-<div id="listeArticles">
-
-
-
-<div class="loading">
-
-
-<i class="fas fa-spinner"></i>
-
-
-<br>
-
-
-Recherchez un article pour commencer...
-
+<h2 id="titreArticle">
+Code du Travail de la République Démocratique du Congo
+</h2>
 
 </div>
 
+<div class="page-livre" id="contenuArticle">
 
+<p>
 
+Le contenu des articles apparaîtra ici.
 
-</div>
+Le livre pourra être consulté comme un véritable ouvrage juridique.
 
+Chaque article sera affiché sur une page avec navigation précédente et suivante.
 
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="chart-box">
-
-
-
-<h3>
-
-<i class="fas fa-scale-balanced"></i>
-
-
-Consultation juridique
-
-
-</h3>
-
-
-
-
-
-<div id="contenuArticle">
-
-
-
-<div class="loading">
-
-
-<i class="fas fa-book"></i>
-
-
-<br>
-
-
-Sélectionnez un article...
-
+</p>
 
 </div>
 
+<div class="livre-actions">
 
+<button id="precedent">
 
-</div>
+<i class="fas fa-arrow-left"></i>
 
-
-
-
-
-
-
-
-<div class="action-buttons">
-
-
-<button id="btnFavori">
-
-
-<i class="fas fa-star"></i>
-
-
-Favori
-
+Précédent
 
 </button>
 
-
-
-
-
-<button id="btnPartager">
-
-
-<i class="fas fa-share-nodes"></i>
-
-
-Partager
-
-
-</button>
-
-
-
-
-
-<button id="btnCopier">
-
+<button id="copier">
 
 <i class="fas fa-copy"></i>
 
-
 Copier
 
-
 </button>
 
-
-
-
-
-<button id="btnImprimer">
-
-
-<i class="fas fa-print"></i>
-
-
-Imprimer
-
-
-</button>
-
-
-
-
-
-<button id="btnLecture">
-
+<button id="ecouter">
 
 <i class="fas fa-volume-high"></i>
 
-
-Lecture vocale
-
+Écouter
 
 </button>
 
+<button id="expliquerIA">
 
+<i class="fas fa-robot"></i>
+
+Expliquer avec l'IA
+
+</button>
+
+<button id="suivant">
+
+Suivant
+
+<i class="fas fa-arrow-right"></i>
+
+</button>
 
 </div>
 
-
-
 </div>
 
+</section>
 
- </section>
-
-<!-- ==========================================
+ <!-- =========================
 ASSISTANT JURIDIQUE IA
-========================================== -->
+========================= -->
 
+<section class="assistant-section">
 
-<section class="page-box">
-
+<div class="assistant-card">
 
 <h2>
 
 <i class="fas fa-robot"></i>
 
-Assistant Juridique IA RDC
+Assistant Juridique IA
 
 </h2>
 
-
-
 <p>
 
-Posez une question concernant le Code du Travail de la République Démocratique du Congo.
+Posez une question sur le Code du Travail de la République Démocratique du Congo.
 
 </p>
-
-
-
-
 
 <textarea
 
@@ -1145,575 +368,349 @@ id="questionIA"
 
 rows="5"
 
-placeholder="Exemple : Quelles sont les conditions légales d'un licenciement ?"
+placeholder="Exemple : Quelles sont les conditions d'un licenciement ?"></textarea>
 
-style="width:100%;margin-top:20px;padding:18px;border-radius:15px;">
-
-</textarea>
-
-
-
-
-
-<div style="margin-top:20px;">
-
+<div class="assistant-actions">
 
 <button id="btnQuestionIA">
 
-
 <i class="fas fa-paper-plane"></i>
 
-
-Analyser avec l'IA
-
+Analyser
 
 </button>
 
+<button id="btnEffacerIA">
+
+<i class="fas fa-trash"></i>
+
+Effacer
+
+</button>
+
+<button id="btnLectureIA">
+
+<i class="fas fa-volume-high"></i>
+
+Lire
+
+</button>
 
 </div>
 
+<div id="reponseIA" class="ia-resultat">
 
+<div class="ia-message">
 
-
-
-
-<div id="reponseIA"
-
-class="ai-response"
-
-style="margin-top:25px;">
-
-
+<i class="fas fa-lightbulb"></i>
 
 <p>
 
-La réponse juridique de l'Assistant IA apparaîtra ici.
+Bienvenue dans l'Assistant Juridique InspecteurBot IA.
+
+Sélectionnez un article ou posez directement votre question.
+
+L'analyse juridique apparaîtra ici.
 
 </p>
 
-
+</div>
 
 </div>
 
-
-
+</div>
 
 </section>
 
+<!-- =========================
+INFORMATIONS DE L'ARTICLE
+========================= -->
 
+<section class="info-section">
 
-
-
-
-
-
-<!-- ==========================================
-COPILOTE INSPECTION
-========================================== -->
-
-
-<section class="page-box">
-
-
-
-<h2>
-
-<i class="fas fa-user-shield"></i>
-
-Copilote d'Inspection
-
-</h2>
-
-
-
-
-
-<p>
-
-
-L'Assistant accompagne les Inspecteurs du Travail dans la préparation des missions, la recherche des infractions et l'application du Code du Travail.
-
-
-</p>
-
-
-
-
-
-
-
-<div class="stats-grid">
-
-
-
-
-
-
-<div class="card">
-
-
-<i class="fas fa-book blue"></i>
-
-
-
-<div>
-
+<div class="info-card">
 
 <h3>
 
-Articles consultés
+<i class="fas fa-circle-info"></i>
+
+Informations de consultation
 
 </h3>
 
+<div class="info-grid">
 
+<div class="info-box">
 
-<h1 id="statArticles">
+<h4>Article actuel</h4>
 
-0
-
-</h1>
-
-
-
-<p>
-
-Depuis l'ouverture
-
-</p>
-
+<p id="infoArticle">Aucun</p>
 
 </div>
 
+<div class="info-box">
 
+<h4>Chapitre</h4>
 
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<i class="fas fa-search green"></i>
-
-
-
-<div>
-
-
-<h3>
-
-Recherches effectuées
-
-</h3>
-
-
-
-<h1 id="statRecherche">
-
-0
-
-</h1>
-
-
-
-<p>
-
-Historique utilisateur
-
-</p>
-
+<p id="infoChapitre">-</p>
 
 </div>
 
+<div class="info-box">
 
+<h4>Titre</h4>
 
-</div>
-
-
-
-
-
-
-
-
-
-<div class="card">
-
-
-<i class="fas fa-robot purple"></i>
-
-
-
-<div>
-
-
-<h3>
-
-Questions IA
-
-</h3>
-
-
-
-<h1 id="statIA">
-
-0
-
-</h1>
-
-
-
-<p>
-
-Analyses réalisées
-
-</p>
-
+<p id="infoTitre">-</p>
 
 </div>
 
+<div class="info-box">
 
+<h4>Dernière recherche</h4>
 
-</div>
-
-
-
-
+<p id="infoRecherche">Aucune</p>
 
 </div>
 
+</div>
 
-
+</div>
 
 </section>
 
+<!-- =========================
+OUTILS RAPIDES
+========================= -->
 
-
-
-
-
-
-
-<!-- ==========================================
-OUTILS INSPECTEUR
-========================================== -->
-
-
-<section class="page-box">
-
-
+<section class="outils-section">
 
 <h2>
-
 
 <i class="fas fa-toolbox"></i>
 
-
 Outils de l'Inspecteur
-
 
 </h2>
 
+<div class="outils-grid">
 
-
-
-
-
-<div class="quick-grid">
-
-
-
-
-
-
-<a href="inspection.html"
-
-class="quick-card">
-
-
-<i class="fas fa-search"></i>
-
-
-<h3>
-
-Préparer une inspection
-
-</h3>
-
-
-<p>
-
-Assistant de contrôle terrain.
-
-</p>
-
-
-
-</a>
-
-
-
-
-
-
-
-
-
-<a href="pv.html"
-
-class="quick-card">
-
+<a href="pv.html" class="outil-card">
 
 <i class="fas fa-file-signature"></i>
 
-
-<h3>
-
-Créer un PV
-
-</h3>
-
+<h3>Créer un PV</h3>
 
 <p>
-
-Génération assistée des procès-verbaux.
-
+Rédaction assistée d'un procès-verbal.
 </p>
-
-
 
 </a>
 
-
-
-
-
-
-
-
-
-<a href="infractions.html"
-
-class="quick-card">
-
+<a href="infractions.html" class="outil-card">
 
 <i class="fas fa-triangle-exclamation"></i>
 
-
-<h3>
-
-Détection infractions
-
-</h3>
-
+<h3>Infractions</h3>
 
 <p>
-
-Identifier les violations possibles.
-
+Détecter les infractions au Code du Travail.
 </p>
-
-
 
 </a>
 
+<a href="inspection.html" class="outil-card">
 
+<i class="fas fa-user-shield"></i>
 
+<h3>Inspection</h3>
 
+<p>
+Préparer une mission de contrôle.
+</p>
 
+</a>
 
-
-
-
-<a href="rapport-ia.html"
-
-class="quick-card">
-
+<a href="rapport-ia.html" class="outil-card">
 
 <i class="fas fa-file-lines"></i>
 
-
-<h3>
-
-Rapports IA
-
-</h3>
-
+<h3>Rapport IA</h3>
 
 <p>
-
-Création automatique des rapports.
-
+Créer automatiquement un rapport d'inspection.
 </p>
-
-
 
 </a>
 
+</div>
 
+</section>
 
+<!-- =========================
+STATISTIQUES
+========================= -->
 
+<section class="statistiques-section">
+
+<h2>
+
+<i class="fas fa-chart-column"></i>
+
+Statistiques
+
+</h2>
+
+<div class="stats-grid">
+
+<div class="stat-card">
+
+<i class="fas fa-book-open"></i>
+
+<h3 id="statArticles">
+0
+</h3>
+
+<p>Articles consultés</p>
 
 </div>
 
+<div class="stat-card">
 
+<i class="fas fa-magnifying-glass"></i>
 
-</section> 
+<h3 id="statRecherche">
+0
+</h3>
 
- 
-<!-- ==========================================
+<p>Recherches</p>
+
+</div>
+
+<div class="stat-card">
+
+<i class="fas fa-star"></i>
+
+<h3 id="statFavoris">
+0
+</h3>
+
+<p>Favoris</p>
+
+</div>
+
+<div class="stat-card">
+
+<i class="fas fa-robot"></i>
+
+<h3 id="statIA">
+0
+</h3>
+
+<p>Analyses IA</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================
 PIED DE PAGE
-========================================== -->
-
+========================= -->
 
 <footer class="footer">
 
+<div class="footer-content">
 
-<img src="assets/img/logo.png"
-
+<img
+src="assets/img/logo.png"
 class="footer-logo"
-
 alt="Logo InspecteurBot">
 
+<h2>
+Inspection Générale du Travail
+</h2>
 
-
-<h3>
+<p>
 
 InspecteurBot IA RDC
 
-</h3>
-
-
-
+</p>
 
 <p>
 
-Plateforme intelligente d'assistance aux Inspecteurs du Travail de la République Démocratique du Congo.
+Plateforme numérique d'assistance juridique
+pour les Inspecteurs du Travail de la
+République Démocratique du Congo.
 
 </p>
-
-
 
 <hr>
 
+<p>
 
+Créé par
+<strong>Inspecteur Limengo (Pmiller)</strong>
+
+</p>
 
 <p>
 
-© 2026 Tous droits réservés
+© 2026 - Tous droits réservés
 
 </p>
-
-
-
-<p style="margin-top:10px;font-weight:bold;">
-
-
-Créé par Inspecteur Limengo (Pmiller)
-
-© 2026
-
-
-</p>
-
-
-
-</footer>
-
-
-
-</main>
 
 </div>
 
+</footer>
 
+</main>
 
-
-
-<!-- ==========================================
-MODULES IA INSPECTEURBOT
-========================================== -->
-
+<!-- =========================
+MODULES JAVASCRIPT
+========================= -->
 
 <script src="assets/data/code-travail.js"></script>
 
-<script src="assets/js/vector-search.js"></script>
+<script src="assets/js/vectorSearch.js"></script>
 
 <script src="assets/js/rag.js"></script>
 
-<script src="assets/js/traduction.js"></script>
+<script src="assets/js/search.js"></script>
 
 <script src="assets/js/speech.js"></script>
 
+<script src="assets/js/traduction.js"></script>
+
 <script src="assets/js/ia.js"></script>
-
-<script src="assets/js/search.js"></script>
-
-
-
-
-
-
-
-
 
 <script>
 
-
 "use strict";
 
+/* ===========================
+VÉRIFICATION CONNEXION
+=========================== */
 
-
-// ================================
-// VERIFICATION CONNEXION
-// ================================
-
-
-if(localStorage.getItem("isLoggedIn") !== "true"){
-
+if(localStorage.getItem("isLoggedIn")!=="true"){
 
 window.location.href="index.html";
 
-
 }
 
-
-
-
-
-
-
-
-// ================================
-// HORLOGE
-// ================================
-
+/* ===========================
+HORLOGE
+=========================== */
 
 function updateClock(){
 
-
 const now=new Date();
 
+const h=now.toLocaleTimeString("fr-FR");
 
+const d=now.toLocaleDateString("fr-FR",{
 
-document.getElementById("clock").innerHTML =
-
-now.toLocaleTimeString("fr-FR");
-
-
-
-document.getElementById("date").innerHTML =
-
-now.toLocaleDateString("fr-FR",
-{
-
-day:"numeric",
+day:"2-digit",
 
 month:"long",
 
@@ -1721,258 +718,305 @@ year:"numeric"
 
 });
 
+const clock=document.getElementById("clock");
 
+const date=document.getElementById("date");
+
+if(clock) clock.textContent=h;
+
+if(date) date.textContent=d;
 
 }
-
-
 
 updateClock();
 
+<script>
 
-setInterval(updateClock,1000);
+/* ==========================
+NAVIGATION DES ARTICLES
+========================== */
 
+let indexArticle = 0;
 
+function articleSuivant(){
 
+    if(typeof articles==="undefined") return;
 
+    if(indexArticle < articles.length-1){
 
+        indexArticle++;
 
+        ouvrirArticle(articles[indexArticle].id);
 
-// ================================
-// DECONNEXION
-// ================================
-
-
-function logout(){
-
-
-localStorage.removeItem("isLoggedIn");
-
-localStorage.removeItem("currentUser");
-
-
-window.location.href="index.html";
-
+    }
 
 }
 
+function articlePrecedent(){
 
+    if(typeof articles==="undefined") return;
 
+    if(indexArticle>0){
 
+        indexArticle--;
 
-// ================================
-// FAVORIS
-// ================================
+        ouvrirArticle(articles[indexArticle].id);
 
+    }
+
+}
 
 document
-.getElementById("btnFavori")
+.getElementById("suivant")
+?.addEventListener("click",articleSuivant);
+
+document
+.getElementById("precedent")
+?.addEventListener("click",articlePrecedent);
+
+/* ==========================
+COPIER
+========================== */
+
+document
+.getElementById("copier")
 ?.addEventListener("click",()=>{
 
+const texte=document.getElementById("contenuArticle").innerText;
 
-let article=
+navigator.clipboard.writeText(texte);
 
-document.getElementById("contenuArticle").innerText;
-
-
-
-localStorage.setItem(
-
-"articleFavori",
-
-article
-
-);
-
-
-
-alert("Article ajouté aux favoris");
-
+alert("Article copié.");
 
 });
 
-
-
-
-
-// ================================
-// COPIER
-// ================================
-
+/* ==========================
+LECTURE VOCALE
+========================== */
 
 document
-.getElementById("btnCopier")
+.getElementById("ecouter")
 ?.addEventListener("click",()=>{
 
+const texte=document.getElementById("contenuArticle").innerText;
 
-navigator.clipboard.writeText(
+speechSynthesis.cancel();
 
-document.getElementById("contenuArticle").innerText
+const lecture=new SpeechSynthesisUtterance(texte);
 
-);
+lecture.lang="fr-FR";
 
-
-
-alert("Contenu copié");
-
+speechSynthesis.speak(lecture);
 
 });
 
+/* ==========================
+EXPLICATION IA
+========================== */
 
+document
+.getElementById("expliquerIA")
+?.addEventListener("click",()=>{
 
+const article=document.getElementById("contenuArticle").innerText;
 
-// ================================
-// PARTAGER
-// ================================
+document.getElementById("reponseIA").innerHTML=
 
+"<h3>🤖 Analyse juridique</h3><br>"+
+
+"L'InspecteurBot IA analysera automatiquement cet article afin d'expliquer son contenu, ses conditions d'application, les obligations de l'employeur et du travailleur, ainsi que les éventuelles sanctions prévues.";
+
+});
+
+/* ==========================
+PARTAGE
+========================== */
 
 document
 .getElementById("btnPartager")
-?.addEventListener("click",()=>{
+?.addEventListener("click",async()=>{
 
+if(!navigator.share) return;
 
-if(navigator.share){
+await navigator.share({
 
+title:"Code du Travail RDC",
 
-navigator.share({
-
-title:"InspecteurBot IA RDC",
-
-text:
-
-document.getElementById("contenuArticle").innerText
-
+text:document.getElementById("contenuArticle").innerText
 
 });
 
-
-}
-
 });
 
-
-
-// ================================
-// IMPRESSION
-// ================================
-
+/* ==========================
+IMPRESSION
+========================== */
 
 document
 .getElementById("btnImprimer")
 ?.addEventListener("click",()=>{
 
-
 window.print();
 
-
 });
 
-
-
-// ================================
-// QUESTION IA
-// ================================
-
+/* ==========================
+FAVORIS
+========================== */
 
 document
-.getElementById("btnQuestionIA")
+.getElementById("btnFavori")
 ?.addEventListener("click",()=>{
 
+localStorage.setItem(
 
-const question=
+"articleFavori",
 
-document.getElementById("questionIA").value;
+document.getElementById("contenuArticle").innerHTML
 
+);
 
-
-if(!question){
-
-alert("Veuillez écrire une question");
-
-return;
-
-}
-
-
-
-if(typeof analyserQuestionIA==="function"){
-
-
-
-let reponse=
-
-analyserQuestionIA(question);
-
-
-
-document.getElementById("reponseIA").innerHTML=
-
-reponse;
-
-
-
-}
-
-else{
-
-
-document.getElementById("reponseIA").innerHTML=
-
-"Assistant IA prêt. Module IA en chargement.";
-
-
-
-}
-
-
+alert("Article ajouté aux favoris.");
 
 });
-
-
-
-// ================================
-// COMPTE ARTICLES
-// ================================
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-if(typeof CodeTravail !== "undefined"){
-
-
-
-document.getElementById("compteurArticles").innerHTML=
-
-Object.keys(CodeTravail).length+" articles";
-
-
-
-}
-
-
-console.log(
-
-"Code du Travail InspecteurBot chargé"
-
-);
-
-
-
-}
-
-);
-
-
 
 </script>
 
+<!-- ===========================
+SÉLECTEUR DE LANGUE
+=========================== -->
 
+<div class="language-bar">
+
+<label for="langue">
+<i class="fas fa-language"></i>
+Langue :
+</label>
+
+<select id="langue">
+
+<option value="fr">🇫🇷 Français</option>
+
+<option value="en">🇬🇧 English</option>
+
+<option value="ln">🇨🇩 Lingala</option>
+
+<option value="sw">🇨🇩 Kiswahili</option>
+
+<option value="lu">🇨🇩 Tshiluba</option>
+
+<option value="kg">🇨🇩 Kikongo</option>
+
+</select>
+
+</div>
+
+<script>
+
+/* ==========================
+LANGUE
+========================== */
+
+const langue = document.getElementById("langue");
+
+if(localStorage.getItem("langue")){
+
+    langue.value = localStorage.getItem("langue");
+
+}
+
+langue.addEventListener("change",()=>{
+
+    localStorage.setItem("langue",langue.value);
+
+    if(typeof changerLangue==="function"){
+
+        changerLangue(langue.value);
+
+    }
+
+});
+
+/* ==========================
+MICROPHONE
+========================== */
+
+document
+.getElementById("btnMicro")
+?.addEventListener("click",()=>{
+
+    if(typeof demarrerReconnaissance==="function"){
+
+        demarrerReconnaissance();
+
+    }else{
+
+        alert("Le module de reconnaissance vocale n'est pas encore chargé.");
+
+    }
+
+});
+
+/* ==========================
+RECHERCHE
+========================== */
+
+document
+.getElementById("btnRecherche")
+?.addEventListener("click",()=>{
+
+    if(typeof rechercherArticles==="function"){
+
+        rechercherArticles();
+
+    }
+
+});
+
+document
+.getElementById("rechercheArticle")
+?.addEventListener("keydown",(e)=>{
+
+    if(e.key==="Enter"){
+
+        rechercherArticles();
+
+    }
+
+});
+
+/* ==========================
+LECTURE DE LA RECHERCHE
+========================== */
+
+document
+.getElementById("btnRechercheLecture")
+?.addEventListener("click",()=>{
+
+    const texte=document
+    .getElementById("rechercheArticle")
+    .value;
+
+    if(!texte) return;
+
+    speechSynthesis.cancel();
+
+    const lecture=new SpeechSynthesisUtterance(texte);
+
+    lecture.lang="fr-FR";
+
+    speechSynthesis.speak(lecture);
+
+});
+
+</script>
 
 </body>
 
- </html>
+</html>
+
+setInterval(updateClock,1000);
+
+ </script>
+
+
