@@ -1,0 +1,528 @@
+/*==================================================
+SEARCH.CSS
+PARTIE 1
+RECHERCHE INTELLIGENTE
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+SECTION PRINCIPALE
+==================================================*/
+
+.search-section{
+
+    position:relative;
+
+    overflow:hidden;
+
+    margin:35px 0;
+
+    padding:35px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.30),
+        inset 0 0 25px rgba(255,255,255,.05);
+
+}
+
+/*==================================================
+HALO ANIMÉ
+==================================================*/
+
+.search-section::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-40%;
+
+    background:radial-gradient(
+        circle,
+        rgba(11,94,215,.18),
+        transparent 70%
+    );
+
+    animation:searchHalo 8s linear infinite;
+
+    pointer-events:none;
+
+}
+
+@keyframes searchHalo{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*==================================================
+TITRE
+==================================================*/
+
+.search-header{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.search-header h2{
+
+    color:var(--accent);
+
+    font-size:32px;
+
+    font-weight:700;
+
+    margin-bottom:12px;
+
+    text-shadow:
+        0 0 15px rgba(255,215,0,.35);
+
+}
+
+.search-header p{
+
+    color:#dce8ff;
+
+    font-size:16px;
+
+    line-height:1.7;
+
+}
+
+/*==================================================
+BARRE DE RECHERCHE
+==================================================*/
+
+.search-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    position:relative;
+
+}
+
+/*==================================================
+CHAMP DE RECHERCHE
+==================================================*/
+
+.search-box input{
+
+    flex:1;
+
+    height:62px;
+
+    padding:0 22px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.12);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    color:#ffffff;
+
+    font-size:16px;
+
+    transition:.35s;
+
+}
+
+.search-box input::placeholder{
+
+    color:#dbe8ff;
+
+}
+
+.search-box input:focus{
+
+    border-color:var(--accent);
+
+    box-shadow:
+        0 0 20px rgba(255,215,0,.25);
+
+    background:rgba(255,255,255,.16);
+
+}
+
+/*==================================================
+BOUTONS
+==================================================*/
+
+.search-box button{
+
+    width:62px;
+
+    height:62px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        #0B5ED7,
+        #041C5C
+    );
+
+    color:#ffffff;
+
+    border:1px solid rgba(255,215,0,.25);
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    font-size:20px;
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,.25);
+
+}
+
+.search-box button:hover{
+
+    transform:translateY(-4px);
+
+    color:var(--accent);
+
+    box-shadow:
+        0 0 22px rgba(255,215,0,.35);
+
+}
+
+.search-box button:active{
+
+    transform:scale(.95);
+
+}
+
+.search-box i{
+
+    transition:.35s;
+
+}
+
+.search-box button:hover i{
+
+    transform:scale(1.2);
+
+  }
+
+/*==================================================
+SEARCH.CSS
+PARTIE 2
+SUGGESTIONS • RÉSULTATS • RESPONSIVE
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+SUGGESTIONS RAPIDES
+==================================================*/
+
+.suggestions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin-top:28px;
+
+}
+
+.suggestions button{
+
+    padding:12px 18px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.10);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    color:#ffffff;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    backdrop-filter:blur(12px);
+
+}
+
+.suggestions button:hover{
+
+    background:linear-gradient(
+        135deg,
+        #0B5ED7,
+        #041C5C
+    );
+
+    border-color:var(--accent);
+
+    color:var(--accent);
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.30);
+
+}
+
+.suggestions button:active{
+
+    transform:scale(.95);
+
+}
+
+/*==================================================
+RÉSULTATS DE RECHERCHE
+==================================================*/
+
+.search-results{
+
+    margin-top:30px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+/*==================================================
+CARTE RÉSULTAT
+==================================================*/
+
+.search-result-card{
+
+    padding:20px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.25);
+
+}
+
+.search-result-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:var(--accent);
+
+    box-shadow:
+        0 0 25px rgba(255,215,0,.30);
+
+}
+
+.search-result-card h3{
+
+    color:var(--accent);
+
+    font-size:20px;
+
+    margin-bottom:10px;
+
+}
+
+.search-result-card p{
+
+    color:#dbe8ff;
+
+    line-height:1.8;
+
+    font-size:15px;
+
+}
+
+/*==================================================
+AUCUN RÉSULTAT
+==================================================*/
+
+.no-result{
+
+    text-align:center;
+
+    padding:35px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px dashed rgba(255,255,255,.20);
+
+    color:#dce8ff;
+
+    font-size:16px;
+
+}
+
+/*==================================================
+ANIMATION D'APPARITION
+==================================================*/
+
+.search-result-card{
+
+    animation:resultFade .45s ease;
+
+}
+
+@keyframes resultFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*==================================================
+RESPONSIVE TABLETTE
+==================================================*/
+
+@media(max-width:900px){
+
+    .search-box{
+
+        flex-wrap:wrap;
+
+    }
+
+    .search-box input{
+
+        width:100%;
+
+    }
+
+}
+
+/*==================================================
+RESPONSIVE MOBILE
+==================================================*/
+
+@media(max-width:768px){
+
+    .search-section{
+
+        padding:25px;
+
+        border-radius:24px;
+
+    }
+
+    .search-header h2{
+
+        font-size:26px;
+
+    }
+
+    .search-header p{
+
+        font-size:15px;
+
+    }
+
+    .search-box{
+
+        flex-direction:column;
+
+    }
+
+    .search-box input{
+
+        width:100%;
+
+        height:58px;
+
+    }
+
+    .search-box button{
+
+        width:100%;
+
+        height:56px;
+
+        border-radius:16px;
+
+    }
+
+    .suggestions{
+
+        justify-content:center;
+
+    }
+
+    .suggestions button{
+
+        width:100%;
+
+    }
+
+    .search-result-card{
+
+        padding:18px;
+
+    }
+
+    .search-result-card h3{
+
+        font-size:18px;
+
+    }
+
+      }
