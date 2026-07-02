@@ -40,8 +40,7 @@ Categories.initialiserCartes = function(){
             ()=>{
 
                 const categorie =
-
-                    carte.dataset.categorie;
+                    carte.dataset.category;
 
                 this.ouvrir(categorie);
 
@@ -90,11 +89,13 @@ Categories.ouvrir = function(categorie){
 
     }
 
-    Consultation.afficherArticle(
+CodeTravail.selectionner(
+    articles[0].numero
+);
 
-        articles[0]
-
-    );
+Consultation.afficherArticle(
+    articles[0]
+);
 
     CodeTravail.selectionner(
 
