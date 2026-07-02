@@ -1,91 +1,145 @@
 /*==================================================
-INSPECTEURBOT RDC
-RESET + VARIABLES
+INSPECTEURBOT RDC 2026
+RESET.CSS
+Base du projet
+Développeur : Inspecteur Limengo (Pmiller)
+==================================================*/
+
+/*==================================================
+RESET GÉNÉRAL
+==================================================*/
+
+*,
+*::before,
+*::after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/*==================================================
+VARIABLES GLOBALES
 ==================================================*/
 
 :root{
 
-    --primary:#0A2B73;
+    /* Couleurs principales */
+
+    --primary:#041C5C;
+    --primary-light:#0B5ED7;
+    --primary-dark:#02133D;
+
     --secondary:#123F97;
     --accent:#FFD700;
 
-    --bg:#041C5C;
+    --white:#FFFFFF;
+    --black:#000000;
 
-    --card:rgba(255,255,255,.08);
+    --text:#F8FAFF;
+    --text-dark:#1D2A44;
 
-    --text:#FFFFFF;
+    --border:rgba(255,255,255,.15);
 
-    --text2:#DDE8FF;
+    --glass:rgba(255,255,255,.08);
 
-    --border:rgba(255,215,0,.18);
+    --shadow:0 10px 35px rgba(0,0,0,.35);
 
-    --shadow:0 15px 35px rgba(0,0,0,.30);
+    --radius:22px;
 
-    --radius:24px;
-
-    --transition:.35s;
+    --transition:.35s ease;
 
 }
 
 /*==================================================
-RESET
+MODE SOMBRE
 ==================================================*/
 
-*{
+body.dark-theme{
 
-    margin:0;
+    --primary:#021234;
 
-    padding:0;
+    --primary-light:#0A49B8;
 
-    box-sizing:border-box;
+    --secondary:#08245E;
+
+    --text:#FFFFFF;
+
+    --glass:rgba(255,255,255,.05);
 
 }
+
+/*==================================================
+MODE CLAIR
+==================================================*/
+
+body.light-theme{
+
+    --primary:#F4F8FF;
+
+    --primary-light:#EAF2FF;
+
+    --secondary:#DCEBFF;
+
+    --text:#041C5C;
+
+    --glass:rgba(255,255,255,.80);
+
+}
+
+/*==================================================
+HTML
+==================================================*/
 
 html{
 
     scroll-behavior:smooth;
 
-}
-
-body{
-
-    font-family:'Poppins',sans-serif;
-
-    background:linear-gradient(180deg,#031645,#07256d,#0a2b73);
-
-    color:var(--text);
-
     font-size:16px;
-
-    line-height:1.7;
-
-    overflow-x:hidden;
 
 }
 
 /*==================================================
-CONTAINER
+BODY
+==================================================*/
+
+body{
+
+    background:linear-gradient(
+        135deg,
+        #041C5C,
+        #0B5ED7,
+        #041C5C
+    );
+
+    background-size:300% 300%;
+
+    animation:gradientMove 18s ease infinite;
+
+    color:var(--text);
+
+    font-family:"Poppins",sans-serif;
+
+    line-height:1.7;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    transition:background .5s,color .5s;
+
+}
+
+/*==================================================
+CONTENEUR
 ==================================================*/
 
 .container{
 
-    width:min(1400px,95%);
+    width:min(96%,1450px);
 
     margin:auto;
 
-    padding:25px 0;
-
-}
-
-/*==================================================
-LIENS
-==================================================*/
-
-a{
-
-    text-decoration:none;
-
-    color:inherit;
+    padding:20px;
 
 }
 
@@ -99,6 +153,33 @@ img{
 
     display:block;
 
+    user-select:none;
+
+}
+
+/*==================================================
+LIENS
+==================================================*/
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+    transition:var(--transition);
+
+}
+
+/*==================================================
+LISTES
+==================================================*/
+
+ul,
+ol{
+
+    list-style:none;
+
 }
 
 /*==================================================
@@ -107,17 +188,15 @@ BOUTONS
 
 button{
 
-    font-family:inherit;
+    border:none;
+
+    outline:none;
 
     cursor:pointer;
 
+    font-family:inherit;
+
     transition:var(--transition);
-
-}
-
-button:hover{
-
-    transform:translateY(-2px);
 
 }
 
@@ -133,183 +212,39 @@ select{
 
     outline:none;
 
-}
-
-/*==================================================
-BARRE DE DÉFILEMENT
-==================================================*/
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-}
-
-::-webkit-scrollbar-track{
-
-    background:#08235f;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:var(--accent);
-
-    border-radius:20px;
-
-}
-
-/*==================================================
-CARTES GÉNÉRALES
-==================================================*/
-
-.card{
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,215,0,.15);
-
-    border-radius:24px;
-
-    box-shadow:0 12px 30px rgba(0,0,0,.30);
-
-    padding:25px;
-
-}
-
-/*==================================================
-TITRES
-==================================================*/
-
-.section-title{
-
-    text-align:center;
-
-    margin-bottom:30px;
-
-}
-
-.section-title h2{
-
-    color:#FFD700;
-
-    font-size:32px;
-
-    font-weight:700;
-
-    margin-bottom:10px;
-
-}
-
-.section-title p{
-
-    color:#DDE8FF;
-
-    font-size:16px;
-
-}
-
-/*==================================================
-BOUTONS PRINCIPAUX
-==================================================*/
-
-.btn{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    padding:14px 22px;
-
     border:none;
 
-    border-radius:16px;
-
-    background:linear-gradient(135deg,#FFD700,#FFC107);
-
-    color:#041C5C;
-
-    font-weight:600;
-
-    transition:.35s;
-
 }
 
-.btn:hover{
+/*==================================================
+TEXTAREA
+==================================================*/
 
-    transform:translateY(-3px);
+textarea{
 
-    box-shadow:0 0 20px rgba(255,215,0,.40);
+    resize:vertical;
 
 }
 
 /*==================================================
-CHAMPS DE SAISIE
+TABLEAUX
 ==================================================*/
 
-input,
-textarea,
-select{
+table{
+
+    border-collapse:collapse;
 
     width:100%;
 
-    background:rgba(255,255,255,.12);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    border-radius:16px;
-
-    padding:15px;
-
-    color:#FFFFFF;
-
-}
-
-input::placeholder,
-textarea::placeholder{
-
-    color:#C7D6FF;
-
 }
 
 /*==================================================
-BADGES
+ICÔNES
 ==================================================*/
 
-.badge{
+i{
 
-    display:inline-block;
-
-    padding:6px 14px;
-
-    border-radius:20px;
-
-    background:#FFD700;
-
-    color:#041C5C;
-
-    font-size:13px;
-
-    font-weight:700;
-
-}
-
-/*==================================================
-TRANSITIONS
-==================================================*/
-
-a,
-button,
-.card,
-.badge{
-
-    transition:.35s;
+    transition:var(--transition);
 
 }
 
@@ -319,9 +254,42 @@ SÉLECTION DU TEXTE
 
 ::selection{
 
-    background:#FFD700;
+    background:var(--accent);
 
     color:#041C5C;
+
+}
+
+/*==================================================
+SCROLLBAR
+==================================================*/
+
+::-webkit-scrollbar{
+
+    width:12px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#05296F;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:linear-gradient(
+        var(--accent),
+        #FFEE88
+    );
+
+    border-radius:30px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#FFE347;
 
 }
 
@@ -329,55 +297,48 @@ SÉLECTION DU TEXTE
 FOCUS ACCESSIBILITÉ
 ==================================================*/
 
-button:focus,
-input:focus,
-textarea:focus,
-select:focus{
+:focus-visible{
 
-    outline:2px solid #FFD700;
+    outline:3px solid var(--accent);
 
     outline-offset:3px;
 
 }
 
 /*==================================================
-RESPONSIVE GLOBAL
+DÉSACTIVÉ
 ==================================================*/
 
-@media(max-width:768px){
+button:disabled{
 
-    body{
+    opacity:.6;
 
-        font-size:15px;
-
-    }
-
-    .container{
-
-        width:95%;
-
-        padding:15px 0;
-
-    }
-
-    .section-title h2{
-
-        font-size:24px;
-
-    }
-
-    .section-title p{
-
-        font-size:14px;
-
-    }
-
-    .card{
-
-        padding:18px;
-
-        border-radius:18px;
-
-    }
+    cursor:not-allowed;
 
 }
+
+/*==================================================
+ANIMATION DU FOND
+==================================================*/
+
+@keyframes gradientMove{
+
+    0%{
+
+        background-position:0% 50%;
+
+    }
+
+    50%{
+
+        background-position:100% 50%;
+
+    }
+
+    100%{
+
+        background-position:0% 50%;
+
+    }
+
+    }
