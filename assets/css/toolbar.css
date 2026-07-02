@@ -145,4 +145,435 @@ SELECT
 
 }
 
-        
+/*==================================================
+TOOLBAR.CSS
+PARTIE 2
+BOUTONS D'ACTIONS FUTURISTES
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+COLONNE DROITE
+==================================================*/
+
+.toolbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+}
+
+/*==================================================
+BOUTONS
+==================================================*/
+
+.tool-btn{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:58px;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    overflow:hidden;
+
+    color:#ffffff;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    backdrop-filter:blur(15px);
+
+    transition:.35s;
+
+    box-shadow:
+
+        0 8px 20px rgba(0,0,0,.20),
+
+        inset 0 0 15px rgba(255,255,255,.05);
+
+}
+
+/*==================================================
+REFLET LUMINEUX
+==================================================*/
+
+.tool-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-120%;
+
+    left:-45%;
+
+    width:60%;
+
+    height:320%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:rotate(25deg);
+
+    transition:.7s;
+
+}
+
+.tool-btn:hover::before{
+
+    left:150%;
+
+}
+
+/*==================================================
+SURVOL
+==================================================*/
+
+.tool-btn:hover{
+
+    transform:translateY(-6px);
+
+    border-color:rgba(255,215,0,.55);
+
+    box-shadow:
+
+        0 0 25px rgba(255,215,0,.30),
+
+        0 10px 28px rgba(0,0,0,.30);
+
+}
+
+/*==================================================
+CLIC
+==================================================*/
+
+.tool-btn:active{
+
+    transform:scale(.92);
+
+}
+
+/*==================================================
+ICÔNES
+==================================================*/
+
+.tool-btn i{
+
+    font-size:22px;
+
+    color:var(--accent);
+
+    transition:.35s;
+
+    text-shadow:
+
+        0 0 10px rgba(255,215,0,.45);
+
+}
+
+.tool-btn:hover i{
+
+    transform:scale(1.20) rotate(8deg);
+
+}
+
+/*==================================================
+BOUTON ACTIF
+==================================================*/
+
+.tool-btn.active{
+
+    background:linear-gradient(
+
+        135deg,
+
+        #0B5ED7,
+
+        #041C5C
+
+    );
+
+    border-color:var(--accent);
+
+    box-shadow:
+
+        0 0 28px rgba(255,215,0,.40);
+
+}
+
+.tool-btn.active i{
+
+    color:#FFD700;
+
+}
+
+/*==================================================
+ANIMATION DOUCE
+==================================================*/
+
+.tool-btn{
+
+    animation:toolbarFloat 5s ease-in-out infinite;
+
+}
+
+.tool-btn:nth-child(2){
+
+    animation-delay:.3s;
+
+}
+
+.tool-btn:nth-child(3){
+
+    animation-delay:.6s;
+
+}
+
+.tool-btn:nth-child(4){
+
+    animation-delay:.9s;
+
+}
+
+.tool-btn:nth-child(5){
+
+    animation-delay:1.2s;
+
+}
+
+.tool-btn:nth-child(6){
+
+    animation-delay:1.5s;
+
+}
+
+@keyframes toolbarFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-3px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+ }        
+
+/*==================================================
+TOOLBAR.CSS
+PARTIE 3
+RESPONSIVE + FINITIONS
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+FOCUS ACCESSIBILITÉ
+==================================================*/
+
+.tool-btn:focus-visible,
+.toolbar-left select:focus-visible{
+
+    outline:3px solid var(--accent);
+
+    outline-offset:4px;
+
+}
+
+/*==================================================
+TRANSITIONS
+==================================================*/
+
+.toolbar *,
+.toolbar *::before,
+.toolbar *::after{
+
+    transition:all .35s ease;
+
+}
+
+/*==================================================
+RESPONSIVE TABLETTE
+==================================================*/
+
+@media(max-width:992px){
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+        gap:22px;
+
+        padding:22px;
+
+    }
+
+    .toolbar-left{
+
+        justify-content:center;
+
+    }
+
+    .toolbar-right{
+
+        justify-content:center;
+
+    }
+
+    .toolbar-left select{
+
+        width:100%;
+
+        max-width:320px;
+
+    }
+
+}
+
+/*==================================================
+RESPONSIVE MOBILE
+==================================================*/
+
+@media(max-width:768px){
+
+    .toolbar{
+
+        padding:18px;
+
+        border-radius:22px;
+
+    }
+
+    .toolbar-left{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+        width:100%;
+
+    }
+
+    .toolbar-left label{
+
+        justify-content:center;
+
+    }
+
+    .toolbar-left select{
+
+        width:100%;
+
+        min-width:auto;
+
+    }
+
+    .toolbar-right{
+
+        display:grid;
+
+        grid-template-columns:repeat(3,1fr);
+
+        gap:14px;
+
+        width:100%;
+
+    }
+
+    .tool-btn{
+
+        width:100%;
+
+        height:56px;
+
+        border-radius:16px;
+
+    }
+
+}
+
+/*==================================================
+PETITS SMARTPHONES
+==================================================*/
+
+@media(max-width:480px){
+
+    .toolbar{
+
+        padding:15px;
+
+    }
+
+    .toolbar-right{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .tool-btn{
+
+        height:54px;
+
+    }
+
+    .tool-btn i{
+
+        font-size:20px;
+
+    }
+
+}
+
+/*==================================================
+MODE IMPRESSION
+==================================================*/
+
+@media print{
+
+    .toolbar{
+
+        display:none;
+
+    }
+
+}
