@@ -1,0 +1,433 @@
+/*==================================================
+HEADER - PARTIE 1
+INSPECTEURBOT RDC
+==================================================*/
+
+.top-header{
+
+    position:relative;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:20px;
+
+    padding:35px 25px;
+
+    margin-bottom:30px;
+
+    border-radius:28px;
+
+    background:linear-gradient(135deg,#08245d,#0d3d99,#1549b8);
+
+    border:1px solid rgba(255,215,0,.20);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+
+    backdrop-filter:blur(18px);
+
+}
+
+/*==================================================
+EFFET LUMIÈRE
+==================================================*/
+
+.top-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:350px;
+
+    height:350px;
+
+    background:rgba(255,215,0,.08);
+
+    border-radius:50%;
+
+    top:-160px;
+
+    right:-130px;
+
+    filter:blur(30px);
+
+}
+
+.top-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+
+    height:250px;
+
+    background:rgba(255,255,255,.05);
+
+    border-radius:50%;
+
+    left:-100px;
+
+    bottom:-120px;
+
+    filter:blur(25px);
+
+}
+
+/*==================================================
+LOGO
+==================================================*/
+
+.logo-box{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.logo{
+
+    width:110px;
+
+    height:110px;
+
+    object-fit:contain;
+
+    border-radius:50%;
+
+    padding:10px;
+
+    background:rgba(255,255,255,.08);
+
+    border:2px solid rgba(255,215,0,.30);
+
+    box-shadow:0 0 25px rgba(255,215,0,.25);
+
+    transition:.40s;
+
+}
+
+.logo:hover{
+
+    transform:rotate(8deg) scale(1.05);
+
+    box-shadow:0 0 35px rgba(255,215,0,.50);
+
+}
+
+/*==================================================
+TITRES
+==================================================*/
+
+.title-box{
+
+    position:relative;
+
+    z-index:2;
+
+    text-align:center;
+
+}
+
+.title-box h1{
+
+    font-size:38px;
+
+    color:#FFD700;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+    margin-bottom:10px;
+
+}
+
+.title-box h2{
+
+    font-size:24px;
+
+    color:#FFFFFF;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.title-box h3{
+
+    font-size:18px;
+
+    color:#DDE8FF;
+
+    font-weight:500;
+
+    margin-bottom:10px;
+
+}
+
+.title-box p{
+
+    color:#C7D6FF;
+
+    font-size:16px;
+
+    letter-spacing:1px;
+
+  }
+
+/*==================================================
+HEADER - PARTIE 2
+DATE • HEURE • MÉTÉO • ACTIONS
+==================================================*/
+
+.datetime-box{
+
+    position:relative;
+
+    z-index:2;
+
+    width:100%;
+
+    max-width:850px;
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+.info-item{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:15px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,215,0,.15);
+
+    border-radius:18px;
+
+    backdrop-filter:blur(15px);
+
+    transition:.35s;
+
+}
+
+.info-item:hover{
+
+    transform:translateY(-4px);
+
+    border-color:#FFD700;
+
+    box-shadow:0 0 18px rgba(255,215,0,.30);
+
+}
+
+.info-item i{
+
+    font-size:20px;
+
+    color:#FFD700;
+
+}
+
+.info-item span{
+
+    color:#FFFFFF;
+
+    font-weight:600;
+
+    font-size:15px;
+
+}
+
+/*==================================================
+HORLOGE
+==================================================*/
+
+#clock{
+
+    color:#FFD700;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+#day{
+
+    color:#DDE8FF;
+
+}
+
+#date{
+
+    color:#DDE8FF;
+
+}
+
+#temperature{
+
+    color:#FFD700;
+
+}
+
+#city{
+
+    color:#FFFFFF;
+
+}
+
+/*==================================================
+BOUTON THÈME
+==================================================*/
+
+.header-actions{
+
+    position:absolute;
+
+    top:20px;
+
+    right:20px;
+
+    z-index:3;
+
+}
+
+.theme-btn{
+
+    width:55px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.10);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    color:#FFD700;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    backdrop-filter:blur(15px);
+
+    transition:.35s;
+
+}
+
+.theme-btn:hover{
+
+    transform:rotate(180deg) scale(1.08);
+
+    background:#FFD700;
+
+    color:#041C5C;
+
+    box-shadow:0 0 20px rgba(255,215,0,.45);
+
+}
+
+/*==================================================
+RESPONSIVE
+==================================================*/
+
+@media(max-width:768px){
+
+    .top-header{
+
+        padding:25px 18px;
+
+    }
+
+    .logo{
+
+        width:85px;
+
+        height:85px;
+
+    }
+
+    .title-box h1{
+
+        font-size:26px;
+
+    }
+
+    .title-box h2{
+
+        font-size:18px;
+
+    }
+
+    .title-box h3{
+
+        font-size:15px;
+
+    }
+
+    .title-box p{
+
+        font-size:14px;
+
+    }
+
+    .datetime-box{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .info-item{
+
+        justify-content:flex-start;
+
+    }
+
+    .header-actions{
+
+        top:15px;
+
+        right:15px;
+
+    }
+
+    .theme-btn{
+
+        width:45px;
+
+        height:45px;
+
+        font-size:20px;
+
+    }
+
+}
