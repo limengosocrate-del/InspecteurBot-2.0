@@ -1,13 +1,13 @@
-/*==================================================
+/*=========================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
+ CSS PREMIUM V6.0
  PARTIE 1/10
- RESET + VARIABLES + BASE FUTURISTE
-==================================================*/
+ RESET • VARIABLES • BASE • RESPONSIVE
+==========================================================*/
 
-/*==========================
- RESET
-==========================*/
+/*==============================
+RESET
+==============================*/
 
 *,
 *::before,
@@ -20,41 +20,8 @@
 html{
     scroll-behavior:smooth;
     -webkit-text-size-adjust:100%;
+    overflow-x:hidden;
 }
-
-:root{
-
-    --bleu:#041c5c;
-    --bleu2:#0b3f9f;
-    --bleu3:#165fd4;
-
-    --or:#FFD700;
-    --or2:#ffb300;
-
-    --vert:#00ff95;
-    --rouge:#ff4d6d;
-
-    --blanc:#ffffff;
-    --gris:#dce6ff;
-
-    --glass:rgba(255,255,255,.08);
-    --glass2:rgba(255,255,255,.04);
-
-    --ombreBleu:
-    0 0 35px rgba(0,120,255,.35);
-
-    --ombreOr:
-    0 0 25px rgba(255,215,0,.45);
-
-    --rayon:26px;
-
-    --transition:.45s ease;
-
-}
-
-/*==========================
- BODY
-==========================*/
 
 body{
 
@@ -62,174 +29,167 @@ body{
 
     overflow-x:hidden;
 
-    color:var(--blanc);
-
     font-family:
     "Poppins",
     "Segoe UI",
     Arial,
     sans-serif;
 
+    color:#ffffff;
+
     background:
-
     radial-gradient(circle at top,
-    #1347b5 0%,
-    #082d7d 25%,
-    #041c5c 55%,
-    #010b22 100%);
+    #1a56d8 0%,
+    #0d3da6 30%,
+    #05256f 65%,
+    #02103c 100%);
 
-    background-size:300% 300%;
-
-    animation:
-    fondIA 18s ease infinite;
+    background-attachment:fixed;
 
 }
 
-/*==========================
- FOND ANIME
-==========================*/
+/*==============================
+VARIABLES
+==============================*/
 
-@keyframes fondIA{
+:root{
 
-0%{
+    --bleu:#083ea7;
+    --bleu2:#124fc8;
+    --bleu3:#2d73ff;
 
-background-position:
-0% 50%;
+    --or:#FFD700;
+    --or2:#ffb300;
+
+    --vert:#00e676;
+
+    --rouge:#ff4d6d;
+
+    --texte:#ffffff;
+
+    --texte2:#d9e6ff;
+
+    --glass:rgba(255,255,255,.10);
+
+    --glass2:rgba(255,255,255,.05);
+
+    --border:rgba(255,255,255,.18);
+
+    --radius:24px;
+
+    --shadow:
+
+    0 15px 40px rgba(0,0,0,.30);
+
+    --shadowGold:
+
+    0 0 25px rgba(255,215,0,.35);
+
+    --transition:.35s ease;
 
 }
 
-50%{
-
-background-position:
-100% 50%;
-
-}
-
-100%{
-
-background-position:
-0% 50%;
-
-}
-
-}
-
-/*==========================
- PARTICULES
-==========================*/
+/*==============================
+PARTICULES
+==============================*/
 
 body::before{
 
-content:"";
+    content:"";
 
-position:fixed;
+    position:fixed;
 
-top:0;
-left:0;
+    inset:0;
 
-width:100%;
-height:100%;
+    pointer-events:none;
 
-pointer-events:none;
+    opacity:.15;
 
-background-image:
+    background-image:
 
-radial-gradient(circle,
-rgba(255,255,255,.10) 1px,
-transparent 1px);
+    radial-gradient(circle,
+    rgba(255,255,255,.6) 1px,
+    transparent 1px);
 
-background-size:
-80px 80px;
+    background-size:70px 70px;
 
-opacity:.18;
-
-animation:
-particules 60s linear infinite;
+    animation:particles 60s linear infinite;
 
 }
 
-@keyframes particules{
+@keyframes particles{
 
-from{
+    from{
 
-transform:
-translateY(0);
+        transform:translateY(0);
 
-}
+    }
 
-to{
+    to{
 
-transform:
-translateY(-120px);
+        transform:translateY(-120px);
 
-}
+    }
 
 }
 
-/*==========================
- CONTENEUR
-==========================*/
+/*==============================
+CONTENEUR
+==============================*/
 
 main{
 
-width:min(1400px,95%);
+    width:min(1300px,95%);
 
-margin:auto;
+    margin:auto;
 
-padding:25px;
+    padding:
 
-}
-
-/*==========================
- SELECTION
-==========================*/
-
-::selection{
-
-background:var(--or);
-
-color:var(--bleu);
+    18px
+    16px
+    40px;
 
 }
 
-/*==========================
- SCROLLBAR
-==========================*/
+/*==============================
+SECTIONS
+==============================*/
 
-::-webkit-scrollbar{
+section{
 
-width:10px;
+    margin-bottom:28px;
 
-}
-
-::-webkit-scrollbar-track{
-
-background:#02153f;
+    animation:fadeUp .7s ease;
 
 }
 
-::-webkit-scrollbar-thumb{
+@keyframes fadeUp{
 
-background:
+    from{
 
-linear-gradient(
-180deg,
-var(--or),
-#ff9800);
+        opacity:0;
 
-border-radius:20px;
+        transform:
+
+        translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+
+        translateY(0);
+
+    }
 
 }
 
-::-webkit-scrollbar-thumb:hover{
-
-background:white;
-
-}
-
-/*==========================
- GLASS EFFECT
-==========================*/
+/*==============================
+CARTES PREMIUM
+==============================*/
 
 .hero,
 .search-card,
@@ -240,33 +200,21 @@ background:white;
 .outil-card,
 .footer-content{
 
-background:
-rgba(255,255,255,.08);
+    background:var(--glass);
 
-backdrop-filter:
-blur(18px);
+    backdrop-filter:blur(18px);
 
--webkit-backdrop-filter:
-blur(18px);
+    -webkit-backdrop-filter:blur(18px);
 
-border:
-1px solid rgba(255,255,255,.15);
+    border:1px solid var(--border);
 
-border-radius:
-28px;
+    border-radius:30px;
 
-box-shadow:
+    box-shadow:var(--shadow);
 
-0 0 30px rgba(0,90,255,.25);
-
-transition:
-var(--transition);
+    transition:var(--transition);
 
 }
-
-/*==========================
- SURVOL CARTES
-==========================*/
 
 .hero:hover,
 .search-card:hover,
@@ -276,195 +224,84 @@ var(--transition);
 .stat-card:hover,
 .outil-card:hover{
 
-transform:
+    transform:translateY(-4px);
 
-translateY(-8px);
+    border-color:
 
-border-color:
-
-rgba(255,215,0,.35);
-
-box-shadow:
-
-0 0 20px rgba(255,215,0,.35),
-
-0 0 60px rgba(0,130,255,.35);
+    rgba(255,215,0,.35);
 
 }
 
-/*==========================
- TITRES
-==========================*/
+/*==============================
+TEXTES
+==============================*/
 
 h1,h2,h3,h4{
 
-font-weight:700;
-
-line-height:1.4;
+    font-weight:700;
 
 }
 
 h1{
 
-color:var(--or);
+    color:var(--or);
 
-text-shadow:
+    text-align:center;
 
-0 0 15px rgba(255,215,0,.65);
+    text-shadow:
+
+    0 0 18px rgba(255,215,0,.5);
 
 }
 
 h2{
 
-color:white;
+    color:#ffffff;
 
 }
 
 p{
 
-line-height:1.8;
+    color:var(--texte2);
 
-color:#eef4ff;
-
-}
-
-/*==========================
- IMAGES
-==========================*/
-
-img{
-
-display:block;
-
-max-width:100%;
-
-height:auto;
+    line-height:1.8;
 
 }
 
-/*==========================
- LIENS
-==========================*/
-
-a{
-
-text-decoration:none;
-
-color:inherit;
-
-}
-
-/*==========================
- BOUTONS
-==========================*/
-
-button{
-
-border:none;
-
-cursor:pointer;
-
-transition:.35s;
-
-border-radius:18px;
-
-font-weight:700;
-
-}
-
-button:hover{
-
-transform:
-
-translateY(-5px)
-scale(1.05);
-
-}
-
-button:active{
-
-transform:
-
-scale(.95);
-
-}
-
-/*==========================
- ANIMATION BOUTONS
-==========================*/
-
-@keyframes respiration{
-
-0%{
-
-box-shadow:
-
-0 0 8px rgba(255,215,0,.20);
-
-}
-
-50%{
-
-box-shadow:
-
-0 0 22px rgba(255,215,0,.60);
-
-}
-
-100%{
-
-box-shadow:
-
-0 0 8px rgba(255,215,0,.20);
-
-}
-
-}
-
-.search-box button,
-.livre-actions button,
-.assistant-actions button{
-
-animation:
-
-respiration 2.5s infinite;
-
-}
-
-/*==========================
- INPUTS
-==========================*/
+/*==============================
+FORMULAIRES
+==============================*/
 
 input,
 textarea,
 select{
 
-width:100%;
+    width:100%;
 
-padding:16px;
+    border:none;
 
-border-radius:18px;
+    outline:none;
 
-border:
+    padding:16px 18px;
 
-1px solid rgba(255,255,255,.18);
+    border-radius:18px;
 
-background:
+    background:
 
-rgba(255,255,255,.08);
+    rgba(255,255,255,.12);
 
-color:white;
+    color:#fff;
 
-font-size:16px;
+    font-size:16px;
 
-transition:.4s;
+    transition:.30s;
 
 }
 
 input::placeholder,
 textarea::placeholder{
 
-color:#d7e5ff;
+    color:#d7e2ff;
 
 }
 
@@ -472,31 +309,160 @@ input:focus,
 textarea:focus,
 select:focus{
 
-outline:none;
+    background:
 
-border-color:var(--or);
+    rgba(255,255,255,.16);
 
-box-shadow:
+    box-shadow:
 
-0 0 18px rgba(255,215,0,.40);
-
-transform:scale(1.01);
+    0 0 18px rgba(255,215,0,.25);
 
 }
 
-/*==========================
- ANIMATION APPARITION
-==========================*/
+/*==============================
+BOUTONS
+==============================*/
 
-@keyframes apparition{
+button{
+
+    border:none;
+
+    cursor:pointer;
+
+    transition:.30s;
+
+    font-weight:700;
+
+    border-radius:18px;
+
+}
+
+button:hover{
+
+    transform:
+
+    translateY(-3px);
+
+}
+
+button:active{
+
+    transform:scale(.96);
+
+}
+
+/*==============================
+IMAGES
+==============================*/
+
+img{
+
+    display:block;
+
+    max-width:100%;
+
+    height:auto;
+
+}
+
+/*==============================
+SCROLLBAR
+==============================*/
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+
+    linear-gradient(
+
+    var(--or),
+
+    #ff9800);
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#06215d;
+
+}
+
+/*==============================
+RESPONSIVE
+==============================*/
+
+@media(max-width:768px){
+
+main{
+
+padding:12px;
+
+}
+
+section{
+
+margin-bottom:22px;
+
+}
+
+ }
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V6.0
+ PARTIE 2/10
+ HEADER + MÉTÉO + HORLOGE + TOOLBAR
+==================================================*/
+
+/*=========================
+HEADER
+=========================*/
+
+.top-header{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:25px;
+
+padding:25px;
+
+margin-bottom:25px;
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:28px;
+
+box-shadow:0 10px 35px rgba(0,0,0,.30);
+
+animation:fadeHeader .8s ease;
+
+}
+
+@keyframes fadeHeader{
 
 from{
 
 opacity:0;
 
-transform:
-
-translateY(30px);
+transform:translateY(-25px);
 
 }
 
@@ -504,126 +470,43 @@ to{
 
 opacity:1;
 
-transform:
-
-translateY(0);
+transform:translateY(0);
 
 }
 
 }
 
-section{
+/*=========================
+LOGO
+=========================*/
 
-animation:
+.logo-box{
 
-apparition .8s ease;
+flex:0 0 95px;
 
-margin-bottom:35px;
+display:flex;
 
-}
+justify-content:center;
 
-/*==================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
- PARTIE 2/10
- HERO + RECHERCHE FUTURISTE
-==================================================*/
-
-/*==========================
- HERO
-==========================*/
-
-.hero{
-
-position:relative;
-
-overflow:hidden;
-
-padding:50px 35px;
-
-text-align:center;
-
-border-radius:32px;
+align-items:center;
 
 }
 
-/* Halo lumineux */
+.logo{
 
-.hero::before{
+width:85px;
 
-content:"";
+height:85px;
 
-position:absolute;
-
-top:-50%;
-left:-50%;
-
-width:200%;
-height:200%;
-
-background:
-conic-gradient(
-from 0deg,
-transparent,
-rgba(255,215,0,.12),
-transparent,
-rgba(0,180,255,.10),
-transparent);
-
-animation:
-rotationHero 18s linear infinite;
-
-pointer-events:none;
-
-}
-
-@keyframes rotationHero{
-
-from{
-transform:rotate(0deg);
-}
-
-to{
-transform:rotate(360deg);
-}
-
-}
-
-.hero>*{
-
-position:relative;
-
-z-index:2;
-
-}
-
-/*==========================
- LOGO
-==========================*/
-
-.hero img{
-
-width:110px;
-
-margin:0 auto 20px;
+object-fit:contain;
 
 filter:
 
-drop-shadow(0 0 12px rgba(255,215,0,.6))
-drop-shadow(0 0 30px rgba(0,170,255,.45));
+drop-shadow(0 0 12px rgba(255,215,0,.45))
 
-animation:
-logoPulse 3s ease-in-out infinite;
+drop-shadow(0 0 20px rgba(0,170,255,.35));
 
-transition:.4s;
-
-}
-
-.hero img:hover{
-
-transform:
-scale(1.12)
-rotate(6deg);
+animation:logoPulse 3s infinite;
 
 }
 
@@ -643,495 +526,398 @@ transform:scale(1.08);
 
 }
 
-/*==========================
- TITRES
-==========================*/
+/*=========================
+TITRES
+=========================*/
 
-.hero h1{
-
-font-size:clamp(34px,5vw,52px);
-
-margin-bottom:18px;
-
-letter-spacing:1px;
-
-}
-
-.hero p{
-
-max-width:850px;
-
-margin:0 auto;
-
-font-size:19px;
-
-color:#e7f0ff;
-
-}
-
-/*==========================
- BARRE RECHERCHE
-==========================*/
-
-.search-box{
-
-display:flex;
-
-flex-wrap:wrap;
-
-justify-content:center;
-
-align-items:center;
-
-gap:14px;
-
-margin-top:35px;
-
-}
-
-.search-box input{
+.title-box{
 
 flex:1;
 
-min-width:260px;
+}
 
-height:60px;
+.title-box h1{
+
+font-size:34px;
+
+color:var(--or);
+
+margin-bottom:8px;
+
+text-shadow:0 0 15px rgba(255,215,0,.40);
+
+}
+
+.title-box h2{
+
+font-size:20px;
+
+margin-bottom:5px;
+
+}
+
+.title-box h3{
 
 font-size:17px;
 
-padding:0 20px;
+color:#dce6ff;
 
-background:
-
-rgba(255,255,255,.10);
+margin-bottom:6px;
 
 }
 
-.search-box input:hover{
+.title-box p{
 
-background:
+font-size:15px;
 
-rgba(255,255,255,.14);
+color:#bdd4ff;
 
 }
 
-/*==========================
- BOUTONS RECHERCHE
-==========================*/
+/*=========================
+HORLOGE
+=========================*/
 
-.search-box button{
+.datetime-box{
 
-width:60px;
+display:grid;
 
-height:60px;
+grid-template-columns:1fr;
+
+gap:10px;
+
+min-width:220px;
+
+}
+
+.info-item{
 
 display:flex;
 
 align-items:center;
 
-justify-content:center;
+gap:10px;
 
-font-size:22px;
+padding:12px 15px;
 
-color:var(--bleu);
+background:rgba(255,255,255,.07);
 
-background:
+border:1px solid rgba(255,255,255,.10);
 
-linear-gradient(
-135deg,
-var(--or),
-var(--or2));
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-/* Effet lumineux */
-
-.search-box button::before{
-
-content:"";
-
-position:absolute;
-
-top:-120%;
-left:-40%;
-
-width:40%;
-
-height:300%;
-
-background:
-
-rgba(255,255,255,.55);
-
-transform:
-rotate(25deg);
-
-transition:.6s;
-
-}
-
-.search-box button:hover::before{
-
-left:140%;
-
-}
-
-.search-box button:hover{
-
-box-shadow:
-
-0 0 20px rgba(255,215,0,.65),
-
-0 0 45px rgba(0,170,255,.45);
-
-}
-
-/*==========================
- SECTION RECHERCHE
-==========================*/
-
-.search-section{
-
-margin-top:35px;
-
-}
-
-.search-card{
-
-padding:35px;
-
-}
-
-.search-card h2{
-
-font-size:30px;
-
-text-align:center;
-
-margin-bottom:12px;
-
-color:var(--or);
-
-}
-
-.search-card h2 i{
-
-margin-right:10px;
-
-animation:
-iconeSearch 2s infinite;
-
-}
-
-@keyframes iconeSearch{
-
-0%,100%{
-
-transform:rotate(0deg);
-
-}
-
-50%{
-
-transform:rotate(-12deg);
-
-}
-
-}
-
-.search-card p{
-
-text-align:center;
-
-margin-bottom:28px;
-
-}
-
-/*==========================
- RECHERCHE RAPIDE
-==========================*/
-
-.recherche-rapide{
-
-display:flex;
-
-flex-wrap:wrap;
-
-justify-content:center;
-
-gap:12px;
-
-margin-top:22px;
-
-}
-
-.recherche-rapide button{
-
-padding:12px 18px;
-
-border-radius:30px;
-
-background:
-
-linear-gradient(
-135deg,
-#0b4dbd,
-#062d78);
-
-color:var(--or);
-
-font-size:15px;
-
-border:
-
-1px solid rgba(255,215,0,.18);
-
-transition:.35s;
-
-animation:
-badgePulse 3s infinite;
-
-}
-
-.recherche-rapide button:hover{
-
-background:
-
-linear-gradient(
-135deg,
-var(--or),
-#ffb400);
-
-color:var(--bleu);
-
-transform:
-
-translateY(-4px)
-scale(1.08);
-
-}
-
-@keyframes badgePulse{
-
-0%,100%{
-
-box-shadow:
-
-0 0 8px rgba(255,215,0,.18);
-
-}
-
-50%{
-
-box-shadow:
-
-0 0 18px rgba(255,215,0,.45);
-
-}
-
-}
-
-/*==========================
- EFFET FOCUS GLOBAL
-==========================*/
-
-.search-box:focus-within{
-
-transform:scale(1.01);
+border-radius:16px;
 
 transition:.3s;
 
 }
 
-/*==========================
- RESPONSIVE
-==========================*/
+.info-item:hover{
 
-@media(max-width:768px){
+border-color:rgba(255,215,0,.30);
 
-.hero{
-
-padding:35px 20px;
+box-shadow:0 0 15px rgba(255,215,0,.20);
 
 }
 
-.hero img{
+.info-item i{
 
-width:90px;
+font-size:18px;
+
+color:var(--or);
+
+min-width:22px;
+
+text-align:center;
 
 }
 
-.hero h1{
+.info-item span{
 
-font-size:34px;
+font-size:15px;
+
+font-weight:600;
+
+color:#fff;
 
 }
 
-.hero p{
+/*=========================
+BOUTON THÈME
+=========================*/
+
+.header-actions{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+.theme-btn{
+
+width:55px;
+
+height:55px;
+
+border-radius:50%;
+
+background:linear-gradient(135deg,var(--or),var(--or2));
+
+color:#041c5c;
+
+font-size:22px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+box-shadow:0 0 18px rgba(255,215,0,.35);
+
+transition:.35s;
+
+}
+
+.theme-btn:hover{
+
+transform:rotate(180deg) scale(1.08);
+
+}
+
+/*=========================
+TOOLBAR
+=========================*/
+
+.toolbar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:20px;
+
+padding:18px 22px;
+
+margin-bottom:25px;
+
+background:rgba(255,255,255,.08);
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:24px;
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
+
+}
+
+.toolbar-left{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.toolbar-left label{
+
+font-weight:600;
+
+color:#fff;
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.toolbar-left select{
+
+width:180px;
+
+}
+
+.toolbar-right{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:12px;
+
+justify-content:flex-end;
+
+}
+
+.tool-btn{
+
+width:52px;
+
+height:52px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:16px;
+
+background:linear-gradient(135deg,var(--bleu2),var(--bleu3));
+
+color:#fff;
+
+font-size:20px;
+
+border:1px solid rgba(255,255,255,.10);
+
+transition:.35s;
+
+}
+
+.tool-btn:hover{
+
+background:linear-gradient(135deg,var(--or),var(--or2));
+
+color:#041c5c;
+
+box-shadow:0 0 18px rgba(255,215,0,.35);
+
+}
+
+/*=========================
+RESPONSIVE
+=========================*/
+
+@media(max-width:900px){
+
+.top-header{
+
+flex-direction:column;
+
+text-align:center;
+
+}
+
+.logo-box{
+
+flex:none;
+
+}
+
+.datetime-box{
+
+width:100%;
+
+}
+
+.toolbar{
+
+flex-direction:column;
+
+align-items:stretch;
+
+}
+
+.toolbar-left{
+
+flex-direction:column;
+
+align-items:stretch;
+
+}
+
+.toolbar-left select{
+
+width:100%;
+
+}
+
+.toolbar-right{
+
+justify-content:center;
+
+}
+
+}
+
+@media(max-width:600px){
+
+.title-box h1{
+
+font-size:28px;
+
+}
+
+.title-box h2{
+
+font-size:18px;
+
+}
+
+.title-box h3{
 
 font-size:16px;
 
 }
 
-.search-box{
+.tool-btn{
 
-flex-direction:column;
+width:48px;
 
-}
+height:48px;
 
-.search-box input{
-
-min-width:100%;
+font-size:18px;
 
 }
 
-.search-box button{
-
-width:100%;
-
-height:56px;
-
-border-radius:16px;
-
 }
-
-.recherche-rapide{
-
-gap:10px;
-
-}
-
-.recherche-rapide button{
-
-flex:1 1 45%;
-
-}
-
- }
 
 /*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
+ CSS PREMIUM V6.0
  PARTIE 3/10
- LIVRE JURIDIQUE FUTURISTE
+ RECHERCHE INTELLIGENTE
 ==================================================*/
 
 /*=========================
- SECTION LIVRE
+SECTION
 =========================*/
 
-.livre-section{
+.search-section{
 
-margin-top:40px;
+padding:28px;
 
-margin-bottom:40px;
+margin-bottom:30px;
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.15);
+
+border-radius:28px;
+
+box-shadow:0 10px 35px rgba(0,0,0,.25);
 
 }
 
 /*=========================
- LIVRE
+TITRE
 =========================*/
 
-.livre{
-
-position:relative;
-
-overflow:hidden;
-
-padding:35px;
-
-background:
-
-linear-gradient(
-145deg,
-rgba(8,38,108,.96),
-rgba(3,20,72,.98));
-
-border-radius:30px;
-
-border:1px solid rgba(255,215,0,.25);
-
-box-shadow:
-
-0 0 25px rgba(0,120,255,.30),
-
-0 0 60px rgba(0,0,0,.35);
-
-transition:.45s;
-
-}
-
-/*=========================
- HALO DU LIVRE
-=========================*/
-
-.livre::before{
-
-content:"";
-
-position:absolute;
-
-top:-50%;
-left:-50%;
-
-width:200%;
-height:200%;
-
-background:
-
-conic-gradient(
-
-transparent,
-
-rgba(255,215,0,.08),
-
-transparent,
-
-rgba(0,160,255,.08),
-
-transparent);
-
-animation:
-
-rotationLivre 22s linear infinite;
-
-pointer-events:none;
-
-}
-
-@keyframes rotationLivre{
-
-from{
-
-transform:rotate(0deg);
-
-}
-
-to{
-
-transform:rotate(360deg);
-
-}
-
-}
-
-.livre>*{
-
-position:relative;
-
-z-index:2;
-
-}
-
-/*=========================
- EN-TÊTE
-=========================*/
-
-.livre-header{
+.search-header{
 
 text-align:center;
 
@@ -1139,92 +925,636 @@ margin-bottom:25px;
 
 }
 
-#numeroArticle{
+.search-header h2{
+
+font-size:30px;
+
+color:var(--or);
+
+margin-bottom:10px;
+
+text-shadow:0 0 15px rgba(255,215,0,.35);
+
+}
+
+.search-header h2 i{
+
+margin-right:10px;
+
+}
+
+.search-header p{
+
+color:#dce6ff;
+
+font-size:16px;
+
+line-height:1.8;
+
+}
+
+/*=========================
+BARRE RECHERCHE
+=========================*/
+
+.search-box{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+margin-bottom:25px;
+
+}
+
+.search-box input{
+
+flex:1;
+
+height:58px;
+
+padding:0 18px;
+
+font-size:16px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.10);
+
+border:1px solid rgba(255,255,255,.15);
+
+color:#fff;
+
+}
+
+.search-box input:focus{
+
+border-color:var(--or);
+
+box-shadow:0 0 15px rgba(255,215,0,.25);
+
+}
+
+/*=========================
+BOUTONS
+=========================*/
+
+.search-box button{
+
+width:58px;
+
+height:58px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:18px;
+
+background:linear-gradient(135deg,var(--bleu2),var(--bleu3));
+
+color:#fff;
+
+font-size:20px;
+
+transition:.30s;
+
+}
+
+.search-box button:hover{
+
+background:linear-gradient(135deg,var(--or),var(--or2));
+
+color:#041c5c;
+
+transform:translateY(-3px);
+
+}
+
+/*=========================
+SUGGESTIONS
+=========================*/
+
+.suggestions{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:12px;
+
+justify-content:center;
+
+margin-top:20px;
+
+}
+
+.suggestions button{
+
+padding:12px 18px;
+
+border-radius:30px;
+
+background:rgba(255,255,255,.10);
+
+border:1px solid rgba(255,255,255,.15);
+
+color:#fff;
+
+font-size:15px;
+
+font-weight:600;
+
+transition:.30s;
+
+}
+
+.suggestions button:hover{
+
+background:linear-gradient(135deg,var(--or),var(--or2));
+
+color:#041c5c;
+
+border-color:transparent;
+
+box-shadow:0 0 18px rgba(255,215,0,.30);
+
+}
+
+/*=========================
+RESULTATS
+=========================*/
+
+.search-results{
+
+margin-top:25px;
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+.search-result{
+
+padding:18px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.08);
+
+border:1px solid rgba(255,255,255,.12);
+
+transition:.30s;
+
+cursor:pointer;
+
+}
+
+.search-result:hover{
+
+border-color:rgba(255,215,0,.35);
+
+transform:translateY(-3px);
+
+box-shadow:0 0 18px rgba(255,215,0,.20);
+
+}
+
+.search-result h3{
+
+color:var(--or);
+
+margin-bottom:8px;
+
+font-size:18px;
+
+}
+
+.search-result p{
+
+font-size:15px;
+
+color:#dce6ff;
+
+line-height:1.7;
+
+}
+
+/*=========================
+RESPONSIVE
+=========================*/
+
+@media(max-width:768px){
+
+.search-section{
+
+padding:20px;
+
+}
+
+.search-box{
+
+flex-wrap:wrap;
+
+}
+
+.search-box input{
+
+width:100%;
+
+flex:none;
+
+}
+
+.search-box button{
+
+flex:1;
+
+min-width:60px;
+
+height:54px;
+
+}
+
+.suggestions{
+
+justify-content:flex-start;
+
+}
+
+.suggestions button{
+
+flex:1 1 calc(50% - 12px);
+
+text-align:center;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.suggestions button{
+
+flex:1 1 100%;
+
+}
+
+ }
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V6.0
+ PARTIE 4/10
+ CATEGORIES + CONSULTATION DES ARTICLES
+==================================================*/
+
+/*=========================
+ SECTION CATEGORIES
+=========================*/
+
+.categories-section{
+    margin:45px 0;
+}
+
+.categories-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+}
+
+/*=========================
+ CARTE CATEGORIE
+=========================*/
+
+.category-card{
+
+    position:relative;
+    overflow:hidden;
+
+    padding:28px;
+
+    border-radius:28px;
+
+    background:
+    linear-gradient(
+    145deg,
+    rgba(8,42,120,.92),
+    rgba(3,18,65,.98));
+
+    border:
+    1px solid rgba(255,215,0,.15);
+
+    transition:.4s;
+
+    cursor:pointer;
+
+    text-align:center;
+
+}
+
+.category-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-60%;
+    left:-60%;
+
+    width:220%;
+    height:220%;
+
+    background:
+    conic-gradient(
+    transparent,
+    rgba(255,215,0,.08),
+    transparent,
+    rgba(0,170,255,.08),
+    transparent);
+
+    animation:rotationCategorie 20s linear infinite;
+
+    pointer-events:none;
+
+}
+
+@keyframes rotationCategorie{
+
+from{
+transform:rotate(0deg);
+}
+
+to{
+transform:rotate(360deg);
+}
+
+}
+
+.category-card>*{
+
+position:relative;
+z-index:2;
+
+}
+
+.category-card:hover{
+
+transform:
+translateY(-8px);
+
+border-color:var(--or);
+
+box-shadow:
+
+0 0 25px rgba(255,215,0,.35),
+
+0 0 40px rgba(0,120,255,.35);
+
+}
+
+.category-card i{
+
+font-size:42px;
+
+color:var(--or);
+
+margin-bottom:18px;
+
+text-shadow:
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+.category-card h3{
+
+color:white;
+
+margin-bottom:10px;
+
+font-size:22px;
+
+}
+
+.category-card p{
+
+color:#dfeaff;
+
+font-size:15px;
+
+margin-bottom:18px;
+
+}
+
+.badge{
 
 display:inline-block;
 
-padding:10px 24px;
+padding:10px 18px;
+
+border-radius:30px;
 
 background:
 
 linear-gradient(
 135deg,
 #FFD700,
-#ffb400);
+#ffb300);
 
 color:#041c5c;
 
 font-weight:700;
 
+font-size:14px;
+
+}
+
+/*=========================
+ SECTION ARTICLE
+=========================*/
+
+.article-section{
+
+margin:50px 0;
+
+}
+
+.article-card{
+
+position:relative;
+
+overflow:hidden;
+
+padding:35px;
+
 border-radius:30px;
 
-margin-bottom:15px;
+background:
+
+linear-gradient(
+145deg,
+rgba(6,30,90,.95),
+rgba(3,18,70,.98));
+
+border:1px solid rgba(255,255,255,.12);
 
 box-shadow:
 
-0 0 20px rgba(255,215,0,.50);
-
-animation:
-
-pulseNumero 2.5s infinite;
+0 0 30px rgba(0,100,255,.28);
 
 }
 
-@keyframes pulseNumero{
+.article-card::before{
 
-0%,100%{
+content:"";
 
-transform:scale(1);
+position:absolute;
+
+top:-60%;
+left:-60%;
+
+width:220%;
+height:220%;
+
+background:
+
+conic-gradient(
+
+transparent,
+
+rgba(255,215,0,.07),
+
+transparent,
+
+rgba(0,170,255,.08),
+
+transparent);
+
+animation:rotationArticle 18s linear infinite;
+
+pointer-events:none;
 
 }
 
-50%{
+@keyframes rotationArticle{
 
-transform:scale(1.06);
+from{
+transform:rotate(0deg);
+}
 
+to{
+transform:rotate(360deg);
 }
 
 }
 
-#titreArticle{
+.article-card>*{
+
+position:relative;
+z-index:2;
+
+}
+
+/*=========================
+ NUMERO ARTICLE
+=========================*/
+
+.article-number{
+
+display:inline-block;
+
+padding:12px 22px;
+
+border-radius:40px;
+
+background:
+
+linear-gradient(
+135deg,
+#FFD700,
+#ffb300);
+
+color:#041c5c;
+
+font-weight:700;
+
+margin-bottom:20px;
+
+box-shadow:
+
+0 0 18px rgba(255,215,0,.45);
+
+}
+
+/*=========================
+ TITRE
+=========================*/
+
+.article-title{
 
 font-size:30px;
 
 color:#FFD700;
 
-margin-top:10px;
+margin-bottom:15px;
 
 text-shadow:
 
-0 0 15px rgba(255,215,0,.40);
+0 0 14px rgba(255,215,0,.35);
 
 }
 
 /*=========================
- PAGE JURIDIQUE
+ CATEGORIE
 =========================*/
 
-.page-livre{
+.article-category{
 
-position:relative;
+display:inline-block;
+
+margin-bottom:25px;
+
+padding:8px 18px;
+
+border-radius:25px;
+
+background:
+
+rgba(255,255,255,.08);
+
+color:#9fd4ff;
+
+border:
+
+1px solid rgba(255,255,255,.15);
+
+}
+
+/*=========================
+ CONTENU
+=========================*/
+
+.article-content{
 
 background:
 
 linear-gradient(
-
 180deg,
-
 #ffffff,
+#f6f8ff);
 
-#f5f8ff);
+color:#202020;
 
-color:#1b1b1b;
+padding:35px;
 
-padding:40px;
-
-border-radius:18px;
-
-min-height:420px;
+border-radius:20px;
 
 font-size:18px;
 
@@ -1232,115 +1562,68 @@ line-height:2;
 
 text-align:justify;
 
+min-height:320px;
+
 box-shadow:
 
-inset 0 0 20px rgba(0,0,0,.08),
-
-0 0 18px rgba(0,0,0,.18);
-
-overflow:hidden;
-
-animation:
-
-ouvrirLivre .7s ease;
+inset 0 0 15px rgba(0,0,0,.08);
 
 }
 
 /*=========================
- TEXTURE PAPIER
+ SANCTION
 =========================*/
 
-.page-livre::before{
+.article-sanction{
 
-content:"";
+margin-top:25px;
 
-position:absolute;
+padding:18px;
 
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-opacity:.05;
+border-left:6px solid #ff4d6d;
 
 background:
 
-repeating-linear-gradient(
+rgba(255,77,109,.12);
 
-0deg,
+border-radius:15px;
 
-#000 0px,
-
-transparent 1px,
-
-transparent 34px);
-
-pointer-events:none;
+color:#fff;
 
 }
 
 /*=========================
- APPARITION
+ QUESTIONS IA
 =========================*/
 
-@keyframes ouvrirLivre{
+.article-questions{
 
-from{
+margin-top:25px;
 
-opacity:0;
+display:flex;
 
-transform:
+flex-wrap:wrap;
 
-rotateY(12deg)
-
-translateX(40px);
+gap:12px;
 
 }
 
-to{
+.article-questions button{
 
-opacity:1;
+padding:12px 18px;
 
-transform:
+border-radius:25px;
 
-rotateY(0)
+background:
 
-translateX(0);
+linear-gradient(
+135deg,
+#0d47a1,
+#1565c0);
 
-}
+color:white;
 
-}
-
-/*=========================
- CONTENU ARTICLE
-=========================*/
-
-#contenuArticle h2{
-
-color:#0b48b8;
-
-font-size:28px;
-
-margin-bottom:15px;
-
-}
-
-#contenuArticle h3{
-
-color:#041c5c;
-
-margin-bottom:20px;
-
-}
-
-#contenuArticle p{
-
-color:#222;
-
-line-height:2;
-
-font-size:18px;
+font-size:14px;
 
 }
 
@@ -1348,7 +1631,9 @@ font-size:18px;
  ACTIONS
 =========================*/
 
-.livre-actions{
+.article-actions{
+
+margin-top:30px;
 
 display:flex;
 
@@ -1358,123 +1643,51 @@ justify-content:center;
 
 gap:15px;
 
-margin-top:30px;
-
 }
 
-.livre-actions button{
+.article-actions button{
 
-padding:15px 24px;
+padding:15px 22px;
 
 border-radius:18px;
 
-font-size:16px;
-
-font-weight:700;
-
 background:
 
 linear-gradient(
-
 135deg,
-
-#0b48b8,
-
-#06245e);
+#0b4dbd,
+#072d74);
 
 color:#FFD700;
 
-border:1px solid rgba(255,215,0,.20);
+font-weight:700;
+
+border:
+
+1px solid rgba(255,215,0,.18);
 
 transition:.35s;
 
-position:relative;
-
-overflow:hidden;
-
 }
 
-/*=========================
- REFLET
-=========================*/
-
-.livre-actions button::before{
-
-content:"";
-
-position:absolute;
-
-top:-150%;
-
-left:-40%;
-
-width:40%;
-
-height:320%;
-
-background:
-
-rgba(255,255,255,.45);
-
-transform:rotate(25deg);
-
-transition:.6s;
-
-}
-
-.livre-actions button:hover::before{
-
-left:150%;
-
-}
-
-.livre-actions button:hover{
-
-transform:
-
-translateY(-6px)
-
-scale(1.06);
+.article-actions button:hover{
 
 background:
 
 linear-gradient(
-
 135deg,
-
 #FFD700,
-
-#ffb400);
+#ffb300);
 
 color:#041c5c;
 
-box-shadow:
-
-0 0 20px rgba(255,215,0,.55),
-
-0 0 40px rgba(0,150,255,.35);
-
-}
-
-/*=========================
- ICÔNES
-=========================*/
-
-.livre-actions button i{
-
-margin-right:8px;
-
-transition:.35s;
-
-}
-
-.livre-actions button:hover i{
-
 transform:
 
-rotate(-12deg)
+translateY(-6px);
 
-scale(1.20);
+box-shadow:
+
+0 0 20px rgba(255,215,0,.45);
 
 }
 
@@ -1484,7 +1697,13 @@ scale(1.20);
 
 @media(max-width:768px){
 
-.page-livre{
+.article-card{
+
+padding:22px;
+
+}
+
+.article-content{
 
 padding:22px;
 
@@ -1492,19 +1711,19 @@ font-size:16px;
 
 }
 
-#titreArticle{
+.article-title{
 
 font-size:24px;
 
 }
 
-.livre-actions{
+.article-actions{
 
 flex-direction:column;
 
 }
 
-.livre-actions button{
+.article-actions button{
 
 width:100%;
 
@@ -1514,18 +1733,18 @@ width:100%;
 
 /*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
- PARTIE 4/10
- ASSISTANT JURIDIQUE IA
+ CSS PREMIUM V6.0
+ PARTIE 5/10
+ ASSISTANT IA + QUESTIONS RAPIDES + INFORMATIONS
 ==================================================*/
 
 /*=========================
- SECTION IA
+ SECTION ASSISTANT IA
 =========================*/
 
 .assistant-section{
 
-margin:45px 0;
+margin:50px 0;
 
 }
 
@@ -1537,26 +1756,22 @@ overflow:hidden;
 
 padding:35px;
 
+border-radius:30px;
+
 background:
 
 linear-gradient(
 145deg,
-rgba(6,32,105,.95),
+rgba(5,30,100,.96),
 rgba(3,18,70,.98));
 
-border-radius:30px;
-
-border:1px solid rgba(0,255,170,.20);
+border:1px solid rgba(0,255,170,.18);
 
 box-shadow:
 
-0 0 30px rgba(0,170,255,.25);
+0 0 30px rgba(0,120,255,.25);
 
 }
-
-/*=========================
- HALO IA
-=========================*/
 
 .assistant-card::before{
 
@@ -1576,10 +1791,10 @@ conic-gradient(
 transparent,
 rgba(0,255,170,.08),
 transparent,
-rgba(0,140,255,.10),
+rgba(0,160,255,.10),
 transparent);
 
-animation:rotationIA 16s linear infinite;
+animation:rotationIA 18s linear infinite;
 
 pointer-events:none;
 
@@ -1588,15 +1803,11 @@ pointer-events:none;
 @keyframes rotationIA{
 
 from{
-
 transform:rotate(0deg);
-
 }
 
 to{
-
 transform:rotate(360deg);
-
 }
 
 }
@@ -1604,80 +1815,39 @@ transform:rotate(360deg);
 .assistant-card>*{
 
 position:relative;
-
 z-index:2;
 
 }
 
 /*=========================
- TITRE IA
+ ZONE QUESTION
 =========================*/
 
-.assistant-card h2{
+.assistant-input{
 
-text-align:center;
-
-font-size:32px;
-
-color:#FFD700;
-
-margin-bottom:15px;
-
-text-shadow:
-
-0 0 15px rgba(255,215,0,.45);
+margin-top:25px;
 
 }
-
-.assistant-card h2 i{
-
-margin-right:10px;
-
-color:#00ff95;
-
-animation:pulseRobot 2s infinite;
-
-}
-
-@keyframes pulseRobot{
-
-0%,100%{
-
-transform:scale(1);
-
-}
-
-50%{
-
-transform:scale(1.18);
-
-}
-
-}
-
-.assistant-card p{
-
-text-align:center;
-
-margin-bottom:25px;
-
-color:#dce8ff;
-
-}
-
-/*=========================
- QUESTION IA
-=========================*/
 
 #questionIA{
 
-min-height:160px;
+width:100%;
+
+min-height:180px;
 
 resize:vertical;
+
+padding:20px;
+
+border-radius:20px;
 
 background:
 
 rgba(255,255,255,.08);
+
+border:
+
+1px solid rgba(255,255,255,.15);
 
 color:white;
 
@@ -1711,79 +1881,22 @@ padding:15px 24px;
 
 border-radius:18px;
 
-font-size:16px;
-
-font-weight:700;
-
 background:
 
 linear-gradient(
 135deg,
-#00c853,
-#00897b);
+#0b4dbd,
+#072d74);
 
 color:white;
 
+font-weight:700;
+
+border:
+
+1px solid rgba(255,255,255,.15);
+
 transition:.35s;
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.assistant-actions button:nth-child(2){
-
-background:
-
-linear-gradient(
-135deg,
-#ef5350,
-#c62828);
-
-}
-
-.assistant-actions button:nth-child(3){
-
-background:
-
-linear-gradient(
-135deg,
-#1565c0,
-#0d47a1);
-
-}
-
-/*=========================
- EFFET LASER
-=========================*/
-
-.assistant-actions button::after{
-
-content:"";
-
-position:absolute;
-
-top:0;
-left:-120%;
-
-width:60%;
-
-height:100%;
-
-background:
-
-rgba(255,255,255,.35);
-
-transform:skewX(-25deg);
-
-transition:.6s;
-
-}
-
-.assistant-actions button:hover::after{
-
-left:150%;
 
 }
 
@@ -1791,25 +1904,34 @@ left:150%;
 
 transform:
 
-translateY(-5px)
+translateY(-6px);
 
-scale(1.05);
+background:
+
+linear-gradient(
+135deg,
+#FFD700,
+#ffb300);
+
+color:#041c5c;
 
 box-shadow:
 
-0 0 20px rgba(255,255,255,.25);
+0 0 18px rgba(255,215,0,.45);
 
 }
 
 /*=========================
- RÉPONSE IA
+ REPONSE IA
 =========================*/
 
-#reponseIA{
+.ai-result{
 
 margin-top:30px;
 
 padding:25px;
+
+border-radius:20px;
 
 background:
 
@@ -1817,85 +1939,184 @@ rgba(255,255,255,.07);
 
 border-left:5px solid #00ff95;
 
-border-radius:18px;
+color:white;
 
-min-height:160px;
+}
 
-color:#eef5ff;
+.ai-result h3{
 
-font-size:17px;
+color:#FFD700;
+
+margin-bottom:15px;
+
+}
+
+#reponseIA{
 
 line-height:1.9;
 
-animation:apparitionIA .6s ease;
+font-size:16px;
 
-}
-
-@keyframes apparitionIA{
-
-from{
-
-opacity:0;
-
-transform:translateY(20px);
-
-}
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
+white-space:pre-line;
 
 }
 
 /*=========================
- MESSAGE IA
+ QUESTIONS RAPIDES
 =========================*/
 
-.ia-message{
+.ia-tools{
+
+margin:50px 0;
+
+}
+
+#questionsRapides{
 
 display:flex;
 
+flex-wrap:wrap;
+
 gap:15px;
 
-align-items:flex-start;
+justify-content:center;
+
+margin-top:25px;
 
 }
 
-.ia-message i{
+#questionsRapides button{
 
-font-size:28px;
+padding:13px 22px;
+
+border-radius:30px;
+
+background:
+
+linear-gradient(
+135deg,
+#0d47a1,
+#1565c0);
+
+color:white;
+
+font-weight:600;
+
+border:none;
+
+transition:.35s;
+
+}
+
+#questionsRapides button:hover{
+
+transform:
+
+translateY(-5px);
+
+background:
+
+linear-gradient(
+135deg,
+#FFD700,
+#ffb300);
+
+color:#041c5c;
+
+}
+
+/*=========================
+ INFORMATIONS
+=========================*/
+
+.info-section{
+
+margin:50px 0;
+
+}
+
+.info-card{
+
+padding:35px;
+
+border-radius:30px;
+
+background:
+
+rgba(255,255,255,.06);
+
+backdrop-filter:blur(16px);
+
+border:
+
+1px solid rgba(255,255,255,.15);
+
+}
+
+.info-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+margin-top:25px;
+
+}
+
+.info-box{
+
+padding:25px;
+
+border-radius:20px;
+
+background:
+
+linear-gradient(
+145deg,
+rgba(8,45,120,.9),
+rgba(4,20,70,.96));
+
+text-align:center;
+
+transition:.35s;
+
+}
+
+.info-box:hover{
+
+transform:
+
+translateY(-8px);
+
+box-shadow:
+
+0 0 18px rgba(255,215,0,.35);
+
+}
+
+.info-box h4{
 
 color:#FFD700;
 
-animation:clignoter 1.5s infinite;
+margin-bottom:12px;
+
+font-size:18px;
 
 }
 
-@keyframes clignoter{
+.info-box p{
 
-0%,100%{
+color:white;
 
-opacity:1;
+font-size:20px;
 
-}
+font-weight:700;
 
-50%{
-
-opacity:.35;
-
-}
-
-}
-
-.ia-message p{
-
-margin:0;
-
-text-align:left;
+word-break:break-word;
 
 }
 
@@ -1911,12 +2132,6 @@ padding:22px;
 
 }
 
-.assistant-card h2{
-
-font-size:25px;
-
-}
-
 .assistant-actions{
 
 flex-direction:column;
@@ -1929,394 +2144,31 @@ width:100%;
 
 }
 
-#questionIA{
-
-min-height:130px;
-
-}
-
-}
-
-/*==================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
- PARTIE 5/10
- INFORMATIONS + STATISTIQUES
-==================================================*/
-
-/*=========================
- SECTION INFORMATIONS
-=========================*/
-
-.info-section{
-
-margin:40px 0;
-
-}
-
-.info-card{
-
-padding:35px;
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.info-card h3{
-
-text-align:center;
-
-font-size:30px;
-
-color:var(--or);
-
-margin-bottom:30px;
-
-text-shadow:
-0 0 15px rgba(255,215,0,.45);
-
-}
-
-.info-card h3 i{
-
-margin-right:10px;
-
-animation:infoPulse 2s infinite;
-
-}
-
-@keyframes infoPulse{
-
-0%,100%{
-
-transform:scale(1);
-
-}
-
-50%{
-
-transform:scale(1.15);
-
-}
-
-}
-
-/*=========================
- GRILLE INFORMATIONS
-=========================*/
-
 .info-grid{
 
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(220px,1fr));
-
-gap:20px;
+grid-template-columns:1fr;
 
 }
 
-/*=========================
- CARTE INFO
-=========================*/
+#questionsRapides{
 
-.info-box{
-
-padding:25px;
-
-border-radius:22px;
-
-background:
-
-linear-gradient(
-145deg,
-rgba(9,44,120,.85),
-rgba(3,22,70,.95));
-
-border:1px solid rgba(255,215,0,.15);
-
-text-align:center;
-
-transition:.4s;
-
-position:relative;
-
-overflow:hidden;
+flex-direction:column;
 
 }
 
-.info-box::before{
-
-content:"";
-
-position:absolute;
-
-top:-120%;
-left:-40%;
-
-width:40%;
-height:320%;
-
-background:
-
-rgba(255,255,255,.20);
-
-transform:rotate(25deg);
-
-transition:.7s;
-
-}
-
-.info-box:hover::before{
-
-left:150%;
-
-}
-
-.info-box:hover{
-
-transform:
-
-translateY(-8px)
-
-scale(1.03);
-
-border-color:var(--or);
-
-box-shadow:
-
-0 0 18px rgba(255,215,0,.35),
-
-0 0 35px rgba(0,160,255,.25);
-
-}
-
-.info-box h4{
-
-font-size:18px;
-
-color:var(--or);
-
-margin-bottom:12px;
-
-}
-
-.info-box p{
-
-font-size:20px;
-
-font-weight:700;
-
-color:#ffffff;
-
-word-break:break-word;
-
-}
-
-/*=========================
- SECTION STATISTIQUES
-=========================*/
-
-.statistiques-section{
-
-margin:45px 0;
-
-}
-
-.statistiques-section h2{
-
-text-align:center;
-
-font-size:32px;
-
-color:var(--or);
-
-margin-bottom:30px;
-
-text-shadow:
-
-0 0 15px rgba(255,215,0,.45);
-
-}
-
-/*=========================
- GRILLE STATS
-=========================*/
-
-.stats-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(220px,1fr));
-
-gap:22px;
-
-}
-
-/*=========================
- CARTE STAT
-=========================*/
-
-.stat-card{
-
-padding:30px;
-
-text-align:center;
-
-position:relative;
-
-overflow:hidden;
-
-transition:.45s;
-
-}
-
-.stat-card::after{
-
-content:"";
-
-position:absolute;
-
-top:0;
-left:0;
+#questionsRapides button{
 
 width:100%;
-height:100%;
-
-background:
-
-linear-gradient(
-135deg,
-transparent,
-rgba(255,255,255,.05),
-transparent);
-
-transform:translateX(-100%);
-
-transition:.8s;
 
 }
 
-.stat-card:hover::after{
-
-transform:translateX(100%);
-
-}
-
-.stat-card:hover{
-
-transform:
-
-translateY(-10px)
-
-scale(1.04);
-
-}
-
-/*=========================
- ICÔNES
-=========================*/
-
-.stat-card i{
-
-font-size:48px;
-
-color:var(--or);
-
-margin-bottom:18px;
-
-animation:iconeStat 3s infinite ease-in-out;
-
-}
-
-@keyframes iconeStat{
-
-0%,100%{
-
-transform:translateY(0);
-
-}
-
-50%{
-
-transform:translateY(-8px);
-
-}
-
-}
-
-/*=========================
- VALEUR
-=========================*/
-
-.stat-card h3{
-
-font-size:42px;
-
-color:#ffffff;
-
-margin-bottom:10px;
-
-text-shadow:
-
-0 0 15px rgba(0,180,255,.45);
-
-}
-
-/*=========================
- LIBELLÉ
-=========================*/
-
-.stat-card p{
-
-font-size:17px;
-
-color:#dce8ff;
-
-}
-
-/*=========================
- RESPONSIVE
-=========================*/
-
-@media(max-width:768px){
-
-.info-card,
-.stat-card{
-
-padding:22px;
-
-}
-
-.info-card h3,
-.statistiques-section h2{
-
-font-size:24px;
-
-}
-
-.stat-card h3{
-
-font-size:34px;
-
-}
-
-.stat-card i{
-
-font-size:40px;
-
-}
-
-}
+ }
 
 /*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
+ CSS PREMIUM V6.0
  PARTIE 6/10
- OUTILS DE L'INSPECTEUR
+ OUTILS + STATISTIQUES
 ==================================================*/
 
 /*=========================
@@ -2325,68 +2177,25 @@ font-size:40px;
 
 .outils-section{
 
-margin:45px 0;
+margin:55px 0;
 
 }
-
-.outils-section h2{
-
-text-align:center;
-
-font-size:32px;
-
-color:var(--or);
-
-margin-bottom:35px;
-
-text-shadow:
-
-0 0 18px rgba(255,215,0,.45);
-
-}
-
-.outils-section h2 i{
-
-margin-right:10px;
-
-animation:toolRotate 6s linear infinite;
-
-}
-
-@keyframes toolRotate{
-
-0%{
-
-transform:rotate(0deg);
-
-}
-
-100%{
-
-transform:rotate(360deg);
-
-}
-
-}
-
-/*=========================
- GRILLE
-=========================*/
 
 .outils-grid{
 
 display:grid;
 
 grid-template-columns:
+repeat(auto-fit,minmax(240px,1fr));
 
-repeat(auto-fit,minmax(260px,1fr));
+gap:22px;
 
-gap:25px;
+margin-top:30px;
 
 }
 
 /*=========================
- CARTE
+ CARTE OUTIL
 =========================*/
 
 .outil-card{
@@ -2395,30 +2204,40 @@ position:relative;
 
 overflow:hidden;
 
-padding:30px;
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
 
 text-align:center;
 
+padding:32px 24px;
+
 border-radius:28px;
+
+text-decoration:none;
 
 background:
 
 linear-gradient(
 145deg,
-rgba(10,42,118,.92),
-rgba(4,22,68,.96));
+rgba(8,42,120,.95),
+rgba(3,18,70,.98));
 
 border:
 
-1px solid rgba(255,215,0,.18);
+1px solid rgba(255,255,255,.12);
 
-transition:.45s;
+transition:.40s;
+
+box-shadow:
+
+0 0 22px rgba(0,120,255,.20);
 
 }
-
-/*=========================
- HALO
-=========================*/
 
 .outil-card::before{
 
@@ -2426,11 +2245,11 @@ content:"";
 
 position:absolute;
 
-top:-60%;
-left:-60%;
+top:-70%;
+left:-70%;
 
-width:220%;
-height:220%;
+width:240%;
+height:240%;
 
 background:
 
@@ -2442,19 +2261,19 @@ rgba(255,215,0,.08),
 
 transparent,
 
-rgba(0,170,255,.10),
+rgba(0,170,255,.08),
 
 transparent);
 
 animation:
 
-outilHalo 18s linear infinite;
+rotationOutil 20s linear infinite;
 
 pointer-events:none;
 
 }
 
-@keyframes outilHalo{
+@keyframes rotationOutil{
 
 from{
 
@@ -2478,61 +2297,37 @@ z-index:2;
 
 }
 
-/*=========================
- SURVOL
-=========================*/
-
 .outil-card:hover{
 
 transform:
 
-translateY(-12px)
+translateY(-10px);
 
-scale(1.04);
+border-color:
 
-border-color:var(--or);
+rgba(255,215,0,.40);
 
 box-shadow:
 
-0 0 25px rgba(255,215,0,.40),
+0 0 20px rgba(255,215,0,.30),
 
-0 0 45px rgba(0,160,255,.35);
+0 0 45px rgba(0,120,255,.35);
 
 }
-
-/*=========================
- ICÔNES
-=========================*/
 
 .outil-card i{
 
-font-size:54px;
+font-size:52px;
+
+margin-bottom:18px;
 
 color:var(--or);
 
-margin-bottom:20px;
+text-shadow:
 
-transition:.45s;
+0 0 20px rgba(255,215,0,.45);
 
-animation:
-
-iconeFlotte 3s ease-in-out infinite;
-
-}
-
-@keyframes iconeFlotte{
-
-0%,100%{
-
-transform:translateY(0);
-
-}
-
-50%{
-
-transform:translateY(-10px);
-
-}
+transition:.35s;
 
 }
 
@@ -2540,73 +2335,194 @@ transform:translateY(-10px);
 
 transform:
 
-scale(1.18)
-
-rotate(10deg);
+scale(1.15)
+rotate(-8deg);
 
 }
-
-/*=========================
- TITRE
-=========================*/
 
 .outil-card h3{
 
-font-size:24px;
+font-size:22px;
 
-color:var(--or);
+color:white;
 
-margin-bottom:15px;
+margin-bottom:12px;
 
 }
-
-/*=========================
- DESCRIPTION
-=========================*/
 
 .outil-card p{
 
-font-size:16px;
+font-size:15px;
 
-line-height:1.8;
+color:#dce6ff;
 
-color:#dbe8ff;
+line-height:1.7;
 
 }
 
 /*=========================
- EFFET LASER
+ STATISTIQUES
 =========================*/
 
-.outil-card::after{
+.statistiques-section{
+
+margin:60px 0;
+
+}
+
+.stats-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:22px;
+
+margin-top:30px;
+
+}
+
+.stat-card{
+
+position:relative;
+
+overflow:hidden;
+
+padding:30px;
+
+border-radius:26px;
+
+text-align:center;
+
+background:
+
+linear-gradient(
+
+145deg,
+
+rgba(8,42,120,.92),
+
+rgba(3,18,70,.98));
+
+border:
+
+1px solid rgba(255,255,255,.12);
+
+transition:.40s;
+
+box-shadow:
+
+0 0 20px rgba(0,120,255,.20);
+
+}
+
+.stat-card::before{
 
 content:"";
 
 position:absolute;
 
-top:0;
+top:-120%;
+left:-40%;
 
-left:-120%;
-
-width:45%;
-
-height:100%;
+width:40%;
+height:320%;
 
 background:
 
-rgba(255,255,255,.18);
+rgba(255,255,255,.20);
 
-transform:
+transform:rotate(25deg);
 
-skewX(-25deg);
-
-transition:.8s;
+transition:.7s;
 
 }
 
-.outil-card:hover::after{
+.stat-card:hover::before{
 
 left:150%;
+
+}
+
+.stat-card:hover{
+
+transform:
+
+translateY(-8px);
+
+border-color:
+
+rgba(255,215,0,.35);
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.30),
+
+0 0 40px rgba(0,120,255,.30);
+
+}
+
+.stat-card i{
+
+font-size:44px;
+
+color:var(--or);
+
+margin-bottom:18px;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+.stat-card h3{
+
+font-size:40px;
+
+color:white;
+
+margin-bottom:10px;
+
+font-weight:700;
+
+}
+
+.stat-card p{
+
+font-size:16px;
+
+color:#dce6ff;
+
+}
+
+/*=========================
+ ANIMATION
+=========================*/
+
+@keyframes compteurPulse{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+}
+
+}
+
+.stat-card h3{
+
+animation:
+
+compteurPulse 3s infinite;
 
 }
 
@@ -2622,148 +2538,44 @@ grid-template-columns:1fr;
 
 }
 
-.outil-card{
+.stats-grid{
 
-padding:24px;
+grid-template-columns:1fr;
 
 }
 
-.outil-card i{
+.outil-card{
 
-font-size:46px;
+padding:25px;
+
+}
+
+.stat-card{
+
+padding:25px;
 
 }
 
 .outil-card h3{
 
-font-size:21px;
+font-size:20px;
 
 }
 
+.stat-card h3{
+
+font-size:32px;
+
 }
+
+       }
 
 /*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
+ CSS PREMIUM V6.0
  PARTIE 7/10
- FOOTER PREMIUM + LANGUES
+ FOOTER + BOUTON TOP + NOTIFICATION + LOADER
 ==================================================*/
-
-/*=========================
- BARRE DE LANGUE
-=========================*/
-
-.language-bar{
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-gap:15px;
-
-margin:40px auto;
-
-padding:18px 25px;
-
-width:min(500px,95%);
-
-background:
-
-rgba(255,255,255,.08);
-
-backdrop-filter:blur(18px);
-
--webkit-backdrop-filter:blur(18px);
-
-border:1px solid rgba(255,215,0,.20);
-
-border-radius:50px;
-
-box-shadow:
-
-0 0 25px rgba(0,120,255,.20);
-
-transition:.4s;
-
-}
-
-.language-bar:hover{
-
-transform:
-
-translateY(-4px);
-
-box-shadow:
-
-0 0 20px rgba(255,215,0,.35),
-
-0 0 45px rgba(0,160,255,.35);
-
-}
-
-.language-bar label{
-
-font-size:18px;
-
-font-weight:700;
-
-color:var(--or);
-
-display:flex;
-
-align-items:center;
-
-gap:8px;
-
-}
-
-.language-bar label i{
-
-animation:rotationLangue 8s linear infinite;
-
-}
-
-@keyframes rotationLangue{
-
-0%{
-
-transform:rotate(0deg);
-
-}
-
-100%{
-
-transform:rotate(360deg);
-
-}
-
-}
-
-.language-bar select{
-
-width:220px;
-
-background:
-
-rgba(255,255,255,.10);
-
-color:white;
-
-border-radius:18px;
-
-cursor:pointer;
-
-}
-
-.language-bar option{
-
-background:#06245e;
-
-color:white;
-
-}
 
 /*=========================
  FOOTER
@@ -2771,9 +2583,9 @@ color:white;
 
 .footer{
 
-margin-top:60px;
+margin-top:70px;
 
-padding-bottom:40px;
+padding:40px 20px;
 
 }
 
@@ -2783,30 +2595,28 @@ position:relative;
 
 overflow:hidden;
 
+padding:45px 30px;
+
 text-align:center;
 
-padding:45px;
+border-radius:30px;
 
 background:
 
 linear-gradient(
 145deg,
-rgba(7,35,105,.94),
-rgba(2,15,58,.98));
+rgba(5,25,90,.96),
+rgba(2,15,60,.99));
 
-border-radius:30px;
+border:
 
-border:1px solid rgba(255,215,0,.18);
+1px solid rgba(255,255,255,.12);
 
 box-shadow:
 
-0 0 30px rgba(0,140,255,.25);
+0 0 30px rgba(0,120,255,.25);
 
 }
-
-/*=========================
- HALO
-=========================*/
 
 .footer-content::before{
 
@@ -2830,19 +2640,19 @@ rgba(255,215,0,.08),
 
 transparent,
 
-rgba(0,170,255,.10),
+rgba(0,170,255,.08),
 
 transparent);
 
 animation:
 
-footerHalo 20s linear infinite;
+footerRotation 22s linear infinite;
 
 pointer-events:none;
 
 }
 
-@keyframes footerHalo{
+@keyframes footerRotation{
 
 from{
 
@@ -2866,13 +2676,9 @@ z-index:2;
 
 }
 
-/*=========================
- LOGO
-=========================*/
+.footer-logo img{
 
-.footer-logo{
-
-width:110px;
+width:100px;
 
 margin:auto;
 
@@ -2880,113 +2686,307 @@ margin-bottom:20px;
 
 filter:
 
-drop-shadow(0 0 12px rgba(255,215,0,.55))
-
-drop-shadow(0 0 30px rgba(0,170,255,.30));
-
-animation:
-
-logoFooter 4s ease-in-out infinite;
+drop-shadow(0 0 18px rgba(255,215,0,.45));
 
 }
 
-@keyframes logoFooter{
-
-0%,100%{
-
-transform:scale(1);
-
-}
-
-50%{
-
-transform:scale(1.08);
-
-}
-
-}
-
-/*=========================
- TITRES
-=========================*/
-
-.footer-content h2{
-
-font-size:30px;
+.footer h2{
 
 color:var(--or);
 
-margin-bottom:15px;
-
-text-shadow:
-
-0 0 15px rgba(255,215,0,.45);
+margin-bottom:10px;
 
 }
 
-.footer-content p{
+.footer h3{
 
-font-size:17px;
+color:white;
 
-line-height:1.9;
+margin-bottom:15px;
 
-color:#dbe8ff;
+}
 
-margin-top:8px;
+.footer p{
+
+color:#dce6ff;
+
+line-height:1.8;
+
+margin:10px 0;
+
+}
+
+.footer hr{
+
+margin:30px 0;
+
+border:none;
+
+height:1px;
+
+background:
+
+rgba(255,255,255,.15);
 
 }
 
 /*=========================
- SEPARATEUR
+ LIENS
 =========================*/
 
-.footer-content hr{
+.footer-links{
 
-margin:28px auto;
+display:flex;
 
-width:70%;
+flex-wrap:wrap;
 
-border:none;
+justify-content:center;
 
-height:2px;
+gap:18px;
+
+margin:25px 0;
+
+}
+
+.footer-links a{
+
+padding:12px 18px;
+
+border-radius:18px;
+
+background:
+
+rgba(255,255,255,.08);
+
+transition:.35s;
+
+}
+
+.footer-links a:hover{
 
 background:
 
 linear-gradient(
+135deg,
+#FFD700,
+#ffb300);
 
-90deg,
+color:#041c5c;
 
-transparent,
+transform:
 
-var(--or),
-
-transparent);
+translateY(-4px);
 
 }
 
 /*=========================
- NOM CREATEUR
+ BOUTON RETOUR HAUT
 =========================*/
 
-.footer-content strong{
+.btn-top{
 
-color:var(--or);
+position:fixed;
+
+right:25px;
+
+bottom:25px;
+
+width:60px;
+
+height:60px;
+
+border:none;
+
+border-radius:50%;
+
+background:
+
+linear-gradient(
+135deg,
+#FFD700,
+#ffb300);
+
+color:#041c5c;
+
+font-size:24px;
+
+cursor:pointer;
+
+display:none;
+
+z-index:999;
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.45);
+
+transition:.35s;
+
+}
+
+.btn-top:hover{
+
+transform:
+
+scale(1.12);
+
+}
+
+/*=========================
+ NOTIFICATION
+=========================*/
+
+.notification{
+
+position:fixed;
+
+top:25px;
+
+right:25px;
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:16px 22px;
+
+border-radius:18px;
+
+background:
+
+linear-gradient(
+135deg,
+#00c853,
+#009688);
+
+color:white;
+
+font-weight:600;
+
+box-shadow:
+
+0 0 20px rgba(0,255,120,.35);
+
+transform:
+
+translateX(420px);
+
+opacity:0;
+
+transition:.45s;
+
+z-index:2000;
+
+}
+
+.notification.show{
+
+transform:
+
+translateX(0);
+
+opacity:1;
+
+}
+
+.notification i{
+
+font-size:22px;
+
+}
+
+/*=========================
+ ECRAN CHARGEMENT
+=========================*/
+
+.loading-screen{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+background:
+
+linear-gradient(
+180deg,
+#03123d,
+#01081e);
+
+z-index:99999;
+
+transition:.5s;
+
+}
+
+.loading-screen.hide{
+
+opacity:0;
+
+visibility:hidden;
+
+}
+
+.loader{
+
+width:75px;
+
+height:75px;
+
+border-radius:50%;
+
+border:7px solid rgba(255,255,255,.15);
+
+border-top:
+
+7px solid #FFD700;
+
+animation:
+
+rotationLoader 1s linear infinite;
+
+margin-bottom:20px;
+
+}
+
+@keyframes rotationLoader{
+
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.loading-screen p{
 
 font-size:18px;
 
-}
+color:white;
 
-/*=========================
- COPYRIGHT
-=========================*/
-
-.footer-content p:last-child{
-
-margin-top:20px;
-
-font-size:15px;
-
-opacity:.85;
+letter-spacing:1px;
 
 }
 
@@ -2996,37 +2996,45 @@ opacity:.85;
 
 @media(max-width:768px){
 
-.language-bar{
+.footer-links{
 
 flex-direction:column;
 
-border-radius:24px;
-
-padding:20px;
-
 }
 
-.language-bar select{
+.footer-links a{
 
 width:100%;
 
 }
 
-.footer-content{
+.btn-top{
 
-padding:28px;
+width:52px;
+
+height:52px;
+
+right:18px;
+
+bottom:18px;
 
 }
 
-.footer-content h2{
+.notification{
 
-font-size:24px;
+left:10px;
+
+right:10px;
+
+top:15px;
+
+transform:translateY(-120px);
 
 }
 
-.footer-logo{
+.notification.show{
 
-width:85px;
+transform:translateY(0);
 
 }
 
@@ -3034,185 +3042,176 @@ width:85px;
 
 /*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
+ CSS PREMIUM V6.0
  PARTIE 8/10
- ANIMATIONS IA PREMIUM
+ THEMES + ANIMATIONS + EFFETS PREMIUM
 ==================================================*/
 
 /*=========================
- TRANSITIONS GLOBALES
+ THEME CLAIR
 =========================*/
 
-.hero,
-.search-card,
-.livre,
+body.light-theme{
+
+--fond1:#eef5ff;
+--fond2:#dfe9ff;
+
+background:
+
+linear-gradient(
+180deg,
+var(--fond1),
+var(--fond2));
+
+color:#08275d;
+
+}
+
+body.light-theme
+.top-header,
+body.light-theme
+.toolbar,
+body.light-theme
+.category-card,
+body.light-theme
+.article-card,
+body.light-theme
 .assistant-card,
+body.light-theme
 .info-card,
+body.light-theme
 .outil-card,
+body.light-theme
 .stat-card,
-.footer-content,
-button,
-input,
-textarea{
+body.light-theme
+.footer-content{
 
-transition:
-all .45s ease;
+background:
+
+rgba(255,255,255,.95);
+
+color:#08275d;
+
+border:
+
+1px solid rgba(0,60,160,.12);
+
+}
+
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3{
+
+color:#083f98;
+
+}
+
+body.light-theme p{
+
+color:#374b73;
+
+}
+
+body.light-theme
+.article-content{
+
+background:white;
+
+color:#222;
+
+}
+
+body.light-theme input,
+body.light-theme textarea,
+body.light-theme select{
+
+background:white;
+
+color:#222;
 
 }
 
 /*=========================
- ANIMATION FLOTTANTE
+ THEME SOMBRE
 =========================*/
 
-@keyframes flotter{
+body.dark-theme{
 
-0%,100%{
+background:
 
-transform:translateY(0);
+radial-gradient(circle,
+#103d96,
+#041c5c,
+#01091d);
 
-}
-
-50%{
-
-transform:translateY(-6px);
-
-}
-
-}
-
-.hero{
-
-animation:
-
-flotter 8s ease-in-out infinite;
+color:white;
 
 }
 
 /*=========================
- PULSE LUMINEUX
+ HALO GLOBAL
 =========================*/
 
-@keyframes pulseGold{
-
-0%{
-
-box-shadow:
-
-0 0 10px rgba(255,215,0,.15);
-
-}
-
-50%{
-
-box-shadow:
-
-0 0 28px rgba(255,215,0,.55);
-
-}
-
-100%{
-
-box-shadow:
-
-0 0 10px rgba(255,215,0,.15);
-
-}
-
-}
-
-button{
-
-animation:
-
-pulseGold 3s infinite;
-
-}
-
-/*=========================
- REFLET PREMIUM
-=========================*/
-
-button{
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-button::after{
+body::after{
 
 content:"";
 
-position:absolute;
+position:fixed;
 
-top:-100%;
+top:0;
+left:0;
 
-left:-45%;
+width:100%;
+height:100%;
 
-width:35%;
-
-height:300%;
-
-background:
-
-rgba(255,255,255,.40);
-
-transform:
-
-rotate(25deg);
-
-transition:.7s;
-
-}
-
-button:hover::after{
-
-left:160%;
-
-}
-
-/*=========================
- SURVOL
-=========================*/
-
-button:hover{
-
-transform:
-
-translateY(-6px)
-
-scale(1.05);
-
-}
-
-/*=========================
- INPUTS
-=========================*/
-
-input:hover,
-textarea:hover{
+pointer-events:none;
 
 background:
 
-rgba(255,255,255,.12);
+radial-gradient(circle at center,
+rgba(255,215,0,.05),
+transparent 60%);
+
+animation:
+
+haloGlobal 10s ease infinite;
 
 }
 
-input:focus,
-textarea:focus{
+@keyframes haloGlobal{
 
-transform:
+0%,100%{
 
-scale(1.015);
+opacity:.25;
+
+}
+
+50%{
+
+opacity:.6;
+
+}
 
 }
 
 /*=========================
- APPARITION
+ ANIMATION CARTES
 =========================*/
 
-@keyframes fadeUp{
+.category-card,
+.article-card,
+.info-card,
+.outil-card,
+.stat-card,
+.assistant-card{
+
+animation:
+
+fadeCard .8s ease both;
+
+}
+
+@keyframes fadeCard{
 
 from{
 
@@ -3236,933 +3235,91 @@ translateY(0);
 
 }
 
-.hero,
-.search-section,
-.livre-section,
-.assistant-section,
-.info-section,
-.outils-section,
-.statistiques-section,
-.footer{
-
-animation:
-
-fadeUp .8s ease;
-
-}
-
 /*=========================
- HALO DES CARTES
+ SURVOL PREMIUM
 =========================*/
 
-.hero:hover,
-.search-card:hover,
-.livre:hover,
-.assistant-card:hover,
-.info-card:hover,
+.category-card:hover,
+.outil-card:hover,
 .stat-card:hover,
-.outil-card:hover{
-
-box-shadow:
-
-0 0 22px rgba(255,215,0,.35),
-
-0 0 55px rgba(0,160,255,.40);
-
-}
-
-/*=========================
- ICÔNES
-=========================*/
-
-i{
-
-transition:.4s;
-
-}
-
-button:hover i{
-
-transform:
-
-rotate(-10deg)
-
-scale(1.20);
-
-}
-
-/*=========================
- EFFET TITRES
-=========================*/
-
-h1,
-h2{
-
-position:relative;
-
-}
-
-h1::after,
-h2::after{
-
-content:"";
-
-display:block;
-
-width:0;
-
-height:3px;
-
-margin:auto;
-
-margin-top:10px;
-
-background:
-
-linear-gradient(
-90deg,
-transparent,
-#FFD700,
-transparent);
-
-transition:.5s;
-
-}
-
-.hero:hover h1::after,
-.search-card:hover h2::after,
-.assistant-card:hover h2::after,
-.outils-section:hover h2::after,
-.statistiques-section:hover h2::after{
-
-width:85%;
-
-}
-
-/*=========================
- EFFET LIVRE
-=========================*/
-
-.page-livre{
-
-transform-origin:left center;
-
-}
-
-.livre:hover .page-livre{
-
-animation:
-
-tournerPage .8s ease;
-
-}
-
-@keyframes tournerPage{
-
-0%{
-
-transform:
-
-rotateY(0);
-
-}
-
-50%{
-
-transform:
-
-rotateY(-8deg);
-
-}
-
-100%{
-
-transform:
-
-rotateY(0);
-
-}
-
-}
-
-/*=========================
- TEXTE IA
-=========================*/
-
-#reponseIA{
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-#reponseIA::before{
-
-content:"";
-
-position:absolute;
-
-top:0;
-
-left:-100%;
-
-width:100%;
-
-height:100%;
-
-background:
-
-linear-gradient(
-
-90deg,
-
-transparent,
-
-rgba(255,255,255,.10),
-
-transparent);
-
-animation:
-
-scanIA 5s linear infinite;
-
-}
-
-@keyframes scanIA{
-
-0%{
-
-left:-100%;
-
-}
-
-100%{
-
-left:120%;
-
-}
-
-}
-
-/*=========================
- CARDS
-=========================*/
-
-.stat-card:hover h3{
-
-transform:scale(1.10);
-
-color:#FFD700;
-
-}
-
-.outil-card:hover h3{
-
-letter-spacing:1px;
-
-}
-
-.info-box:hover p{
-
-color:#FFD700;
-
-}
-
-/*=========================
- FIN PARTIE 8
-=========================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
- PARTIE 9/10
- RESPONSIVE PREMIUM 2026
-===================================================*/
-
-/*=========================
- VARIABLES
-=========================*/
-
-:root{
-
---mobile:768px;
---small-mobile:480px;
---tablet:1024px;
-
-}
-
-/*=========================
- IMAGES
-=========================*/
-
-img{
-
-max-width:100%;
-height:auto;
-display:block;
-
-}
-
-/*=========================
- LIVRE
-=========================*/
-
-.livre{
-
-width:100%;
-
-}
-
-.page-livre{
-
-overflow-wrap:break-word;
-word-break:break-word;
-
-}
-
-/*=========================
- TABLETTES
-=========================*/
-
-@media (max-width:1024px){
-
-.hero h1{
-
-font-size:34px;
-
-}
-
-.hero p{
-
-font-size:18px;
-
-}
-
-.search-box{
-
-flex-wrap:wrap;
-
-}
-
-.search-box input{
-
-width:100%;
-
-}
-
-.search-box button{
-
-width:60px;
-height:60px;
-
-}
-
-.livre-actions{
-
-display:grid;
-
-grid-template-columns:
-repeat(2,1fr);
-
-gap:15px;
-
-}
-
-.outils-grid{
-
-grid-template-columns:
-repeat(2,1fr);
-
-}
-
-.stats-grid{
-
-grid-template-columns:
-repeat(2,1fr);
-
-}
-
-.info-grid{
-
-grid-template-columns:
-repeat(2,1fr);
-
-}
-
-}
-
-/*=========================
- SMARTPHONE
-=========================*/
-
-@media (max-width:768px){
-
-body{
-
-font-size:15px;
-
-}
-
-main{
-
-width:96%;
-padding:15px;
-
-}
-
-.hero{
-
-padding:30px 15px;
-
-}
-
-.hero img{
-
-width:70px;
-
-}
-
-.hero h1{
-
-font-size:28px;
-
-}
-
-.hero p{
-
-font-size:16px;
-
-line-height:1.7;
-
-}
-
-.search-box{
-
-display:flex;
-
-flex-direction:column;
-
-gap:12px;
-
-}
-
-.search-box input{
-
-width:100%;
-
-padding:16px;
-
-}
-
-.search-box button{
-
-width:100%;
-height:56px;
-
-border-radius:14px;
-
-}
-
-.recherche-rapide{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:10px;
-
-justify-content:center;
-
-}
-
-.recherche-rapide button{
-
-flex:1;
-
-min-width:120px;
-
-}
-
-.livre{
-
-padding:18px;
-
-}
-
-.page-livre{
-
-padding:18px;
-
-font-size:16px;
-
-line-height:1.9;
-
-}
-
-.livre-header h2{
-
-font-size:22px;
-
-}
-
-.livre-actions{
-
-display:grid;
-
-grid-template-columns:1fr;
-
-gap:12px;
-
-}
-
-.assistant-actions{
-
-display:grid;
-
-grid-template-columns:1fr;
-
-gap:12px;
-
-}
-
-textarea{
-
-width:100%;
-
-}
-
-.info-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.outils-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.stats-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.footer{
-
-text-align:center;
-
-}
-
-.footer-logo{
-
-margin:auto;
-
-}
-
-}
-
-/*=========================
- PETITS SMARTPHONES
-=========================*/
-
-@media (max-width:480px){
-
-.hero h1{
-
-font-size:24px;
-
-}
-
-.hero p{
-
-font-size:15px;
-
-}
-
-button{
-
-font-size:15px;
-
-}
-
-.page-livre{
-
-font-size:15px;
-
-}
-
-#reponseIA{
-
-font-size:15px;
-
-line-height:1.8;
-
-}
-
-.info-box h4{
-
-font-size:16px;
-
-}
-
-.info-box p{
-
-font-size:14px;
-
-}
-
-.stat-card h3{
-
-font-size:30px;
-
-}
-
-.stat-card p{
-
-font-size:14px;
-
-}
-
-}
-
-/*=========================
- GRANDS ÉCRANS
-=========================*/
-
-@media (min-width:1400px){
-
-main{
-
-max-width:1400px;
-
-}
-
-.hero h1{
-
-font-size:52px;
-
-}
-
-.hero p{
-
-font-size:22px;
-
-}
-
-.page-livre{
-
-font-size:20px;
-
-}
-
-}
-
-/*=========================
- MODE PAYSAGE
-=========================*/
-
-@media (orientation:landscape)
-and
-(max-width:900px){
-
-.hero{
-
-padding:20px;
-
-}
-
-.search-box{
-
-flex-direction:row;
-
-}
-
-.search-box input{
-
-flex:1;
-
-}
-
-}
-
-/*=========================
- ACCESSIBILITÉ
-=========================*/
-
-button,
-input,
-textarea,
-select{
-
-min-height:48px;
-
-}
-
-button:focus,
-input:focus,
-textarea:focus,
-select:focus{
-
-outline:2px solid #FFD700;
-
-outline-offset:3px;
-
-}
-
-/*=========================
- OPTIMISATION ANIMATIONS
-=========================*/
-
-@media (prefers-reduced-motion:reduce){
-
-*{
-
-animation:none!important;
-
-transition:none!important;
-
-scroll-behavior:auto!important;
-
-}
-
-}
-
-/*=========================
- FIN PARTIE 9
-=========================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V5.0
- PARTIE 10/10
- FINITIONS IA • FUTUR 2026
-==================================================*/
-
-/*=========================
- VARIABLES LUMIÈRES
-=========================*/
-
-:root{
-
---neon-blue:#00cfff;
---neon-gold:#FFD700;
---neon-green:#00ff99;
---shadow-blue:0 0 35px rgba(0,180,255,.45);
---shadow-gold:0 0 30px rgba(255,215,0,.45);
-
-}
-
-/*=========================
- FOND VIVANT
-=========================*/
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-pointer-events:none;
-
-background:
-
-radial-gradient(circle at 20% 20%,
-rgba(255,215,0,.06),
-transparent 25%),
-
-radial-gradient(circle at 80% 35%,
-rgba(0,170,255,.08),
-transparent 30%),
-
-radial-gradient(circle at 50% 80%,
-rgba(0,255,170,.05),
-transparent 28%);
-
-animation:fondIA 18s linear infinite;
-
-z-index:-1;
-
-}
-
-@keyframes fondIA{
-
-0%{
-
-transform:translate(0,0) scale(1);
-
-}
-
-50%{
-
-transform:translate(-20px,-15px) scale(1.08);
-
-}
-
-100%{
-
-transform:translate(0,0) scale(1);
-
-}
-
-}
-
-/*=========================
- CARTES PREMIUM
-=========================*/
-
-.hero,
-.search-card,
-.livre,
-.assistant-card,
-.info-card,
-.outil-card,
-.stat-card{
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.hero::before,
-.search-card::before,
-.livre::before,
-.assistant-card::before,
-.info-card::before,
-.outil-card::before,
-.stat-card::before{
-
-content:"";
-
-position:absolute;
-
-top:-150%;
-left:-40%;
-
-width:40%;
-height:400%;
-
-background:
-
-linear-gradient(
-
-90deg,
-
-transparent,
-
-rgba(255,255,255,.18),
-
-transparent
-
-);
-
-transform:rotate(22deg);
-
-transition:.8s;
-
-}
-
-.hero:hover::before,
-.search-card:hover::before,
-.livre:hover::before,
-.assistant-card:hover::before,
-.info-card:hover::before,
-.outil-card:hover::before,
-.stat-card:hover::before{
-
-left:170%;
-
-}
-
-/*=========================
- BOUTONS PREMIUM
-=========================*/
-
-button{
-
-position:relative;
-
-overflow:hidden;
-
-font-weight:700;
-
-letter-spacing:.5px;
-
-}
-
-button:hover{
-
-box-shadow:
-
-var(--shadow-gold),
-
-var(--shadow-blue);
-
-}
-
-button:active{
-
-transform:scale(.96);
-
-}
-
-/*=========================
- HALO DES TITRES
-=========================*/
-
-.hero h1,
-.search-card h2,
-.assistant-card h2,
-.outils-section h2,
-.statistiques-section h2{
-
-animation:titrePulse 4s ease infinite;
-
-}
-
-@keyframes titrePulse{
-
-0%,100%{
-
-text-shadow:
-
-0 0 10px rgba(255,215,0,.4);
-
-}
-
-50%{
-
-text-shadow:
-
-0 0 28px rgba(255,215,0,.9),
-
-0 0 45px rgba(0,170,255,.35);
-
-}
-
-}
-
-/*=========================
- LOGO
-=========================*/
-
-.hero img,
-.footer-logo{
-
-animation:logoPulse 6s ease-in-out infinite;
+.info-box:hover{
 
 filter:
 
-drop-shadow(0 0 12px gold);
+brightness(1.05);
+
+}
+
+/*=========================
+ ICONES
+=========================*/
+
+.fa-solid{
+
+transition:.35s;
+
+}
+
+button:hover .fa-solid{
+
+transform:
+
+scale(1.18)
+rotate(-8deg);
+
+}
+
+/*=========================
+ BADGES
+=========================*/
+
+.badge{
+
+animation:
+
+badgePulse 2.5s infinite;
+
+}
+
+@keyframes badgePulse{
+
+0%,100%{
+
+box-shadow:
+
+0 0 8px rgba(255,215,0,.25);
+
+}
+
+50%{
+
+box-shadow:
+
+0 0 22px rgba(255,215,0,.55);
+
+}
+
+}
+
+/*=========================
+ SCROLL DOUX
+=========================*/
+
+section{
+
+scroll-margin-top:90px;
+
+}
+
+/*=========================
+ IMAGE LOGO
+=========================*/
+
+.logo{
+
+animation:
+
+logoPulse 3s ease infinite;
 
 }
 
@@ -4176,157 +3333,431 @@ transform:scale(1);
 
 50%{
 
-transform:scale(1.08) rotate(4deg);
+transform:scale(1.08);
 
 }
 
 }
 
 /*=========================
- PAGE LIVRE
+ TRANSITIONS
 =========================*/
 
-.page-livre{
+*{
 
-position:relative;
+transition:
 
-}
-
-.page-livre::after{
-
-content:"";
-
-position:absolute;
-
-left:0;
-top:0;
-
-width:5px;
-height:100%;
-
-background:
-
-linear-gradient(
-
-180deg,
-
-#FFD700,
-
-#00cfff,
-
-#FFD700
-
-);
-
-border-radius:30px;
-
-animation:barreIA 5s linear infinite;
+background .35s,
+color .35s,
+border .35s,
+box-shadow .35s,
+transform .35s;
 
 }
 
-@keyframes barreIA{
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V6.0
+ PARTIE 9/10
+ RESPONSIVE PREMIUM + IMPRESSION + ACCESSIBILITÉ
+==================================================*/
+
+/*=========================
+ TABLETTES
+=========================*/
+
+@media screen and (max-width:1024px){
+
+.container{
+
+width:96%;
+
+margin:auto;
+
+padding:15px;
+
+}
+
+.top-header{
+
+flex-direction:column;
+
+text-align:center;
+
+gap:20px;
+
+}
+
+.datetime-box{
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+}
+
+.toolbar{
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+.toolbar-left,
+.toolbar-right{
+
+width:100%;
+
+justify-content:center;
+
+}
+
+.search-box{
+
+flex-direction:column;
+
+}
+
+.search-box input,
+.search-box button{
+
+width:100%;
+
+}
+
+.categories-grid,
+.outils-grid,
+.stats-grid,
+.info-grid{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+}
+
+/*=========================
+ SMARTPHONES
+=========================*/
+
+@media screen and (max-width:768px){
+
+.container{
+
+padding:12px;
+
+}
+
+.top-header{
+
+padding:20px;
+
+}
+
+.logo{
+
+width:80px;
+
+}
+
+.title-box h1{
+
+font-size:28px;
+
+}
+
+.title-box h2{
+
+font-size:18px;
+
+}
+
+.title-box h3{
+
+font-size:16px;
+
+}
+
+.datetime-box{
+
+display:grid;
+
+grid-template-columns:
+1fr;
+
+gap:10px;
+
+}
+
+.toolbar-right{
+
+display:grid;
+
+grid-template-columns:
+repeat(3,1fr);
+
+gap:10px;
+
+}
+
+.tool-btn{
+
+width:100%;
+
+}
+
+.categories-grid,
+.outils-grid,
+.stats-grid,
+.info-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.article-actions,
+.assistant-actions{
+
+flex-direction:column;
+
+}
+
+.article-actions button,
+.assistant-actions button{
+
+width:100%;
+
+}
+
+.footer-links{
+
+flex-direction:column;
+
+}
+
+.footer-links a{
+
+width:100%;
+
+text-align:center;
+
+}
+
+}
+
+/*=========================
+ PETITS TELEPHONES
+=========================*/
+
+@media screen and (max-width:480px){
+
+.title-box h1{
+
+font-size:22px;
+
+}
+
+.title-box h2{
+
+font-size:16px;
+
+}
+
+.title-box p{
+
+font-size:14px;
+
+}
+
+.search-box input{
+
+font-size:15px;
+
+}
+
+.article-content{
+
+font-size:15px;
+
+line-height:1.8;
+
+padding:20px;
+
+}
+
+.stat-card h3{
+
+font-size:28px;
+
+}
+
+.info-box p{
+
+font-size:17px;
+
+}
+
+}
+
+/*=========================
+ ACCESSIBILITE
+=========================*/
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+a:focus{
+
+outline:3px solid #FFD700;
+
+outline-offset:3px;
+
+}
+
+button:disabled{
+
+opacity:.5;
+
+cursor:not-allowed;
+
+}
+
+::placeholder{
+
+color:#b8c8ea;
+
+opacity:1;
+
+}
+
+/*=========================
+ IMPRESSION
+=========================*/
+
+@media print{
+
+body{
+
+background:white !important;
+
+color:black !important;
+
+}
+
+.top-header,
+.toolbar,
+.footer,
+.btn-top,
+.notification,
+.loading-screen,
+.assistant-section,
+.ia-tools,
+.outils-section{
+
+display:none !important;
+
+}
+
+.article-card{
+
+box-shadow:none;
+
+border:1px solid #000;
+
+background:white;
+
+color:black;
+
+}
+
+.article-content{
+
+background:white;
+
+color:black;
+
+}
+
+ }
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V6.0
+ PARTIE 10/10
+ FINITIONS + ANIMATIONS + OPTIMISATIONS
+==================================================*/
+
+/*=========================
+ APPARITION PROGRESSIVE
+=========================*/
+
+.fade-in{
+
+animation:
+fadeIn .7s ease both;
+
+}
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+/*=========================
+ ZOOM
+=========================*/
+
+.zoom-in{
+
+animation:
+zoomIn .35s ease;
+
+}
+
+@keyframes zoomIn{
 
 0%{
 
-filter:hue-rotate(0deg);
+transform:scale(.92);
 
 }
 
 100%{
 
-filter:hue-rotate(360deg);
+transform:scale(1);
 
 }
 
 }
 
 /*=========================
- IA
+ CLIGNOTEMENT
 =========================*/
 
-#reponseIA{
+.blink{
 
-animation:iaGlow 5s infinite;
-
-}
-
-@keyframes iaGlow{
-
-0%,100%{
-
-box-shadow:
-
-0 0 15px rgba(255,215,0,.15);
+animation:
+blink 1.2s infinite;
 
 }
 
-50%{
-
-box-shadow:
-
-0 0 35px rgba(0,255,170,.35);
-
-}
-
-}
-
-/*=========================
- STATISTIQUES
-=========================*/
-
-.stat-card{
-
-cursor:pointer;
-
-}
-
-.stat-card:hover{
-
-transform:
-
-translateY(-10px)
-
-scale(1.04);
-
-}
-
-/*=========================
- OUTILS
-=========================*/
-
-.outil-card:hover{
-
-transform:
-
-translateY(-12px)
-
-rotateX(6deg)
-
-scale(1.04);
-
-}
-
-/*=========================
- SCROLL
-=========================*/
-
-html{
-
-scroll-behavior:smooth;
-
-}
-
-/*=========================
- CLIGNOTEMENT IA
-=========================*/
-
-.fa-robot{
-
-animation:robotBlink 2.5s infinite;
-
-}
-
-@keyframes robotBlink{
+@keyframes blink{
 
 0%,100%{
 
@@ -4336,23 +3767,51 @@ opacity:1;
 
 50%{
 
-opacity:.55;
+opacity:.35;
 
 }
 
 }
 
 /*=========================
- EFFET MICROPHONE
+ ROTATION
 =========================*/
 
-.fa-microphone{
+.rotate{
 
-animation:microMove 1.8s ease-in-out infinite;
+animation:
+rotate360 2s linear infinite;
 
 }
 
-@keyframes microMove{
+@keyframes rotate360{
+
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+/*=========================
+ PULSE
+=========================*/
+
+.pulse{
+
+animation:
+pulse 2s infinite;
+
+}
+
+@keyframes pulse{
 
 0%,100%{
 
@@ -4362,77 +3821,192 @@ transform:scale(1);
 
 50%{
 
-transform:scale(1.18);
+transform:scale(1.06);
 
 }
 
 }
 
 /*=========================
- FOOTER
+ EFFET GLASS PREMIUM
 =========================*/
 
-.footer{
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.footer::before{
-
-content:"";
-
-position:absolute;
-
-top:0;
-left:-100%;
-
-width:100%;
-height:2px;
+.glass{
 
 background:
 
-linear-gradient(
-90deg,
-transparent,
-gold,
-transparent);
+rgba(255,255,255,.08);
 
-animation:footerLight 6s linear infinite;
+backdrop-filter:
 
-}
+blur(18px);
 
-@keyframes footerLight{
+-webkit-backdrop-filter:
 
-100%{
+blur(18px);
 
-left:120%;
+border:
 
-}
+1px solid rgba(255,255,255,.15);
 
 }
 
 /*=========================
- FINITIONS
+ OMBRES PREMIUM
 =========================*/
+
+.shadow-blue{
+
+box-shadow:
+
+0 0 18px rgba(0,120,255,.35);
+
+}
+
+.shadow-gold{
+
+box-shadow:
+
+0 0 18px rgba(255,215,0,.40);
+
+}
+
+/*=========================
+ TITRES
+=========================*/
+
+.section-title{
+
+margin-bottom:30px;
+
+text-align:center;
+
+}
+
+.section-title h2{
+
+font-size:34px;
+
+color:var(--or);
+
+margin-bottom:10px;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.35);
+
+}
+
+.section-title h2 i{
+
+margin-right:10px;
+
+}
+
+.section-title p{
+
+max-width:850px;
+
+margin:auto;
+
+color:#dbe7ff;
+
+line-height:1.8;
+
+}
+
+/*=========================
+ LIENS
+=========================*/
+
+a{
+
+transition:.35s;
+
+}
+
+a:hover{
+
+color:var(--or);
+
+}
+
+/*=========================
+ ICÔNES
+=========================*/
+
+i{
+
+user-select:none;
+
+}
+
+/*=========================
+ IMAGES
+=========================*/
+
+img{
+
+user-select:none;
+
+-webkit-user-drag:none;
+
+}
+
+/*=========================
+ TEXTE
+=========================*/
+
+h1,h2,h3,h4,h5{
+
+word-wrap:break-word;
+
+}
+
+p{
+
+word-wrap:break-word;
+
+}
+
+/*=========================
+ PERFORMANCE
+=========================*/
+
+.top-header,
+.toolbar,
+.category-card,
+.article-card,
+.assistant-card,
+.outil-card,
+.stat-card,
+.info-card{
+
+will-change:
+
+transform,
+opacity;
+
+}
+
+/*=========================
+ REDUCTION DES ANIMATIONS
+=========================*/
+
+@media (prefers-reduced-motion:reduce){
 
 *{
 
--webkit-tap-highlight-color:transparent;
+animation:none !important;
+
+transition:none !important;
+
+scroll-behavior:auto !important;
 
 }
-
-button,
-input,
-textarea{
-
-will-change:transform;
 
 }
 
 /*=========================
- FIN CSS PREMIUM V5.0
- InspecteurBot IA RDC
+ FIN CSS PREMIUM V6.0
 =========================*/
