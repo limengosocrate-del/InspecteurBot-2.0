@@ -59,3 +59,49 @@ document.addEventListener("DOMContentLoaded", () => {
     CodeTravail.initialiser();
 
 });
+
+/* =====================================================
+   MÉTHODES D'ACCÈS AUX ARTICLES
+   ===================================================== */
+
+CodeTravail.getTous = function () {
+
+    return this.articles;
+
+};
+
+CodeTravail.getParNumero = function (numero) {
+
+    return this.articles.find(
+
+        article => article.numero === Number(numero)
+
+    ) || null;
+
+};
+
+CodeTravail.getParId = function (id) {
+
+    return this.articles.find(
+
+        article => article.id === id
+
+    ) || null;
+
+};
+
+CodeTravail.getParCategorie = function (categorie) {
+
+    return this.articles.filter(
+
+        article => article.categorie === categorie
+
+    );
+
+};
+
+CodeTravail.nombreArticles = function () {
+
+    return this.articles.length;
+
+};
