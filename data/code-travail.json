@@ -1,1 +1,527 @@
+[
+  {
+    "id": "art001",
+    "numero": 1,
+    "titre": "Champ d'application",
+    "categorie": "Dispositions générales",
+    "motsCles": ["champ d'application", "travail", "employeur", "travailleur"],
+    "contenu": "(Loi n° 16/010 du 15 juillet 2016 modifiant et complétante la Loi n° 015-2002 portant Code du travail)\n\nLe présent code est applicable à tous les travailleurs et à tous les employeurs...",
+    "sanction": null,
+    "questionsIA": [
+      "À qui s’applique ce code du travail ?",
+      "Quels sont les travailleurs exclus ?"
+    ]
+  },
+  {
+    "id": "art002",
+    "numero": 2,
+    "titre": "Droit au travail",
+    "categorie": "Dispositions générales",
+    "motsCles": ["droit au travail", "travail forcé"],
+    "contenu": "Le travail est pour chacun un droit et un devoir. Le travail forcé ou obligatoire est interdit...",
+    "sanction": "Toute violation de l’interdiction du travail forcé peut entraîner des poursuites pénales selon les dispositions du droit congolais.",
+    "questionsIA": [
+      "Le travail forcé est-il autorisé ?",
+      "Quelles sont les conséquences du travail forcé ?"
+    ]
+  },
+  {
+    "id": "art003",
+    "numero": 3,
+    "titre": "Pires formes de travail des enfants",
+    "categorie": "Protection des enfants",
+    "motsCles": ["enfant", "travail", "protection"],
+    "contenu": "Les pires formes de travail des enfants sont interdites par la loi...",
+    "sanction": "Les auteurs peuvent être poursuivis et sanctionnés conformément aux lois sur la protection de l’enfant.",
+    "questionsIA": [
+      "Quelles sont les pires formes de travail des enfants ?",
+      "Quelles sanctions pour exploitation d’enfants ?"
+    ]
+  },
+  {
+    "id": "art004",
+    "numero": 4,
+    "titre": "Comité national de lutte contre les pires formes de travail des enfants",
+    "categorie": "Protection des enfants",
+    "motsCles": ["comité", "enfants"],
+    "contenu": "Il est créé un comité national chargé de lutter contre les pires formes de travail des enfants...",
+    "sanction": null,
+    "questionsIA": [
+      "Quel est le rôle du comité national ?"
+    ]
+  },
+  {
+    "id": "art005",
+    "numero": 5,
+    "titre": "Organisation du Comité national",
+    "categorie": "Protection des enfants",
+    "motsCles": ["organisation", "comité"],
+    "contenu": "L’organisation du comité est fixée par voie réglementaire...",
+    "sanction": null,
+    "questionsIA": [
+      "Comment est organisé le comité national ?"
+    ]
+  },
+  {
+    "id": "art006",
+    "numero": 6,
+    "titre": "Capacité de contracter",
+    "categorie": "Dispositions générales",
+    "motsCles": ["capacité", "contrat"],
+    "contenu": "Toute personne peut contracter dans les conditions prévues par la loi...",
+    "sanction": null,
+    "questionsIA": [
+      "Qui peut signer un contrat de travail ?"
+    ]
+  },
+  {
+    "id": "art007",
+    "numero": 7,
+    "titre": "Définitions",
+    "categorie": "Dispositions générales",
+    "motsCles": ["définitions"],
+    "contenu": "Au sens du présent code, les termes suivants signifient...",
+    "sanction": null,
+    "questionsIA": [
+      "Pourquoi les définitions sont importantes dans ce code ?"
+    ]
+  },
+  {
+    "id": "art008",
+    "numero": 8,
+    "titre": "Formation professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["formation"],
+    "contenu": "La formation professionnelle vise à améliorer les compétences des travailleurs...",
+    "sanction": null,
+    "questionsIA": [
+      "Quel est l’objectif de la formation professionnelle ?"
+    ]
+  },
+  {
+    "id": "art009",
+    "numero": 9,
+    "titre": "Politique de formation professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["politique", "formation"],
+    "contenu": "L’État définit la politique nationale de formation professionnelle...",
+    "sanction": null,
+    "questionsIA": [
+      "Qui définit la politique de formation ?"
+    ]
+  },
+  {
+    "id": "art010",
+    "numero": 10,
+    "titre": "Exécution de la politique de formation",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["formation"],
+    "contenu": "La mise en œuvre de la politique de formation est assurée par les institutions compétentes...",
+    "sanction": null,
+    "questionsIA": [
+      "Qui exécute la politique de formation ?"
+    ]
+  },
 
+  {
+    "id": "art011",
+    "numero": 11,
+    "titre": "Institut National de Préparation Professionnelle",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP", "formation"],
+    "contenu": "Il est institué un établissement public chargé de la formation et du perfectionnement professionnel des travailleurs...",
+    "sanction": null,
+    "questionsIA": [
+      "Qu’est-ce que l’INPP ?",
+      "Quel est son rôle principal ?"
+    ]
+  },
+  {
+    "id": "art012",
+    "numero": 12,
+    "titre": "Mission de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP", "mission"],
+    "contenu": "L’INPP a pour mission d’assurer la formation professionnelle, le perfectionnement et la reconversion des travailleurs...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelle est la mission de l’INPP ?"
+    ]
+  },
+  {
+    "id": "art013",
+    "numero": 13,
+    "titre": "Attributions de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP", "attributions"],
+    "contenu": "L’INPP est chargé notamment de concevoir, organiser et exécuter les programmes de formation professionnelle...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelles sont les attributions de l’INPP ?"
+    ]
+  },
+  {
+    "id": "art014",
+    "numero": 14,
+    "titre": "Tutelle de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP", "tutelle"],
+    "contenu": "L’INPP est placé sous la tutelle du ministère ayant le travail dans ses attributions...",
+    "sanction": null,
+    "questionsIA": [
+      "Qui contrôle l’INPP ?"
+    ]
+  },
+  {
+    "id": "art015",
+    "numero": 15,
+    "titre": "Ressources de l'INPP",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["INPP", "financement"],
+    "contenu": "Les ressources de l’INPP proviennent notamment des subventions de l’État, des cotisations et des prestations...",
+    "sanction": null,
+    "questionsIA": [
+      "Comment l’INPP est-il financé ?"
+    ]
+  },
+  {
+    "id": "art016",
+    "numero": 16,
+    "titre": "Recouvrement des cotisations",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["cotisations", "INPP"],
+    "contenu": "Les cotisations destinées à la formation professionnelle sont recouvrées selon les modalités fixées par la réglementation...",
+    "sanction": "Le non-paiement des cotisations peut entraîner des pénalités financières et poursuites administratives.",
+    "questionsIA": [
+      "Que se passe-t-il en cas de non-paiement des cotisations ?"
+    ]
+  },
+  {
+    "id": "art017",
+    "numero": 17,
+    "titre": "Maintien des dispositions antérieures",
+    "categorie": "Formation professionnelle",
+    "motsCles": ["dispositions", "transition"],
+    "contenu": "Les dispositions antérieures non contraires au présent code demeurent en vigueur...",
+    "sanction": null,
+    "questionsIA": [
+      "Que deviennent les anciennes lois non contraires ?"
+    ]
+  },
+  {
+    "id": "art018",
+    "numero": 18,
+    "titre": "Conditions pour recevoir des apprentis",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprentissage", "conditions"],
+    "contenu": "Nul ne peut recevoir des apprentis s’il ne remplit pas les conditions fixées par la loi...",
+    "sanction": "L’accueil illégal d’apprentis peut entraîner des sanctions administratives et fermeture de l’établissement.",
+    "questionsIA": [
+      "Qui peut former un apprenti ?"
+    ]
+  },
+  {
+    "id": "art019",
+    "numero": 19,
+    "titre": "Forme du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["contrat", "apprentissage"],
+    "contenu": "Le contrat d’apprentissage doit être établi par écrit et soumis aux autorités compétentes...",
+    "sanction": null,
+    "questionsIA": [
+      "Sous quelle forme doit être le contrat d’apprentissage ?"
+    ]
+  },
+  {
+    "id": "art020",
+    "numero": 20,
+    "titre": "Mentions du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["contrat", "mentions"],
+    "contenu": "Le contrat d’apprentissage doit contenir les informations essentielles relatives aux parties et à la formation...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelles informations doit contenir un contrat d’apprentissage ?"
+    ]
+  },
+
+  {
+    "id": "art021",
+    "numero": 21,
+    "titre": "Visa du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["visa", "ONEM", "contrat"],
+    "contenu": "Le contrat d’apprentissage est soumis au visa de l’autorité compétente (ONEM ou service habilité) avant son exécution...",
+    "sanction": "Tout contrat d’apprentissage non visé peut être considéré comme irrégulier et entraîner son annulation ainsi que des sanctions administratives.",
+    "questionsIA": [
+      "Pourquoi le contrat d’apprentissage doit-il être visé ?",
+      "Que se passe-t-il si le visa n’est pas obtenu ?"
+    ]
+  },
+  {
+    "id": "art022",
+    "numero": 22,
+    "titre": "Conditions du visa",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["visa", "conditions"],
+    "contenu": "Le visa est accordé si le contrat respecte les conditions légales relatives à l’âge, à la formation et aux capacités du maître d’apprentissage...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelles sont les conditions pour obtenir le visa ?"
+    ]
+  },
+  {
+    "id": "art023",
+    "numero": 23,
+    "titre": "Absence ou refus du visa",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["visa", "refus"],
+    "contenu": "En cas de refus du visa, le contrat ne peut produire d’effet juridique et ne peut être exécuté...",
+    "sanction": "L’exécution d’un contrat sans visa peut entraîner des sanctions administratives et pénales selon la réglementation.",
+    "questionsIA": [
+      "Que se passe-t-il si le visa est refusé ?"
+    ]
+  },
+  {
+    "id": "art024",
+    "numero": 24,
+    "titre": "Obligations du maître d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["maître", "obligations"],
+    "contenu": "Le maître d’apprentissage doit assurer une formation correcte, encadrer l’apprenti et respecter les conditions de travail...",
+    "sanction": "Le non-respect des obligations peut entraîner la résiliation du contrat et des sanctions administratives.",
+    "questionsIA": [
+      "Quelles sont les obligations du maître d’apprentissage ?"
+    ]
+  },
+  {
+    "id": "art025",
+    "numero": 25,
+    "titre": "Rémunération de l'apprenti",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprenti", "rémunération"],
+    "contenu": "L’apprenti a droit à une rémunération progressive ou fixée selon les dispositions légales en vigueur...",
+    "sanction": "Le non-paiement de la rémunération expose l’employeur à des sanctions financières.",
+    "questionsIA": [
+      "L’apprenti doit-il être payé ?",
+      "Comment est fixée la rémunération ?"
+    ]
+  },
+  {
+    "id": "art026",
+    "numero": 26,
+    "titre": "Obligations de l'apprenti",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprenti", "obligations"],
+    "contenu": "L’apprenti doit respecter les instructions, suivre la formation et observer la discipline de l’entreprise...",
+    "sanction": "Le non-respect peut entraîner des avertissements ou la résiliation du contrat.",
+    "questionsIA": [
+      "Quelles sont les obligations de l’apprenti ?"
+    ]
+  },
+  {
+    "id": "art027",
+    "numero": 27,
+    "titre": "Engagement après l'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["engagement", "apprentissage"],
+    "contenu": "À la fin de l’apprentissage, des engagements peuvent être pris pour l’embauche selon les besoins de l’entreprise...",
+    "sanction": null,
+    "questionsIA": [
+      "L’employeur doit-il engager l’apprenti après formation ?"
+    ]
+  },
+  {
+    "id": "art028",
+    "numero": 28,
+    "titre": "Suspension du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["suspension", "contrat"],
+    "contenu": "Le contrat peut être suspendu en cas de maladie, accident ou autres causes légales...",
+    "sanction": null,
+    "questionsIA": [
+      "Dans quels cas le contrat peut-il être suspendu ?"
+    ]
+  },
+  {
+    "id": "art029",
+    "numero": 29,
+    "titre": "Fin du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["fin", "contrat"],
+    "contenu": "Le contrat prend fin à l’expiration de la durée prévue ou en cas de réalisation de l’objectif de formation...",
+    "sanction": null,
+    "questionsIA": [
+      "Quand un contrat d’apprentissage prend-il fin ?"
+    ]
+  },
+  {
+    "id": "art030",
+    "numero": 30,
+    "titre": "Résiliation du contrat d'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["résiliation", "contrat"],
+    "contenu": "Le contrat peut être résilié en cas de faute grave, d’inexécution des obligations ou d’accord entre les parties...",
+    "sanction": "La résiliation abusive peut entraîner des dommages et intérêts.",
+    "questionsIA": [
+      "Dans quels cas peut-on résilier un contrat d’apprentissage ?"
+    ]
+  },
+  {
+    "id": "art031",
+    "numero": 31,
+    "titre": "Résiliation du contrat d'apprentissage d'un mineur",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["mineur", "résiliation", "apprentissage"],
+    "contenu": "La résiliation du contrat d’apprentissage concernant un mineur doit tenir compte de son intérêt supérieur et peut nécessiter l’intervention du représentant légal ou de l’autorité compétente...",
+    "sanction": "Toute résiliation abusive portant préjudice au mineur peut entraîner des sanctions civiles et administratives.",
+    "questionsIA": [
+      "Comment protéger un apprenti mineur en cas de résiliation ?"
+    ]
+  },
+  {
+    "id": "art032",
+    "numero": 32,
+    "titre": "Recevabilité de la demande de résiliation",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["résiliation", "demande"],
+    "contenu": "La demande de résiliation du contrat doit être motivée et conforme aux conditions légales pour être recevable...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelles sont les conditions pour qu’une demande de résiliation soit acceptée ?"
+    ]
+  },
+  {
+    "id": "art033",
+    "numero": 33,
+    "titre": "Contrôle de l'apprentissage",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["contrôle", "apprentissage"],
+    "contenu": "Les services compétents assurent le contrôle du déroulement de l’apprentissage afin de garantir le respect des règles...",
+    "sanction": "Tout refus de contrôle ou obstruction peut entraîner des sanctions administratives.",
+    "questionsIA": [
+      "Qui contrôle l’apprentissage ?",
+      "Pourquoi ce contrôle est-il important ?"
+    ]
+  },
+  {
+    "id": "art034",
+    "numero": 34,
+    "titre": "Assimilation des apprentis aux travailleurs",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprentis", "travailleurs"],
+    "contenu": "Les apprentis sont assimilés aux travailleurs pour certaines dispositions relatives à la sécurité et aux conditions de travail...",
+    "sanction": null,
+    "questionsIA": [
+      "Les apprentis ont-ils les mêmes droits que les travailleurs ?"
+    ]
+  },
+  {
+    "id": "art035",
+    "numero": 35,
+    "titre": "Limitation du nombre d'apprentis",
+    "categorie": "Contrat d'apprentissage",
+    "motsCles": ["apprentis", "effectif"],
+    "contenu": "Le nombre d’apprentis pouvant être accueillis dans une entreprise peut être limité selon la capacité de formation...",
+    "sanction": "Le dépassement du quota légal peut entraîner des sanctions administratives.",
+    "questionsIA": [
+      "Pourquoi limiter le nombre d’apprentis ?"
+    ]
+  },
+  {
+    "id": "art036",
+    "numero": 36,
+    "titre": "Contrat de travail",
+    "categorie": "Contrat de travail",
+    "motsCles": ["contrat", "travail"],
+    "contenu": "Le contrat de travail est une convention par laquelle une personne s’engage à travailler pour le compte d’une autre sous son autorité...",
+    "sanction": null,
+    "questionsIA": [
+      "Qu’est-ce qu’un contrat de travail ?"
+    ]
+  },
+  {
+    "id": "art037",
+    "numero": 37,
+    "titre": "Dispositions d'ordre public",
+    "categorie": "Contrat de travail",
+    "motsCles": ["ordre public", "contrat"],
+    "contenu": "Les dispositions du contrat de travail ne peuvent déroger aux règles d’ordre public du travail...",
+    "sanction": "Toute clause contraire à l’ordre public est nulle de plein droit.",
+    "questionsIA": [
+      "Qu’est-ce qu’une règle d’ordre public en droit du travail ?"
+    ]
+  },
+  {
+    "id": "art038",
+    "numero": 38,
+    "titre": "Aptitude médicale au travail",
+    "categorie": "Contrat de travail",
+    "motsCles": ["aptitude", "certificat médical"],
+    "contenu": "L’embauche est subordonnée à la présentation d’un certificat médical attestant l’aptitude du travailleur...",
+    "sanction": "L’absence de contrôle médical peut engager la responsabilité de l’employeur.",
+    "questionsIA": [
+      "Pourquoi un certificat médical est-il exigé ?"
+    ]
+  },
+  {
+    "id": "art039",
+    "numero": 39,
+    "titre": "Types de contrat de travail",
+    "categorie": "Contrat de travail",
+    "motsCles": ["CDD", "CDI"],
+    "contenu": "Le contrat de travail peut être conclu à durée déterminée ou indéterminée selon la nature de l’emploi...",
+    "sanction": null,
+    "questionsIA": [
+      "Quelle est la différence entre CDD et CDI ?"
+    ]
+  },
+  {
+    "id": "art040",
+    "numero": 40,
+    "titre": "Contrat à durée déterminée",
+    "categorie": "Contrat de travail",
+    "motsCles": ["CDD", "durée déterminée"],
+    "contenu": "Le contrat à durée déterminée est conclu pour une durée précise ou pour un travail temporaire...",
+    "sanction": "La requalification abusive d’un CDD en CDI peut entraîner des sanctions et rappels de droits.",
+    "questionsIA": [
+      "Quand utilise-t-on un CDD ?"
+    ]
+  },
+  {
+    "id": "art041",
+    "numero": 41,
+    "titre": "Durée maximale du contrat à durée déterminée",
+    "categorie": "Contrat de travail",
+    "motsCles": ["CDD", "durée", "renouvellement"],
+    "contenu": "Le contrat à durée déterminée ne peut excéder la durée maximale fixée par la législation et peut être renouvelé dans des conditions strictes...",
+    "sanction": "Le dépassement de la durée légale ou les renouvellements abusifs peuvent entraîner la requalification en contrat à durée indéterminée (CDI).",
+    "questionsIA": [
+      "Combien de fois un CDD peut-il être renouvelé ?",
+      "Que se passe-t-il si un CDD dépasse la durée autorisée ?"
+    ]
+  },
+  {
+    "id": "art042",
+    "numero": 42,
+    "titre": "Emploi permanent",
+    "categorie": "Contrat de travail",
+    "motsCles": ["emploi permanent", "CDI"],
+    "contenu": "Les emplois permanents doivent normalement être occupés par des travailleurs sous contrat à durée indéterminée...",
+    "sanction": "Le recours abusif aux CDD pour des emplois permanents peut entraîner une requalification en CDI et des sanctions pour l’employeur.",
+    "questionsIA": [
+      "Qu’est-ce qu’un emploi permanent ?",
+      "Peut-on utiliser un CDD pour un emploi permanent ?"
+    ]
+  },
+  {
+    "id": "art043",
+    "numero": 43,
+    "titre": "Clause d'essai",
+    "categorie": "Contrat de travail",
+    "motsCles": ["essai", "période d'essai"],
+    "contenu": "Le contrat de travail peut comporter une période d’essai permettant d’évaluer les compétences du travailleur...",
+    "sanction": "Toute rupture abusive de la période d’essai peut engager la responsabilité de la partie fautive.",
+    "questionsIA": [
+      "À quoi sert la période d’essai ?",
+      "Peut-on rompre 
