@@ -1,227 +1,419 @@
+/*=================================================
+ INSPECTEURBOT RDC
+ speech.js
+ VERSION 1.0
+ RECONNAISSANCE ET LECTURE VOCALE
+==================================================*/
+
 "use strict";
 
-/*=========================================
- INSPECTEURBOT IA RDC
- RECONNAISSANCE VOCALE V2.0
- Compatible recherche Code du Travail JSON 2.0
-=========================================*/
+/*=================================================
+ ESPACE DE NOMS
+==================================================*/
 
+window.CodeTravail = window.CodeTravail || {};
+window.CodeTravail.Speech = {};
 
-document.addEventListener("DOMContentLoaded",()=>{
+/*=================================================
+ COMPATIBILITÉ NAVIGATEUR
+==================================================*/
 
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
 
-    const btnMicro = document.getElementById(
-        "btnMicro"
-    );
+const synthese =
+    window.speechSynthesis;
 
+/*=================================================
+ RECONNAISSANCE VOCALE
+==================================================*/
 
-    const input = document.getElementById(
-        "rechercheArticle"
-    );
+let reconnaissance = null;
 
+if (SpeechRecognition) {
 
-    const btnRecherche = document.getElementById(
-        "btnRecherche"
-    );
+    reconnaissance = new SpeechRecognition();
 
+    reconnaissance.lang = "fr-FR";
 
+    reconnaissance.continuous = false;
 
-    if(
-        !btnMicro ||
-        !input ||
-        !btnRecherche
-    ){
+    reconnaissance.interimResults = false;
 
-        console.log(
-            "Éléments vocaux introuvables"
-        );
+    reconnaissance.maxAlternatives = 1;
+
+}
+
+/*=================================================
+ ÉTAT
+==================================================*/
+
+let ecouteActive = false;
+
+/*=================================================
+ DÉMARRER L'ÉCOUTE
+==================================================*/
+
+function demarrerEcoute() {
+
+    if (!reconnaissance) {
+
+        window.CodeTravail.Utils
+            .afficherNotification(
+
+                "Reconnaissance vocale indisponible.",
+
+                "warning"
+
+            );
 
         return;
 
     }
 
+    try {
 
-
-
-    const SpeechRecognition =
-
-        window.SpeechRecognition ||
-
-        window.webkitSpeechRecognition;
-
-
-
-    if(!SpeechRecognition){
-
-
-        btnMicro.style.display="none";
-
-
-        console.log(
-            "Reconnaissance vocale non disponible"
-        );
-
-
-        return;
-
+        reconnaissance.start();
 
     }
 
+    catch (e) {
 
+        console.error(e);
 
+    }
 
+}
 
-    const recognition = new SpeechRecognition();
+/*=================================================
+ ARRÊTER L'ÉCOUTE
+==================================================*/
 
+function arreterEcoute() {
 
+    if (!reconnaissance) return;
 
-    recognition.lang = "fr-FR";
+    reconnaissance.stop();
 
-    recognition.continuous = false;
+}
 
-    recognition.interimResults = false;
+/*=================================================
+ ÉVÉNEMENTS
+==================================================*/
 
+if (reconnaissance) {
 
+    reconnaissance.onstart = () => {
 
+        ecouteActive = true;
 
-    let enEcoute = false;
+        window.CodeTravail.Utils
+            .afficherNotification(
 
+                "🎤 Écoute en cours..."
 
-
-
-
-    /*===========================
-       ACTIVATION MICRO
-    ===========================*/
-
-
-    btnMicro.addEventListener(
-    "click",
-    ()=>{
-
-
-        if(enEcoute){
-
-            recognition.stop();
-
-            return;
-
-        }
-
-
-
-        try{
-
-
-            enEcoute = true;
-
-
-            btnMicro.innerHTML =
-            "🔴";
-
-
-            recognition.start();
-
-
-
-        }
-
-
-        catch(e){
-
-
-            console.log(e);
-
-
-        }
-
-
-
-    });
-
-
-
-
-
-
-    /*===========================
-       TEXTE RECONNU
-    ===========================*/
-
-
-    recognition.onresult=(event)=>{
-
-
-        const texte =
-
-        event.results[0][0].transcript;
-
-
-
-        input.value = texte;
-
-
-
-        // Lance automatiquement la recherche
-
-        btnRecherche.click();
-
-
+            );
 
     };
 
+    reconnaissance.onend = () => {
 
-
-
-
-
-    /*===========================
-       FIN ÉCOUTE
-    ===========================*/
-
-
-    recognition.onend=()=>{
-
-
-        enEcoute=false;
-
-
-        btnMicro.innerHTML =
-        "🎤";
-
-
+        ecouteActive = false;
 
     };
 
+}
 
+/*=================================================
+ PARTIE 2
+ DICTÉE VOCALE ET LECTURE
+==================================================*/
 
+/*=================================================
+ RÉSULTAT DE LA DICTÉE
+==================================================*/
 
+if (reconnaissance) {
 
+    reconnaissance.onresult = (event) => {
 
-    /*===========================
-       ERREUR
-    ===========================*/
+        const texte = event.results[0][0].transcript;
 
+        const champRecherche =
+            document.querySelector("#rechercheArticle");
 
-    recognition.onerror=(event)=>{
+        const questionIA =
+            document.querySelector("#questionIA");
 
+        if (champRecherche) {
 
-        console.log(
-            "Erreur micro :",
-            event.error
+            champRecherche.value = texte;
+
+        }
+
+        if (
+            window.CodeTravail &&
+            window.CodeTravail.Search &&
+            typeof window.CodeTravail.Search.rechercher === "function"
+        ) {
+
+            window.CodeTravail.Search.rechercher();
+
+        }
+
+        if (questionIA && document.activeElement === questionIA) {
+
+            questionIA.value = texte;
+
+        }
+
+        window.CodeTravail.Utils
+            .afficherNotification(
+
+                "Recherche vocale terminée."
+
+            );
+
+    };
+
+}
+
+/*=================================================
+ GESTION DES ERREURS
+==================================================*/
+
+if (reconnaissance) {
+
+    reconnaissance.onerror = (event) => {
+
+        console.error(event.error);
+
+        window.CodeTravail.Utils
+            .afficherNotification(
+
+                "Erreur du microphone.",
+
+                "error"
+
+            );
+
+    };
+
+}
+
+/*=================================================
+ LECTURE D'UN TEXTE
+==================================================*/
+
+function lire(texte) {
+
+    if (!synthese || !texte) return;
+
+    synthese.cancel();
+
+    const voix =
+        new SpeechSynthesisUtterance(texte);
+
+    voix.lang = "fr-FR";
+
+    voix.rate = 1;
+
+    voix.pitch = 1;
+
+    voix.volume = 1;
+
+    synthese.speak(voix);
+
+}
+
+/*=================================================
+ ARRÊTER LA LECTURE
+==================================================*/
+
+function arreterLecture() {
+
+    if (!synthese) return;
+
+    synthese.cancel();
+
+}
+
+/*=================================================
+ LIRE L'ARTICLE
+==================================================*/
+
+function lireArticle() {
+
+    const numero =
+        document.querySelector("#numeroArticle")?.textContent || "";
+
+    const titre =
+        document.querySelector("#titreArticle")?.textContent || "";
+
+    const contenu =
+        document.querySelector("#contenuArticle")?.textContent || "";
+
+    lire(
+
+`${numero}. ${titre}. ${contenu}`
+
+    );
+
+}
+
+/*=================================================
+ LIRE LA RÉPONSE IA
+==================================================*/
+
+function lireReponseIA() {
+
+    const texte =
+        document.querySelector("#reponseIA")?.textContent || "";
+
+    lire(texte);
+
+}
+
+/*=================================================
+ PARTIE 3
+ INITIALISATION
+ VERSION FINALE
+==================================================*/
+
+/*=================================================
+ INITIALISATION DES BOUTONS
+==================================================*/
+
+function initialiserSpeech() {
+
+    document
+        .querySelector("#btnMicro")
+        ?.addEventListener(
+
+            "click",
+
+            demarrerEcoute
+
         );
 
+    document
+        .querySelector("#btnRechercheVocale")
+        ?.addEventListener(
 
-        enEcoute=false;
+            "click",
 
+            demarrerEcoute
 
-        btnMicro.innerHTML =
-        "🎤";
+        );
 
+    document
+        .querySelector("#btnLecture")
+        ?.addEventListener(
 
+            "click",
 
-    };
+            lireArticle
 
+        );
 
+    document
+        .querySelector("#btnLectureArticle")
+        ?.addEventListener(
 
-});
+            "click",
+
+            lireArticle
+
+        );
+
+    document
+        .querySelector("#btnLectureIA")
+        ?.addEventListener(
+
+            "click",
+
+            lireReponseIA
+
+        );
+
+    console.log(
+
+        "🎤 speech.js initialisé."
+
+    );
+
+}
+
+/*=================================================
+ CHANGER LA LANGUE
+==================================================*/
+
+function changerLangue(langue = "fr-FR") {
+
+    if (!reconnaissance) return;
+
+    reconnaissance.lang = langue;
+
+}
+
+/*=================================================
+ ÉTAT DU MICROPHONE
+==================================================*/
+
+function microphoneActif() {
+
+    return ecouteActive;
+
+}
+
+/*=================================================
+ EXPORT
+==================================================*/
+
+window.CodeTravail.Speech.demarrer =
+    demarrerEcoute;
+
+window.CodeTravail.Speech.arreter =
+    arreterEcoute;
+
+window.CodeTravail.Speech.lire =
+    lire;
+
+window.CodeTravail.Speech.lireArticle =
+    lireArticle;
+
+window.CodeTravail.Speech.lireIA =
+    lireReponseIA;
+
+window.CodeTravail.Speech.arreterLecture =
+    arreterLecture;
+
+window.CodeTravail.Speech.changerLangue =
+    changerLangue;
+
+window.CodeTravail.Speech.microphoneActif =
+    microphoneActif;
+
+window.CodeTravail.Speech.initialiser =
+    initialiserSpeech;
+
+/*=================================================
+ DÉMARRAGE
+==================================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        initialiserSpeech();
+
+    }
+
+);
+
+/*=================================================
+ FIN DU FICHIER
+==================================================*/
