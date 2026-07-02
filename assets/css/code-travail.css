@@ -1,36 +1,60 @@
-/*=================================================
+/*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 1/7
- RESET + STRUCTURE GÉNÉRALE
- Compatible :
- - Code du Travail RDC JSON 2.0
- - RAG Engine V2
- - IA Juridique
- - Copilote Inspection
+ CSS PREMIUM V5.0
+ PARTIE 1/10
+ RESET + VARIABLES + BASE FUTURISTE
 ==================================================*/
 
+/*==========================
+ RESET
+==========================*/
 
-/*=========================
- RESET GLOBAL
-=========================*/
-
-*{
+*,
+*::before,
+*::after{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins','Segoe UI',sans-serif;
 }
-
 
 html{
-
     scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
+}
 
-    text-rendering:optimizeLegibility;
+:root{
+
+    --bleu:#041c5c;
+    --bleu2:#0b3f9f;
+    --bleu3:#165fd4;
+
+    --or:#FFD700;
+    --or2:#ffb300;
+
+    --vert:#00ff95;
+    --rouge:#ff4d6d;
+
+    --blanc:#ffffff;
+    --gris:#dce6ff;
+
+    --glass:rgba(255,255,255,.08);
+    --glass2:rgba(255,255,255,.04);
+
+    --ombreBleu:
+    0 0 35px rgba(0,120,255,.35);
+
+    --ombreOr:
+    0 0 25px rgba(255,215,0,.45);
+
+    --rayon:26px;
+
+    --transition:.45s ease;
 
 }
 
+/*==========================
+ BODY
+==========================*/
 
 body{
 
@@ -38,3987 +62,4377 @@ body{
 
     overflow-x:hidden;
 
-    line-height:1.7;
+    color:var(--blanc);
 
-    color:#ffffff;
-
-    background:
-    radial-gradient(
-        circle at top,
-        #1b56d6 0%,
-        #0a2f7d 35%,
-        #041c5c 70%,
-        #010b20 100%
-    );
-
-    -webkit-font-smoothing:antialiased;
-
-    -moz-osx-font-smoothing:grayscale;
-
-}
-
-
-
-/*=========================
- VARIABLES DESIGN
-=========================*/
-
-:root{
-
-    --bleu-principal:#0b48b8;
-
-    --bleu-fonce:#041c5c;
-
-    --bleu-noir:#010b20;
-
-    --or:#FFD700;
-
-    --blanc:#ffffff;
-
-    --texte-clair:#dbe8ff;
-
-    --vert-ia:#00e676;
-
-    --glass:
-    rgba(255,255,255,.08);
-
-    --border-or:
-    rgba(255,215,0,.25);
-
-    --ombre-or:
-    0 0 25px rgba(255,215,0,.35);
-
-}
-
-
-
-/*=========================
- SCROLLBAR PREMIUM
-=========================*/
-
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-}
-
-
-::-webkit-scrollbar-track{
+    font-family:
+    "Poppins",
+    "Segoe UI",
+    Arial,
+    sans-serif;
 
     background:
-    var(--bleu-fonce);
 
-}
+    radial-gradient(circle at top,
+    #1347b5 0%,
+    #082d7d 25%,
+    #041c5c 55%,
+    #010b22 100%);
 
-
-::-webkit-scrollbar-thumb{
-
-    background:
-    linear-gradient(
-        180deg,
-        #FFD700,
-        #ff9900
-    );
-
-    border-radius:30px;
-
-}
-
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:#ffffff;
-
-}
-
-
-
-/*=========================
- CONTAINER PRINCIPAL
-=========================*/
-
-
-.container{
-
-    width:95%;
-
-    max-width:1400px;
-
-    margin:auto;
-
-    padding:25px;
+    background-size:300% 300%;
 
     animation:
-    fadeContainer .8s ease;
+    fondIA 18s ease infinite;
 
 }
 
+/*==========================
+ FOND ANIME
+==========================*/
 
+@keyframes fondIA{
 
-/*=========================
- ANIMATION GENERALE
-=========================*/
+0%{
 
-
-@keyframes fadeContainer{
-
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(30px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0);
-
-    }
-
+background-position:
+0% 50%;
 
 }
 
+50%{
 
+background-position:
+100% 50%;
 
-/*=========================
- SELECTION TEXTE
-=========================*/
+}
 
+100%{
+
+background-position:
+0% 50%;
+
+}
+
+}
+
+/*==========================
+ PARTICULES
+==========================*/
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+pointer-events:none;
+
+background-image:
+
+radial-gradient(circle,
+rgba(255,255,255,.10) 1px,
+transparent 1px);
+
+background-size:
+80px 80px;
+
+opacity:.18;
+
+animation:
+particules 60s linear infinite;
+
+}
+
+@keyframes particules{
+
+from{
+
+transform:
+translateY(0);
+
+}
+
+to{
+
+transform:
+translateY(-120px);
+
+}
+
+}
+
+/*==========================
+ CONTENEUR
+==========================*/
+
+main{
+
+width:min(1400px,95%);
+
+margin:auto;
+
+padding:25px;
+
+}
+
+/*==========================
+ SELECTION
+==========================*/
 
 ::selection{
 
-    background:
-    var(--or);
+background:var(--or);
 
-    color:
-    var(--bleu-fonce);
+color:var(--bleu);
 
 }
 
+/*==========================
+ SCROLLBAR
+==========================*/
 
+::-webkit-scrollbar{
 
-/*=========================
- EFFET GLASS COMMUN
-=========================*/
-
-
-.glass{
-
-
-    background:
-    var(--glass);
-
-
-    backdrop-filter:
-    blur(18px);
-
-
-    -webkit-backdrop-filter:
-    blur(18px);
-
-
-    border:
-    1px solid rgba(255,255,255,.15);
-
-
-    border-radius:
-    28px;
-
+width:10px;
 
 }
 
+::-webkit-scrollbar-track{
 
+background:#02153f;
 
-/*=========================
+}
+
+::-webkit-scrollbar-thumb{
+
+background:
+
+linear-gradient(
+180deg,
+var(--or),
+#ff9800);
+
+border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+background:white;
+
+}
+
+/*==========================
+ GLASS EFFECT
+==========================*/
+
+.hero,
+.search-card,
+.livre,
+.assistant-card,
+.info-card,
+.stat-card,
+.outil-card,
+.footer-content{
+
+background:
+rgba(255,255,255,.08);
+
+backdrop-filter:
+blur(18px);
+
+-webkit-backdrop-filter:
+blur(18px);
+
+border:
+1px solid rgba(255,255,255,.15);
+
+border-radius:
+28px;
+
+box-shadow:
+
+0 0 30px rgba(0,90,255,.25);
+
+transition:
+var(--transition);
+
+}
+
+/*==========================
+ SURVOL CARTES
+==========================*/
+
+.hero:hover,
+.search-card:hover,
+.livre:hover,
+.assistant-card:hover,
+.info-card:hover,
+.stat-card:hover,
+.outil-card:hover{
+
+transform:
+
+translateY(-8px);
+
+border-color:
+
+rgba(255,215,0,.35);
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.35),
+
+0 0 60px rgba(0,130,255,.35);
+
+}
+
+/*==========================
+ TITRES
+==========================*/
+
+h1,h2,h3,h4{
+
+font-weight:700;
+
+line-height:1.4;
+
+}
+
+h1{
+
+color:var(--or);
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.65);
+
+}
+
+h2{
+
+color:white;
+
+}
+
+p{
+
+line-height:1.8;
+
+color:#eef4ff;
+
+}
+
+/*==========================
  IMAGES
-=========================*/
-
+==========================*/
 
 img{
 
-    max-width:100%;
+display:block;
 
-    height:auto;
+max-width:100%;
 
-    display:block;
-
-}
-
-
-
-/*=========================
- TEXTES JURIDIQUES LONGS
- Adapté aux articles du Code
-=========================*/
-
-
-p,
-h1,
-h2,
-h3,
-h4,
-span,
-pre,
-.article-content,
-#reponseIA{
-
-
-    overflow-wrap:
-    break-word;
-
-
-    word-break:
-    break-word;
-
+height:auto;
 
 }
 
+/*==========================
+ LIENS
+==========================*/
 
+a{
 
-/*=========================
- BOUTONS GENERAUX
-=========================*/
+text-decoration:none;
 
+color:inherit;
+
+}
+
+/*==========================
+ BOUTONS
+==========================*/
 
 button{
 
+border:none;
 
-    cursor:pointer;
+cursor:pointer;
 
+transition:.35s;
 
-    border:none;
+border-radius:18px;
 
-
-    transition:
-    .35s ease;
-
-
-    touch-action:
-    manipulation;
-
-
-    -webkit-tap-highlight-color:
-    transparent;
-
+font-weight:700;
 
 }
-
-
 
 button:hover{
 
+transform:
 
-    transform:
-    translateY(-5px);
-
+translateY(-5px)
+scale(1.05);
 
 }
 
+button:active{
 
+transform:
 
-/*=========================
- INPUTS IA
-=========================*/
+scale(.95);
 
+}
+
+/*==========================
+ ANIMATION BOUTONS
+==========================*/
+
+@keyframes respiration{
+
+0%{
+
+box-shadow:
+
+0 0 8px rgba(255,215,0,.20);
+
+}
+
+50%{
+
+box-shadow:
+
+0 0 22px rgba(255,215,0,.60);
+
+}
+
+100%{
+
+box-shadow:
+
+0 0 8px rgba(255,215,0,.20);
+
+}
+
+}
+
+.search-box button,
+.livre-actions button,
+.assistant-actions button{
+
+animation:
+
+respiration 2.5s infinite;
+
+}
+
+/*==========================
+ INPUTS
+==========================*/
 
 input,
 textarea,
 select{
 
+width:100%;
 
-    transition:
-    .35s ease;
+padding:16px;
 
+border-radius:18px;
 
-    font-size:
-    16px;
+border:
 
+1px solid rgba(255,255,255,.18);
+
+background:
+
+rgba(255,255,255,.08);
+
+color:white;
+
+font-size:16px;
+
+transition:.4s;
 
 }
 
+input::placeholder,
+textarea::placeholder{
 
+color:#d7e5ff;
+
+}
 
 input:focus,
-textarea:focus{
+textarea:focus,
+select:focus{
 
+outline:none;
 
-    outline:none;
+border-color:var(--or);
 
+box-shadow:
 
-    transform:
-    scale(1.01);
+0 0 18px rgba(255,215,0,.40);
 
-
-    box-shadow:
-    0 0 18px rgba(255,215,0,.5);
-
+transform:scale(1.01);
 
 }
 
+/*==========================
+ ANIMATION APPARITION
+==========================*/
 
+@keyframes apparition{
 
-/*=========================
- FIN PARTIE 1
-=========================*/
+from{
 
+opacity:0;
 
-/*=================================================
+transform:
+
+translateY(30px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(0);
+
+}
+
+}
+
+section{
+
+animation:
+
+apparition .8s ease;
+
+margin-bottom:35px;
+
+}
+
+/*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 2/7
- HEADER FUTURISTE IGT 2026
+ CSS PREMIUM V5.0
+ PARTIE 2/10
+ HERO + RECHERCHE FUTURISTE
 ==================================================*/
 
+/*==========================
+ HERO
+==========================*/
 
-/*=========================
- HEADER PRINCIPAL
-=========================*/
+.hero{
 
+position:relative;
 
-.top-header{
+overflow:hidden;
 
+padding:50px 35px;
 
-    position:relative;
+text-align:center;
 
-
-    padding:45px 30px;
-
-
-    margin-bottom:35px;
-
-
-    text-align:center;
-
-
-    overflow:hidden;
-
-
-    background:
-    rgba(15,55,145,.28);
-
-
-    backdrop-filter:
-    blur(20px);
-
-
-    -webkit-backdrop-filter:
-    blur(20px);
-
-
-    border:
-    1px solid rgba(255,215,0,.25);
-
-
-    border-radius:
-    35px;
-
-
-    box-shadow:
-
-    0 0 25px rgba(0,0,0,.35),
-
-    0 0 45px rgba(0,110,255,.35);
-
-
-    transition:
-    .45s ease;
-
+border-radius:32px;
 
 }
 
+/* Halo lumineux */
 
+.hero::before{
 
-/*=========================
- HALO LUMINEUX ANIME
-=========================*/
+content:"";
 
+position:absolute;
 
-.top-header::before{
+top:-50%;
+left:-50%;
 
+width:200%;
+height:200%;
 
-    content:"";
+background:
+conic-gradient(
+from 0deg,
+transparent,
+rgba(255,215,0,.12),
+transparent,
+rgba(0,180,255,.10),
+transparent);
 
+animation:
+rotationHero 18s linear infinite;
 
-    position:absolute;
-
-
-    width:200%;
-
-
-    height:200%;
-
-
-    top:-50%;
-
-
-    left:-50%;
-
-
-    background:
-
-    radial-gradient(
-
-        circle,
-
-        rgba(255,215,0,.15),
-
-        transparent 65%
-
-    );
-
-
-    animation:
-
-    haloRotation 18s linear infinite;
-
+pointer-events:none;
 
 }
 
+@keyframes rotationHero{
 
+from{
+transform:rotate(0deg);
+}
 
-@keyframes haloRotation{
-
-
-    from{
-
-        transform:
-        rotate(0deg);
-
-    }
-
-
-    to{
-
-        transform:
-        rotate(360deg);
-
-    }
-
+to{
+transform:rotate(360deg);
+}
 
 }
 
+.hero>*{
 
+position:relative;
 
-/* Protection contenu */
-
-
-.top-header > *{
-
-
-    position:relative;
-
-
-    z-index:2;
-
+z-index:2;
 
 }
 
+/*==========================
+ LOGO
+==========================*/
 
+.hero img{
 
-/*=========================
- EFFET SURVOL HEADER
-=========================*/
+width:110px;
 
+margin:0 auto 20px;
 
-.top-header:hover{
+filter:
 
+drop-shadow(0 0 12px rgba(255,215,0,.6))
+drop-shadow(0 0 30px rgba(0,170,255,.45));
 
-    transform:
-    translateY(-8px);
+animation:
+logoPulse 3s ease-in-out infinite;
 
-
-    border-color:
-    var(--or);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(255,215,0,.5),
-
-
-    0 0 60px rgba(0,140,255,.55);
-
+transition:.4s;
 
 }
 
+.hero img:hover{
 
-
-/*=========================
- LOGO INSPECTEURBOT
-=========================*/
-
-
-.logo-box{
-
-
-    margin-bottom:
-    20px;
-
+transform:
+scale(1.12)
+rotate(6deg);
 
 }
 
+@keyframes logoPulse{
 
+0%,100%{
 
-.logo-box img{
-
-
-    width:
-    120px;
-
-
-    height:
-    120px;
-
-
-    margin:auto;
-
-
-    object-fit:
-    contain;
-
-
-    filter:
-
-    drop-shadow(
-        0 0 18px rgba(255,215,0,.6)
-    );
-
-
-    transition:
-    .45s;
-
+transform:scale(1);
 
 }
 
+50%{
 
-
-.logo-box img:hover{
-
-
-    transform:
-
-    scale(1.15)
-    rotate(8deg);
-
-
-    filter:
-
-    drop-shadow(
-        0 0 20px #FFD700
-    )
-
-    drop-shadow(
-        0 0 45px #FFD700
-    );
-
+transform:scale(1.08);
 
 }
 
+}
 
+/*==========================
+ TITRES
+==========================*/
 
-/*=========================
- TITRES IDENTITÉ
-=========================*/
+.hero h1{
 
+font-size:clamp(34px,5vw,52px);
 
-.title-box h1{
+margin-bottom:18px;
 
-
-    font-size:
-    42px;
-
-
-    font-weight:
-    800;
-
-
-    text-transform:
-    uppercase;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    18px;
-
-
-    text-shadow:
-
-
-    0 0 15px rgba(255,215,0,.6);
-
+letter-spacing:1px;
 
 }
 
+.hero p{
 
+max-width:850px;
 
-.title-box h2{
+margin:0 auto;
 
+font-size:19px;
 
-    font-size:
-    27px;
-
-
-    font-weight:
-    700;
-
-
-    color:
-    #ffffff;
-
-
-    margin-bottom:
-    10px;
-
+color:#e7f0ff;
 
 }
 
-
-
-.title-box h3{
-
-
-    font-size:
-    22px;
-
-
-    color:
-    #dbe8ff;
-
-
-    margin-bottom:
-    10px;
-
-
-}
-
-
-
-.title-box p{
-
-
-    font-size:
-    18px;
-
-
-    color:
-    #dbe8ff;
-
-
-}
-
-
-
-/*=========================
- BOUTON MODE SOMBRE/CLAIR
-=========================*/
-
-
-.theme-btn{
-
-
-    margin:
-    18px auto;
-
-
-    width:
-    60px;
-
-
-    height:
-    60px;
-
-
-    border-radius:
-    50%;
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #FFD700,
-        #ffb400
-    );
-
-
-    color:
-    #041c5c;
-
-
-    font-size:
-    24px;
-
-
-    box-shadow:
-
-    0 0 18px rgba(255,215,0,.5);
-
-
-}
-
-
-
-.theme-btn:hover{
-
-
-    transform:
-    rotate(180deg)
-    scale(1.15);
-
-
-}
-
-
-
-/*=========================
- DATE ET HEURE
-=========================*/
-
-
-.datetime-box{
-
-
-    margin-top:
-    35px;
-
-
-}
-
-
-
-#clock{
-
-
-    font-size:
-    58px;
-
-
-    font-weight:
-    800;
-
-
-    color:
-    var(--or);
-
-
-    text-shadow:
-
-    0 0 20px rgba(255,215,0,.7);
-
-
-}
-
-
-
-#day{
-
-
-    margin-top:
-    10px;
-
-
-    font-size:
-    24px;
-
-
-    font-weight:
-    600;
-
-
-}
-
-
-
-#date{
-
-
-    margin-top:
-    8px;
-
-
-    font-size:
-    20px;
-
-
-    color:
-    var(--texte-clair);
-
-
-}
-
-
-
-/*=========================
- METEO
-=========================*/
-
-
-#weather{
-
-
-    margin-top:
-    18px;
-
-
-    font-size:
-    34px;
-
-
-    color:
-    var(--or);
-
-
-}
-
-
-
-#weather i{
-
-
-    margin-right:
-    10px;
-
-
-    animation:
-
-    meteoMove 2s infinite ease-in-out;
-
-
-}
-
-
-
-@keyframes meteoMove{
-
-
-    0%,100%{
-
-        transform:
-        translateY(0);
-
-    }
-
-
-    50%{
-
-        transform:
-        translateY(-6px);
-
-    }
-
-
-}
-
-
-
-#city{
-
-
-    margin-top:
-    10px;
-
-
-    font-size:
-    24px;
-
-
-    font-weight:
-    600;
-
-
-    color:
-    #ffffff;
-
-
-}
-
-
-
-/*=========================
- FIN PARTIE 2
-=========================*/
-
-
-
-/*=================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 3/7
- ASSISTANT IA + RECHERCHE JURIDIQUE
-==================================================*/
-
-
-/*=========================
- SECTION RECHERCHE IA
-=========================*/
-
-
-.search-section{
-
-
-    margin-bottom:
-    40px;
-
-
-    padding:
-    35px;
-
-
-    background:
-
-    rgba(15,55,145,.28);
-
-
-    backdrop-filter:
-
-    blur(18px);
-
-
-    -webkit-backdrop-filter:
-
-    blur(18px);
-
-
-    border:
-
-    1px solid rgba(255,215,0,.20);
-
-
-    border-radius:
-    30px;
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(0,120,255,.20);
-
-
-    transition:
-    .45s ease;
-
-
-}
-
-
-
-.search-section:hover{
-
-
-    transform:
-    translateY(-8px);
-
-
-    border-color:
-    var(--or);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(255,215,0,.5),
-
-
-    0 0 60px rgba(0,170,255,.45);
-
-
-}
-
-
-
-/*=========================
- TITRE RECHERCHE
-=========================*/
-
-
-.search-section h2{
-
-
-    text-align:
-    center;
-
-
-    font-size:
-    32px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    12px;
-
-
-}
-
-
-
-.search-section p{
-
-
-    text-align:
-    center;
-
-
-    color:
-    var(--texte-clair);
-
-
-    font-size:
-    17px;
-
-
-    margin-bottom:
-    30px;
-
-
-}
-
-
-
-/*=========================
- BARRE QUESTION IA
-=========================*/
-
+/*==========================
+ BARRE RECHERCHE
+==========================*/
 
 .search-box{
 
+display:flex;
 
-    display:
-    flex;
+flex-wrap:wrap;
 
+justify-content:center;
 
-    gap:
-    15px;
+align-items:center;
 
+gap:14px;
 
-    align-items:
-    center;
-
-
-    justify-content:
-    center;
-
-
-    margin-bottom:
-    30px;
-
+margin-top:35px;
 
 }
-
-
 
 .search-box input{
 
+flex:1;
 
-    flex:
-    1;
+min-width:260px;
 
+height:60px;
 
-    padding:
-    18px;
+font-size:17px;
 
+padding:0 20px;
 
-    border:
-    none;
+background:
 
-
-    border-radius:
-    18px;
-
-
-    font-size:
-    17px;
-
-
-    background:
-    #ffffff;
-
-
-    color:
-    #041c5c;
-
+rgba(255,255,255,.10);
 
 }
 
+.search-box input:hover{
 
+background:
 
-/* Bouton recherche */
+rgba(255,255,255,.14);
 
+}
+
+/*==========================
+ BOUTONS RECHERCHE
+==========================*/
 
 .search-box button{
 
+width:60px;
 
-    width:
-    65px;
+height:60px;
 
+display:flex;
 
-    height:
-    60px;
+align-items:center;
 
+justify-content:center;
 
-    border-radius:
-    18px;
+font-size:22px;
 
+color:var(--bleu);
 
-    background:
+background:
 
-    linear-gradient(
-        135deg,
-        #FFD700,
-        #ffb300
-    );
+linear-gradient(
+135deg,
+var(--or),
+var(--or2));
 
+position:relative;
 
-    color:
-    #041c5c;
-
-
-    font-size:
-    22px;
-
-
-    box-shadow:
-
-
-    0 0 18px rgba(255,215,0,.45);
-
+overflow:hidden;
 
 }
 
+/* Effet lumineux */
 
+.search-box button::before{
+
+content:"";
+
+position:absolute;
+
+top:-120%;
+left:-40%;
+
+width:40%;
+
+height:300%;
+
+background:
+
+rgba(255,255,255,.55);
+
+transform:
+rotate(25deg);
+
+transition:.6s;
+
+}
+
+.search-box button:hover::before{
+
+left:140%;
+
+}
 
 .search-box button:hover{
 
+box-shadow:
 
-    transform:
+0 0 20px rgba(255,215,0,.65),
 
-    translateY(-6px)
-    scale(1.10)
-    rotate(-5deg);
-
+0 0 45px rgba(0,170,255,.45);
 
 }
 
+/*==========================
+ SECTION RECHERCHE
+==========================*/
 
+.search-section{
 
-/*=========================
- SUGGESTIONS QUESTIONS IA
-=========================*/
-
-
-.suggestions{
-
-
-    display:
-    flex;
-
-
-    flex-wrap:
-    wrap;
-
-
-    justify-content:
-    center;
-
-
-    gap:
-    15px;
-
+margin-top:35px;
 
 }
 
+.search-card{
 
-
-.suggestions button{
-
-
-    padding:
-    14px 20px;
-
-
-    border-radius:
-    30px;
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #0b48b8,
-        #06245e
-    );
-
-
-    color:
-    var(--or);
-
-
-    font-weight:
-    600;
-
-
-    border:
-    1px solid rgba(255,215,0,.20);
-
+padding:35px;
 
 }
 
+.search-card h2{
 
+font-size:30px;
 
-.suggestions button:hover{
+text-align:center;
 
+margin-bottom:12px;
 
-    background:
-
-    linear-gradient(
-        135deg,
-        #FFD700,
-        #ffb300
-    );
-
-
-    color:
-    #041c5c;
-
+color:var(--or);
 
 }
 
+.search-card h2 i{
 
+margin-right:10px;
 
-/*=================================================
- CARTES MODULES JURIDIQUES
- F01 F02 F03 CODE DU TRAVAIL
-==================================================*/
-
-
-.categories{
-
-
-    display:
-    grid;
-
-
-    grid-template-columns:
-
-    repeat(
-        auto-fit,
-        minmax(260px,1fr)
-    );
-
-
-    gap:
-    25px;
-
-
-    margin-top:
-    40px;
-
+animation:
+iconeSearch 2s infinite;
 
 }
 
+@keyframes iconeSearch{
 
+0%,100%{
 
-
-.category-card{
-
-
-    padding:
-    30px;
-
-
-    text-align:
-    center;
-
-
-    cursor:
-    pointer;
-
-
-    background:
-
-    rgba(15,55,145,.30);
-
-
-    backdrop-filter:
-
-    blur(16px);
-
-
-    border:
-
-    1px solid rgba(255,215,0,.18);
-
-
-    border-radius:
-    25px;
-
-
-    transition:
-    .45s ease;
-
-
-    box-shadow:
-
-
-    0 0 18px rgba(0,100,255,.18);
-
+transform:rotate(0deg);
 
 }
 
+50%{
 
-
-.category-card:hover{
-
-
-    transform:
-
-    translateY(-12px)
-    scale(1.05);
-
-
-    border-color:
-    var(--or);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(255,215,0,.60),
-
-
-    0 0 55px rgba(0,170,255,.55);
-
+transform:rotate(-12deg);
 
 }
 
+}
 
+.search-card p{
 
-/* Icônes */
+text-align:center;
 
-
-.category-card i{
-
-
-    font-size:
-    55px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    18px;
-
-
-    transition:
-    .4s;
-
+margin-bottom:28px;
 
 }
 
+/*==========================
+ RECHERCHE RAPIDE
+==========================*/
 
+.recherche-rapide{
 
-.category-card:hover i{
+display:flex;
 
+flex-wrap:wrap;
 
-    transform:
+justify-content:center;
 
-    scale(1.20)
-    rotate(10deg);
+gap:12px;
 
-
-}
-
-
-
-/* Titres modules */
-
-
-.category-card h3{
-
-
-    font-size:
-    23px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    12px;
-
+margin-top:22px;
 
 }
 
+.recherche-rapide button{
 
+padding:12px 18px;
 
-.category-card p{
+border-radius:30px;
 
+background:
 
-    font-size:
-    16px;
+linear-gradient(
+135deg,
+#0b4dbd,
+#062d78);
 
+color:var(--or);
 
-    color:
-    var(--texte-clair);
+font-size:15px;
 
+border:
 
-    line-height:
-    1.6;
+1px solid rgba(255,215,0,.18);
 
+transition:.35s;
 
-}
-
-
-
-/* Badge */
-
-
-.badge{
-
-
-    display:
-    inline-block;
-
-
-    padding:
-    8px 18px;
-
-
-    border-radius:
-    30px;
-
-
-    background:
-
-    rgba(255,215,0,.18);
-
-
-    color:
-    var(--or);
-
-
-    font-weight:
-    bold;
-
+animation:
+badgePulse 3s infinite;
 
 }
 
+.recherche-rapide button:hover{
 
+background:
 
-/* Modules inspection */
+linear-gradient(
+135deg,
+var(--or),
+#ffb400);
 
+color:var(--bleu);
 
-.category-card[data-module="F01"],
-.category-card[data-module="F02"],
-.category-card[data-module="F03"]{
+transform:
 
-
-    border-left:
-    5px solid var(--or);
-
+translateY(-4px)
+scale(1.08);
 
 }
 
+@keyframes badgePulse{
 
+0%,100%{
 
-/*=========================
- FIN PARTIE 3
-=========================*/
+box-shadow:
 
+0 0 8px rgba(255,215,0,.18);
 
-/*=================================================
+}
+
+50%{
+
+box-shadow:
+
+0 0 18px rgba(255,215,0,.45);
+
+}
+
+}
+
+/*==========================
+ EFFET FOCUS GLOBAL
+==========================*/
+
+.search-box:focus-within{
+
+transform:scale(1.01);
+
+transition:.3s;
+
+}
+
+/*==========================
+ RESPONSIVE
+==========================*/
+
+@media(max-width:768px){
+
+.hero{
+
+padding:35px 20px;
+
+}
+
+.hero img{
+
+width:90px;
+
+}
+
+.hero h1{
+
+font-size:34px;
+
+}
+
+.hero p{
+
+font-size:16px;
+
+}
+
+.search-box{
+
+flex-direction:column;
+
+}
+
+.search-box input{
+
+min-width:100%;
+
+}
+
+.search-box button{
+
+width:100%;
+
+height:56px;
+
+border-radius:16px;
+
+}
+
+.recherche-rapide{
+
+gap:10px;
+
+}
+
+.recherche-rapide button{
+
+flex:1 1 45%;
+
+}
+
+ }
+
+/*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 4/7
- ARTICLES CODE DU TRAVAIL RDC + RAG
+ CSS PREMIUM V5.0
+ PARTIE 3/10
+ LIVRE JURIDIQUE FUTURISTE
 ==================================================*/
 
-
 /*=========================
- SECTION ARTICLES
+ SECTION LIVRE
 =========================*/
 
+.livre-section{
 
-.article-section{
+margin-top:40px;
 
-
-    margin-top:
-    45px;
-
-
-    padding:
-    35px;
-
-
-    background:
-
-    rgba(15,55,145,.28);
-
-
-    backdrop-filter:
-
-    blur(18px);
-
-
-    -webkit-backdrop-filter:
-
-    blur(18px);
-
-
-    border:
-
-    1px solid rgba(255,215,0,.20);
-
-
-    border-radius:
-    30px;
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(0,120,255,.25);
-
+margin-bottom:40px;
 
 }
-
-
-
-/* Titre section */
-
-
-.article-section h2{
-
-
-    text-align:
-    center;
-
-
-    font-size:
-    32px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    30px;
-
-
-    text-shadow:
-
-
-    0 0 15px rgba(255,215,0,.45);
-
-
-}
-
-
-
-/*=================================================
- CARTE ARTICLE JURIDIQUE
-==================================================*/
-
-
-.article-card{
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        #0b2d77,
-        #123f97
-    );
-
-
-    padding:
-    30px;
-
-
-    margin-bottom:
-    25px;
-
-
-    border-radius:
-    25px;
-
-
-    border:
-
-    1px solid rgba(255,215,0,.18);
-
-
-    box-shadow:
-
-
-    0 0 20px rgba(0,0,0,.25);
-
-
-    animation:
-
-    fadeArticle .7s ease;
-
-
-    transition:
-    .35s;
-
-
-}
-
-
-
-.article-card:hover{
-
-
-    transform:
-    translateY(-8px);
-
-
-    border-color:
-    var(--or);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(255,215,0,.45),
-
-
-    0 0 50px rgba(0,120,255,.35);
-
-
-}
-
-
-
-@keyframes fadeArticle{
-
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(25px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0);
-
-    }
-
-
-}
-
-
 
 /*=========================
- NUMERO ARTICLE
+ LIVRE
 =========================*/
 
+.livre{
 
-.article-number{
+position:relative;
 
+overflow:hidden;
 
-    display:
-    inline-block;
+padding:35px;
 
+background:
 
-    padding:
-    10px 22px;
+linear-gradient(
+145deg,
+rgba(8,38,108,.96),
+rgba(3,20,72,.98));
 
+border-radius:30px;
 
-    margin-bottom:
-    20px;
+border:1px solid rgba(255,215,0,.25);
 
+box-shadow:
 
-    border-radius:
-    30px;
+0 0 25px rgba(0,120,255,.30),
 
+0 0 60px rgba(0,0,0,.35);
 
-    background:
-
-    var(--or);
-
-
-    color:
-    var(--bleu-fonce);
-
-
-    font-size:
-    18px;
-
-
-    font-weight:
-    700;
-
-
-    box-shadow:
-
-
-    0 0 18px rgba(255,215,0,.50);
-
+transition:.45s;
 
 }
-
-
 
 /*=========================
- TITRE ARTICLE
+ HALO DU LIVRE
 =========================*/
 
+.livre::before{
 
-.article-title{
+content:"";
 
+position:absolute;
 
-    font-size:
-    28px;
+top:-50%;
+left:-50%;
 
+width:200%;
+height:200%;
 
-    font-weight:
-    700;
+background:
 
+conic-gradient(
 
-    color:
-    var(--or);
+transparent,
 
+rgba(255,215,0,.08),
 
-    margin-bottom:
-    15px;
+transparent,
 
+rgba(0,160,255,.08),
 
-    line-height:
-    1.4;
+transparent);
 
+animation:
+
+rotationLivre 22s linear infinite;
+
+pointer-events:none;
 
 }
 
+@keyframes rotationLivre{
 
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.livre>*{
+
+position:relative;
+
+z-index:2;
+
+}
 
 /*=========================
- STRUCTURE CODE
- Titre - Chapitre - Section
+ EN-TÊTE
 =========================*/
 
+.livre-header{
 
-.article-meta{
+text-align:center;
 
-
-    display:
-    flex;
-
-
-    flex-wrap:
-    wrap;
-
-
-    gap:
-    10px;
-
-
-    margin-bottom:
-    20px;
-
+margin-bottom:25px;
 
 }
 
+#numeroArticle{
 
+display:inline-block;
 
-.article-meta span{
+padding:10px 24px;
 
+background:
 
-    padding:
-    8px 15px;
+linear-gradient(
+135deg,
+#FFD700,
+#ffb400);
 
+color:#041c5c;
 
-    border-radius:
-    20px;
+font-weight:700;
 
+border-radius:30px;
 
-    background:
+margin-bottom:15px;
 
-    rgba(255,255,255,.08);
+box-shadow:
 
+0 0 20px rgba(255,215,0,.50);
 
-    color:
-    #dbe8ff;
+animation:
 
-
-    font-size:
-    14px;
-
-
-    border:
-
-    1px solid rgba(255,215,0,.15);
-
+pulseNumero 2.5s infinite;
 
 }
 
+@keyframes pulseNumero{
 
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.06);
+
+}
+
+}
+
+#titreArticle{
+
+font-size:30px;
+
+color:#FFD700;
+
+margin-top:10px;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.40);
+
+}
+
+/*=========================
+ PAGE JURIDIQUE
+=========================*/
+
+.page-livre{
+
+position:relative;
+
+background:
+
+linear-gradient(
+
+180deg,
+
+#ffffff,
+
+#f5f8ff);
+
+color:#1b1b1b;
+
+padding:40px;
+
+border-radius:18px;
+
+min-height:420px;
+
+font-size:18px;
+
+line-height:2;
+
+text-align:justify;
+
+box-shadow:
+
+inset 0 0 20px rgba(0,0,0,.08),
+
+0 0 18px rgba(0,0,0,.18);
+
+overflow:hidden;
+
+animation:
+
+ouvrirLivre .7s ease;
+
+}
+
+/*=========================
+ TEXTURE PAPIER
+=========================*/
+
+.page-livre::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+opacity:.05;
+
+background:
+
+repeating-linear-gradient(
+
+0deg,
+
+#000 0px,
+
+transparent 1px,
+
+transparent 34px);
+
+pointer-events:none;
+
+}
+
+/*=========================
+ APPARITION
+=========================*/
+
+@keyframes ouvrirLivre{
+
+from{
+
+opacity:0;
+
+transform:
+
+rotateY(12deg)
+
+translateX(40px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+rotateY(0)
+
+translateX(0);
+
+}
+
+}
 
 /*=========================
  CONTENU ARTICLE
 =========================*/
 
+#contenuArticle h2{
 
-.article-content{
+color:#0b48b8;
 
+font-size:28px;
 
-    font-size:
-    18px;
-
-
-    line-height:
-    1.9;
-
-
-    color:
-    #eef4ff;
-
-
-    text-align:
-    justify;
-
-
-    padding:
-    25px;
-
-
-    border-radius:
-    18px;
-
-
-    background:
-
-    rgba(255,255,255,.06);
-
-
-    border-left:
-
-    5px solid var(--or);
-
+margin-bottom:15px;
 
 }
 
+#contenuArticle h3{
 
+color:#041c5c;
+
+margin-bottom:20px;
+
+}
+
+#contenuArticle p{
+
+color:#222;
+
+line-height:2;
+
+font-size:18px;
+
+}
 
 /*=========================
- INFRACTIONS
+ ACTIONS
 =========================*/
 
+.livre-actions{
 
-.infraction-box{
+display:flex;
 
+flex-wrap:wrap;
 
-    margin-top:
-    25px;
+justify-content:center;
 
+gap:15px;
 
-    padding:
-    20px;
-
-
-    border-radius:
-    18px;
-
-
-    background:
-
-    rgba(255,0,0,.08);
-
-
-    border-left:
-
-    5px solid #ff5252;
-
+margin-top:30px;
 
 }
 
+.livre-actions button{
 
+padding:15px 24px;
 
-.infraction-box h4{
+border-radius:18px;
 
+font-size:16px;
 
-    color:
-    #ff8080;
+font-weight:700;
 
+background:
 
-    margin-bottom:
-    12px;
+linear-gradient(
 
+135deg,
+
+#0b48b8,
+
+#06245e);
+
+color:#FFD700;
+
+border:1px solid rgba(255,215,0,.20);
+
+transition:.35s;
+
+position:relative;
+
+overflow:hidden;
 
 }
-
-
 
 /*=========================
- MOTS CLES IA
+ REFLET
 =========================*/
 
+.livre-actions button::before{
 
-.keyword-box{
+content:"";
 
+position:absolute;
 
-    margin-top:
-    20px;
+top:-150%;
 
+left:-40%;
 
-    display:
-    flex;
+width:40%;
 
+height:320%;
 
-    flex-wrap:
-    wrap;
+background:
 
+rgba(255,255,255,.45);
 
-    gap:
-    10px;
+transform:rotate(25deg);
 
-
-}
-
-
-
-.keyword{
-
-
-    padding:
-    7px 15px;
-
-
-    border-radius:
-    25px;
-
-
-    background:
-
-    rgba(255,215,0,.15);
-
-
-    color:
-    var(--or);
-
-
-    font-size:
-    14px;
-
+transition:.6s;
 
 }
 
+.livre-actions button:hover::before{
 
+left:150%;
+
+}
+
+.livre-actions button:hover{
+
+transform:
+
+translateY(-6px)
+
+scale(1.06);
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#FFD700,
+
+#ffb400);
+
+color:#041c5c;
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.55),
+
+0 0 40px rgba(0,150,255,.35);
+
+}
 
 /*=========================
- BOUTONS ARTICLE
+ ICÔNES
 =========================*/
 
+.livre-actions button i{
 
-.article-actions{
+margin-right:8px;
 
-
-    display:
-    flex;
-
-
-    flex-wrap:
-    wrap;
-
-
-    justify-content:
-    center;
-
-
-    gap:
-    18px;
-
-
-    margin-top:
-    30px;
-
+transition:.35s;
 
 }
 
+.livre-actions button:hover i{
 
+transform:
 
-.article-actions button{
+rotate(-12deg)
 
-
-    padding:
-    15px 24px;
-
-
-    border-radius:
-    18px;
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #0b48b8,
-        #06245e
-    );
-
-
-    color:
-    var(--or);
-
-
-    font-weight:
-    700;
-
+scale(1.20);
 
 }
-
-
-
-.article-actions button:hover{
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #FFD700,
-        #ffb300
-    );
-
-
-    color:
-    #041c5c;
-
-
-    transform:
-
-    translateY(-6px)
-    scale(1.05);
-
-
-}
-
-
 
 /*=========================
- FIN PARTIE 4
+ RESPONSIVE
 =========================*/
 
+@media(max-width:768px){
 
+.page-livre{
 
-/*=================================================
+padding:22px;
+
+font-size:16px;
+
+}
+
+#titreArticle{
+
+font-size:24px;
+
+}
+
+.livre-actions{
+
+flex-direction:column;
+
+}
+
+.livre-actions button{
+
+width:100%;
+
+}
+
+ }
+
+/*==================================================
  INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 5/7
- ASSISTANT IA + RAPPORT JURIDIQUE
+ CSS PREMIUM V5.0
+ PARTIE 4/10
+ ASSISTANT JURIDIQUE IA
 ==================================================*/
 
+/*=========================
+ SECTION IA
+=========================*/
 
-/*=================================================
- CONTENEUR REPONSE IA
-==================================================*/
+.assistant-section{
 
-
-.ai-result{
-
-
-    margin-top:
-    40px;
-
-
-    padding:
-    35px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        rgba(12,45,120,.95),
-        rgba(5,25,75,.95)
-    );
-
-
-    border-radius:
-    30px;
-
-
-    border:
-
-    1px solid rgba(255,215,0,.25);
-
-
-    backdrop-filter:
-
-    blur(18px);
-
-
-    -webkit-backdrop-filter:
-
-    blur(18px);
-
-
-    box-shadow:
-
-
-    0 0 25px rgba(0,140,255,.25),
-
-
-    0 0 50px rgba(255,215,0,.10);
-
-
-    animation:
-
-    fadeIA .8s ease;
-
+margin:45px 0;
 
 }
 
+.assistant-card{
 
+position:relative;
 
-@keyframes fadeIA{
+overflow:hidden;
 
+padding:35px;
 
-    from{
+background:
 
-        opacity:0;
+linear-gradient(
+145deg,
+rgba(6,32,105,.95),
+rgba(3,18,70,.98));
 
-        transform:
-        translateY(30px);
+border-radius:30px;
 
-    }
+border:1px solid rgba(0,255,170,.20);
 
+box-shadow:
 
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0);
-
-    }
-
+0 0 30px rgba(0,170,255,.25);
 
 }
 
+/*=========================
+ HALO IA
+=========================*/
 
+.assistant-card::before{
 
-/*=================================================
+content:"";
+
+position:absolute;
+
+top:-60%;
+left:-60%;
+
+width:220%;
+height:220%;
+
+background:
+
+conic-gradient(
+transparent,
+rgba(0,255,170,.08),
+transparent,
+rgba(0,140,255,.10),
+transparent);
+
+animation:rotationIA 16s linear infinite;
+
+pointer-events:none;
+
+}
+
+@keyframes rotationIA{
+
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.assistant-card>*{
+
+position:relative;
+
+z-index:2;
+
+}
+
+/*=========================
  TITRE IA
-==================================================*/
+=========================*/
 
+.assistant-card h2{
 
-.ai-result h3{
+text-align:center;
 
+font-size:32px;
 
-    display:
-    flex;
+color:#FFD700;
 
+margin-bottom:15px;
 
-    justify-content:
-    center;
+text-shadow:
 
-
-    align-items:
-    center;
-
-
-    gap:
-    12px;
-
-
-    margin-bottom:
-    25px;
-
-
-    font-size:
-    30px;
-
-
-    color:
-    var(--or);
-
-
-    text-shadow:
-
-
-    0 0 12px rgba(255,215,0,.6);
-
+0 0 15px rgba(255,215,0,.45);
 
 }
 
+.assistant-card h2 i{
 
+margin-right:10px;
 
-/* Indicateur IA */
+color:#00ff95;
 
-
-.ai-result h3::before{
-
-
-    content:"🟢";
-
-
-    font-size:
-    18px;
-
-
-    animation:
-
-    pulseIA 1.2s infinite;
-
+animation:pulseRobot 2s infinite;
 
 }
 
+@keyframes pulseRobot{
 
+0%,100%{
 
-@keyframes pulseIA{
-
-
-    0%{
-
-        opacity:.4;
-
-        transform:
-        scale(.9);
-
-    }
-
-
-    50%{
-
-        opacity:1;
-
-        transform:
-        scale(1.3);
-
-    }
-
-
-    100%{
-
-        opacity:.4;
-
-        transform:
-        scale(.9);
-
-    }
-
+transform:scale(1);
 
 }
 
+50%{
 
+transform:scale(1.18);
 
-/*=================================================
- ZONE REPONSE RAG
-==================================================*/
+}
 
+}
+
+.assistant-card p{
+
+text-align:center;
+
+margin-bottom:25px;
+
+color:#dce8ff;
+
+}
+
+/*=========================
+ QUESTION IA
+=========================*/
+
+#questionIA{
+
+min-height:160px;
+
+resize:vertical;
+
+background:
+
+rgba(255,255,255,.08);
+
+color:white;
+
+font-size:17px;
+
+line-height:1.8;
+
+}
+
+/*=========================
+ ACTIONS IA
+=========================*/
+
+.assistant-actions{
+
+display:flex;
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+gap:15px;
+
+margin-top:25px;
+
+}
+
+.assistant-actions button{
+
+padding:15px 24px;
+
+border-radius:18px;
+
+font-size:16px;
+
+font-weight:700;
+
+background:
+
+linear-gradient(
+135deg,
+#00c853,
+#00897b);
+
+color:white;
+
+transition:.35s;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.assistant-actions button:nth-child(2){
+
+background:
+
+linear-gradient(
+135deg,
+#ef5350,
+#c62828);
+
+}
+
+.assistant-actions button:nth-child(3){
+
+background:
+
+linear-gradient(
+135deg,
+#1565c0,
+#0d47a1);
+
+}
+
+/*=========================
+ EFFET LASER
+=========================*/
+
+.assistant-actions button::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:60%;
+
+height:100%;
+
+background:
+
+rgba(255,255,255,.35);
+
+transform:skewX(-25deg);
+
+transition:.6s;
+
+}
+
+.assistant-actions button:hover::after{
+
+left:150%;
+
+}
+
+.assistant-actions button:hover{
+
+transform:
+
+translateY(-5px)
+
+scale(1.05);
+
+box-shadow:
+
+0 0 20px rgba(255,255,255,.25);
+
+}
+
+/*=========================
+ RÉPONSE IA
+=========================*/
 
 #reponseIA{
 
+margin-top:30px;
 
-    padding:
-    28px;
+padding:25px;
 
+background:
 
-    background:
+rgba(255,255,255,.07);
 
-    rgba(255,255,255,.06);
+border-left:5px solid #00ff95;
 
+border-radius:18px;
 
-    border-left:
+min-height:160px;
 
-    6px solid var(--or);
+color:#eef5ff;
 
+font-size:17px;
 
-    border-radius:
-    18px;
+line-height:1.9;
 
-
-    color:
-    #eef5ff;
-
-
-    font-size:
-    18px;
-
-
-    line-height:
-    1.9;
-
-
-    text-align:
-    justify;
-
+animation:apparitionIA .6s ease;
 
 }
 
+@keyframes apparitionIA{
 
+from{
 
-/* Articles dans réponse IA */
+opacity:0;
 
-
-#reponseIA .article-card{
-
-
-    margin-top:
-    20px;
-
+transform:translateY(20px);
 
 }
 
+to{
 
+opacity:1;
 
-/* Texte important */
-
-
-#reponseIA strong{
-
-
-    color:
-    var(--or);
-
+transform:translateY(0);
 
 }
 
-
-
-/*=================================================
- CONVERSATION IA
-==================================================*/
-
-
-.conversation-ia{
-
-
-    margin-top:
-    35px;
-
-
-    padding:
-    30px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        rgba(8,35,95,.96),
-        rgba(4,18,55,.96)
-    );
-
-
-    border-radius:
-    30px;
-
-
-    border:
-
-    1px solid rgba(255,215,0,.25);
-
-
 }
-
-
-
-/* Messages */
-
-
-.message-utilisateur,
-.message-ia{
-
-
-    padding:
-    22px;
-
-
-    margin-bottom:
-    22px;
-
-
-    border-radius:
-    22px;
-
-
-    font-size:
-    17px;
-
-
-    line-height:
-    1.8;
-
-
-}
-
-
-
-/* Message utilisateur */
-
-
-.message-utilisateur{
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #0b48b8,
-        #06245e
-    );
-
-
-    border-left:
-
-    6px solid var(--or);
-
-
-}
-
-
-
-/* Message IA */
-
-
-.message-ia{
-
-
-    background:
-
-    rgba(255,255,255,.08);
-
-
-    border-left:
-
-    6px solid var(--vert-ia);
-
-
-}
-
-
-
-/*=================================================
- RAPPORT JURIDIQUE
-==================================================*/
-
-
-.rapport-juridique{
-
-
-    margin-top:
-    35px;
-
-
-    padding:
-    35px;
-
-
-    border-radius:
-    30px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        rgba(8,35,95,.97),
-        rgba(3,18,55,.97)
-    );
-
-
-    border:
-
-    1px solid rgba(255,215,0,.25);
-
-
-}
-
-
-
-/* Titre rapport */
-
-
-.rapport-juridique h2{
-
-
-    text-align:
-    center;
-
-
-    font-size:
-    32px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    30px;
-
-
-}
-
-
-
-/* Sous titres */
-
-
-.rapport-juridique h3{
-
-
-    color:
-    var(--or);
-
-
-    font-size:
-    22px;
-
-
-    margin-top:
-    25px;
-
-
-}
-
-
-
-/* Paragraphes */
-
-
-.rapport-juridique p{
-
-
-    color:
-    #eef4ff;
-
-
-    font-size:
-    17px;
-
-
-    line-height:
-    1.9;
-
-
-}
-
-
-
-/* Bloc articles */
-
-
-.rapport-juridique pre{
-
-
-    margin-top:
-    20px;
-
-
-    padding:
-    22px;
-
-
-    background:
-
-    rgba(255,255,255,.06);
-
-
-    border-left:
-
-    5px solid var(--or);
-
-
-    border-radius:
-    18px;
-
-
-    color:
-    #eef4ff;
-
-
-    white-space:
-    pre-wrap;
-
-
-}
-
-
-
-/* Niveau risque */
-
-
-.risque{
-
-
-    display:
-    inline-flex;
-
-
-    padding:
-    10px 18px;
-
-
-    border-radius:
-    30px;
-
-
-    background:
-
-    rgba(255,215,0,.15);
-
-
-    color:
-    var(--or);
-
-
-    font-weight:
-    bold;
-
-
-}
-
-
 
 /*=========================
- FIN PARTIE 5
+ MESSAGE IA
 =========================*/
 
+.ia-message{
 
-/*=================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 6/7
- COPILOTE INSPECTION IA
- F01 • F02 • F03 • PV
-==================================================*/
+display:flex;
 
+gap:15px;
 
-/*=================================================
- CONTENEUR COPILOTE
-==================================================*/
-
-
-.copilote-ia{
-
-
-    margin-top:
-    40px;
-
-
-    padding:
-    35px;
-
-
-    background:
-
-    linear-gradient(
-        145deg,
-        rgba(5,28,82,.96),
-        rgba(3,16,48,.96)
-    );
-
-
-    border-radius:
-    30px;
-
-
-    border:
-
-    1px solid rgba(255,215,0,.25);
-
-
-    backdrop-filter:
-
-    blur(20px);
-
-
-    -webkit-backdrop-filter:
-
-    blur(20px);
-
-
-    box-shadow:
-
-
-    0 0 30px rgba(0,120,255,.25),
-
-
-    0 0 55px rgba(255,215,0,.12);
-
-
-    animation:
-
-    copiloteFade .8s ease;
-
+align-items:flex-start;
 
 }
 
+.ia-message i{
 
+font-size:28px;
 
-@keyframes copiloteFade{
+color:#FFD700;
 
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translateY(35px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateY(0);
-
-    }
-
+animation:clignoter 1.5s infinite;
 
 }
 
+@keyframes clignoter{
 
+0%,100%{
 
-/*=================================================
- TITRES COPILOTE
-==================================================*/
-
-
-.copilote-ia h2{
-
-
-    text-align:
-    center;
-
-
-    font-size:
-    34px;
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    30px;
-
+opacity:1;
 
 }
 
+50%{
 
-
-.copilote-ia h3{
-
-
-    font-size:
-    24px;
-
-
-    color:
-    var(--or);
-
-
-    margin-top:
-    30px;
-
-
-    margin-bottom:
-    18px;
-
+opacity:.35;
 
 }
 
+}
 
+.ia-message p{
 
-/*=================================================
- BADGE IA ACTIVE
-==================================================*/
+margin:0;
 
-
-.badge-ia{
-
-
-    display:
-    inline-flex;
-
-
-    align-items:
-    center;
-
-
-    gap:
-    10px;
-
-
-    padding:
-    10px 18px;
-
-
-    border-radius:
-    30px;
-
-
-    background:
-
-    rgba(0,255,170,.12);
-
-
-    color:
-    #00ff99;
-
-
-    border:
-
-    1px solid rgba(0,255,170,.30);
-
-
-    font-weight:
-    700;
-
+text-align:left;
 
 }
 
-
-
-/*=================================================
- PROCÈS VERBAL INSPECTION
-==================================================*/
-
-
-.copilote-ia pre{
-
-
-    padding:
-    25px;
-
-
-    border-radius:
-    20px;
-
-
-    background:
-
-    rgba(255,255,255,.06);
-
-
-    border-left:
-
-    6px solid var(--or);
-
-
-    color:
-    #eef4ff;
-
-
-    font-size:
-    16px;
-
-
-    line-height:
-    1.9;
-
-
-    white-space:
-    pre-wrap;
-
-
-    overflow:auto;
-
-
-}
-
-
-
-/*=================================================
- LISTE POINTS DE CONTRÔLE
- F01 F02 F03
-==================================================*/
-
-
-.copilote-ia ul{
-
-
-    margin-top:
-    20px;
-
-
-    padding-left:
-    25px;
-
-
-}
-
-
-
-.copilote-ia li{
-
-
-    margin-bottom:
-    14px;
-
-
-    font-size:
-    17px;
-
-
-    color:
-    #eef4ff;
-
-
-}
-
-
-
-.copilote-ia li::marker{
-
-
-    color:
-    var(--or);
-
-
-}
-
-
-
-/*=================================================
- CARTES RECOMMANDATIONS
-==================================================*/
-
-
-.recommandation-card{
-
-
-    padding:
-    22px;
-
-
-    margin-top:
-    18px;
-
-
-    border-radius:
-    20px;
-
-
-    background:
-
-    rgba(255,255,255,.05);
-
-
-    border:
-
-    1px solid rgba(255,215,0,.15);
-
-
-    transition:
-    .35s;
-
-
-}
-
-
-
-.recommandation-card:hover{
-
-
-    transform:
-    translateY(-6px);
-
-
-    border-color:
-    var(--or);
-
-
-    box-shadow:
-
-
-    0 0 20px rgba(255,215,0,.35);
-
-
-}
-
-
-
-/*=================================================
- DOSSIER INSPECTION
-==================================================*/
-
-
-.dossier-ia{
-
-
-    display:
-    grid;
-
-
-    grid-template-columns:
-
-    repeat(
-        auto-fit,
-        minmax(240px,1fr)
-    );
-
-
-    gap:
-    18px;
-
-
-    margin-top:
-    30px;
-
-
-}
-
-
-
-.dossier-item{
-
-
-    padding:
-    18px;
-
-
-    border-radius:
-    18px;
-
-
-    background:
-
-    rgba(255,255,255,.05);
-
-
-    border:
-
-    1px solid rgba(255,215,0,.12);
-
-
-}
-
-
-
-.dossier-item h4{
-
-
-    color:
-    var(--or);
-
-
-    margin-bottom:
-    10px;
-
-
-}
-
-
-
-.dossier-item p{
-
-
-    color:
-    #eef4ff;
-
-
-    line-height:
-    1.7;
-
-
-}
-
-
-
-/*=================================================
- ACTIONS COPILOTE
-==================================================*/
-
-
-.copilote-actions{
-
-
-    display:
-    flex;
-
-
-    flex-wrap:
-    wrap;
-
-
-    justify-content:
-    center;
-
-
-    gap:
-    18px;
-
-
-    margin-top:
-    35px;
-
-
-}
-
-
-
-.copilote-actions button{
-
-
-    padding:
-    15px 24px;
-
-
-    border-radius:
-    18px;
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #0b48b8,
-        #06245e
-    );
-
-
-    color:
-    var(--or);
-
-
-    font-weight:
-    700;
-
-
-}
-
-
-
-.copilote-actions button:hover{
-
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #FFD700,
-        #ffb300
-    );
-
-
-    color:
-    #041c5c;
-
-
-    transform:
-
-    translateY(-6px)
-    scale(1.06);
-
-
-}
-
-
-
-/*=================================================
- RESPONSIVE COPILOTE
-==================================================*/
-
+/*=========================
+ RESPONSIVE
+=========================*/
 
 @media(max-width:768px){
 
+.assistant-card{
 
-    .copilote-ia{
-
-        padding:
-        22px;
-
-    }
-
-
-    .copilote-ia h2{
-
-        font-size:
-        26px;
-
-    }
-
-
-    .copilote-ia h3{
-
-        font-size:
-        20px;
-
-    }
-
-
-    .copilote-actions{
-
-        flex-direction:
-        column;
-
-    }
-
-
-    .copilote-actions button{
-
-        width:
-        100%;
-
-    }
-
+padding:22px;
 
 }
 
+.assistant-card h2{
 
+font-size:25px;
+
+}
+
+.assistant-actions{
+
+flex-direction:column;
+
+}
+
+.assistant-actions button{
+
+width:100%;
+
+}
+
+#questionIA{
+
+min-height:130px;
+
+}
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 5/10
+ INFORMATIONS + STATISTIQUES
+==================================================*/
 
 /*=========================
- FIN PARTIE 6
+ SECTION INFORMATIONS
 =========================*/
 
+.info-section{
 
-
-/*=================================================
- INSPECTEURBOT IA RDC
- CSS PREMIUM V4.0
- PARTIE 7/7
- RESPONSIVE + EXPORT PDF + IMPRESSION
-==================================================*/
-
-
-/*=================================================
- RESPONSIVE GLOBAL
-==================================================*/
-
-
-@media(max-width:992px){
-
-
-    .container{
-
-
-        width:
-        97%;
-
-
-        padding:
-        18px;
-
-
-    }
-
-
-
-    .article-card,
-    .category-card,
-    .search-section,
-    .article-section,
-    .ai-result,
-    .rapport-juridique,
-    .copilote-ia{
-
-
-        padding:
-        22px;
-
-
-    }
-
+margin:40px 0;
 
 }
 
+.info-card{
 
+padding:35px;
 
-/*=================================================
- MOBILE ANDROID / IPHONE
-==================================================*/
+position:relative;
 
+overflow:hidden;
+
+}
+
+.info-card h3{
+
+text-align:center;
+
+font-size:30px;
+
+color:var(--or);
+
+margin-bottom:30px;
+
+text-shadow:
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+.info-card h3 i{
+
+margin-right:10px;
+
+animation:infoPulse 2s infinite;
+
+}
+
+@keyframes infoPulse{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.15);
+
+}
+
+}
+
+/*=========================
+ GRILLE INFORMATIONS
+=========================*/
+
+.info-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+}
+
+/*=========================
+ CARTE INFO
+=========================*/
+
+.info-box{
+
+padding:25px;
+
+border-radius:22px;
+
+background:
+
+linear-gradient(
+145deg,
+rgba(9,44,120,.85),
+rgba(3,22,70,.95));
+
+border:1px solid rgba(255,215,0,.15);
+
+text-align:center;
+
+transition:.4s;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.info-box::before{
+
+content:"";
+
+position:absolute;
+
+top:-120%;
+left:-40%;
+
+width:40%;
+height:320%;
+
+background:
+
+rgba(255,255,255,.20);
+
+transform:rotate(25deg);
+
+transition:.7s;
+
+}
+
+.info-box:hover::before{
+
+left:150%;
+
+}
+
+.info-box:hover{
+
+transform:
+
+translateY(-8px)
+
+scale(1.03);
+
+border-color:var(--or);
+
+box-shadow:
+
+0 0 18px rgba(255,215,0,.35),
+
+0 0 35px rgba(0,160,255,.25);
+
+}
+
+.info-box h4{
+
+font-size:18px;
+
+color:var(--or);
+
+margin-bottom:12px;
+
+}
+
+.info-box p{
+
+font-size:20px;
+
+font-weight:700;
+
+color:#ffffff;
+
+word-break:break-word;
+
+}
+
+/*=========================
+ SECTION STATISTIQUES
+=========================*/
+
+.statistiques-section{
+
+margin:45px 0;
+
+}
+
+.statistiques-section h2{
+
+text-align:center;
+
+font-size:32px;
+
+color:var(--or);
+
+margin-bottom:30px;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+/*=========================
+ GRILLE STATS
+=========================*/
+
+.stats-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:22px;
+
+}
+
+/*=========================
+ CARTE STAT
+=========================*/
+
+.stat-card{
+
+padding:30px;
+
+text-align:center;
+
+position:relative;
+
+overflow:hidden;
+
+transition:.45s;
+
+}
+
+.stat-card::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:
+
+linear-gradient(
+135deg,
+transparent,
+rgba(255,255,255,.05),
+transparent);
+
+transform:translateX(-100%);
+
+transition:.8s;
+
+}
+
+.stat-card:hover::after{
+
+transform:translateX(100%);
+
+}
+
+.stat-card:hover{
+
+transform:
+
+translateY(-10px)
+
+scale(1.04);
+
+}
+
+/*=========================
+ ICÔNES
+=========================*/
+
+.stat-card i{
+
+font-size:48px;
+
+color:var(--or);
+
+margin-bottom:18px;
+
+animation:iconeStat 3s infinite ease-in-out;
+
+}
+
+@keyframes iconeStat{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-8px);
+
+}
+
+}
+
+/*=========================
+ VALEUR
+=========================*/
+
+.stat-card h3{
+
+font-size:42px;
+
+color:#ffffff;
+
+margin-bottom:10px;
+
+text-shadow:
+
+0 0 15px rgba(0,180,255,.45);
+
+}
+
+/*=========================
+ LIBELLÉ
+=========================*/
+
+.stat-card p{
+
+font-size:17px;
+
+color:#dce8ff;
+
+}
+
+/*=========================
+ RESPONSIVE
+=========================*/
 
 @media(max-width:768px){
 
+.info-card,
+.stat-card{
 
-    body{
-
-        font-size:
-        15px;
-
-    }
-
-
-
-    .container{
-
-        width:
-        96%;
-
-        padding:
-        12px;
-
-    }
-
-
-
-    .top-header{
-
-
-        padding:
-        25px 18px;
-
-
-        border-radius:
-        22px;
-
-
-    }
-
-
-
-    .logo-box img{
-
-
-        width:
-        80px;
-
-
-        height:
-        80px;
-
-
-    }
-
-
-
-    .title-box h1{
-
-
-        font-size:
-        26px;
-
-
-    }
-
-
-
-    .title-box h2{
-
-
-        font-size:
-        18px;
-
-
-    }
-
-
-
-    #clock{
-
-
-        font-size:
-        36px;
-
-
-    }
-
-
-
-    .search-box{
-
-
-        flex-direction:
-        column;
-
-
-    }
-
-
-
-    .search-box input,
-    .search-box button{
-
-
-        width:
-        100%;
-
-
-    }
-
-
-
-    .categories{
-
-
-        grid-template-columns:
-        1fr;
-
-
-    }
-
-
-
-    .article-title{
-
-
-        font-size:
-        22px;
-
-
-    }
-
-
-
-    .article-content{
-
-
-        font-size:
-        15px;
-
-
-        padding:
-        18px;
-
-
-    }
-
-
-
-    .article-actions,
-    .rapport-actions,
-    .copilote-actions{
-
-
-        flex-direction:
-        column;
-
-
-    }
-
-
-
-    .article-actions button,
-    .rapport-actions button,
-    .copilote-actions button{
-
-
-        width:
-        100%;
-
-
-    }
-
+padding:22px;
 
 }
 
+.info-card h3,
+.statistiques-section h2{
 
+font-size:24px;
 
+}
 
-/*=================================================
+.stat-card h3{
+
+font-size:34px;
+
+}
+
+.stat-card i{
+
+font-size:40px;
+
+}
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 6/10
+ OUTILS DE L'INSPECTEUR
+==================================================*/
+
+/*=========================
+ SECTION OUTILS
+=========================*/
+
+.outils-section{
+
+margin:45px 0;
+
+}
+
+.outils-section h2{
+
+text-align:center;
+
+font-size:32px;
+
+color:var(--or);
+
+margin-bottom:35px;
+
+text-shadow:
+
+0 0 18px rgba(255,215,0,.45);
+
+}
+
+.outils-section h2 i{
+
+margin-right:10px;
+
+animation:toolRotate 6s linear infinite;
+
+}
+
+@keyframes toolRotate{
+
+0%{
+
+transform:rotate(0deg);
+
+}
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+/*=========================
+ GRILLE
+=========================*/
+
+.outils-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(260px,1fr));
+
+gap:25px;
+
+}
+
+/*=========================
+ CARTE
+=========================*/
+
+.outil-card{
+
+position:relative;
+
+overflow:hidden;
+
+padding:30px;
+
+text-align:center;
+
+border-radius:28px;
+
+background:
+
+linear-gradient(
+145deg,
+rgba(10,42,118,.92),
+rgba(4,22,68,.96));
+
+border:
+
+1px solid rgba(255,215,0,.18);
+
+transition:.45s;
+
+}
+
+/*=========================
+ HALO
+=========================*/
+
+.outil-card::before{
+
+content:"";
+
+position:absolute;
+
+top:-60%;
+left:-60%;
+
+width:220%;
+height:220%;
+
+background:
+
+conic-gradient(
+
+transparent,
+
+rgba(255,215,0,.08),
+
+transparent,
+
+rgba(0,170,255,.10),
+
+transparent);
+
+animation:
+
+outilHalo 18s linear infinite;
+
+pointer-events:none;
+
+}
+
+@keyframes outilHalo{
+
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.outil-card>*{
+
+position:relative;
+
+z-index:2;
+
+}
+
+/*=========================
+ SURVOL
+=========================*/
+
+.outil-card:hover{
+
+transform:
+
+translateY(-12px)
+
+scale(1.04);
+
+border-color:var(--or);
+
+box-shadow:
+
+0 0 25px rgba(255,215,0,.40),
+
+0 0 45px rgba(0,160,255,.35);
+
+}
+
+/*=========================
+ ICÔNES
+=========================*/
+
+.outil-card i{
+
+font-size:54px;
+
+color:var(--or);
+
+margin-bottom:20px;
+
+transition:.45s;
+
+animation:
+
+iconeFlotte 3s ease-in-out infinite;
+
+}
+
+@keyframes iconeFlotte{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-10px);
+
+}
+
+}
+
+.outil-card:hover i{
+
+transform:
+
+scale(1.18)
+
+rotate(10deg);
+
+}
+
+/*=========================
+ TITRE
+=========================*/
+
+.outil-card h3{
+
+font-size:24px;
+
+color:var(--or);
+
+margin-bottom:15px;
+
+}
+
+/*=========================
+ DESCRIPTION
+=========================*/
+
+.outil-card p{
+
+font-size:16px;
+
+line-height:1.8;
+
+color:#dbe8ff;
+
+}
+
+/*=========================
+ EFFET LASER
+=========================*/
+
+.outil-card::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-120%;
+
+width:45%;
+
+height:100%;
+
+background:
+
+rgba(255,255,255,.18);
+
+transform:
+
+skewX(-25deg);
+
+transition:.8s;
+
+}
+
+.outil-card:hover::after{
+
+left:150%;
+
+}
+
+/*=========================
+ RESPONSIVE
+=========================*/
+
+@media(max-width:768px){
+
+.outils-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.outil-card{
+
+padding:24px;
+
+}
+
+.outil-card i{
+
+font-size:46px;
+
+}
+
+.outil-card h3{
+
+font-size:21px;
+
+}
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 7/10
+ FOOTER PREMIUM + LANGUES
+==================================================*/
+
+/*=========================
+ BARRE DE LANGUE
+=========================*/
+
+.language-bar{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:15px;
+
+margin:40px auto;
+
+padding:18px 25px;
+
+width:min(500px,95%);
+
+background:
+
+rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,215,0,.20);
+
+border-radius:50px;
+
+box-shadow:
+
+0 0 25px rgba(0,120,255,.20);
+
+transition:.4s;
+
+}
+
+.language-bar:hover{
+
+transform:
+
+translateY(-4px);
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.35),
+
+0 0 45px rgba(0,160,255,.35);
+
+}
+
+.language-bar label{
+
+font-size:18px;
+
+font-weight:700;
+
+color:var(--or);
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.language-bar label i{
+
+animation:rotationLangue 8s linear infinite;
+
+}
+
+@keyframes rotationLangue{
+
+0%{
+
+transform:rotate(0deg);
+
+}
+
+100%{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.language-bar select{
+
+width:220px;
+
+background:
+
+rgba(255,255,255,.10);
+
+color:white;
+
+border-radius:18px;
+
+cursor:pointer;
+
+}
+
+.language-bar option{
+
+background:#06245e;
+
+color:white;
+
+}
+
+/*=========================
+ FOOTER
+=========================*/
+
+.footer{
+
+margin-top:60px;
+
+padding-bottom:40px;
+
+}
+
+.footer-content{
+
+position:relative;
+
+overflow:hidden;
+
+text-align:center;
+
+padding:45px;
+
+background:
+
+linear-gradient(
+145deg,
+rgba(7,35,105,.94),
+rgba(2,15,58,.98));
+
+border-radius:30px;
+
+border:1px solid rgba(255,215,0,.18);
+
+box-shadow:
+
+0 0 30px rgba(0,140,255,.25);
+
+}
+
+/*=========================
+ HALO
+=========================*/
+
+.footer-content::before{
+
+content:"";
+
+position:absolute;
+
+top:-60%;
+left:-60%;
+
+width:220%;
+height:220%;
+
+background:
+
+conic-gradient(
+
+transparent,
+
+rgba(255,215,0,.08),
+
+transparent,
+
+rgba(0,170,255,.10),
+
+transparent);
+
+animation:
+
+footerHalo 20s linear infinite;
+
+pointer-events:none;
+
+}
+
+@keyframes footerHalo{
+
+from{
+
+transform:rotate(0deg);
+
+}
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+.footer-content>*{
+
+position:relative;
+
+z-index:2;
+
+}
+
+/*=========================
+ LOGO
+=========================*/
+
+.footer-logo{
+
+width:110px;
+
+margin:auto;
+
+margin-bottom:20px;
+
+filter:
+
+drop-shadow(0 0 12px rgba(255,215,0,.55))
+
+drop-shadow(0 0 30px rgba(0,170,255,.30));
+
+animation:
+
+logoFooter 4s ease-in-out infinite;
+
+}
+
+@keyframes logoFooter{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+}
+
+}
+
+/*=========================
+ TITRES
+=========================*/
+
+.footer-content h2{
+
+font-size:30px;
+
+color:var(--or);
+
+margin-bottom:15px;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+.footer-content p{
+
+font-size:17px;
+
+line-height:1.9;
+
+color:#dbe8ff;
+
+margin-top:8px;
+
+}
+
+/*=========================
+ SEPARATEUR
+=========================*/
+
+.footer-content hr{
+
+margin:28px auto;
+
+width:70%;
+
+border:none;
+
+height:2px;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+var(--or),
+
+transparent);
+
+}
+
+/*=========================
+ NOM CREATEUR
+=========================*/
+
+.footer-content strong{
+
+color:var(--or);
+
+font-size:18px;
+
+}
+
+/*=========================
+ COPYRIGHT
+=========================*/
+
+.footer-content p:last-child{
+
+margin-top:20px;
+
+font-size:15px;
+
+opacity:.85;
+
+}
+
+/*=========================
+ RESPONSIVE
+=========================*/
+
+@media(max-width:768px){
+
+.language-bar{
+
+flex-direction:column;
+
+border-radius:24px;
+
+padding:20px;
+
+}
+
+.language-bar select{
+
+width:100%;
+
+}
+
+.footer-content{
+
+padding:28px;
+
+}
+
+.footer-content h2{
+
+font-size:24px;
+
+}
+
+.footer-logo{
+
+width:85px;
+
+}
+
+ }
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 8/10
+ ANIMATIONS IA PREMIUM
+==================================================*/
+
+/*=========================
+ TRANSITIONS GLOBALES
+=========================*/
+
+.hero,
+.search-card,
+.livre,
+.assistant-card,
+.info-card,
+.outil-card,
+.stat-card,
+.footer-content,
+button,
+input,
+textarea{
+
+transition:
+all .45s ease;
+
+}
+
+/*=========================
+ ANIMATION FLOTTANTE
+=========================*/
+
+@keyframes flotter{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-6px);
+
+}
+
+}
+
+.hero{
+
+animation:
+
+flotter 8s ease-in-out infinite;
+
+}
+
+/*=========================
+ PULSE LUMINEUX
+=========================*/
+
+@keyframes pulseGold{
+
+0%{
+
+box-shadow:
+
+0 0 10px rgba(255,215,0,.15);
+
+}
+
+50%{
+
+box-shadow:
+
+0 0 28px rgba(255,215,0,.55);
+
+}
+
+100%{
+
+box-shadow:
+
+0 0 10px rgba(255,215,0,.15);
+
+}
+
+}
+
+button{
+
+animation:
+
+pulseGold 3s infinite;
+
+}
+
+/*=========================
+ REFLET PREMIUM
+=========================*/
+
+button{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+button::after{
+
+content:"";
+
+position:absolute;
+
+top:-100%;
+
+left:-45%;
+
+width:35%;
+
+height:300%;
+
+background:
+
+rgba(255,255,255,.40);
+
+transform:
+
+rotate(25deg);
+
+transition:.7s;
+
+}
+
+button:hover::after{
+
+left:160%;
+
+}
+
+/*=========================
+ SURVOL
+=========================*/
+
+button:hover{
+
+transform:
+
+translateY(-6px)
+
+scale(1.05);
+
+}
+
+/*=========================
+ INPUTS
+=========================*/
+
+input:hover,
+textarea:hover{
+
+background:
+
+rgba(255,255,255,.12);
+
+}
+
+input:focus,
+textarea:focus{
+
+transform:
+
+scale(1.015);
+
+}
+
+/*=========================
+ APPARITION
+=========================*/
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:
+
+translateY(25px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(0);
+
+}
+
+}
+
+.hero,
+.search-section,
+.livre-section,
+.assistant-section,
+.info-section,
+.outils-section,
+.statistiques-section,
+.footer{
+
+animation:
+
+fadeUp .8s ease;
+
+}
+
+/*=========================
+ HALO DES CARTES
+=========================*/
+
+.hero:hover,
+.search-card:hover,
+.livre:hover,
+.assistant-card:hover,
+.info-card:hover,
+.stat-card:hover,
+.outil-card:hover{
+
+box-shadow:
+
+0 0 22px rgba(255,215,0,.35),
+
+0 0 55px rgba(0,160,255,.40);
+
+}
+
+/*=========================
+ ICÔNES
+=========================*/
+
+i{
+
+transition:.4s;
+
+}
+
+button:hover i{
+
+transform:
+
+rotate(-10deg)
+
+scale(1.20);
+
+}
+
+/*=========================
+ EFFET TITRES
+=========================*/
+
+h1,
+h2{
+
+position:relative;
+
+}
+
+h1::after,
+h2::after{
+
+content:"";
+
+display:block;
+
+width:0;
+
+height:3px;
+
+margin:auto;
+
+margin-top:10px;
+
+background:
+
+linear-gradient(
+90deg,
+transparent,
+#FFD700,
+transparent);
+
+transition:.5s;
+
+}
+
+.hero:hover h1::after,
+.search-card:hover h2::after,
+.assistant-card:hover h2::after,
+.outils-section:hover h2::after,
+.statistiques-section:hover h2::after{
+
+width:85%;
+
+}
+
+/*=========================
+ EFFET LIVRE
+=========================*/
+
+.page-livre{
+
+transform-origin:left center;
+
+}
+
+.livre:hover .page-livre{
+
+animation:
+
+tournerPage .8s ease;
+
+}
+
+@keyframes tournerPage{
+
+0%{
+
+transform:
+
+rotateY(0);
+
+}
+
+50%{
+
+transform:
+
+rotateY(-8deg);
+
+}
+
+100%{
+
+transform:
+
+rotateY(0);
+
+}
+
+}
+
+/*=========================
+ TEXTE IA
+=========================*/
+
+#reponseIA{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+#reponseIA::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-100%;
+
+width:100%;
+
+height:100%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.10),
+
+transparent);
+
+animation:
+
+scanIA 5s linear infinite;
+
+}
+
+@keyframes scanIA{
+
+0%{
+
+left:-100%;
+
+}
+
+100%{
+
+left:120%;
+
+}
+
+}
+
+/*=========================
+ CARDS
+=========================*/
+
+.stat-card:hover h3{
+
+transform:scale(1.10);
+
+color:#FFD700;
+
+}
+
+.outil-card:hover h3{
+
+letter-spacing:1px;
+
+}
+
+.info-box:hover p{
+
+color:#FFD700;
+
+}
+
+/*=========================
+ FIN PARTIE 8
+=========================*/
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 9/10
+ RESPONSIVE PREMIUM 2026
+===================================================*/
+
+/*=========================
+ VARIABLES
+=========================*/
+
+:root{
+
+--mobile:768px;
+--small-mobile:480px;
+--tablet:1024px;
+
+}
+
+/*=========================
+ IMAGES
+=========================*/
+
+img{
+
+max-width:100%;
+height:auto;
+display:block;
+
+}
+
+/*=========================
+ LIVRE
+=========================*/
+
+.livre{
+
+width:100%;
+
+}
+
+.page-livre{
+
+overflow-wrap:break-word;
+word-break:break-word;
+
+}
+
+/*=========================
+ TABLETTES
+=========================*/
+
+@media (max-width:1024px){
+
+.hero h1{
+
+font-size:34px;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+}
+
+.search-box{
+
+flex-wrap:wrap;
+
+}
+
+.search-box input{
+
+width:100%;
+
+}
+
+.search-box button{
+
+width:60px;
+height:60px;
+
+}
+
+.livre-actions{
+
+display:grid;
+
+grid-template-columns:
+repeat(2,1fr);
+
+gap:15px;
+
+}
+
+.outils-grid{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+.stats-grid{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+.info-grid{
+
+grid-template-columns:
+repeat(2,1fr);
+
+}
+
+}
+
+/*=========================
+ SMARTPHONE
+=========================*/
+
+@media (max-width:768px){
+
+body{
+
+font-size:15px;
+
+}
+
+main{
+
+width:96%;
+padding:15px;
+
+}
+
+.hero{
+
+padding:30px 15px;
+
+}
+
+.hero img{
+
+width:70px;
+
+}
+
+.hero h1{
+
+font-size:28px;
+
+}
+
+.hero p{
+
+font-size:16px;
+
+line-height:1.7;
+
+}
+
+.search-box{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+}
+
+.search-box input{
+
+width:100%;
+
+padding:16px;
+
+}
+
+.search-box button{
+
+width:100%;
+height:56px;
+
+border-radius:14px;
+
+}
+
+.recherche-rapide{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:10px;
+
+justify-content:center;
+
+}
+
+.recherche-rapide button{
+
+flex:1;
+
+min-width:120px;
+
+}
+
+.livre{
+
+padding:18px;
+
+}
+
+.page-livre{
+
+padding:18px;
+
+font-size:16px;
+
+line-height:1.9;
+
+}
+
+.livre-header h2{
+
+font-size:22px;
+
+}
+
+.livre-actions{
+
+display:grid;
+
+grid-template-columns:1fr;
+
+gap:12px;
+
+}
+
+.assistant-actions{
+
+display:grid;
+
+grid-template-columns:1fr;
+
+gap:12px;
+
+}
+
+textarea{
+
+width:100%;
+
+}
+
+.info-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.outils-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.stats-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.footer{
+
+text-align:center;
+
+}
+
+.footer-logo{
+
+margin:auto;
+
+}
+
+}
+
+/*=========================
  PETITS SMARTPHONES
-==================================================*/
+=========================*/
 
+@media (max-width:480px){
 
-@media(max-width:480px){
+.hero h1{
 
-
-    .container{
-
-
-        padding:
-        10px;
-
-
-    }
-
-
-
-    .title-box h1{
-
-
-        font-size:
-        22px;
-
-
-    }
-
-
-
-    .search-section,
-    .article-section,
-    .ai-result,
-    .rapport-juridique,
-    .copilote-ia{
-
-
-        padding:
-        18px;
-
-
-    }
-
-
-
-    #reponseIA{
-
-
-        font-size:
-        15px;
-
-
-        padding:
-        18px;
-
-
-    }
-
-
+font-size:24px;
 
 }
 
+.hero p{
 
-
-/*=================================================
- MODE PAYSAGE MOBILE
-==================================================*/
-
-
-@media(orientation:landscape)
-and (max-width:900px){
-
-
-    .search-box{
-
-
-        flex-direction:
-        row;
-
-
-    }
-
-
-
-    .article-actions{
-
-
-        flex-direction:
-        row;
-
-
-    }
-
+font-size:15px;
 
 }
 
+button{
 
-
-/*=================================================
- EXPORT PDF
-==================================================*/
-
-
-.export-zone{
-
-
-    background:
-    #ffffff;
-
-
-    color:
-    #000000;
-
-
-    padding:
-    35px;
-
-
-    border-radius:
-    20px;
-
+font-size:15px;
 
 }
 
+.page-livre{
 
-
-.export-zone h1,
-.export-zone h2,
-.export-zone h3{
-
-
-    color:
-    #003b8e;
-
+font-size:15px;
 
 }
 
+#reponseIA{
 
+font-size:15px;
 
-/*=================================================
- RAPPORT OFFICIEL INSPECTION
-==================================================*/
-
-
-.rapport-officiel{
-
-
-    background:
-    #ffffff;
-
-
-    color:
-    #111111;
-
-
-    border:
-
-    2px solid #003b8e;
-
-
-    border-radius:
-    18px;
-
-
-    padding:
-    30px;
-
-
-    margin-top:
-    30px;
-
+line-height:1.8;
 
 }
 
+.info-box h4{
 
-
-.rapport-officiel .entete{
-
-
-    text-align:
-    center;
-
-
-    border-bottom:
-
-    2px solid #003b8e;
-
-
-    padding-bottom:
-    20px;
-
+font-size:16px;
 
 }
 
+.info-box p{
 
-
-.rapport-officiel .titre{
-
-
-    font-size:
-    28px;
-
-
-    font-weight:
-    700;
-
-
-    color:
-    #003b8e;
-
-
-    text-transform:
-    uppercase;
-
+font-size:14px;
 
 }
 
+.stat-card h3{
 
-
-/* Tableau rapport */
-
-
-.rapport-table{
-
-
-    width:
-    100%;
-
-
-    border-collapse:
-    collapse;
-
+font-size:30px;
 
 }
 
+.stat-card p{
 
-
-.rapport-table th{
-
-
-    background:
-    #003b8e;
-
-
-    color:
-    white;
-
-
-    padding:
-    12px;
-
+font-size:14px;
 
 }
 
+}
 
+/*=========================
+ GRANDS ÉCRANS
+=========================*/
 
-.rapport-table td{
+@media (min-width:1400px){
 
+main{
 
-    padding:
-    12px;
-
-
-    border:
-
-    1px solid #cccccc;
-
+max-width:1400px;
 
 }
 
+.hero h1{
 
-
-/*=================================================
- SIGNATURE PV
-==================================================*/
-
-
-.signature-zone{
-
-
-    display:
-    flex;
-
-
-    justify-content:
-    space-between;
-
-
-    gap:
-    40px;
-
-
-    margin-top:
-    60px;
-
+font-size:52px;
 
 }
 
+.hero p{
 
-
-.signature{
-
-
-    flex:
-    1;
-
-
-    text-align:
-    center;
-
+font-size:22px;
 
 }
 
+.page-livre{
 
-
-.cachet{
-
-
-    width:
-    130px;
-
-
-    height:
-    130px;
-
-
-    border:
-
-    3px dashed #003b8e;
-
-
-    border-radius:
-    50%;
-
-
-    display:
-    flex;
-
-
-    align-items:
-    center;
-
-
-    justify-content:
-    center;
-
-
-    margin:
-    auto;
-
-
-    color:
-    #003b8e;
-
-
-    font-weight:
-    bold;
-
+font-size:20px;
 
 }
 
+}
 
+/*=========================
+ MODE PAYSAGE
+=========================*/
 
-/*=================================================
- IMPRESSION
-==================================================*/
+@media (orientation:landscape)
+and
+(max-width:900px){
 
+.hero{
 
-@media print{
-
-
-    body{
-
-
-        background:
-        #ffffff !important;
-
-
-        color:
-        #000000 !important;
-
-
-    }
-
-
-
-    .top-header,
-    .search-section,
-    footer,
-    #btnTop,
-    button{
-
-
-        display:
-        none !important;
-
-
-    }
-
-
-
-    .container{
-
-
-        width:
-        100%;
-
-
-        max-width:
-        100%;
-
-
-        padding:
-        0;
-
-
-    }
-
-
-
-    .article-card,
-    .ai-result,
-    .rapport-juridique,
-    .copilote-ia,
-    .rapport-officiel{
-
-
-        background:
-        #ffffff !important;
-
-
-        color:
-        #000000 !important;
-
-
-        box-shadow:
-        none;
-
-
-        page-break-inside:
-        avoid;
-
-
-    }
-
-
-
-    h1,
-    h2,
-    h3,
-    .article-title{
-
-
-        color:
-        #003b8e !important;
-
-
-    }
-
-
-
-    .article-content,
-    #reponseIA,
-    pre{
-
-
-        background:
-        #ffffff !important;
-
-
-        color:
-        #000000 !important;
-
-
-        border-left:
-
-        3px solid #003b8e;
-
-
-    }
-
+padding:20px;
 
 }
 
+.search-box{
 
+flex-direction:row;
 
-/*=================================================
- FIN CSS PREMIUM V4.0
+}
+
+.search-box input{
+
+flex:1;
+
+}
+
+}
+
+/*=========================
+ ACCESSIBILITÉ
+=========================*/
+
+button,
+input,
+textarea,
+select{
+
+min-height:48px;
+
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus{
+
+outline:2px solid #FFD700;
+
+outline-offset:3px;
+
+}
+
+/*=========================
+ OPTIMISATION ANIMATIONS
+=========================*/
+
+@media (prefers-reduced-motion:reduce){
+
+*{
+
+animation:none!important;
+
+transition:none!important;
+
+scroll-behavior:auto!important;
+
+}
+
+}
+
+/*=========================
+ FIN PARTIE 9
+=========================*/
+
+/*==================================================
  INSPECTEURBOT IA RDC
+ CSS PREMIUM V5.0
+ PARTIE 10/10
+ FINITIONS IA • FUTUR 2026
 ==================================================*/
+
+/*=========================
+ VARIABLES LUMIÈRES
+=========================*/
+
+:root{
+
+--neon-blue:#00cfff;
+--neon-gold:#FFD700;
+--neon-green:#00ff99;
+--shadow-blue:0 0 35px rgba(0,180,255,.45);
+--shadow-gold:0 0 30px rgba(255,215,0,.45);
+
+}
+
+/*=========================
+ FOND VIVANT
+=========================*/
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+pointer-events:none;
+
+background:
+
+radial-gradient(circle at 20% 20%,
+rgba(255,215,0,.06),
+transparent 25%),
+
+radial-gradient(circle at 80% 35%,
+rgba(0,170,255,.08),
+transparent 30%),
+
+radial-gradient(circle at 50% 80%,
+rgba(0,255,170,.05),
+transparent 28%);
+
+animation:fondIA 18s linear infinite;
+
+z-index:-1;
+
+}
+
+@keyframes fondIA{
+
+0%{
+
+transform:translate(0,0) scale(1);
+
+}
+
+50%{
+
+transform:translate(-20px,-15px) scale(1.08);
+
+}
+
+100%{
+
+transform:translate(0,0) scale(1);
+
+}
+
+}
+
+/*=========================
+ CARTES PREMIUM
+=========================*/
+
+.hero,
+.search-card,
+.livre,
+.assistant-card,
+.info-card,
+.outil-card,
+.stat-card{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.hero::before,
+.search-card::before,
+.livre::before,
+.assistant-card::before,
+.info-card::before,
+.outil-card::before,
+.stat-card::before{
+
+content:"";
+
+position:absolute;
+
+top:-150%;
+left:-40%;
+
+width:40%;
+height:400%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.18),
+
+transparent
+
+);
+
+transform:rotate(22deg);
+
+transition:.8s;
+
+}
+
+.hero:hover::before,
+.search-card:hover::before,
+.livre:hover::before,
+.assistant-card:hover::before,
+.info-card:hover::before,
+.outil-card:hover::before,
+.stat-card:hover::before{
+
+left:170%;
+
+}
+
+/*=========================
+ BOUTONS PREMIUM
+=========================*/
+
+button{
+
+position:relative;
+
+overflow:hidden;
+
+font-weight:700;
+
+letter-spacing:.5px;
+
+}
+
+button:hover{
+
+box-shadow:
+
+var(--shadow-gold),
+
+var(--shadow-blue);
+
+}
+
+button:active{
+
+transform:scale(.96);
+
+}
+
+/*=========================
+ HALO DES TITRES
+=========================*/
+
+.hero h1,
+.search-card h2,
+.assistant-card h2,
+.outils-section h2,
+.statistiques-section h2{
+
+animation:titrePulse 4s ease infinite;
+
+}
+
+@keyframes titrePulse{
+
+0%,100%{
+
+text-shadow:
+
+0 0 10px rgba(255,215,0,.4);
+
+}
+
+50%{
+
+text-shadow:
+
+0 0 28px rgba(255,215,0,.9),
+
+0 0 45px rgba(0,170,255,.35);
+
+}
+
+}
+
+/*=========================
+ LOGO
+=========================*/
+
+.hero img,
+.footer-logo{
+
+animation:logoPulse 6s ease-in-out infinite;
+
+filter:
+
+drop-shadow(0 0 12px gold);
+
+}
+
+@keyframes logoPulse{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.08) rotate(4deg);
+
+}
+
+}
+
+/*=========================
+ PAGE LIVRE
+=========================*/
+
+.page-livre{
+
+position:relative;
+
+}
+
+.page-livre::after{
+
+content:"";
+
+position:absolute;
+
+left:0;
+top:0;
+
+width:5px;
+height:100%;
+
+background:
+
+linear-gradient(
+
+180deg,
+
+#FFD700,
+
+#00cfff,
+
+#FFD700
+
+);
+
+border-radius:30px;
+
+animation:barreIA 5s linear infinite;
+
+}
+
+@keyframes barreIA{
+
+0%{
+
+filter:hue-rotate(0deg);
+
+}
+
+100%{
+
+filter:hue-rotate(360deg);
+
+}
+
+}
+
+/*=========================
+ IA
+=========================*/
+
+#reponseIA{
+
+animation:iaGlow 5s infinite;
+
+}
+
+@keyframes iaGlow{
+
+0%,100%{
+
+box-shadow:
+
+0 0 15px rgba(255,215,0,.15);
+
+}
+
+50%{
+
+box-shadow:
+
+0 0 35px rgba(0,255,170,.35);
+
+}
+
+}
+
+/*=========================
+ STATISTIQUES
+=========================*/
+
+.stat-card{
+
+cursor:pointer;
+
+}
+
+.stat-card:hover{
+
+transform:
+
+translateY(-10px)
+
+scale(1.04);
+
+}
+
+/*=========================
+ OUTILS
+=========================*/
+
+.outil-card:hover{
+
+transform:
+
+translateY(-12px)
+
+rotateX(6deg)
+
+scale(1.04);
+
+}
+
+/*=========================
+ SCROLL
+=========================*/
+
+html{
+
+scroll-behavior:smooth;
+
+}
+
+/*=========================
+ CLIGNOTEMENT IA
+=========================*/
+
+.fa-robot{
+
+animation:robotBlink 2.5s infinite;
+
+}
+
+@keyframes robotBlink{
+
+0%,100%{
+
+opacity:1;
+
+}
+
+50%{
+
+opacity:.55;
+
+}
+
+}
+
+/*=========================
+ EFFET MICROPHONE
+=========================*/
+
+.fa-microphone{
+
+animation:microMove 1.8s ease-in-out infinite;
+
+}
+
+@keyframes microMove{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.18);
+
+}
+
+}
+
+/*=========================
+ FOOTER
+=========================*/
+
+.footer{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.footer::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-100%;
+
+width:100%;
+height:2px;
+
+background:
+
+linear-gradient(
+90deg,
+transparent,
+gold,
+transparent);
+
+animation:footerLight 6s linear infinite;
+
+}
+
+@keyframes footerLight{
+
+100%{
+
+left:120%;
+
+}
+
+}
+
+/*=========================
+ FINITIONS
+=========================*/
+
+*{
+
+-webkit-tap-highlight-color:transparent;
+
+}
+
+button,
+input,
+textarea{
+
+will-change:transform;
+
+}
+
+/*=========================
+ FIN CSS PREMIUM V5.0
+ InspecteurBot IA RDC
+=========================*/
