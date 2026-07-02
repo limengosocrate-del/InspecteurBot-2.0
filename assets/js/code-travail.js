@@ -1,1635 +1,581 @@
 "use strict";
 
-/*=========================================================
- INSPECTEURBOT IA RDC
- MODULE : CODE DU TRAVAIL
- Version 3.0
-=========================================================*/
+/*=====================================================
+      INSPECTEURBOT RDC
+      CODE DU TRAVAIL
+      VERSION 2026
+=====================================================*/
 
-/*=========================================================
- CONFIGURATION
-=========================================================*/
+/*=====================================================
+INITIALISATION
+=====================================================*/
 
-const APP = {
+console.clear();
 
-    version: "3.0",
+console.log("======================================");
+console.log("InspecteurBot RDC");
+console.log("Code du Travail");
+console.log("Version 2026");
+console.log("======================================");
 
-    langue: localStorage.getItem("langue") || "fr",
-
-    fichier: "assets/data/code-travail.json",
-
-    lectureAuto: false
-
-};
-
-/*=========================================================
- VARIABLES GLOBALES
-=========================================================*/
+/*=====================================================
+VARIABLES GLOBALES
+=====================================================*/
 
 let articles = [];
+let categorieActive = "";
+let articleActuel = 0;
 
-let articleActuel = null;
+let totalRecherches = 0;
+let totalArticles = 0;
+let totalFavoris = 0;
+let totalAnalysesIA = 0;
 
-let indexActuel = 0;
+/*=====================================================
+RÉCUPÉRATION DES ÉLÉMENTS HTML
+=====================================================*/
 
-let historique = [];
+const numeroArticle = document.getElementById("numeroArticle");
+const titreArticle = document.getElementById("titreArticle");
+const contenuArticle = document.getElementById("contenuArticle");
 
-let favoris = JSON.parse(
+const reponseIA = document.getElementById("reponseIA");
 
-    localStorage.getItem("favoris") || "[]"
+const champRecherche = document.getElementById("rechercheArticle");
 
-);
+const btnRecherche = document.getElementById("btnRecherche");
 
-let statistiques = {
+const btnTop = document.getElementById("btnTop");
 
-    recherches: 0,
+const themeToggle = document.getElementById("themeToggle");
 
-    consultations: 0,
+const themeIcon = document.getElementById("themeIcon");
 
-    favoris: favoris.length,
+/*=====================================================
+ANIMATION D'APPARITION
+=====================================================*/
 
-    ia: 0
+function apparition(element){
 
-};
+    if(!element) return;
 
-/*=========================================================
- INITIALISATION
-=========================================================*/
+    element.animate([
 
-document.addEventListener("DOMContentLoaded", () => {
+        {
+            opacity:0,
+            transform:"translateY(30px)"
+        },
 
-    chargerArticles();
-
-    chargerLangue();
-
-    mettreAJourStatistiques();
-
-    console.log("✅ InspecteurBot IA RDC chargé.");
-
-});
-
-/*=========================================================
- GESTION DES LANGUES
-=========================================================*/
-
-const LANGUES = {
-
-fr:{
-
-nom:"Français",
-
-rechercher:"Rechercher",
-
-micro:"Micro",
-
-ecouter:"Écouter",
-
-precedent:"Précédent",
-
-suivant:"Suivant",
-
-copier:"Copier",
-
-favori:"Favori",
-
-partager:"Partager",
-
-imprimer:"Imprimer",
-
-assistant:"Assistant IA",
-
-aucun:"Aucun résultat trouvé.",
-
-chargement:"Chargement..."
-
-},
-
-en:{
-
-nom:"English",
-
-rechercher:"Search",
-
-micro:"Microphone",
-
-ecouter:"Listen",
-
-precedent:"Previous",
-
-suivant:"Next",
-
-copier:"Copy",
-
-favori:"Favorite",
-
-partager:"Share",
-
-imprimer:"Print",
-
-assistant:"AI Assistant",
-
-aucun:"No result found.",
-
-chargement:"Loading..."
-
-},
-
-ln:{
-
-nom:"Lingála",
-
-rechercher:"Boluki",
-
-micro:"Micro",
-
-ecouter:"Yoka",
-
-precedent:"Liboso",
-
-suivant:"Nsima",
-
-copier:"Kopi",
-
-favori:"Favori",
-
-partager:"Kabola",
-
-imprimer:"Bimisa",
-
-assistant:"Asista IA",
-
-aucun:"Eloko ezwami te.",
-
-chargement:"Kozwa ba données..."
-
-},
-
-sw:{
-
-nom:"Kiswahili",
-
-rechercher:"Tafuta",
-
-micro:"Maikrofoni",
-
-ecouter:"Sikiliza",
-
-precedent:"Nyuma",
-
-suivant:"Mbele",
-
-copier:"Nakili",
-
-favori:"Pendwa",
-
-partager:"Shiriki",
-
-imprimer:"Chapisha",
-
-assistant:"Msaidizi AI",
-
-aucun:"Hakuna matokeo.",
-
-chargement:"Inapakia..."
-
-},
-
-lu:{
-
-nom:"Tshiluba",
-
-rechercher:"Sangisha",
-
-micro:"Mikolo",
-
-ecouter:"Teeleja",
-
-precedent:"Kunyima",
-
-suivant:"Kumpala",
-
-copier:"Kopila",
-
-favori:"Favori",
-
-partager:"Kabanya",
-
-imprimer:"Imprimer",
-
-assistant:"Mulongeshi IA",
-
-aucun:"Kakuyi bipeta.",
-
-chargement:"Kulonda..."
-
-},
-
-kg:{
-
-nom:"Kikongo",
-
-rechercher:"Sosa",
-
-micro:"Mikro",
-
-ecouter:"Wa",
-
-precedent:"Na nima",
-
-suivant:"Na ntwala",
-
-copier:"Kopia",
-
-favori:"Favori",
-
-partager:"Kabula",
-
-imprimer:"Imprimer",
-
-assistant:"Asista IA",
-
-aucun:"Kima me monika ko.",
-
-chargement:"Kubaka..."
-
-}
-
-};
-
-/*=========================================================
- TRADUCTION
-=========================================================*/
-
-function T(cle){
-
-    const langue = LANGUES[APP.langue];
-
-    if(!langue){
-
-        return cle;
-
-    }
-
-    return langue[cle] || cle;
-
-}
-
-function changerLangue(langue){
-
-    if(!LANGUES[langue]){
-
-        return;
-
-    }
-
-    APP.langue = langue;
-
-    localStorage.setItem("langue", langue);
-
-    console.log("🌍 Langue :", LANGUES[langue].nom);
-
-   }
-
-/*=========================================================
- CHARGEMENT DU CODE DU TRAVAIL
-=========================================================*/
-
-async function chargerArticles(){
-
-    try{
-
-        const reponse = await fetch(APP.fichier);
-
-        if(!reponse.ok){
-
-            throw new Error("Impossible de charger le Code du Travail.");
-
+        {
+            opacity:1,
+            transform:"translateY(0)"
         }
 
-        articles = await reponse.json();
+    ],{
 
-        console.log("📚", articles.length, "articles chargés.");
+        duration:500,
 
-        const compteur = document.getElementById("compteurArticles");
-
-        if(compteur){
-
-            compteur.textContent = articles.length + " articles";
-
-        }
-
-        if(articles.length > 0){
-
-            indexActuel = 0;
-
-            ouvrirArticle(indexActuel);
-
-        }
-
-    }catch(erreur){
-
-        console.error(erreur);
-
-        const contenu = document.getElementById("contenuArticle");
-
-        if(contenu){
-
-            contenu.innerHTML = `
-
-                <div class="article-erreur">
-
-                    <h2>⚠ Erreur</h2>
-
-                    <p>
-
-                    Impossible de charger le fichier
-                    <strong>code-travail.json</strong>
-
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-}
-
-/*=========================================================
- OUVRIR UN ARTICLE
-=========================================================*/
-
-function ouvrirArticle(index){
-
-    if(index < 0 || index >= articles.length){
-
-        return;
-
-    }
-
-    indexActuel = index;
-
-    articleActuel = articles[index];
-
-    statistiques.consultations++;
-
-    const numero = document.getElementById("numeroArticle");
-
-    const titre = document.getElementById("titreArticle");
-
-    const contenu = document.getElementById("contenuArticle");
-
-    if(numero){
-
-        numero.textContent =
-        "Article " + articleActuel.numero;
-
-    }
-
-    if(titre){
-
-        titre.textContent =
-        articleActuel.titre || "Code du Travail";
-
-    }
-
-    if(contenu){
-
-        contenu.innerHTML = `
-
-            <div class="page-juridique">
-
-                <h2>
-
-                    Article ${articleActuel.numero}
-
-                </h2>
-
-                <h3>
-
-                    ${articleActuel.titre}
-
-                </h3>
-
-                <hr>
-
-                <p>
-
-                    ${articleActuel.contenu}
-
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-    mettreAJourStatistiques();
-
-    sauvegarderDerniereLecture();
-
-}
-
-/*=========================================================
- NAVIGATION DU LIVRE
-=========================================================*/
-
-function articleSuivant(){
-
-    if(articles.length===0){
-
-        return;
-
-    }
-
-    if(indexActuel < articles.length-1){
-
-        ouvrirArticle(indexActuel+1);
-
-    }
-
-}
-
-function articlePrecedent(){
-
-    if(articles.length===0){
-
-        return;
-
-    }
-
-    if(indexActuel>0){
-
-        ouvrirArticle(indexActuel-1);
-
-    }
-
-}
-
-/*=========================================================
- BOUTONS PRECEDENT / SUIVANT
-=========================================================*/
-
-document
-.getElementById("precedent")
-?.addEventListener("click",articlePrecedent);
-
-document
-.getElementById("suivant")
-?.addEventListener("click",articleSuivant);
-
-/*=========================================================
- CLAVIER
-=========================================================*/
-
-document.addEventListener("keydown",(e)=>{
-
-    switch(e.key){
-
-        case "ArrowLeft":
-
-            articlePrecedent();
-
-        break;
-
-        case "ArrowRight":
-
-            articleSuivant();
-
-        break;
-
-    }
-
-});
-
-/*=========================================================
- SAUVEGARDE DE LA DERNIERE LECTURE
-=========================================================*/
-
-function sauvegarderDerniereLecture(){
-
-    if(!articleActuel){
-
-        return;
-
-    }
-
-    localStorage.setItem(
-
-        "dernierArticle",
-
-        indexActuel
-
-    );
-
-}
-
-/*=========================================================
- RESTAURATION
-=========================================================*/
-
-function restaurerDerniereLecture(){
-
-    const dernier = Number(
-
-        localStorage.getItem("dernierArticle")
-
-    );
-
-    if(
-
-        !isNaN(dernier)
-
-        &&
-
-        dernier>=0
-
-        &&
-
-        dernier<articles.length
-
-    ){
-
-        ouvrirArticle(dernier);
-
-    }
-
-}
-
-/*=========================================================
- OUVERTURE AUTOMATIQUE
-=========================================================*/
-
-window.addEventListener("load",()=>{
-
-    setTimeout(()=>{
-
-        if(articles.length){
-
-            restaurerDerniereLecture();
-
-        }
-
-    },500);
-
-});
-
-/*=========================================================
- RECHERCHE INTELLIGENTE
-=========================================================*/
-
-function rechercherArticles(){
-
-    const champ = document.getElementById("rechercheArticle");
-
-    if(!champ){
-
-        return;
-
-    }
-
-    const texte = champ.value
-        .toLowerCase()
-        .trim();
-
-    statistiques.recherches++;
-
-    mettreAJourStatistiques();
-
-    if(texte===""){
-
-        if(articles.length){
-
-            ouvrirArticle(indexActuel);
-
-        }
-
-        return;
-
-    }
-
-    const resultat = articles.filter(article=>{
-
-        const numero = String(article.numero);
-
-        const titre = (article.titre || "").toLowerCase();
-
-        const contenu = (article.contenu || "").toLowerCase();
-
-        const chapitre = (article.chapitre || "").toLowerCase();
-
-        const section = (article.section || "").toLowerCase();
-
-        const mots = (article.motsCles || [])
-            .join(" ")
-            .toLowerCase();
-
-        return (
-
-            numero.includes(texte) ||
-
-            titre.includes(texte) ||
-
-            contenu.includes(texte) ||
-
-            chapitre.includes(texte) ||
-
-            section.includes(texte) ||
-
-            mots.includes(texte)
-
-        );
-
-    });
-
-    afficherResultatsRecherche(resultat);
-
-}
-
-/*=========================================================
- AFFICHAGE DES RESULTATS
-=========================================================*/
-
-function afficherResultatsRecherche(resultats){
-
-    const zone = document.getElementById("listeArticles");
-
-    if(!zone){
-
-        return;
-
-    }
-
-    zone.innerHTML = "";
-
-    if(resultats.length===0){
-
-        zone.innerHTML = `
-
-            <div class="aucun-resultat">
-
-                Aucun article trouvé.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-    resultats.forEach(article=>{
-
-        const index = articles.findIndex(
-
-            a=>a.id===article.id
-
-        );
-
-        zone.innerHTML += `
-
-            <button
-                class="resultat-article"
-                onclick="ouvrirArticle(${index})">
-
-                <strong>
-
-                    Article ${article.numero}
-
-                </strong>
-
-                <br>
-
-                ${article.titre}
-
-            </button>
-
-        `;
+        easing:"ease-out"
 
     });
 
 }
 
-/*=========================================================
- EVENEMENTS
-=========================================================*/
+/*=====================================================
+EFFET FUTURISTE SUR LES BOUTONS
+=====================================================*/
 
-document
-.getElementById("btnRecherche")
-?.addEventListener("click",rechercherArticles);
+function effetBoutons(){
 
-document
-.getElementById("rechercheArticle")
-?.addEventListener("keyup",function(e){
+    const boutons=document.querySelectorAll("button");
 
-    if(e.key==="Enter"){
+    boutons.forEach((btn)=>{
 
-        rechercherArticles();
+        btn.addEventListener("mouseenter",()=>{
 
-    }
-
-});
-
-/*=========================================================
- MICROPHONE + LECTURE VOCALE + LANGUES
-=========================================================*/
-
-const LANGUES = {
-
-    fr:"fr-FR",
-
-    en:"en-US",
-
-    ln:"fr-FR",
-
-    sw:"sw-KE",
-
-    lu:"fr-FR",
-
-    kg:"fr-FR"
-
-};
-
-let langueCourante =
-
-localStorage.getItem("langue") || "fr";
-
-/*=========================================================
- CHANGER LA LANGUE
-=========================================================*/
-
-function changerLangue(code){
-
-    langueCourante = code;
-
-    localStorage.setItem(
-
-        "langue",
-
-        code
-
-    );
-
-}
-
-/*=========================================================
- LECTURE VOCALE
-=========================================================*/
-
-function lireArticle(){
-
-    if(!articleActuel){
-
-        alert("Aucun article sélectionné.");
-
-        return;
-
-    }
-
-    speechSynthesis.cancel();
-
-    const lecture = new SpeechSynthesisUtterance(
-
-        "Article " +
-
-        articleActuel.numero +
-
-        ". " +
-
-        articleActuel.titre +
-
-        ". " +
-
-        articleActuel.contenu
-
-    );
-
-    lecture.lang =
-
-    LANGUES[langueCourante] ||
-
-    "fr-FR";
-
-    lecture.rate = 1;
-
-    lecture.pitch = 1;
-
-    speechSynthesis.speak(lecture);
-
-}
-
-document
-
-.getElementById("btnLecture")
-
-?.addEventListener(
-
-"click",
-
-lireArticle
-
-);
-
-/*=========================================================
- MICROPHONE
-=========================================================*/
-
-function activerMicro(){
-
-    const SpeechRecognition =
-
-    window.SpeechRecognition ||
-
-    window.webkitSpeechRecognition;
-
-    if(!SpeechRecognition){
-
-        alert("Microphone non disponible.");
-
-        return;
-
-    }
-
-    const recognition =
-
-    new SpeechRecognition();
-
-    recognition.lang =
-
-    LANGUES[langueCourante] ||
-
-    "fr-FR";
-
-    recognition.interimResults = false;
-
-    recognition.maxAlternatives = 1;
-
-    recognition.start();
-
-    recognition.onresult = function(e){
-
-        const texte =
-
-        e.results[0][0].transcript;
-
-        document.getElementById(
-
-        "rechercheArticle"
-
-        ).value = texte;
-
-        rechercherArticles();
-
-    };
-
-    recognition.onerror = function(){
-
-        alert("Impossible d'utiliser le microphone.");
-
-    };
-
-}
-
-document
-
-.getElementById("btnMicro")
-
-?.addEventListener(
-
-"click",
-
-activerMicro
-
-);
-
-/*=========================================================
- TRADUCTION MULTILINGUE
- Français - Anglais - Lingala
- Swahili - Tshiluba - Kikongo
-=========================================================*/
-
-const TEXTES = {
-
-fr:{
-recherche:"Rechercher un article...",
-precedent:"⬅ Précédent",
-suivant:"Suivant ➡",
-ecouter:"Écouter",
-micro:"Micro",
-aucun:"Aucun article trouvé.",
-livre:"Code du Travail RDC"
-},
-
-en:{
-recherche:"Search an article...",
-precedent:"⬅ Previous",
-suivant:"Next ➡",
-ecouter:"Listen",
-micro:"Microphone",
-aucun:"No article found.",
-livre:"Labour Code"
-},
-
-ln:{
-recherche:"Luka mobeko...",
-precedent:"⬅ Liboso",
-suivant:"Nsima ➡",
-ecouter:"Yoka",
-micro:"Micro",
-aucun:"Article ezwami te.",
-livre:"Mobeko ya Mosala"
-},
-
-sw:{
-recherche:"Tafuta kifungu...",
-precedent:"⬅ Nyuma",
-suivant:"Mbele ➡",
-ecouter:"Sikiliza",
-micro:"Kipaza sauti",
-aucun:"Hakuna kifungu.",
-livre:"Sheria ya Kazi"
-},
-
-lu:{
-recherche:"Sangisha mukanda...",
-precedent:"⬅ Kunyima",
-suivant:"Kumpala ➡",
-ecouter:"Teeleka",
-micro:"Mikro",
-aucun:"Kakwena article.",
-livre:"Mikenji ya Mudimu"
-},
-
-kg:{
-recherche:"Sosa article...",
-precedent:"⬅ Vutuka",
-suivant:"Landila ➡",
-ecouter:"Wa",
-micro:"Mikro",
-aucun:"Article kele ve.",
-livre:"Nsiku ya Kisalu"
-}
-
-};
-
-/*=========================================================
- APPLIQUER LA LANGUE
-=========================================================*/
-
-function appliquerLangue(){
-
-    const t =
-
-    TEXTES[langueCourante] ||
-
-    TEXTES.fr;
-
-    document.getElementById("rechercheArticle")
-    ?.setAttribute(
-        "placeholder",
-        t.recherche
-    );
-
-    document.getElementById("precedent")
-    ?.innerHTML = t.precedent;
-
-    document.getElementById("suivant")
-    ?.innerHTML = t.suivant;
-
-    document.getElementById("btnLecture")
-    ?.innerHTML =
-    '<i class="fa-solid fa-volume-high"></i> '+
-    t.ecouter;
-
-    document.getElementById("btnMicro")
-    ?.innerHTML =
-    '<i class="fa-solid fa-microphone"></i> '+
-    t.micro;
-
-    const titre = document.getElementById("titreLivre");
-
-    if(titre){
-
-        titre.textContent = t.livre;
-
-    }
-
-}
-
-/*=========================================================
- SELECTEUR DE LANGUE
-=========================================================*/
-
-document
-.getElementById("langue")
-?.addEventListener("change",function(){
-
-    changerLangue(this.value);
-
-    appliquerLangue();
-
-});
-
-/*=========================================================
- INITIALISATION
-=========================================================*/
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    appliquerLangue();
-
-});
-
-/*=========================================================
- ASSISTANT JURIDIQUE IA
-=========================================================*/
-
-function analyserQuestionIA(){
-
-    const champ = document.getElementById("questionIA");
-
-    const reponse = document.getElementById("reponseIA");
-
-    if(!champ || !reponse){
-
-        return;
-
-    }
-
-    const question = champ.value
-        .trim()
-        .toLowerCase();
-
-    if(question===""){
-
-        reponse.innerHTML =
-        "<p>Veuillez saisir une question.</p>";
-
-        return;
-
-    }
-
-    statistiques.ia++;
-
-    mettreAJourStatistiques();
-
-    let resultat = articles.filter(article=>{
-
-        const texte = (
-
-            (article.titre || "") + " " +
-
-            (article.contenu || "") + " " +
-
-            (article.motsCles || []).join(" ")
-
-        ).toLowerCase();
-
-        return texte.includes(question);
-
-    });
-
-    if(resultat.length){
-
-        reponse.innerHTML = `
-
-            <h3>
-
-                🤖 Assistant Juridique
-
-            </h3>
-
-            <p>
-
-                ${resultat[0].contenu}
-
-            </p>
-
-            <br>
-
-            <button
-            onclick="ouvrirArticle(
-
-            ${articles.findIndex(
-
-            a=>a.id===resultat[0].id
-
-            )}
-
-            )">
-
-            Ouvrir l'article
-
-            </button>
-
-        `;
-
-    }
-
-    else{
-
-        reponse.innerHTML = `
-
-        <h3>
-
-        🤖 Assistant Juridique
-
-        </h3>
-
-        <p>
-
-        Aucun article correspondant n'a été trouvé.
-
-        Essayez un autre mot-clé.
-
-        </p>
-
-        `;
-
-    }
-
-}
-
-/*=========================================================
- BOUTON IA
-=========================================================*/
-
-document
-
-.getElementById("btnQuestionIA")
-
-?.addEventListener(
-
-"click",
-
-analyserQuestionIA
-
-);
-
-/*=========================================================
- HISTORIQUE
-=========================================================*/
-
-const historique = [];
-
-function ajouterHistorique(texte){
-
-    if(!texte){
-
-        return;
-
-    }
-
-    historique.unshift(texte);
-
-    if(historique.length>10){
-
-        historique.pop();
-
-    }
-
-    const zone =
-
-    document.getElementById("historiqueRecherche");
-
-    if(!zone){
-
-        return;
-
-    }
-
-    zone.innerHTML = historique
-
-    .map(item=>`
-
-        <div class="historique-item">
-
-            ${item}
-
-        </div>
-
-    `)
-
-    .join("");
-
-}
-
-/*=========================================================
- FAVORIS
-=========================================================*/
-
-function ajouterFavori(){
-
-    if(!articleActuel){
-
-        return;
-
-    }
-
-    let favoris = JSON.parse(
-
-        localStorage.getItem("favoris")
-
-        ||
-
-        "[]"
-
-    );
-
-    if(!favoris.includes(articleActuel.id)){
-
-        favoris.push(articleActuel.id);
-
-        localStorage.setItem(
-
-            "favoris",
-
-            JSON.stringify(favoris)
-
-        );
-
-        alert("Article ajouté aux favoris.");
-
-    }
-
-}
-
-document
-
-.getElementById("btnFavori")
-
-?.addEventListener(
-
-"click",
-
-ajouterFavori
-
-);
-
-/*=========================================================
- OUTILS DU LECTEUR
- Copier - Partager - Imprimer
-=========================================================*/
-
-function copierArticle(){
-
-    if(!articleActuel){
-
-        return;
-
-    }
-
-    navigator.clipboard.writeText(
-
-        "Article " +
-
-        articleActuel.numero +
-
-        "\n\n" +
-
-        articleActuel.titre +
-
-        "\n\n" +
-
-        articleActuel.contenu
-
-    );
-
-    alert("Article copié.");
-
-}
-
-document
-.getElementById("btnCopier")
-?.addEventListener("click",copierArticle);
-
-/*=========================================================
- PARTAGE
-=========================================================*/
-
-async function partagerArticle(){
-
-    if(!articleActuel){
-
-        return;
-
-    }
-
-    const texte =
-
-        "Article " +
-
-        articleActuel.numero +
-
-        "\n\n" +
-
-        articleActuel.titre +
-
-        "\n\n" +
-
-        articleActuel.contenu;
-
-    if(navigator.share){
-
-        await navigator.share({
-
-            title:"Code du Travail RDC",
-
-            text:texte
+            btn.style.transform="translateY(-3px) scale(1.03)";
 
         });
 
-    }
+        btn.addEventListener("mouseleave",()=>{
 
-    else{
+            btn.style.transform="";
 
-        copierArticle();
+        });
 
-    }
+        btn.addEventListener("mousedown",()=>{
+
+            btn.style.transform="scale(.96)";
+
+        });
+
+        btn.addEventListener("mouseup",()=>{
+
+            btn.style.transform="translateY(-3px) scale(1.03)";
+
+        });
+
+    });
 
 }
 
-document
-.getElementById("btnPartager")
-?.addEventListener("click",partagerArticle);
+/*=====================================================
+INITIALISATION
+=====================================================*/
 
-/*=========================================================
- IMPRESSION
-=========================================================*/
+document.addEventListener("DOMContentLoaded",()=>{
 
-document
-.getElementById("btnImprimer")
-?.addEventListener("click",()=>{
+    effetBoutons();
 
-    window.print();
+    apparition(document.querySelector(".search-section"));
+
+    apparition(document.querySelector(".categories"));
+
+    apparition(document.querySelector(".article-section"));
+
+    apparition(document.querySelector(".ai-result"));
+
+    console.log("Application initialisée.");
 
 });
 
-/*=========================================================
- SIGNET
-=========================================================*/
+/*=====================================================
+HORLOGE - DATE - JOUR
+=====================================================*/
 
-function enregistrerSignet(){
+function mettreAJourHorloge() {
 
-    if(!articleActuel){
+    const maintenant = new Date();
 
-        return;
+    const heure = maintenant.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
 
+    const jour = maintenant.toLocaleDateString("fr-FR", {
+        weekday: "long"
+    });
+
+    const date = maintenant.toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+
+    const clock = document.getElementById("clock");
+    const day = document.getElementById("day");
+    const dateBox = document.getElementById("date");
+
+    if (clock) clock.textContent = heure;
+
+    if (day) {
+        day.textContent =
+            jour.charAt(0).toUpperCase() +
+            jour.slice(1);
     }
 
-    localStorage.setItem(
-
-        "signetArticle",
-
-        articleActuel.id
-
-    );
+    if (dateBox) dateBox.textContent = date;
 
 }
 
-function ouvrirSignet(){
+setInterval(mettreAJourHorloge,1000);
 
-    const id =
+mettreAJourHorloge();
 
-    localStorage.getItem("signetArticle");
+/*=====================================================
+MÉTÉO (TEMPORAIRE)
+=====================================================*/
 
-    if(!id){
+const temperature = document.getElementById("temperature");
+const ville = document.getElementById("city");
 
-        return;
+if (temperature) {
 
-    }
-
-    const index =
-
-    articles.findIndex(
-
-        a=>a.id===id
-
-    );
-
-    if(index>=0){
-
-        ouvrirArticle(index);
-
-    }
+    temperature.textContent = "26°C";
 
 }
 
-/*=========================================================
- SAUVEGARDE AUTOMATIQUE
-=========================================================*/
+if (ville) {
 
-window.addEventListener(
-
-"beforeunload",
-
-()=>{
-
-    enregistrerSignet();
+    ville.textContent = "Kinshasa";
 
 }
 
-/*=========================================================
- DEMARRAGE
-=========================================================*/
+/*=====================================================
+THÈME CLAIR / SOMBRE
+=====================================================*/
 
-document.addEventListener(
+function appliquerTheme(theme){
 
-"DOMContentLoaded",
-
-()=>{
-
-    chargerArticles();
-
-    ouvrirSignet();
-
-    appliquerLangue();
-
-    mettreAJourStatistiques();
-
-    console.log(
-
-        "InspecteurBot IA - Code du Travail prêt."
-
+    document.body.classList.remove(
+        "light-theme",
+        "dark-theme"
     );
 
-});
+    document.body.classList.add(theme);
 
-/*=========================================================
- PARTIE 10
- FINITIONS ET OPTIMISATIONS
-=========================================================*/
+    if(themeIcon){
 
-/*=========================================================
- MODE LIVRE
-=========================================================*/
-
-function tournerPage(direction){
-
-    const livre = document.getElementById("livre");
-
-    if(!livre){
-
-        return;
+        themeIcon.textContent =
+        theme==="dark-theme"
+        ? "☀️"
+        : "🌙";
 
     }
 
-    livre.classList.remove(
+    localStorage.setItem("theme",theme);
 
-        "page-gauche",
+}
 
-        "page-droite"
+const themeSauvegarde =
+localStorage.getItem("theme");
 
-    );
+if(themeSauvegarde){
 
-    void livre.offsetWidth;
+    appliquerTheme(themeSauvegarde);
 
-    if(direction==="suivant"){
+}else{
 
-        livre.classList.add("page-droite");
+    appliquerTheme("light-theme");
+
+}
+
+themeToggle?.addEventListener("click",()=>{
+
+    if(document.body.classList.contains("dark-theme")){
+
+        appliquerTheme("light-theme");
 
     }else{
 
-        livre.classList.add("page-gauche");
+        appliquerTheme("dark-theme");
 
     }
 
-}
+});
 
-/*=========================================================
- NAVIGATION
-=========================================================*/
+/*=====================================================
+BOUTON RETOUR EN HAUT
+=====================================================*/
 
-const ancienSuivant = articleSuivant;
+window.addEventListener("scroll",()=>{
 
-articleSuivant = function(){
+    if(!btnTop) return;
 
-    tournerPage("suivant");
+    if(window.scrollY>300){
 
-    ancienSuivant();
+        btnTop.style.display="flex";
 
-};
+    }else{
 
-const ancienPrecedent = articlePrecedent;
-
-articlePrecedent = function(){
-
-    tournerPage("precedent");
-
-    ancienPrecedent();
-
-};
-
-/*=========================================================
- ZOOM DU TEXTE
-=========================================================*/
-
-let taillePolice = 18;
-
-function zoomPlus(){
-
-    taillePolice++;
-
-    document.documentElement.style.setProperty(
-
-        "--taille-article",
-
-        taillePolice+"px"
-
-    );
-
-}
-
-function zoomMoins(){
-
-    if(taillePolice>12){
-
-        taillePolice--;
+        btnTop.style.display="none";
 
     }
 
-    document.documentElement.style.setProperty(
+});
 
-        "--taille-article",
+btnTop?.addEventListener("click",()=>{
 
-        taillePolice+"px"
+    window.scrollTo({
 
-    );
-
-}
-
-document
-.getElementById("zoomPlus")
-?.addEventListener("click",zoomPlus);
-
-document
-.getElementById("zoomMoins")
-?.addEventListener("click",zoomMoins);
-
-/*=========================================================
- DEFILEMENT
-=========================================================*/
-
-function allerDebut(){
-
-    document.getElementById("contenuArticle")
-    ?.scrollIntoView({
+        top:0,
 
         behavior:"smooth"
 
     });
 
+});
+
+/*=====================================================
+EFFET FUTURISTE D'APPARITION
+=====================================================*/
+
+const cartes = document.querySelectorAll(
+
+".category-card,.article-card,.ai-result"
+
+);
+
+const observateur = new IntersectionObserver(
+
+(entrees)=>{
+
+    entrees.forEach((entree)=>{
+
+        if(entree.isIntersecting){
+
+            entree.target.classList.add("show");
+
+        }
+
+    });
+
+},
+
+{
+
+    threshold:0.15
+
 }
 
-/*=========================================================
- RACCOURCIS CLAVIER
-=========================================================*/
+);
+
+cartes.forEach((carte)=>{
+
+    observateur.observe(carte);
+
+});
+
+console.log("Horloge, thème et animations chargés.");
+
+/*=====================================================
+BASE DES CATÉGORIES
+=====================================================*/
+
+const categories = {
+
+    contrat: [],
+
+    salaire: [],
+
+    conges: [],
+
+    temps: [],
+
+    licenciement: [],
+
+    inspection: [],
+
+    securite: [],
+
+    sanctions: []
+
+};
+
+/*=====================================================
+OUVRIR UNE CATÉGORIE
+=====================================================*/
+
+function ouvrirCategorie(nomCategorie){
+
+    if(!categories[nomCategorie]){
+
+        afficherNotification(
+            "Catégorie introuvable.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    categorieActive = nomCategorie;
+
+    articles = categories[nomCategorie];
+
+    articleActuel = 0;
+
+    if(articles.length===0){
+
+        numeroArticle.textContent="Aucun article";
+
+        titreArticle.textContent="Base de données en préparation";
+
+        contenuArticle.innerHTML=
+
+        "Les articles de cette catégorie seront automatiquement affichés dès que la base complète du Code du Travail sera chargée.";
+
+        return;
+
+    }
+
+    afficherArticle(articleActuel);
+
+}
+
+/*=====================================================
+AFFICHER UN ARTICLE
+=====================================================*/
+
+function afficherArticle(index){
+
+    if(index<0) return;
+
+    if(index>=articles.length) return;
+
+    articleActuel=index;
+
+    const article=articles[index];
+
+    numeroArticle.textContent=
+
+    article.numero || "";
+
+    titreArticle.textContent=
+
+    article.titre || "";
+
+    contenuArticle.innerHTML=
+
+    article.contenu || "";
+
+    totalArticles++;
+
+    apparition(document.querySelector(".article-card"));
+
+    mettreAJourStatistiques();
+
+}
+
+/*=====================================================
+ARTICLE SUIVANT
+=====================================================*/
+
+function articleSuivant(){
+
+    if(articleActuel<articles.length-1){
+
+        afficherArticle(articleActuel+1);
+
+    }else{
+
+        afficherNotification(
+
+        "Dernier article.",
+
+        "info"
+
+        );
+
+    }
+
+}
+
+/*=====================================================
+ARTICLE PRÉCÉDENT
+=====================================================*/
+
+function articlePrecedent(){
+
+    if(articleActuel>0){
+
+        afficherArticle(articleActuel-1);
+
+    }else{
+
+        afficherNotification(
+
+        "Premier article.",
+
+        "info"
+
+        );
+
+    }
+
+}
+
+/*=====================================================
+BOUTONS CLAVIER
+=====================================================*/
 
 document.addEventListener("keydown",(e)=>{
 
-    if(e.ctrlKey && e.key==="f"){
+    if(e.key==="ArrowRight"){
 
-        e.preventDefault();
-
-        document
-        .getElementById("rechercheArticle")
-        ?.focus();
+        articleSuivant();
 
     }
 
-    if(e.ctrlKey && e.key==="+"){
+    if(e.key==="ArrowLeft"){
 
-        e.preventDefault();
-
-        zoomPlus();
-
-    }
-
-    if(e.ctrlKey && e.key==="−"){
-
-        e.preventDefault();
-
-        zoomMoins();
+        articlePrecedent();
 
     }
 
 });
 
-/*=========================================================
- INITIALISATION
-=========================================================*/
+/*=====================================================
+MISE À JOUR DES STATISTIQUES
+=====================================================*/
 
-window.addEventListener("load",()=>{
+function mettreAJourStatistiques(){
 
-    allerDebut();
+    const a=document.getElementById("statArticles");
 
-    console.log(
+    const r=document.getElementById("statRecherche");
 
-        "InspecteurBot IA RDC - Code du Travail Version 3.0"
+    const f=document.getElementById("statFavoris");
 
-    );
+    const ia=document.getElementById("statIA");
 
-});
+    if(a) a.textContent=totalArticles;
+
+    if(r) r.textContent=totalRecherches;
+
+    if(f) f.textContent=totalFavoris;
+
+    if(ia) ia.textContent=totalAnalysesIA;
+
+}
+
+console.log("Navigation des articles chargée.");
+
+/*=====================================================
+BASE DE DONNÉES DES ARTICLES
+PARTIE 1
+=====================================================*/
+
+categories.contrat = [
+
+{
+    numero: "Article 1",
+    titre: "Objet du Code du Travail",
+    contenu: `
+    Le présent Code fixe les règles applicables aux relations
+    individuelles et collectives de travail en République
+    Démocratique du Congo.
+    `
+},
+
+{
+    numero: "Article 2",
+    titre: "Champ d'application",
+    contenu: `
+    Les dispositions du Code du Travail s'appliquent aux
+    travailleurs et employeurs soumis à la législation
+    congolaise, sauf exceptions prévues par la loi.
+    `
+},
+
+{
+    numero: "Article 3",
+    titre: "Liberté du travail",
+    contenu: `
+    Toute personne est libre d'exercer une activité
+    professionnelle dans les conditions prévues par la loi.
+    `
+},
+
+{
+    numero: "Article 4",
+    titre: "Égalité de traitement",
+    contenu: `
+    Toute discrimination en matière d'emploi ou de profession
+    est interdite conformément aux lois de la République.
+    `
+},
+
+{
+    numero: "Article 5",
+    titre: "Protection du travailleur",
+    contenu: `
+    Le travailleur bénéficie de la protection prévue par le
+    Code du Travail concernant la sécurité, la santé,
+    la rémunération et les droits sociaux.
+    `
+},
+
+ 
+
