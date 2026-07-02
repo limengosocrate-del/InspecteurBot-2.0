@@ -1,6 +1,12 @@
 /*==================================================
-TOOLBAR - PARTIE 1
-INSPECTEURBOT RDC
+TOOLBAR.CSS
+PARTIE 1
+BARRE D'OUTILS FUTURISTE
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+BARRE PRINCIPALE
 ==================================================*/
 
 .toolbar{
@@ -11,26 +17,34 @@ INSPECTEURBOT RDC
 
     align-items:center;
 
+    flex-wrap:wrap;
+
     gap:20px;
 
-    margin-bottom:30px;
+    margin:30px 0;
 
-    padding:20px 25px;
+    padding:22px 25px;
+
+    border-radius:26px;
 
     background:rgba(255,255,255,.08);
 
     backdrop-filter:blur(18px);
 
-    border:1px solid rgba(255,215,0,.18);
+    -webkit-backdrop-filter:blur(18px);
 
-    border-radius:24px;
+    border:1px solid rgba(255,255,255,.12);
 
-    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    box-shadow:
+
+        0 12px 35px rgba(0,0,0,.30),
+
+        inset 0 0 25px rgba(255,255,255,.04);
 
 }
 
 /*==================================================
-ZONE GAUCHE
+COLONNE GAUCHE
 ==================================================*/
 
 .toolbar-left{
@@ -41,7 +55,13 @@ ZONE GAUCHE
 
     gap:15px;
 
+    flex-wrap:wrap;
+
 }
+
+/*==================================================
+LABEL
+==================================================*/
 
 .toolbar-left label{
 
@@ -51,7 +71,7 @@ ZONE GAUCHE
 
     gap:8px;
 
-    color:#FFD700;
+    color:#ffffff;
 
     font-size:16px;
 
@@ -59,29 +79,35 @@ ZONE GAUCHE
 
 }
 
-.toolbar-left i{
+.toolbar-left label i{
+
+    color:var(--accent);
 
     font-size:18px;
+
+    text-shadow:0 0 10px rgba(255,215,0,.45);
 
 }
 
 /*==================================================
-LISTE DES LANGUES
+SELECT
 ==================================================*/
 
 .toolbar-left select{
 
-    min-width:180px;
+    min-width:190px;
 
     padding:12px 18px;
 
-    border-radius:14px;
-
-    border:1px solid rgba(255,215,0,.20);
+    border-radius:16px;
 
     background:rgba(255,255,255,.10);
 
-    color:#FFFFFF;
+    color:#ffffff;
+
+    border:1px solid rgba(255,255,255,.15);
+
+    backdrop-filter:blur(10px);
 
     font-size:15px;
 
@@ -93,221 +119,30 @@ LISTE DES LANGUES
 
 .toolbar-left select:hover{
 
-    border-color:#FFD700;
+    border-color:rgba(255,215,0,.45);
+
+    box-shadow:
+
+        0 0 18px rgba(255,215,0,.25);
 
 }
 
 .toolbar-left select:focus{
 
-    border-color:#FFD700;
-
-    box-shadow:0 0 15px rgba(255,215,0,.30);
-
-}
-
-/*==================================================
-OPTIONS
-==================================================*/
-
-.toolbar-left option{
-
-    background:#08245d;
-
-    color:#FFFFFF;
-
-}
-
-/*==================================================
-TOOLBAR - PARTIE 2
-BOUTONS D'ACTIONS
-==================================================*/
-
-.toolbar-right{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:flex-end;
-
-    flex-wrap:wrap;
-
-    gap:12px;
-
-}
-
-/*==================================================
-BOUTONS
-==================================================*/
-
-.tool-btn{
-
-    width:52px;
-
-    height:52px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border:none;
-
-    border-radius:16px;
-
-    background:linear-gradient(135deg,#0D3D99,#08245D);
-
-    color:#FFD700;
-
-    border:1px solid rgba(255,215,0,.20);
-
-    cursor:pointer;
-
-    transition:.35s;
-
-    box-shadow:0 6px 18px rgba(0,0,0,.20);
-
-}
-
-.tool-btn i{
-
-    font-size:20px;
-
-}
-
-/*==================================================
-EFFET SURVOL
-==================================================*/
-
-.tool-btn:hover{
-
-    transform:translateY(-4px);
-
-    background:linear-gradient(135deg,#FFD700,#FFC107);
-
-    color:#041C5C;
-
-    border-color:#FFD700;
-
-    box-shadow:0 0 20px rgba(255,215,0,.45);
-
-}
-
-/*==================================================
-EFFET CLIC
-==================================================*/
-
-.tool-btn:active{
-
-    transform:scale(.95);
-
-}
-
-/*==================================================
-FOCUS ACCESSIBILITÉ
-==================================================*/
-
-.tool-btn:focus{
-
-    outline:none;
+    border-color:var(--accent);
 
     box-shadow:
 
-        0 0 0 3px rgba(255,215,0,.25),
-
-        0 0 20px rgba(255,215,0,.45);
+        0 0 22px rgba(255,215,0,.35);
 
 }
 
-/*==================================================
-RESPONSIVE TABLETTE
-==================================================*/
+.toolbar-left option{
 
-@media(max-width:900px){
+    color:#041C5C;
 
-    .toolbar{
-
-        flex-direction:column;
-
-        align-items:stretch;
-
-    }
-
-    .toolbar-left{
-
-        justify-content:center;
-
-        flex-wrap:wrap;
-
-    }
-
-    .toolbar-right{
-
-        justify-content:center;
-
-    }
+    background:#ffffff;
 
 }
 
-/*==================================================
-RESPONSIVE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .toolbar{
-
-        padding:18px;
-
-        gap:18px;
-
-    }
-
-    .toolbar-left{
-
-        width:100%;
-
-        flex-direction:column;
-
-        align-items:stretch;
-
-    }
-
-    .toolbar-left label{
-
-        justify-content:center;
-
-    }
-
-    .toolbar-left select{
-
-        width:100%;
-
-        min-width:100%;
-
-    }
-
-    .toolbar-right{
-
-        width:100%;
-
-        display:grid;
-
-        grid-template-columns:repeat(3,1fr);
-
-        gap:12px;
-
-    }
-
-    .tool-btn{
-
-        width:100%;
-
-        height:50px;
-
-        border-radius:14px;
-
-    }
-
-}
+        
