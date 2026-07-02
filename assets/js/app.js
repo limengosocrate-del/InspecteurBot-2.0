@@ -1,430 +1,407 @@
+/*=================================================
+ INSPECTEURBOT RDC
+ app.js
+ VERSION 1.0
+ CHEF D'ORCHESTRE DE L'APPLICATION
+ PARTIE 1
+==================================================*/
+
 "use strict";
 
-/*===========================
-CONFIGURATION
-===========================*/
+/*=================================================
+ ESPACE DE NOMS
+==================================================*/
 
-const APP = {
+window.CodeTravail = window.CodeTravail || {};
 
-    fichierJSON: "code-travail.json"
+window.CodeTravail.App = {};
+
+/*=================================================
+ CONFIGURATION
+==================================================*/
+
+const CONFIG = {
+
+    version: "2026.1",
+
+    nom: "InspecteurBot RDC",
+
+    auteur: "Inspecteur Limengo (Pmiller)",
+
+    modeDebug: false
 
 };
 
+/*=================================================
+ ÉTAT GLOBAL
+==================================================*/
 
-/*===========================
-VARIABLES
-===========================*/
+const ETAT = {
 
-let articles = [];
+    initialise: false,
 
-let articleActuel = null;
+    demarrage: null,
 
+    modulesCharges: []
 
-/*===========================
-CHARGER LE JSON
-===========================*/
+};
 
-async function chargerArticles(){
+/*=================================================
+ ENREGISTRER UN MODULE
+==================================================*/
 
-    try{
+function enregistrerModule(nom) {
 
-        const reponse = await fetch(APP.fichierJSON);
+    if (!ETAT.modulesCharges.includes(nom)) {
 
+        ETAT.modulesCharges.push(nom);
 
-        if(!reponse.ok){
+    }
 
-            throw new Error(
-                "Impossible de charger le fichier JSON"
+}
+
+/*=================================================
+ VÉRIFIER UN MODULE
+==================================================*/
+
+function verifierModule(objet, nom) {
+
+    if (objet) {
+
+        enregistrerModule(nom);
+
+        return true;
+
+    }
+
+    console.warn(
+
+        "Module absent :", nom
+
+    );
+
+    return false;
+
+        }
+
+/*=================================================
+ PARTIE 2
+ INITIALISATION DES MODULES
+==================================================*/
+
+/*=================================================
+ INITIALISER UN MODULE
+==================================================*/
+
+function initialiserModule(module, nom) {
+
+    try {
+
+        if (
+
+            module &&
+
+            typeof module.initialiser === "function"
+
+        ) {
+
+            module.initialiser();
+
+            enregistrerModule(nom);
+
+            console.log(
+
+                "✅ " + nom + " initialisé."
+
             );
 
         }
 
+    }
 
-        articles = await reponse.json();
+    catch (erreur) {
 
+        console.error(
 
-        console.log(
-            "Articles chargés :",
-            articles.length
+            "Erreur dans " + nom,
+
+            erreur
+
         );
 
-
-        afficher(articles);
-
-
-    }
-
-    catch(e){
-
-        console.error(e);
-
-
-        document.getElementById("resultats").innerHTML =
-
-        "<p>Erreur de chargement du Code du Travail.</p>";
-
     }
 
 }
 
+/*=================================================
+ INITIALISATION GÉNÉRALE
+==================================================*/
 
+function initialiserApplication() {
 
-/*===========================
-RECHERCHE INTELLIGENTE
-Compatible JSON 2.0
-===========================*/
+    ETAT.demarrage = new Date();
 
+    /*=========================================
+      CODE DU TRAVAIL
+    =========================================*/
 
-function rechercher(mot){
+    initialiserModule(
 
+        window.CodeTravail.Index,
 
-    mot = mot.toLowerCase().trim();
-
-
-    if(mot===""){
-
-        afficher(articles);
-
-        return;
-
-    }
-
-
-
-    const resultat = articles.filter(article=>{
-
-
-        const texte = (
-
-            article.numeroArticle +
-
-            " " +
-
-            article.titreCode +
-
-            " " +
-
-            article.chapitre +
-
-            " " +
-
-            article.section +
-
-            " " +
-
-            article.intitule +
-
-            " " +
-
-            article.contenu +
-
-            " " +
-
-            (article.motsCles || []).join(" ")
-
-        ).toLowerCase();
-
-
-
-        return texte.includes(mot);
-
-
-
-    });
-
-
-
-    afficher(resultat);
-
-
-
-}
-
-
-
-/*===========================
-AFFICHAGE DES ARTICLES
-===========================*/
-
-
-function afficher(liste){
-
-
-    const zone = document.getElementById("resultats");
-
-
-    zone.innerHTML="";
-
-
-
-    if(liste.length===0){
-
-
-        zone.innerHTML=
-
-        "<h3>Aucun article trouvé.</h3>";
-
-
-        return;
-
-
-    }
-
-
-
-    liste.forEach(article=>{
-
-
-        let extrait = article.contenu;
-
-
-        if(extrait.length > 250){
-
-            extrait =
-
-            extrait.substring(0,250)
-
-            +
-
-            "...";
-
-        }
-
-
-
-        zone.innerHTML += `
-
-
-        <div class="article">
-
-
-            <h3>
-
-            Article ${article.numeroArticle}
-
-            </h3>
-
-
-            <h4>
-
-            ${article.intitule}
-
-            </h4>
-
-
-            <small>
-
-            ${article.titreCode}
-
-            <br>
-
-            ${article.chapitre}
-
-            </small>
-
-
-            <p>
-
-            ${extrait}
-
-            </p>
-
-
-
-            <button onclick="ouvrirArticle('${article.id}')">
-
-            📖 Lire l'article
-
-            </button>
-
-
-        </div>
-
-
-        `;
-
-
-    });
-
-
-
-}
-
-
-
-/*===========================
-OUVRIR UN ARTICLE COMPLET
-===========================*/
-
-
-function ouvrirArticle(id){
-
-
-    articleActuel = articles.find(
-
-        a=>a.id===id
+        "Index"
 
     );
 
+    initialiserModule(
 
-    if(!articleActuel){
+        window.CodeTravail.Consultation,
 
-        return;
-
-    }
-
-
-
-    document.getElementById("resultats").innerHTML = `
-
-
-
-    <div class="article-complet">
-
-
-        <h2>
-
-        Article ${articleActuel.numeroArticle}
-
-        </h2>
-
-
-
-        <h3>
-
-        ${articleActuel.intitule}
-
-        </h3>
-
-
-
-        <p>
-
-        <b>${articleActuel.titreCode}</b>
-
-        </p>
-
-
-
-        <p>
-
-        <b>${articleActuel.chapitre}</b>
-
-        </p>
-
-
-
-        <hr>
-
-
-
-        <p>
-
-        ${articleActuel.contenu}
-
-        </p>
-
-
-
-        <h4>
-
-        Mots clés
-
-        </h4>
-
-
-        <p>
-
-        ${(articleActuel.motsCles || []).join(", ")}
-
-        </p>
-
-
-
-        <h4>
-
-        Infractions possibles
-
-        </h4>
-
-
-        <p>
-
-        ${(articleActuel.infractions || []).join(", ")}
-
-        </p>
-
-
-
-        <button onclick="afficher(articles)">
-
-        ⬅ Retour
-
-        </button>
-
-
-    </div>
-
-
-
-    `;
-
-
-}
-
-
-
-/*===========================
-BOUTON RECHERCHE
-===========================*/
-
-
-document
-
-.getElementById("btnRecherche")
-
-.addEventListener("click",()=>{
-
-
-    rechercher(
-
-        document.getElementById("recherche").value
+        "Consultation"
 
     );
 
+    initialiserModule(
 
-});
+        window.CodeTravail.Recherche,
 
+        "Recherche"
 
+    );
 
-/*===========================
-ENTRÉE CLAVIER
-===========================*/
+    initialiserModule(
 
+        window.CodeTravail.Navigation,
 
-document
+        "Navigation"
 
-.getElementById("recherche")
+    );
 
-.addEventListener("keyup",e=>{
+    initialiserModule(
 
+        window.CodeTravail.Categories,
 
-    if(e.key==="Enter"){
+        "Categories"
 
+    );
 
-        rechercher(e.target.value);
+    /*=========================================
+      MODULES PRINCIPAUX
+    =========================================*/
 
+    initialiserModule(
+
+        window.CodeTravail.VectorSearch,
+
+        "VectorSearch"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.Search,
+
+        "Search"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.Speech,
+
+        "Speech"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.Traduction,
+
+        "Traduction"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.Favoris,
+
+        "Favoris"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.Statistiques,
+
+        "Statistiques"
+
+    );
+
+    initialiserModule(
+
+        window.CodeTravail.IA,
+
+        "IA"
+
+    );
+
+    ETAT.initialise = true;
+
+}
+
+/*=================================================
+ PARTIE 3
+ EXPORT - DÉMARRAGE
+ VERSION FINALE
+==================================================*/
+
+/*=================================================
+ INFORMATIONS
+==================================================*/
+
+function informations() {
+
+    return {
+
+        nom: CONFIG.nom,
+
+        version: CONFIG.version,
+
+        auteur: CONFIG.auteur,
+
+        initialise: ETAT.initialise,
+
+        demarrage: ETAT.demarrage,
+
+        modules: ETAT.modulesCharges
+
+    };
+
+}
+
+/*=================================================
+ RAPPORT
+==================================================*/
+
+function afficherRapport() {
+
+    console.group(
+
+        "📋 InspecteurBot RDC"
+
+    );
+
+    console.log(
+
+        "Nom :", CONFIG.nom
+
+    );
+
+    console.log(
+
+        "Version :", CONFIG.version
+
+    );
+
+    console.log(
+
+        "Auteur :", CONFIG.auteur
+
+    );
+
+    console.log(
+
+        "Modules :", ETAT.modulesCharges
+
+    );
+
+    console.groupEnd();
+
+}
+
+/*=================================================
+ EXPORT
+==================================================*/
+
+window.CodeTravail.App.config =
+    CONFIG;
+
+window.CodeTravail.App.etat =
+    ETAT;
+
+window.CodeTravail.App.initialiser =
+    initialiserApplication;
+
+window.CodeTravail.App.informations =
+    informations;
+
+window.CodeTravail.App.rapport =
+    afficherRapport;
+
+/*=================================================
+ DÉMARRAGE
+==================================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        initialiserApplication();
+
+        afficherRapport();
+
+        console.log(
+
+            "🚀 InspecteurBot RDC prêt."
+
+        );
 
     }
 
+);
 
-});
+/*=================================================
+ GESTION DES ERREURS GLOBALES
+==================================================*/
 
+window.addEventListener(
 
+    "error",
 
-/*===========================
-DÉMARRAGE
-===========================*/
+    event => {
 
+        console.error(
 
-chargerArticles();
+            "Erreur JavaScript :",
+
+            event.message
+
+        );
+
+    }
+
+);
+
+window.addEventListener(
+
+    "unhandledrejection",
+
+    event => {
+
+        console.error(
+
+            "Promesse rejetée :",
+
+            event.reason
+
+        );
+
+    }
+
+);
+
+/*=================================================
+ FIN DU FICHIER
+==================================================*/
