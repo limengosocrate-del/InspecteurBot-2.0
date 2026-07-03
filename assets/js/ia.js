@@ -1,483 +1,338 @@
-/*=================================================
- INSPECTEURBOT RDC
- ia.js
- VERSION 1.0
- ASSISTANT JURIDIQUE IA
- PARTIE 1
-==================================================*/
-
 "use strict";
 
-/*=================================================
- ESPACE DE NOMS
+/*==================================================
+OBJET ASSISTANT IA
 ==================================================*/
 
-window.CodeTravail = window.CodeTravail || {};
+const AssistantIA = {
 
-window.CodeTravail.IA = {};
+    initialisee: false,
 
-/*=================================================
- ÉLÉMENTS HTML
+    voix: {
+
+        homme: null,
+
+        femme: null
+
+    },
+
+    synthese: window.speechSynthesis,
+
+    enCours: false
+
+};
+
+/*==================================================
+EXPORT GLOBAL
 ==================================================*/
 
-const champQuestion =
-    document.querySelector("#questionIA");
+window.AssistantIA = AssistantIA;
 
-const boutonAnalyser =
-    document.querySelector("#btnQuestionIA");
-
-const boutonEffacer =
-    document.querySelector("#btnEffacerIA");
-
-const boutonCopier =
-    document.querySelector("#btnCopierIA");
-
-const boutonLecture =
-    document.querySelector("#btnLectureIA");
-
-const zoneReponse =
-    document.querySelector("#reponseIA");
-
-/*=================================================
- ÉTAT
+/*==================================================
+INITIALISATION
 ==================================================*/
 
-let historiqueQuestions = [];
+AssistantIA.initialiser = function () {
 
-let derniereQuestion = "";
+    if (this.initialisee) return;
 
-let derniereReponse = "";
+    this.initialisee = true;
 
-/*=================================================
- POSER UNE QUESTION
+    console.log("Assistant IA initialisé.");
+
+    this.chargerVoix();
+
+};
+
+/*==================================================
+CHARGEMENT DES VOIX
 ==================================================*/
 
-function analyserQuestion() {
+AssistantIA.chargerVoix = function () {
 
-    const question =
-        champQuestion.value.trim();
+    const voices = speechSynthesis.getVoices();
 
-    if (!question.length) {
+    if (!voices || voices.length === 0) {
 
-        window.CodeTravail.Utils
-            .afficherNotification(
-
-                "Veuillez saisir une question.",
-
-                "warning"
-
-            );
+        setTimeout(() => this.chargerVoix(), 500);
 
         return;
 
     }
 
-    derniereQuestion = question;
+    /*--------------------------
+    VOIX FEMME (priorité FR)
+    --------------------------*/
 
-    historiqueQuestions.push({
+    this.voix.femme =
+        voices.find(v =>
+            v.lang.includes("fr") &&
+            v.name.toLowerCase().includes("female")
+        ) ||
+        voices.find(v =>
+            v.lang.includes("fr")
+        ) ||
+        voices[0];
 
-        question,
+    /*--------------------------
+    VOIX HOMME (approximation)
+    --------------------------*/
 
-        date: new Date()
+    this.voix.homme =
+        voices.find(v =>
+            v.lang.includes("fr") &&
+            v.name.toLowerCase().includes("male")
+        ) ||
+        voices.find(v =>
+            v.lang.includes("fr")
+        ) ||
+        voices[1] ||
+        voices[0];
 
-    });
+    console.log("Voix chargées :", this.voix);
 
-    rechercherReponse(question);
+};
 
-}
-
-/*=================================================
- RECHERCHER UNE RÉPONSE
+/*==================================================
+PARLER TEXTE
 ==================================================*/
 
-function rechercherReponse(question) {
+AssistantIA.parler = function (texte, genre = "femme") {
 
-    if (
+    if (!texte) return;
 
-        window.CodeTravail.VectorSearch &&
-        typeof window.CodeTravail.VectorSearch.rechercherIntelligemment === "function"
+    if (!this.synthese) return;
 
-    ) {
+    this.stop();
 
-        const resultats =
+    const utterance =
+        new SpeechSynthesisUtterance(texte);
 
-            window.CodeTravail.VectorSearch
-                .rechercherIntelligemment(question);
+    utterance.lang = "fr-FR";
 
-        genererReponse(question, resultats);
+    if (genre === "homme") {
+
+        utterance.voice = this.voix.homme;
+
+        utterance.pitch = 0.8;
+
+    } else {
+
+        utterance.voice = this.voix.femme;
+
+        utterance.pitch = 1.1;
 
     }
 
-    else {
+    utterance.rate = 1;
 
-        afficherReponse(
+    this.synthese.speak(utterance);
 
-            "La recherche intelligente est indisponible."
+};
 
-        );
+/*==================================================
+STOP
+==================================================*/
+
+AssistantIA.stop = function () {
+
+    if (this.synthese) {
+
+        this.synthese.cancel();
 
     }
 
-                      }
+};
 
-/*=================================================
- PARTIE 2
- GÉNÉRATION DE LA RÉPONSE IA
+/*==================================================
+ANALYSER ARTICLE
 ==================================================*/
 
-/*=================================================
- GÉNÉRER LA RÉPONSE
-==================================================*/
+AssistantIA.analyser = function (article, question = "") {
 
-function genererReponse(question, resultats = []) {
+    if (this.enCours) return;
 
-    if (!resultats.length) {
+    this.enCours = true;
 
-        afficherReponse(
+    let texte = "";
 
-`Je n'ai trouvé aucun article correspondant à votre question.
+    if (article) {
 
-Essayez d'utiliser d'autres mots-clés ou recherchez directement un numéro d'article.`
+        texte += "Article " + article.numero + ". ";
 
-        );
+        texte += article.titre + ". ";
 
-        return;
+        texte += article.contenu;
 
     }
 
-    const article = resultats[0];
+    if (question) {
 
-    let reponse = "";
-
-    reponse += "Question :\n";
-
-    reponse += question;
-
-    reponse += "\n\n";
-
-    reponse += "Article recommandé : ";
-
-    reponse += article.numero;
-
-    reponse += "\n";
-
-    reponse += article.titre;
-
-    reponse += "\n\n";
-
-    reponse += "Catégorie : ";
-
-    reponse += article.categorie;
-
-    reponse += "\n\n";
-
-    reponse += "Explication :\n";
-
-    reponse += article.contenu;
-
-    if (
-
-        article.sanction &&
-
-        article.sanction.length
-
-    ) {
-
-        reponse += "\n\n";
-
-        reponse += "Sanction prévue :\n";
-
-        reponse += article.sanction;
+        texte += " Question : " + question;
 
     }
 
-    afficherReponse(reponse);
+    const reponse =
+        this.genererReponseSimple(article, question);
 
-    if (
+    this.afficherReponse(reponse);
 
-        window.CodeTravail.Consultation &&
+    this.enCours = false;
 
-        typeof window.CodeTravail.Consultation.afficherArticle === "function"
+    return reponse;
 
-    ) {
+};
 
-        window.CodeTravail.Consultation
+/*==================================================
+GÉNÉRATION DE RÉPONSE
+==================================================*/
 
-            .afficherArticle(article);
+AssistantIA.genererReponseSimple = function (article, question) {
+
+    if (!article && !question) {
+
+        return "Veuillez poser une question ou sélectionner un article.";
 
     }
 
-    if (
+    let base = "";
 
-        window.CodeTravail.Statistiques
+    if (article) {
 
-    ) {
+        base += "Analyse de l'article " + article.numero + " :\n\n";
 
-        window.CodeTravail.Statistiques
+        base += "Cet article traite de : " +
+                (article.titre || "sujet juridique") +
+                ".\n\n";
 
-            .incrementerIA();
-
-    }
-
-}
-
-/*=================================================
- AFFICHER LA RÉPONSE
-==================================================*/
-
-function afficherReponse(texte) {
-
-    derniereReponse = texte;
-
-    if (zoneReponse) {
-
-        zoneReponse.textContent = texte;
+        base += "Explication simplifiée : " +
+                this.simplifierTexte(article.contenu) +
+                "\n\n";
 
     }
 
-}
+    if (question) {
 
-/*=================================================
- OBTENIR LA DERNIÈRE RÉPONSE
-==================================================*/
+        base += "Réponse à la question : " + question + "\n\n";
 
-function obtenirDerniereReponse() {
-
-    return derniereReponse;
-
-}
-
-/*=================================================
- PARTIE 3
- ACTIONS - EXPORT - INITIALISATION
- VERSION FINALE
-==================================================*/
-
-"use strict";
-
-/*=================================================
- EFFACER
-==================================================*/
-
-function effacerQuestion() {
-
-    if (champQuestion) {
-
-        champQuestion.value = "";
-
-        champQuestion.focus();
+        base += "Réponse juridique probable basée sur le Code du Travail de la RDC.";
 
     }
 
-    afficherReponse(
+    return base;
 
-        "Bonjour 👋\n\nJe suis votre assistant juridique intelligent.\n\nPosez votre question concernant le Code du Travail."
+};
 
-    );
-
-}
-
-/*=================================================
- COPIER LA RÉPONSE
+/*==================================================
+SIMPLIFIER TEXTE
 ==================================================*/
 
-function copierReponse() {
+AssistantIA.simplifierTexte = function (texte) {
 
-    if (!derniereReponse.length) return;
+    if (!texte) return "";
 
-    navigator.clipboard
-        .writeText(derniereReponse)
-        .then(() => {
+    return texte
+        .replace(/\s+/g, " ")
+        .trim()
+        .substring(0, 300) + "...";
 
-            window.CodeTravail.Utils
-                ?.afficherNotification(
+};
 
-                    "Réponse copiée."
+/*==================================================
+AFFICHER RÉPONSE IA
+==================================================*/
 
-                );
+AssistantIA.afficherReponse = function (texte) {
+
+    const zone =
+        document.getElementById("reponseIA");
+
+    if (!zone) return;
+
+    zone.innerText = texte;
+
+};
+
+/*==================================================
+INITIALISATION AUTOMATIQUE
+==================================================*/
+
+document.addEventListener("codeTravailCharge", () => {
+
+    AssistantIA.initialiser();
+
+});
+
+/*==================================================
+BOUTONS VOIX UI
+==================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const btnLecture =
+        document.getElementById("btnLectureIA");
+
+    const btnEffacer =
+        document.getElementById("btnEffacerIA");
+
+    const btnCopier =
+        document.getElementById("btnCopierIA");
+
+    /*--------------------------
+    LECTURE VOCALE (FEMME PAR DÉFAUT)
+    --------------------------*/
+
+    if (btnLecture) {
+
+        btnLecture.addEventListener("click", () => {
+
+            const texte =
+                document.getElementById("reponseIA")
+                ?.innerText;
+
+            AssistantIA.parler(texte, "femme");
 
         });
 
-}
-
-/*=================================================
- LECTURE VOCALE
-==================================================*/
-
-function lireReponse() {
-
-    if (
-
-        window.CodeTravail.Speech &&
-
-        typeof window.CodeTravail.Speech.lire === "function"
-
-    ) {
-
-        window.CodeTravail.Speech
-
-            .lire(derniereReponse);
-
     }
 
-}
+    /*--------------------------
+    EFFACER
+    --------------------------*/
 
-/*=================================================
- QUESTIONS RAPIDES
-==================================================*/
+    if (btnEffacer) {
 
-function initialiserQuestionsRapides() {
+        btnEffacer.addEventListener("click", () => {
 
-    document
+            document.getElementById("questionIA").value = "";
 
-        .querySelectorAll(
-
-            "#questionsRapides button"
-
-        )
-
-        .forEach(button => {
-
-            button.addEventListener(
-
-                "click",
-
-                () => {
-
-                    const question =
-
-                        button.dataset.question || "";
-
-                    if (champQuestion) {
-
-                        champQuestion.value = question;
-
-                    }
-
-                    analyserQuestion();
-
-                }
-
-            );
+            document.getElementById("reponseIA").innerText =
+                "Réponse effacée.";
 
         });
 
-}
+    }
 
-/*=================================================
- INITIALISATION
-==================================================*/
+    /*--------------------------
+    COPIER
+    --------------------------*/
 
-function initialiserIA() {
+    if (btnCopier) {
 
-    boutonAnalyser?.addEventListener(
+        btnCopier.addEventListener("click", () => {
 
-        "click",
+            const texte =
+                document.getElementById("reponseIA")
+                ?.innerText;
 
-        analyserQuestion
+            if (texte) {
 
-    );
-
-    boutonEffacer?.addEventListener(
-
-        "click",
-
-        effacerQuestion
-
-    );
-
-    boutonCopier?.addEventListener(
-
-        "click",
-
-        copierReponse
-
-    );
-
-    boutonLecture?.addEventListener(
-
-        "click",
-
-        lireReponse
-
-    );
-
-    champQuestion?.addEventListener(
-
-        "keydown",
-
-        event => {
-
-            if (
-
-                event.key === "Enter" &&
-
-                !event.shiftKey
-
-            ) {
-
-                event.preventDefault();
-
-                analyserQuestion();
+                navigator.clipboard.writeText(texte);
 
             }
 
-        }
-
-    );
-
-    initialiserQuestionsRapides();
-
-    console.log(
-
-        "🤖 ia.js initialisé."
-
-    );
-
-}
-
-/*=================================================
- EXPORT
-==================================================*/
-
-window.CodeTravail.IA.analyser =
-    analyserQuestion;
-
-window.CodeTravail.IA.afficher =
-    afficherReponse;
-
-window.CodeTravail.IA.effacer =
-    effacerQuestion;
-
-window.CodeTravail.IA.copier =
-    copierReponse;
-
-window.CodeTravail.IA.lire =
-    lireReponse;
-
-window.CodeTravail.IA.derniereReponse =
-    obtenirDerniereReponse;
-
-window.CodeTravail.IA.initialiser =
-    initialiserIA;
-
-/*=================================================
- DÉMARRAGE
-==================================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        initialiserIA();
+        });
 
     }
 
-);
-
-/*=================================================
- FIN DU FICHIER
-==================================================*/
-
+});
