@@ -1,12 +1,12 @@
 /*==================================================
 RESET.CSS
-VERSION 2026 UPGRADE
-InspecteurBot RDC
-Base système UI futuriste
+VERSION 2026 PREMIUM V7
+INSPECTEURBOT RDC
+BLUE NIGHT + GOLD EDITION
 ==================================================*/
 
 /*==================================================
-RESET GLOBAL CLEAN
+RESET GLOBAL
 ==================================================*/
 
 *,
@@ -18,93 +18,194 @@ RESET GLOBAL CLEAN
 }
 
 /*==================================================
-VARIABLES GLOBALES (OPTIMISÉES)
+VARIABLES GLOBALES PREMIUM
 ==================================================*/
 
 :root{
 
-    /* PRIMARY SYSTEM */
-    --primary:#041C5C;
-    --primary-light:#0B5ED7;
-    --primary-dark:#02133D;
+    /*==============================
+      PALETTE BLEU NUIT
+    ==============================*/
 
-    --secondary:#123F97;
+    --primary:#04163F;
+    --primary-dark:#020C26;
+    --primary-light:#0D3F9E;
+    --secondary:#133E9B;
+
+    /*==============================
+      OR PREMIUM
+    ==============================*/
+
     --accent:#FFD700;
+    --gold:#D4AF37;
+    --gold-light:#FFE27A;
+    --gold-dark:#B8860B;
 
-    /* TEXT SYSTEM */
+    /*==============================
+      TEXTE
+    ==============================*/
+
     --text:#F8FAFF;
-    --text-dark:#0E1A33;
+    --text-soft:#D9E4FF;
+    --text-dark:#061633;
 
-    /* UI SYSTEM */
-    --glass:rgba(255,255,255,.08);
-    --border:rgba(255,255,255,.15);
+    /*==============================
+      FONDS
+    ==============================*/
 
-    --shadow:0 10px 35px rgba(0,0,0,.35);
-    --radius:22px;
+    --bg:#020B25;
 
-    --transition:.3s ease;
-
-    /* BACKGROUND SYSTEM */
-    --bg-gradient:linear-gradient(
-        135deg,
-        #041C5C,
-        #0B5ED7,
-        #041C5C
+    --bg-gradient:
+    linear-gradient(
+        145deg,
+        #020B25 0%,
+        #04163F 35%,
+        #0A2F82 70%,
+        #04163F 100%
     );
+
+    /*==============================
+      GLASSMORPHISM
+    ==============================*/
+
+    --glass:rgba(255,255,255,.08);
+    --glass-light:rgba(255,255,255,.12);
+    --border:rgba(255,215,0,.18);
+
+    /*==============================
+      OMBRES
+    ==============================*/
+
+    --shadow-soft:
+        0 8px 25px rgba(0,0,0,.35);
+
+    --shadow-blue:
+        0 0 30px rgba(0,90,255,.25);
+
+    --shadow-gold:
+        0 0 25px rgba(255,215,0,.18);
+
+    --shadow-deep:
+        0 18px 45px rgba(0,0,0,.55);
+
+    /*==============================
+      BORDURES
+    ==============================*/
+
+    --radius-sm:14px;
+    --radius:22px;
+    --radius-lg:30px;
+    --radius-xl:40px;
+
+    /*==============================
+      EFFETS
+    ==============================*/
+
+    --blur:16px;
+
+    --transition-fast:.25s ease;
+
+    --transition:.40s ease;
+
+    --transition-slow:.65s ease;
 }
 
 /*==================================================
-DARK MODE (OPTIMISÉ)
+DARK MODE
 ==================================================*/
 
 body.dark-theme{
+
     --text:#FFFFFF;
-    --glass:rgba(255,255,255,.06);
+    --text-soft:#E5EEFF;
+
+    --glass:rgba(255,255,255,.08);
+    --glass-light:rgba(255,255,255,.12);
+
+    --border:rgba(255,215,0,.20);
+
+    --bg:#020B25;
 }
 
 /*==================================================
-LIGHT MODE (CLEAN + CONTRASTE AMÉLIORÉ)
+LIGHT MODE
 ==================================================*/
 
 body.light-theme{
-    --text:#041C5C;
-    --glass:rgba(255,255,255,.85);
+
+    --text:#04163F;
+    --text-soft:#27446D;
+
+    --glass:rgba(255,255,255,.88);
+    --glass-light:rgba(255,255,255,.96);
+
+    --border:rgba(212,175,55,.30);
+
+    --bg:#EEF4FF;
+}
 
 /*==================================================
 HTML
 ==================================================*/
 
 html{
-    scroll-behavior:smooth;
+
     font-size:16px;
+
+    scroll-behavior:smooth;
+
+    -webkit-text-size-adjust:100%;
 }
 
 /*==================================================
-BODY (PERFORMANCE OPTIMISÉE)
+BODY
 ==================================================*/
 
 body{
+
     font-family:"Poppins",sans-serif;
-    line-height:1.7;
 
     color:var(--text);
 
+    line-height:1.7;
+
     background:var(--bg-gradient);
     background-size:300% 300%;
-
-    animation:gradientMove 18s ease infinite;
+    background-attachment:fixed;
 
     min-height:100vh;
+
     overflow-x:hidden;
 
-    transition:background .4s ease, color .4s ease;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+
+    transition:
+        background var(--transition),
+        color var(--transition);
+
+    animation:
+        gradientMove 18s ease infinite;
 }
 
-/* Animation fond */
+/*==================================================
+ANIMATION DU FOND
+==================================================*/
+
 @keyframes gradientMove{
-    0%{ background-position:0% 50%; }
-    50%{ background-position:100% 50%; }
-    100%{ background-position:0% 50%; }
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
 }
 
 /*==================================================
@@ -122,9 +223,11 @@ IMAGES
 ==================================================*/
 
 img{
-    max-width:100%;
     display:block;
+    max-width:100%;
+    height:auto;
     user-select:none;
+    -webkit-user-drag:none;
 }
 
 /*==================================================
@@ -132,104 +235,154 @@ LIENS
 ==================================================*/
 
 a{
-    text-decoration:none;
     color:inherit;
+    text-decoration:none;
     transition:var(--transition);
+}
+
+a:hover{
+    color:var(--gold-light);
 }
 
 /*==================================================
 LISTES
 ==================================================*/
 
-ul, ol{
+ul,
+ol{
     list-style:none;
 }
 
 /*==================================================
-BUTTONS
+BOUTONS PREMIUM
 ==================================================*/
 
 button{
+
     border:none;
     outline:none;
-    cursor:pointer;
+
     font-family:inherit;
-    transition:var(--transition);
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+
+    -webkit-tap-highlight-color:transparent;
 }
 
-/* disabled */
 button:disabled{
+
     opacity:.55;
+
     cursor:not-allowed;
+
+    filter:grayscale(.2);
 }
 
 /*==================================================
-INPUT SYSTEM
+FORMULAIRES
 ==================================================*/
 
 input,
 textarea,
 select{
+
     font-family:inherit;
+
+    color:inherit;
+
+    background:none;
+
+    border:none;
+
     outline:none;
+
+    transition:var(--transition);
+}
+
+input::placeholder,
+textarea::placeholder{
+
+    color:rgba(255,255,255,.60);
 }
 
 /*==================================================
-TABLES
+TABLEAUX
 ==================================================*/
 
 table{
-    border-collapse:collapse;
+
     width:100%;
+
+    border-collapse:collapse;
 }
 
 /*==================================================
-ICONS
+ICÔNES
 ==================================================*/
 
 i{
+
     transition:var(--transition);
 }
 
 /*==================================================
-SELECTION TEXTE
+SÉLECTION
 ==================================================*/
 
 ::selection{
-    background:var(--accent);
-    color:#041C5C;
+
+    background:var(--gold);
+
+    color:var(--primary-dark);
 }
 
 /*==================================================
-SCROLLBAR (PRO CLEAN)
+SCROLLBAR PREMIUM
 ==================================================*/
 
 ::-webkit-scrollbar{
-    width:10px;
+
+    width:8px;
 }
 
 ::-webkit-scrollbar-track{
-    background:#05296F;
+
+    background:#02112F;
 }
 
 ::-webkit-scrollbar-thumb{
+
     background:linear-gradient(
-        var(--accent),
-        #FFEE88
+        180deg,
+        var(--gold-light),
+        var(--gold),
+        var(--gold-dark)
     );
-    border-radius:20px;
+
+    border-radius:30px;
 }
 
 ::-webkit-scrollbar-thumb:hover{
-    background:#FFE347;
+
+    background:linear-gradient(
+        180deg,
+        #FFF1A8,
+        var(--accent),
+        var(--gold)
+    );
 }
 
 /*==================================================
-FOCUS ACCESSIBILITY (IMPORTANT)
+FOCUS ACCESSIBILITÉ
 ==================================================*/
 
 :focus-visible{
-    outline:3px solid var(--accent);
+
+    outline:2px solid var(--accent);
+
     outline-offset:3px;
-    }
+
+    border-radius:8px;
 }
