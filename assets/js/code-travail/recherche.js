@@ -1,264 +1,183 @@
 "use strict";
 
-/* =====================================================
-   INSPECTEURBOT RDC
-   MODULE : RECHERCHE
-   ===================================================== */
+/*==================================================
+ RECHERCHE DES ARTICLES
+ InspecteurBot RDC
+==================================================*/
 
-const Recherche = {
-
-    initialiser(){
-
-        this.initialiserChamp();
-
-        this.initialiserBouton();
-
-    }
-
-};
+const Recherche = {};
 
 window.Recherche = Recherche;
 
-/* =====================================================
-   BOUTON RECHERCHER
-   ===================================================== */
+/*=========================================
+ Initialisation
+=========================================*/
 
-Recherche.initialiserBouton = function(){
+Recherche.initialiser = function () {
 
-    const bouton =
+    const input = document.getElementById("rechercheArticle");
+    const bouton = document.getElementById("btnRecherche");
+    const resultat = document.getElementById("resultatsRecherche");
 
-        document.getElementById(
+    if (!input || !bouton || !resultat) return;
 
-            "btnRecherche"
+    bouton.onclick = () => {
 
-        );
+        Recherche.rechercher(input.value);
 
-    if(!bouton){
+    };
 
-        return;
+    input.addEventListener("keyup", function (e) {
 
-    }
+        if (e.key === "Enter") {
 
-    bouton.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            this.rechercher();
+            Recherche.rechercher(this.value);
 
         }
 
-    );
+    });
+
+    /* Suggestions rapides */
+
+    document
+        .querySelectorAll("#suggestionsRapides button")
+        .forEach(btn => {
+
+            btn.onclick = function () {
+
+                if (this.dataset.search) {
+
+                    input.value = this.dataset.search;
+
+                    Recherche.rechercher(this.dataset.search);
+
+                }
+
+                if (this.dataset.article) {
+
+                    const article =
+                        CodeTravail.selectionnerArticle(
+                            Number(this.dataset.article)
+                        );
+
+                    if (article) {
+
+                        Consultation.afficherArticle(article);
+
+                    }
+
+                }
+
+            };
+
+        });
 
 };
 
-/* =====================================================
-   CHAMP DE RECHERCHE
-   ===================================================== */
+/*=========================================
+ Recherche principale
+=========================================*/
 
-Recherche.initialiserChamp = function(){
+Recherche.rechercher = function (texte) {
 
-    const champ =
+    const resultat =
+        document.getElementById("resultatsRecherche");
 
-        document.getElementById(
+    resultat.innerHTML = "";
 
-            "rechercheArticle"
+    texte = texte.trim().toLowerCase();
+
+    if (!texte) return;
+
+    const liste =
+        CodeTravail.getTousArticles();
+
+    const trouve = liste.filter(article => {
+
+        return (
+
+            article.numero.toString() === texte ||
+
+            article.titre.toLowerCase().includes(texte) ||
+
+            article.categorie.toLowerCase().includes(texte) ||
+
+            article.contenu.toLowerCase().includes(texte) ||
+
+            (article.motsCles || []).join(" ").toLowerCase().includes(texte)
 
         );
 
-    if(!champ){
+    });
+
+    document.getElementById("infoRecherche").textContent = texte;
+    document.getElementById("infoResultats").textContent = trouve.length;
+
+    if (trouve.length === 0) {
+
+        resultat.innerHTML =
+
+            "<p>Aucun article trouvé.</p>";
 
         return;
 
     }
 
-    champ.addEventListener(
+    trouve.forEach(article => {
 
-        "keydown",
+        const carte =
+            document.createElement("div");
 
-        (event)=>{
+        carte.className = "result-card";
 
-            if(event.key==="Enter"){
+        carte.innerHTML = `
 
-                this.rechercher();
+            <h3>
 
-            }
+                Article ${article.numero}
 
-        }
+            </h3>
 
-    );
+            <p>
+
+                <strong>${article.titre}</strong>
+
+            </p>
+
+            <small>
+
+                ${article.categorie}
+
+            </small>
+
+        `;
+
+        carte.onclick = function () {
+
+            Consultation.afficherArticle(article);
+
+            resultat.innerHTML = "";
+
+        };
+
+        resultat.appendChild(carte);
+
+    });
 
 };
 
-/* =====================================================
-   RECHERCHE D'UN ARTICLE
-   ===================================================== */
+/*=========================================
+ Chargement automatique
+=========================================*/
 
-Recherche.rechercher = function(){
+document.addEventListener(
 
-    const champ =
+    "DOMContentLoaded",
 
-        document.getElementById(
-            "rechercheArticle"
-        );
+    function () {
 
-    if(!champ){
-
-        return;
+        Recherche.initialiser();
 
     }
 
-    const texte =
-
-        champ.value
-        .trim()
-        .toLowerCase();
-
-    if(texte===""){
-
-        return;
-
-    }
-
-    const numero =
-
-    Number(texte);
-
-    let resultat = null;
-
-  /* -------------------------
-   Détection "Article XX"
--------------------------- */
-
-const correspondance =
-
-    texte.match(
-
-        /(?:article|art\.?|art)\s*(?:n°|no)?\s*(\d+)/i
-
-    );
-
-if(correspondance){
-
-    const numero =
-
-        parseInt(
-
-            correspondance[1]
-
-        );
-
-    const article =
-
-        CodeTravail.getParNumero(
-
-            numero
-
-        );
-
-    if(article){
-
-        Consultation.afficherArticle(
-
-            article
-
-        );
-
-        CodeTravail.selectionner(
-
-            numero
-
-        );
-
-        return;
-
-    }
-
-}
-
-    /* -------------------------
-       Recherche par numéro
-    -------------------------- */
-
-    if(!isNaN(numero)){
-
-        resultat =
-
-            CodeTravail.getParNumero(numero);
-
-    }
-
-    /* -------------------------
-       Recherche textuelle
-    -------------------------- */
-
-    if(!resultat){
-
-        resultat =
-
-            CodeTravail.articles.find(
-
-                article =>
-
-                    article.titre
-                    .toLowerCase()
-                    .includes(texte)
-
-                    ||
-
-                    article.categorie
-                    .toLowerCase()
-                    .includes(texte)
-
-                    ||
-
-                    article.contenu
-                    .toLowerCase()
-                    .includes(texte)
-
-                    ||
-
-                    article.motsCles.some(
-
-                        mot=>
-
-                        mot.toLowerCase()
-                        .includes(texte)
-
-                    )
-
-            );
-
-    }
-
-    /* -------------------------
-       Résultat
-    -------------------------- */
-
-    if(resultat){
-
-        Consultation.afficherArticle(
-
-            resultat
-
-        );
-
-        CodeTravail.selectionner(
-
-            resultat.numero
-
-        );
-
-        return;
-
-    }
-
-    alert(
-
-        "Aucun article trouvé."
-
-    );
-
-};
-
+);
