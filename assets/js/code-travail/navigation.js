@@ -1,44 +1,19 @@
 "use strict";
 
 /*==================================================
-OBJET NAVIGATION
+ NAVIGATION DES ARTICLES
+ InspecteurBot RDC
 ==================================================*/
 
-const Navigation = {
-
-    initialisee: false,
-
-    verrou: false
-
-};
-
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
+const Navigation = {};
 
 window.Navigation = Navigation;
 
-/*==================================================
-INITIALISATION
-==================================================*/
+/*=========================================
+ Initialisation
+=========================================*/
 
 Navigation.initialiser = function () {
-
-    if (this.initialisee) return;
-
-    this.initialisee = true;
-
-    console.log("Module Navigation initialisé.");
-
-    this.initialiserEvenements();
-
-};
-
-/*==================================================
-ÉVÉNEMENTS NAVIGATION
-==================================================*/
-
-Navigation.initialiserEvenements = function () {
 
     const btnPrecedent =
         document.getElementById("btnArticlePrecedent");
@@ -46,228 +21,158 @@ Navigation.initialiserEvenements = function () {
     const btnSuivant =
         document.getElementById("btnArticleSuivant");
 
-    /*------------------------------
-    PRÉCÉDENT
-    ------------------------------*/
-
     if (btnPrecedent) {
 
-        btnPrecedent.addEventListener("click", () => {
-
-            this.precedent();
-
-        });
+        btnPrecedent.onclick = Navigation.precedent;
 
     }
-
-    /*------------------------------
-    SUIVANT
-    ------------------------------*/
 
     if (btnSuivant) {
 
-        btnSuivant.addEventListener("click", () => {
-
-            this.suivant();
-
-        });
+        btnSuivant.onclick = Navigation.suivant;
 
     }
 
-    /*------------------------------
-    NAVIGATION CLAVIER (optionnel)
-    ------------------------------*/
-
-    document.addEventListener("keydown", (e) => {
-
-        if (!CodeTravail || !CodeTravail.estCharge()) return;
-
-        if (e.key === "ArrowLeft") {
-            this.precedent();
-        }
-
-        if (e.key === "ArrowRight") {
-            this.suivant();
-        }
-
-    });
-
 };
 
-/*==================================================
-ARTICLE PRÉCÉDENT
-==================================================*/
+/*=========================================
+ Article précédent
+=========================================*/
 
 Navigation.precedent = function () {
 
-    if (this.verrou) return;
-
-    if (!window.CodeTravail) return;
-
     const article =
-        CodeTravail.articlePrecedent();
-
-    if (!article) {
-
-        console.log("Début de la liste atteint.");
-
-        return;
-
-    }
-
-    this.afficher(article);
-
-};
-
-/*==================================================
-ARTICLE SUIVANT
-==================================================*/
-
-Navigation.suivant = function () {
-
-    if (this.verrou) return;
-
-    if (!window.CodeTravail) return;
-
-    const article =
-        CodeTravail.articleSuivant();
-
-    if (!article) {
-
-        console.log("Fin de la liste atteinte.");
-
-        return;
-
-    }
-
-    this.afficher(article);
-
-};
-
-/*==================================================
-AFFICHER ARTICLE
-==================================================*/
-
-Navigation.afficher = function (article) {
+        CodeTravail.articleActuel;
 
     if (!article) return;
 
-    this.verrou = true;
+    const liste =
+        CodeTravail.getTousArticles();
 
-    if (window.Consultation) {
+    const index =
+        liste.findIndex(a => a.numero === article.numero);
 
-        Consultation.afficherArticle(article);
+    if (index <= 0) return;
 
-    }
+    const precedent =
+        liste[index - 1];
 
-    if (window.Statistiques) {
+    CodeTravail.articleActuel =
+        precedent;
 
-        if (Statistiques.incrementer) {
-
-            Statistiques.incrementer("consultations");
-
-        }
-
-    }
-
-    setTimeout(() => {
-
-        this.verrou = false;
-
-    }, 200);
+    Consultation.afficherArticle(precedent);
 
 };
 
-/*==================================================
-ALLER À UN ARTICLE
-==================================================*/
+/*=========================================
+ Article suivant
+=========================================*/
 
-Navigation.allerA = function (numero) {
-
-    if (!window.CodeTravail) return;
+Navigation.suivant = function () {
 
     const article =
-        CodeTravail.selectionner(numero);
+        CodeTravail.articleActuel;
 
-    if (!article) {
+    if (!article) return;
 
-        console.log("Article introuvable :", numero);
+    const liste =
+        CodeTravail.getTousArticles();
 
-        return;
+    const index =
+        liste.findIndex(a => a.numero === article.numero);
 
-    }
+    if (index === -1) return;
 
-    this.afficher(article);
+    if (index >= liste.length - 1) return;
+
+    const suivant =
+        liste[index + 1];
+
+    CodeTravail.articleActuel =
+        suivant;
+
+    Consultation.afficherArticle(suivant);
 
 };
 
-/*==================================================
-PREMIER ARTICLE
-==================================================*/
+/*=========================================
+ Aller à un article
+=========================================*/
+
+Navigation.aller = function (numero) {
+
+    const article =
+        CodeTravail.selectionnerArticle(numero);
+
+    if (!article) return;
+
+    Consultation.afficherArticle(article);
+
+};
+
+/*=========================================
+ Premier article
+=========================================*/
 
 Navigation.premier = function () {
 
-    if (!window.CodeTravail) return;
+    const liste =
+        CodeTravail.getTousArticles();
 
-    if (CodeTravail.articles.length === 0) return;
+    if (!liste.length) return;
 
-    const article =
-        CodeTravail.articles[0];
+    CodeTravail.articleActuel =
+        liste[0];
 
-    CodeTravail.indexActuel = 0;
-
-    this.afficher(article);
+    Consultation.afficherArticle(liste[0]);
 
 };
 
-/*==================================================
-DERNIER ARTICLE
-==================================================*/
+/*=========================================
+ Dernier article
+=========================================*/
 
 Navigation.dernier = function () {
 
-    if (!window.CodeTravail) return;
+    const liste =
+        CodeTravail.getTousArticles();
 
-    const last =
-        CodeTravail.articles.length - 1;
+    if (!liste.length) return;
 
-    const article =
-        CodeTravail.articles[last];
+    const dernier =
+        liste[liste.length - 1];
 
-    CodeTravail.indexActuel = last;
+    CodeTravail.articleActuel =
+        dernier;
 
-    this.afficher(article);
-
-};
-
-/*==================================================
-VÉRIFICATION NAVIGATION POSSIBLE
-==================================================*/
-
-Navigation.peutPreceder = function () {
-
-    return CodeTravail.indexActuel > 0;
+    Consultation.afficherArticle(dernier);
 
 };
 
-/*==================================================
-VÉRIFICATION SUIVANT POSSIBLE
-==================================================*/
+/*=========================================
+ Vérifie si un article existe
+=========================================*/
 
-Navigation.peutSuivre = function () {
+Navigation.existe = function (numero) {
 
-    return CodeTravail.indexActuel <
-        CodeTravail.articles.length - 1;
+    return CodeTravail
+        .getTousArticles()
+        .some(a => a.numero == numero);
 
 };
 
-/*==================================================
-AUTO INIT
-==================================================*/
+/*=========================================
+ Chargement automatique
+=========================================*/
 
-document.addEventListener("codeTravailCharge", () => {
+document.addEventListener(
 
-    Navigation.initialiser();
+    "DOMContentLoaded",
 
-});
+    function () {
 
+        Navigation.initialiser();
+
+    }
+
+);
