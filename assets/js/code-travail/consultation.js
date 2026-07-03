@@ -384,5 +384,243 @@ Consultation.viderHistorique=function(){
 
 };
 
+"use strict";
 
+/*==================================================
+ARTICLE PRÉCÉDENT
+==================================================*/
+
+Consultation.articlePrecedent = function () {
+
+    if (!CodeTravail.articlePrecedent) {
+        return null;
+    }
+
+    const article = CodeTravail.articlePrecedent();
+
+    if (article) {
+        this.afficherArticle(article);
+    }
+
+    return article;
+};
+
+/*==================================================
+ARTICLE SUIVANT
+==================================================*/
+
+Consultation.articleSuivant = function () {
+
+    if (!CodeTravail.articleSuivant) {
+        return null;
+    }
+
+    const article = CodeTravail.articleSuivant();
+
+    if (article) {
+        this.afficherArticle(article);
+    }
+
+    return article;
+};
+
+"use strict";
+
+/*==================================================
+INITIALISER LES ÉVÉNEMENTS UI
+==================================================*/
+
+Consultation.initialiserEvenements = function () {
+
+    const btnPrecedent =
+        document.getElementById("btnArticlePrecedent");
+
+    const btnSuivant =
+        document.getElementById("btnArticleSuivant");
+
+    const btnCopier =
+        document.getElementById("btnCopierArticle");
+
+    const btnLecture =
+        document.getElementById("btnLectureArticle");
+
+    const btnFavori =
+        document.getElementById("btnFavoriArticle");
+
+    const btnPartager =
+        document.getElementById("btnPartagerArticle");
+
+    const btnImprimer =
+        document.getElementById("btnImprimerArticle");
+
+    const btnIA =
+        document.getElementById("btnExpliquerIA");
+
+    if (btnPrecedent) {
+        btnPrecedent.addEventListener("click", () => {
+            this.articlePrecedent();
+        });
+    }
+
+    if (btnSuivant) {
+        btnSuivant.addEventListener("click", () => {
+            this.articleSuivant();
+        });
+    }
+
+    if (btnCopier && navigator.clipboard) {
+        btnCopier.addEventListener("click", () => {
+            if (this.article) {
+                navigator.clipboard.writeText(this.article.contenu || "");
+            }
+        });
+    }
+
+    if (btnLecture) {
+        btnLecture.addEventListener("click", () => {
+            if (window.Speech && this.article) {
+                Speech.lire(this.article.contenu || "");
+            }
+        });
+    }
+
+    if (btnFavori) {
+        btnFavori.addEventListener("click", () => {
+            if (window.Favoris && this.article) {
+                Favoris.ajouter(this.article);
+            }
+        });
+    }
+
+    if (btnPartager) {
+        btnPartager.addEventListener("click", () => {
+            if (window.Share && this.article) {
+                Share.partagerArticle(this.article);
+            }
+        });
+    }
+
+    if (btnImprimer) {
+        btnImprimer.addEventListener("click", () => {
+            window.print();
+        });
+    }
+
+    if (btnIA) {
+        btnIA.addEventListener("click", () => {
+            const zone = document.getElementById("questionIA");
+            if (window.AssistantIA && zone && this.article) {
+                AssistantIA.analyser(this.article, zone.value);
+            }
+        });
+    }
+};
+
+"use strict";
+
+/*==================================================
+INITIALISER QUESTIONS RAPIDES
+==================================================*/
+
+Consultation.initialiserQuestionsRapides = function () {
+
+    const boutons =
+        document.querySelectorAll("#questionsRapides button");
+
+    boutons.forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+            const question =
+                btn.getAttribute("data-question");
+
+            if (!question) return;
+
+            const zone =
+                document.getElementById("questionIA");
+
+            if (zone) {
+                zone.value = question;
+            }
+
+            if (window.AssistantIA) {
+                AssistantIA.analyser(null, question);
+            }
+
+        });
+
+    });
+};
+
+"use strict";
+
+/*==================================================
+OBTENIR ARTICLE COURANT
+==================================================*/
+
+Consultation.getArticleCourant = function () {
+    return this.article;
+};
+
+/*==================================================
+RECHERCHER ET AFFICHER
+==================================================*/
+
+Consultation.rechercherEtAfficher = function (texte) {
+
+    if (!window.CodeTravail) {
+        return;
+    }
+
+    const resultats =
+        CodeTravail.rechercher(texte);
+
+    if (resultats.length > 0) {
+        this.afficherArticle(resultats[0]);
+    }
+
+    return resultats;
+};
+
+/*==================================================
+RÉINITIALISER AFFICHAGE
+==================================================*/
+
+Consultation.reinitialiser = function () {
+
+    this.article = null;
+    this.index = -1;
+
+    const numero =
+        document.getElementById("numeroArticle");
+
+    const titre =
+        document.getElementById("titreArticle");
+
+    const contenu =
+        document.getElementById("contenuArticle");
+
+    if (numero) numero.textContent = "Aucun article";
+    if (titre) titre.textContent = "Sélectionnez un article";
+    if (contenu) contenu.textContent = "Utilisez la recherche ou les catégories.";
+
+};
+
+"use strict";
+
+/*==================================================
+FINALISATION INIT MODULE
+==================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    Consultation.initialiser();
+
+    Consultation.initialiserEvenements();
+
+    Consultation.initialiserQuestionsRapides();
+
+    console.log("Consultation prête.");
+
+});
 
