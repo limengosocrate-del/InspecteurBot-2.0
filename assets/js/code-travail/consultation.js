@@ -1,227 +1,240 @@
 "use strict";
 
-/*==================================================
+/*====================================================
  INSPECTEURBOT RDC
- CODE DU TRAVAIL
- CONSULTATION V3
- PARTIE 1/8
-==================================================*/
+ CODE DU TRAVAIL V4
+ CONSULTATION
+====================================================*/
 
-/*==================================================
-OBJET CONSULTATION
-==================================================*/
-
-const Consultation = {
-
-    article: null,
-    index: -1,
-    initialise: false,
-    historique: []
-
-};
-
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
+const Consultation = {};
 
 window.Consultation = Consultation;
 
-/*==================================================
-INITIALISATION
-==================================================*/
-
-Consultation.initialiser = function () {
-
-    if (this.initialise) return;
-
-    this.initialise = true;
-
-    console.log("Consultation V3 initialisée");
-
-};
-
-/*==================================================
-CHARGEMENT CODE DU TRAVAIL
-==================================================*/
-
-document.addEventListener("codeTravailCharge", () => {
-
-    Consultation.initialiser();
-
-    Consultation.afficherAccueil();
-
-});
-
-/*==================================================
-AFFICHAGE ACCUEIL
-==================================================*/
-
-Consultation.afficherAccueil = function () {
-
-    const numero = document.getElementById("numeroArticle");
-    const titre = document.getElementById("titreArticle");
-    const contenu = document.getElementById("contenuArticle");
-
-    if (numero) numero.textContent = "Code du Travail";
-    if (titre) titre.textContent = "Bibliothèque juridique intelligente";
-
-    if (contenu) {
-
-        contenu.innerHTML = `
-            <div class="accueil-box">
-                <p>
-                    Bienvenue dans le Code du Travail de la RDC.
-                </p>
-                <p>
-                    Utilisez la recherche ou les catégories pour commencer.
-                </p>
-            </div>
-        `;
-
-    }
-
-};
-
-/*==================================================
-AFFICHER ARTICLE
-==================================================*/
+/*====================================================
+AFFICHER UN ARTICLE
+====================================================*/
 
 Consultation.afficherArticle = function (article) {
 
     if (!article) return;
 
-    this.article = article;
+    CodeTravail.articleActuel = article;
+
+    CodeTravail.indexActuel =
+        CodeTravail.articles.findIndex(
+            a => a.numero === article.numero
+        );
 
     const numero = document.getElementById("numeroArticle");
     const titre = document.getElementById("titreArticle");
-    const contenu = document.getElementById("contenuArticle");
     const categorie = document.getElementById("categorieArticle");
+    const contenu = document.getElementById("contenuArticle");
+    const sanction = document.getElementById("sanctionArticle");
+    const questions = document.getElementById("questionsIA");
 
-    if (numero) numero.textContent = `Article ${article.numero || "-"}`;
-    if (titre) titre.textContent = article.titre || "Sans titre";
+    if (numero)
+        numero.textContent = "Article " + article.numero;
 
-    if (contenu) {
+    if (titre)
+        titre.textContent = article.titre || "";
 
-        contenu.innerHTML = `
-            <div class="article-text">
-                ${article.contenu || "Contenu indisponible"}
-            </div>
-        `;
+    if (categorie)
+        categorie.textContent = article.categorie || "";
+
+    if (contenu)
+        contenu.innerHTML = article.contenu || "";
+
+    if (sanction) {
+
+        if (article.sanction) {
+
+            sanction.innerHTML = `
+                <h4>⚖️ Sanction</h4>
+                <p>${article.sanction}</p>
+            `;
+
+        } else {
+
+            sanction.innerHTML = "";
+
+        }
 
     }
 
-    if (categorie) {
-        categorie.textContent = article.categorie || "Non classé";
+    if (questions) {
+
+        questions.innerHTML = "";
+
+        if (
+            Array.isArray(article.questionsIA) &&
+            article.questionsIA.length
+        ) {
+
+            const titreQuestions =
+                document.createElement("h4");
+
+            titreQuestions.textContent =
+                "🤖 Questions IA";
+
+            questions.appendChild(titreQuestions);
+
+            article.questionsIA.forEach(q => {
+
+                const bouton =
+                    document.createElement("button");
+
+                bouton.className =
+                    "question-ia";
+
+                bouton.textContent = q;
+
+                bouton.addEventListener(
+                    "click",
+                    () => {
+
+                        const zone =
+                            document.getElementById("questionIA");
+
+                        if (zone) {
+
+                            zone.value = q;
+
+                        }
+
+                    }
+                );
+
+                questions.appendChild(bouton);
+
+            });
+
+        }
+
     }
 
-    this.ajouterHistorique(article);
-
-    this.mettreAJourInfos(article);
+    Consultation.mettreAJourInformations(article);
 
 };
 
-/*==================================================
-INFOS ARTICLE
-==================================================*/
+/*====================================================
+INFORMATIONS
+====================================================*/
 
-Consultation.mettreAJourInfos = function (article) {
+Consultation.mettreAJourInformations = function (article) {
 
-    const infoArticle = document.getElementById("infoArticle");
-    const infoCategorie = document.getElementById("infoCategorie");
+    const infoArticle =
+        document.getElementById("infoArticle");
+
+    const infoCategorie =
+        document.getElementById("infoCategorie");
 
     if (infoArticle) {
-        infoArticle.textContent = `Article ${article.numero || "-"}`;
+
+        infoArticle.textContent =
+            "Article " + article.numero;
+
     }
 
     if (infoCategorie) {
-        infoCategorie.textContent = article.categorie || "-";
+
+        infoCategorie.textContent =
+            article.categorie;
+
     }
 
 };
 
-/*==================================================
-HISTORIQUE
-==================================================*/
+/*====================================================
+ARTICLE SUIVANT
+====================================================*/
 
-Consultation.ajouterHistorique = function (article) {
+Consultation.suivant = function () {
 
-    if (!article) return;
+    const article =
+        CodeTravail.articleSuivant();
 
-    this.historique =
-        this.historique.filter(a => a.id !== article.id);
+    if (article) {
 
-    this.historique.unshift(article);
+        Consultation.afficherArticle(article);
 
-    if (this.historique.length > 30) {
-        this.historique.pop();
     }
 
 };
 
-Consultation.getHistorique = function () {
-    return [...this.historique];
-};
+/*====================================================
+ARTICLE PRECEDENT
+====================================================*/
 
-/*==================================================
-NAVIGATION ARTICLE
-==================================================*/
+Consultation.precedent = function () {
 
-Consultation.articlePrecedent = function () {
+    const article =
+        CodeTravail.articlePrecedent();
 
-    if (!window.CodeTravail) return;
+    if (article) {
 
-    const article = CodeTravail.articlePrecedent();
+        Consultation.afficherArticle(article);
 
-    if (article) this.afficherArticle(article);
-
-    return article;
+    }
 
 };
 
-Consultation.articleSuivant = function () {
+/*====================================================
+INITIALISATION
+====================================================*/
 
-    if (!window.CodeTravail) return;
+Consultation.initialiser = function () {
 
-    const article = CodeTravail.articleSuivant();
+    const btnSuivant =
+        document.getElementById(
+            "btnArticleSuivant"
+        );
 
-    if (article) this.afficherArticle(article);
+    const btnPrecedent =
+        document.getElementById(
+            "btnArticlePrecedent"
+        );
 
-    return article;
+    if (btnSuivant) {
+
+        btnSuivant.addEventListener(
+            "click",
+            Consultation.suivant
+        );
+
+    }
+
+    if (btnPrecedent) {
+
+        btnPrecedent.addEventListener(
+            "click",
+            Consultation.precedent
+        );
+
+    }
+
+    if (CodeTravail.articleActuel) {
+
+        Consultation.afficherArticle(
+            CodeTravail.articleActuel
+        );
+
+    }
 
 };
 
-/*==================================================
-EVENTS UI
-==================================================*/
+/*====================================================
+DEMARRAGE
+====================================================*/
 
-Consultation.initialiserEvenements = function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const on = (id, fn) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener("click", fn);
-    };
+        setTimeout(() => {
 
-    on("btnArticlePrecedent", () => this.articlePrecedent());
-    on("btnArticleSuivant", () => this.articleSuivant());
+            Consultation.initialiser();
 
-    on("btnCopierArticle", () => {
-        if (this.article) {
-            navigator.clipboard?.writeText(this.article.contenu || "");
-        }
-    });
+        }, 300);
 
-    on("btnImprimerArticle", () => window.print());
-
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    Consultation.initialiser();
-    Consultation.initialiserEvenements();
-
-    console.log("Consultation V3 prête");
-
-});
-
-
-
+    }
+);
