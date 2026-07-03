@@ -1,8 +1,8 @@
 /*==================================================
 ARTICLE.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 1
-STRUCTURE IA MODERNE
-InspecteurBot RDC 2026
+STRUCTURE PREMIUM
 ==================================================*/
 
 /*==================================================
@@ -10,121 +10,286 @@ SECTION PRINCIPALE
 ==================================================*/
 
 .article-section{
+
     position:relative;
+
     margin:40px 0;
-    padding:35px;
-    border-radius:var(--radius);
+
+    padding:36px;
+
+    border-radius:32px;
+
+    overflow:hidden;
+
     background:linear-gradient(
         145deg,
-        var(--primary),
-        var(--secondary)
+        #02173E,
+        #062B68,
+        #041C5C
     );
-    border:1px solid var(--border);
-    box-shadow:var(--shadow);
-    overflow:hidden;
+
+    border:1px solid rgba(255,215,0,.12);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.05);
+
 }
 
 /*==================================================
-HALO IA (FOND DYNAMIQUE)
+HALO BLEU
 ==================================================*/
 
 .article-section::before{
+
     content:"";
+
     position:absolute;
-    inset:-50%;
+
+    width:520px;
+
+    height:520px;
+
+    top:-220px;
+
+    left:-180px;
+
+    border-radius:50%;
+
     background:radial-gradient(
-        circle,
-        rgba(11,94,215,.20),
+
+        rgba(0,110,255,.22),
+
         transparent 70%
+
     );
-    animation:articleRotate 14s linear infinite;
-    pointer-events:none;
+
+    animation:rotateHalo 18s linear infinite;
+
 }
 
 /*==================================================
-PULSATION OR (ÉNERGIE IA)
+HALO OR
 ==================================================*/
 
 .article-section::after{
+
     content:"";
+
     position:absolute;
-    width:260px;
-    height:260px;
-    right:-100px;
-    bottom:-100px;
+
+    width:320px;
+
+    height:320px;
+
+    right:-120px;
+
+    bottom:-120px;
+
     border-radius:50%;
+
     background:radial-gradient(
-        rgba(255,215,0,.14),
+
+        rgba(255,215,0,.18),
+
         transparent 70%
+
     );
-    animation:articlePulse 6s ease-in-out infinite;
-    pointer-events:none;
+
+    animation:pulseGold 6s ease-in-out infinite;
+
 }
 
 /*==================================================
-TITRE SECTION
+TITRE
 ==================================================*/
 
-.article-section .section-title{
-    text-align:center;
-    margin-bottom:30px;
+.section-title{
+
     position:relative;
+
     z-index:2;
+
+    text-align:center;
+
+    margin-bottom:34px;
+
 }
 
-.article-section .section-title h2{
-    color:var(--accent);
-    font-size:32px;
+.section-title h2{
+
+    font-size:2rem;
+
     font-weight:800;
-    text-shadow:0 0 15px rgba(255,215,0,.35);
-    margin-bottom:10px;
+
+    color:var(--gold-light);
+
+    text-shadow:
+
+        0 0 18px rgba(255,215,0,.35);
+
 }
 
-.article-section .section-title p{
-    color:var(--text);
-    font-size:16px;
-    opacity:.9;
-    max-width:750px;
-    margin:auto;
-    line-height:1.7;
+.section-title p{
+
+    margin-top:12px;
+
+    color:var(--text-soft);
+
+    line-height:1.8;
+
 }
 
 /*==================================================
-CARTE ARTICLE
+CARTE ARTICLE PREMIUM
 ==================================================*/
 
 .article-card{
-    position:relative;
-    background:rgba(255,255,255,.95);
-    color:var(--primary);
-    border-radius:25px;
-    padding:30px;
-    margin-top:25px;
-    border-left:8px solid var(--accent);
-    box-shadow:0 10px 25px rgba(0,0,0,.20);
-    transition:var(--transition);
-    overflow:hidden;
-}
 
-/* hover */
-.article-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 15px 30px rgba(255,215,0,.20);
+    position:relative;
+
+    z-index:2;
+
+    overflow:hidden;
+
+    padding:32px;
+
+    margin-top:24px;
+
+    border-radius:28px;
+
+    background:linear-gradient(
+
+        180deg,
+
+        rgba(255,255,255,.12),
+
+        rgba(255,255,255,.05)
+
+    );
+
+    border:1px solid rgba(255,215,0,.18);
+
+    backdrop-filter:blur(25px);
+
+    -webkit-backdrop-filter:blur(25px);
+
+    box-shadow:
+
+        var(--shadow-deep),
+
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:all .40s ease;
+
 }
 
 /*==================================================
-NUMÉRO ARTICLE
+LUMIÈRE GLISSANTE
+==================================================*/
+
+.article-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:45%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.28),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+}
+
+.article-card:hover::before{
+
+    animation:cardLight .9s linear;
+
+}
+
+/*==================================================
+SURVOL PREMIUM
+==================================================*/
+
+.article-card:hover{
+
+    transform:
+
+        translateY(-8px)
+
+        scale(1.01);
+
+    border-color:rgba(255,215,0,.35);
+
+    box-shadow:
+
+        var(--shadow-deep),
+
+        var(--shadow-gold),
+
+        var(--shadow-blue);
+
+}
+
+/*==================================================
+BADGE ARTICLE
 ==================================================*/
 
 .article-number{
-    display:inline-block;
-    padding:8px 18px;
-    border-radius:30px;
-    background:var(--accent);
-    color:var(--primary);
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:10px 22px;
+
+    margin-bottom:20px;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+
+        135deg,
+
+        #FFD700,
+
+        #FFF2A8
+
+    );
+
+    color:#041C5C;
+
     font-weight:800;
+
     font-size:15px;
-    margin-bottom:15px;
+
+    box-shadow:
+
+        0 10px 25px rgba(255,215,0,.30);
+
 }
 
 /*==================================================
@@ -132,10 +297,17 @@ TITRE ARTICLE
 ==================================================*/
 
 .article-title{
-    font-size:26px;
+
+    margin-bottom:14px;
+
+    font-size:30px;
+
     font-weight:800;
-    color:#0a2b73;
-    margin-bottom:15px;
+
+    color:#FFFFFF;
+
+    line-height:1.4;
+
 }
 
 /*==================================================
@@ -143,24 +315,70 @@ CATÉGORIE
 ==================================================*/
 
 .article-category{
+
     display:inline-block;
-    padding:6px 14px;
-    border-radius:20px;
-    background:rgba(11,94,215,.12);
-    color:var(--primary-light);
-    font-size:13px;
+
+    margin-bottom:22px;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    background:rgba(0,120,255,.18);
+
+    border:1px solid rgba(255,215,0,.20);
+
+    color:var(--gold-light);
+
     font-weight:600;
-    margin-bottom:18px;
-}
+
+    font-size:13px;
+
+        }
 
 /*==================================================
-CONTENU
+ARTICLE.CSS
+VERSION 2026 PREMIUM V8
+PARTIE 2
+CONTENU • IA • ACTIONS
+==================================================*/
+
+/*==================================================
+CONTENU ARTICLE
 ==================================================*/
 
 .article-content{
+
     font-size:17px;
-    line-height:1.9;
+
+    line-height:2;
+
+    color:rgba(255,255,255,.94);
+
     text-align:justify;
+
+    letter-spacing:.2px;
+
+}
+
+/*==================================================
+MISE EN VALEUR
+==================================================*/
+
+.article-content strong{
+
+    color:var(--gold-light);
+
+    font-weight:700;
+
+}
+
+.article-content em{
+
+    color:#8EC5FF;
+
+    font-style:italic;
+
 }
 
 /*==================================================
@@ -168,48 +386,207 @@ SANCTION
 ==================================================*/
 
 .article-sanction{
-    margin-top:20px;
-    padding:15px;
-    border-radius:15px;
-    background:rgba(255,0,0,.06);
-    border:1px solid rgba(255,0,0,.15);
-    color:#8b0000;
-    font-weight:600;
+
+    margin-top:28px;
+
+    padding:20px;
+
+    border-radius:22px;
+
+    background:linear-gradient(
+
+        135deg,
+
+        rgba(120,0,0,.22),
+
+        rgba(255,60,60,.08)
+
+    );
+
+    border:1px solid rgba(255,90,90,.28);
+
+    color:#FFE5E5;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+
+        0 12px 25px rgba(0,0,0,.25);
+
 }
 
 /*==================================================
-ACTIONS
+BOUTONS IA
 ==================================================*/
 
 .assistant-actions{
+
     display:flex;
-    flex-wrap:wrap;
+
     justify-content:center;
-    gap:14px;
-    margin-top:25px;
+
+    flex-wrap:wrap;
+
+    gap:18px;
+
+    margin-top:30px;
+
 }
 
-/* boutons */
+/*==================================================
+BOUTONS PREMIUM
+==================================================*/
+
 .assistant-actions button{
-    padding:12px 18px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    min-width:180px;
+
+    height:56px;
+
+    padding:0 24px;
+
     border-radius:18px;
-    border:1px solid rgba(255,215,0,.25);
+
+    color:#FFF8D8;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
     background:linear-gradient(
-        135deg,
-        var(--primary-light),
-        var(--primary)
+
+        180deg,
+
+        rgba(255,255,255,.14),
+
+        rgba(255,255,255,.05)
+
     );
-    color:var(--accent);
-    font-weight:600;
-    cursor:pointer;
-    transition:var(--transition);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+
+        0 15px 30px rgba(0,0,0,.35),
+
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:all .35s ease;
+
 }
 
-/* hover */
+/*==================================================
+REFLET PREMIUM
+==================================================*/
+
+.assistant-actions button::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-150%;
+
+    left:-40%;
+
+    width:50%;
+
+    height:320%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:rotate(25deg);
+
+    transition:.8s;
+
+}
+
+.assistant-actions button:hover::before{
+
+    left:170%;
+
+}
+
+/*==================================================
+SURVOL
+==================================================*/
+
 .assistant-actions button:hover{
-    transform:translateY(-4px);
-    box-shadow:0 0 20px rgba(255,215,0,.25);
-    color:#fff;
+
+    transform:
+
+        translateY(-6px)
+
+        scale(1.03);
+
+    border-color:rgba(255,215,0,.55);
+
+    box-shadow:
+
+        var(--shadow-gold),
+
+        var(--shadow-blue),
+
+        0 20px 35px rgba(0,0,0,.40);
+
+}
+
+/*==================================================
+CLIC
+==================================================*/
+
+.assistant-actions button:active{
+
+    transform:scale(.94);
+
+}
+
+/*==================================================
+ICÔNES
+==================================================*/
+
+.assistant-actions button i{
+
+    color:var(--gold-light);
+
+    font-size:20px;
+
+    transition:.35s;
+
+}
+
+.assistant-actions button:hover i{
+
+    transform:
+
+        rotate(10deg)
+
+        scale(1.15);
+
 }
 
 /*==================================================
@@ -217,124 +594,428 @@ ZONE IA
 ==================================================*/
 
 .ai-result{
-    margin-top:30px;
-    padding:25px;
-    border-radius:20px;
-    background:var(--glass);
-    border:1px solid var(--border);
-    backdrop-filter:blur(15px);
-}
 
-/* titre IA */
-.ai-result h3{
-    color:var(--accent);
-    font-size:22px;
-    margin-bottom:15px;
-}
+    position:relative;
 
-/* texte IA */
-#reponseIA{
-    color:var(--text);
-    font-size:16px;
-    line-height:1.9;
-}
+    margin-top:35px;
 
-/*==================================================
-ANIMATIONS
-==================================================*/
+    padding:28px;
 
-@keyframes articleRotate{
-    from{ transform:rotate(0deg); }
-    to{ transform:rotate(360deg); }
-}
+    border-radius:26px;
 
-@keyframes articlePulse{
-    0%{ transform:scale(1); opacity:.35; }
-    50%{ transform:scale(1.25); opacity:.15; }
-    100%{ transform:scale(1); opacity:.35; }
-}
+    overflow:hidden;
 
-/* lumière carte */
-.article-card::before{
-    content:"";
-    position:absolute;
-    top:0;
-    left:-120%;
-    width:50%;
-    height:100%;
     background:linear-gradient(
-        transparent,
-        rgba(255,255,255,.20),
-        transparent
+
+        180deg,
+
+        rgba(255,255,255,.10),
+
+        rgba(255,255,255,.05)
+
     );
-    transform:skewX(-25deg);
-}
 
-.article-card:hover::before{
-    animation:lightSweep .9s linear;
-}
+    border:1px solid rgba(255,215,0,.18);
 
-@keyframes lightSweep{
-    from{ left:-120%; }
-    to{ left:160%; }
-}
+    backdrop-filter:blur(22px);
 
-/* apparition */
-.article-card{
-    animation:fadeUp .5s ease;
-}
+    box-shadow:
 
-@keyframes fadeUp{
-    from{ opacity:0; transform:translateY(20px); }
-    to{ opacity:1; transform:translateY(0); }
+        var(--shadow-soft);
+
 }
 
 /*==================================================
-RESPONSIVE
+LIGNE LUMINEUSE IA
 ==================================================*/
 
-@media(max-width:900px){
+.ai-result::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:5px;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        var(--gold-light),
+
+        #3AA7FF
+
+    );
+
+}
+
+/*==================================================
+TITRE IA
+==================================================*/
+
+.ai-result h3{
+
+    margin-bottom:16px;
+
+    color:var(--gold-light);
+
+    font-size:22px;
+
+    font-weight:800;
+
+}
+
+/*==================================================
+RÉPONSE IA
+==================================================*/
+
+#reponseIA{
+
+    color:rgba(255,255,255,.92);
+
+    font-size:16px;
+
+    line-height:1.9;
+
+    text-align:justify;
+
+    }
+
+/*==================================================
+ARTICLE.CSS
+VERSION 2026 PREMIUM V8
+PARTIE 3
+ANIMATIONS • RESPONSIVE • FINITIONS
+==================================================*/
+
+/*==================================================
+APPARITION PREMIUM
+==================================================*/
+
+.article-card{
+
+    animation:articleFade .55s ease both;
+
+}
+
+@keyframes articleFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(22px)
+            scale(.98);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+/*==================================================
+BALAYAGE LUMINEUX
+==================================================*/
+
+@keyframes cardLight{
+
+    from{
+
+        left:-150%;
+
+    }
+
+    to{
+
+        left:180%;
+
+    }
+
+}
+
+/*==================================================
+ROTATION HALO BLEU
+==================================================*/
+
+@keyframes rotateHalo{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*==================================================
+PULSATION HALO OR
+==================================================*/
+
+@keyframes pulseGold{
+
+    0%,100%{
+
+        transform:scale(1);
+
+        opacity:.20;
+
+    }
+
+    50%{
+
+        transform:scale(1.25);
+
+        opacity:.40;
+
+    }
+
+}
+
+/*==================================================
+SCROLLBAR ARTICLE
+==================================================*/
+
+.article-content::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.article-content::-webkit-scrollbar-track{
+
+    background:rgba(255,255,255,.05);
+
+    border-radius:20px;
+
+}
+
+.article-content::-webkit-scrollbar-thumb{
+
+    background:linear-gradient(
+
+        var(--gold-light),
+
+        #FFED9D
+
+    );
+
+    border-radius:20px;
+
+}
+
+/*==================================================
+SÉLECTION TEXTE
+==================================================*/
+
+.article-content::selection{
+
+    background:rgba(255,215,0,.35);
+
+    color:#ffffff;
+
+}
+
+/*==================================================
+FOCUS ACCESSIBILITÉ
+==================================================*/
+
+.assistant-actions button:focus-visible{
+
+    outline:3px solid var(--gold-light);
+
+    outline-offset:4px;
+
+}
+
+.article-card:focus-within{
+
+    border-color:rgba(255,215,0,.40);
+
+}
+
+/*==================================================
+RESPONSIVE TABLETTE
+==================================================*/
+
+@media(max-width:992px){
+
+    .article-section{
+
+        padding:28px;
+
+    }
+
     .article-card{
-        padding:25px;
+
+        padding:26px;
+
     }
 
     .article-title{
-        font-size:22px;
+
+        font-size:26px;
+
     }
 
-    .article-content{
-        font-size:16px;
-    }
 }
+
+/*==================================================
+RESPONSIVE MOBILE
+==================================================*/
 
 @media(max-width:768px){
+
     .article-section{
-        padding:25px;
+
+        padding:20px;
+
+        border-radius:24px;
+
     }
 
-    .article-section .section-title h2{
-        font-size:24px;
+    .section-title h2{
+
+        font-size:1.6rem;
+
+    }
+
+    .section-title p{
+
+        font-size:14px;
+
     }
 
     .article-card{
+
         padding:20px;
+
+        border-radius:20px;
+
+    }
+
+    .article-number{
+
+        font-size:13px;
+
+        padding:8px 16px;
+
     }
 
     .article-title{
-        font-size:20px;
+
+        font-size:22px;
+
     }
 
     .article-content{
+
         font-size:15px;
+
+        line-height:1.9;
+
     }
 
     .assistant-actions{
+
         flex-direction:column;
+
+        gap:14px;
+
     }
 
     .assistant-actions button{
+
         width:100%;
+
+        min-width:100%;
+
     }
+
+    .ai-result{
+
+        padding:20px;
+
+    }
+
 }
 
+/*==================================================
+TRÈS PETITS ÉCRANS
+==================================================*/
 
+@media(max-width:480px){
+
+    .article-section{
+
+        padding:16px;
+
+    }
+
+    .article-card{
+
+        padding:18px;
+
+    }
+
+    .article-title{
+
+        font-size:20px;
+
+    }
+
+    .article-content{
+
+        font-size:14px;
+
+    }
+
+    .ai-result h3{
+
+        font-size:19px;
+
+    }
+
+    #reponseIA{
+
+        font-size:15px;
+
+    }
+
+}
+
+/*==================================================
+OPTIMISATION GPU
+==================================================*/
+
+.article-card,
+.assistant-actions button,
+.ai-result{
+
+    will-change:
+        transform,
+        box-shadow;
+
+}
+
+/*==================================================
+FIN PREMIUM V8
+==================================================*/
