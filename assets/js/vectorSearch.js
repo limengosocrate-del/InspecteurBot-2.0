@@ -1,161 +1,274 @@
-/*=================================================
- INSPECTEURBOT RDC
- vectorSearch.js
- VERSION 1.0
- RECHERCHE VECTORIELLE
-==================================================*/
-
 "use strict";
 
-/*=================================================
- ESPACE DE NOMS
+/*==================================================
+INSPECTEURBOT RDC
+VECTOR SEARCH V2.0
+Compatible code-travail.json
 ==================================================*/
 
 window.CodeTravail = window.CodeTravail || {};
 
-window.CodeTravail.VectorSearch = {};
+CodeTravail.VectorSearch = {};
 
-/*=================================================
- MOTS VIDES
+/*==================================================
+MOTS VIDES
 ==================================================*/
 
-const MOTS_VIDES = [
+const STOP_WORDS = [
 
-    "le","la","les","de","du","des",
-    "un","une","et","ou","à","au",
-    "aux","pour","par","avec","sur",
-    "dans","est","sont","en","d","l"
+"le","la","les","de","du","des","un","une",
+
+"et","ou","en","dans","sur","pour","avec",
+
+"au","aux","par","est","sont","a","à"
 
 ];
 
-/*=================================================
- NORMALISATION
+/*==================================================
+NORMALISER
 ==================================================*/
 
-function normaliserTexte(texte = "") {
+CodeTravail.VectorSearch.normaliser = function (texte) {
 
-    return texte
+    return String(texte || "")
 
         .toLowerCase()
 
         .normalize("NFD")
 
-        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\u0300-\u036f]/g,"")
 
-        .replace(/[^\w\s]/g, " ")
+        .replace(/[^\w\s]/g," ")
 
-        .replace(/\s+/g, " ")
+        .replace(/\s+/g," ")
 
         .trim();
 
-}
+};
 
-/*=================================================
- DÉCOUPAGE
+/*==================================================
+DÉCOUPAGE
 ==================================================*/
 
-function decouperTexte(texte) {
+CodeTravail.VectorSearch.decouper = function (texte) {
 
-    return normaliserTexte(texte)
+    return this.normaliser(texte)
 
-        .split(" ")
+    .split(" ")
 
-        .filter(
+    .filter(mot =>
 
-            mot =>
+        mot.length>2 &&
 
-                mot.length > 1 &&
-
-                !MOTS_VIDES.includes(mot)
-
-        );
-
-}
-
-/*=================================================
- SCORE D'UN ARTICLE
-==================================================*/
-
-function calculerScore(article, motsRecherche) {
-
-    let score = 0;
-
-    const texte = normaliserTexte(
-
-        [
-
-            article.numero,
-
-            article.titre,
-
-            article.categorie,
-
-            article.contenu,
-
-            article.sanction
-
-        ].join(" ")
+        !STOP_WORDS.includes(mot)
 
     );
 
-    motsRecherche.forEach(mot => {
+};
 
-        if (texte.includes(mot)) {
+/*==================================================
+SYNONYMES
+==================================================*/
 
-            score += 10;
+CodeTravail.VectorSearch.synonymes = {
+
+licenciement:["renvoi","rupture"],
+
+salaire:["paie","remuneration"],
+
+travailleur:["employe","salarié"],
+
+employeur:["entreprise","patron"],
+
+inspection:["inspecteur","controle"],
+
+conge:["vacances","repos"],
+
+contrat:["cdi","cdd","embauche"],
+
+enfant:["mineur"]
+
+};
+
+/*==================================================
+ENRICHIR
+==================================================*/
+
+CodeTravail.VectorSearch.enrichir = function (mots) {
+
+    let resultat=[...mots];
+
+    mots.forEach(mot=>{
+
+        if(this.synonymes[mot]){
+
+            resultat.push(
+
+                ...this.synonymes[mot]
+
+            );
 
         }
+
+    });
+
+    return [...new Set(resultat)];
+
+};
+
+/*==================================================
+CALCUL SCORE
+==================================================*/
+
+CodeTravail.VectorSearch.score = function (
+
+article,
+
+mots
+
+){
+
+    let score=0;
+
+    mots.forEach(mot=>{
+
+        if(
+
+            String(article.numero)
+
+            .includes(mot)
+
+        )
+
+            score+=80;
+
+        if(
+
+            article.titre
+
+            ?.toLowerCase()
+
+            .includes(mot)
+
+        )
+
+            score+=50;
+
+        if(
+
+            article.categorie
+
+            ?.toLowerCase()
+
+            .includes(mot)
+
+        )
+
+            score+=40;
+
+        if(
+
+            article.contenu
+
+            ?.toLowerCase()
+
+            .includes(mot)
+
+        )
+
+            score+=20;
+
+        if(article.motsCles){
+
+            article.motsCles.forEach(mc=>{
+
+                if(
+
+                    mc.toLowerCase()
+
+                    .includes(mot)
+
+                )
+
+                    score+=60;
+
+            });
+
+        }
+
+        if(
+
+            article.sanction &&
+
+            article.sanction
+
+            .toLowerCase()
+
+            .includes(mot)
+
+        )
+
+            score+=15;
 
     });
 
     return score;
 
-     }
+};
 
-/*=================================================
- PARTIE 2
- MOTEUR DE RECHERCHE VECTORIELLE
+/*==================================================
+RECHERCHE
 ==================================================*/
 
-/*=================================================
- RECHERCHE PAR PERTINENCE
-==================================================*/
+CodeTravail.VectorSearch.rechercher = function (
 
-function rechercher(texte) {
+texte,
 
-    if (
+limite=20
+
+){
+
+    if(
+
         !window.CodeTravail ||
-        !window.CodeTravail.Index ||
-        !Array.isArray(window.CodeTravail.Index.articles)
-    ) {
 
-        console.error("Base des articles introuvable.");
+        !CodeTravail.getTousArticles
+
+    ){
 
         return [];
 
     }
 
-    const articles =
-        window.CodeTravail.Index.articles;
+    const mots=
 
-    const motsRecherche =
-        decouperTexte(texte);
+        this.enrichir(
 
-    const resultats = [];
-
-    articles.forEach(article => {
-
-        const score = calculerScore(
-
-            article,
-
-            motsRecherche
+            this.decouper(texte)
 
         );
 
-        if (score > 0) {
+    const resultat=[];
 
-            resultats.push({
+    CodeTravail
+
+    .getTousArticles()
+
+    .forEach(article=>{
+
+        const score=
+
+            this.score(
+
+                article,
+
+                mots
+
+            );
+
+        if(score>0){
+
+            resultat.push({
 
                 ...article,
 
@@ -167,251 +280,100 @@ function rechercher(texte) {
 
     });
 
-    resultats.sort(
+    resultat.sort(
 
-        (a, b) => b.score - a.score
+        (a,b)=>b.score-a.score
 
     );
 
-    return resultats;
+    return resultat.slice(
 
-}
+        0,
 
-/*=================================================
- MEILLEUR RÉSULTAT
-==================================================*/
+        limite
 
-function meilleurResultat(texte) {
-
-    const resultats =
-        rechercher(texte);
-
-    if (!resultats.length) {
-
-        return null;
-
-    }
-
-    return resultats[0];
-
-}
-
-/*=================================================
- LIMITER LES RÉSULTATS
-==================================================*/
-
-function rechercherLimite(
-
-    texte,
-
-    limite = 20
-
-) {
-
-    return rechercher(texte)
-
-        .slice(0, limite);
-
-}
-
-/*=================================================
- FILTRER PAR CATÉGORIE
-==================================================*/
-
-function rechercherCategorie(
-
-    categorie,
-
-    texte = ""
-
-) {
-
-    return rechercher(texte)
-
-        .filter(article =>
-
-            article.categorie === categorie
-
-        );
-
-}
-
-/*=================================================
- PARTIE 3
- SYNONYMES - EXPORT - INITIALISATION
- VERSION FINALE
-==================================================*/
-
-/*=================================================
- DICTIONNAIRE DE SYNONYMES
-==================================================*/
-
-const SYNONYMES = {
-
-    licenciement: [
-        "renvoi",
-        "rupture",
-        "congédiement"
-    ],
-
-    salaire: [
-        "paie",
-        "rémunération",
-        "revenu"
-    ],
-
-    employeur: [
-        "entreprise",
-        "patron",
-        "société"
-    ],
-
-    travailleur: [
-        "employé",
-        "salarié",
-        "agent"
-    ],
-
-    congé: [
-        "vacances",
-        "repos",
-        "permission"
-    ],
-
-    inspection: [
-        "contrôle",
-        "inspecteur",
-        "vérification"
-    ]
+    );
 
 };
 
-/*=================================================
- AJOUTER LES SYNONYMES
+/*==================================================
+MEILLEUR ARTICLE
 ==================================================*/
 
-function enrichirMots(mots) {
+CodeTravail.VectorSearch.meilleurResultat = function (
 
-    const liste = [...mots];
+texte
 
-    mots.forEach(mot => {
+){
 
-        if (SYNONYMES[mot]) {
+    const r=
 
-            liste.push(...SYNONYMES[mot]);
+        this.rechercher(
 
-        }
+            texte,
 
-    });
-
-    return [...new Set(liste)];
-
-}
-
-/*=================================================
- RECHERCHE INTELLIGENTE
-==================================================*/
-
-function rechercherIntelligemment(texte) {
-
-    const mots = enrichirMots(
-
-        decouperTexte(texte)
-
-    );
-
-    const articles =
-        window.CodeTravail.Index.articles || [];
-
-    const resultats = [];
-
-    articles.forEach(article => {
-
-        const score = calculerScore(
-
-            article,
-
-            mots
+            1
 
         );
 
-        if (score > 0) {
+    return r.length ?
 
-            resultats.push({
+        r[0]
 
-                ...article,
+        :
 
-                score
+        null;
 
-            });
+};
 
-        }
+/*==================================================
+CATÉGORIE
+==================================================*/
 
-    });
+CodeTravail.VectorSearch.rechercherCategorie=function(
 
-    resultats.sort(
+categorie
 
-        (a, b) => b.score - a.score
+){
+
+    return CodeTravail
+
+    .getTousArticles()
+
+    .filter(a=>
+
+        a.categorie===categorie
 
     );
 
-    return resultats;
+};
 
-}
-
-/*=================================================
- EXPORT
+/*==================================================
+INITIALISATION
 ==================================================*/
 
-window.CodeTravail.VectorSearch.normaliser =
-    normaliserTexte;
-
-window.CodeTravail.VectorSearch.decouper =
-    decouperTexte;
-
-window.CodeTravail.VectorSearch.score =
-    calculerScore;
-
-window.CodeTravail.VectorSearch.rechercher =
-    rechercher;
-
-window.CodeTravail.VectorSearch.rechercherLimite =
-    rechercherLimite;
-
-window.CodeTravail.VectorSearch.meilleurResultat =
-    meilleurResultat;
-
-window.CodeTravail.VectorSearch.rechercherCategorie =
-    rechercherCategorie;
-
-window.CodeTravail.VectorSearch.rechercherIntelligemment =
-    rechercherIntelligemment;
-
-/*=================================================
- INITIALISATION
-==================================================*/
-
-function initialiserVectorSearch() {
+CodeTravail.VectorSearch.initialiser=function(){
 
     console.log(
 
-        "🧠 VectorSearch initialisé."
+        "VectorSearch V2 prêt."
 
     );
 
-}
-
-window.CodeTravail.VectorSearch.initialiser =
-    initialiserVectorSearch;
+};
 
 document.addEventListener(
 
-    "DOMContentLoaded",
+"codeTravailCharge",
 
-    initialiserVectorSearch
+()=>{
+
+    CodeTravail
+
+    .VectorSearch
+
+    .initialiser();
+
+}
 
 );
-
-/*=================================================
- FIN DU FICHIER
-==================================================*/
