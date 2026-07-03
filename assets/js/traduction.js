@@ -1,456 +1,401 @@
-/*=================================================
- INSPECTEURBOT RDC
- traduction.js
- VERSION 1.0
- GESTION DES LANGUES
-==================================================*/
-
 "use strict";
 
-/*=================================================
- ESPACE DE NOMS
+/*==================================================
+INSPECTEURBOT RDC
+TRADUCTION V2.0
+Compatible 2026
 ==================================================*/
 
 window.CodeTravail = window.CodeTravail || {};
-window.CodeTravail.Traduction = {};
 
-/*=================================================
- LANGUE PAR DÉFAUT
+CodeTravail.Traduction = {};
+
+CodeTravail.Traduction.langue = "fr";
+
+/*==================================================
+DICTIONNAIRE
 ==================================================*/
 
-let langueCourante = "fr";
+CodeTravail.Traduction.dictionnaire = {
 
-/*=================================================
- DICTIONNAIRE
-==================================================*/
+fr:{
 
-const DICTIONNAIRE = {
+analyser:"Analyser",
 
-    fr: {
+effacer:"Effacer",
 
-        recherche: "Recherche Intelligente",
+copier:"Copier",
 
-        consulter: "Consultation des Articles",
+lecture:"Écouter",
 
-        assistant: "Assistant Juridique IA",
+favori:"Favori",
 
-        analyser: "Analyser",
+partager:"Partager",
 
-        effacer: "Effacer",
+imprimer:"Imprimer",
 
-        copier: "Copier",
+precedent:"Précédent",
 
-        partager: "Partager",
+suivant:"Suivant",
 
-        imprimer: "Imprimer",
+assistant:"Assistant Juridique IA"
 
-        favoris: "Favori"
+},
 
-    },
+en:{
 
-    en: {
+analyser:"Analyze",
 
-        recherche: "Smart Search",
+effacer:"Clear",
 
-        consulter: "Article Viewer",
+copier:"Copy",
 
-        assistant: "AI Legal Assistant",
+lecture:"Listen",
 
-        analyser: "Analyze",
+favori:"Favorite",
 
-        effacer: "Clear",
+partager:"Share",
 
-        copier: "Copy",
+imprimer:"Print",
 
-        partager: "Share",
+precedent:"Previous",
 
-        imprimer: "Print",
+suivant:"Next",
 
-        favoris: "Favorite"
+assistant:"AI Assistant"
 
-    },
+},
 
-    ln: {
+ln:{
 
-        recherche: "Boluki",
+analyser:"Talela",
 
-        consulter: "Kotala Article",
+effacer:"Longola",
 
-        assistant: "Mosungi IA",
+copier:"Kopi",
 
-        analyser: "Talela",
+lecture:"Yoka",
 
-        effacer: "Longola",
+favori:"Favori",
 
-        copier: "Kopi",
+partager:"Kabola",
 
-        partager: "Kabola",
+imprimer:"Imprimer",
 
-        imprimer: "Imprimer",
+precedent:"Liboso",
 
-        favoris: "Favori"
+suivant:"Nsima",
 
-    },
+assistant:"Mosungi IA"
 
-    sw: {
+},
 
-        recherche: "Utafutaji",
+sw:{
 
-        consulter: "Soma Makala",
+analyser:"Chambua",
 
-        assistant: "Msaidizi IA",
+effacer:"Futa",
 
-        analyser: "Chambua",
+copier:"Nakili",
 
-        effacer: "Futa",
+lecture:"Soma",
 
-        copier: "Nakili",
+favori:"Pendwa",
 
-        partager: "Shiriki",
+partager:"Shiriki",
 
-        imprimer: "Chapisha",
+imprimer:"Chapisha",
 
-        favoris: "Pendwa"
+precedent:"Nyuma",
 
-    },
+suivant:"Mbele",
 
-    lu: {
+assistant:"Msaidizi IA"
 
-        recherche: "Kulonda",
+},
 
-        consulter: "Kubala",
+lu:{
 
-        assistant: "Musadidi IA",
+analyser:"Sangana",
 
-        analyser: "Sangana",
+effacer:"Futa",
 
-        effacer: "Futa",
+copier:"Kopiya",
 
-        copier: "Kopiya",
+lecture:"Tanga",
 
-        partager: "Kabula",
+favori:"Favori",
 
-        imprimer: "Imprima",
+partager:"Kabula",
 
-        favoris: "Favori"
+imprimer:"Imprima",
 
-    },
+precedent:"Kunyima",
 
-    kg: {
+suivant:"Kumpala",
 
-        recherche: "Sosa",
+assistant:"Musadidi IA"
 
-        consulter: "Tanga",
+},
 
-        assistant: "Nsadisi IA",
+kg:{
 
-        analyser: "Tala",
+analyser:"Tala",
 
-        effacer: "Katula",
+effacer:"Katula",
 
-        copier: "Kopa",
+copier:"Kopa",
 
-        partager: "Kabula",
+lecture:"Wa",
 
-        imprimer: "Imprimer",
+favori:"Favori",
 
-        favoris: "Favori"
+partager:"Kabula",
 
-    }
+imprimer:"Imprimer",
+
+precedent:"Nima",
+
+suivant:"Mvula",
+
+assistant:"Nsadisi IA"
+
+}
 
 };
 
-/*=================================================
- PARTIE 2
- CHANGEMENT DE LANGUE
+/*==================================================
+APPLIQUER
 ==================================================*/
 
-/*=================================================
- APPLIQUER UNE LANGUE
-==================================================*/
+CodeTravail.Traduction.appliquer=function(langue){
 
-function appliquerLangue(langue = "fr") {
+if(!this.dictionnaire[langue])
 
-    if (!DICTIONNAIRE[langue]) {
+langue="fr";
 
-        langue = "fr";
+this.langue=langue;
 
-    }
+localStorage.setItem(
 
-    langueCourante = langue;
+"inspecteurbot_langue",
 
-    localStorage.setItem(
+langue
 
-        "inspecteurbot_langue",
+);
 
-        langue
+const d=this.dictionnaire[langue];
 
-    );
+/*==========================
+Boutons IA
+==========================*/
 
-    /*=========================================
-      SYNCHRONISATION AVEC SPEECH.JS
-    =========================================*/
+const changer=(id,texte)=>{
 
-    if (window.CodeTravail.Speech) {
+const b=document.getElementById(id);
 
-        const langues = {
+if(b) b.innerHTML=texte;
 
-            fr: "fr-FR",
+};
 
-            en: "en-GB",
+changer("btnQuestionIA",d.analyser);
 
-            ln: "fr-CD",
+changer("btnEffacerIA",d.effacer);
 
-            sw: "sw-CD",
+changer("btnCopierIA",d.copier);
 
-            lu: "fr-CD",
+changer("btnLectureIA",d.lecture);
 
-            kg: "fr-CD"
+changer("btnFavoriArticle",d.favori);
 
-        };
+changer("btnPartagerArticle",d.partager);
 
-        window.CodeTravail.Speech
-            .changerLangue(
+changer("btnImprimerArticle",d.imprimer);
 
-                langues[langue] || "fr-FR"
+changer("btnArticlePrecedent",
 
-            );
+'<i class="fa-solid fa-arrow-left"></i> '+
 
-    }
+d.precedent
 
-    /*=========================================
-      BOUTONS
-    =========================================*/
+);
 
-    document
-        .querySelector("#btnQuestionIA")
-        ?.replaceChildren(
+changer("btnArticleSuivant",
 
-            document.createTextNode(
+d.suivant+
 
-                DICTIONNAIRE[langue].analyser
+' <i class="fa-solid fa-arrow-right"></i>'
 
-            )
+);
 
-        );
+/*==========================
+Placeholder IA
+==========================*/
 
-    document
-        .querySelector("#btnEffacerIA")
-        ?.replaceChildren(
+const zone=document.getElementById("questionIA");
 
-            document.createTextNode(
+if(zone){
 
-                DICTIONNAIRE[langue].effacer
+switch(langue){
 
-            )
+case"en":
 
-        );
+zone.placeholder="Ask your legal question...";
 
-    document
-        .querySelector("#btnCopierIA")
-        ?.replaceChildren(
+break;
 
-            document.createTextNode(
+case"ln":
 
-                DICTIONNAIRE[langue].copier
+zone.placeholder="Tuna motuna na yo...";
 
-            )
+break;
 
-        );
+case"sw":
 
-    document
-        .querySelector("#btnPartagerArticle")
-        ?.replaceChildren(
+zone.placeholder="Uliza swali lako...";
 
-            document.createTextNode(
+break;
 
-                DICTIONNAIRE[langue].partager
+default:
 
-            )
-
-        );
-
-    document
-        .querySelector("#btnImprimerArticle")
-        ?.replaceChildren(
-
-            document.createTextNode(
-
-                DICTIONNAIRE[langue].imprimer
-
-            )
-
-        );
-
-    document
-        .querySelector("#btnFavoriArticle")
-        ?.replaceChildren(
-
-            document.createTextNode(
-
-                DICTIONNAIRE[langue].favoris
-
-            )
-
-        );
-
-    window.CodeTravail.Utils
-        ?.afficherNotification(
-
-            "Langue : " + langue.toUpperCase()
-
-        );
+zone.placeholder="Posez votre question juridique...";
 
 }
 
-/*=================================================
- LANGUE SAUVEGARDÉE
-==================================================*/
+}
 
-function chargerLangue() {
+/*==========================
+Voix
+==========================*/
 
-    const langue =
+if(window.CodeTravail.Speech){
 
-        localStorage.getItem(
+CodeTravail.Speech.changerLangue(
 
-            "inspecteurbot_langue"
+this.codeVocal()
 
-        ) || "fr";
-
-    const select =
-
-        document.querySelector("#langue");
-
-    if (select) {
-
-        select.value = langue;
-
-    }
-
-    appliquerLangue(langue);
-
-     }
-
-/*=================================================
- PARTIE 3
- INITIALISATION
- VERSION FINALE
-==================================================*/
-
-/*=================================================
- CHANGEMENT DE LANGUE
-==================================================*/
-
-function changerLangue(event) {
-
-    appliquerLangue(event.target.value);
+);
 
 }
 
-/*=================================================
- LANGUE ACTUELLE
-==================================================*/
+/*==========================
+Notification
+==========================*/
 
-function obtenirLangue() {
+if(window.Utils){
 
-    return langueCourante;
+Utils.notification(
 
-}
+"Langue : "+langue.toUpperCase()
 
-/*=================================================
- CODE VOCAL
-==================================================*/
-
-function obtenirCodeVocal() {
-
-    switch (langueCourante) {
-
-        case "en":
-            return "en-GB";
-
-        case "ln":
-            return "fr-CD";
-
-        case "sw":
-            return "sw-CD";
-
-        case "lu":
-            return "fr-CD";
-
-        case "kg":
-            return "fr-CD";
-
-        default:
-            return "fr-FR";
-
-    }
+);
 
 }
 
-/*=================================================
- INITIALISATION
+};
+
+/*==================================================
+CODE VOCAL
 ==================================================*/
 
-function initialiserTraduction() {
+CodeTravail.Traduction.codeVocal=function(){
 
-    const select =
+switch(this.langue){
 
-        document.querySelector("#langue");
+case"en":
 
-    if (select) {
+return"en-US";
 
-        select.addEventListener(
+case"sw":
 
-            "change",
+return"sw";
 
-            changerLangue
+default:
 
-        );
-
-    }
-
-    chargerLangue();
-
-    console.log(
-
-        "🌍 traduction.js initialisé."
-
-    );
+return"fr-FR";
 
 }
 
-/*=================================================
- EXPORT
+};
+
+/*==================================================
+LANGUE
 ==================================================*/
 
-window.CodeTravail.Traduction.initialiser =
-    initialiserTraduction;
+CodeTravail.Traduction.obtenir=function(){
 
-window.CodeTravail.Traduction.appliquer =
-    appliquerLangue;
+return this.langue;
 
-window.CodeTravail.Traduction.obtenirLangue =
-    obtenirLangue;
+};
 
-window.CodeTravail.Traduction.obtenirCodeVocal =
-    obtenirCodeVocal;
+/*==================================================
+INITIALISATION
+==================================================*/
 
-/*=================================================
- DÉMARRAGE
+CodeTravail.Traduction.initialiser=function(){
+
+const select=
+
+document.getElementById("langue");
+
+if(select){
+
+select.addEventListener(
+
+"change",
+
+e=>{
+
+this.appliquer(
+
+e.target.value
+
+);
+
+}
+
+);
+
+}
+
+const sauvegarde=
+
+localStorage.getItem(
+
+"inspecteurbot_langue"
+
+)||"fr";
+
+if(select)
+
+select.value=sauvegarde;
+
+this.appliquer(
+
+sauvegarde
+
+);
+
+console.log(
+
+"Traduction V2 chargée."
+
+);
+
+};
+
+/*==================================================
+DÉMARRAGE
 ==================================================*/
 
 document.addEventListener(
 
-    "DOMContentLoaded",
+"DOMContentLoaded",
 
-    () => {
+()=>{
 
-        initialiserTraduction();
+CodeTravail.Traduction.initialiser();
 
-    }
+}
 
 );
-
-/*=================================================
- FIN DU FICHIER
-==================================================*/
