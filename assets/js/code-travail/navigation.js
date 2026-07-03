@@ -1,154 +1,273 @@
 "use strict";
 
-/* =====================================================
-   INSPECTEURBOT RDC
-   MODULE : NAVIGATION
-   ===================================================== */
+/*==================================================
+OBJET NAVIGATION
+==================================================*/
 
 const Navigation = {
 
-    initialiser() {
+    initialisee: false,
 
-        this.initialiserBoutons();
-
-    },
-
-    initialiserBoutons() {
-
-        const boutons = document.querySelectorAll(
-            ".article-actions button"
-        );
-
-        if(boutons.length < 2){
-
-            return;
-
-        }
-
-        boutons[0].addEventListener(
-
-            "click",
-
-            () => this.precedent()
-
-        );
-
-        boutons[boutons.length - 1].addEventListener(
-
-            "click",
-
-            () => this.suivant()
-
-        );
-
-    }
+    verrou: false
 
 };
+
+/*==================================================
+EXPORT GLOBAL
+==================================================*/
 
 window.Navigation = Navigation;
 
-document.addEventListener(
+/*==================================================
+INITIALISATION
+==================================================*/
 
-    "DOMContentLoaded",
+Navigation.initialiser = function () {
 
-    () => {
+    if (this.initialisee) return;
 
-        Navigation.initialiser();
+    this.initialisee = true;
+
+    console.log("Module Navigation initialisé.");
+
+    this.initialiserEvenements();
+
+};
+
+/*==================================================
+ÉVÉNEMENTS NAVIGATION
+==================================================*/
+
+Navigation.initialiserEvenements = function () {
+
+    const btnPrecedent =
+        document.getElementById("btnArticlePrecedent");
+
+    const btnSuivant =
+        document.getElementById("btnArticleSuivant");
+
+    /*------------------------------
+    PRÉCÉDENT
+    ------------------------------*/
+
+    if (btnPrecedent) {
+
+        btnPrecedent.addEventListener("click", () => {
+
+            this.precedent();
+
+        });
 
     }
 
-);
+    /*------------------------------
+    SUIVANT
+    ------------------------------*/
 
-/* =====================================================
-   ARTICLE PRÉCÉDENT
-   ===================================================== */
+    if (btnSuivant) {
 
-Navigation.precedent = function(){
+        btnSuivant.addEventListener("click", () => {
 
-    if(CodeTravail.indexActuel <= 0){
+            this.suivant();
+
+        });
+
+    }
+
+    /*------------------------------
+    NAVIGATION CLAVIER (optionnel)
+    ------------------------------*/
+
+    document.addEventListener("keydown", (e) => {
+
+        if (!CodeTravail || !CodeTravail.estCharge()) return;
+
+        if (e.key === "ArrowLeft") {
+            this.precedent();
+        }
+
+        if (e.key === "ArrowRight") {
+            this.suivant();
+        }
+
+    });
+
+};
+
+/*==================================================
+ARTICLE PRÉCÉDENT
+==================================================*/
+
+Navigation.precedent = function () {
+
+    if (this.verrou) return;
+
+    if (!window.CodeTravail) return;
+
+    const article =
+        CodeTravail.articlePrecedent();
+
+    if (!article) {
+
+        console.log("Début de la liste atteint.");
 
         return;
 
     }
 
-    const index =
-
-        CodeTravail.indexActuel - 1;
-
-    const article =
-
-        CodeTravail.articles[index];
-
-    Consultation.afficherArticle(article);
-
-    CodeTravail.selectionner(article.numero);
+    this.afficher(article);
 
 };
 
-/* =====================================================
-   ARTICLE SUIVANT
-   ===================================================== */
+/*==================================================
+ARTICLE SUIVANT
+==================================================*/
 
-Navigation.suivant = function(){
+Navigation.suivant = function () {
 
-    if(
-        CodeTravail.indexActuel >=
-        CodeTravail.articles.length - 1
-    ){
+    if (this.verrou) return;
+
+    if (!window.CodeTravail) return;
+
+    const article =
+        CodeTravail.articleSuivant();
+
+    if (!article) {
+
+        console.log("Fin de la liste atteinte.");
 
         return;
 
     }
 
-    const index =
-
-        CodeTravail.indexActuel + 1;
-
-    const article =
-
-        CodeTravail.articles[index];
-
-    Consultation.afficherArticle(article);
-
-    CodeTravail.selectionner(article.numero);
+    this.afficher(article);
 
 };
 
-/* =====================================================
-   NAVIGATION CLAVIER
-   ===================================================== */
+/*==================================================
+AFFICHER ARTICLE
+==================================================*/
 
-Navigation.clavier = function(){
+Navigation.afficher = function (article) {
 
-    document.addEventListener(
+    if (!article) return;
 
-        "keydown",
+    this.verrou = true;
 
-        (event)=>{
+    if (window.Consultation) {
 
-            if(event.key==="ArrowLeft"){
+        Consultation.afficherArticle(article);
 
-                this.precedent();
+    }
 
-            }
+    if (window.Statistiques) {
 
-            if(event.key==="ArrowRight"){
+        if (Statistiques.incrementer) {
 
-                this.suivant();
-
-            }
+            Statistiques.incrementer("consultations");
 
         }
 
-    );
+    }
+
+    setTimeout(() => {
+
+        this.verrou = false;
+
+    }, 200);
 
 };
 
-Navigation.initialiser = function(){
+/*==================================================
+ALLER À UN ARTICLE
+==================================================*/
 
-    this.initialiserBoutons();
+Navigation.allerA = function (numero) {
 
-    this.clavier();
+    if (!window.CodeTravail) return;
+
+    const article =
+        CodeTravail.selectionner(numero);
+
+    if (!article) {
+
+        console.log("Article introuvable :", numero);
+
+        return;
+
+    }
+
+    this.afficher(article);
 
 };
+
+/*==================================================
+PREMIER ARTICLE
+==================================================*/
+
+Navigation.premier = function () {
+
+    if (!window.CodeTravail) return;
+
+    if (CodeTravail.articles.length === 0) return;
+
+    const article =
+        CodeTravail.articles[0];
+
+    CodeTravail.indexActuel = 0;
+
+    this.afficher(article);
+
+};
+
+/*==================================================
+DERNIER ARTICLE
+==================================================*/
+
+Navigation.dernier = function () {
+
+    if (!window.CodeTravail) return;
+
+    const last =
+        CodeTravail.articles.length - 1;
+
+    const article =
+        CodeTravail.articles[last];
+
+    CodeTravail.indexActuel = last;
+
+    this.afficher(article);
+
+};
+
+/*==================================================
+VÉRIFICATION NAVIGATION POSSIBLE
+==================================================*/
+
+Navigation.peutPreceder = function () {
+
+    return CodeTravail.indexActuel > 0;
+
+};
+
+/*==================================================
+VÉRIFICATION SUIVANT POSSIBLE
+==================================================*/
+
+Navigation.peutSuivre = function () {
+
+    return CodeTravail.indexActuel <
+        CodeTravail.articles.length - 1;
+
+};
+
+/*==================================================
+AUTO INIT
+==================================================*/
+
+document.addEventListener("codeTravailCharge", () => {
+
+    Navigation.initialiser();
+
+});
 
