@@ -1,8 +1,12 @@
 /*==================================================
 HEADER.CSS
 PARTIE 1
-HEADER PRINCIPAL
+HEADER PREMIUM V6
 InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+HEADER PRINCIPAL
 ==================================================*/
 
 .top-header{
@@ -15,33 +19,32 @@ InspecteurBot RDC 2026
 
     align-items:center;
 
-    gap:25px;
+    gap:30px;
 
     flex-wrap:wrap;
 
-    padding:30px;
+    padding:35px;
 
-    margin-bottom:30px;
-
-    border-radius:28px;
-
-    background:linear-gradient(
-        135deg,
-        #0b1f55,
-        #0d2d78
-    );
-
-    border:1px solid rgba(255,215,0,.25);
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.30),
-        inset 0 0 20px rgba(255,255,255,.05);
+    margin-bottom:35px;
 
     overflow:hidden;
 
+    border-radius:32px;
+
+    background:
+        linear-gradient(135deg,#071b4d 0%,#0b2d80 55%,#123f9d 100%);
+
+    border:1px solid rgba(255,215,0,.22);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.35),
+        inset 0 0 35px rgba(255,255,255,.05);
+
 }
 
-/*============================*/
+/*==================================================
+HALO LUMINEUX
+==================================================*/
 
 .top-header::before{
 
@@ -49,23 +52,58 @@ InspecteurBot RDC 2026
 
     position:absolute;
 
-    inset:0;
+    inset:-40%;
 
     background:radial-gradient(
-        circle at top right,
-        rgba(255,215,0,.10),
-        transparent 60%
+        circle,
+        rgba(255,215,0,.12),
+        transparent 70%
     );
+
+    animation:headerHalo 18s linear infinite;
 
     pointer-events:none;
 
 }
 
-/*============================*/
+/*==================================================
+LIGNE LUMINEUSE
+==================================================*/
+
+.top-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:45%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.10),
+        transparent
+    );
+
+    transform:skewX(-25deg);
+
+    animation:headerScan 10s linear infinite;
+
+}
+
+/*==================================================
+LOGO
+==================================================*/
 
 .logo-box{
 
-    flex:0 0 120px;
+    flex:0 0 130px;
 
     display:flex;
 
@@ -77,28 +115,32 @@ InspecteurBot RDC 2026
 
 }
 
-/*============================*/
-
 .logo{
 
-    width:110px;
+    width:120px;
 
-    height:110px;
+    height:120px;
 
     object-fit:contain;
 
-    border-radius:18px;
+    padding:8px;
 
-    background:#fff;
+    border-radius:28px;
 
-    padding:6px;
+    background:#ffffff;
+
+    border:2px solid rgba(255,215,0,.30);
 
     box-shadow:
-        0 0 18px rgba(255,215,0,.35);
+        0 0 30px rgba(255,215,0,.45);
+
+    animation:logoFloat 4s ease-in-out infinite;
 
 }
 
-/*============================*/
+/*==================================================
+ZONE TITRE
+==================================================*/
 
 .title-box{
 
@@ -110,11 +152,9 @@ InspecteurBot RDC 2026
 
 }
 
-/*============================*/
-
 .title-box h1{
 
-    font-size:38px;
+    font-size:42px;
 
     font-weight:800;
 
@@ -122,18 +162,18 @@ InspecteurBot RDC 2026
 
     letter-spacing:1px;
 
+    text-transform:uppercase;
+
     text-shadow:
-        0 0 12px rgba(255,215,0,.35);
+        0 0 20px rgba(255,215,0,.40);
 
 }
 
-/*============================*/
-
 .title-box h2{
 
-    margin-top:8px;
+    margin-top:12px;
 
-    font-size:22px;
+    font-size:24px;
 
     font-weight:700;
 
@@ -141,41 +181,89 @@ InspecteurBot RDC 2026
 
 }
 
-/*============================*/
-
 .title-box h3{
-
-    margin-top:6px;
-
-    font-size:18px;
-
-    font-weight:600;
-
-    color:#ffe082;
-
-}
-
-/*============================*/
-
-.title-box p{
 
     margin-top:10px;
 
-    font-size:15px;
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#ffd54f;
+
+}
+
+.title-box p{
+
+    margin-top:14px;
+
+    font-size:17px;
 
     font-weight:500;
 
-    color:#dfeaff;
+    color:#edf4ff;
 
     letter-spacing:.5px;
 
 }
 
 /*==================================================
+ANIMATIONS
+==================================================*/
+
+@keyframes logoFloat{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-10px);
+
+    }
+
+}
+
+@keyframes headerHalo{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@keyframes headerScan{
+
+    0%{
+
+        left:-120%;
+
+    }
+
+    100%{
+
+        left:160%;
+
+    }
+
+}
+
+/*==================================================
 HEADER.CSS
 PARTIE 2
-HORLOGE • DATE • MÉTÉO • ACTIONS
-InspecteurBot RDC 2026
+INFOS (HORLOGE • DATE • MÉTÉO • VILLE)
+ACTIONS (THÈME)
 ==================================================*/
 
 /*==================================================
@@ -188,16 +276,16 @@ COLONNE INFORMATIONS
 
     flex-direction:column;
 
-    gap:12px;
+    gap:14px;
 
-    min-width:220px;
+    min-width:240px;
 
     z-index:2;
 
 }
 
 /*==================================================
-LIGNE D'INFORMATION
+CARTE INFO (HORLOGE / DATE / MÉTÉO)
 ==================================================*/
 
 .info-item{
@@ -208,17 +296,39 @@ LIGNE D'INFORMATION
 
     gap:12px;
 
-    padding:10px 14px;
+    padding:12px 16px;
 
-    border-radius:14px;
+    border-radius:16px;
 
     background:rgba(255,255,255,.08);
 
-    border:1px solid rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.14);
 
-    backdrop-filter:blur(10px);
+    backdrop-filter:blur(12px);
 
-    -webkit-backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(12px);
+
+    box-shadow:
+        inset 0 0 12px rgba(255,255,255,.05),
+        0 8px 20px rgba(0,0,0,.20);
+
+    transition:all .25s ease;
+
+}
+
+/* Hover effet premium */
+
+.info-item:hover{
+
+    transform:translateX(-4px);
+
+    background:rgba(255,255,255,.12);
+
+    border:1px solid rgba(255,215,0,.25);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.25),
+        0 0 18px rgba(255,215,0,.15);
 
 }
 
@@ -228,34 +338,38 @@ ICÔNES
 
 .info-item i{
 
-    width:22px;
+    width:24px;
 
     text-align:center;
 
+    font-size:18px;
+
     color:#ffd700;
 
-    font-size:18px;
+    filter:drop-shadow(0 0 6px rgba(255,215,0,.35));
 
 }
 
 /*==================================================
-TEXTES
+TEXTE INFO
 ==================================================*/
 
 .info-item span{
-
-    color:#ffffff;
 
     font-size:15px;
 
     font-weight:700;
 
-    letter-spacing:.3px;
+    color:#ffffff;
+
+    letter-spacing:.4px;
+
+    text-shadow:0 0 10px rgba(0,0,0,.25);
 
 }
 
 /*==================================================
-BOUTON THÈME
+BOUTON ACTION HEADER (THÈME)
 ==================================================*/
 
 .header-actions{
@@ -264,21 +378,33 @@ BOUTON THÈME
 
     align-items:flex-start;
 
+    justify-content:center;
+
     z-index:2;
 
 }
 
+/* Bouton thème */
+
 .theme-btn{
 
-    width:54px;
+    width:56px;
 
-    height:54px;
+    height:56px;
 
     border:none;
 
-    border-radius:16px;
+    border-radius:18px;
 
     cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:26px;
 
     background:rgba(255,255,255,.10);
 
@@ -286,33 +412,106 @@ BOUTON THÈME
 
     color:#ffffff;
 
-    font-size:26px;
+    transition:all .3s ease;
 
-    transition:.30s;
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.25),
+        inset 0 0 12px rgba(255,255,255,.05);
 
 }
+
+/* Hover */
 
 .theme-btn:hover{
 
-    transform:scale(1.08);
+    transform:scale(1.08) rotate(6deg);
 
     background:rgba(255,215,0,.18);
 
-    box-shadow:0 0 18px rgba(255,215,0,.35);
+    box-shadow:
+        0 0 25px rgba(255,215,0,.35),
+        0 10px 25px rgba(0,0,0,.25);
 
 }
 
+/* Active */
+
 .theme-btn:active{
 
-    transform:scale(.95);
+    transform:scale(.94);
+
+}
+
+/* Icône interne */
+
+.theme-btn span{
+
+    display:inline-block;
+
+    transition:transform .3s ease;
 
 }
 
 /*==================================================
-RESPONSIVE TABLETTE
+PETIT INDICATEUR DE VIE (OPTION PREMIUM)
 ==================================================*/
 
-@media(max-width:900px){
+.datetime-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:6px;
+
+    height:6px;
+
+    border-radius:50%;
+
+    background:#ffd700;
+
+    right:18px;
+
+    top:18px;
+
+    box-shadow:0 0 12px rgba(255,215,0,.8);
+
+    animation:pulseDot 2s infinite;
+
+}
+
+/* Animation point */
+
+@keyframes pulseDot{
+
+    0%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+    50%{
+        transform:scale(1.6);
+        opacity:.5;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+}
+
+/*==================================================
+HEADER.CSS
+PARTIE 3
+RESPONSIVE TABLETTE • MOBILE
+==================================================*/
+
+/*==================================================
+TABLETTE (max 900px)
+==================================================*/
+
+@media (max-width: 900px){
 
     .top-header{
 
@@ -320,75 +519,175 @@ RESPONSIVE TABLETTE
 
         text-align:center;
 
+        gap:25px;
+
+        padding:28px;
+
     }
+
+    /* Logo centré et légèrement réduit */
+
+    .logo-box{
+
+        flex:unset;
+
+    }
+
+    .logo{
+
+        width:100px;
+
+        height:100px;
+
+    }
+
+    /* Titre ajusté */
+
+    .title-box h1{
+
+        font-size:34px;
+
+    }
+
+    .title-box h2{
+
+        font-size:20px;
+
+    }
+
+    .title-box h3{
+
+        font-size:18px;
+
+    }
+
+    .title-box p{
+
+        font-size:15px;
+
+    }
+
+    /* Bloc infos devient horizontal scroll léger */
 
     .datetime-box{
 
-        width:100%;
+        flex-direction:row;
 
-        max-width:380px;
-
-    }
-
-    .header-actions{
+        flex-wrap:wrap;
 
         justify-content:center;
 
+        gap:12px;
+
         width:100%;
+
+    }
+
+    .info-item{
+
+        flex:1 1 45%;
+
+        justify-content:center;
+
+        text-align:center;
+
+    }
+
+    /* Actions centrées */
+
+    .header-actions{
+
+        width:100%;
+
+        justify-content:center;
 
     }
 
 }
 
 /*==================================================
-RESPONSIVE MOBILE
+MOBILE (max 600px)
 ==================================================*/
 
-@media(max-width:600px){
+@media (max-width: 600px){
 
     .top-header{
 
-        padding:22px;
+        padding:20px;
 
         border-radius:22px;
 
+        gap:18px;
+
     }
+
+    /* Logo encore plus compact */
 
     .logo{
 
-        width:90px;
+        width:85px;
 
-        height:90px;
+        height:85px;
+
+        border-radius:20px;
 
     }
 
+    /* Titres plus lisibles sur petit écran */
+
     .title-box h1{
 
-        font-size:28px;
+        font-size:26px;
+
+        letter-spacing:.5px;
 
     }
 
     .title-box h2{
 
-        font-size:18px;
+        font-size:17px;
 
     }
 
     .title-box h3{
 
-        font-size:16px;
+        font-size:15px;
 
     }
 
     .title-box p{
 
-        font-size:14px;
+        font-size:13px;
+
+    }
+
+    /* Infos en colonne propre */
+
+    .datetime-box{
+
+        flex-direction:column;
+
+        width:100%;
+
+        gap:10px;
 
     }
 
     .info-item{
 
-        padding:9px 12px;
+        width:100%;
+
+        justify-content:flex-start;
+
+        padding:10px 14px;
+
+    }
+
+    /* Icônes légèrement réduites */
+
+    .info-item i{
+
+        font-size:16px;
 
     }
 
@@ -398,4 +697,412 @@ RESPONSIVE MOBILE
 
     }
 
+    /* Bouton thème plus accessible */
+
+    .theme-btn{
+
+        width:52px;
+
+        height:52px;
+
+        font-size:24px;
+
+    }
+
 }
+
+/*==================================================
+TRÈS PETITS ÉCRANS (max 380px)
+==================================================*/
+
+@media (max-width: 380px){
+
+    .title-box h1{
+
+        font-size:22px;
+
+    }
+
+    .title-box h2{
+
+        font-size:15px;
+
+    }
+
+    .info-item{
+
+        padding:9px 12px;
+
+    }
+
+}
+
+/*==================================================
+HEADER.CSS
+PARTIE 4
+ANIMATIONS AVANCÉES • EFFETS PREMIUM
+==================================================*/
+
+/*==================================================
+EFFET SCROLL LÉGER (optionnel si header sticky)
+==================================================*/
+
+.top-header{
+
+    transition:transform .35s ease, box-shadow .35s ease;
+
+}
+
+/* Classe optionnelle si tu veux réduire le header au scroll via JS */
+.top-header.shrink{
+
+    transform:scale(.98);
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.35),
+        inset 0 0 25px rgba(255,255,255,.04);
+
+}
+
+/*==================================================
+AMÉLIORATION ANIM LOGO (fluidité + glow)
+==================================================*/
+
+.logo{
+
+    will-change:transform;
+
+    transition:filter .3s ease, transform .3s ease;
+
+}
+
+.logo:hover{
+
+    transform:scale(1.05) rotate(-2deg);
+
+    filter:drop-shadow(0 0 18px rgba(255,215,0,.45));
+
+}
+
+/*==================================================
+EFFET PULSATION GLOBAL HEADER
+==================================================*/
+
+@keyframes headerPulse{
+
+    0%{
+        box-shadow:
+            0 18px 45px rgba(0,0,0,.35),
+            inset 0 0 25px rgba(255,255,255,.04);
+    }
+
+    50%{
+        box-shadow:
+            0 22px 60px rgba(0,0,0,.45),
+            inset 0 0 35px rgba(255,255,255,.06);
+    }
+
+    100%{
+        box-shadow:
+            0 18px 45px rgba(0,0,0,.35),
+            inset 0 0 25px rgba(255,255,255,.04);
+    }
+
+}
+
+/* Activer si tu veux un header vivant */
+.top-header.pulse{
+
+    animation:headerPulse 6s ease-in-out infinite;
+
+}
+
+/*==================================================
+EFFET LUMIÈRE MOBILE FLOTTANTE
+==================================================*/
+
+@keyframes floatingLight{
+
+    0%{
+        transform:translateX(-10%) translateY(0);
+        opacity:.2;
+    }
+
+    50%{
+        transform:translateX(10%) translateY(-10px);
+        opacity:.4;
+    }
+
+    100%{
+        transform:translateX(-10%) translateY(0);
+        opacity:.2;
+    }
+
+}
+
+.top-header::before{
+
+    animation:floatingLight 14s ease-in-out infinite;
+
+}
+
+/*==================================================
+EFFET "SCAN LUMINEUX" RENFORCÉ
+==================================================*/
+
+.top-header::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:50%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.08),
+        rgba(255,215,0,.08),
+        transparent
+    );
+
+    transform:skewX(-25deg);
+
+    animation:headerScan 8s linear infinite;
+
+    pointer-events:none;
+
+}
+
+/*==================================================
+MICRO INTERACTIONS INFO ITEMS
+==================================================*/
+
+.info-item{
+
+    will-change:transform;
+
+}
+
+.info-item:active{
+
+    transform:scale(.98);
+
+}
+
+/*==================================================
+EFFET "GLOW TEXT" TITRE PRINCIPAL
+==================================================*/
+
+.title-box h1{
+
+    animation:titleGlow 5s ease-in-out infinite;
+
+}
+
+@keyframes titleGlow{
+
+    0%,100%{
+        text-shadow:0 0 12px rgba(255,215,0,.25);
+    }
+
+    50%{
+        text-shadow:0 0 25px rgba(255,215,0,.45);
+    }
+
+}
+
+/*==================================================
+EFFET RESPIRATION DU HEADER (subtil)
+==================================================*/
+
+@keyframes headerBreath{
+
+    0%,100%{
+        filter:saturate(1) brightness(1);
+    }
+
+    50%{
+        filter:saturate(1.1) brightness(1.05);
+    }
+
+}
+
+.top-header{
+
+    animation:headerBreath 10s ease-in-out infinite;
+
+}
+
+/*==================================================
+HEADER.CSS
+PARTIE 5
+OPTIMISATION FINALE • STABILITÉ • FIX UI
+==================================================*/
+
+/*==================================================
+STABILISATION GÉNÉRALE DU HEADER
+==================================================*/
+
+.top-header,
+.logo,
+.info-item,
+.theme-btn{
+
+    backface-visibility:hidden;
+
+    -webkit-backface-visibility:hidden;
+
+    transform-style:preserve-3d;
+
+}
+
+/*==================================================
+ÉVITER LES DÉBORDEMENTS VISUELS
+==================================================*/
+
+.top-header{
+
+    overflow:hidden;
+
+    isolation:isolate;
+
+}
+
+/*==================================================
+FIX FLEX WRAP INTELLIGENT
+==================================================*/
+
+.top-header{
+
+    align-content:center;
+
+}
+
+/*==================================================
+AMÉLIORATION LISIBILITÉ TEXTE (ANTI FLOU MOBILE)
+==================================================*/
+
+.title-box h1,
+.title-box h2,
+.title-box h3,
+.title-box p,
+.info-item span{
+
+    -webkit-font-smoothing:antialiased;
+
+    -moz-osx-font-smoothing:grayscale;
+
+    text-rendering:optimizeLegibility;
+
+}
+
+/*==================================================
+PERFORMANCE (réduction animations sur petits appareils si besoin)
+==================================================*/
+
+@media (max-width: 600px){
+
+    .top-header::before,
+    .top-header::after{
+
+        animation:none; /* évite lag mobile */
+
+        opacity:.4;
+
+    }
+
+    .top-header.pulse{
+
+        animation:none;
+
+    }
+
+}
+
+/*==================================================
+AMÉLIORATION ACCESSIBILITÉ (focus clavier)
+==================================================*/
+
+.theme-btn:focus{
+
+    outline:2px solid rgba(255,215,0,.6);
+
+    outline-offset:3px;
+
+}
+
+/*==================================================
+HARMONISATION DES ESPACES INTERNES
+==================================================*/
+
+.logo-box,
+.title-box,
+.datetime-box,
+.header-actions{
+
+    z-index:2;
+
+}
+
+/*==================================================
+ANTI OVERFLOW TEXTE LONG
+==================================================*/
+
+.title-box h1,
+.title-box h2,
+.title-box h3{
+
+    word-break:break-word;
+
+    overflow-wrap:break-word;
+
+}
+
+/*==================================================
+SMOOTH RENDER FINAL
+==================================================*/
+
+.top-header{
+
+    will-change:transform, box-shadow;
+
+    contain:layout paint;
+
+}
+
+/*==================================================
+ÉTAT ACTIF GLOBAL (OPTION JS FUTUR)
+==================================================*/
+
+.top-header.active{
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.45),
+        inset 0 0 40px rgba(255,255,255,.06);
+
+    transform:translateY(0);
+
+}
+
+/*==================================================
+PETIT BONUS : INDICATEUR DE CHARGEMENT HEADER
+==================================================*/
+
+.top-header.loading{
+
+    filter:blur(.3px);
+
+    opacity:.92;
+
+}
+
+/*==================================================
+FIN HEADER PREMIUM V6
+==================================================*/
