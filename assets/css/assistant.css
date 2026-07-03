@@ -1,12 +1,12 @@
 /*==================================================
 ASSISTANT.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 1
-STRUCTURE GÉNÉRALE
-InspecteurBot RDC 2026
+SECTION ASSISTANT IA
 ==================================================*/
 
 /*==================================================
-SECTION ASSISTANT IA
+SECTION PRINCIPALE
 ==================================================*/
 
 .assistant-section{
@@ -17,26 +17,30 @@ SECTION ASSISTANT IA
 
     margin:40px 0;
 
-    padding:35px;
+    padding:38px;
 
-    border-radius:30px;
+    border-radius:32px;
 
-    background:rgba(255,255,255,.08);
+    background:linear-gradient(
+        145deg,
+        #02173E,
+        #062B68,
+        #041C5C
+    );
 
-    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,215,0,.12);
 
-    -webkit-backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.15);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.30),
-        inset 0 0 25px rgba(255,255,255,.05);
+        var(--shadow-deep),
+        inset 0 1px 0 rgba(255,255,255,.05);
 
 }
 
 /*==================================================
-HALO IA PRINCIPAL
+HALO BLEU IA
 ==================================================*/
 
 .assistant-section::before{
@@ -45,26 +49,27 @@ HALO IA PRINCIPAL
 
     position:absolute;
 
-    inset:-45%;
+    width:650px;
+    height:650px;
+
+    top:-260px;
+    left:-220px;
+
+    border-radius:50%;
 
     background:radial-gradient(
-
-        circle,
-
-        rgba(11,94,215,.20),
-
-        transparent 70%
-
+        rgba(0,120,255,.22),
+        transparent 72%
     );
 
-    animation:assistantHalo 10s linear infinite;
+    animation:assistantRotate 18s linear infinite;
 
     pointer-events:none;
 
 }
 
 /*==================================================
-PULSATION INTELLIGENCE IA
+HALO OR
 ==================================================*/
 
 .assistant-section::after{
@@ -73,85 +78,117 @@ PULSATION INTELLIGENCE IA
 
     position:absolute;
 
-    width:260px;
+    width:320px;
+    height:320px;
 
-    height:260px;
-
-    left:-100px;
-
-    bottom:-100px;
+    right:-120px;
+    bottom:-120px;
 
     border-radius:50%;
 
     background:radial-gradient(
-
-        rgba(255,215,0,.12),
-
-        transparent 70%
-
+        rgba(255,215,0,.18),
+        transparent 72%
     );
 
-    animation:assistantPulse 6s ease-in-out infinite;
+    animation:assistantGold 6s ease-in-out infinite;
 
     pointer-events:none;
 
 }
 
 /*==================================================
-TITRE SECTION ASSISTANT
+TITRE
 ==================================================*/
 
 .assistant-section .section-title{
 
     position:relative;
 
-    text-align:center;
-
-    margin-bottom:30px;
-
     z-index:2;
 
+    text-align:center;
+
+    margin-bottom:35px;
+
 }
+
+/*==================================================
+TITRE PRINCIPAL
+==================================================*/
 
 .assistant-section .section-title h2{
 
-    color:var(--accent);
+    font-size:2rem;
 
-    font-size:32px;
+    font-weight:800;
 
-    font-weight:700;
+    color:var(--gold-light);
 
-    margin-bottom:12px;
+    letter-spacing:.5px;
 
     text-shadow:
-
-        0 0 15px rgba(255,215,0,.35);
+        0 0 20px rgba(255,215,0,.35);
 
 }
 
+/*==================================================
+DESCRIPTION
+==================================================*/
+
 .assistant-section .section-title p{
 
-    color:#dce8ff;
+    max-width:760px;
+
+    margin:14px auto 0;
+
+    color:var(--text-soft);
 
     font-size:16px;
 
-    line-height:1.8;
+    line-height:1.9;
 
-    max-width:750px;
+}
 
-    margin:auto;
+/*==================================================
+TRAIT LUMINEUX
+==================================================*/
 
-  }
+.assistant-section .section-title::after{
+
+    content:"";
+
+    display:block;
+
+    width:90px;
+
+    height:4px;
+
+    margin:18px auto 0;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        var(--gold-light),
+        transparent
+    );
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.35);
+
+}
 
 /*==================================================
 ASSISTANT.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 2
-INTERFACE CONVERSATION IA
-InspecteurBot RDC 2026
+CONVERSATION IA PREMIUM
 ==================================================*/
 
 /*==================================================
-ZONE CONVERSATION IA
+ZONE CHAT
 ==================================================*/
 
 .ai-chat{
@@ -162,11 +199,37 @@ ZONE CONVERSATION IA
 
     flex-direction:column;
 
-    gap:18px;
-
-    margin-top:25px;
+    gap:20px;
 
     z-index:2;
+
+}
+
+/*==================================================
+MESSAGE COMMUN
+==================================================*/
+
+.ai-message{
+
+    position:relative;
+
+    overflow:hidden;
+
+    max-width:86%;
+
+    padding:18px 22px;
+
+    border-radius:24px;
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:all .35s ease;
+
+    animation:messageAppear .45s ease;
 
 }
 
@@ -178,58 +241,97 @@ MESSAGE UTILISATEUR
 
     align-self:flex-end;
 
-    max-width:80%;
+    background:linear-gradient(
+        135deg,
+        #0B5ED7,
+        #041C5C
+    );
 
-    padding:14px 18px;
+    color:#FFFFFF;
 
-    border-radius:18px 18px 4px 18px;
-
-    background:linear-gradient(135deg,#0B5ED7,#041C5C);
-
-    color:#ffffff;
-
-    font-size:15px;
-
-    line-height:1.7;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    box-shadow:
+        0 18px 35px rgba(0,0,0,.35),
+        0 0 20px rgba(11,94,215,.18);
 
 }
 
 /*==================================================
-MESSAGE ASSISTANT
+MESSAGE IA
 ==================================================*/
 
 .ai-message.bot{
 
     align-self:flex-start;
 
-    max-width:85%;
+    background:linear-gradient(
+        180deg,
+        rgba(255,255,255,.10),
+        rgba(255,255,255,.05)
+    );
 
-    padding:16px 18px;
+    color:#F8FBFF;
 
-    border-radius:18px 18px 18px 4px;
+    border:1px solid rgba(255,215,0,.10);
 
-    background:rgba(255,255,255,.10);
-
-    backdrop-filter:blur(15px);
-
-    -webkit-backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    color:#ffffff;
-
-    font-size:15px;
-
-    line-height:1.8;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.20);
+    box-shadow:
+        var(--shadow-deep);
 
 }
 
 /*==================================================
-NOM ASSISTANT
+REFLET PREMIUM
+==================================================*/
+
+.ai-message::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-160%;
+
+    left:-45%;
+
+    width:45%;
+
+    height:340%;
+
+    background:linear-gradient(
+        transparent,
+        rgba(255,255,255,.38),
+        transparent
+    );
+
+    transform:rotate(25deg);
+
+    transition:.9s;
+
+}
+
+.ai-message:hover::before{
+
+    left:170%;
+
+}
+
+/*==================================================
+SURVOL
+==================================================*/
+
+.ai-message:hover{
+
+    transform:translateY(-4px);
+
+    border-color:rgba(255,215,0,.25);
+
+    box-shadow:
+        var(--shadow-deep),
+        var(--shadow-gold);
+
+}
+
+/*==================================================
+BADGE IA
 ==================================================*/
 
 .ai-badge{
@@ -240,41 +342,73 @@ NOM ASSISTANT
 
     gap:8px;
 
-    margin-bottom:10px;
+    margin-bottom:12px;
 
-    padding:6px 12px;
+    padding:8px 15px;
 
-    border-radius:30px;
+    border-radius:999px;
 
-    background:rgba(255,215,0,.15);
+    background:rgba(255,215,0,.12);
 
-    border:1px solid rgba(255,215,0,.25);
+    border:1px solid rgba(255,215,0,.20);
 
-    color:var(--accent);
+    color:var(--gold-light);
 
     font-size:12px;
+
+    font-weight:700;
+
+    backdrop-filter:blur(10px);
+
+}
+
+/*==================================================
+TEXTE
+==================================================*/
+
+.ai-message p{
+
+    line-height:1.9;
+
+    font-size:15px;
+
+}
+
+/*==================================================
+MISE EN ÉVIDENCE
+==================================================*/
+
+.ai-message mark{
+
+    padding:3px 8px;
+
+    border-radius:8px;
+
+    background:linear-gradient(
+        135deg,
+        #FFD700,
+        #FFF1A0
+    );
+
+    color:#041C5C;
 
     font-weight:700;
 
 }
 
 /*==================================================
-EFFET APPARITION MESSAGE
+ANIMATION APPARITION
 ==================================================*/
 
-.ai-message{
-
-    animation:aiFade .4s ease;
-
-}
-
-@keyframes aiFade{
+@keyframes messageAppear{
 
     from{
 
         opacity:0;
 
-        transform:translateY(10px);
+        transform:
+            translateY(18px)
+            scale(.96);
 
     }
 
@@ -282,39 +416,23 @@ EFFET APPARITION MESSAGE
 
         opacity:1;
 
-        transform:translateY(0);
+        transform:
+            translateY(0)
+            scale(1);
 
     }
 
-}
-
-/*==================================================
-HIGHLIGHT TEXTE IA
-==================================================*/
-
-.ai-message mark{
-
-    background:var(--accent);
-
-    color:#041C5C;
-
-    padding:2px 6px;
-
-    border-radius:6px;
-
-    font-weight:700;
-
-}
+                          }
 
 /*==================================================
 ASSISTANT.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 3
-ZONE DE SAISIE IA (INPUT + ACTIONS)
-InspecteurBot RDC 2026
+ZONE DE SAISIE IA PREMIUM
 ==================================================*/
 
 /*==================================================
-CONTAINER INPUT IA
+CONTAINER
 ==================================================*/
 
 .ai-input-box{
@@ -325,148 +443,269 @@ CONTAINER INPUT IA
 
     align-items:center;
 
-    gap:12px;
+    gap:14px;
 
-    margin-top:25px;
+    margin-top:28px;
 
-    padding:10px;
+    padding:12px;
 
-    border-radius:22px;
+    border-radius:26px;
 
-    background:rgba(255,255,255,.08);
+    background:linear-gradient(
+        180deg,
+        rgba(255,255,255,.10),
+        rgba(255,255,255,.05)
+    );
 
-    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,215,0,.12);
 
-    -webkit-backdrop-filter:blur(15px);
+    backdrop-filter:blur(24px);
 
-    border:1px solid rgba(255,255,255,.15);
+    -webkit-backdrop-filter:blur(24px);
 
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    box-shadow:
+        var(--shadow-deep);
+
+    overflow:hidden;
 
     z-index:2;
 
 }
 
 /*==================================================
-CHAMP TEXTE IA
+HALO LUMINEUX
+==================================================*/
+
+.ai-input-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-120%;
+
+    background:radial-gradient(
+
+        circle,
+
+        rgba(255,215,0,.12),
+
+        transparent 70%
+
+    );
+
+    animation:inputHalo 8s linear infinite;
+
+    pointer-events:none;
+
+}
+
+/*==================================================
+CHAMP IA
 ==================================================*/
 
 .ai-input-box input{
 
+    position:relative;
+
     flex:1;
 
-    height:54px;
+    height:58px;
 
-    padding:0 18px;
+    padding:0 22px;
 
     border:none;
 
-    outline:none;
+    border-radius:18px;
 
-    border-radius:16px;
+    background:rgba(255,255,255,.08);
 
-    background:rgba(255,255,255,.12);
-
-    color:#ffffff;
+    color:#FFFFFF;
 
     font-size:15px;
 
-    transition:.3s;
+    backdrop-filter:blur(12px);
 
-}
+    transition:.35s;
 
-.ai-input-box input::placeholder{
-
-    color:#dbe8ff;
-
-}
-
-/* FOCUS INPUT */
-
-.ai-input-box input:focus{
-
-    background:rgba(255,255,255,.18);
-
-    box-shadow:0 0 15px rgba(255,215,0,.25);
+    z-index:2;
 
 }
 
 /*==================================================
-BOUTON ENVOI IA
+PLACEHOLDER
+==================================================*/
+
+.ai-input-box input::placeholder{
+
+    color:rgba(255,255,255,.70);
+
+}
+
+/*==================================================
+FOCUS
+==================================================*/
+
+.ai-input-box input:focus{
+
+    background:rgba(255,255,255,.14);
+
+    box-shadow:
+
+        0 0 20px rgba(255,215,0,.20);
+
+}
+
+/*==================================================
+BOUTON ENVOI
 ==================================================*/
 
 .ai-send-btn{
 
-    width:54px;
+    position:relative;
 
-    height:54px;
+    width:58px;
 
-    border-radius:16px;
+    height:58px;
 
     border:none;
 
+    border-radius:18px;
+
     cursor:pointer;
 
-    background:linear-gradient(135deg,#0B5ED7,#041C5C);
+    background:linear-gradient(
+        135deg,
+        #0D6EFD,
+        #041C5C
+    );
 
-    color:#ffffff;
+    color:var(--gold-light);
 
-    font-size:18px;
+    font-size:20px;
 
-    transition:.3s;
+    overflow:hidden;
 
-    box-shadow:0 6px 15px rgba(0,0,0,.25);
+    transition:.35s;
 
-}
+    box-shadow:
 
-.ai-send-btn:hover{
+        0 15px 28px rgba(0,0,0,.35);
 
-    transform:translateY(-3px);
-
-    box-shadow:0 0 18px rgba(255,215,0,.35);
+    z-index:2;
 
 }
 
 /*==================================================
-BOUTON MICRO IA
+REFLET
+==================================================*/
+
+.ai-send-btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-150%;
+
+    left:-40%;
+
+    width:45%;
+
+    height:320%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.45),
+
+        transparent
+
+    );
+
+    transform:rotate(25deg);
+
+    transition:.8s;
+
+}
+
+.ai-send-btn:hover::before{
+
+    left:170%;
+
+}
+
+/*==================================================
+SURVOL ENVOI
+==================================================*/
+
+.ai-send-btn:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.04);
+
+    box-shadow:
+
+        var(--shadow-gold),
+
+        var(--shadow-blue);
+
+}
+
+/*==================================================
+MICROPHONE
 ==================================================*/
 
 .ai-micro-btn{
 
-    width:54px;
+    width:58px;
 
-    height:54px;
+    height:58px;
 
-    border-radius:16px;
+    border-radius:18px;
 
-    border:none;
+    border:1px solid rgba(255,215,0,.18);
+
+    background:rgba(255,215,0,.10);
+
+    color:var(--gold-light);
 
     cursor:pointer;
 
-    background:rgba(255,215,0,.15);
+    font-size:20px;
 
-    color:var(--accent);
+    transition:.35s;
 
-    font-size:18px;
+    backdrop-filter:blur(14px);
 
-    transition:.3s;
-
-    border:1px solid rgba(255,215,0,.25);
-
-}
-
-.ai-micro-btn:hover{
-
-    transform:scale(1.05);
-
-    background:rgba(255,215,0,.25);
-
-    box-shadow:0 0 15px rgba(255,215,0,.25);
+    z-index:2;
 
 }
 
 /*==================================================
-ÉTAT ACTIF (ENVOI)
+SURVOL MICRO
+==================================================*/
+
+.ai-micro-btn:hover{
+
+    transform:
+
+        translateY(-4px)
+
+        scale(1.05);
+
+    background:rgba(255,215,0,.18);
+
+    box-shadow:
+
+        0 0 25px rgba(255,215,0,.35);
+
+}
+
+/*==================================================
+APPUI
 ==================================================*/
 
 .ai-send-btn:active,
@@ -477,7 +716,7 @@ BOUTON MICRO IA
 }
 
 /*==================================================
-INDICATEUR EN TRAIN D'ÉCRIRE
+INDICATEUR IA
 ==================================================*/
 
 .ai-typing{
@@ -486,25 +725,25 @@ INDICATEUR EN TRAIN D'ÉCRIRE
 
     align-items:center;
 
-    gap:6px;
+    gap:8px;
 
-    margin-top:10px;
+    margin-top:14px;
 
-    padding-left:5px;
+    padding-left:6px;
 
 }
 
 .ai-typing span{
 
-    width:6px;
+    width:8px;
 
-    height:6px;
+    height:8px;
 
     border-radius:50%;
 
-    background:var(--accent);
+    background:var(--gold-light);
 
-    animation:typingDots 1.2s infinite;
+    animation:typingPulse 1.2s infinite ease-in-out;
 
 }
 
@@ -520,59 +759,74 @@ INDICATEUR EN TRAIN D'ÉCRIRE
 
 }
 
-@keyframes typingDots{
+/*==================================================
+ANIMATIONS
+==================================================*/
+
+@keyframes typingPulse{
 
     0%,100%{
 
-        transform:scale(.5);
+        transform:scale(.45);
 
-        opacity:.4;
+        opacity:.35;
 
     }
 
     50%{
 
-        transform:scale(1.3);
+        transform:scale(1.35);
 
         opacity:1;
 
     }
 
-  }
+}
+
+@keyframes inputHalo{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+    }
 
 /*==================================================
 ASSISTANT.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 4
-RESPONSIVE • ANIMATIONS • ACCESSIBILITÉ • FINITION
-InspecteurBot RDC 2026
+RESPONSIVE • ANIMATIONS • ACCESSIBILITÉ
 ==================================================*/
 
 /*==================================================
 RESPONSIVE TABLETTE
 ==================================================*/
 
-@media(max-width:900px){
+@media(max-width:992px){
 
     .assistant-section{
 
-        padding:28px;
+        padding:30px;
 
     }
 
-    .ai-message.user,
-    .ai-message.bot{
+    .ai-message{
 
-        max-width:90%;
-
-        font-size:14px;
+        max-width:92%;
 
     }
 
     .ai-input-box{
 
         flex-wrap:wrap;
-
-        gap:10px;
 
     }
 
@@ -594,20 +848,27 @@ RESPONSIVE MOBILE
 
         padding:22px;
 
-        border-radius:24px;
+        border-radius:26px;
 
     }
 
     .assistant-section .section-title h2{
 
-        font-size:24px;
+        font-size:1.65rem;
 
     }
 
-    .ai-message.user,
-    .ai-message.bot{
+    .assistant-section .section-title p{
+
+        font-size:14px;
+
+    }
+
+    .ai-message{
 
         max-width:100%;
+
+        padding:16px;
 
         font-size:14px;
 
@@ -617,7 +878,17 @@ RESPONSIVE MOBILE
 
         flex-direction:column;
 
-        padding:12px;
+        padding:14px;
+
+        gap:12px;
+
+    }
+
+    .ai-input-box input{
+
+        width:100%;
+
+        height:54px;
 
     }
 
@@ -626,14 +897,16 @@ RESPONSIVE MOBILE
 
         width:100%;
 
-        height:50px;
+        height:54px;
+
+        border-radius:16px;
 
     }
 
 }
 
 /*==================================================
-PETITS ÉCRANS
+PETITS SMARTPHONES
 ==================================================*/
 
 @media(max-width:480px){
@@ -642,11 +915,19 @@ PETITS ÉCRANS
 
         padding:18px;
 
+        border-radius:22px;
+
     }
 
     .assistant-section .section-title h2{
 
-        font-size:20px;
+        font-size:1.4rem;
+
+    }
+
+    .assistant-section .section-title p{
+
+        font-size:13px;
 
     }
 
@@ -654,15 +935,17 @@ PETITS ÉCRANS
 
         font-size:13px;
 
+        line-height:1.8;
+
     }
 
 }
 
 /*==================================================
-ANIMATION GLOBALE ASSISTANT
+ANIMATION HALO BLEU
 ==================================================*/
 
-@keyframes assistantHalo{
+@keyframes assistantRotate{
 
     from{
 
@@ -678,21 +961,25 @@ ANIMATION GLOBALE ASSISTANT
 
 }
 
-@keyframes assistantPulse{
+/*==================================================
+PULSATION OR
+==================================================*/
+
+@keyframes assistantGold{
 
     0%{
 
         transform:scale(1);
 
-        opacity:.35;
+        opacity:.18;
 
     }
 
     50%{
 
-        transform:scale(1.25);
+        transform:scale(1.30);
 
-        opacity:.15;
+        opacity:.42;
 
     }
 
@@ -700,37 +987,104 @@ ANIMATION GLOBALE ASSISTANT
 
         transform:scale(1);
 
-        opacity:.35;
+        opacity:.18;
 
     }
 
 }
 
 /*==================================================
-EFFET DE SURVOL GLOBAL IA
+LUEUR DES MESSAGES
 ==================================================*/
 
-.ai-message:hover{
+.ai-message.bot:hover{
 
-    box-shadow:0 0 18px rgba(255,215,0,.15);
+    box-shadow:
+        var(--shadow-deep),
+        0 0 28px rgba(255,215,0,.18),
+        0 0 55px rgba(0,120,255,.10);
+
+}
+
+.ai-message.user:hover{
+
+    box-shadow:
+        var(--shadow-deep),
+        0 0 25px rgba(255,215,0,.20);
 
 }
 
 /*==================================================
-ACCESSIBILITÉ (réduction des animations)
+FOCUS ACCESSIBILITÉ
 ==================================================*/
 
-@media (prefers-reduced-motion: reduce){
+.ai-input-box input:focus-visible,
+.ai-send-btn:focus-visible,
+.ai-micro-btn:focus-visible{
+
+    outline:2px solid var(--gold-light);
+
+    outline-offset:3px;
+
+}
+
+/*==================================================
+ÉTAT DÉSACTIVÉ
+==================================================*/
+
+.ai-send-btn:disabled,
+.ai-micro-btn:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+
+.ai-input-box input:disabled{
+
+    opacity:.65;
+
+    cursor:not-allowed;
+
+}
+
+/*==================================================
+OPTIMISATION GPU
+==================================================*/
+
+.ai-message,
+.ai-send-btn,
+.ai-micro-btn,
+.ai-input-box{
+
+    will-change:
+        transform,
+        box-shadow;
+
+}
+
+/*==================================================
+MODE RÉDUCTION DES ANIMATIONS
+==================================================*/
+
+@media(prefers-reduced-motion:reduce){
 
     .assistant-section::before,
     .assistant-section::after,
     .ai-message,
-    .ai-typing span{
+    .ai-typing span,
+    .ai-send-btn::before{
 
         animation:none !important;
 
     }
 
+    .ai-message:hover,
     .ai-send-btn:hover,
     .ai-micro-btn:hover{
 
@@ -741,17 +1095,5 @@ ACCESSIBILITÉ (réduction des animations)
 }
 
 /*==================================================
-ÉTAT DÉSACTIVÉ INPUT IA
-==================================================*/
-
-.ai-input-box input:disabled{
-
-    opacity:.6;
-
-    cursor:not-allowed;
-
-}
-
-/*==================================================
-FIN ASSISTANT.CSS
+FIN ASSISTANT.CSS PREMIUM V8
 ==================================================*/
