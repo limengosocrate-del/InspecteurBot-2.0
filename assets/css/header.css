@@ -1,322 +1,477 @@
 /*==================================================
 HEADER.CSS
-VERSION 2026 UPGRADE
-InspecteurBot RDC
-Clean Futuristic UI
+VERSION 2026 PREMIUM V7
+INSPECTEURBOT RDC
+PARTIE 1
 ==================================================*/
 
 /*==================================================
 HEADER PRINCIPAL
 ==================================================*/
 
-.top-header{
+.header{
+
     position:relative;
-    overflow:hidden;
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:28px;
+    width:100%;
 
-    padding:30px;
-    margin-bottom:28px;
+    margin:18px auto 25px;
+
+    padding:18px 22px;
 
     border-radius:30px;
 
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(
+        135deg,
+        rgba(3,19,61,.96),
+        rgba(7,38,109,.92)
+    );
 
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,215,0,.18);
+
+    backdrop-filter:blur(var(--blur));
+
+    -webkit-backdrop-filter:blur(var(--blur));
 
     box-shadow:
-        0 12px 35px rgba(0,0,0,.35),
-        inset 0 0 20px rgba(255,255,255,.04);
+        var(--shadow-deep),
+        var(--shadow-blue),
+        inset 0 1px 0 rgba(255,255,255,.08);
 
-    transition:.4s ease;
+    overflow:hidden;
+
+    transition:var(--transition);
 }
 
 /*==================================================
-SOFT LIGHT GLOW (PLUS DISCRET QUE TON ANCIEN)
+HALO LUMINEUX
 ==================================================*/
 
-.top-header::before{
+.header::before{
+
     content:"";
+
     position:absolute;
-    inset:-60%;
+
+    top:-120px;
+
+    left:-120px;
+
+    width:280px;
+
+    height:280px;
 
     background:radial-gradient(
         circle,
-        rgba(255,215,0,.10),
-        transparent 60%
+        rgba(255,215,0,.18),
+        transparent 72%
     );
 
-    animation:headerGlow 12s linear infinite;
+    animation:headerGlow 9s linear infinite;
 
     pointer-events:none;
 }
 
-@keyframes headerGlow{
-    from{ transform:rotate(0deg); }
-    to{ transform:rotate(360deg); }
+.header::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:-140px;
+
+    bottom:-140px;
+
+    width:320px;
+
+    height:320px;
+
+    background:radial-gradient(
+        circle,
+        rgba(25,120,255,.18),
+        transparent 72%
+    );
+
+    animation:headerGlowReverse 10s linear infinite;
+
+    pointer-events:none;
 }
 
 /*==================================================
-LOGO BOX
+CONTENU HEADER
 ==================================================*/
 
-.logo-box{
+.header-content{
+
+    position:relative;
+
+    z-index:2;
+
     display:flex;
+
     align-items:center;
-    justify-content:center;
-    flex-shrink:0;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    flex-wrap:wrap;
 }
 
 /*==================================================
-LOGO CLEAN PREMIUM
+LOGO
 ==================================================*/
 
-.logo{
-    width:90px;
-    height:90px;
+.header-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+}
+
+.header-logo img{
+
+    width:72px;
+
+    height:72px;
 
     object-fit:contain;
 
-    border-radius:50%;
-    padding:8px;
+    filter:
+        drop-shadow(0 0 12px rgba(255,215,0,.30))
+        drop-shadow(0 0 20px rgba(0,120,255,.25));
 
-    background:rgba(255,255,255,.06);
-
-    border:2px solid rgba(255,215,0,.25);
-
-    box-shadow:
-        0 0 18px rgba(255,215,0,.25),
-        0 0 35px rgba(11,94,215,.25);
-
-    transition:.35s ease;
+    transition:var(--transition);
 }
 
-/* Hover plus soft */
-.logo:hover{
-    transform:scale(1.05);
-    box-shadow:
-        0 0 25px rgba(255,215,0,.35),
-        0 0 45px rgba(11,94,215,.30);
+.header-logo img:hover{
+
+    transform:scale(1.08) rotate(-3deg);
 }
 
 /*==================================================
-ZONE TITRE
+TITRES
 ==================================================*/
 
-.title-box{
+.header-title{
+
     flex:1;
-    min-width:280px;
-}
-
-/* MAIN TITLE */
-.title-box h1{
-    font-size:34px;
-    font-weight:800;
-
-    color:var(--accent);
-
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-
-    margin-bottom:10px;
-}
-
-/* SUB TITLE */
-.title-box h2{
-    font-size:20px;
-    font-weight:600;
-    color:#ffffff;
-
-    margin-bottom:6px;
-}
-
-/* SMALL TITLE */
-.title-box h3{
-    font-size:16px;
-    color:#dbe8ff;
-    font-weight:500;
-
-    margin-bottom:6px;
-}
-
-/* DESCRIPTION */
-.title-box p{
-    font-size:14px;
-    color:#bcd7ff;
-    letter-spacing:.3px;
-}
-
-/*==================================================
-DATETIME BOX
-==================================================*/
-
-.datetime-box{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
 
     min-width:220px;
 }
 
-/* INFO ITEM */
-.info-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
+.header-title h1{
 
-    padding:10px 14px;
+    font-size:2rem;
 
-    border-radius:16px;
-
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.10);
-
-    backdrop-filter:blur(12px);
-
-    transition:.3s ease;
-}
-
-/* hover soft */
-.info-item:hover{
-    transform:translateX(4px);
-    border-color:rgba(255,215,0,.35);
-}
-
-/* ICON */
-.info-item i{
-    color:var(--accent);
-    font-size:16px;
-}
-
-/* TEXT */
-.info-item span{
-    color:#ffffff;
-    font-size:14px;
-    font-weight:500;
-}
-
-/*==================================================
-CLOCK SPECIAL CLEAN GLOW
-==================================================*/
-
-#clock{
-    font-size:22px;
     font-weight:700;
-    color:var(--accent);
-    letter-spacing:2px;
+
+    color:#FFFFFF;
+
+    letter-spacing:.6px;
+
+    text-shadow:
+        0 0 12px rgba(255,215,0,.18);
+
+    margin-bottom:6px;
+}
+
+.header-title p{
+
+    font-size:.95rem;
+
+    color:var(--text-soft);
+
+    letter-spacing:.4px;
 }
 
 /*==================================================
-THEME BUTTON (SIMPLIFIÉ + PRO)
+ZONE DATE / HEURE
 ==================================================*/
 
-.header-actions{
+.header-info{
+
     display:flex;
+
     align-items:center;
-    justify-content:center;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
 }
 
-/* BUTTON */
-.theme-btn{
-    width:58px;
-    height:58px;
+/*==================================================
+CARTE DATE
+==================================================*/
+
+.info-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 18px;
+
+    min-width:155px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,215,0,.18);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+        var(--shadow-soft),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:var(--transition);
+
+    cursor:default;
+}
+
+.info-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:rgba(255,215,0,.45);
+
+    box-shadow:
+        var(--shadow-blue),
+        var(--shadow-gold),
+        var(--shadow-soft);
+}
+
+/*==================================================
+ICÔNES
+==================================================*/
+
+.info-card i{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
 
     border-radius:50%;
 
-    border:none;
-    cursor:pointer;
+    color:var(--accent);
 
     background:linear-gradient(
         135deg,
-        #0B5ED7,
-        #041C5C
+        rgba(255,215,0,.16),
+        rgba(255,255,255,.05)
     );
 
-    border:1px solid rgba(255,215,0,.25);
+    box-shadow:
+        0 0 18px rgba(255,215,0,.18);
+}
 
-    color:#fff;
+/*==================================================
+TEXTES
+==================================================*/
+
+.info-text{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.info-text span{
+
+    font-size:.74rem;
+
+    color:var(--gold-light);
+
+    letter-spacing:.5px;
+
+    text-transform:uppercase;
+}
+
+.info-text strong{
+
+    font-size:.98rem;
+
+    font-weight:600;
+
+    color:#FFFFFF;
+}
+
+/*==================================================
+ANIMATIONS PREMIUM
+==================================================*/
+
+@keyframes headerGlow{
+
+    0%{
+        transform:translate(0,0) scale(1);
+        opacity:.45;
+    }
+
+    50%{
+        transform:translate(40px,25px) scale(1.15);
+        opacity:.80;
+    }
+
+    100%{
+        transform:translate(0,0) scale(1);
+        opacity:.45;
+    }
+}
+
+@keyframes headerGlowReverse{
+
+    0%{
+        transform:translate(0,0) scale(1);
+        opacity:.30;
+    }
+
+    50%{
+        transform:translate(-35px,-25px) scale(1.20);
+        opacity:.70;
+    }
+
+    100%{
+        transform:translate(0,0) scale(1);
+        opacity:.30;
+    }
+}
+
+/*==================================================
+ANIMATION FLOTTANTE
+==================================================*/
+
+@keyframes floatingHeader{
+
+    0%,100%{
+
+        transform:translateY(0);
+    }
+
+    50%{
+
+        transform:translateY(-4px);
+    }
+}
+
+.header{
+
+    animation:floatingHeader 6s ease-in-out infinite;
+}
+
+/*==================================================
+EFFETS PREMIUM
+==================================================*/
+
+.header:hover{
+
+    transform:translateY(-3px);
+
+    border-color:rgba(255,215,0,.35);
 
     box-shadow:
-        0 10px 25px rgba(0,0,0,.25);
-
-    transition:.35s ease;
+        var(--shadow-deep),
+        0 0 40px rgba(255,215,0,.12),
+        0 0 60px rgba(0,120,255,.18);
 }
 
-/* hover */
-.theme-btn:hover{
-    transform:rotate(180deg) scale(1.06);
-    box-shadow:0 0 22px rgba(255,215,0,.35);
+.header-logo img:hover{
+
+    filter:
+        drop-shadow(0 0 18px rgba(255,215,0,.45))
+        drop-shadow(0 0 28px rgba(0,120,255,.35));
+
+    transform:scale(1.08) rotate(-4deg);
 }
 
-/* icon */
-#themeIcon{
-    font-size:24px;
+.header-title h1{
+
+    animation:titleGlow 5s ease-in-out infinite;
+}
+
+@keyframes titleGlow{
+
+    0%,100%{
+
+        text-shadow:
+            0 0 10px rgba(255,215,0,.20);
+    }
+
+    50%{
+
+        text-shadow:
+            0 0 18px rgba(255,215,0,.45),
+            0 0 30px rgba(255,215,0,.25);
+    }
 }
 
 /*==================================================
-RESPONSIVE TABLETTE
+RESPONSIVE
 ==================================================*/
 
-@media(max-width:900px){
+@media(max-width:992px){
 
-    .top-header{
+    .header-content{
+
         flex-direction:column;
+
         text-align:center;
-        gap:20px;
     }
 
-    .datetime-box{
-        width:100%;
-        align-items:center;
-    }
+    .header-info{
 
-    .info-item{
         justify-content:center;
-        width:100%;
-        max-width:320px;
+    }
+
+    .header-title h1{
+
+        font-size:1.7rem;
     }
 }
-
-/*==================================================
-RESPONSIVE MOBILE
-==================================================*/
 
 @media(max-width:768px){
 
-    .top-header{
-        padding:22px;
-        border-radius:24px;
+    .header{
+
+        padding:18px;
     }
 
-    .logo{
-        width:72px;
-        height:72px;
+    .header-logo img{
+
+        width:60px;
+
+        height:60px;
     }
 
-    .title-box h1{
-        font-size:26px;
+    .header-title h1{
+
+        font-size:1.45rem;
     }
 
-    .title-box h2{
-        font-size:18px;
+    .header-title p{
+
+        font-size:.88rem;
     }
 
-    .title-box h3{
-        font-size:15px;
-    }
+    .info-card{
 
-    #clock{
-        font-size:20px;
-    }
+        width:100%;
 
-    .theme-btn{
-        width:52px;
-        height:52px;
+        justify-content:center;
     }
-}
+            }
