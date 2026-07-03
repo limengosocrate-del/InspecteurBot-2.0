@@ -7,421 +7,320 @@
 
 "use strict";
 
-/*=================================================
- ESPACE DE NOMS
+/*==================================================
+OBJET RECHERCHE
 ==================================================*/
 
-window.CodeTravail = window.CodeTravail || {};
+const Recherche = {
 
-window.CodeTravail.Search = {};
+    initialisee: false,
 
-/*=================================================
- ÉLÉMENTS HTML
+    dernierTexte: "",
+
+    resultats: [],
+
+    debounceTimer: null
+
+};
+
+/*==================================================
+EXPORT GLOBAL
 ==================================================*/
 
-const champRecherche =
-    document.querySelector("#rechercheArticle");
+window.Recherche = Recherche; 
 
-const boutonRecherche =
-    document.querySelector("#btnRecherche");
-
-const boutonEffacer =
-    document.querySelector("#btnEffacerRecherche");
-
-const zoneResultats =
-    document.querySelector("#resultatsRecherche");
-
-/*=================================================
- RECHERCHE
+/*==================================================
+INITIALISATION
 ==================================================*/
 
-function rechercher() {
+Recherche.initialiser = function () {
 
-    const texte = champRecherche.value.trim();
+    if (this.initialisee) return;
 
-    if (!texte.length) {
+    this.initialisee = true;
 
-        window.CodeTravail.Utils.afficherNotification(
+    console.log("Module Recherche initialisé.");
 
-            "Veuillez saisir une recherche.",
+    this.initialiserEvenements();
+};
 
-            "warning"
+/*==================================================
+INITIALISER LES ÉVÉNEMENTS
+==================================================*/
 
-        );
+Recherche.initialiserEvenements = function () {
 
-        return;
+    const input =
+        document.getElementById("rechercheArticle");
+
+    const btn =
+        document.getElementById("btnRecherche");
+
+    const btnEffacer =
+        document.getElementById("btnEffacerRecherche");
+
+    const btnVocal =
+        document.getElementById("btnRechercheVocale");
+
+    const suggestions =
+        document.getElementById("suggestionsRapides");
+
+    /*------------------------------
+    SAISIE TEXTE (DEBOUNCE)
+    ------------------------------*/
+
+    if (input) {
+
+        input.addEventListener("input", (e) => {
+
+            const texte = e.target.value;
+
+            clearTimeout(this.debounceTimer);
+
+            this.debounceTimer = setTimeout(() => {
+
+                this.effectuerRecherche(texte);
+
+            }, 300);
+
+        });
+
+        /* ENTER = RECHERCHE DIRECTE */
+        input.addEventListener("keydown", (e) => {
+
+            if (e.key === "Enter") {
+
+                this.effectuerRecherche(input.value);
+
+            }
+
+        });
+    }
+
+    /*------------------------------
+    BOUTON RECHERCHE
+    ------------------------------*/
+
+    if (btn) {
+
+        btn.addEventListener("click", () => {
+
+            if (input) {
+                this.effectuerRecherche(input.value);
+            }
+
+        });
 
     }
 
-    rechercherTexte(texte);
+    /*------------------------------
+    BOUTON EFFACER
+    ------------------------------*/
 
-}
+    if (btnEffacer) {
 
-/*=================================================
- LANCER LA RECHERCHE
-==================================================*/
+        btnEffacer.addEventListener("click", () => {
 
-function rechercherTexte(texte) {
+            if (input) input.value = "";
 
-    if (
+            this.afficherResultats([]);
 
-        !window.CodeTravail ||
-
-        !window.CodeTravail.Recherche ||
-
-        typeof window.CodeTravail.Recherche.rechercher !==
-        "function"
-
-    ) {
-
-        console.error("recherche.js absent.");
-
-        return;
+        });
 
     }
 
-    const resultat =
+    /*------------------------------
+    RECHERCHE VOCALE (HOOK)
+    ------------------------------*/
 
-        window.CodeTravail.Recherche.rechercher(
+    if (btnVocal) {
 
-            texte
+        btnVocal.addEventListener("click", () => {
 
-        );
+            if (window.Speech && Speech.ecouter) {
 
-    afficherResultats(resultat);
+                Speech.ecouter((texte) => {
 
-    if (
+                    if (input) input.value = texte;
 
-        window.CodeTravail.Statistiques
+                    this.effectuerRecherche(texte);
 
-    ) {
+                });
 
-        window.CodeTravail.Statistiques
-            .incrementerRecherches();
+            }
+
+        });
 
     }
 
-}
+    /*------------------------------
+    SUGGESTIONS RAPIDES
+    ------------------------------*/
 
-/*=================================================
- PARTIE 2
- AFFICHAGE DES RÉSULTATS
+    if (suggestions) {
+
+        suggestions.addEventListener("click", (e) => {
+
+            const btn = e.target.closest("button");
+
+            if (!btn) return;
+
+            const query =
+                btn.getAttribute("data-search") ||
+                btn.getAttribute("data-article");
+
+            if (!query) return;
+
+            if (input) input.value = query;
+
+            this.effectuerRecherche(query);
+
+        });
+
+    }
+
+};
+
+/*==================================================
+RECHERCHE PRINCIPALE
 ==================================================*/
 
-/*=================================================
- AFFICHER LES RÉSULTATS
+Recherche.effectuerRecherche = function (texte) {
+
+    if (!texte || !window.CodeTravail) return;
+
+    texte = texte.trim();
+
+    if (texte === this.dernierTexte) return;
+
+    this.dernierTexte = texte;
+
+    // Mise à jour stats
+    if (CodeTravail.statistiques) {
+        CodeTravail.statistiques.recherches++;
+    }
+
+    const resultats =
+        CodeTravail.rechercher(texte);
+
+    this.resultats = resultats;
+
+    this.afficherResultats(resultats);
+
+    this.mettreAJourInfo(resultats, texte);
+
+    return resultats;
+};
+
+/*==================================================
+AFFICHER LES RÉSULTATS
 ==================================================*/
 
-function afficherResultats(resultats = []) {
+Recherche.afficherResultats = function (resultats) {
 
-    if (!zoneResultats) return;
+    const container =
+        document.getElementById("resultatsRecherche");
 
-    zoneResultats.innerHTML = "";
+    if (!container) return;
 
-    if (!resultats.length) {
+    container.innerHTML = "";
 
-        zoneResultats.innerHTML = `
+    if (!resultats || resultats.length === 0) {
 
-        <div class="search-empty">
-
-            <i class="fa-solid fa-circle-info"></i>
-
-            <p>Aucun résultat trouvé.</p>
-
-        </div>
-
+        container.innerHTML = `
+            <div class="no-results">
+                Aucun résultat trouvé.
+            </div>
         `;
 
         return;
-
     }
 
     resultats.forEach(article => {
 
-        const carte = document.createElement("article");
+        const div =
+            document.createElement("div");
 
-        carte.className = "search-card";
+        div.className = "result-item";
 
-        carte.innerHTML = `
-
-            <h3>
-
-                Article ${article.numero}
-
-            </h3>
-
-            <h4>
-
-                ${article.titre}
-
-            </h4>
-
-            <p>
-
-                ${article.categorie}
-
-            </p>
-
+        div.innerHTML = `
+            <h3>Article ${article.numero}</h3>
+            <p>${article.titre || ""}</p>
+            <span>${article.categorie || ""}</span>
         `;
 
-        carte.addEventListener(
+        div.addEventListener("click", () => {
 
-            "click",
+            if (window.Consultation) {
 
-            () => ouvrirArticle(article)
+                Consultation.afficherArticle(article);
 
-        );
-
-        zoneResultats.appendChild(carte);
-
-    });
-
-}
-
-/*=================================================
- OUVRIR UN ARTICLE
-==================================================*/
-
-function ouvrirArticle(article) {
-
-    if (
-
-        window.CodeTravail.Consultation &&
-
-        typeof window.CodeTravail.Consultation.afficherArticle === "function"
-
-    ) {
-
-        window.CodeTravail.Consultation
-
-            .afficherArticle(article);
-
-    }
-
-    if (
-
-        window.CodeTravail.Statistiques
-
-    ) {
-
-        window.CodeTravail.Statistiques
-
-            .incrementerArticles();
-
-    }
-
-    zoneResultats.innerHTML = "";
-
-}
-
-/*=================================================
- SUGGESTIONS RAPIDES
-==================================================*/
-
-function initialiserSuggestions() {
-
-    document
-
-        .querySelectorAll(
-
-            "#suggestionsRapides button"
-
-        )
-
-        .forEach(bouton => {
-
-            bouton.addEventListener(
-
-                "click",
-
-                () => {
-
-                    const texte =
-
-                        bouton.dataset.search ||
-
-                        bouton.dataset.article ||
-
-                        "";
-
-                    champRecherche.value = texte;
-
-                    rechercher();
-
-                }
-
-            );
+            }
 
         });
 
-}
+        container.appendChild(div);
 
-/*=================================================
- EFFACER
+    });
+
+};
+
+/*==================================================
+METTRE À JOUR INFOS
 ==================================================*/
 
-function effacerRecherche() {
+Recherche.mettreAJourInfo = function (resultats, texte) {
 
-    champRecherche.value = "";
+    const infoRecherche =
+        document.getElementById("infoRecherche");
 
-    zoneResultats.innerHTML = "";
+    const infoResultats =
+        document.getElementById("infoResultats");
 
-    champRecherche.focus();
-
-}
-
-/*=================================================
- PARTIE 3
- INITIALISATION
- VERSION FINALE
-==================================================*/
-
-/*=================================================
- RECHERCHE AVEC LA TOUCHE ENTRÉE
-==================================================*/
-
-function gererClavier(event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        rechercher();
-
+    if (infoRecherche) {
+        infoRecherche.textContent = texte;
     }
 
-}
-
-/*=================================================
- RECHERCHE EN TEMPS RÉEL
-==================================================*/
-
-function rechercherInstantanement() {
-
-    if (!champRecherche) return;
-
-    const texte = champRecherche.value.trim();
-
-    if (texte.length < 2) {
-
-        if (zoneResultats) {
-
-            zoneResultats.innerHTML = "";
-
-        }
-
-        return;
-
+    if (infoResultats) {
+        infoResultats.textContent = resultats.length;
     }
 
-    rechercherTexte(texte);
+};
 
-}
-
-/*=================================================
- INITIALISATION
+/*==================================================
+VIDER RECHERCHE
 ==================================================*/
 
-function initialiserRecherche() {
+Recherche.vider = function () {
 
-    if (boutonRecherche) {
+    this.resultats = [];
+    this.dernierTexte = "";
 
-        boutonRecherche.addEventListener(
+    const input =
+        document.getElementById("rechercheArticle");
 
-            "click",
+    if (input) input.value = "";
 
-            rechercher
+    this.afficherResultats([]);
 
-        );
+};
 
-    }
-
-    if (boutonEffacer) {
-
-        boutonEffacer.addEventListener(
-
-            "click",
-
-            effacerRecherche
-
-        );
-
-    }
-
-    if (champRecherche) {
-
-        champRecherche.addEventListener(
-
-            "keydown",
-
-            gererClavier
-
-        );
-
-        champRecherche.addEventListener(
-
-            "input",
-
-            window.CodeTravail.Utils.debounce(
-
-                rechercherInstantanement,
-
-                300
-
-            )
-
-        );
-
-    }
-
-    initialiserSuggestions();
-
-    console.log(
-
-        "🔍 search.js initialisé."
-
-    );
-
-}
-
-/*=================================================
- EXPORT
+/*==================================================
+OBTENIR DERNIERS RÉSULTATS
 ==================================================*/
 
-window.CodeTravail.Search.rechercher =
-    rechercher;
+Recherche.getResultats = function () {
+    return this.resultats;
+};
 
-window.CodeTravail.Search.rechercherTexte =
-    rechercherTexte;
-
-window.CodeTravail.Search.afficherResultats =
-    afficherResultats;
-
-window.CodeTravail.Search.ouvrirArticle =
-    ouvrirArticle;
-
-window.CodeTravail.Search.effacer =
-    effacerRecherche;
-
-window.CodeTravail.Search.initialiser =
-    initialiserRecherche;
-
-/*=================================================
- DÉMARRAGE
+/*==================================================
+AUTO INIT
 ==================================================*/
 
-document.addEventListener(
+document.addEventListener("codeTravailCharge", () => {
 
-    "DOMContentLoaded",
+    Recherche.initialiser();
 
-    () => {
+});
 
-        initialiserRecherche();
-
-    }
-
-);
-
-/*=================================================
- FIN DU FICHIER
-==================================================*/
+ 
