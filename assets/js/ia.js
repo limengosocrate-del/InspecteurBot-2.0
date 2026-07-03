@@ -1,35 +1,41 @@
 "use strict";
 
 /*==================================================
-OBJET ASSISTANT IA
+ IA.JS
+ INSPECTEURBOT RDC 2026
+ ASSISTANT JURIDIQUE INTELLIGENT
 ==================================================*/
 
-const AssistantIA = {
-
-    initialisee: false,
-
-    voix: {
-
-        homme: null,
-
-        femme: null
-
-    },
-
-    synthese: window.speechSynthesis,
-
-    enCours: false
-
-};
-
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
+const AssistantIA = {};
 
 window.AssistantIA = AssistantIA;
 
 /*==================================================
-INITIALISATION
+ ÉTAT
+==================================================*/
+
+AssistantIA.initialisee = false;
+
+AssistantIA.synthese = window.speechSynthesis;
+
+AssistantIA.voix = {
+
+    femme: null,
+
+    homme: null
+
+};
+
+AssistantIA.articleActuel = null;
+
+AssistantIA.question = "";
+
+AssistantIA.reponse = "";
+
+AssistantIA.enCours = false;
+
+/*==================================================
+ INITIALISATION
 ==================================================*/
 
 AssistantIA.initialiser = function () {
@@ -38,66 +44,73 @@ AssistantIA.initialiser = function () {
 
     this.initialisee = true;
 
-    console.log("Assistant IA initialisé.");
+    console.log("🤖 Assistant IA démarré");
 
     this.chargerVoix();
+
+    this.initialiserBoutons();
 
 };
 
 /*==================================================
-CHARGEMENT DES VOIX
+ CHARGEMENT DES VOIX
 ==================================================*/
 
 AssistantIA.chargerVoix = function () {
 
-    const voices = speechSynthesis.getVoices();
+    const voix = speechSynthesis.getVoices();
 
-    if (!voices || voices.length === 0) {
+    if (!voix.length) {
 
-        setTimeout(() => this.chargerVoix(), 500);
+        setTimeout(() => {
+
+            AssistantIA.chargerVoix();
+
+        }, 300);
 
         return;
 
     }
 
-    /*--------------------------
-    VOIX FEMME (priorité FR)
-    --------------------------*/
-
     this.voix.femme =
-        voices.find(v =>
-            v.lang.includes("fr") &&
+
+        voix.find(v =>
+            v.lang.startsWith("fr") &&
             v.name.toLowerCase().includes("female")
         ) ||
-        voices.find(v =>
-            v.lang.includes("fr")
-        ) ||
-        voices[0];
 
-    /*--------------------------
-    VOIX HOMME (approximation)
-    --------------------------*/
+        voix.find(v =>
+            v.lang.startsWith("fr")
+        ) ||
+
+        voix[0];
 
     this.voix.homme =
-        voices.find(v =>
-            v.lang.includes("fr") &&
+
+        voix.find(v =>
+            v.lang.startsWith("fr") &&
             v.name.toLowerCase().includes("male")
         ) ||
-        voices.find(v =>
-            v.lang.includes("fr")
-        ) ||
-        voices[1] ||
-        voices[0];
 
-    console.log("Voix chargées :", this.voix);
+        voix.find(v =>
+            v.lang.startsWith("fr")
+        ) ||
+
+        voix[0];
 
 };
 
 /*==================================================
-PARLER TEXTE
+ PARLER
 ==================================================*/
 
-AssistantIA.parler = function (texte, genre = "femme") {
+AssistantIA.parler = function (
+
+    texte,
+
+    genre = "femme"
+
+) {
 
     if (!texte) return;
 
@@ -105,33 +118,29 @@ AssistantIA.parler = function (texte, genre = "femme") {
 
     this.stop();
 
-    const utterance =
+    const lecture =
         new SpeechSynthesisUtterance(texte);
 
-    utterance.lang = "fr-FR";
+    lecture.lang = "fr-FR";
 
-    if (genre === "homme") {
+    lecture.rate = 1;
 
-        utterance.voice = this.voix.homme;
+    lecture.pitch =
+        genre === "homme"
+        ? 0.9
+        : 1.1;
 
-        utterance.pitch = 0.8;
+    lecture.voice =
+        genre === "homme"
+        ? this.voix.homme
+        : this.voix.femme;
 
-    } else {
-
-        utterance.voice = this.voix.femme;
-
-        utterance.pitch = 1.1;
-
-    }
-
-    utterance.rate = 1;
-
-    this.synthese.speak(utterance);
+    this.synthese.speak(lecture);
 
 };
 
 /*==================================================
-STOP
+ ARRÊTER LA LECTURE
 ==================================================*/
 
 AssistantIA.stop = function () {
@@ -145,191 +154,529 @@ AssistantIA.stop = function () {
 };
 
 /*==================================================
-ANALYSER ARTICLE
+ AFFICHER UNE RÉPONSE
 ==================================================*/
 
-AssistantIA.analyser = function (article, question = "") {
+AssistantIA.afficher = function (texte) {
 
-    if (this.enCours) return;
-
-    this.enCours = true;
-
-    let texte = "";
-
-    if (article) {
-
-        texte += "Article " + article.numero + ". ";
-
-        texte += article.titre + ". ";
-
-        texte += article.contenu;
-
-    }
-
-    if (question) {
-
-        texte += " Question : " + question;
-
-    }
-
-    const reponse =
-        this.genererReponseSimple(article, question);
-
-    this.afficherReponse(reponse);
-
-    this.enCours = false;
-
-    return reponse;
-
-};
-
-/*==================================================
-GÉNÉRATION DE RÉPONSE
-==================================================*/
-
-AssistantIA.genererReponseSimple = function (article, question) {
-
-    if (!article && !question) {
-
-        return "Veuillez poser une question ou sélectionner un article.";
-
-    }
-
-    let base = "";
-
-    if (article) {
-
-        base += "Analyse de l'article " + article.numero + " :\n\n";
-
-        base += "Cet article traite de : " +
-                (article.titre || "sujet juridique") +
-                ".\n\n";
-
-        base += "Explication simplifiée : " +
-                this.simplifierTexte(article.contenu) +
-                "\n\n";
-
-    }
-
-    if (question) {
-
-        base += "Réponse à la question : " + question + "\n\n";
-
-        base += "Réponse juridique probable basée sur le Code du Travail de la RDC.";
-
-    }
-
-    return base;
-
-};
-
-/*==================================================
-SIMPLIFIER TEXTE
-==================================================*/
-
-AssistantIA.simplifierTexte = function (texte) {
-
-    if (!texte) return "";
-
-    return texte
-        .replace(/\s+/g, " ")
-        .trim()
-        .substring(0, 300) + "...";
-
-};
-
-/*==================================================
-AFFICHER RÉPONSE IA
-==================================================*/
-
-AssistantIA.afficherReponse = function (texte) {
+    this.reponse = texte;
 
     const zone =
         document.getElementById("reponseIA");
 
     if (!zone) return;
 
-    zone.innerText = texte;
+    zone.textContent = texte;
 
 };
 
 /*==================================================
-INITIALISATION AUTOMATIQUE
+ RÉCUPÉRER LA QUESTION
 ==================================================*/
 
-document.addEventListener("codeTravailCharge", () => {
+AssistantIA.getQuestion = function () {
 
-    AssistantIA.initialiser();
+    const input =
+        document.getElementById("questionIA");
 
-});
+    if (!input) return "";
+
+    return input.value.trim();
+
+};
 
 /*==================================================
-BOUTONS VOIX UI
+ MÉMORISER L'ARTICLE COURANT
 ==================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+AssistantIA.setArticle = function (article) {
 
-    const btnLecture =
-        document.getElementById("btnLectureIA");
+    this.articleActuel = article;
 
-    const btnEffacer =
-        document.getElementById("btnEffacerIA");
+};
 
-    const btnCopier =
-        document.getElementById("btnCopierIA");
+/*==================================================
+ OBTENIR L'ARTICLE COURANT
+==================================================*/
 
-    /*--------------------------
-    LECTURE VOCALE (FEMME PAR DÉFAUT)
-    --------------------------*/
+AssistantIA.getArticle = function () {
 
-    if (btnLecture) {
+    return this.articleActuel;
 
-        btnLecture.addEventListener("click", () => {
+};
 
-            const texte =
-                document.getElementById("reponseIA")
-                ?.innerText;
+/*==================================================
+ ANALYSE D'UNE QUESTION
+==================================================*/
 
-            AssistantIA.parler(texte, "femme");
+AssistantIA.analyser = function () {
+
+    if (this.enCours) return;
+
+    this.enCours = true;
+
+    const question =
+        this.getQuestion();
+
+    const article =
+        this.getArticle();
+
+    if (!question && !article) {
+
+        this.afficher(
+
+            "Veuillez sélectionner un article ou poser une question."
+
+        );
+
+        this.enCours = false;
+
+        return;
+
+    }
+
+    const reponse =
+        this.genererReponse(
+
+            question,
+
+            article
+
+        );
+
+    this.afficher(reponse);
+
+    this.enCours = false;
+
+};
+
+/*==================================================
+ GÉNÉRER UNE RÉPONSE
+==================================================*/
+
+AssistantIA.genererReponse = function (
+
+    question,
+
+    article
+
+) {
+
+    if (question) {
+
+        return this.rechercherQuestion(question);
+
+    }
+
+    if (article) {
+
+        return this.expliquerArticle(article);
+
+    }
+
+    return "Aucune réponse disponible.";
+
+};
+
+/*==================================================
+ RECHERCHE DANS LE CODE DU TRAVAIL
+==================================================*/
+
+AssistantIA.rechercherQuestion = function (
+
+    question
+
+) {
+
+    if (!window.CodeTravail)
+
+        return "Le Code du Travail n'est pas chargé.";
+
+    const texte =
+        question.toLowerCase();
+
+    const articles =
+        CodeTravail.getTousArticles();
+
+    const resultat = [];
+
+    articles.forEach(article => {
+
+        let trouve = false;
+
+        if (
+
+            article.titre &&
+            article.titre.toLowerCase().includes(texte)
+
+        ) {
+
+            trouve = true;
+
+        }
+
+        if (
+
+            article.categorie &&
+            article.categorie.toLowerCase().includes(texte)
+
+        ) {
+
+            trouve = true;
+
+        }
+
+        if (
+
+            article.contenu &&
+            article.contenu.toLowerCase().includes(texte)
+
+        ) {
+
+            trouve = true;
+
+        }
+
+        if (
+
+            article.motsCles
+
+        ) {
+
+            article.motsCles.forEach(mot => {
+
+                if (
+
+                    mot.toLowerCase().includes(texte)
+
+                ) {
+
+                    trouve = true;
+
+                }
+
+            });
+
+        }
+
+        if (trouve) {
+
+            resultat.push(article);
+
+        }
+
+    });
+
+    if (resultat.length === 0) {
+
+        return
+
+            "Je n'ai trouvé aucun article correspondant à votre question.";
+
+    }
+
+    return this.formaterResultats(
+
+        resultat,
+
+        question
+
+    );
+
+};
+
+/*==================================================
+ EXPLIQUER L'ARTICLE SÉLECTIONNÉ
+==================================================*/
+
+AssistantIA.expliquerArticle = function (
+
+    article
+
+) {
+
+    let texte = "";
+
+    texte +=
+
+        "Article " +
+
+        article.numero +
+
+        " : " +
+
+        article.titre +
+
+        "\n\n";
+
+    texte +=
+
+        "Résumé :\n";
+
+    texte +=
+
+        this.resumer(
+
+            article.contenu
+
+        );
+
+    if (
+
+        article.sanction
+
+    ) {
+
+        texte +=
+
+            "\n\nSanction prévue :\n";
+
+        texte +=
+
+            article.sanction;
+
+    }
+
+    return texte;
+
+};
+
+/*==================================================
+GÉNÉRER UNE RÉPONSE INTELLIGENTE
+==================================================*/
+
+AssistantIA.genererReponse = function (question) {
+
+    if (!question) {
+
+        return "Veuillez saisir une question.";
+
+    }
+
+    question = question.toLowerCase().trim();
+
+    const articles = CodeTravail.getTousArticles();
+
+    let resultat = null;
+
+    /*==============================
+    Recherche par mots-clés
+    ==============================*/
+
+    for (const article of articles) {
+
+        if (article.titre &&
+            article.titre.toLowerCase().includes(question)) {
+
+            resultat = article;
+            break;
+
+        }
+
+        if (article.motsCles) {
+
+            const trouve = article.motsCles.some(mot =>
+
+                question.includes(mot.toLowerCase())
+
+            );
+
+            if (trouve) {
+
+                resultat = article;
+                break;
+
+            }
+
+        }
+
+    }
+
+    /*==============================
+    Si aucun résultat
+    ==============================*/
+
+    if (!resultat) {
+
+        return `
+Je n'ai trouvé aucun article correspondant à votre question.
+
+Essayez par exemple :
+
+• licenciement
+
+• salaire
+
+• contrat
+
+• congé
+
+• sécurité
+
+• apprentissage
+
+• article 10
+`;
+
+    }
+
+    /*==============================
+    Construire la réponse
+    ==============================*/
+
+    let texte = "";
+
+    texte += "📖 ARTICLE " + resultat.numero + "\n\n";
+
+    texte += resultat.titre + "\n\n";
+
+    texte += resultat.contenu + "\n\n";
+
+    if (resultat.sanction) {
+
+        texte += "⚖ Sanction :\n";
+
+        texte += resultat.sanction + "\n\n";
+
+    }
+
+    if (resultat.questionsIA &&
+        resultat.questionsIA.length > 0) {
+
+        texte += "❓ Questions liées :\n";
+
+        resultat.questionsIA.forEach(q => {
+
+            texte += "• " + q + "\n";
 
         });
 
     }
 
-    /*--------------------------
+    return texte;
+
+};
+
+/*==================================================
+ÉVÈNEMENTS DE L'INTERFACE IA
+==================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    AssistantIA.initialiser();
+
+    const questionIA =
+        document.getElementById("questionIA");
+
+    const reponseIA =
+        document.getElementById("reponseIA");
+
+    const btnAnalyser =
+        document.getElementById("btnQuestionIA");
+
+    const btnLecture =
+        document.getElementById("btnLectureIA");
+
+    const btnCopier =
+        document.getElementById("btnCopierIA");
+
+    const btnEffacer =
+        document.getElementById("btnEffacerIA");
+
+    /*=====================================
+    ANALYSER
+    =====================================*/
+
+    if (btnAnalyser) {
+
+        btnAnalyser.addEventListener("click", () => {
+
+            const question = questionIA.value.trim();
+
+            if (!question) {
+
+                reponseIA.innerHTML =
+                    "Veuillez saisir une question.";
+
+                return;
+
+            }
+
+            const reponse =
+                AssistantIA.genererReponse(question);
+
+            AssistantIA.afficherReponse(reponse);
+
+        });
+
+    }
+
+    /*=====================================
+    COPIER
+    =====================================*/
+
+    if (btnCopier) {
+
+        btnCopier.addEventListener("click", async () => {
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    reponseIA.innerText
+                );
+
+                alert("Réponse copiée.");
+
+            } catch {
+
+                alert("Impossible de copier.");
+
+            }
+
+        });
+
+    }
+
+    /*=====================================
     EFFACER
-    --------------------------*/
+    =====================================*/
 
     if (btnEffacer) {
 
         btnEffacer.addEventListener("click", () => {
 
-            document.getElementById("questionIA").value = "";
+            questionIA.value = "";
 
-            document.getElementById("reponseIA").innerText =
-                "Réponse effacée.";
+            reponseIA.innerHTML = `
+Bonjour 👋
+
+Je suis votre assistant juridique intelligent.
+
+Posez simplement votre question concernant
+le Code du Travail de la RDC.
+`;
+
+            AssistantIA.stop();
 
         });
 
     }
 
-    /*--------------------------
-    COPIER
-    --------------------------*/
+    /*=====================================
+    LECTURE VOCALE
+    =====================================*/
 
-    if (btnCopier) {
+    if (btnLecture) {
 
-        btnCopier.addEventListener("click", () => {
+        btnLecture.addEventListener("click", () => {
 
-            const texte =
-                document.getElementById("reponseIA")
-                ?.innerText;
+            AssistantIA.parler(
 
-            if (texte) {
+                reponseIA.innerText,
 
-                navigator.clipboard.writeText(texte);
+                "femme"
 
-            }
+            );
 
         });
 
