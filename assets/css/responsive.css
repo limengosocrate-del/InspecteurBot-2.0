@@ -1,0 +1,308 @@
+/*==================================================
+RESPONSIVE.CSS
+PARTIE 1
+BASE RESPONSIVE GLOBALE • SYSTÈME • STRUCTURE
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+BASE RESPONSIVE GLOBALE
+==================================================*/
+
+/* Empêche les débordements horizontaux */
+html, body{
+
+    width:100%;
+
+    overflow-x:hidden;
+
+}
+
+/* Images toujours adaptatives */
+img{
+
+    max-width:100%;
+
+    height:auto;
+
+    display:block;
+
+}
+
+/*==================================================
+CONTAINER GLOBAL RESPONSIVE
+==================================================*/
+
+.container{
+
+    width:95%;
+
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+/*==================================================
+SYSTÈME FLEX GLOBAL
+==================================================*/
+
+.flex{
+
+    display:flex;
+
+}
+
+.flex-center{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.flex-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/*==================================================
+SYSTÈME GRID GLOBAL
+==================================================*/
+
+.grid{
+
+    display:grid;
+
+    gap:20px;
+
+}
+
+/*==================================================
+BREAKPOINT TABLETTE (BASE)
+==================================================*/
+
+@media(max-width:1024px){
+
+    .container{
+
+        width:96%;
+
+        padding:18px;
+
+    }
+
+}
+
+/*==================================================
+BREAKPOINT TABLETTE PETITE
+==================================================*/
+
+@media(max-width:900px){
+
+    .container{
+
+        padding:15px;
+
+    }
+
+}
+
+/*==================================================
+RESPONSIVE.CSS
+PARTIE 2
+MOBILE • OPTIMISATION GLOBALE • FINITIONS UI
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+MOBILE LARGE (768px et -)
+==================================================*/
+
+@media(max-width:768px){
+
+    /* Container */
+    .container{
+
+        width:95%;
+
+        padding:12px;
+
+    }
+
+    /* Titres globaux */
+    h1{
+
+        font-size:26px;
+
+    }
+
+    h2{
+
+        font-size:22px;
+
+    }
+
+    h3{
+
+        font-size:18px;
+
+    }
+
+    /* Paragraphes */
+    p{
+
+        font-size:14px;
+
+        line-height:1.7;
+
+    }
+
+    /*==================================================
+    BOUTONS GLOBAUX
+    ==================================================*/
+
+    button{
+
+        font-size:14px;
+
+    }
+
+    /*==================================================
+    GRILLES GLOBALES
+    ==================================================*/
+
+    .grid{
+
+        grid-template-columns:1fr !important;
+
+    }
+
+    /*==================================================
+    FLEX MOBILE
+    ==================================================*/
+
+    .flex{
+
+        flex-direction:column;
+
+    }
+
+    /*==================================================
+    ESPACEMENTS
+    ==================================================*/
+
+    section{
+
+        margin:25px 0;
+
+    }
+
+}
+
+/*==================================================
+MOBILE PETIT (480px et -)
+==================================================*/
+
+@media(max-width:480px){
+
+    /* Container encore plus compact */
+    .container{
+
+        padding:10px;
+
+    }
+
+    /* Titres */
+    h1{
+
+        font-size:22px;
+
+    }
+
+    h2{
+
+        font-size:18px;
+
+    }
+
+    h3{
+
+        font-size:16px;
+
+    }
+
+    /* Texte */
+    p{
+
+        font-size:13px;
+
+    }
+
+    /* Boutons */
+    button{
+
+        font-size:13px;
+
+        padding:10px 14px;
+
+    }
+
+}
+
+/*==================================================
+OPTIMISATION TOUCH (MOBILE)
+==================================================*/
+
+@media (hover:none){
+
+    button,
+    .outil-card,
+    .category-card,
+    .search-result-card{
+
+        transition:none;
+
+    }
+
+    button:active,
+    .outil-card:active,
+    .category-card:active{
+
+        transform:scale(0.97);
+
+    }
+
+}
+
+/*==================================================
+SUPPRESSION OVERFLOW GLOBAL
+==================================================*/
+
+body{
+
+    overflow-x:hidden;
+
+}
+
+/*==================================================
+AMÉLIORATION ACCESSIBILITÉ
+==================================================*/
+
+@media (prefers-reduced-motion: reduce){
+
+    *{
+
+        scroll-behavior:auto !important;
+
+    }
+
+}
+
