@@ -1,134 +1,268 @@
 "use strict";
 
-/* =====================================================
-   INSPECTEURBOT RDC
-   MODULE : CATÉGORIES
-   ===================================================== */
+/*==================================================
+OBJET CATEGORIES
+==================================================*/
 
 const Categories = {
 
-    initialiser(){
+    initialise: false,
 
-        this.initialiserCartes();
+    categorieActuelle: null,
 
-    }
+    filtresActifs: []
 
 };
 
+/*==================================================
+EXPORT GLOBAL
+==================================================*/
+
 window.Categories = Categories;
 
-/* =====================================================
-   INITIALISATION DES CARTES
-   ===================================================== */
+/*==================================================
+INITIALISATION
+==================================================*/
 
-Categories.initialiserCartes = function(){
+Categories.initialiser = function () {
+
+    if (this.initialise) return;
+
+    this.initialise = true;
+
+    console.log("Module Categories initialisé.");
+
+    this.initialiserEvenements();
+
+    this.initialiserBadges();
+
+};
+
+/*==================================================
+ÉVÉNEMENTS UI CATÉGORIES
+==================================================*/
+
+Categories.initialiserEvenements = function () {
 
     const cartes =
+        document.querySelectorAll(".category-card");
 
-        document.querySelectorAll(
+    cartes.forEach(card => {
 
-            ".category-card"
+        card.addEventListener("click", () => {
 
-        );
+            const categorie =
+                card.getAttribute("data-category");
 
-    cartes.forEach(carte=>{
+            if (!categorie) return;
 
-        carte.addEventListener(
+            this.selectionnerCategorie(categorie);
 
-            "click",
-
-            ()=>{
-
-                const categorie =
-                    carte.dataset.category;
-
-                this.ouvrir(categorie);
-
-            }
-
-        );
+        });
 
     });
 
 };
 
-/* =====================================================
-   OUVERTURE D'UNE CATÉGORIE
-   ===================================================== */
+/*==================================================
+SÉLECTION CATÉGORIE
+==================================================*/
 
-Categories.ouvrir = function(categorie){
+Categories.selectionnerCategorie = function (categorie) {
 
-    if(!categorie){
+    if (!window.CodeTravail) return;
 
-        return;
-
-    }
+    this.categorieActuelle = categorie;
 
     const articles =
+        CodeTravail.getArticlesCategorie(categorie);
 
-        CodeTravail.articles.filter(
+    console.log(
+        "Catégorie sélectionnée :",
+        categorie,
+        "|",
+        articles.length,
+        "articles"
+    );
 
-            article=>
+    this.afficherArticlesCategorie(articles);
 
-                article.categorie
-                .toLowerCase()===
+    this.mettreAJourInfo(categorie, articles.length);
 
-                categorie.toLowerCase()
+};
 
-        );
+/*==================================================
+AFFICHER ARTICLES CATÉGORIE
+==================================================*/
 
-    if(articles.length===0){
+Categories.afficherArticlesCategorie = function (articles) {
 
-        alert(
+    const container =
+        document.getElementById("resultatsRecherche");
 
-            "Aucun article trouvé."
+    if (!container) return;
 
-        );
+    container.innerHTML = "";
+
+    if (!articles || articles.length === 0) {
+
+        container.innerHTML = `
+            <div class="no-results">
+                Aucun article dans cette catégorie.
+            </div>
+        `;
 
         return;
 
     }
 
-CodeTravail.selectionner(
-    articles[0].numero
-);
+    articles.forEach(article => {
 
-Consultation.afficherArticle(
-    articles[0]
-);
+        const div =
+            document.createElement("div");
 
-    CodeTravail.selectionner(
+        div.className = "result-item";
 
-        articles[0].numero
+        div.innerHTML = `
+            <h3>Article ${article.numero}</h3>
+            <p>${article.titre || ""}</p>
+            <span>${article.categorie || ""}</span>
+        `;
 
-    );
+        div.addEventListener("click", () => {
+
+            if (window.Consultation) {
+
+                Consultation.afficherArticle(article);
+
+            }
+
+        });
+
+        container.appendChild(div);
+
+    });
 
 };
 
-/* =====================================================
-   FONCTION HTML
-   Compatible avec ton HTML actuel
-   ===================================================== */
+/*==================================================
+INFOS CATÉGORIE
+==================================================*/
 
-window.ouvrirCategorie = function(categorie){
+Categories.mettreAJourInfo = function (categorie, total) {
 
-    Categories.ouvrir(categorie);
+    const infoCategorie =
+        document.getElementById("infoCategorie");
 
-};
+    const infoRecherche =
+        document.getElementById("infoRecherche");
 
-/* =====================================================
-   INITIALISATION
-   ===================================================== */
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    ()=>{
-
-        Categories.initialiser();
-
+    if (infoCategorie) {
+        infoCategorie.textContent = categorie;
     }
 
-);
+    if (infoRecherche) {
+        infoRecherche.textContent =
+            total + " article(s)";
+    }
+
+};
+
+/*==================================================
+INITIALISER BADGES
+==================================================*/
+
+Categories.initialiserBadges = function () {
+
+    if (!window.CodeTravail) return;
+
+    const categories =
+        CodeTravail.getCategories();
+
+    categories.forEach(cat => {
+
+        const total =
+            CodeTravail.compterCategorie(cat);
+
+        this.mettreBadge(cat, total);
+
+    });
+
+};
+
+/*==================================================
+METTRE À JOUR UN BADGE
+==================================================*/
+
+Categories.mettreBadge = function (categorie, total) {
+
+    const map = {
+
+        "Dispositions générales": "badgeDispositions",
+        "Contrat de travail": "badgeContrat",
+        "Salaire": "badgeSalaire",
+        "Temps de travail": "badgeTemps",
+        "Congés": "badgeConges",
+        "Santé et sécurité": "badgeSecurite",
+        "Inspection du Travail": "badgeInspection",
+        "Infractions et sanctions": "badgeSanctions"
+
+    };
+
+    const id = map[categorie];
+
+    if (!id) return;
+
+    const badge =
+        document.getElementById(id);
+
+    if (!badge) return;
+
+    badge.textContent =
+        total + " article" +
+        (total > 1 ? "s" : "");
+
+};
+
+/*==================================================
+FILTRER CATÉGORIE
+==================================================*/
+
+Categories.filtrer = function (categorie) {
+
+    if (!window.CodeTravail) return [];
+
+    return CodeTravail.getArticlesCategorie(categorie);
+
+};
+
+/*==================================================
+RESET CATÉGORIES
+==================================================*/
+
+Categories.reinitialiser = function () {
+
+    this.categorieActuelle = null;
+    this.filtresActifs = [];
+
+    const container =
+        document.getElementById("resultatsRecherche");
+
+    if (container) {
+        container.innerHTML = "";
+    }
+
+};
+
+/*==================================================
+AUTO INIT
+==================================================*/
+
+document.addEventListener("codeTravailCharge", () => {
+
+    Categories.initialiser();
+
+});
+
+
 
