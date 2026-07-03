@@ -1,8 +1,8 @@
 /*==================================================
 HEADER.CSS
-PARTIE 1
-HEADER FUTURISTE
-InspecteurBot RDC 2026
+VERSION 2026 UPGRADE
+InspecteurBot RDC
+Clean Futuristic UI
 ==================================================*/
 
 /*==================================================
@@ -10,155 +10,99 @@ HEADER PRINCIPAL
 ==================================================*/
 
 .top-header{
-
     position:relative;
-
     overflow:hidden;
 
     display:flex;
-
-    flex-wrap:wrap;
-
     justify-content:space-between;
-
     align-items:center;
+    flex-wrap:wrap;
+    gap:28px;
 
-    gap:30px;
-
-    padding:35px;
-
-    margin-bottom:30px;
+    padding:30px;
+    margin-bottom:28px;
 
     border-radius:30px;
 
-    background:rgba(255,255,255,.08);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
 
-    backdrop-filter:blur(18px);
-
-    -webkit-backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.15);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
 
     box-shadow:
-    0 10px 40px rgba(0,0,0,.35),
-    inset 0 0 30px rgba(255,255,255,.05);
+        0 12px 35px rgba(0,0,0,.35),
+        inset 0 0 20px rgba(255,255,255,.04);
 
-    transition:.4s;
-
+    transition:.4s ease;
 }
 
 /*==================================================
-REFLET ANIMÉ
+SOFT LIGHT GLOW (PLUS DISCRET QUE TON ANCIEN)
 ==================================================*/
 
 .top-header::before{
-
     content:"";
-
     position:absolute;
+    inset:-60%;
 
-    top:-100%;
-
-    left:-30%;
-
-    width:40%;
-
-    height:300%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.18),
-
-        transparent
-
+    background:radial-gradient(
+        circle,
+        rgba(255,215,0,.10),
+        transparent 60%
     );
 
-    transform:rotate(25deg);
+    animation:headerGlow 12s linear infinite;
 
-    animation:headerLight 10s linear infinite;
-
+    pointer-events:none;
 }
 
-@keyframes headerLight{
-
-    from{
-
-        left:-50%;
-
-    }
-
-    to{
-
-        left:150%;
-
-    }
-
+@keyframes headerGlow{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
 }
 
 /*==================================================
-LOGO
+LOGO BOX
 ==================================================*/
 
 .logo-box{
-
     display:flex;
-
-    justify-content:center;
-
     align-items:center;
-
+    justify-content:center;
     flex-shrink:0;
-
 }
 
+/*==================================================
+LOGO CLEAN PREMIUM
+==================================================*/
+
 .logo{
-
-    width:95px;
-
-    height:95px;
+    width:90px;
+    height:90px;
 
     object-fit:contain;
 
     border-radius:50%;
-
     padding:8px;
 
-    background:rgba(255,255,255,.08);
+    background:rgba(255,255,255,.06);
 
-    border:2px solid rgba(255,215,0,.35);
+    border:2px solid rgba(255,215,0,.25);
 
     box-shadow:
+        0 0 18px rgba(255,215,0,.25),
+        0 0 35px rgba(11,94,215,.25);
 
-    0 0 20px rgba(255,215,0,.35),
-
-    0 0 45px rgba(11,94,215,.35);
-
-    animation:logoPulse 4s ease-in-out infinite;
-
+    transition:.35s ease;
 }
 
-@keyframes logoPulse{
-
-    0%{
-
-        transform:scale(1);
-
-    }
-
-    50%{
-
-        transform:scale(1.05);
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-    }
-
+/* Hover plus soft */
+.logo:hover{
+    transform:scale(1.05);
+    box-shadow:
+        0 0 25px rgba(255,215,0,.35),
+        0 0 45px rgba(11,94,215,.30);
 }
 
 /*==================================================
@@ -166,234 +110,127 @@ ZONE TITRE
 ==================================================*/
 
 .title-box{
-
     flex:1;
-
-    min-width:300px;
-
+    min-width:280px;
 }
 
+/* MAIN TITLE */
 .title-box h1{
-
-    font-size:36px;
+    font-size:34px;
+    font-weight:800;
 
     color:var(--accent);
 
-    font-weight:800;
-
-    letter-spacing:2px;
-
+    letter-spacing:1.5px;
     text-transform:uppercase;
 
-    text-shadow:
-
-    0 0 12px rgba(255,215,0,.45);
-
     margin-bottom:10px;
-
 }
 
+/* SUB TITLE */
 .title-box h2{
-
-    font-size:22px;
-
+    font-size:20px;
     font-weight:600;
-
     color:#ffffff;
 
-    margin-bottom:8px;
-
+    margin-bottom:6px;
 }
 
+/* SMALL TITLE */
 .title-box h3{
-
-    font-size:18px;
-
+    font-size:16px;
     color:#dbe8ff;
+    font-weight:500;
 
-    margin-bottom:8px;
-
+    margin-bottom:6px;
 }
 
+/* DESCRIPTION */
 .title-box p{
-
+    font-size:14px;
     color:#bcd7ff;
-
-    font-size:15px;
-
-    letter-spacing:.5px;
-
+    letter-spacing:.3px;
 }
 
 /*==================================================
-HEADER.CSS
-PARTIE 2
-HORLOGE • DATE • MÉTÉO • THÈME
-==================================================*/
-
-/*==================================================
-BLOC INFORMATIONS
+DATETIME BOX
 ==================================================*/
 
 .datetime-box{
-
     display:flex;
-
     flex-direction:column;
-
-    gap:12px;
+    gap:10px;
 
     min-width:220px;
-
 }
 
+/* INFO ITEM */
 .info-item{
-
     display:flex;
-
     align-items:center;
+    gap:10px;
 
-    gap:12px;
+    padding:10px 14px;
 
-    padding:12px 16px;
+    border-radius:16px;
 
-    border-radius:18px;
-
-    background:rgba(255,255,255,.08);
-
-    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.10);
 
     backdrop-filter:blur(12px);
 
-    transition:.35s;
-
+    transition:.3s ease;
 }
 
+/* hover soft */
 .info-item:hover{
-
-    transform:translateX(6px);
-
-    border-color:rgba(255,215,0,.45);
-
-    box-shadow:
-    0 0 18px rgba(255,215,0,.20);
-
+    transform:translateX(4px);
+    border-color:rgba(255,215,0,.35);
 }
 
-/*==================================================
-ICÔNES
-==================================================*/
-
+/* ICON */
 .info-item i{
-
-    width:22px;
-
-    text-align:center;
-
     color:var(--accent);
-
-    font-size:18px;
-
-    text-shadow:0 0 10px rgba(255,215,0,.45);
-
+    font-size:16px;
 }
 
-/*==================================================
-TEXTES
-==================================================*/
-
+/* TEXT */
 .info-item span{
-
     color:#ffffff;
-
-    font-size:15px;
-
+    font-size:14px;
     font-weight:500;
-
 }
 
 /*==================================================
-HORLOGE
+CLOCK SPECIAL CLEAN GLOW
 ==================================================*/
 
 #clock{
-
     font-size:22px;
-
     font-weight:700;
-
     color:var(--accent);
-
     letter-spacing:2px;
-
-    text-shadow:
-
-    0 0 10px rgba(255,215,0,.40),
-
-    0 0 25px rgba(255,215,0,.20);
-
-    animation:clockGlow 2s ease-in-out infinite alternate;
-
-}
-
-@keyframes clockGlow{
-
-    from{
-
-        text-shadow:
-        0 0 8px rgba(255,215,0,.25);
-
-    }
-
-    to{
-
-        text-shadow:
-        0 0 20px rgba(255,215,0,.65);
-
-    }
-
 }
 
 /*==================================================
-DATE
-==================================================*/
-
-#day,
-#date,
-#temperature,
-#city{
-
-    font-weight:600;
-
-}
-
-/*==================================================
-BOUTON THÈME
+THEME BUTTON (SIMPLIFIÉ + PRO)
 ==================================================*/
 
 .header-actions{
-
     display:flex;
-
-    justify-content:center;
-
     align-items:center;
-
+    justify-content:center;
 }
 
+/* BUTTON */
 .theme-btn{
-
-    width:60px;
-
-    height:60px;
-
-    border:none;
+    width:58px;
+    height:58px;
 
     border-radius:50%;
 
+    border:none;
     cursor:pointer;
-
-    color:#ffffff;
 
     background:linear-gradient(
         135deg,
@@ -401,112 +238,85 @@ BOUTON THÈME
         #041C5C
     );
 
-    border:1px solid rgba(255,215,0,.30);
+    border:1px solid rgba(255,215,0,.25);
+
+    color:#fff;
 
     box-shadow:
+        0 10px 25px rgba(0,0,0,.25);
 
-    0 0 18px rgba(11,94,215,.40),
-
-    inset 0 0 12px rgba(255,255,255,.10);
-
-    transition:.35s;
-
+    transition:.35s ease;
 }
 
+/* hover */
 .theme-btn:hover{
-
-    transform:rotate(180deg) scale(1.08);
-
-    box-shadow:
-
-    0 0 28px rgba(255,215,0,.45);
-
+    transform:rotate(180deg) scale(1.06);
+    box-shadow:0 0 22px rgba(255,215,0,.35);
 }
 
+/* icon */
 #themeIcon{
-
-    font-size:26px;
-
-    display:block;
-
+    font-size:24px;
 }
 
 /*==================================================
-RESPONSIVE
+RESPONSIVE TABLETTE
 ==================================================*/
 
 @media(max-width:900px){
 
     .top-header{
-
         flex-direction:column;
-
         text-align:center;
-
+        gap:20px;
     }
 
     .datetime-box{
-
         width:100%;
-
+        align-items:center;
     }
 
     .info-item{
-
         justify-content:center;
-
+        width:100%;
+        max-width:320px;
     }
-
 }
+
+/*==================================================
+RESPONSIVE MOBILE
+==================================================*/
 
 @media(max-width:768px){
 
     .top-header{
-
-        padding:25px;
-
+        padding:22px;
         border-radius:24px;
-
     }
 
     .logo{
-
-        width:75px;
-
-        height:75px;
-
+        width:72px;
+        height:72px;
     }
 
     .title-box h1{
-
-        font-size:28px;
-
+        font-size:26px;
     }
 
     .title-box h2{
-
         font-size:18px;
-
     }
 
     .title-box h3{
-
-        font-size:16px;
-
+        font-size:15px;
     }
 
     #clock{
-
         font-size:20px;
-
     }
 
     .theme-btn{
-
-        width:54px;
-
-        height:54px;
-
+        width:52px;
+        height:52px;
     }
-
 }
