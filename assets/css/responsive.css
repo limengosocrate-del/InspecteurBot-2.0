@@ -470,6 +470,8 @@ font-size:17px;
 }
 
 .article-content{
+
+    
 font-size:13px;
 }
 
@@ -482,3 +484,180 @@ padding:15px;
 }
 
 }
+
+/*==================================================
+RESPONSIVE.CSS
+PARTIE 4
+FOOTER • NOTIFICATIONS • ACCESSIBILITÉ • FIN
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+FOOTER TABLETTE
+==================================================*/
+
+@media (max-width:1024px){
+
+.footer{
+padding:35px 20px;
+}
+
+.footer h2{
+font-size:22px;
+}
+
+.footer h3{
+font-size:18px;
+}
+
+.footer-links{
+gap:10px;
+}
+
+}
+
+/*==================================================
+FOOTER MOBILE
+==================================================*/
+
+@media (max-width:768px){
+
+.footer{
+padding:25px 16px;
+border-radius:22px 22px 0 0;
+}
+
+.footer-logo img{
+width:70px;
+height:70px;
+}
+
+.footer h2{
+font-size:20px;
+}
+
+.footer h3{
+font-size:16px;
+}
+
+.footer p{
+font-size:14px;
+line-height:1.7;
+}
+
+.footer-links{
+flex-direction:column;
+gap:10px;
+}
+
+.footer-links a{
+width:100%;
+justify-content:center;
+}
+
+.btn-top{
+width:48px;
+height:48px;
+font-size:18px;
+right:15px;
+bottom:15px;
+}
+
+}
+
+/*==================================================
+TRÈS PETITS ÉCRANS
+==================================================*/
+
+@media (max-width:480px){
+
+.footer{
+padding:20px 14px;
+}
+
+.footer h2{
+font-size:18px;
+}
+
+.footer h3{
+font-size:15px;
+}
+
+.footer p{
+font-size:13px;
+}
+
+.btn-top{
+width:44px;
+height:44px;
+font-size:16px;
+}
+
+}
+
+/*==================================================
+NOTIFICATIONS RESPONSIVE
+==================================================*/
+
+@media (max-width:768px){
+
+.notification,
+.toast{
+width:90%;
+left:50%;
+transform:translateX(-50%);
+font-size:13px;
+padding:12px;
+}
+
+}
+
+/*==================================================
+ACCESSIBILITÉ
+==================================================*/
+
+@media (prefers-reduced-motion:reduce){
+
+*,
+*::before,
+*::after{
+
+animation:none!important;
+transition:none!important;
+scroll-behavior:auto!important;
+
+}
+
+}
+
+/*==================================================
+MODE IMPRESSION
+==================================================*/
+
+@media print{
+
+.footer,
+.btn-top,
+.ai-input-box,
+.assistant-actions{
+
+display:none!important;
+
+}
+
+.article-card,
+.article-section{
+
+box-shadow:none!important;
+background:#fff!important;
+color:#000!important;
+border:1px solid #ccc;
+
+}
+
+}
+
+/*==================================================
+FIN RESPONSIVE.CSS
+VERSION PREMIUM V6
+==================================================*/
