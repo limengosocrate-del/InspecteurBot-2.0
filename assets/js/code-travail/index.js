@@ -1066,3 +1066,108 @@ CodeTravail.reinitialiser=function(){
 FIN PARTIE 9
 ==================================================*/ 
 }
+
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ index.js
+ PARTIE 10/10
+ DÉMARRAGE FINAL
+==================================================*/
+
+"use strict";
+
+/*==================================================
+DÉMARRAGE DE L'APPLICATION
+==================================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    async()=>{
+
+        console.log(
+            "Chargement du Code du Travail..."
+        );
+
+        try{
+
+            await chargerCodeTravail();
+
+            if(
+                typeof Consultation!=="undefined" &&
+                typeof Consultation.afficherAccueil==="function"
+            ){
+
+                Consultation.afficherAccueil();
+
+            }
+
+            document.dispatchEvent(
+
+                new CustomEvent(
+
+                    "codeTravailCharge",
+
+                    {
+
+                        detail:{
+
+                            totalArticles:
+                            CodeTravail.articles.length,
+
+                            categories:
+                            CodeTravail.categories
+
+                        }
+
+                    }
+
+                )
+
+            );
+
+            console.log(
+
+                "Application prête."
+
+            );
+
+        }
+
+        catch(erreur){
+
+            console.error(
+
+                "Erreur de démarrage :",
+
+                erreur
+
+            );
+
+        }
+
+    }
+
+);
+
+/*==================================================
+EXPORT GLOBAL
+==================================================*/
+
+window.CodeTravail = CodeTravail;
+
+window.chargerCodeTravail =
+chargerCodeTravail;
+
+window.afficherErreurChargement =
+afficherErreurChargement;
+
+Object.freeze(window.CodeTravail);
+
+/*==================================================
+ FIN DU FICHIER index.js
+ Version 4.0 Professionnelle
+ INSPECTEURBOT RDC
+==================================================*/
