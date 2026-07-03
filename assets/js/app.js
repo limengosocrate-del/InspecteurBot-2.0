@@ -1,32 +1,60 @@
 /*==================================================
-APP.JS - CORE INSPECTEURBOT RDC
-VERSION CENTRALISÉE STABLE
+APP.JS
+CORE CENTRALISÉ - INSPECTEURBOT RDC
+VERSION STABLE & RAPIDE
 ==================================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("InspecteurBot App chargé ✔");
+    console.log("InspecteurBot App initialisé ✔");
 
-    initClock();
-    initTheme();
-    initUIFixes();
+    // Initialisation globale propre
+    initUI();
+    initModules();
 
 });
 
 /*==================================================
-HORLOGE + DATE
+INITIALISATION UI
 ==================================================*/
 
-function initClock() {
+function initUI() {
+
+    initClockSafe();
+    initThemeSafe();
+    initButtonsSafe();
+
+}
+
+/*==================================================
+MODULES (STATS + IA + AUTRES)
+==================================================*/
+
+function initModules() {
+
+    // Stats
+    if (window.initStats) {
+        window.initStats();
+    }
+
+    // Tu peux ajouter ici les autres modules plus tard
+    // initSearch();
+    // initIA();
+    // initSpeech();
+
+}
+
+/*==================================================
+HORLOGE (SAFE - SANS CRASH)
+==================================================*/
+
+function initClockSafe() {
 
     const clockEl = document.getElementById("clock");
     const dayEl = document.getElementById("day");
     const dateEl = document.getElementById("date");
 
-    if (!clockEl || !dayEl || !dateEl) {
-        console.warn("Clock UI manquant");
-        return;
-    }
+    if (!clockEl || !dayEl || !dateEl) return;
 
     const days = [
         "Dimanche","Lundi","Mardi","Mercredi",
@@ -38,7 +66,7 @@ function initClock() {
         "juillet","août","septembre","octobre","novembre","décembre"
     ];
 
-    function updateClock() {
+    function update() {
 
         const now = new Date();
 
@@ -49,23 +77,26 @@ function initClock() {
         clockEl.textContent = `${h}:${m}:${s}`;
         dayEl.textContent = days[now.getDay()];
         dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
     }
 
-    updateClock();
-    setInterval(updateClock, 1000);
+    update();
+    setInterval(update, 1000);
+
 }
 
 /*==================================================
-THEME TOGGLE
+THEME (SAFE)
 ==================================================*/
 
-function initTheme() {
+function initThemeSafe() {
 
     const btn = document.getElementById("themeToggle");
     const icon = document.getElementById("themeIcon");
-    const body = document.body;
 
     if (!btn || !icon) return;
+
+    const body = document.body;
 
     btn.addEventListener("click", () => {
 
@@ -80,35 +111,45 @@ function initTheme() {
 
     });
 
-    // restore theme
+    // restore
     const saved = localStorage.getItem("theme");
 
     if (saved === "dark") {
+
         body.classList.add("dark-theme");
         body.classList.remove("light-theme");
+
         icon.textContent = "☀️";
+
     }
+
 }
 
 /*==================================================
-FIX UI GLOBAL (ANTI BUG FUTUR)
+BOUTONS SAFE (ANTI CRASH TOTAL)
 ==================================================*/
 
-function initUIFixes() {
+function initButtonsSafe() {
 
-    // Empêche erreurs silencieuses sur boutons manquants
-
-    const safeBind = (id, event, fn) => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener(event, fn);
-    };
-
-    safeBind("btnMicro", "click", () => console.log("Micro"));
-    safeBind("btnLecture", "click", () => console.log("Lecture"));
-    safeBind("btnPartager", "click", () => console.log("Partager"));
-    safeBind("btnImprimer", "click", () => console.log("Imprimer"));
-    safeBind("btnFavori", "click", () => console.log("Favori"));
-    safeBind("btnParametres", "click", () => console.log("Paramètres"));
+    safeClick("btnMicro", () => console.log("Micro"));
+    safeClick("btnLecture", () => console.log("Lecture"));
+    safeClick("btnPartager", () => console.log("Partager"));
+    safeClick("btnImprimer", () => console.log("Imprimer"));
+    safeClick("btnFavori", () => console.log("Favori"));
+    safeClick("btnParametres", () => console.log("Paramètres"));
 
 }
 
+/*==================================================
+UTILITAIRE SAFE CLICK
+==================================================*/
+
+function safeClick(id, callback) {
+
+    const el = document.getElementById(id);
+
+    if (!el) return;
+
+    el.addEventListener("click", callback);
+
+}
