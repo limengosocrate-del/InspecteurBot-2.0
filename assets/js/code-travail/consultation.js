@@ -1,217 +1,70 @@
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ consultation.js
+ PARTIE 1/10
+ CONFIGURATION GÉNÉRALE
+==================================================*/
+
 "use strict";
 
-/* =====================================================
-   INSPECTEURBOT RDC
-   MODULE : CONSULTATION
-   ===================================================== */
+/*==================================================
+OBJET CONSULTATION
+==================================================*/
 
 const Consultation = {
 
-    article: null,
+    article:null,
 
-    initialiser() {
+    index:-1,
 
-        document.addEventListener(
+    historique:[],
 
-            "codeTravailCharge",
-
-            () => {
-
-                this.afficherAccueil();
-
-            }
-
-        );
-
-    },
-
-    afficherAccueil() {
-
-        const numero =
-            document.getElementById("numeroArticle");
-
-        const titre =
-            document.getElementById("titreArticle");
-
-        const contenu =
-            document.getElementById("contenuArticle");
-
-        if(numero){
-
-            numero.textContent="Code du Travail";
-
-        }
-
-        if(titre){
-
-            titre.textContent=
-            "Bibliothèque juridique intelligente";
-
-        }
-
-        if(contenu){
-
-            contenu.textContent=
-            "Utilisez la recherche intelligente, choisissez une catégorie ou sélectionnez un article pour commencer la consultation du Code du Travail de la République Démocratique du Congo.";
-
-        }
-
-    }
+    initialise:false
 
 };
 
-window.Consultation = Consultation;
+/*==================================================
+INITIALISATION
+==================================================*/
 
-document.addEventListener(
+Consultation.initialiser=function(){
 
-    "DOMContentLoaded",
-
-    () => {
-
-        Consultation.initialiser();
-
-    }
-
-);
-
-/* =====================================================
-   AFFICHAGE D'UN ARTICLE
-   ===================================================== */
-
-Consultation.afficherArticle = function(article){
-
-    if(!article){
+    if(this.initialise){
 
         return;
 
     }
 
-    this.article = article;
+    this.initialise=true;
 
-    const numero =
-    document.getElementById("numeroArticle");
+    console.log(
 
-    const titre =
-    document.getElementById("titreArticle");
-
-    const contenu =
-    document.getElementById("contenuArticle");
-
-    if(numero){
-
-        numero.textContent =
-        "Article " + article.numero;
-
-    }
-
-    if(titre){
-
-        titre.textContent =
-        article.titre;
-
-    }
-
-    if(contenu){
-
-        contenu.textContent =
-        article.contenu;
-
-    }
-
-    this.mettreAJourInformations(article);
-
-};
-
-/* =====================================================
-   INFORMATIONS DE CONSULTATION
-   ===================================================== */
-
-Consultation.mettreAJourInformations = function(article){
-
-    const infoArticle =
-    document.getElementById("infoArticle");
-
-    const infoChapitre =
-    document.getElementById("infoChapitre");
-
-    const infoTitre =
-    document.getElementById("infoTitre");
-
-    if(infoArticle){
-
-        infoArticle.textContent =
-        "Article " + article.numero;
-
-    }
-
-    if(infoChapitre){
-
-        infoChapitre.textContent =
-        article.categorie;
-
-    }
-
-    if(infoTitre){
-
-        infoTitre.textContent =
-        article.titre;
-
-    }
-
-};
-
-/* =====================================================
-   OUVRIR UN ARTICLE PAR NUMÉRO
-   ===================================================== */
-
-Consultation.ouvrirArticle = function(numero){
-
-    const article =
-    CodeTravail.getParNumero(numero);
-
-    if(!article){
-
-        console.warn(
-            "Article introuvable :",
-            numero
-        );
-
-        return;
-
-    }
-
-    CodeTravail.selectionner(numero);
-
-    this.afficherArticle(article);
-
-};
-
-/* =====================================================
-   OUVRIR LE PREMIER ARTICLE
-   ===================================================== */
-
-Consultation.premierArticle = function(){
-
-    const articles =
-    CodeTravail.getTous();
-
-    if(!articles.length){
-
-        return;
-
-    }
-
-    this.ouvrirArticle(
-
-        articles[0].numero
+        "Module Consultation initialisé."
 
     );
 
 };
 
-/* =====================================================
-   ÉCOUTE DU CHARGEMENT DU CODE DU TRAVAIL
-   ===================================================== */
+/*==================================================
+EXPORT GLOBAL
+==================================================*/
+
+window.Consultation=Consultation;
+
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ consultation.js
+ PARTIE 2/10
+ ÉCOUTE DU CHARGEMENT
+==================================================*/
+
+"use strict";
+
+/*==================================================
+ÉVÉNEMENT CODE CHARGÉ
+==================================================*/
 
 document.addEventListener(
 
@@ -219,14 +72,317 @@ document.addEventListener(
 
     ()=>{
 
+        Consultation.initialiser();
+
         Consultation.afficherAccueil();
-
-        console.log(
-
-            "Consultation prête."
-
-        );
 
     }
 
 );
+
+/*==================================================
+AFFICHAGE DE L'ACCUEIL
+==================================================*/
+
+Consultation.afficherAccueil=function(){
+
+    const numero=
+
+        document.getElementById(
+
+            "numeroArticle"
+
+        );
+
+    const titre=
+
+        document.getElementById(
+
+            "titreArticle"
+
+        );
+
+    const contenu=
+
+        document.getElementById(
+
+            "contenuArticle"
+
+        );
+
+    if(numero){
+
+        numero.textContent=
+
+        "Code du Travail";
+
+    }
+
+    if(titre){
+
+        titre.textContent=
+
+        "Bibliothèque juridique intelligente";
+
+    }
+
+    if(contenu){
+
+        contenu.textContent=
+
+        "Bienvenue dans le Code du Travail de la République Démocratique du Congo. Utilisez la recherche intelligente, les catégories ou la navigation pour consulter les articles.";
+
+    }
+
+};
+
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ consultation.js
+ PARTIE 3/10
+ AFFICHAGE D'UN ARTICLE
+==================================================*/
+
+"use strict";
+
+/*==================================================
+AFFICHER UN ARTICLE
+==================================================*/
+
+Consultation.afficherArticle=function(article){
+
+    if(!article){
+
+        return;
+
+    }
+
+    this.article=article;
+
+    this.index=
+
+    CodeTravail.articles.findIndex(
+
+        item=>item.id===article.id
+
+    );
+
+    const numero=
+
+    document.getElementById(
+
+        "numeroArticle"
+
+    );
+
+    const titre=
+
+    document.getElementById(
+
+        "titreArticle"
+
+    );
+
+    const contenu=
+
+    document.getElementById(
+
+        "contenuArticle"
+
+    );
+
+    if(numero){
+
+        numero.textContent=
+
+        "Article "+article.numero;
+
+    }
+
+    if(titre){
+
+        titre.textContent=
+
+        article.titre;
+
+    }
+
+    if(contenu){
+
+        contenu.textContent=
+
+        article.contenu;
+
+    }
+
+    this.ajouterHistorique(article);
+
+    this.mettreAJourInformations(article);
+
+};
+
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ consultation.js
+ PARTIE 4/10
+ MISE À JOUR DES INFORMATIONS
+==================================================*/
+
+"use strict";
+
+/*==================================================
+METTRE À JOUR LES INFORMATIONS
+==================================================*/
+
+Consultation.mettreAJourInformations=function(article){
+
+    const infoArticle=
+
+    document.getElementById(
+
+        "infoArticle"
+
+    );
+
+    const infoCategorie=
+
+    document.getElementById(
+
+        "infoCategorie"
+
+    );
+
+    const infoTitre=
+
+    document.getElementById(
+
+        "infoTitre"
+
+    );
+
+    if(infoArticle){
+
+        infoArticle.textContent=
+
+        "Article "+article.numero;
+
+    }
+
+    if(infoCategorie){
+
+        infoCategorie.textContent=
+
+        article.categorie||"-";
+
+    }
+
+    if(infoTitre){
+
+        infoTitre.textContent=
+
+        article.titre||"-";
+
+    }
+
+    const infoSanction=
+
+    document.getElementById(
+
+        "infoSanction"
+
+    );
+
+    if(infoSanction){
+
+        infoSanction.textContent=
+
+        article.sanction?
+
+        "Oui":
+
+        "Non";
+
+    }
+
+};
+
+/*==================================================
+ INSPECTEURBOT RDC
+ CODE DU TRAVAIL
+ consultation.js
+ PARTIE 5/10
+ HISTORIQUE DES CONSULTATIONS
+==================================================*/
+
+"use strict";
+
+/*==================================================
+AJOUTER À L'HISTORIQUE
+==================================================*/
+
+Consultation.ajouterHistorique=function(article){
+
+    if(!article){
+
+        return;
+
+    }
+
+    this.historique=
+
+    this.historique.filter(
+
+        item=>item.id!==article.id
+
+    );
+
+    this.historique.unshift(article);
+
+    if(this.historique.length>20){
+
+        this.historique.pop();
+
+    }
+
+    console.log(
+
+        "Historique :",
+
+        this.historique.length,
+
+        "article(s)"
+
+    );
+
+};
+
+/*==================================================
+OBTENIR L'HISTORIQUE
+==================================================*/
+
+Consultation.getHistorique=function(){
+
+    return [...this.historique];
+
+};
+
+/*==================================================
+VIDER L'HISTORIQUE
+==================================================*/
+
+Consultation.viderHistorique=function(){
+
+    this.historique=[];
+
+    console.log(
+
+        "Historique vidé."
+
+    );
+
+};
+
+
+
