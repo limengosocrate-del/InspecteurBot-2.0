@@ -1,8 +1,8 @@
 /*==================================================
 OUTILS.CSS
 PARTIE 1
-STRUCTURE GÉNÉRALE
-InspecteurBot RDC 2026
+SECTION • STRUCTURE • CARTES
+InspecteurBot RDC Premium V6
 ==================================================*/
 
 /*==================================================
@@ -11,257 +11,255 @@ SECTION OUTILS
 
 .outils-section{
 
-    position:relative;
-
-    overflow:hidden;
-
-    margin:40px 0;
-
-    padding:35px;
-
-    border-radius:30px;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(18px);
-
-    -webkit-backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.30),
-        inset 0 0 25px rgba(255,255,255,.05);
+position:relative;
+overflow:hidden;
+margin:40px 0;
+padding:35px;
+border-radius:28px;
+background:var(--glass);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+border:1px solid var(--border);
+box-shadow:var(--shadow);
 
 }
 
 /*==================================================
-HALO FUTURISTE OUTILS
+HALO IA
 ==================================================*/
 
 .outils-section::before{
 
-    content:"";
-
-    position:absolute;
-
-    inset:-50%;
-
-    background:radial-gradient(
-
-        circle,
-
-        rgba(11,94,215,.18),
-
-        transparent 70%
-
-    );
-
-    animation:outilsHalo 10s linear infinite;
-
-    pointer-events:none;
+content:"";
+position:absolute;
+inset:-40%;
+background:radial-gradient(circle,
+rgba(11,94,215,.18),
+transparent 70%);
+animation:outilsRotate 14s linear infinite;
+pointer-events:none;
 
 }
-
-/*==================================================
-PULSATION OR (STYLE IGT)
-==================================================*/
 
 .outils-section::after{
 
-    content:"";
-
-    position:absolute;
-
-    width:240px;
-
-    height:240px;
-
-    right:-90px;
-
-    bottom:-90px;
-
-    border-radius:50%;
-
-    background:radial-gradient(
-
-        rgba(255,215,0,.12),
-
-        transparent 70%
-
-    );
-
-    animation:outilsPulse 6s ease-in-out infinite;
-
-    pointer-events:none;
+content:"";
+position:absolute;
+width:260px;
+height:260px;
+right:-100px;
+bottom:-100px;
+border-radius:50%;
+background:radial-gradient(
+rgba(255,215,0,.12),
+transparent 70%);
+animation:outilsPulse 6s ease-in-out infinite;
+pointer-events:none;
 
 }
 
 /*==================================================
-TITRE SECTION OUTILS
+TITRE
 ==================================================*/
 
 .outils-section .section-title{
 
-    position:relative;
-
-    text-align:center;
-
-    margin-bottom:30px;
-
-    z-index:2;
+position:relative;
+z-index:2;
+text-align:center;
+margin-bottom:35px;
 
 }
 
 .outils-section .section-title h2{
 
-    color:var(--accent);
-
-    font-size:32px;
-
-    font-weight:700;
-
-    margin-bottom:12px;
-
-    text-shadow:0 0 15px rgba(255,215,0,.35);
+font-size:32px;
+font-weight:800;
+color:var(--accent);
+margin-bottom:12px;
 
 }
 
 .outils-section .section-title p{
 
-    color:#dce8ff;
-
-    font-size:16px;
-
-    line-height:1.8;
-
-    max-width:750px;
-
-    margin:auto;
+max-width:760px;
+margin:auto;
+font-size:16px;
+line-height:1.8;
+color:var(--text);
 
 }
 
 /*==================================================
-GRILLE OUTILS
+GRILLE
 ==================================================*/
 
 .outils-grid{
 
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
-
-    gap:20px;
-
-    margin-top:30px;
+position:relative;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:24px;
+z-index:2;
 
 }
 
 /*==================================================
-CARTE OUTIL (BASE)
+CARTE
 ==================================================*/
 
 .outil-card{
 
-    position:relative;
+position:relative;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:28px 22px;
+border-radius:22px;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+color:var(--text);
+text-decoration:none;
+cursor:pointer;
+transition:var(--transition);
+box-shadow:0 10px 25px rgba(0,0,0,.20);
 
-    display:flex;
+}
 
-    flex-direction:column;
+.outil-card:hover{
 
-    justify-content:center;
-
-    align-items:center;
-
-    text-align:center;
-
-    padding:25px 20px;
-
-    border-radius:22px;
-
-    background:rgba(255,255,255,.10);
-
-    backdrop-filter:blur(15px);
-
-    -webkit-backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    text-decoration:none;
-
-    color:#ffffff;
-
-    transition:.35s;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
+transform:translateY(-6px);
+border-color:var(--accent);
+box-shadow:0 0 25px rgba(255,215,0,.25);
 
 }
 
 /*==================================================
-ICÔNE OUTIL
+ICÔNE
 ==================================================*/
 
 .outil-card i{
 
-    font-size:42px;
-
-    color:var(--accent);
-
-    margin-bottom:15px;
-
-    transition:.3s;
-
-}
-
-/*==================================================
-TITRE OUTIL
-==================================================*/
-
-.outil-card h3{
-
-    font-size:20px;
-
-    font-weight:700;
-
-    margin-bottom:10px;
-
-    color:#ffffff;
-
-}
-
-/*==================================================
-DESCRIPTION OUTIL
-==================================================*/
-
-.outil-card p{
-
-    font-size:14px;
-
-    color:#dbe8ff;
-
-    line-height:1.6;
-
-}
-
-/*==================================================
-HOVER OUTIL
-==================================================*/
-
-.outil-card:hover{
-
-    transform:translateY(-6px);
-
-    border-color:var(--accent);
-
-    box-shadow:0 0 25px rgba(255,215,0,.30);
+font-size:46px;
+color:var(--accent);
+margin-bottom:18px;
+transition:var(--transition);
 
 }
 
 .outil-card:hover i{
 
-    transform:scale(1.15);
+transform:scale(1.15);
 
-    text-shadow:0 0 15px rgba(255,215,0,.35);
+}
+
+/*==================================================
+TITRE
+==================================================*/
+
+.outil-card h3{
+
+font-size:21px;
+font-weight:700;
+margin-bottom:12px;
+color:var(--accent);
+
+}
+
+/*==================================================
+DESCRIPTION
+==================================================*/
+
+.outil-card p{
+
+font-size:15px;
+line-height:1.8;
+color:var(--text);
+
+}
+
+/*==================================================
+OUTILS.CSS
+PARTIE 2
+ANIMATIONS • BADGES • RESPONSIVE • ACCESSIBILITÉ
+InspecteurBot RDC Premium V6
+==================================================*/
+
+/*==================================================
+LIGNE LUMINEUSE
+==================================================*/
+
+.outil-card::before{
+
+content:"";
+position:absolute;
+top:0;
+left:-120%;
+width:45%;
+height:100%;
+background:linear-gradient(
+transparent,
+rgba(255,255,255,.20),
+transparent
+);
+transform:skewX(-25deg);
+
+}
+
+.outil-card:hover::before{
+
+animation:outilLight .9s linear;
+
+}
+
+/*==================================================
+BADGE
+==================================================*/
+
+.outil-badge{
+
+display:inline-flex;
+align-items:center;
+justify-content:center;
+margin-top:18px;
+padding:8px 16px;
+border-radius:30px;
+background:rgba(255,215,0,.15);
+border:1px solid rgba(255,215,0,.30);
+color:var(--accent);
+font-size:13px;
+font-weight:700;
+transition:var(--transition);
+
+}
+
+.outil-card:hover .outil-badge{
+
+background:var(--accent);
+color:var(--primary);
+
+}
+
+/*==================================================
+ÉTAT ACTIF
+==================================================*/
+
+.outil-card.active{
+
+border-color:var(--accent);
+background:rgba(255,255,255,.12);
+box-shadow:0 0 25px rgba(255,215,0,.35);
+
+}
+
+.outil-card.active i{
+
+color:#FFD700;
 
 }
 
@@ -269,236 +267,150 @@ HOVER OUTIL
 ANIMATIONS
 ==================================================*/
 
-@keyframes outilsHalo{
+@keyframes outilsRotate{
 
-    from{
+from{
 
-        transform:rotate(0deg);
+transform:rotate(0deg);
 
-    }
+}
 
-    to{
+to{
 
-        transform:rotate(360deg);
+transform:rotate(360deg);
 
-    }
+}
 
 }
 
 @keyframes outilsPulse{
 
-    0%{
+0%{
 
-        transform:scale(1);
+transform:scale(1);
+opacity:.35;
 
-        opacity:.35;
+}
 
-    }
+50%{
 
-    50%{
+transform:scale(1.25);
+opacity:.15;
 
-        transform:scale(1.2);
+}
 
-        opacity:.15;
+100%{
 
-    }
+transform:scale(1);
+opacity:.35;
 
-    100%{
+}
 
-        transform:scale(1);
+}
 
-        opacity:.35;
+@keyframes outilLight{
 
-    }
+from{
 
-      }
+left:-120%;
+
+}
+
+to{
+
+left:160%;
+
+}
+
+}
 
 /*==================================================
-OUTILS.CSS
-PARTIE 2
-ANIMATIONS • INTERACTIONS • ÉTATS ACTIFS
-InspecteurBot RDC 2026
+EFFET FLOTTANT
 ==================================================*/
 
-/*==================================================
-ÉTAT ACTIF (CLICK / SELECTION)
-==================================================*/
+.outil-card{
 
-.outil-card:active{
+animation:outilFloat 6s ease-in-out infinite;
 
-    transform:scale(.96);
+}
 
-    box-shadow:0 0 15px rgba(255,215,0,.25);
+@keyframes outilFloat{
+
+0%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-4px);
+
+}
+
+100%{
+
+transform:translateY(0);
+
+}
 
 }
 
 /*==================================================
-EFFET LIGNE LUMINEUSE (SCAN IA)
-==================================================*/
-
-.outil-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-120%;
-
-    width:40%;
-
-    height:100%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.18),
-
-        transparent
-
-    );
-
-    transform:skewX(-25deg);
-
-    transition:.8s;
-
-    pointer-events:none;
-
-}
-
-.outil-card:hover::before{
-
-    left:160%;
-
-}
-
-/*==================================================
-BADGE OUTIL (OPTIONNEL FUTUR)
-==================================================*/
-
-.outil-badge{
-
-    position:absolute;
-
-    top:12px;
-
-    right:12px;
-
-    padding:6px 10px;
-
-    border-radius:20px;
-
-    font-size:11px;
-
-    font-weight:700;
-
-    background:rgba(255,215,0,.15);
-
-    color:var(--accent);
-
-    border:1px solid rgba(255,215,0,.25);
-
-}
-
-/*==================================================
-EFFET "PULSE" SUR ICÔNE ACTIVE
-==================================================*/
-
-.outil-card:hover i{
-
-    animation:outilIconPulse .8s ease-in-out infinite;
-
-}
-
-@keyframes outilIconPulse{
-
-    0%{
-
-        transform:scale(1);
-
-    }
-
-    50%{
-
-        transform:scale(1.18);
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-    }
-
-}
-
-/*==================================================
-FOCUS ACCESSIBILITÉ
-==================================================*/
-
-.outil-card:focus-visible{
-
-    outline:none;
-
-    box-shadow:
-        0 0 0 3px rgba(255,215,0,.30),
-        0 0 20px rgba(255,215,0,.25);
-
-}
-
-/*==================================================
-GRILLE RESPONSIVE AVANCÉE
+RESPONSIVE TABLETTE
 ==================================================*/
 
 @media(max-width:900px){
 
-    .outils-grid{
+.outils-grid{
 
-        grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
 
-    }
+}
 
 }
 
 /*==================================================
-MOBILE
+RESPONSIVE MOBILE
 ==================================================*/
 
 @media(max-width:768px){
 
-    .outils-section{
+.outils-section{
 
-        padding:25px;
+padding:24px;
 
-        border-radius:24px;
+}
 
-    }
+.outils-section .section-title h2{
 
-    .outils-section .section-title h2{
+font-size:24px;
 
-        font-size:24px;
+}
 
-    }
+.outil-card{
 
-    .outil-card{
+padding:22px 18px;
 
-        padding:22px 18px;
+}
 
-    }
+.outil-card i{
 
-    .outil-card i{
+font-size:38px;
 
-        font-size:36px;
+}
 
-    }
+.outil-card h3{
 
-    .outil-card h3{
+font-size:18px;
 
-        font-size:18px;
+}
 
-    }
+.outil-card p{
+
+font-size:14px;
+
+}
 
 }
 
@@ -508,45 +420,44 @@ PETITS ÉCRANS
 
 @media(max-width:480px){
 
-    .outil-card{
+.outils-grid{
 
-        padding:20px 15px;
+grid-template-columns:1fr;
 
-    }
+}
 
-    .outil-card i{
+.outil-card{
 
-        font-size:32px;
+padding:20px 16px;
 
-    }
-
-    .outil-card p{
-
-        font-size:13px;
-
-    }
+}
 
 }
 
 /*==================================================
-DÉSACTIVATION ANIMATIONS (ACCESSIBILITÉ)
+ACCESSIBILITÉ
 ==================================================*/
 
-@media (prefers-reduced-motion: reduce){
+@media(prefers-reduced-motion:reduce){
 
-    .outil-card::before,
-    .outils-section::before,
-    .outils-section::after,
-    .outil-card i{
+.outil-card,
+.outils-section::before,
+.outils-section::after{
 
-        animation:none !important;
+animation:none!important;
 
-    }
+}
 
-    .outil-card:hover{
+.outil-card:hover{
 
-        transform:none !important;
+transform:none!important;
 
-    }
+}
 
-  }
+}
+
+/*==================================================
+FIN OUTILS.CSS
+VERSION PREMIUM V6
+==================================================*/
+
