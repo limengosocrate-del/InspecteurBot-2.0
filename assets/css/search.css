@@ -526,3 +526,314 @@ RESPONSIVE MOBILE
     }
 
       }
+
+/*==================================================
+SEARCH.CSS
+PARTIE 3
+EFFETS IA • LOADING • HIGHLIGHT • ANIMATIONS
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+ÉTAT DE CHARGEMENT
+==================================================*/
+
+.search-loading{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:14px;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    color:var(--accent);
+
+    font-weight:600;
+
+}
+
+/*==================================================
+SPINNER IA
+==================================================*/
+
+.search-spinner{
+
+    width:28px;
+
+    height:28px;
+
+    border:3px solid rgba(255,255,255,.18);
+
+    border-top:3px solid var(--accent);
+
+    border-radius:50%;
+
+    animation:searchSpin .8s linear infinite;
+
+}
+
+@keyframes searchSpin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*==================================================
+TEXTE IA
+==================================================*/
+
+.search-loading span{
+
+    animation:searchText 1.4s ease-in-out infinite;
+
+}
+
+@keyframes searchText{
+
+    0%{
+
+        opacity:.4;
+
+    }
+
+    50%{
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        opacity:.4;
+
+    }
+
+}
+
+/*==================================================
+MISE EN SURBRILLANCE
+==================================================*/
+
+mark{
+
+    padding:2px 6px;
+
+    border-radius:6px;
+
+    background:var(--accent);
+
+    color:#041C5C;
+
+    font-weight:700;
+
+}
+
+/*==================================================
+BADGE ARTICLE
+==================================================*/
+
+.result-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:12px;
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    background:rgba(255,215,0,.15);
+
+    color:var(--accent);
+
+    border:1px solid rgba(255,215,0,.30);
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+/*==================================================
+LIGNE LUMINEUSE
+==================================================*/
+
+.search-result-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.search-result-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:45%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.18),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+    transition:.8s;
+
+}
+
+.search-result-card:hover::after{
+
+    left:160%;
+
+}
+
+/*==================================================
+EFFET IA
+==================================================*/
+
+.search-section::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    right:-80px;
+
+    bottom:-80px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+
+        rgba(255,215,0,.12),
+
+        transparent 70%
+
+    );
+
+    pointer-events:none;
+
+    animation:iaPulse 6s ease-in-out infinite;
+
+}
+
+@keyframes iaPulse{
+
+    0%{
+
+        transform:scale(1);
+
+        opacity:.35;
+
+    }
+
+    50%{
+
+        transform:scale(1.25);
+
+        opacity:.15;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:.35;
+
+    }
+
+}
+
+/*==================================================
+BOUTONS SUGGESTIONS
+==================================================*/
+
+.suggestions button i{
+
+    margin-right:6px;
+
+}
+
+.suggestions button:hover{
+
+    letter-spacing:.3px;
+
+}
+
+/*==================================================
+FOCUS ACCESSIBLE
+==================================================*/
+
+.search-box input:focus-visible{
+
+    outline:none;
+
+    box-shadow:
+
+        0 0 0 3px rgba(255,215,0,.25),
+
+        0 0 20px rgba(255,215,0,.30);
+
+}
+
+/*==================================================
+ÉTAT DÉSACTIVÉ
+==================================================*/
+
+.search-box button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
+
+        }
+
+
