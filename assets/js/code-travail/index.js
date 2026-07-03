@@ -1,252 +1,411 @@
 "use strict";
 
-/*====================================================
- INSPECTEURBOT RDC
- CODE DU TRAVAIL V4
- INDEX
-====================================================*/
+/*=====================================================
+  CODE DU TRAVAIL RDC
+  INDEX.JS
+======================================================*/
 
-const CodeTravail = {
-
-    articles: [],
-
-    articleActuel: null,
-
-    indexActuel: -1,
-
-    categories: [],
-
-    charge: false,
-
-    pret: false
-
-};
+const CodeTravail = {};
 
 window.CodeTravail = CodeTravail;
 
-/*====================================================
-CHARGER LE JSON
-====================================================*/
+/*=====================================================
+ BASE DES ARTICLES
+======================================================*/
 
-CodeTravail.charger = async function () {
+CodeTravail.articles = [];
 
-    try {
+/*=====================================================
+ CHARGEMENT DU JSON
+======================================================*/
 
-        const reponse = await fetch("assets/data/code-travail.json");
+fetch("assets/data/code-travail.json")
 
-        if (!reponse.ok) {
-            throw new Error("Impossible de charger le Code du Travail.");
-        }
+.then(response => response.json())
 
-        const data = await reponse.json();
+.then(data => {
 
-        if (!Array.isArray(data)) {
-            throw new Error("Le fichier JSON est invalide.");
-        }
+    CodeTravail.articles = data;
 
-        this.articles = data;
+    console.log(
+        "Code du Travail chargé :",
+        data.length,
+        "articles"
+    );
 
-        this.charge = true;
-
-        console.log("Articles chargés :", data.length);
-
+    if (window.Categories) {
+        Categories.initialiser();
     }
 
-    catch (e) {
-
-        console.error(e);
-
-        this.charge = false;
-
+    if (window.Navigation) {
+        Navigation.initialiser();
     }
 
-};
+})
 
-/*====================================================
-INITIALISER LES CATEGORIES
-====================================================*/
+.catch(error => {
 
-CodeTravail.initialiserCategories = function () {
+    console.error(
+        "Erreur de chargement du Code du Travail",
+        error
+    );
 
-    const liste = [];
+});
 
-    this.articles.forEach(article => {
+/*=====================================================
+ CATÉGORIES
+======================================================*/
 
-        if (
-            article.categorie &&
-            !liste.includes(article.categorie)
-        ) {
+CodeTravail.getCategories = function () {
 
-            liste.push(article.categorie);
+    const categories = [];
+
+    CodeTravail.articles.forEach(article => {
+
+        if (!categories.includes(article.categorie)) {
+
+            categories.push(article.categorie);
 
         }
 
     });
 
-    this.categories = liste.sort();
+    return categories.sort();
 
 };
 
-/*====================================================
-GETTERS
-====================================================*/
-
-CodeTravail.getTousLesArticles = function () {
-
-    return this.articles;
-
-};
-
-CodeTravail.getArticle = function (numero) {
-
-    numero = Number(numero);
-
-    return this.articles.find(a => a.numero === numero);
-
-};
-
-CodeTravail.getCategories = function () {
-
-    return this.categories;
-
-};
+/*=====================================================
+ ARTICLES D'UNE CATÉGORIE
+======================================================*/
 
 CodeTravail.getArticlesCategorie = function (categorie) {
 
-    return this.articles.filter(
+    return CodeTravail.articles.filter(article =>
 
-        a => a.categorie === categorie
+        article.categorie === categorie
 
     );
 
 };
 
-/*====================================================
-SELECTION
-====================================================*/
+/*=====================================================
+ RECHERCHE PAR NUMÉRO
+======================================================*/
 
 CodeTravail.selectionnerArticle = function (numero) {
 
     numero = Number(numero);
 
-    const index = this.articles.findIndex(
+    return CodeTravail.articles.find(article =>
 
-        a => a.numero === numero
+        article.numero === numero
+
+    );
+
+};
+
+/*=====================================================
+ RECHERCHE PAR ID
+======================================================*/
+
+CodeTravail.getArticleId = function (id) {
+
+    return CodeTravail.articles.find(article =>
+
+        article.id === id
+
+    );
+
+};
+
+/*=====================================================
+ PREMIER ARTICLE
+======================================================*/
+
+CodeTravail.premierArticle = function () {
+
+    return CodeTravail.articles[0];
+
+};
+
+/*=====================================================
+ DERNIER ARTICLE
+======================================================*/
+
+CodeTravail.dernierArticle = function () {
+
+    return CodeTravail.articles[
+        CodeTravail.articles.length - 1
+    ];
+
+};
+
+/*=====================================================
+ ARTICLE SUIVANT
+======================================================*/
+
+CodeTravail.articleSuivant = function (numero) {
+
+    numero = Number(numero);
+
+    const index = CodeTravail.articles.findIndex(
+
+        article => article.numero === numero
 
     );
 
     if (index === -1) return null;
 
-    this.indexActuel = index;
+    if (index >= CodeTravail.articles.length - 1) {
 
-    this.articleActuel = this.articles[index];
-
-    return this.articleActuel;
-
-};
-
-/*====================================================
-NAVIGATION
-====================================================*/
-
-CodeTravail.articleSuivant = function () {
-
-    if (this.indexActuel >= this.articles.length - 1) {
-
-        return null;
+        return CodeTravail.articles[index];
 
     }
 
-    this.indexActuel++;
-
-    this.articleActuel = this.articles[this.indexActuel];
-
-    return this.articleActuel;
+    return CodeTravail.articles[index + 1];
 
 };
 
-CodeTravail.articlePrecedent = function () {
+/*=====================================================
+ ARTICLE PRÉCÉDENT
+======================================================*/
 
-    if (this.indexActuel <= 0) {
+CodeTravail.articlePrecedent = function (numero) {
 
-        return null;
+    numero = Number(numero);
+
+    const index = CodeTravail.articles.findIndex(
+
+        article => article.numero === numero
+
+    );
+
+    if (index === -1) return null;
+
+    if (index <= 0) {
+
+        return CodeTravail.articles[index];
 
     }
 
-    this.indexActuel--;
-
-    this.articleActuel = this.articles[this.indexActuel];
-
-    return this.articleActuel;
+    return CodeTravail.articles[index - 1];
 
 };
 
-/*====================================================
-RECHERCHE
-====================================================*/
+/*=====================================================
+ RECHERCHE INTELLIGENTE
+======================================================*/
 
 CodeTravail.rechercher = function (texte) {
 
+    if (!texte) {
+
+        return [];
+
+    }
+
     texte = texte.toLowerCase().trim();
 
-    return this.articles.filter(article => {
+    return CodeTravail.articles.filter(article => {
 
-        return (
+        if (
 
-            article.numero.toString().includes(texte)
+            article.numero.toString() === texte ||
 
-            ||
+            ("article " + article.numero).toLowerCase() === texte
 
-            (article.titre || "")
-            .toLowerCase()
-            .includes(texte)
+        ) {
 
-            ||
+            return true;
 
-            (article.contenu || "")
-            .toLowerCase()
-            .includes(texte)
+        }
 
-            ||
+        if (
 
-            (article.categorie || "")
-            .toLowerCase()
-            .includes(texte)
+            article.titre &&
 
-            ||
+            article.titre.toLowerCase().includes(texte)
 
-            (article.motsCles || [])
-            .join(" ")
-            .toLowerCase()
-            .includes(texte)
+        ) {
 
-        );
+            return true;
+
+        }
+
+        if (
+
+            article.categorie &&
+
+            article.categorie.toLowerCase().includes(texte)
+
+        ) {
+
+            return true;
+
+        }
+
+        if (
+
+            article.contenu &&
+
+            article.contenu.toLowerCase().includes(texte)
+
+        ) {
+
+            return true;
+
+        }
+
+        if (
+
+            Array.isArray(article.motsCles)
+
+        ) {
+
+            return article.motsCles.some(mot =>
+
+                mot.toLowerCase().includes(texte)
+
+            );
+
+        }
+
+        return false;
 
     });
 
 };
 
-/*====================================================
-DEMARRAGE
-====================================================*/
+/*=====================================================
+ NOMBRE D'ARTICLES PAR CATÉGORIE
+======================================================*/
 
-document.addEventListener("DOMContentLoaded", async () => {
+CodeTravail.nombreArticlesCategorie = function (categorie) {
 
-    await CodeTravail.charger();
+    return CodeTravail.articles.filter(article =>
 
-    if (!CodeTravail.charge) {
+        article.categorie === categorie
 
-        alert("Impossible de charger le Code du Travail.");
+    ).length;
 
-        return;
+};
 
-    }
+/*=====================================================
+ TOUS LES ARTICLES
+======================================================*/
 
-    CodeTravail.initialiserCategories();
+CodeTravail.getTousLesArticles = function () {
 
-    CodeTravail.selectionnerArticle(1);
+    return CodeTravail.articles;
 
-    console.log("Code du Travail prêt.");
+};
+
+/*=====================================================
+ VÉRIFIER SI UN ARTICLE EXISTE
+======================================================*/
+
+CodeTravail.articleExiste = function (numero) {
+
+    numero = Number(numero);
+
+    return CodeTravail.articles.some(article =>
+
+        article.numero === numero
+
+    );
+
+};
+
+/*=====================================================
+ RECHERCHE EXACTE
+======================================================*/
+
+CodeTravail.rechercheExacte = function (numero) {
+
+    numero = Number(numero);
+
+    return CodeTravail.articles.find(article =>
+
+        article.numero === numero
+
+    ) || null;
+
+};
+
+/*=====================================================
+ TRI DES ARTICLES
+======================================================*/
+
+CodeTravail.trierArticles = function () {
+
+    CodeTravail.articles.sort((a, b) =>
+
+        a.numero - b.numero
+
+    );
+
+};
+
+/*=====================================================
+ INITIALISATION
+======================================================*/
+
+CodeTravail.initialiser = function () {
+
+    CodeTravail.trierArticles();
+
+    console.log(
+
+        "InspecteurBot RDC - Code du Travail prêt."
+
+    );
+
+};
+
+/*=====================================================
+ FINALISATION
+======================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const attendre = setInterval(() => {
+
+        if (CodeTravail.articles.length > 0) {
+
+            clearInterval(attendre);
+
+            CodeTravail.initialiser();
+
+            if (window.Categories &&
+                typeof Categories.initialiser === "function") {
+
+                Categories.initialiser();
+
+            }
+
+            if (window.Navigation &&
+                typeof Navigation.initialiser === "function") {
+
+                Navigation.initialiser();
+
+            }
+
+            console.log(
+
+                "InspecteurBot RDC prêt."
+
+            );
+
+        }
+
+    }, 100);
 
 });
+
+/*=====================================================
+ EXPORT
+======================================================*/
+
+window.CodeTravail = CodeTravail;
+
 
