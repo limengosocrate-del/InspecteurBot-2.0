@@ -1,8 +1,8 @@
 /*==================================================
 CATEGORIES.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 1
 SECTION PRINCIPALE
-InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
@@ -15,28 +15,33 @@ SECTION CATÉGORIES
 
     overflow:hidden;
 
-    margin:35px 0;
+    margin:40px 0;
 
-    padding:35px;
+    padding:38px;
 
-    border-radius:30px;
+    border-radius:32px;
 
-    background:rgba(255,255,255,.08);
+    background:linear-gradient(
+        145deg,
+        #02173E,
+        #062B68,
+        #041C5C
+    );
 
-    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,215,0,.12);
 
-    -webkit-backdrop-filter:blur(18px);
+    backdrop-filter:blur(24px);
 
-    border:1px solid rgba(255,255,255,.15);
+    -webkit-backdrop-filter:blur(24px);
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.30),
-        inset 0 0 25px rgba(255,255,255,.05);
+        0 22px 45px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.05);
 
 }
 
 /*==================================================
-HALO LUMINEUX
+HALO BLEU
 ==================================================*/
 
 .categories-section::before{
@@ -45,23 +50,33 @@ HALO LUMINEUX
 
     position:absolute;
 
-    inset:-40%;
+    width:620px;
+
+    height:620px;
+
+    top:-260px;
+
+    left:-220px;
+
+    border-radius:50%;
 
     background:radial-gradient(
 
-        circle,
-
-        rgba(11,94,215,.18),
+        rgba(0,120,255,.22),
 
         transparent 70%
 
     );
 
-    animation:categoriesHalo 10s linear infinite;
+    animation:categoriesRotate 18s linear infinite;
 
     pointer-events:none;
 
 }
+
+/*==================================================
+HALO OR
+==================================================*/
 
 .categories-section::after{
 
@@ -69,81 +84,119 @@ HALO LUMINEUX
 
     position:absolute;
 
-    width:220px;
+    width:320px;
 
-    height:220px;
+    height:320px;
 
-    top:-90px;
+    right:-120px;
 
-    left:-90px;
+    bottom:-120px;
 
     border-radius:50%;
 
     background:radial-gradient(
 
-        rgba(255,215,0,.12),
+        rgba(255,215,0,.18),
 
-        transparent 70%
+        transparent 72%
 
     );
 
-    pointer-events:none;
+    animation:categoriesGold 6s ease-in-out infinite;
 
-    animation:categoriesPulse 6s ease-in-out infinite;
+    pointer-events:none;
 
 }
 
 /*==================================================
-TITRE DE SECTION
+TITRE
 ==================================================*/
 
 .categories-section .section-title{
 
     position:relative;
 
-    text-align:center;
-
-    margin-bottom:35px;
-
     z-index:2;
 
+    text-align:center;
+
+    margin-bottom:36px;
+
 }
+
+/*==================================================
+TITRE PRINCIPAL
+==================================================*/
 
 .categories-section .section-title h2{
 
-    color:var(--accent);
+    font-size:2rem;
 
-    font-size:32px;
+    font-weight:800;
 
-    font-weight:700;
+    color:var(--gold-light);
 
-    margin-bottom:12px;
+    letter-spacing:.5px;
 
     text-shadow:
 
-        0 0 15px rgba(255,215,0,.35);
+        0 0 18px rgba(255,215,0,.35);
 
 }
 
+/*==================================================
+DESCRIPTION
+==================================================*/
+
 .categories-section .section-title p{
 
-    max-width:700px;
+    max-width:760px;
 
-    margin:auto;
+    margin:14px auto 0;
 
-    color:#dce8ff;
+    color:var(--text-soft);
 
     font-size:16px;
 
-    line-height:1.8;
+    line-height:1.9;
 
-          }
+}
 
 /*==================================================
+TRAIT DÉCORATIF PREMIUM
+==================================================*/
+
+.categories-section .section-title::after{
+
+    content:"";
+
+    display:block;
+
+    width:90px;
+
+    height:4px;
+
+    margin:18px auto 0;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        var(--gold-light),
+        transparent
+    );
+
+    box-shadow:
+        0 0 18px rgba(255,215,0,.35);
+
+            }
+
+   /*==================================================
 CATEGORIES.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 2
-GRILLE DES CATÉGORIES
-InspecteurBot RDC 2026
+GRILLE + CARTES PREMIUM
 ==================================================*/
 
 /*==================================================
@@ -154,18 +207,18 @@ GRILLE
 
     position:relative;
 
+    z-index:2;
+
     display:grid;
 
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
 
-    gap:24px;
-
-    z-index:2;
+    gap:26px;
 
 }
 
 /*==================================================
-CARTE
+CARTE PREMIUM
 ==================================================*/
 
 .category-card{
@@ -180,27 +233,81 @@ CARTE
 
     align-items:center;
 
+    justify-content:center;
+
     text-align:center;
 
-    padding:28px 22px;
+    padding:32px 24px;
 
-    border-radius:24px;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(15px);
-
-    -webkit-backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.15);
+    border-radius:28px;
 
     cursor:pointer;
 
-    transition:all .35s ease;
+    background:linear-gradient(
+
+        180deg,
+
+        rgba(255,255,255,.12),
+
+        rgba(255,255,255,.05)
+
+    );
+
+    border:1px solid rgba(255,215,0,.15);
+
+    backdrop-filter:blur(22px);
+
+    -webkit-backdrop-filter:blur(22px);
 
     box-shadow:
 
-        0 8px 22px rgba(0,0,0,.25);
+        var(--shadow-deep),
+
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:all .4s ease;
+
+    will-change:transform;
+
+}
+
+/*==================================================
+REFLET PREMIUM
+==================================================*/
+
+.category-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-160%;
+
+    left:-45%;
+
+    width:45%;
+
+    height:340%;
+
+    background:linear-gradient(
+
+        transparent,
+
+        rgba(255,255,255,.40),
+
+        transparent
+
+    );
+
+    transform:rotate(25deg);
+
+    transition:.9s;
+
+}
+
+.category-card:hover::before{
+
+    left:170%;
 
 }
 
@@ -210,11 +317,15 @@ ICÔNE
 
 .category-card i{
 
-    font-size:48px;
+    font-size:54px;
 
-    color:var(--accent);
+    color:var(--gold-light);
 
-    margin-bottom:18px;
+    margin-bottom:20px;
+
+    text-shadow:
+
+        0 0 18px rgba(255,215,0,.35);
 
     transition:all .35s ease;
 
@@ -226,13 +337,15 @@ TITRE
 
 .category-card h3{
 
-    color:var(--accent);
-
-    font-size:21px;
-
-    font-weight:700;
-
     margin-bottom:12px;
+
+    font-size:22px;
+
+    font-weight:800;
+
+    color:#FFFFFF;
+
+    transition:.35s;
 
 }
 
@@ -242,95 +355,120 @@ DESCRIPTION
 
 .category-card p{
 
-    color:#dce8ff;
+    color:var(--text-soft);
 
     font-size:15px;
 
     line-height:1.8;
 
-  }
+}
+
+/*==================================================
+EFFET FLOTTANT
+==================================================*/
+
+.category-card{
+
+    animation:cardFloat 6s ease-in-out infinite;
+
+}
+
+.category-card:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.category-card:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+.category-card:nth-child(4){
+
+    animation-delay:.6s;
+
+}
+
+.category-card:nth-child(5){
+
+    animation-delay:.8s;
+
+}
+
+.category-card:nth-child(6){
+
+    animation-delay:1s;
+
+        } 
 
 /*==================================================
 CATEGORIES.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 3
-EFFETS • BADGES • IA
-InspecteurBot RDC 2026
+HOVER • BADGES • ÉTAT ACTIF
 ==================================================*/
 
 /*==================================================
-SURVOL DES CARTES
+SURVOL PREMIUM
 ==================================================*/
 
 .category-card:hover{
 
-    transform:translateY(-8px);
+    transform:
+        translateY(-10px)
+        scale(1.03);
 
-    border-color:var(--accent);
+    border-color:rgba(255,215,0,.45);
 
     box-shadow:
-
-        0 0 28px rgba(255,215,0,.30),
-
-        0 12px 30px rgba(0,0,0,.30);
+        var(--shadow-deep),
+        var(--shadow-gold),
+        var(--shadow-blue);
 
 }
+
+/*==================================================
+ICÔNE AU SURVOL
+==================================================*/
 
 .category-card:hover i{
 
-    transform:scale(1.12) rotate(6deg);
+    transform:
+        scale(1.15)
+        rotate(8deg);
+
+    color:var(--gold-light);
 
     text-shadow:
-
-        0 0 20px rgba(255,215,0,.45);
+        0 0 20px rgba(255,215,0,.50),
+        0 0 35px rgba(255,215,0,.25);
 
 }
+
+/*==================================================
+TITRE AU SURVOL
+==================================================*/
 
 .category-card:hover h3{
 
-    color:#FFD700;
+    color:var(--gold-light);
 
 }
 
 /*==================================================
-LIGNE LUMINEUSE
+DESCRIPTION AU SURVOL
 ==================================================*/
 
-.category-card::after{
+.category-card:hover p{
 
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-120%;
-
-    width:45%;
-
-    height:100%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.18),
-
-        transparent
-
-    );
-
-    transform:skewX(-25deg);
-
-}
-
-.category-card:hover::after{
-
-    animation:categoryLight .9s linear;
+    color:#FFFFFF;
 
 }
 
 /*==================================================
-BADGES
+BADGE PREMIUM
 ==================================================*/
 
 .badge{
@@ -341,35 +479,46 @@ BADGES
 
     justify-content:center;
 
-    margin-top:18px;
+    margin-top:20px;
 
-    padding:8px 16px;
+    padding:9px 18px;
 
-    border-radius:30px;
+    border-radius:999px;
 
-    background:rgba(255,215,0,.15);
+    background:rgba(255,215,0,.12);
 
-    border:1px solid rgba(255,215,0,.30);
+    border:1px solid rgba(255,215,0,.22);
 
-    color:var(--accent);
+    color:var(--gold-light);
 
     font-size:13px;
 
     font-weight:700;
 
+    backdrop-filter:blur(12px);
+
     transition:all .35s ease;
 
 }
 
+/*==================================================
+BADGE HOVER
+==================================================*/
+
 .category-card:hover .badge{
 
-    background:var(--accent);
+    background:linear-gradient(
+        135deg,
+        #FFD700,
+        #FFF1A0
+    );
 
     color:#041C5C;
 
-    box-shadow:
+    transform:translateY(-2px);
 
-        0 0 18px rgba(255,215,0,.35);
+    box-shadow:
+        0 10px 25px rgba(255,215,0,.35);
 
 }
 
@@ -379,42 +528,110 @@ BADGES
 
 .category-card.active{
 
-    border-color:var(--accent);
+    border-color:rgba(255,215,0,.55);
 
-    background:rgba(255,255,255,.12);
+    background:linear-gradient(
+
+        180deg,
+
+        rgba(255,255,255,.16),
+
+        rgba(255,255,255,.08)
+
+    );
 
     box-shadow:
 
-        0 0 25px rgba(255,215,0,.35);
+        var(--shadow-gold),
+        var(--shadow-blue),
+        var(--shadow-deep);
 
 }
+
+/*==================================================
+ICÔNE ACTIVE
+==================================================*/
 
 .category-card.active i{
 
-    color:#FFD700;
+    color:var(--gold-light);
+
+    transform:scale(1.10);
 
 }
 
+/*==================================================
+TITRE ACTIF
+==================================================*/
+
+.category-card.active h3{
+
+    color:var(--gold-light);
+
+}
+
+/*==================================================
+BADGE ACTIF
+==================================================*/
+
 .category-card.active .badge{
 
-    background:var(--accent);
+    background:linear-gradient(
+        135deg,
+        #FFD700,
+        #FFF3AE
+    );
 
     color:#041C5C;
 
-                    }
+}
+
+/*==================================================
+ANIMATION D'APPARITION
+==================================================*/
+
+.category-card{
+
+    animation:categoryFade .55s ease both;
+
+}
+
+@keyframes categoryFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(24px)
+            scale(.97);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
 
 /*==================================================
 CATEGORIES.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 4
-ANIMATIONS IA • EFFETS LUMINEUX
-InspecteurBot RDC 2026
+ANIMATIONS FUTURISTES • HALOS • LUMIÈRES
 ==================================================*/
 
 /*==================================================
-HALO PRINCIPAL
+ROTATION HALO BLEU
 ==================================================*/
 
-@keyframes categoriesHalo{
+@keyframes categoriesRotate{
 
     from{
 
@@ -431,24 +648,24 @@ HALO PRINCIPAL
 }
 
 /*==================================================
-PULSATION IA
+PULSATION HALO OR
 ==================================================*/
 
-@keyframes categoriesPulse{
+@keyframes categoriesGold{
 
     0%{
 
         transform:scale(1);
 
-        opacity:.35;
+        opacity:.20;
 
     }
 
     50%{
 
-        transform:scale(1.25);
+        transform:scale(1.28);
 
-        opacity:.15;
+        opacity:.45;
 
     }
 
@@ -456,69 +673,17 @@ PULSATION IA
 
         transform:scale(1);
 
-        opacity:.35;
+        opacity:.20;
 
     }
 
 }
 
 /*==================================================
-LIGNE LUMINEUSE
+CARTE FLOTTANTE PREMIUM
 ==================================================*/
 
-@keyframes categoryLight{
-
-    from{
-
-        left:-120%;
-
-    }
-
-    to{
-
-        left:160%;
-
-    }
-
-}
-
-/*==================================================
-EFFET HOVER GLOW
-==================================================*/
-
-@keyframes categoryGlow{
-
-    0%{
-
-        box-shadow:0 0 0 rgba(255,215,0,0);
-
-    }
-
-    50%{
-
-        box-shadow:0 0 25px rgba(255,215,0,.35);
-
-    }
-
-    100%{
-
-        box-shadow:0 0 0 rgba(255,215,0,0);
-
-    }
-
-}
-
-/*==================================================
-EFFET IA FLOTTANT
-==================================================*/
-
-.category-card{
-
-    animation:categoryFloat 6s ease-in-out infinite;
-
-}
-
-@keyframes categoryFloat{
+@keyframes cardFloat{
 
     0%{
 
@@ -526,7 +691,19 @@ EFFET IA FLOTTANT
 
     }
 
+    25%{
+
+        transform:translateY(-4px);
+
+    }
+
     50%{
+
+        transform:translateY(-8px);
+
+    }
+
+    75%{
 
         transform:translateY(-4px);
 
@@ -538,26 +715,198 @@ EFFET IA FLOTTANT
 
     }
 
-      }
+}
+
+/*==================================================
+AURA DORÉE
+==================================================*/
+
+.category-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:inherit;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    background:
+
+        radial-gradient(
+
+            circle at top,
+
+            rgba(255,215,0,.18),
+
+            transparent 70%
+
+        );
+
+    transition:.45s ease;
+
+}
+
+.category-card:hover::after{
+
+    opacity:1;
+
+}
+
+/*==================================================
+LUEUR IA
+==================================================*/
+
+.category-card:hover{
+
+    animation:
+
+        cardGlow 2s ease-in-out infinite;
+
+}
+
+@keyframes cardGlow{
+
+    0%{
+
+        box-shadow:
+
+            var(--shadow-deep),
+
+            0 0 15px rgba(255,215,0,.15);
+
+    }
+
+    50%{
+
+        box-shadow:
+
+            var(--shadow-deep),
+
+            0 0 35px rgba(255,215,0,.35),
+
+            0 0 70px rgba(0,102,255,.18);
+
+    }
+
+    100%{
+
+        box-shadow:
+
+            var(--shadow-deep),
+
+            0 0 15px rgba(255,215,0,.15);
+
+    }
+
+}
+
+/*==================================================
+ICÔNE RESPIRATION
+==================================================*/
+
+.category-card i{
+
+    animation:iconBreath 3.5s ease-in-out infinite;
+
+}
+
+@keyframes iconBreath{
+
+    0%,100%{
+
+        transform:scale(1);
+
+        filter:drop-shadow(0 0 6px rgba(255,215,0,.18));
+
+    }
+
+    50%{
+
+        transform:scale(1.08);
+
+        filter:drop-shadow(0 0 18px rgba(255,215,0,.40));
+
+    }
+
+}
+
+/*==================================================
+TEXTE PREMIUM
+==================================================*/
+
+.category-card h3{
+
+    transition:
+
+        letter-spacing .35s ease,
+
+        color .35s ease;
+
+}
+
+.category-card:hover h3{
+
+    letter-spacing:.6px;
+
+}
+
+/*==================================================
+EFFET GLASS PROFONDEUR
+==================================================*/
+
+.category-card{
+
+    transform-style:preserve-3d;
+
+    perspective:1200px;
+
+}
+
+.category-card:hover{
+
+    transform:
+
+        perspective(1200px)
+
+        rotateX(4deg)
+
+        rotateY(-4deg)
+
+        translateY(-12px)
+
+        scale(1.03);
+
+}
 
 /*==================================================
 CATEGORIES.CSS
+VERSION 2026 PREMIUM V8
 PARTIE 5
-RESPONSIVE MOBILE • OPTIMISATION
-InspecteurBot RDC 2026
+RESPONSIVE • ACCESSIBILITÉ • OPTIMISATIONS
 ==================================================*/
 
 /*==================================================
 TABLETTE
 ==================================================*/
 
-@media(max-width:900px){
+@media(max-width:992px){
+
+    .categories-section{
+
+        padding:30px;
+
+    }
 
     .categories-grid{
 
-        grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+        grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 
-        gap:18px;
+        gap:20px;
 
     }
 
@@ -571,21 +920,85 @@ MOBILE
 
     .categories-section{
 
-        padding:25px;
+        padding:22px;
 
-        border-radius:24px;
+        border-radius:26px;
 
     }
 
     .categories-section .section-title h2{
 
-        font-size:24px;
+        font-size:1.65rem;
 
     }
 
     .categories-section .section-title p{
 
-        font-size:15px;
+        font-size:14px;
+
+        line-height:1.8;
+
+    }
+
+    .categories-grid{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+    .category-card{
+
+        padding:26px 20px;
+
+        border-radius:24px;
+
+    }
+
+    .category-card i{
+
+        font-size:46px;
+
+    }
+
+    .category-card h3{
+
+        font-size:20px;
+
+    }
+
+    .category-card p{
+
+        font-size:14px;
+
+    }
+
+}
+
+/*==================================================
+PETITS SMARTPHONES
+==================================================*/
+
+@media(max-width:480px){
+
+    .categories-section{
+
+        padding:18px;
+
+        border-radius:22px;
+
+    }
+
+    .categories-section .section-title h2{
+
+        font-size:1.45rem;
+
+    }
+
+    .categories-section .section-title p{
+
+        font-size:13px;
 
     }
 
@@ -601,54 +1014,70 @@ MOBILE
 
     }
 
-    .category-card h3{
+    .badge{
 
-        font-size:18px;
+        font-size:12px;
 
-    }
-
-    .category-card p{
-
-        font-size:14px;
+        padding:8px 15px;
 
     }
 
 }
 
 /*==================================================
-PETITS ÉCRANS
+ACCESSIBILITÉ
 ==================================================*/
 
-@media(max-width:480px){
+.category-card:focus-visible{
 
-    .categories-grid{
+    outline:2px solid var(--gold-light);
 
-        grid-template-columns:1fr;
+    outline-offset:4px;
 
-        gap:16px;
+    box-shadow:
 
-    }
-
-    .category-card{
-
-        padding:20px 16px;
-
-    }
+        0 0 25px rgba(255,215,0,.35);
 
 }
 
 /*==================================================
-ACCESSIBILITÉ (OPTIONNEL)
+OPTIMISATION PERFORMANCES
 ==================================================*/
 
-@media (prefers-reduced-motion: reduce){
+.category-card,
+.category-card::before,
+.category-card::after{
 
-    .category-card,
+    will-change:
+
+        transform,
+        opacity;
+
+}
+
+/*==================================================
+RÉDUCTION DES ANIMATIONS
+==================================================*/
+
+@media(prefers-reduced-motion:reduce){
+
     .categories-section::before,
-    .categories-section::after{
+    .categories-section::after,
+    .category-card,
+    .category-card i{
 
         animation:none !important;
 
     }
 
+    .category-card:hover{
+
+        transform:none;
+
+    }
+
 }
+
+/*==================================================
+FIN DU FICHIER
+==================================================*/
