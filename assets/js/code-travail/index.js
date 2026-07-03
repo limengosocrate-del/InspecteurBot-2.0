@@ -1,15 +1,7 @@
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 1
- INITIALISATION GÉNÉRALE
-==================================================*/
-
 "use strict";
 
 /*==================================================
-ESPACE GLOBAL
+CORE GLOBAL — CODE DU TRAVAIL V3
 ==================================================*/
 
 const CodeTravail = {
@@ -24,17 +16,18 @@ const CodeTravail = {
 
     charge: false,
 
-    statistiques:{
+    pret: false,
 
-        consultations:0,
+    statistiques: {
 
-        recherches:0,
+        consultations: 0,
+        recherches: 0,
+        favoris: 0,
+        ia: 0
 
-        favoris:0,
+    },
 
-        ia:0
-
-    }
+    events: new EventTarget()
 
 };
 
@@ -44,1130 +37,303 @@ EXPORT GLOBAL
 
 window.CodeTravail = CodeTravail;
 
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 2
- CHARGEMENT DU CODE DU TRAVAIL
-==================================================*/
 
-/*==================================================
-CHARGER LE FICHIER JSON
-==================================================*/
+async function chargerCodeTravail() {
 
-async function chargerCodeTravail(){
+    try {
 
-    try{
+        const response = await fetch("assets/data/code-travail.json", {
+            cache: "no-cache"
+        });
 
-        const reponse = await fetch(
-
-            "assets/data/code-travail.json",
-
-            {
-
-                cache:"no-cache"
-
-            }
-
-        );
-
-        if(!reponse.ok){
-
-            throw new Error(
-
-                "Impossible de charger le fichier code-travail.json"
-
-            );
-
+        if (!response.ok) {
+            throw new Error("Impossible de charger code-travail.json");
         }
 
-        const donnees = await reponse.json();
+        const data = await response.json();
 
-        if(!Array.isArray(donnees)){
-
-            throw new Error(
-
-                "Le fichier JSON est invalide."
-
-            );
-
+        if (!Array.isArray(data)) {
+            throw new Error("Format JSON invalide");
         }
 
-        CodeTravail.articles = donnees;
-
+        CodeTravail.articles = data;
         CodeTravail.charge = true;
 
-        console.log(
+        console.log("📚 Articles chargés :", data.length);
 
-            "Code du Travail chargé :",
-
-            donnees.length,
-
-            "articles"
-
+        CodeTravail.events.dispatchEvent(
+            new CustomEvent("codeTravailCharge", {
+                detail: { total: data.length }
+            })
         );
 
-        document.dispatchEvent(
+    } catch (err) {
 
-            new CustomEvent(
-
-                "codeTravailCharge",
-
-                {
-
-                    detail:{
-
-                        total:donnees.length
-
-                    }
-
-                }
-
-            )
-
-        );
-
-    }
-
-    catch(erreur){
-
-        console.error(
-
-            "Erreur de chargement :",
-
-            erreur
-
-        );
+        console.error("❌ Erreur chargement :", err);
 
         CodeTravail.charge = false;
 
-        document.dispatchEvent(
-
-            new CustomEvent(
-
-                "codeTravailErreur",
-
-                {
-
-                    detail:erreur
-
-                }
-
-            )
-
+        CodeTravail.events.dispatchEvent(
+            new CustomEvent("codeTravailErreur", {
+                detail: err
+            })
         );
 
     }
 
- /*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 3
- MÉTHODES GLOBALES
-==================================================*/
+     }
 
-/*==================================================
-OBTENIR TOUS LES ARTICLES
-==================================================*/
 
-CodeTravail.getTous = function(){
+CodeTravail.getTous = () => CodeTravail.articles;
 
-    return this.articles;
+CodeTravail.getParNumero = (num) =>
+    CodeTravail.articles.find(a => a.numero === Number(num)) || null;
 
-};
+CodeTravail.getParId = (id) =>
+    CodeTravail.articles.find(a => a.id === id) || null;
 
-/*==================================================
-OBTENIR UN ARTICLE PAR NUMÉRO
-==================================================*/
+CodeTravail.getParIndex = (i) =>
+    (i >= 0 && i < CodeTravail.articles.length)
+        ? CodeTravail.articles[i]
+        : null;
 
-CodeTravail.getParNumero = function(numero){
+CodeTravail.selectionner = function (numero) {
 
-    return this.articles.find(
-
-        article => article.numero === Number(numero)
-
-    ) || null;
-
-};
-
-/*==================================================
-OBTENIR UN ARTICLE PAR ID
-==================================================*/
-
-CodeTravail.getParId = function(id){
-
-    return this.articles.find(
-
-        article => article.id === id
-
-    ) || null;
-
-};
-
-/*==================================================
-OBTENIR UN ARTICLE PAR INDEX
-==================================================*/
-
-CodeTravail.getParIndex = function(index){
-
-    if(
-
-        index < 0 ||
-
-        index >= this.articles.length
-
-    ){
-
-        return null;
-
-    }
-
-    return this.articles[index];
-
-};
-
-/*==================================================
-SÉLECTIONNER UN ARTICLE
-==================================================*/
-
-CodeTravail.selectionner = function(numero){
-
-    const index = this.articles.findIndex(
-
-        article => article.numero === Number(numero)
-
+    const index = CodeTravail.articles.findIndex(
+        a => a.numero === Number(numero)
     );
 
-    if(index === -1){
+    if (index === -1) return null;
 
-        return null;
+    CodeTravail.indexActuel = index;
+    CodeTravail.articleActuel = CodeTravail.articles[index];
 
-    }
-
-    this.indexActuel = index;
-
-    this.articleActuel = this.articles[index];
-
-    return this.articleActuel;
+    return CodeTravail.articleActuel;
 
 };
 
-/*==================================================
-OBTENIR L'ARTICLE ACTUEL
-==================================================*/
+CodeTravail.getArticleActuel = () => CodeTravail.articleActuel;
 
-CodeTravail.getArticleActuel = function(){
+CodeTravail.estCharge = () => CodeTravail.charge;
 
-    return this.articleActuel;
 
-};
+CodeTravail.initialiserCategories = function () {
 
-/*==================================================
-VÉRIFIER SI LE CODE EST CHARGÉ
-==================================================*/
+    const set = new Set();
 
-CodeTravail.estCharge = function(){
-
-    return this.charge;
-
-};
-
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 4
- GESTION DES CATÉGORIES
-==================================================*/
-
-/*==================================================
-INITIALISER LES CATÉGORIES
-==================================================*/
-
-CodeTravail.initialiserCategories = function(){
-
-    const liste = new Set();
-
-    this.articles.forEach(article=>{
-
-        if(article.categorie){
-
-            liste.add(
-
-                article.categorie.trim()
-
-            );
-
-        }
-
+    CodeTravail.articles.forEach(a => {
+        if (a.categorie) set.add(a.categorie.trim());
     });
 
-    this.categories =
-
-        [...liste].sort();
+    CodeTravail.categories = [...set].sort();
 
 };
 
-/*==================================================
-OBTENIR LES CATÉGORIES
-==================================================*/
+CodeTravail.getCategories = () => CodeTravail.categories;
 
-CodeTravail.getCategories = function(){
+CodeTravail.getArticlesCategorie = (cat) =>
+    CodeTravail.articles.filter(a => a.categorie === cat);
 
-    return this.categories;
+CodeTravail.compterCategorie = (cat) =>
+    CodeTravail.getArticlesCategorie(cat).length;
 
-};
 
-/*==================================================
-OBTENIR LES ARTICLES D'UNE CATÉGORIE
-==================================================*/
+CodeTravail.mettreAJourStatistiques = function () {
 
-CodeTravail.getArticlesCategorie = function(categorie){
-
-    return this.articles.filter(article=>
-
-        article.categorie===categorie
-
-    );
+    const el = document.getElementById("statArticles");
+    if (el) el.textContent = CodeTravail.articles.length;
 
 };
 
-/*==================================================
-COMPTER LES ARTICLES D'UNE CATÉGORIE
-==================================================*/
+CodeTravail.mettreAJourBadges = function () {
 
-CodeTravail.compterCategorie = function(categorie){
-
-    return this.getArticlesCategorie(
-
-        categorie
-
-    ).length;
-
-};
-
-/*==================================================
-METTRE À JOUR LES BADGES
-==================================================*/
-
-CodeTravail.mettreAJourBadges = function(){
-
-    const badges={
-
-        "Dispositions générales":"badgeDispositions",
-
-        "Contrat de travail":"badgeContrat",
-
-        "Salaire":"badgeSalaire",
-
-        "Temps de travail":"badgeTemps",
-
-        "Congés":"badgeConges",
-
-        "Santé et sécurité":"badgeSecurite",
-
-        "Inspection du Travail":"badgeInspection",
-
-        "Infractions et sanctions":"badgeSanctions"
-
+    const map = {
+        "Dispositions générales": "badgeDispositions",
+        "Contrat de travail": "badgeContrat",
+        "Salaire": "badgeSalaire",
+        "Temps de travail": "badgeTemps",
+        "Congés": "badgeConges",
+        "Santé et sécurité": "badgeSecurite",
+        "Inspection du Travail": "badgeInspection",
+        "Infractions et sanctions": "badgeSanctions"
     };
 
-    Object.entries(
+    Object.entries(map).forEach(([cat, id]) => {
 
-        badges
+        const el = document.getElementById(id);
+        if (!el) return;
 
-    ).forEach(([categorie,id])=>{
-
-        const badge =
-
-            document.getElementById(id);
-
-        if(!badge){
-
-            return;
-
-        }
-
-        const total =
-
-            this.compterCategorie(
-
-                categorie
-
-            );
-
-        badge.textContent =
-
-            total+" article"+
-
-            (total>1?"s":"");
+        el.textContent =
+            CodeTravail.compterCategorie(cat) +
+            " article(s)";
 
     });
 
 };
 
- /*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 5
- INITIALISATION DU MODULE
-==================================================*/
 
-/*==================================================
-INITIALISER LE MODULE
-==================================================*/
-
-async function initialiserCodeTravail(){
+async function initialiserCodeTravail() {
 
     await chargerCodeTravail();
 
-    if(!CodeTravail.estCharge()){
-
-        return;
-
-    }
+    if (!CodeTravail.estCharge()) return;
 
     CodeTravail.initialiserCategories();
-
     CodeTravail.mettreAJourBadges();
 
-    console.log(
+    if (CodeTravail.articles.length > 0) {
 
-        "Catégories :", 
-
-        CodeTravail.categories.length
-
-    );
-
-    console.log(
-
-        "Articles :", 
-
-        CodeTravail.articles.length
-
-    );
-
-    if(CodeTravail.articles.length>0){
-
-        CodeTravail.articleActuel=
-
-            CodeTravail.articles[0];
-
-        CodeTravail.indexActuel=0;
+        CodeTravail.indexActuel = 0;
+        CodeTravail.articleActuel = CodeTravail.articles[0];
 
     }
 
-    document.dispatchEvent(
+    CodeTravail.pret = true;
 
-        new CustomEvent(
-
-            "codeTravailPret",
-
-            {
-
-                detail:{
-
-                    articles:
-
-                    CodeTravail.articles.length,
-
-                    categories:
-
-                    CodeTravail.categories.length
-
-                }
-
+    CodeTravail.events.dispatchEvent(
+        new CustomEvent("codeTravailPret", {
+            detail: {
+                total: CodeTravail.articles.length,
+                categories: CodeTravail.categories.length
             }
-
-        )
-
+        })
     );
 
 }
 
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 6
- STATISTIQUES ET CHARGEMENT
-==================================================*/
 
-/*==================================================
-METTRE À JOUR LES STATISTIQUES
-==================================================*/
+CodeTravail.articlePrecedent = function () {
 
-CodeTravail.mettreAJourStatistiques = function(){
+    if (this.indexActuel <= 0) return null;
 
-    const totalArticles =
+    this.indexActuel--;
+    this.articleActuel = this.articles[this.indexActuel];
 
-        document.getElementById(
-
-            "statArticles"
-
-        );
-
-    if(totalArticles){
-
-        totalArticles.textContent =
-
-            this.articles.length;
-
-    }
+    return this.articleActuel;
 
 };
 
-/*==================================================
-MASQUER L'ÉCRAN DE CHARGEMENT
-==================================================*/
+CodeTravail.articleSuivant = function () {
 
-function masquerChargement(){
+    if (this.indexActuel >= this.articles.length - 1) return null;
 
-    const loading =
+    this.indexActuel++;
+    this.articleActuel = this.articles[this.indexActuel];
 
-        document.getElementById(
+    return this.articleActuel;
 
-            "loadingScreen"
+};
 
+CodeTravail.rechercher = function (text) {
+
+    if (!text) return [];
+
+    text = text.toLowerCase();
+
+    return this.articles.filter(a => {
+
+        return (
+            String(a.numero).includes(text) ||
+            (a.titre || "").toLowerCase().includes(text) ||
+            (a.contenu || "").toLowerCase().includes(text) ||
+            (a.categorie || "").toLowerCase().includes(text)
         );
 
-    if(!loading){
+    });
 
-        return;
+};
 
-    }
+CodeTravail.existe = (num) =>
+    CodeTravail.articles.some(a => a.numero === Number(num));
 
-    loading.style.opacity = "0";
+CodeTravail.totalArticles = () => CodeTravail.articles.length;
 
-    setTimeout(()=>{
 
-        loading.style.display = "none";
+function masquerChargement() {
 
-    },500);
+    const el = document.getElementById("loadingScreen");
+    if (!el) return;
+
+    el.style.opacity = "0";
+
+    setTimeout(() => {
+        el.style.display = "none";
+    }, 400);
 
 }
 
-/*==================================================
-AFFICHER UNE ERREUR
-==================================================*/
+function afficherErreur() {
 
-function afficherErreurChargement(){
+    const el = document.getElementById("contenuArticle");
+    if (!el) return;
 
-    const contenu =
-
-        document.getElementById(
-
-            "contenuArticle"
-
-        );
-
-    if(!contenu){
-
-        return;
-
-    }
-
-    contenu.innerHTML = `
-
-        <div class="erreur-code">
-
-            <h3>
-
-                ❌ Chargement impossible
-
-            </h3>
-
-            <p>
-
-                Le Code du Travail n'a pas pu être chargé.
-
-            </p>
-
-            <p>
-
-                Vérifiez le fichier
-                <strong>code-travail.json</strong>
-                puis rechargez la page.
-
-            </p>
-
-        </div>
-
+    el.innerHTML = `
+        <h3>❌ Erreur de chargement</h3>
+        <p>Impossible de charger le Code du Travail.</p>
     `;
 
 }
 
-/*==================================================
-FIN DU CHARGEMENT
-==================================================*/
 
-document.addEventListener(
+function initialiserModules() {
 
-    "codeTravailPret",
-
-    ()=>{
-
-        CodeTravail.mettreAJourStatistiques();
-
-        masquerChargement();
-
-    }
-
-);
-
-/*==================================================
-ERREUR DE CHARGEMENT
-==================================================*/
-
-document.addEventListener(
-
-    "codeTravailErreur",
-
-    ()=>{
-
-        afficherErreurChargement();
-
-        masquerChargement();
-
-    }
-
-);
-
- /*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 7
- INITIALISATION DES MODULES
-==================================================*/
-
-/*==================================================
-INITIALISER LES MODULES
-==================================================*/
-
-function initialiserModules(){
-
-    console.log(
-
-        "Initialisation des modules..."
-
-    );
-
-    if(
-
-        window.Consultation &&
-
-        typeof Consultation.initialiser==="function"
-
-    ){
-
-        Consultation.initialiser();
-
-    }
-
-    if(
-
-        window.Navigation &&
-
-        typeof Navigation.initialiser==="function"
-
-    ){
-
-        Navigation.initialiser();
-
-    }
-
-    if(
-
-        window.Recherche &&
-
-        typeof Recherche.initialiser==="function"
-
-    ){
-
-        Recherche.initialiser();
-
-    }
-
-    if(
-
-        window.Categories &&
-
-        typeof Categories.initialiser==="function"
-
-    ){
-
-        Categories.initialiser();
-
-    }
-
-    if(
-
-        window.Favoris &&
-
-        typeof Favoris.initialiser==="function"
-
-    ){
-
-        Favoris.initialiser();
-
-    }
-
-    if(
-
-        window.Statistiques &&
-
-        typeof Statistiques.initialiser==="function"
-
-    ){
-
-        Statistiques.initialiser();
-
-    }
-
-    if(
-
-        window.Speech &&
-
-        typeof Speech.initialiser==="function"
-
-    ){
-
-        Speech.initialiser();
-
-    }
-
-    if(
-
-        window.AssistantIA &&
-
-        typeof AssistantIA.initialiser==="function"
-
-    ){
-
-        AssistantIA.initialiser();
-
-    }
+    if (window.Consultation) Consultation.initialiser?.();
+    if (window.Recherche) Recherche.initialiser?.();
+    if (window.Navigation) Navigation.initialiser?.();
+    if (window.Categories) Categories.initialiser?.();
+    if (window.AssistantIA) AssistantIA.initialiser?.();
 
 }
 
-/*==================================================
-AFFICHER LE PREMIER ARTICLE
-==================================================*/
+function afficherPremierArticle() {
 
-function afficherPremierArticle(){
-
-    if(
-
-        !CodeTravail.estCharge()
-
-    ){
-
-        return;
-
-    }
-
-    if(
-
-        CodeTravail.articles.length===0
-
-    ){
-
-        return;
-
-    }
-
-    CodeTravail.articleActuel =
-
-        CodeTravail.articles[0];
+    if (!CodeTravail.articles.length) return;
 
     CodeTravail.indexActuel = 0;
+    CodeTravail.articleActuel = CodeTravail.articles[0];
 
-    if(
-
-        window.Consultation &&
-
-        typeof Consultation.afficherArticle==="function"
-
-    ){
-
-        Consultation.afficherArticle(
-
-            CodeTravail.articleActuel
-
-        );
-
+    if (window.Consultation) {
+        Consultation.afficherArticle(CodeTravail.articleActuel, 0);
     }
 
 }
 
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 8
- DÉMARRAGE DE L'APPLICATION
-==================================================*/
+async function demarrerApplication() {
 
-/*==================================================
-DÉMARRER L'APPLICATION
-==================================================*/
-
-async function demarrerApplication(){
-
-    console.log(
-
-        "Démarrage du Code du Travail..."
-
-    );
+    console.log("🚀 Démarrage V3...");
 
     await initialiserCodeTravail();
 
-    if(
-
-        !CodeTravail.estCharge()
-
-    ){
-
-        return;
-
-    }
+    if (!CodeTravail.estCharge()) return;
 
     initialiserModules();
-
     afficherPremierArticle();
 
-    console.log(
-
-        "Application prête."
-
-    );
+    console.log("✅ Application prête");
 
 }
 
-/*==================================================
-ATTENDRE LE CHARGEMENT DE LA PAGE
-==================================================*/
 
-document.addEventListener(
+document.addEventListener("DOMContentLoaded", async () => {
 
-    "DOMContentLoaded",
+    await demarrerApplication();
 
-    async()=>{
+});
 
-        await demarrerApplication();
-
-    }
-
-);
-
-/*==================================================
-RECHARGER LE CODE DU TRAVAIL
-==================================================*/
-
-CodeTravail.recharger = async function(){
+CodeTravail.recharger = async function () {
 
     this.articles = [];
-
-    this.categories = [];
-
     this.articleActuel = null;
-
     this.indexActuel = -1;
-
     this.charge = false;
 
     await demarrerApplication();
 
 };
 
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
-
-window.demarrerApplication =
-
-    demarrerApplication;
-
-window.initialiserCodeTravail =
-
-    initialiserCodeTravail;
-
-/*==================================================
- INSPECTEURBOT IA RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 9
- OUTILS ET MÉTHODES UTILITAIRES
-==================================================*/
-
-/*==================================================
-ARTICLE PRÉCÉDENT
-==================================================*/
-
-CodeTravail.articlePrecedent = function(){
-
-    if(this.indexActuel<=0){
-
-        return null;
-
-    }
-
-    this.indexActuel--;
-
-    this.articleActuel=
-
-        this.articles[this.indexActuel];
-
-    return this.articleActuel;
-
-};
-
-/*==================================================
-ARTICLE SUIVANT
-==================================================*/
-
-CodeTravail.articleSuivant = function(){
-
-    if(
-
-        this.indexActuel>=
-
-        this.articles.length-1
-
-    ){
-
-        return null;
-
-    }
-
-    this.indexActuel++;
-
-    this.articleActuel=
-
-        this.articles[this.indexActuel];
-
-    return this.articleActuel;
-
-};
-
-/*==================================================
-VÉRIFIER SI UN ARTICLE EXISTE
-==================================================*/
-
-CodeTravail.existe = function(numero){
-
-    return this.articles.some(article=>
-
-        article.numero===Number(numero)
-
-    );
-
-};
-
-/*==================================================
-RECHERCHE PAR MOT-CLÉ
-==================================================*/
-
-CodeTravail.rechercher = function(texte){
-
-    if(!texte){
-
-        return [];
-
-    }
-
-    texte=texte
-        .toLowerCase()
-        .trim();
-
-    return this.articles.filter(article=>{
-
-        const numero=
-
-            String(article.numero);
-
-        const titre=
-
-            (article.titre||"")
-
-            .toLowerCase();
-
-        const contenu=
-
-            (article.contenu||"")
-
-            .toLowerCase();
-
-        const categorie=
-
-            (article.categorie||"")
-
-            .toLowerCase();
-
-        const mots=
-
-            Array.isArray(article.motsCles)
-
-            ?
-
-            article.motsCles.join(" ")
-
-            .toLowerCase()
-
-            :
-
-            "";
-
-        return(
-
-            numero.includes(texte)||
-
-            titre.includes(texte)||
-
-            contenu.includes(texte)||
-
-            categorie.includes(texte)||
-
-            mots.includes(texte)
-
-        );
-
-    });
-
-};
-
-/*==================================================
-OBTENIR LE NOMBRE TOTAL D'ARTICLES
-==================================================*/
-
-CodeTravail.totalArticles=function(){
-
-    return this.articles.length;
-
-};
-
-/*==================================================
-VIDER LA SÉLECTION
-==================================================*/
-
-CodeTravail.reinitialiser=function(){
-
-    this.articleActuel=null;
-
-    this.indexActuel=-1;
-
-};
-
-/*==================================================
-FIN PARTIE 9
-==================================================*/ 
-}
-
-/*==================================================
- INSPECTEURBOT RDC
- CODE DU TRAVAIL
- index.js
- PARTIE 10/10
- DÉMARRAGE FINAL
-==================================================*/
-
-"use strict";
-
-/*==================================================
-DÉMARRAGE DE L'APPLICATION
-==================================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    async()=>{
-
-        console.log(
-            "Chargement du Code du Travail..."
-        );
-
-        try{
-
-            await chargerCodeTravail();
-
-            if(
-                typeof Consultation!=="undefined" &&
-                typeof Consultation.afficherAccueil==="function"
-            ){
-
-                Consultation.afficherAccueil();
-
-            }
-
-            document.dispatchEvent(
-
-                new CustomEvent(
-
-                    "codeTravailCharge",
-
-                    {
-
-                        detail:{
-
-                            totalArticles:
-                            CodeTravail.articles.length,
-
-                            categories:
-                            CodeTravail.categories
-
-                        }
-
-                    }
-
-                )
-
-            );
-
-            console.log(
-
-                "Application prête."
-
-            );
-
-        }
-
-        catch(erreur){
-
-            console.error(
-
-                "Erreur de démarrage :",
-
-                erreur
-
-            );
-
-        }
-
-    }
-
-);
-
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
-
-window.CodeTravail = CodeTravail;
-
-window.chargerCodeTravail =
-chargerCodeTravail;
-
-window.afficherErreurChargement =
-afficherErreurChargement;
-
-Object.freeze(window.CodeTravail);
-
-/*==================================================
- FIN DU FICHIER index.js
- Version 4.0 Professionnelle
- INSPECTEURBOT RDC
-==================================================*/
+/* EXPORT */
+window.demarrerApplication = demarrerApplication;
+window.initialiserCodeTravail = initialiserCodeTravail;
+
+/* FREEZE SAFE */
+Object.freeze(CodeTravail);
