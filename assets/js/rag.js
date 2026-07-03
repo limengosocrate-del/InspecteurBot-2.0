@@ -1,366 +1,144 @@
-/*=========================================
- INSPECTEURBOT IA RDC
- RAG ENGINE V2.0
- Compatible Code du Travail JSON 2.0
-==========================================*/
+"use strict";
 
+/*==================================================
+INSPECTEURBOT RDC
+RAG ENGINE V3.0
+Compatible code-travail.json
+==================================================*/
 
-let ARTICLES = [];
+const RAG = {};
 
+window.RAG = RAG;
 
+RAG.articles = [];
 
-/*=========================================
- CHARGEMENT DES DONNÉES JURIDIQUES
-==========================================*/
+/*==================================================
+CHARGEMENT
+==================================================*/
 
+RAG.charger = async function () {
 
-async function chargerArticles(){
+    if (this.articles.length > 0) {
 
-
-    if(ARTICLES.length > 0){
-
-        return ARTICLES;
-
-    }
-
-
-
-    const chemins = [
-
-        "assets/data/code-travail.json"
-
-    ];
-
-
-
-    for(const chemin of chemins){
-
-
-        try{
-
-
-            const response = await fetch(chemin);
-
-
-
-            if(response.ok){
-
-
-                ARTICLES = await response.json();
-
-
-
-                console.log(
-                    "✅ Articles chargés :",
-                    ARTICLES.length
-                );
-
-
-
-                return ARTICLES;
-
-
-
-            }
-
-
-
-        }
-
-
-        catch(e){
-
-
-            console.log(
-                "Chemin non trouvé :",
-                chemin
-            );
-
-
-        }
-
-
+        return this.articles;
 
     }
 
+    try {
 
+        const response = await fetch(
+            "assets/data/code-travail.json"
+        );
 
+        this.articles = await response.json();
 
-    console.error(
-        "❌ Impossible de charger la base juridique"
-    );
+        console.log(
+            "Code du Travail chargé :",
+            this.articles.length,
+            "articles"
+        );
 
+    }
 
+    catch (e) {
 
-    ARTICLES=[];
+        console.error(e);
 
+        this.articles = [];
 
+    }
 
-    return ARTICLES;
+    return this.articles;
 
+};
 
+/*==================================================
+NORMALISATION
+==================================================*/
 
-}
-
-
-
-
-
-/*=========================================
- NORMALISATION TEXTE
-==========================================*/
-
-
-function normaliser(texte){
-
+RAG.normaliser = function (texte) {
 
     return String(texte || "")
 
-    .toLowerCase()
+        .toLowerCase()
 
-    .normalize("NFD")
+        .normalize("NFD")
 
-    .replace(
-        /[\u0300-\u036f]/g,
-        ""
-    )
+        .replace(/[\u0300-\u036f]/g, "")
 
-    .trim();
+        .trim();
 
+};
 
+/*==================================================
+RECHERCHE RAG
+==================================================*/
 
-}
+RAG.rechercher = async function (question) {
 
+    await this.charger();
 
+    if (this.articles.length === 0) {
 
-
-
-
-/*=========================================
- RAG SEARCH
- Recherche augmentée juridique
-==========================================*/
-
-
-async function ragSearch(question){
-
-
-
-    await chargerArticles();
-
-
-
-
-    if(ARTICLES.length===0){
-
-
-        return `
-
-
-        <div class="result-card">
-
-            <h3>Aucune donnée</h3>
-
-            <p>
-
-            La base juridique est vide.
-
-            </p>
-
-        </div>
-
-
-        `;
-
+        return [];
 
     }
 
+    const recherche =
+        this.normaliser(question);
 
+    const mots =
+        recherche.split(/\s+/);
 
+    let resultat = [];
 
+    this.articles.forEach(article => {
 
-    const recherche = normaliser(question);
+        let score = 0;
 
+        const texte =
 
+            this.normaliser(article.numero) + " " +
 
-    let resultat=[];
+            this.normaliser(article.titre) + " " +
 
+            this.normaliser(article.categorie) + " " +
 
+            this.normaliser(article.contenu) + " " +
 
+            this.normaliser(
+                (article.motsCles || []).join(" ")
+            ) + " " +
 
+            this.normaliser(article.sanction) + " " +
 
-    ARTICLES.forEach(article=>{
+            this.normaliser(
+                (article.questionsIA || []).join(" ")
+            );
 
+        if (
 
-        const numero = normaliser(
+            recherche.startsWith("article") &&
 
-            article.numeroArticle
+            texte.includes(recherche.replace("article","").trim())
 
-        );
+        ) {
 
+            score += 100;
 
-        const titreCode = normaliser(
+        }
 
-            article.titreCode
+        mots.forEach(mot => {
 
-        );
+            if (mot.length < 2) return;
 
+            if (texte.includes(mot))
 
-        const chapitre = normaliser(
-
-            article.chapitre
-
-        );
-
-
-        const section = normaliser(
-
-            article.section
-
-        );
-
-
-        const intitule = normaliser(
-
-            article.intitule
-
-        );
-
-
-        const contenu = normaliser(
-
-            article.contenu
-
-        );
-
-
-        const motsCles = normaliser(
-
-            (article.motsCles || []).join(" ")
-
-        );
-
-
-        const infractions = normaliser(
-
-            (article.infractions || []).join(" ")
-
-        );
-
-
-        const questionsIA = normaliser(
-
-            (article.questionsIA || []).join(" ")
-
-        );
-
-
-
-
-        const texteComplet =
-
-            titreCode +
-
-            " " +
-
-            chapitre +
-
-            " " +
-
-            section +
-
-            " " +
-
-            intitule +
-
-            " " +
-
-            contenu +
-
-            " " +
-
-            motsCles +
-
-            " " +
-
-            infractions +
-
-            " " +
-
-            questionsIA;
-
-
-
-
-
-        let score=0;
-
-
-
-
-        if(numero.includes(recherche))
-
-            score +=100;
-
-
-
-
-        if(intitule.includes(recherche))
-
-            score +=80;
-
-
-
-
-        if(infractions.includes(recherche))
-
-            score +=70;
-
-
-
-
-        if(titreCode.includes(recherche))
-
-            score +=50;
-
-
-
-
-        if(contenu.includes(recherche))
-
-            score +=40;
-
-
-
-
-
-        recherche.split(" ")
-
-        .forEach(mot=>{
-
-
-            if(mot.length>2){
-
-
-
-                if(texteComplet.includes(mot))
-
-                    score +=10;
-
-
-
-            }
-
+                score += 10;
 
         });
 
-
-
-
-
-        if(score>0){
-
-
+        if (score > 0) {
 
             resultat.push({
 
@@ -370,19 +148,9 @@ async function ragSearch(question){
 
             });
 
-
-
         }
 
-
-
-
-
     });
-
-
-
-
 
     resultat.sort(
 
@@ -390,120 +158,109 @@ async function ragSearch(question){
 
     );
 
+    return resultat;
 
+};
 
+/*==================================================
+RÉPONSE HTML
+==================================================*/
 
+RAG.genererHTML = async function (question) {
 
+    const resultat =
+        await this.rechercher(question);
 
-
-    if(resultat.length===0){
-
+    if (resultat.length === 0) {
 
         return `
 
-
-        <div class="result-card">
-
-
-            <h3>Aucun résultat</h3>
-
-
-            <p>
-
-            Aucun article trouvé pour :
-
-            <strong>${question}</strong>
-
-
-            </p>
-
-
-        </div>
-
-
-        `;
-
-
-    }
-
-
-
-
-
-
-    let html="";
-
-
-
-
-
-
-    resultat.slice(0,5)
-
-    .forEach(item=>{
-
-
-
-        html += `
-
-
-
 <div class="article-card">
 
-
-
-<div class="article-number">
-
-Article ${item.article.numeroArticle}
-
-</div>
-
-
-
-
-<h3 class="article-title">
-
-${item.article.intitule}
-
-</h3>
-
-
-
-
+<h3>Aucun résultat</h3>
 
 <p>
 
-<b>${item.article.titreCode}</b>
+Aucun article trouvé.
 
 </p>
 
-
-
-
-<div class="article-content">
-
-${item.article.contenu}
-
 </div>
-
-
-
-</div>
-
-
 
 `;
 
+    }
 
+    let html = "";
+
+    resultat.slice(0,5).forEach(item => {
+
+        const a = item.article;
+
+        html += `
+
+<div class="article-card">
+
+<div class="article-number">
+
+Article ${a.numero}
+
+</div>
+
+<h3 class="article-title">
+
+${a.titre}
+
+</h3>
+
+<div class="article-category">
+
+${a.categorie}
+
+</div>
+
+<div class="article-content">
+
+${a.contenu}
+
+</div>
+
+${
+
+a.sanction ?
+
+`<div class="article-sanction">
+
+<b>Sanction :</b><br>
+
+${a.sanction}
+
+</div>`
+
+:
+
+""
+
+}
+
+</div>
+
+`;
 
     });
 
-
-
-
-
     return html;
 
+};
 
+/*==================================================
+RECHERCHE SIMPLE
+==================================================*/
 
-         }
+window.ragSearch = async function (question) {
+
+    return await RAG.genererHTML(question);
+
+};
+
+console.log("RAG Engine V3 chargé.");
