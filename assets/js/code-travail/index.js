@@ -76,11 +76,13 @@ async function chargerCodeTravail(){
 
     catch(erreur){
 
-        console.error(erreur);
+    console.error("Erreur :", erreur);
 
-        afficherErreurChargement();
+    alert(erreur.message);
 
-    }
+    afficherErreurChargement();
+
+}
 
 }
 
