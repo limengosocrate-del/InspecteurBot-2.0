@@ -1,268 +1,113 @@
 "use strict";
 
-/*==================================================
-OBJET CATEGORIES
-==================================================*/
+/*====================================================
+ INSPECTEURBOT RDC
+ CATEGORIES DYNAMIQUES V4
+====================================================*/
 
-const Categories = {
-
-    initialise: false,
-
-    categorieActuelle: null,
-
-    filtresActifs: []
-
-};
-
-/*==================================================
-EXPORT GLOBAL
-==================================================*/
+const Categories = {};
 
 window.Categories = Categories;
 
-/*==================================================
-INITIALISATION
-==================================================*/
+/*====================================================
+CREER LES CARTES
+====================================================*/
 
 Categories.initialiser = function () {
 
-    if (this.initialise) return;
+    const grille =
+        document.getElementById("categoriesGrid");
 
-    this.initialise = true;
+    if (!grille) return;
 
-    console.log("Module Categories initialisé.");
+    grille.innerHTML = "";
 
-    this.initialiserEvenements();
+    CodeTravail.getCategories().forEach(categorie => {
 
-    this.initialiserBadges();
+        const total =
+            CodeTravail.getArticlesCategorie(categorie).length;
 
-};
+        const carte =
+            document.createElement("article");
 
-/*==================================================
-ÉVÉNEMENTS UI CATÉGORIES
-==================================================*/
+        carte.className = "category-card";
 
-Categories.initialiserEvenements = function () {
+        carte.innerHTML = `
+            <h3>${categorie}</h3>
 
-    const cartes =
-        document.querySelectorAll(".category-card");
+            <p>${total} article${total > 1 ? "s" : ""}</p>
+        `;
 
-    cartes.forEach(card => {
+        carte.addEventListener("click", () => {
 
-        card.addEventListener("click", () => {
-
-            const categorie =
-                card.getAttribute("data-category");
-
-            if (!categorie) return;
-
-            this.selectionnerCategorie(categorie);
+            Categories.afficherArticles(categorie);
 
         });
+
+        grille.appendChild(carte);
 
     });
 
 };
 
-/*==================================================
-SÉLECTION CATÉGORIE
-==================================================*/
+/*====================================================
+AFFICHER ARTICLES
+====================================================*/
 
-Categories.selectionnerCategorie = function (categorie) {
+Categories.afficherArticles = function (categorie) {
 
-    if (!window.CodeTravail) return;
+    const zone =
+        document.getElementById("resultatsRecherche");
 
-    this.categorieActuelle = categorie;
+    if (!zone) return;
+
+    zone.innerHTML = "";
 
     const articles =
         CodeTravail.getArticlesCategorie(categorie);
 
-    console.log(
-        "Catégorie sélectionnée :",
-        categorie,
-        "|",
-        articles.length,
-        "articles"
-    );
-
-    this.afficherArticlesCategorie(articles);
-
-    this.mettreAJourInfo(categorie, articles.length);
-
-};
-
-/*==================================================
-AFFICHER ARTICLES CATÉGORIE
-==================================================*/
-
-Categories.afficherArticlesCategorie = function (articles) {
-
-    const container =
-        document.getElementById("resultatsRecherche");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    if (!articles || articles.length === 0) {
-
-        container.innerHTML = `
-            <div class="no-results">
-                Aucun article dans cette catégorie.
-            </div>
-        `;
-
-        return;
-
-    }
-
     articles.forEach(article => {
 
-        const div =
-            document.createElement("div");
+        const bouton =
+            document.createElement("button");
 
-        div.className = "result-item";
+        bouton.className = "result-item";
 
-        div.innerHTML = `
-            <h3>Article ${article.numero}</h3>
-            <p>${article.titre || ""}</p>
-            <span>${article.categorie || ""}</span>
-        `;
+        bouton.innerHTML =
+            `<strong>Article ${article.numero}</strong><br>${article.titre}`;
 
-        div.addEventListener("click", () => {
+        bouton.onclick = () => {
 
-            if (window.Consultation) {
+            CodeTravail.selectionnerArticle(article.numero);
 
-                Consultation.afficherArticle(article);
+            Consultation.afficherArticle(article);
 
-            }
+            document
+                .getElementById("articleCard")
+                .scrollIntoView({
 
-        });
+                    behavior: "smooth"
 
-        container.appendChild(div);
+                });
 
-    });
+        };
 
-};
-
-/*==================================================
-INFOS CATÉGORIE
-==================================================*/
-
-Categories.mettreAJourInfo = function (categorie, total) {
-
-    const infoCategorie =
-        document.getElementById("infoCategorie");
-
-    const infoRecherche =
-        document.getElementById("infoRecherche");
-
-    if (infoCategorie) {
-        infoCategorie.textContent = categorie;
-    }
-
-    if (infoRecherche) {
-        infoRecherche.textContent =
-            total + " article(s)";
-    }
-
-};
-
-/*==================================================
-INITIALISER BADGES
-==================================================*/
-
-Categories.initialiserBadges = function () {
-
-    if (!window.CodeTravail) return;
-
-    const categories =
-        CodeTravail.getCategories();
-
-    categories.forEach(cat => {
-
-        const total =
-            CodeTravail.compterCategorie(cat);
-
-        this.mettreBadge(cat, total);
+        zone.appendChild(bouton);
 
     });
 
 };
 
-/*==================================================
-METTRE À JOUR UN BADGE
-==================================================*/
+/*====================================================
+DEMARRAGE
+====================================================*/
 
-Categories.mettreBadge = function (categorie, total) {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const map = {
+    setTimeout(() => {
 
-        "Dispositions générales": "badgeDispositions",
-        "Contrat de travail": "badgeContrat",
-        "Salaire": "badgeSalaire",
-        "Temps de travail": "badgeTemps",
-        "Congés": "badgeConges",
-        "Santé et sécurité": "badgeSecurite",
-        "Inspection du Travail": "badgeInspection",
-        "Infractions et sanctions": "badgeSanctions"
+        Categories.initialiser();
 
-    };
-
-    const id = map[categorie];
-
-    if (!id) return;
-
-    const badge =
-        document.getElementById(id);
-
-    if (!badge) return;
-
-    badge.textContent =
-        total + " article" +
-        (total > 1 ? "s" : "");
-
-};
-
-/*==================================================
-FILTRER CATÉGORIE
-==================================================*/
-
-Categories.filtrer = function (categorie) {
-
-    if (!window.CodeTravail) return [];
-
-    return CodeTravail.getArticlesCategorie(categorie);
-
-};
-
-/*==================================================
-RESET CATÉGORIES
-==================================================*/
-
-Categories.reinitialiser = function () {
-
-    this.categorieActuelle = null;
-    this.filtresActifs = [];
-
-    const container =
-        document.getElementById("resultatsRecherche");
-
-    if (container) {
-        container.innerHTML = "";
-    }
-
-};
-
-/*==================================================
-AUTO INIT
-==================================================*/
-
-document.addEventListener("codeTravailCharge", () => {
-
-    Categories.initialiser();
+    }, 500);
 
 });
-
-
-
