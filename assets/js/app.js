@@ -1,155 +1,290 @@
+"use strict";
+
 /*==================================================
-APP.JS
-CORE CENTRALISÉ - INSPECTEURBOT RDC
-VERSION STABLE & RAPIDE
+ APP.JS
+ INSPECTEURBOT RDC 2026
+ CORE PRINCIPAL
+==================================================*/
+
+const App = {};
+
+window.App = App;
+
+/*==================================================
+ INITIALISATION
 ==================================================*/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("InspecteurBot App initialisé ✔");
+    console.log("✅ InspecteurBot RDC démarré");
 
-    // Initialisation globale propre
-    initUI();
-    initModules();
+    App.demarrer();
 
 });
 
 /*==================================================
-INITIALISATION UI
+ DÉMARRAGE
 ==================================================*/
 
-function initUI() {
+App.demarrer = function () {
 
-    initClockSafe();
-    initThemeSafe();
-    initButtonsSafe();
+    App.initHorloge();
 
-}
+    App.initTheme();
+
+    App.initBoutons();
+
+    App.initMeteo();
+
+    App.initStatistiques();
+
+    App.masquerChargement();
+
+};
 
 /*==================================================
-MODULES (STATS + IA + AUTRES)
+ HORLOGE
 ==================================================*/
 
-function initModules() {
+App.initHorloge = function () {
 
-    // Stats
-    if (window.initStats) {
-        window.initStats();
-    }
+    const clock = document.getElementById("clock");
+    const day = document.getElementById("day");
+    const date = document.getElementById("date");
 
-    // Tu peux ajouter ici les autres modules plus tard
-    // initSearch();
-    // initIA();
-    // initSpeech();
+    if (!clock || !day || !date) return;
 
-}
+    const jours = [
 
-/*==================================================
-HORLOGE (SAFE - SANS CRASH)
-==================================================*/
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
 
-function initClockSafe() {
-
-    const clockEl = document.getElementById("clock");
-    const dayEl = document.getElementById("day");
-    const dateEl = document.getElementById("date");
-
-    if (!clockEl || !dayEl || !dateEl) return;
-
-    const days = [
-        "Dimanche","Lundi","Mardi","Mercredi",
-        "Jeudi","Vendredi","Samedi"
     ];
 
-    const months = [
-        "janvier","février","mars","avril","mai","juin",
-        "juillet","août","septembre","octobre","novembre","décembre"
+    const mois = [
+
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+
     ];
 
-    function update() {
+    function afficher() {
 
-        const now = new Date();
+        const maintenant = new Date();
 
-        const h = String(now.getHours()).padStart(2, "0");
-        const m = String(now.getMinutes()).padStart(2, "0");
-        const s = String(now.getSeconds()).padStart(2, "0");
+        clock.textContent =
+            maintenant.toLocaleTimeString("fr-FR");
 
-        clockEl.textContent = `${h}:${m}:${s}`;
-        dayEl.textContent = days[now.getDay()];
-        dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        day.textContent =
+            jours[maintenant.getDay()];
+
+        date.textContent =
+            maintenant.getDate() +
+            " " +
+            mois[maintenant.getMonth()] +
+            " " +
+            maintenant.getFullYear();
 
     }
 
-    update();
-    setInterval(update, 1000);
+    afficher();
 
-}
+    setInterval(afficher, 1000);
+
+};
 
 /*==================================================
-THEME (SAFE)
+ THÈME
 ==================================================*/
 
-function initThemeSafe() {
+App.initTheme = function () {
 
-    const btn = document.getElementById("themeToggle");
-    const icon = document.getElementById("themeIcon");
+    const bouton =
+        document.getElementById("themeToggle");
 
-    if (!btn || !icon) return;
+    const icon =
+        document.getElementById("themeIcon");
 
-    const body = document.body;
+    if (!bouton || !icon) return;
 
-    btn.addEventListener("click", () => {
+    let theme =
+        localStorage.getItem("theme") || "light";
 
-        body.classList.toggle("dark-theme");
-        body.classList.toggle("light-theme");
+    appliquer(theme);
 
-        const isDark = body.classList.contains("dark-theme");
+    bouton.onclick = function () {
 
-        icon.textContent = isDark ? "☀️" : "🌙";
+        theme =
+            theme === "light"
+                ? "dark"
+                : "light";
 
-        localStorage.setItem("theme", isDark ? "dark" : "light");
+        appliquer(theme);
+
+        localStorage.setItem("theme", theme);
+
+    };
+
+    function appliquer(mode) {
+
+        document.body.classList.remove(
+            "light-theme",
+            "dark-theme"
+        );
+
+        document.body.classList.add(
+            mode + "-theme"
+        );
+
+        icon.textContent =
+            mode === "dark"
+                ? "☀️"
+                : "🌙";
+
+    }
+
+};
+
+/*==================================================
+ BOUTONS
+==================================================*/
+
+App.initBoutons = function () {
+
+    App.click("btnPartager", () => {
+
+        if (window.Utils)
+            Utils.partagerArticle();
 
     });
 
-    // restore
-    const saved = localStorage.getItem("theme");
+    App.click("btnImprimer", () => {
 
-    if (saved === "dark") {
+        window.print();
 
-        body.classList.add("dark-theme");
-        body.classList.remove("light-theme");
+    });
 
-        icon.textContent = "☀️";
+    App.click("btnLecture", () => {
 
-    }
+        if (window.Utils)
+            Utils.lireArticle();
 
-}
+    });
+
+    App.click("btnFavori", () => {
+
+        if (window.Utils)
+            Utils.favori();
+
+    });
+
+    App.click("btnMicro", () => {
+
+        console.log("Micro activé");
+
+    });
+
+    App.click("btnParametres", () => {
+
+        alert("Paramètres bientôt disponibles.");
+
+    });
+
+};
 
 /*==================================================
-BOUTONS SAFE (ANTI CRASH TOTAL)
+ MÉTÉO
 ==================================================*/
 
-function initButtonsSafe() {
+App.initMeteo = function () {
 
-    safeClick("btnMicro", () => console.log("Micro"));
-    safeClick("btnLecture", () => console.log("Lecture"));
-    safeClick("btnPartager", () => console.log("Partager"));
-    safeClick("btnImprimer", () => console.log("Imprimer"));
-    safeClick("btnFavori", () => console.log("Favori"));
-    safeClick("btnParametres", () => console.log("Paramètres"));
+    const ville =
+        document.getElementById("city");
 
-}
+    const temperature =
+        document.getElementById("temperature");
+
+    if (!ville || !temperature) return;
+
+    ville.textContent = "Kinshasa";
+
+    temperature.textContent = "--°C";
+
+};
 
 /*==================================================
-UTILITAIRE SAFE CLICK
+ STATISTIQUES
 ==================================================*/
 
-function safeClick(id, callback) {
+App.initStatistiques = function () {
 
-    const el = document.getElementById(id);
+    const total =
+        window.CodeTravail
+            ? CodeTravail.getTousArticles().length
+            : 0;
 
-    if (!el) return;
+    const el =
+        document.getElementById("statArticles");
 
-    el.addEventListener("click", callback);
+    if (el)
+        el.textContent = total;
 
-}
+};
+
+/*==================================================
+ ÉCRAN DE CHARGEMENT
+==================================================*/
+
+App.masquerChargement = function () {
+
+    const ecran =
+        document.getElementById("loadingScreen");
+
+    if (!ecran) return;
+
+    setTimeout(() => {
+
+        ecran.style.opacity = "0";
+
+        setTimeout(() => {
+
+            ecran.style.display = "none";
+
+        }, 400);
+
+    }, 1200);
+
+};
+
+/*==================================================
+ RACCOURCI CLICK
+==================================================*/
+
+App.click = function (id, action) {
+
+    const element =
+        document.getElementById(id);
+
+    if (!element) return;
+
+    element.addEventListener(
+        "click",
+        action
+    );
+
+};
