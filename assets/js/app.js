@@ -1,407 +1,114 @@
-/*=================================================
- INSPECTEURBOT RDC
- app.js
- VERSION 1.0
- CHEF D'ORCHESTRE DE L'APPLICATION
- PARTIE 1
+/*==================================================
+APP.JS - CORE INSPECTEURBOT RDC
+VERSION CENTRALISÉE STABLE
 ==================================================*/
 
-"use strict";
+document.addEventListener("DOMContentLoaded", () => {
 
-/*=================================================
- ESPACE DE NOMS
+    console.log("InspecteurBot App chargé ✔");
+
+    initClock();
+    initTheme();
+    initUIFixes();
+
+});
+
+/*==================================================
+HORLOGE + DATE
 ==================================================*/
 
-window.CodeTravail = window.CodeTravail || {};
+function initClock() {
 
-window.CodeTravail.App = {};
+    const clockEl = document.getElementById("clock");
+    const dayEl = document.getElementById("day");
+    const dateEl = document.getElementById("date");
 
-/*=================================================
- CONFIGURATION
-==================================================*/
-
-const CONFIG = {
-
-    version: "2026.1",
-
-    nom: "InspecteurBot RDC",
-
-    auteur: "Inspecteur Limengo (Pmiller)",
-
-    modeDebug: false
-
-};
-
-/*=================================================
- ÉTAT GLOBAL
-==================================================*/
-
-const ETAT = {
-
-    initialise: false,
-
-    demarrage: null,
-
-    modulesCharges: []
-
-};
-
-/*=================================================
- ENREGISTRER UN MODULE
-==================================================*/
-
-function enregistrerModule(nom) {
-
-    if (!ETAT.modulesCharges.includes(nom)) {
-
-        ETAT.modulesCharges.push(nom);
-
+    if (!clockEl || !dayEl || !dateEl) {
+        console.warn("Clock UI manquant");
+        return;
     }
 
+    const days = [
+        "Dimanche","Lundi","Mardi","Mercredi",
+        "Jeudi","Vendredi","Samedi"
+    ];
+
+    const months = [
+        "janvier","février","mars","avril","mai","juin",
+        "juillet","août","septembre","octobre","novembre","décembre"
+    ];
+
+    function updateClock() {
+
+        const now = new Date();
+
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        const s = String(now.getSeconds()).padStart(2, "0");
+
+        clockEl.textContent = `${h}:${m}:${s}`;
+        dayEl.textContent = days[now.getDay()];
+        dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
 }
 
-/*=================================================
- VÉRIFIER UN MODULE
+/*==================================================
+THEME TOGGLE
 ==================================================*/
 
-function verifierModule(objet, nom) {
+function initTheme() {
 
-    if (objet) {
+    const btn = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
+    const body = document.body;
 
-        enregistrerModule(nom);
+    if (!btn || !icon) return;
 
-        return true;
+    btn.addEventListener("click", () => {
 
+        body.classList.toggle("dark-theme");
+        body.classList.toggle("light-theme");
+
+        const isDark = body.classList.contains("dark-theme");
+
+        icon.textContent = isDark ? "☀️" : "🌙";
+
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    });
+
+    // restore theme
+    const saved = localStorage.getItem("theme");
+
+    if (saved === "dark") {
+        body.classList.add("dark-theme");
+        body.classList.remove("light-theme");
+        icon.textContent = "☀️";
     }
-
-    console.warn(
-
-        "Module absent :", nom
-
-    );
-
-    return false;
-
-        }
-
-/*=================================================
- PARTIE 2
- INITIALISATION DES MODULES
-==================================================*/
-
-/*=================================================
- INITIALISER UN MODULE
-==================================================*/
-
-function initialiserModule(module, nom) {
-
-    try {
-
-        if (
-
-            module &&
-
-            typeof module.initialiser === "function"
-
-        ) {
-
-            module.initialiser();
-
-            enregistrerModule(nom);
-
-            console.log(
-
-                "✅ " + nom + " initialisé."
-
-            );
-
-        }
-
-    }
-
-    catch (erreur) {
-
-        console.error(
-
-            "Erreur dans " + nom,
-
-            erreur
-
-        );
-
-    }
-
 }
 
-/*=================================================
- INITIALISATION GÉNÉRALE
+/*==================================================
+FIX UI GLOBAL (ANTI BUG FUTUR)
 ==================================================*/
 
-function initialiserApplication() {
+function initUIFixes() {
 
-    ETAT.demarrage = new Date();
+    // Empêche erreurs silencieuses sur boutons manquants
 
-    /*=========================================
-      CODE DU TRAVAIL
-    =========================================*/
-
-    initialiserModule(
-
-        window.CodeTravail.Index,
-
-        "Index"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Consultation,
-
-        "Consultation"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Recherche,
-
-        "Recherche"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Navigation,
-
-        "Navigation"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Categories,
-
-        "Categories"
-
-    );
-
-    /*=========================================
-      MODULES PRINCIPAUX
-    =========================================*/
-
-    initialiserModule(
-
-        window.CodeTravail.VectorSearch,
-
-        "VectorSearch"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Search,
-
-        "Search"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Speech,
-
-        "Speech"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Traduction,
-
-        "Traduction"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Favoris,
-
-        "Favoris"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.Statistiques,
-
-        "Statistiques"
-
-    );
-
-    initialiserModule(
-
-        window.CodeTravail.IA,
-
-        "IA"
-
-    );
-
-    ETAT.initialise = true;
-
-}
-
-/*=================================================
- PARTIE 3
- EXPORT - DÉMARRAGE
- VERSION FINALE
-==================================================*/
-
-/*=================================================
- INFORMATIONS
-==================================================*/
-
-function informations() {
-
-    return {
-
-        nom: CONFIG.nom,
-
-        version: CONFIG.version,
-
-        auteur: CONFIG.auteur,
-
-        initialise: ETAT.initialise,
-
-        demarrage: ETAT.demarrage,
-
-        modules: ETAT.modulesCharges
-
+    const safeBind = (id, event, fn) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(event, fn);
     };
 
-}
-
-/*=================================================
- RAPPORT
-==================================================*/
-
-function afficherRapport() {
-
-    console.group(
-
-        "📋 InspecteurBot RDC"
-
-    );
-
-    console.log(
-
-        "Nom :", CONFIG.nom
-
-    );
-
-    console.log(
-
-        "Version :", CONFIG.version
-
-    );
-
-    console.log(
-
-        "Auteur :", CONFIG.auteur
-
-    );
-
-    console.log(
-
-        "Modules :", ETAT.modulesCharges
-
-    );
-
-    console.groupEnd();
+    safeBind("btnMicro", "click", () => console.log("Micro"));
+    safeBind("btnLecture", "click", () => console.log("Lecture"));
+    safeBind("btnPartager", "click", () => console.log("Partager"));
+    safeBind("btnImprimer", "click", () => console.log("Imprimer"));
+    safeBind("btnFavori", "click", () => console.log("Favori"));
+    safeBind("btnParametres", "click", () => console.log("Paramètres"));
 
 }
 
-/*=================================================
- EXPORT
-==================================================*/
-
-window.CodeTravail.App.config =
-    CONFIG;
-
-window.CodeTravail.App.etat =
-    ETAT;
-
-window.CodeTravail.App.initialiser =
-    initialiserApplication;
-
-window.CodeTravail.App.informations =
-    informations;
-
-window.CodeTravail.App.rapport =
-    afficherRapport;
-
-/*=================================================
- DÉMARRAGE
-==================================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        initialiserApplication();
-
-        afficherRapport();
-
-        console.log(
-
-            "🚀 InspecteurBot RDC prêt."
-
-        );
-
-    }
-
-);
-
-/*=================================================
- GESTION DES ERREURS GLOBALES
-==================================================*/
-
-window.addEventListener(
-
-    "error",
-
-    event => {
-
-        console.error(
-
-            "Erreur JavaScript :",
-
-            event.message
-
-        );
-
-    }
-
-);
-
-window.addEventListener(
-
-    "unhandledrejection",
-
-    event => {
-
-        console.error(
-
-            "Promesse rejetée :",
-
-            event.reason
-
-        );
-
-    }
-
-);
-
-/*=================================================
- FIN DU FICHIER
-==================================================*/
