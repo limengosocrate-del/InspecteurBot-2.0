@@ -1,0 +1,724 @@
+/*==================================================
+ANIMATIONS.CSS
+PARTIE 1
+BASE ANIMATIONS GLOBALES • TRANSITIONS • SYSTÈME
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+TRANSITION GLOBALE (SYSTÈME UI)
+==================================================*/
+
+*{
+
+    transition:background .3s ease,
+               color .3s ease,
+               border-color .3s ease,
+               box-shadow .3s ease,
+               transform .3s ease;
+
+}
+
+/*==================================================
+APPARITION GÉNÉRALE (FADE IN)
+==================================================*/
+
+.fade-in{
+
+    animation:fadeIn .6s ease forwards;
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*==================================================
+APPARITION RAPIDE
+==================================================*/
+
+.fade-in-fast{
+
+    animation:fadeInFast .35s ease forwards;
+
+}
+
+@keyframes fadeInFast{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*==================================================
+ZOOM ENTRY (CARDS / MODALS)
+==================================================*/
+
+.zoom-in{
+
+    animation:zoomIn .4s ease forwards;
+
+}
+
+@keyframes zoomIn{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.92);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+/*==================================================
+SLIDE LEFT
+==================================================*/
+
+.slide-left{
+
+    animation:slideLeft .5s ease forwards;
+
+}
+
+@keyframes slideLeft{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+/*==================================================
+SLIDE RIGHT
+==================================================*/
+
+.slide-right{
+
+    animation:slideRight .5s ease forwards;
+
+}
+
+@keyframes slideRight{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+/*==================================================
+UTILITAIRE ANIMATION DELAY
+==================================================*/
+
+.delay-1{ animation-delay:.1s; }
+
+.delay-2{ animation-delay:.2s; }
+
+.delay-3{ animation-delay:.3s; }
+
+.delay-4{ animation-delay:.4s; }
+
+.delay-5{ animation-delay:.5s; }
+
+/*==================================================
+ANIMATIONS.CSS
+PARTIE 2
+EFFETS IA • GLOW • NEON • SCAN • PULSE
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+GLOW OR (ACCENT PRINCIPAL)
+==================================================*/
+
+.glow-gold{
+
+    animation:glowGold 2.5s ease-in-out infinite;
+
+}
+
+@keyframes glowGold{
+
+    0%,100%{
+
+        text-shadow:0 0 5px rgba(255,215,0,.25),
+                    0 0 10px rgba(255,215,0,.15);
+
+    }
+
+    50%{
+
+        text-shadow:0 0 12px rgba(255,215,0,.55),
+                    0 0 25px rgba(255,215,0,.35);
+
+    }
+
+}
+
+/*==================================================
+GLOW BLEU IA
+==================================================*/
+
+.glow-blue{
+
+    animation:glowBlue 3s ease-in-out infinite;
+
+}
+
+@keyframes glowBlue{
+
+    0%,100%{
+
+        text-shadow:0 0 6px rgba(11,94,215,.25),
+                    0 0 12px rgba(11,94,215,.15);
+
+    }
+
+    50%{
+
+        text-shadow:0 0 14px rgba(11,94,215,.55),
+                    0 0 28px rgba(11,94,215,.35);
+
+    }
+
+}
+
+/*==================================================
+PULSE IA (INTELLIGENCE)
+==================================================*/
+
+.pulse-ai{
+
+    animation:pulseAI 2s ease-in-out infinite;
+
+}
+
+@keyframes pulseAI{
+
+    0%{
+
+        transform:scale(1);
+
+        box-shadow:0 0 0 rgba(255,215,0,.0);
+
+    }
+
+    50%{
+
+        transform:scale(1.03);
+
+        box-shadow:0 0 20px rgba(255,215,0,.25);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        box-shadow:0 0 0 rgba(255,215,0,.0);
+
+    }
+
+}
+
+/*==================================================
+SCAN LUMINEUX (EFFET IA SUR CARTES)
+==================================================*/
+
+.scan-light{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.scan-light::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:40%;
+
+    height:100%;
+
+    background:linear-gradient(
+
+        120deg,
+
+        transparent,
+
+        rgba(255,255,255,.25),
+
+        transparent
+
+    );
+
+    transform:skewX(-25deg);
+
+    animation:scanMove 3.5s infinite;
+
+}
+
+@keyframes scanMove{
+
+    0%{
+
+        left:-120%;
+
+    }
+
+    100%{
+
+        left:160%;
+
+    }
+
+}
+
+/*==================================================
+NEON BORDER (IA FUTURISTE)
+==================================================*/
+
+.neon-border{
+
+    border:1px solid rgba(255,215,0,.35);
+
+    box-shadow:0 0 12px rgba(255,215,0,.15);
+
+    animation:neonPulse 3s ease-in-out infinite;
+
+}
+
+@keyframes neonPulse{
+
+    0%,100%{
+
+        box-shadow:0 0 10px rgba(255,215,0,.15);
+
+    }
+
+    50%{
+
+        box-shadow:0 0 25px rgba(255,215,0,.35);
+
+    }
+
+}
+
+/*==================================================
+HOVER FUTURISTE GLOBAL
+==================================================*/
+
+.hover-fx:hover{
+
+    transform:translateY(-5px) scale(1.02);
+
+    box-shadow:0 0 25px rgba(255,215,0,.25);
+
+}
+
+/*==================================================
+TEXTE CLIGNOTANT IA (INDICATEUR)
+==================================================*/
+
+.blink-ai{
+
+    animation:blinkAI 1.5s infinite;
+
+}
+
+@keyframes blinkAI{
+
+    0%,100%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.4;
+
+    }
+
+                                  }
+
+/*==================================================
+ANIMATIONS.CSS
+PARTIE 3
+MICRO-INTERACTIONS • LOADING • SKELETON • POLISH FINAL
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+CLICK FEEDBACK (BOUTONS / ACTIONS)
+==================================================*/
+
+.click-pop{
+
+    animation:clickPop .25s ease;
+
+}
+
+@keyframes clickPop{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(.92);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+/*==================================================
+BOUTON APPUIÉ (FEEDBACK GLOBAL)
+==================================================*/
+
+.press-effect:active{
+
+    transform:scale(.95);
+
+    filter:brightness(.95);
+
+}
+
+/*==================================================
+LOADING GLOBAL (POINTS IA)
+==================================================*/
+
+.loading-dots-global{
+
+    display:inline-flex;
+
+    gap:5px;
+
+    align-items:center;
+
+}
+
+.loading-dots-global span{
+
+    width:7px;
+
+    height:7px;
+
+    border-radius:50%;
+
+    background:var(--accent, #FFD700);
+
+    animation:dotPulse 1.2s infinite ease-in-out;
+
+}
+
+.loading-dots-global span:nth-child(2){
+
+    animation-delay:.2s;
+
+}
+
+.loading-dots-global span:nth-child(3){
+
+    animation-delay:.4s;
+
+}
+
+@keyframes dotPulse{
+
+    0%,100%{
+
+        transform:scale(.4);
+
+        opacity:.4;
+
+    }
+
+    50%{
+
+        transform:scale(1.2);
+
+        opacity:1;
+
+    }
+
+}
+
+/*==================================================
+SKELETON LOADING (CARDS / ARTICLES)
+==================================================*/
+
+.skeleton{
+
+    background:linear-gradient(90deg,
+        rgba(255,255,255,.08) 25%,
+        rgba(255,255,255,.18) 37%,
+        rgba(255,255,255,.08) 63%
+    );
+
+    background-size:400% 100%;
+
+    animation:skeletonMove 1.4s ease infinite;
+
+    border-radius:12px;
+
+}
+
+@keyframes skeletonMove{
+
+    0%{
+
+        background-position:100% 50%;
+
+    }
+
+    100%{
+
+        background-position:0 50%;
+
+    }
+
+}
+
+/*==================================================
+FADE OUT (DISPARITION PROPRE)
+==================================================*/
+
+.fade-out{
+
+    animation:fadeOut .4s ease forwards;
+
+}
+
+@keyframes fadeOut{
+
+    from{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+}
+
+/*==================================================
+SHAKE ERREUR (ERREUR INPUT / SEARCH)
+==================================================*/
+
+.shake{
+
+    animation:shake .45s ease;
+
+}
+
+@keyframes shake{
+
+    0%,100%{
+
+        transform:translateX(0);
+
+    }
+
+    25%{
+
+        transform:translateX(-5px);
+
+    }
+
+    50%{
+
+        transform:translateX(5px);
+
+    }
+
+    75%{
+
+        transform:translateX(-3px);
+
+    }
+
+}
+
+/*==================================================
+PULSE D'ATTENTION (ERREUR / WARNING)
+==================================================*/
+
+.pulse-warning{
+
+    animation:pulseWarning 1.5s infinite;
+
+}
+
+@keyframes pulseWarning{
+
+    0%{
+
+        box-shadow:0 0 0 rgba(255,0,0,0);
+
+    }
+
+    50%{
+
+        box-shadow:0 0 20px rgba(255,0,0,.25);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 rgba(255,0,0,0);
+
+    }
+
+}
+
+/*==================================================
+ZOOM HOVER LÉGER (UX POLISH)
+==================================================*/
+
+.zoom-hover:hover{
+
+    transform:scale(1.03);
+
+    transition:.25s ease;
+
+}
+
+/*==================================================
+ROTATION ICON (LOADING ICONS)
+==================================================*/
+
+.rotate{
+
+    animation:rotateIcon 1s linear infinite;
+
+}
+
+@keyframes rotateIcon{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*==================================================
+OPACITY PULSE (UI INTELLIGENTE)
+==================================================*/
+
+.opacity-pulse{
+
+    animation:opacityPulse 2s ease-in-out infinite;
+
+}
+
+@keyframes opacityPulse{
+
+    0%,100%{
+
+        opacity:.6;
+
+    }
+
+    50%{
+
+        opacity:1;
+
+    }
+
+}
