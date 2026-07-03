@@ -1,41 +1,45 @@
 /*==================================================
 ANIMATIONS.CSS
+VERSION 2026 PREMIUM V8
+BLUE NIGHT + GOLD EDITION
 PARTIE 1
-BASE ANIMATIONS GLOBALES • TRANSITIONS • SYSTÈME
-InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
-TRANSITION GLOBALE (SYSTÈME UI)
+TRANSITIONS PREMIUM
 ==================================================*/
 
 *{
 
-    transition:background .3s ease,
-               color .3s ease,
-               border-color .3s ease,
-               box-shadow .3s ease,
-               transform .3s ease;
+    transition:
+        background .35s ease,
+        color .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease,
+        transform .35s cubic-bezier(.22,.61,.36,1),
+        opacity .35s ease;
 
 }
 
 /*==================================================
-APPARITION GÉNÉRALE (FADE IN)
+FADE UP PREMIUM
 ==================================================*/
 
 .fade-in{
 
-    animation:fadeIn .6s ease forwards;
+    animation:fadePremium .6s ease forwards;
 
 }
 
-@keyframes fadeIn{
+@keyframes fadePremium{
 
     from{
 
         opacity:0;
 
-        transform:translateY(15px);
+        transform:
+            translateY(22px)
+            scale(.98);
 
     }
 
@@ -43,7 +47,9 @@ APPARITION GÉNÉRALE (FADE IN)
 
         opacity:1;
 
-        transform:translateY(0);
+        transform:
+            translateY(0)
+            scale(1);
 
     }
 
@@ -55,17 +61,17 @@ APPARITION RAPIDE
 
 .fade-in-fast{
 
-    animation:fadeInFast .35s ease forwards;
+    animation:fadeFast .35s ease forwards;
 
 }
 
-@keyframes fadeInFast{
+@keyframes fadeFast{
 
     from{
 
         opacity:0;
 
-        transform:translateY(8px);
+        transform:translateY(10px);
 
     }
 
@@ -80,22 +86,24 @@ APPARITION RAPIDE
 }
 
 /*==================================================
-ZOOM ENTRY (CARDS / MODALS)
+ZOOM PREMIUM
 ==================================================*/
 
 .zoom-in{
 
-    animation:zoomIn .4s ease forwards;
+    animation:zoomPremium .45s ease forwards;
 
 }
 
-@keyframes zoomIn{
+@keyframes zoomPremium{
 
     from{
 
         opacity:0;
 
-        transform:scale(.92);
+        transform:
+            scale(.90)
+            rotateX(10deg);
 
     }
 
@@ -103,7 +111,9 @@ ZOOM ENTRY (CARDS / MODALS)
 
         opacity:1;
 
-        transform:scale(1);
+        transform:
+            scale(1)
+            rotateX(0);
 
     }
 
@@ -115,17 +125,18 @@ SLIDE LEFT
 
 .slide-left{
 
-    animation:slideLeft .5s ease forwards;
+    animation:slideLeftPremium .55s ease forwards;
 
 }
 
-@keyframes slideLeft{
+@keyframes slideLeftPremium{
 
     from{
 
         opacity:0;
 
-        transform:translateX(25px);
+        transform:
+            translateX(35px);
 
     }
 
@@ -133,7 +144,8 @@ SLIDE LEFT
 
         opacity:1;
 
-        transform:translateX(0);
+        transform:
+            translateX(0);
 
     }
 
@@ -145,17 +157,18 @@ SLIDE RIGHT
 
 .slide-right{
 
-    animation:slideRight .5s ease forwards;
+    animation:slideRightPremium .55s ease forwards;
 
 }
 
-@keyframes slideRight{
+@keyframes slideRightPremium{
 
     from{
 
         opacity:0;
 
-        transform:translateX(-25px);
+        transform:
+            translateX(-35px);
 
     }
 
@@ -163,129 +176,152 @@ SLIDE RIGHT
 
         opacity:1;
 
-        transform:translateX(0);
+        transform:
+            translateX(0);
 
     }
 
 }
 
 /*==================================================
-UTILITAIRE ANIMATION DELAY
+ANIMATION FLOTTANTE PREMIUM
 ==================================================*/
 
-.delay-1{ animation-delay:.1s; }
+.float{
 
-.delay-2{ animation-delay:.2s; }
+    animation:floatingPremium 5s ease-in-out infinite;
 
-.delay-3{ animation-delay:.3s; }
+}
 
-.delay-4{ animation-delay:.4s; }
+@keyframes floatingPremium{
 
-.delay-5{ animation-delay:.5s; }
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-6px);
+
+    }
+
+}
+
+/*==================================================
+DÉLAIS
+==================================================*/
+
+.delay-1{animation-delay:.10s;}
+.delay-2{animation-delay:.20s;}
+.delay-3{animation-delay:.30s;}
+.delay-4{animation-delay:.40s;}
+.delay-5{animation-delay:.50s;}
 
 /*==================================================
 ANIMATIONS.CSS
+VERSION 2026 PREMIUM V8
+BLUE NIGHT + GOLD EDITION
 PARTIE 2
-EFFETS IA • GLOW • NEON • SCAN • PULSE
-InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
-GLOW OR (ACCENT PRINCIPAL)
+HALO OR PREMIUM
 ==================================================*/
 
 .glow-gold{
 
-    animation:glowGold 2.5s ease-in-out infinite;
+    animation:goldGlow 3s ease-in-out infinite;
 
 }
 
-@keyframes glowGold{
+@keyframes goldGlow{
 
     0%,100%{
 
-        text-shadow:0 0 5px rgba(255,215,0,.25),
-                    0 0 10px rgba(255,215,0,.15);
+        text-shadow:
+            0 0 8px rgba(255,215,0,.25),
+            0 0 18px rgba(255,215,0,.15);
 
     }
 
     50%{
 
-        text-shadow:0 0 12px rgba(255,215,0,.55),
-                    0 0 25px rgba(255,215,0,.35);
+        text-shadow:
+            0 0 18px rgba(255,215,0,.60),
+            0 0 35px rgba(255,215,0,.35),
+            0 0 50px rgba(255,215,0,.15);
 
     }
 
 }
 
 /*==================================================
-GLOW BLEU IA
+HALO BLEU IA
 ==================================================*/
 
 .glow-blue{
 
-    animation:glowBlue 3s ease-in-out infinite;
+    animation:blueGlow 3.5s ease-in-out infinite;
 
 }
 
-@keyframes glowBlue{
+@keyframes blueGlow{
 
     0%,100%{
 
-        text-shadow:0 0 6px rgba(11,94,215,.25),
-                    0 0 12px rgba(11,94,215,.15);
+        text-shadow:
+            0 0 8px rgba(0,120,255,.25),
+            0 0 18px rgba(0,120,255,.15);
 
     }
 
     50%{
 
-        text-shadow:0 0 14px rgba(11,94,215,.55),
-                    0 0 28px rgba(11,94,215,.35);
+        text-shadow:
+            0 0 18px rgba(0,120,255,.55),
+            0 0 35px rgba(0,120,255,.35),
+            0 0 55px rgba(0,120,255,.18);
 
     }
 
 }
 
 /*==================================================
-PULSE IA (INTELLIGENCE)
+PULSE IA PREMIUM
 ==================================================*/
 
 .pulse-ai{
 
-    animation:pulseAI 2s ease-in-out infinite;
+    animation:pulsePremium 2.4s ease-in-out infinite;
 
 }
 
-@keyframes pulseAI{
+@keyframes pulsePremium{
 
-    0%{
+    0%,100%{
 
         transform:scale(1);
 
-        box-shadow:0 0 0 rgba(255,215,0,.0);
+        box-shadow:none;
 
     }
 
     50%{
 
-        transform:scale(1.03);
+        transform:scale(1.04);
 
-        box-shadow:0 0 20px rgba(255,215,0,.25);
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-        box-shadow:0 0 0 rgba(255,215,0,.0);
+        box-shadow:
+            0 0 25px rgba(255,215,0,.18),
+            0 0 40px rgba(0,120,255,.15);
 
     }
 
 }
 
 /*==================================================
-SCAN LUMINEUX (EFFET IA SUR CARTES)
+BALAYAGE LUMINEUX
 ==================================================*/
 
 .scan-light{
@@ -304,9 +340,9 @@ SCAN LUMINEUX (EFFET IA SUR CARTES)
 
     top:0;
 
-    left:-120%;
+    left:-140%;
 
-    width:40%;
+    width:45%;
 
     height:100%;
 
@@ -316,7 +352,7 @@ SCAN LUMINEUX (EFFET IA SUR CARTES)
 
         transparent,
 
-        rgba(255,255,255,.25),
+        rgba(255,255,255,.30),
 
         transparent
 
@@ -324,79 +360,84 @@ SCAN LUMINEUX (EFFET IA SUR CARTES)
 
     transform:skewX(-25deg);
 
-    animation:scanMove 3.5s infinite;
+    animation:scanPremium 3.5s linear infinite;
 
 }
 
-@keyframes scanMove{
+@keyframes scanPremium{
 
-    0%{
+    from{
 
-        left:-120%;
+        left:-140%;
 
     }
 
-    100%{
+    to{
 
-        left:160%;
+        left:170%;
 
     }
 
 }
 
 /*==================================================
-NEON BORDER (IA FUTURISTE)
+BORDURE NÉON
 ==================================================*/
 
 .neon-border{
 
-    border:1px solid rgba(255,215,0,.35);
+    border:1px solid rgba(255,215,0,.30);
 
-    box-shadow:0 0 12px rgba(255,215,0,.15);
-
-    animation:neonPulse 3s ease-in-out infinite;
+    animation:neonBorder 3s ease-in-out infinite;
 
 }
 
-@keyframes neonPulse{
+@keyframes neonBorder{
 
     0%,100%{
 
-        box-shadow:0 0 10px rgba(255,215,0,.15);
+        box-shadow:
+            0 0 10px rgba(255,215,0,.12);
 
     }
 
     50%{
 
-        box-shadow:0 0 25px rgba(255,215,0,.35);
+        box-shadow:
+            0 0 20px rgba(255,215,0,.25),
+            0 0 35px rgba(0,120,255,.18);
 
     }
 
 }
 
 /*==================================================
-HOVER FUTURISTE GLOBAL
+HOVER PREMIUM
 ==================================================*/
 
 .hover-fx:hover{
 
-    transform:translateY(-5px) scale(1.02);
+    transform:
+        translateY(-6px)
+        scale(1.02);
 
-    box-shadow:0 0 25px rgba(255,215,0,.25);
+    box-shadow:
+        var(--shadow-gold),
+        var(--shadow-blue);
 
 }
 
 /*==================================================
-TEXTE CLIGNOTANT IA (INDICATEUR)
+CLIGNOTEMENT IA
 ==================================================*/
 
 .blink-ai{
 
-    animation:blinkAI 1.5s infinite;
+    animation:blinkPremium 1.4s infinite;
 
 }
 
-@keyframes blinkAI{
+@keyframes blinkPremium{
 
     0%,100%{
 
@@ -406,30 +447,29 @@ TEXTE CLIGNOTANT IA (INDICATEUR)
 
     50%{
 
-        opacity:.4;
+        opacity:.45;
 
     }
 
-                                  }
+}
 
 /*==================================================
 ANIMATIONS.CSS
+VERSION 2026 PREMIUM V8
+BLUE NIGHT + GOLD EDITION
 PARTIE 3
-MICRO-INTERACTIONS • LOADING • SKELETON • POLISH FINAL
-InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
-CLICK FEEDBACK (BOUTONS / ACTIONS)
+EFFET CLIC PREMIUM
 ==================================================*/
 
 .click-pop{
 
-    animation:clickPop .25s ease;
-
+    animation:clickPremium .28s ease;
 }
 
-@keyframes clickPop{
+@keyframes clickPremium{
 
     0%{
 
@@ -437,9 +477,9 @@ CLICK FEEDBACK (BOUTONS / ACTIONS)
 
     }
 
-    50%{
+    45%{
 
-        transform:scale(.92);
+        transform:scale(.90);
 
     }
 
@@ -452,62 +492,58 @@ CLICK FEEDBACK (BOUTONS / ACTIONS)
 }
 
 /*==================================================
-BOUTON APPUIÉ (FEEDBACK GLOBAL)
+EFFET D'APPUI
 ==================================================*/
 
 .press-effect:active{
 
-    transform:scale(.95);
+    transform:scale(.94);
 
-    filter:brightness(.95);
+    filter:brightness(.92);
 
 }
 
 /*==================================================
-LOADING GLOBAL (POINTS IA)
+LOADING PREMIUM
 ==================================================*/
 
 .loading-dots-global{
 
     display:inline-flex;
 
-    gap:5px;
-
     align-items:center;
 
+    gap:6px;
 }
 
 .loading-dots-global span{
 
-    width:7px;
+    width:8px;
 
-    height:7px;
+    height:8px;
 
     border-radius:50%;
 
-    background:var(--accent, #FFD700);
+    background:var(--accent);
 
-    animation:dotPulse 1.2s infinite ease-in-out;
-
+    animation:premiumDots 1.2s ease-in-out infinite;
 }
 
 .loading-dots-global span:nth-child(2){
 
     animation-delay:.2s;
-
 }
 
 .loading-dots-global span:nth-child(3){
 
     animation-delay:.4s;
-
 }
 
-@keyframes dotPulse{
+@keyframes premiumDots{
 
     0%,100%{
 
-        transform:scale(.4);
+        transform:scale(.5);
 
         opacity:.4;
 
@@ -515,61 +551,68 @@ LOADING GLOBAL (POINTS IA)
 
     50%{
 
-        transform:scale(1.2);
+        transform:scale(1.4);
 
         opacity:1;
+
+        box-shadow:
+            0 0 14px rgba(255,215,0,.45);
 
     }
 
 }
 
 /*==================================================
-SKELETON LOADING (CARDS / ARTICLES)
+SKELETON PREMIUM
 ==================================================*/
 
 .skeleton{
 
-    background:linear-gradient(90deg,
-        rgba(255,255,255,.08) 25%,
-        rgba(255,255,255,.18) 37%,
-        rgba(255,255,255,.08) 63%
+    border-radius:16px;
+
+    background:linear-gradient(
+
+        90deg,
+
+        rgba(255,255,255,.05) 20%,
+
+        rgba(255,255,255,.18) 50%,
+
+        rgba(255,255,255,.05) 80%
+
     );
 
     background-size:400% 100%;
 
-    animation:skeletonMove 1.4s ease infinite;
-
-    border-radius:12px;
-
+    animation:skeletonPremium 1.4s linear infinite;
 }
 
-@keyframes skeletonMove{
+@keyframes skeletonPremium{
 
-    0%{
+    from{
 
-        background-position:100% 50%;
+        background-position:100% 0;
 
     }
 
-    100%{
+    to{
 
-        background-position:0 50%;
+        background-position:-100% 0;
 
     }
 
 }
 
 /*==================================================
-FADE OUT (DISPARITION PROPRE)
+FADE OUT
 ==================================================*/
 
 .fade-out{
 
-    animation:fadeOut .4s ease forwards;
-
+    animation:fadeOutPremium .35s ease forwards;
 }
 
-@keyframes fadeOut{
+@keyframes fadeOutPremium{
 
     from{
 
@@ -583,23 +626,22 @@ FADE OUT (DISPARITION PROPRE)
 
         opacity:0;
 
-        transform:translateY(10px);
+        transform:translateY(12px);
 
     }
 
 }
 
 /*==================================================
-SHAKE ERREUR (ERREUR INPUT / SEARCH)
+SHAKE
 ==================================================*/
 
 .shake{
 
-    animation:shake .45s ease;
-
+    animation:shakePremium .45s ease;
 }
 
-@keyframes shake{
+@keyframes shakePremium{
 
     0%,100%{
 
@@ -607,81 +649,78 @@ SHAKE ERREUR (ERREUR INPUT / SEARCH)
 
     }
 
-    25%{
+    20%{
 
-        transform:translateX(-5px);
-
-    }
-
-    50%{
-
-        transform:translateX(5px);
+        transform:translateX(-6px);
 
     }
 
-    75%{
+    40%{
 
-        transform:translateX(-3px);
+        transform:translateX(6px);
+
+    }
+
+    60%{
+
+        transform:translateX(-4px);
+
+    }
+
+    80%{
+
+        transform:translateX(4px);
 
     }
 
 }
 
 /*==================================================
-PULSE D'ATTENTION (ERREUR / WARNING)
+WARNING PULSE
 ==================================================*/
 
 .pulse-warning{
 
-    animation:pulseWarning 1.5s infinite;
-
+    animation:warningPremium 1.5s infinite;
 }
 
-@keyframes pulseWarning{
+@keyframes warningPremium{
 
-    0%{
+    0%,100%{
 
-        box-shadow:0 0 0 rgba(255,0,0,0);
+        box-shadow:0 0 0 rgba(255,80,80,0);
 
     }
 
     50%{
 
-        box-shadow:0 0 20px rgba(255,0,0,.25);
-
-    }
-
-    100%{
-
-        box-shadow:0 0 0 rgba(255,0,0,0);
+        box-shadow:
+            0 0 24px rgba(255,80,80,.35);
 
     }
 
 }
 
 /*==================================================
-ZOOM HOVER LÉGER (UX POLISH)
+ZOOM HOVER
 ==================================================*/
 
 .zoom-hover:hover{
 
-    transform:scale(1.03);
-
-    transition:.25s ease;
+    transform:scale(1.04);
 
 }
 
 /*==================================================
-ROTATION ICON (LOADING ICONS)
+ROTATION
 ==================================================*/
 
 .rotate{
 
-    animation:rotateIcon 1s linear infinite;
-
+    animation:rotatePremium 1s linear infinite;
 }
 
-@keyframes rotateIcon{
+@keyframes rotatePremium{
 
     from{
 
@@ -698,26 +737,91 @@ ROTATION ICON (LOADING ICONS)
 }
 
 /*==================================================
-OPACITY PULSE (UI INTELLIGENTE)
+RESPIRATION
 ==================================================*/
 
 .opacity-pulse{
 
-    animation:opacityPulse 2s ease-in-out infinite;
-
+    animation:breathing 2.4s ease-in-out infinite;
 }
 
-@keyframes opacityPulse{
+@keyframes breathing{
 
     0%,100%{
 
-        opacity:.6;
+        opacity:.65;
 
     }
 
     50%{
 
         opacity:1;
+
+    }
+
+}
+
+/*==================================================
+EFFET FLOTTANT PREMIUM
+==================================================*/
+
+.float-premium{
+
+    animation:floatPremium 6s ease-in-out infinite;
+}
+
+@keyframes floatPremium{
+
+    0%,100%{
+
+        transform:translateY(0);
+
+    }
+
+    25%{
+
+        transform:translateY(-3px);
+
+    }
+
+    50%{
+
+        transform:translateY(-6px);
+
+    }
+
+    75%{
+
+        transform:translateY(-3px);
+
+    }
+
+}
+
+/*==================================================
+HALO LUMINEUX PREMIUM
+==================================================*/
+
+.glow-premium{
+
+    animation:glowPremium 3s ease-in-out infinite;
+}
+
+@keyframes glowPremium{
+
+    0%,100%{
+
+        box-shadow:
+            0 0 10px rgba(255,215,0,.12),
+            0 0 20px rgba(0,120,255,.10);
+
+    }
+
+    50%{
+
+        box-shadow:
+            0 0 24px rgba(255,215,0,.28),
+            0 0 40px rgba(0,120,255,.20);
 
     }
 
