@@ -1,93 +1,64 @@
 /*==================================================
 ARTICLE.CSS
 PARTIE 1
-STRUCTURE GÉNÉRALE
+STRUCTURE IA MODERNE
 InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
-SECTION ARTICLE PRINCIPALE
+SECTION PRINCIPALE
 ==================================================*/
 
 .article-section{
-
     position:relative;
-
-    overflow:hidden;
-
     margin:40px 0;
-
     padding:35px;
-
-    border-radius:30px;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(18px);
-
-    -webkit-backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.30),
-        inset 0 0 25px rgba(255,255,255,.05);
-
+    border-radius:var(--radius);
+    background:linear-gradient(
+        145deg,
+        var(--primary),
+        var(--secondary)
+    );
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    overflow:hidden;
 }
 
 /*==================================================
-HALO IA FOND
+HALO IA (FOND DYNAMIQUE)
 ==================================================*/
 
 .article-section::before{
-
     content:"";
-
     position:absolute;
-
-    inset:-45%;
-
+    inset:-50%;
     background:radial-gradient(
         circle,
-        rgba(11,94,215,.18),
+        rgba(11,94,215,.20),
         transparent 70%
     );
-
-    animation:articleHalo 10s linear infinite;
-
+    animation:articleRotate 14s linear infinite;
     pointer-events:none;
-
 }
 
 /*==================================================
-PULSATION OR (EFFET IA)
+PULSATION OR (ÉNERGIE IA)
 ==================================================*/
 
 .article-section::after{
-
     content:"";
-
     position:absolute;
-
-    width:240px;
-
-    height:240px;
-
-    right:-90px;
-
-    bottom:-90px;
-
+    width:260px;
+    height:260px;
+    right:-100px;
+    bottom:-100px;
     border-radius:50%;
-
     background:radial-gradient(
-        rgba(255,215,0,.12),
+        rgba(255,215,0,.14),
         transparent 70%
     );
-
-    pointer-events:none;
-
     animation:articlePulse 6s ease-in-out infinite;
-
+    pointer-events:none;
 }
 
 /*==================================================
@@ -95,93 +66,50 @@ TITRE SECTION
 ==================================================*/
 
 .article-section .section-title{
-
-    position:relative;
-
     text-align:center;
-
     margin-bottom:30px;
-
+    position:relative;
     z-index:2;
-
 }
 
 .article-section .section-title h2{
-
     color:var(--accent);
-
     font-size:32px;
-
-    font-weight:700;
-
-    margin-bottom:12px;
-
-    text-shadow:
-        0 0 15px rgba(255,215,0,.35);
-
+    font-weight:800;
+    text-shadow:0 0 15px rgba(255,215,0,.35);
+    margin-bottom:10px;
 }
 
 .article-section .section-title p{
-
-    color:#dce8ff;
-
+    color:var(--text);
     font-size:16px;
-
-    line-height:1.8;
-
+    opacity:.9;
     max-width:750px;
-
     margin:auto;
-
-  }
-
-/*==================================================
-ARTICLE.CSS
-PARTIE 2
-CARTE ARTICLE • STRUCTURE
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-CARTE PRINCIPALE
-==================================================*/
-
-.article-card{
-
-    position:relative;
-
-    overflow:hidden;
-
-    background:#ffffff;
-
-    color:#041c5c;
-
-    border-radius:25px;
-
-    padding:30px;
-
-    margin-top:25px;
-
-    border-left:8px solid #FFD700;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.20);
-
-    transition:all .35s ease;
-
+    line-height:1.7;
 }
 
 /*==================================================
-HOVER CARTE
+CARTE ARTICLE
 ==================================================*/
 
+.article-card{
+    position:relative;
+    background:rgba(255,255,255,.95);
+    color:var(--primary);
+    border-radius:25px;
+    padding:30px;
+    margin-top:25px;
+    border-left:8px solid var(--accent);
+    box-shadow:0 10px 25px rgba(0,0,0,.20);
+    transition:var(--transition);
+    overflow:hidden;
+}
+
+/* hover */
 .article-card:hover{
-
     transform:translateY(-6px);
-
-    box-shadow:
-        0 15px 30px rgba(255,215,0,.25);
-
+    box-shadow:0 15px 30px rgba(255,215,0,.20);
 }
 
 /*==================================================
@@ -189,23 +117,14 @@ NUMÉRO ARTICLE
 ==================================================*/
 
 .article-number{
-
     display:inline-block;
-
     padding:8px 18px;
-
     border-radius:30px;
-
-    background:#FFD700;
-
-    color:#041c5c;
-
-    font-weight:700;
-
-    font-size:16px;
-
-    margin-bottom:18px;
-
+    background:var(--accent);
+    color:var(--primary);
+    font-weight:800;
+    font-size:15px;
+    margin-bottom:15px;
 }
 
 /*==================================================
@@ -213,17 +132,10 @@ TITRE ARTICLE
 ==================================================*/
 
 .article-title{
-
     font-size:26px;
-
     font-weight:800;
-
     color:#0a2b73;
-
     margin-bottom:15px;
-
-    line-height:1.3;
-
 }
 
 /*==================================================
@@ -231,39 +143,24 @@ CATÉGORIE
 ==================================================*/
 
 .article-category{
-
     display:inline-block;
-
     padding:6px 14px;
-
     border-radius:20px;
-
-    background:rgba(11,94,215,.10);
-
-    color:#0B5ED7;
-
+    background:rgba(11,94,215,.12);
+    color:var(--primary-light);
     font-size:13px;
-
     font-weight:600;
-
     margin-bottom:18px;
-
 }
 
 /*==================================================
-CONTENU ARTICLE
+CONTENU
 ==================================================*/
 
 .article-content{
-
     font-size:17px;
-
     line-height:1.9;
-
     text-align:justify;
-
-    color:#041c5c;
-
 }
 
 /*==================================================
@@ -271,108 +168,48 @@ SANCTION
 ==================================================*/
 
 .article-sanction{
-
     margin-top:20px;
-
     padding:15px;
-
     border-radius:15px;
-
     background:rgba(255,0,0,.06);
-
     border:1px solid rgba(255,0,0,.15);
-
     color:#8b0000;
-
     font-weight:600;
-
-  }
-
-/*==================================================
-ARTICLE.CSS
-PARTIE 3
-ACTIONS • IA • INTERACTIONS
-InspecteurBot RDC 2026
-==================================================*/
+}
 
 /*==================================================
-ZONE ACTIONS
+ACTIONS
 ==================================================*/
 
 .assistant-actions{
-
     display:flex;
-
     flex-wrap:wrap;
-
     justify-content:center;
-
     gap:14px;
-
     margin-top:25px;
-
 }
 
-/*==================================================
-BOUTONS ACTIONS
-==================================================*/
-
+/* boutons */
 .assistant-actions button{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:8px;
-
     padding:12px 18px;
-
-    border:none;
-
     border-radius:18px;
-
-    cursor:pointer;
-
-    font-size:14px;
-
+    border:1px solid rgba(255,215,0,.25);
+    background:linear-gradient(
+        135deg,
+        var(--primary-light),
+        var(--primary)
+    );
+    color:var(--accent);
     font-weight:600;
-
-    color:#FFD700;
-
-    background:linear-gradient(135deg,#082b73,#041c5c);
-
-    border:1px solid rgba(255,215,0,.30);
-
-    transition:all .3s ease;
-
-    box-shadow:0 6px 18px rgba(0,0,0,.15);
-
+    cursor:pointer;
+    transition:var(--transition);
 }
 
-/*==================================================
-HOVER BOUTONS
-==================================================*/
-
+/* hover */
 .assistant-actions button:hover{
-
     transform:translateY(-4px);
-
-    box-shadow:0 0 20px rgba(255,215,0,.35);
-
-    color:#ffffff;
-
-}
-
-/*==================================================
-ICÔNES BOUTONS
-==================================================*/
-
-.assistant-actions i{
-
-    font-size:15px;
-
+    box-shadow:0 0 20px rgba(255,215,0,.25);
+    color:#fff;
 }
 
 /*==================================================
@@ -380,389 +217,124 @@ ZONE IA
 ==================================================*/
 
 .ai-result{
-
     margin-top:30px;
-
     padding:25px;
-
     border-radius:20px;
-
-    background:rgba(255,255,255,.08);
-
-    border:1px solid rgba(255,215,0,.25);
-
+    background:var(--glass);
+    border:1px solid var(--border);
     backdrop-filter:blur(15px);
-
 }
 
-/*==================================================
-TITRE IA
-==================================================*/
-
+/* titre IA */
 .ai-result h3{
-
-    color:#FFD700;
-
+    color:var(--accent);
     font-size:22px;
-
     margin-bottom:15px;
-
 }
 
-/*==================================================
-RÉPONSE IA
-==================================================*/
-
+/* texte IA */
 #reponseIA{
-
-    color:#ffffff;
-
+    color:var(--text);
     font-size:16px;
-
     line-height:1.9;
-
 }
 
 /*==================================================
-EFFET FOCUS ARTICLE
+ANIMATIONS
 ==================================================*/
 
-.article-card:focus-within{
-
-    outline:none;
-
-    box-shadow:
-        0 0 0 3px rgba(255,215,0,.25),
-        0 10px 25px rgba(0,0,0,.25);
-
+@keyframes articleRotate{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
 }
-
-/*==================================================
-ARTICLE.CSS
-PARTIE 4
-ANIMATIONS • EFFETS IA
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-HALO PRINCIPAL
-==================================================*/
-
-@keyframes articleHalo{
-
-    from{
-
-        transform:rotate(0deg);
-
-    }
-
-    to{
-
-        transform:rotate(360deg);
-
-    }
-
-}
-
-/*==================================================
-PULSATION OR
-==================================================*/
 
 @keyframes articlePulse{
-
-    0%{
-
-        transform:scale(1);
-
-        opacity:.35;
-
-    }
-
-    50%{
-
-        transform:scale(1.25);
-
-        opacity:.15;
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-        opacity:.35;
-
-    }
-
+    0%{ transform:scale(1); opacity:.35; }
+    50%{ transform:scale(1.25); opacity:.15; }
+    100%{ transform:scale(1); opacity:.35; }
 }
 
-/*==================================================
-EFFET LUMIÈRE CARTE
-==================================================*/
-
+/* lumière carte */
 .article-card::before{
-
     content:"";
-
     position:absolute;
-
     top:0;
-
     left:-120%;
-
-    width:45%;
-
+    width:50%;
     height:100%;
-
     background:linear-gradient(
-
         transparent,
-
         rgba(255,255,255,.20),
-
         transparent
-
     );
-
     transform:skewX(-25deg);
-
 }
 
 .article-card:hover::before{
-
-    animation:articleLight 0.9s linear;
-
+    animation:lightSweep .9s linear;
 }
 
-/*==================================================
-ANIMATION LUMIÈRE
-==================================================*/
-
-@keyframes articleLight{
-
-    from{
-
-        left:-120%;
-
-    }
-
-    to{
-
-        left:160%;
-
-    }
-
+@keyframes lightSweep{
+    from{ left:-120%; }
+    to{ left:160%; }
 }
 
-/*==================================================
-APPARITION ARTICLE
-==================================================*/
-
+/* apparition */
 .article-card{
-
-    animation:articleFade .5s ease;
-
+    animation:fadeUp .5s ease;
 }
 
-@keyframes articleFade{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(20px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
+@keyframes fadeUp{
+    from{ opacity:0; transform:translateY(20px); }
+    to{ opacity:1; transform:translateY(0); }
 }
 
 /*==================================================
-BOUTONS IA PULSE
-==================================================*/
-
-.assistant-actions button:hover{
-
-    animation:btnPulse .6s ease;
-
-}
-
-@keyframes btnPulse{
-
-    0%{
-
-        transform:translateY(-4px) scale(1);
-
-    }
-
-    50%{
-
-        transform:translateY(-6px) scale(1.03);
-
-    }
-
-    100%{
-
-        transform:translateY(-4px) scale(1);
-
-    }
-
-}
-
-/*==================================================
-ARTICLE.CSS
-PARTIE 5
-RESPONSIVE • MOBILE • ACCESSIBILITÉ
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-TABLETTE
+RESPONSIVE
 ==================================================*/
 
 @media(max-width:900px){
-
     .article-card{
-
         padding:25px;
-
     }
 
     .article-title{
-
         font-size:22px;
-
     }
 
     .article-content{
-
         font-size:16px;
-
     }
-
-    .assistant-actions{
-
-        gap:12px;
-
-    }
-
 }
 
-/*==================================================
-MOBILE
-==================================================*/
-
 @media(max-width:768px){
-
     .article-section{
-
         padding:25px;
-
-        border-radius:24px;
-
     }
 
     .article-section .section-title h2{
-
         font-size:24px;
-
     }
 
     .article-card{
-
         padding:20px;
-
     }
 
     .article-title{
-
         font-size:20px;
-
     }
 
     .article-content{
-
         font-size:15px;
-
-        line-height:1.8;
-
     }
 
     .assistant-actions{
-
         flex-direction:column;
-
     }
 
     .assistant-actions button{
-
         width:100%;
-
     }
-
-    .ai-result h3{
-
-        font-size:20px;
-
-    }
-
 }
 
-/*==================================================
-PETITS ÉCRANS
-==================================================*/
-
-@media(max-width:480px){
-
-    .article-card{
-
-        padding:18px;
-
-    }
-
-    .article-title{
-
-        font-size:18px;
-
-    }
-
-    .article-number{
-
-        font-size:14px;
-
-        padding:6px 14px;
-
-    }
-
-}
-
-/*==================================================
-ACCESSIBILITÉ (réduction animations)
-==================================================*/
-
-@media (prefers-reduced-motion: reduce){
-
-    .article-section::before,
-    .article-section::after,
-    .article-card,
-    .article-card::before{
-
-        animation:none !important;
-
-    }
-
-    .assistant-actions button:hover{
-
-        animation:none !important;
-
-    }
-
-}
 
