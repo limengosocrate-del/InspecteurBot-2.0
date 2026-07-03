@@ -1,73 +1,79 @@
 /*==================================================
 RESPONSIVE.CSS
 PARTIE 1
-BASE GLOBALE • MOBILE FIRST • STRUCTURE FLUIDE
+PREMIUM RESPONSIVE SYSTEM
 InspecteurBot RDC 2026
 ==================================================*/
 
 /*==================================================
-RESET RESPONSIVE GLOBAL
+BASE FLUIDE
 ==================================================*/
 
-img,
-video,
-canvas{
-
-    max-width:100%;
-
-    height:auto;
-
-    display:block;
-
+*{
+    -webkit-tap-highlight-color:transparent;
 }
 
-/*==================================================
-BASE TYPO RESPONSIVE
-==================================================*/
-
 html{
-
     font-size:16px;
-
+    scroll-behavior:smooth;
 }
 
 body{
-
     overflow-x:hidden;
+}
 
+img,
+video,
+canvas,
+svg{
+    max-width:100%;
+    height:auto;
+    display:block;
 }
 
 /*==================================================
-CONTAINER RESPONSIVE
+CONTAINER PREMIUM
 ==================================================*/
 
 .container{
 
-    width:95%;
-
-    max-width:1400px;
+    width:min(95%,1500px);
 
     margin:auto;
 
-    padding:20px;
+    padding:22px;
 
 }
 
 /*==================================================
-GRAND ÉCRAN (DEFAULT STABLE)
+ÉCRANS XXL
 ==================================================*/
 
-@media(min-width:1200px){
+@media(min-width:1600px){
 
     html{
 
-        font-size:17px;
+        font-size:18px;
 
     }
 
     .container{
 
-        max-width:1300px;
+        max-width:1500px;
+
+    }
+
+}
+
+/*==================================================
+LAPTOP
+==================================================*/
+
+@media(max-width:1400px){
+
+    .container{
+
+        width:96%;
 
     }
 
@@ -77,11 +83,11 @@ GRAND ÉCRAN (DEFAULT STABLE)
 TABLETTE LARGE
 ==================================================*/
 
-@media(max-width:1024px){
+@media(max-width:1100px){
 
     html{
 
-        font-size:15px;
+        font-size:15.5px;
 
     }
 
@@ -89,7 +95,7 @@ TABLETTE LARGE
 
         width:96%;
 
-        padding:18px;
+        padding:20px;
 
     }
 
@@ -103,14 +109,22 @@ TABLETTE
 
     html{
 
-        font-size:14.5px;
+        font-size:15px;
+
+    }
+
+    .container{
+
+        width:97%;
+
+        padding:18px;
 
     }
 
 }
 
 /*==================================================
-MOBILE STANDARD
+SMARTPHONE
 ==================================================*/
 
 @media(max-width:768px){
@@ -118,28 +132,6 @@ MOBILE STANDARD
     html{
 
         font-size:14px;
-
-    }
-
-    .container{
-
-        width:95%;
-
-        padding:12px;
-
-    }
-
-}
-
-/*==================================================
-PETIT MOBILE
-==================================================*/
-
-@media(max-width:480px){
-
-    html{
-
-        font-size:13.5px;
 
     }
 
@@ -147,805 +139,27 @@ PETIT MOBILE
 
         width:96%;
 
-        padding:10px;
+        padding:15px;
 
     }
 
 }
 
 /*==================================================
-RESPONSIVE.CSS
-PARTIE 2
-HEADER • TOOLBAR • SEARCH
-UX MOBILE & TABLETTE OPTIMISÉ
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-HEADER RESPONSIVE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .top-header{
-
-        padding:25px 18px;
-
-    }
-
-    .title-box h1{
-
-        font-size:30px;
-
-    }
-
-    .title-box h2{
-
-        font-size:20px;
-
-    }
-
-    .title-box h3{
-
-        font-size:16px;
-
-    }
-
-}
-
-/*==================================================
-TABLETTE HEADER
-==================================================*/
-
-@media(max-width:900px){
-
-    .top-header{
-
-        border-radius:22px;
-
-        padding:22px 15px;
-
-    }
-
-    .datetime-box{
-
-        margin-top:18px;
-
-    }
-
-    #clock{
-
-        font-size:44px;
-
-    }
-
-}
-
-/*==================================================
-MOBILE HEADER COMPLET
-==================================================*/
-
-@media(max-width:768px){
-
-    .top-header{
-
-        padding:20px 15px;
-
-        border-radius:20px;
-
-    }
-
-    .logo-box img{
-
-        width:65px;
-
-        height:65px;
-
-    }
-
-    .title-box h1{
-
-        font-size:22px;
-
-    }
-
-    .title-box h2{
-
-        font-size:16px;
-
-    }
-
-    .title-box h3{
-
-        font-size:14px;
-
-    }
-
-    #clock{
-
-        font-size:38px;
-
-    }
-
-    #day{
-
-        font-size:16px;
-
-    }
-
-    #date{
-
-        font-size:14px;
-
-    }
-
-}
-
-/*==================================================
-TOOLBAR RESPONSIVE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .toolbar{
-
-        flex-direction:column;
-
-        gap:15px;
-
-    }
-
-    .toolbar-left,
-    .toolbar-right{
-
-        justify-content:center;
-
-        flex-wrap:wrap;
-
-    }
-
-}
-
-/*==================================================
-MOBILE TOOLBAR
-==================================================*/
-
-@media(max-width:768px){
-
-    .toolbar-right{
-
-        gap:10px;
-
-    }
-
-    .tool-btn{
-
-        width:42px;
-
-        height:42px;
-
-        font-size:16px;
-
-    }
-
-}
-
-/*==================================================
-SEARCH RESPONSIVE TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .search-box{
-
-        flex-direction:row;
-
-        flex-wrap:wrap;
-
-        justify-content:center;
-
-    }
-
-    .search-box input{
-
-        width:100%;
-
-    }
-
-    .search-box button{
-
-        width:55px;
-
-        height:55px;
-
-    }
-
-}
-
-/*==================================================
-SEARCH MOBILE COMPLET
-==================================================*/
-
-@media(max-width:768px){
-
-    .search-section{
-
-        padding:18px;
-
-        border-radius:18px;
-
-    }
-
-    .search-header h2{
-
-        font-size:22px;
-
-    }
-
-    .search-header p{
-
-        font-size:14px;
-
-    }
-
-    .search-box{
-
-        flex-direction:column;
-
-        gap:10px;
-
-    }
-
-    .search-box input{
-
-        height:52px;
-
-        font-size:14px;
-
-    }
-
-    .search-box button{
-
-        width:100%;
-
-        height:50px;
-
-        border-radius:14px;
-
-    }
-
-    .suggestions button{
-
-        width:100%;
-
-        font-size:13px;
-
-    }
-
-}
-
-/*==================================================
-EXTRA PETIT MOBILE
+PETITS SMARTPHONES
 ==================================================*/
 
 @media(max-width:480px){
 
-    .title-box h1{
+    html{
 
-        font-size:20px;
-
-    }
-
-    .search-header h2{
-
-        font-size:20px;
+        font-size:13.4px;
 
     }
 
-    .tool-btn{
+    .container{
 
-        width:38px;
-
-        height:38px;
-
-    }
-
-        }
-
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 3
-CATÉGORIES • ARTICLES • IA
-UX MOBILE & TABLETTE OPTIMISÉE
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-CATÉGORIES TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .categories-grid{
-
-        grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-        gap:18px;
-
-    }
-
-    .category-card{
-
-        padding:22px 18px;
-
-    }
-
-    .category-card i{
-
-        font-size:42px;
-
-    }
-
-    .category-card h3{
-
-        font-size:20px;
-
-    }
-
-}
-
-/*==================================================
-CATÉGORIES MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .categories-grid{
-
-        grid-template-columns:repeat(2,1fr);
-
-        gap:14px;
-
-    }
-
-    .category-card{
-
-        padding:18px 14px;
-
-        border-radius:18px;
-
-    }
-
-    .category-card i{
-
-        font-size:34px;
-
-        margin-bottom:10px;
-
-    }
-
-    .category-card h3{
-
-        font-size:16px;
-
-    }
-
-    .category-card p{
-
-        font-size:13px;
-
-    }
-
-    .badge{
-
-        font-size:11px;
-
-        padding:5px 10px;
-
-    }
-
-}
-
-/*==================================================
-PETIT MOBILE CATÉGORIES
-==================================================*/
-
-@media(max-width:480px){
-
-    .categories-grid{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .category-card{
-
-        padding:16px;
-
-    }
-
-}
-
-/*==================================================
-ARTICLE TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .article-section{
-
-        padding:25px;
-
-    }
-
-    .article-title{
-
-        font-size:22px;
-
-    }
-
-    .article-content{
-
-        font-size:16px;
-
-    }
-
-}
-
-/*==================================================
-ARTICLE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .article-section{
-
-        padding:18px;
-
-        border-radius:18px;
-
-    }
-
-    .article-section h2{
-
-        font-size:22px;
-
-    }
-
-    .article-card{
-
-        padding:18px;
-
-        border-radius:16px;
-
-    }
-
-    .article-title{
-
-        font-size:18px;
-
-    }
-
-    .article-content{
-
-        font-size:14px;
-
-        line-height:1.7;
-
-    }
-
-    .article-number{
-
-        font-size:14px;
-
-        padding:6px 14px;
-
-    }
-
-}
-
-/*==================================================
-BOUTONS ARTICLE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .assistant-actions{
-
-        flex-direction:column;
-
-        gap:10px;
-
-    }
-
-    .assistant-actions button{
-
-        width:100%;
-
-        font-size:14px;
-
-        padding:12px 16px;
-
-    }
-
-}
-
-/*==================================================
-ZONE IA RESPONSIVE
-==================================================*/
-
-@media(max-width:768px){
-
-    .ai-result{
-
-        padding:18px;
-
-    }
-
-    .ai-result h3{
-
-        font-size:20px;
-
-        text-align:center;
-
-    }
-
-    #reponseIA{
-
-        font-size:14px;
-
-        line-height:1.6;
-
-    }
-
-}
-
-/*==================================================
-QUESTIONS RAPIDES (IA TOOLS)
-==================================================*/
-
-@media(max-width:768px){
-
-    #questionsRapides{
-
-        flex-direction:column;
-
-        gap:10px;
-
-    }
-
-    #questionsRapides button{
-
-        width:100%;
-
-        font-size:13px;
-
-        padding:10px 12px;
-
-    }
-
-}
-
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 4
-OUTILS • STATS • FOOTER • BOUTONS • FINITION
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-OUTILS SECTION TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .outils-grid{
-
-        grid-template-columns:repeat(2,1fr);
-
-        gap:18px;
-
-    }
-
-    .outil-card{
-
-        padding:20px;
-
-    }
-
-    .outil-card h3{
-
-        font-size:18px;
-
-    }
-
-}
-
-/*==================================================
-OUTILS MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .outils-grid{
-
-        grid-template-columns:1fr;
-
-        gap:14px;
-
-    }
-
-    .outil-card{
-
-        padding:18px;
-
-        border-radius:18px;
-
-    }
-
-    .outil-card i{
-
-        font-size:30px;
-
-    }
-
-}
-
-/*==================================================
-STATISTIQUES TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    .stats-grid{
-
-        grid-template-columns:repeat(2,1fr);
-
-        gap:18px;
-
-    }
-
-    .stat-card h3{
-
-        font-size:28px;
-
-    }
-
-}
-
-/*==================================================
-STATISTIQUES MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .stats-grid{
-
-        grid-template-columns:1fr;
-
-        gap:14px;
-
-    }
-
-    .stat-card{
-
-        padding:18px;
-
-    }
-
-    .stat-card h3{
-
-        font-size:24px;
-
-    }
-
-}
-
-/*==================================================
-FOOTER TABLETTE
-==================================================*/
-
-@media(max-width:1024px){
-
-    footer{
-
-        padding:30px 20px;
-
-    }
-
-    footer h2{
-
-        font-size:20px;
-
-    }
-
-    footer h3{
-
-        font-size:18px;
-
-    }
-
-}
-
-/*==================================================
-FOOTER MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    footer{
-
-        padding:25px 15px;
-
-    }
-
-    footer img{
-
-        width:55px;
-
-        height:55px;
-
-    }
-
-    footer h2{
-
-        font-size:18px;
-
-    }
-
-    footer h3{
-
-        font-size:16px;
-
-    }
-
-    footer p{
-
-        font-size:13px;
-
-        line-height:1.6;
-
-    }
-
-}
-
-/*==================================================
-BOUTON RETOUR HAUT MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    #btnTop{
-
-        width:45px;
-
-        height:45px;
-
-        font-size:18px;
-
-        right:12px;
-
-        bottom:12px;
-
-    }
-
-}
-
-/*==================================================
-NOTIFICATION MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .notification{
-
-        width:90%;
-
-        left:50%;
-
-        transform:translateX(-50%);
-
-        font-size:13px;
+        width:97%;
 
         padding:12px;
 
@@ -954,33 +168,317 @@ NOTIFICATION MOBILE
 }
 
 /*==================================================
-FIN POLISH GLOBAL MOBILE
+HEADER PREMIUM
 ==================================================*/
 
-@media(max-width:480px){
+@media(max-width:1100px){
 
-    .section-title{
+    .top-header{
 
-        font-size:20px;
+        padding:28px 22px;
 
     }
 
-    .section-subtitle{
+}
+
+@media(max-width:768px){
+
+    .top-header{
+
+        padding:22px 16px;
+
+        border-radius:24px;
+
+    }
+
+    .logo-box img{
+
+        width:72px;
+
+        height:72px;
+
+    }
+
+    .title-box h1{
+
+        font-size:23px;
+
+    }
+
+    .title-box h2{
+
+        font-size:17px;
+
+    }
+
+    .title-box h3{
 
         font-size:14px;
 
     }
 
-    .outil-card h3{
+}
 
-        font-size:16px;
+/*==================================================
+RESPONSIVE.CSS
+PARTIE 2/3
+ARTICLES • ASSISTANT IA • MODALES
+InspecteurBot RDC 2026
+==================================================*/
 
+/*==================================================
+ARTICLE TABLETTE
+==================================================*/
+@media (max-width:1024px){
+
+    .article-section{
+        padding:26px;
     }
 
-    .stat-card h3{
+    .article-card{
+        padding:24px;
+    }
 
+    .article-title{
         font-size:22px;
-
     }
+
+    .article-content{
+        font-size:16px;
+        line-height:1.8;
+    }
+
+}
+
+/*==================================================
+ARTICLE MOBILE
+==================================================*/
+@media (max-width:768px){
+
+    .article-section{
+        padding:18px;
+        border-radius:18px;
+    }
+
+    .article-card{
+        padding:18px;
+        border-radius:16px;
+    }
+
+    .article-number{
+        font-size:13px;
+        padding:6px 14px;
+    }
+
+    .article-title{
+        font-size:18px;
+    }
+
+    .article-content{
+        font-size:14px;
+        line-height:1.7;
+    }
+
+    .assistant-actions{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .assistant-actions button{
+        width:100%;
+    }
+
+}
+
+/*==================================================
+ASSISTANT IA
+==================================================*/
+@media (max-width:768px){
+
+    .assistant-section{
+        padding:20px;
+    }
+
+    .ai-chat{
+        gap:14px;
+    }
+
+    .ai-message.user,
+    .ai-message.bot{
+        max-width:100%;
+        font-size:14px;
+    }
+
+    .ai-input-box{
+        flex-direction:column;
+    }
+
+    .ai-input-box input{
+        width:100%;
+    }
+
+    .ai-send-btn,
+    .ai-micro-btn{
+        width:100%;
+        height:50px;
+    }
+
+}
+
+/*==================================================
+MODALES
+==================================================*/
+@media (max-width:768px){
+
+    .modal,
+    .modal-content{
+        width:96%;
+        max-height:90vh;
+        border-radius:18px;
+    }
+
+}
+
+/*==================================================
+RESPONSIVE.CSS
+PARTIE 3
+ARTICLES • ASSISTANT IA • RÉSULTATS
+InspecteurBot RDC 2026
+==================================================*/
+
+/*==================================================
+TABLETTE
+==================================================*/
+
+@media (max-width:1024px){
+
+.article-section,
+.assistant-section{
+padding:28px;
+}
+
+.article-card{
+padding:24px;
+}
+
+.article-title{
+font-size:22px;
+}
+
+.article-content{
+font-size:16px;
+line-height:1.8;
+}
+
+.ai-chat{
+gap:16px;
+}
+
+.ai-message{
+max-width:90%;
+}
+
+}
+
+/*==================================================
+MOBILE
+==================================================*/
+
+@media (max-width:768px){
+
+.article-section,
+.assistant-section{
+padding:20px;
+border-radius:20px;
+}
+
+.article-card{
+padding:18px;
+border-radius:18px;
+}
+
+.article-number{
+font-size:13px;
+padding:6px 12px;
+}
+
+.article-title{
+font-size:18px;
+}
+
+.article-content{
+font-size:14px;
+line-height:1.7;
+text-align:left;
+}
+
+.assistant-actions{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.assistant-actions button{
+width:100%;
+}
+
+.ai-chat{
+gap:14px;
+}
+
+.ai-message{
+max-width:100%;
+font-size:14px;
+padding:14px;
+}
+
+.ai-input-box{
+flex-direction:column;
+gap:10px;
+}
+
+.ai-input-box input{
+width:100%;
+height:50px;
+}
+
+.ai-send-btn,
+.ai-micro-btn{
+width:100%;
+height:50px;
+}
+
+.ai-result{
+padding:18px;
+}
+
+#reponseIA{
+font-size:14px;
+line-height:1.7;
+}
+
+}
+
+/*==================================================
+PETITS SMARTPHONES
+==================================================*/
+
+@media (max-width:480px){
+
+.article-title{
+font-size:17px;
+}
+
+.article-content{
+font-size:13px;
+}
+
+.ai-message{
+font-size:13px;
+}
+
+.ai-result{
+padding:15px;
+}
 
 }
