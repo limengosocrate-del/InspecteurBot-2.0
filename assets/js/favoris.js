@@ -1,85 +1,186 @@
-/*=================================================
- INSPECTEURBOT RDC
- favoris.js
- VERSION 1.0
- Gestion des favoris
-==================================================*/
-
 "use strict";
 
-/*=================================================
+/*==================================================
+ INSPECTEURBOT IA RDC
+ favoris.js
+ VERSION 3.0
+ Gestion intelligente des favoris
+==================================================*/
+
+/*==================================================
  ESPACE DE NOMS
 ==================================================*/
 
 window.CodeTravail = window.CodeTravail || {};
-
 window.CodeTravail.Favoris = {};
 
-/*=================================================
- CONSTANTES
+/*==================================================
+ CONFIGURATION
 ==================================================*/
 
 const CLE_FAVORIS = "inspecteurbot_favoris";
 
-/*=================================================
+let favorisCache = [];
+
+/*==================================================
+ INITIALISATION DU CACHE
+==================================================*/
+
+function initialiserCache() {
+
+    favorisCache = chargerFavoris();
+
+}
+
+/*==================================================
  CHARGER LES FAVORIS
 ==================================================*/
 
 function chargerFavoris() {
 
-    return window.CodeTravail.Utils.charger(
+    try {
 
-        CLE_FAVORIS,
+        const data = localStorage.getItem(CLE_FAVORIS);
 
-        []
+        if (!data) return [];
 
-    );
+        const favoris = JSON.parse(data);
+
+        return Array.isArray(favoris)
+            ? favoris
+            : [];
+
+    }
+
+    catch (e) {
+
+        console.error(
+            "Erreur lecture favoris :",
+            e
+        );
+
+        return [];
+
+    }
 
 }
 
-/*=================================================
- SAUVEGARDER LES FAVORIS
+/*==================================================
+ SAUVEGARDER
 ==================================================*/
 
 function sauvegarderFavoris(favoris) {
 
-    window.CodeTravail.Utils.sauvegarder(
+    try {
 
-        CLE_FAVORIS,
+        favorisCache = [...favoris];
 
-        favoris
+        localStorage.setItem(
 
-    );
+            CLE_FAVORIS,
+
+            JSON.stringify(favorisCache)
+
+        );
+
+    }
+
+    catch (e) {
+
+        console.error(
+            "Erreur sauvegarde favoris :",
+            e
+        );
+
+    }
 
 }
 
-/*=================================================
- VÉRIFIER SI UN ARTICLE EST DÉJÀ EN FAVORI
+/*==================================================
+ OBTENIR TOUS LES FAVORIS
+==================================================*/
+
+function obtenirFavoris() {
+
+    return [...favorisCache];
+
+}
+
+/*==================================================
+ RECHERCHE PAR NUMÉRO
+==================================================*/
+
+function trouverFavori(numero) {
+
+    return favorisCache.find(article =>
+
+        String(article.numero) === String(numero)
+
+    ) || null;
+
+}
+
+/*==================================================
+ VÉRIFIER SI EXISTE
 ==================================================*/
 
 function estFavori(numero) {
 
-    const favoris = chargerFavoris();
-
-    return favoris.some(
-
-        article => article.numero === numero
-
-    );
+    return trouverFavori(numero) !== null;
 
 }
 
-/*=================================================
+/*==================================================
+ EXPORT
+==================================================*/
+
+window.CodeTravail.Favoris.charger =
+    chargerFavoris;
+
+window.CodeTravail.Favoris.sauvegarder =
+    sauvegarderFavoris;
+
+window.CodeTravail.Favoris.obtenir =
+    obtenirFavoris;
+
+window.CodeTravail.Favoris.trouver =
+    trouverFavori;
+
+window.CodeTravail.Favoris.estFavori =
+    estFavori;
+
+/*==================================================
+ PARTIE 2
+ AJOUT - SUPPRESSION - BASCULE
+==================================================*/
+
+/*==================================================
  AJOUTER UN FAVORI
 ==================================================*/
 
 function ajouterFavori(article) {
 
-    const favoris = chargerFavoris();
+    if (!article) return false;
 
-    if (estFavori(article.numero)) {
+    const numero = String(
 
-        window.CodeTravail.Utils.afficherNotification(
+        article.numero ||
+        article.numeroArticle ||
+        ""
+
+    );
+
+    if (!numero) {
+
+        console.warn("Article invalide.");
+
+        return false;
+
+    }
+
+    if (estFavori(numero)) {
+
+        window.CodeTravail.Utils?.afficherNotification(
 
             "Cet article est déjà enregistré.",
 
@@ -87,80 +188,115 @@ function ajouterFavori(article) {
 
         );
 
-        return;
+        return false;
 
     }
 
-    favoris.push(article);
+    const favori = {
 
-    sauvegarderFavoris(favoris);
+        numero,
+
+        titre:
+
+            article.titre ||
+            article.intitule ||
+            "Sans titre",
+
+        categorie:
+
+            article.categorie ||
+            article.section ||
+            "",
+
+        contenu:
+
+            article.contenu || "",
+
+        dateAjout:
+
+            new Date().toISOString()
+
+    };
+
+    favorisCache.push(favori);
+
+    sauvegarderFavoris(favorisCache);
 
     mettreAJourCompteur();
 
-    window.CodeTravail.Utils.afficherNotification(
+    actualiserBouton();
 
-        "Article ajouté aux favoris."
+    window.CodeTravail.Utils?.afficherNotification(
+
+        "⭐ Article ajouté aux favoris."
 
     );
 
+    return true;
+
 }
 
-/*=================================================
- EXPORT
-==================================================*/
-
-window.CodeTravail.Favoris.charger = chargerFavoris;
-
-window.CodeTravail.Favoris.sauvegarder = sauvegarderFavoris;
-
-window.CodeTravail.Favoris.estFavori = estFavori;
-
-window.CodeTravail.Favoris.ajouter = ajouterFavori;
-
-/*=================================================
- PARTIE 2
- SUPPRESSION - COMPTEUR - BOUTON FAVORI
-==================================================*/
-
-/*=================================================
+/*==================================================
  SUPPRIMER UN FAVORI
 ==================================================*/
 
 function supprimerFavori(numero) {
 
-    let favoris = chargerFavoris();
+    numero = String(numero);
 
-    favoris = favoris.filter(
+    const tailleAvant = favorisCache.length;
 
-        article => article.numero !== numero
+    favorisCache = favorisCache.filter(
+
+        article =>
+
+            String(article.numero) !== numero
 
     );
 
-    sauvegarderFavoris(favoris);
+    if (favorisCache.length === tailleAvant) {
+
+        return false;
+
+    }
+
+    sauvegarderFavoris(favorisCache);
 
     mettreAJourCompteur();
 
-    window.CodeTravail.Utils.afficherNotification(
+    actualiserBouton();
+
+    window.CodeTravail.Utils?.afficherNotification(
 
         "Article retiré des favoris."
 
     );
 
+    return true;
+
 }
 
-/*=================================================
- AJOUT / RETRAIT AUTOMATIQUE
+/*==================================================
+ BASCULER FAVORI
 ==================================================*/
 
-function basculerFavori() {
+function basculerFavori(article = null) {
 
-    const article =
-        window.CodeTravail.Utils.articleActuel();
+    if (!article) {
 
-    if (!article.numero ||
-        article.numero === "Article —") {
+        article =
 
-        window.CodeTravail.Utils.afficherNotification(
+            window.CodeTravail.Utils?.articleActuel?.()
+
+            ||
+
+            null;
+
+    }
+
+    if (!article) {
+
+        window.CodeTravail.Utils?.afficherNotification(
 
             "Aucun article sélectionné.",
 
@@ -172,86 +308,34 @@ function basculerFavori() {
 
     }
 
-    if (estFavori(article.numero)) {
+    const numero =
 
-        supprimerFavori(article.numero);
+        article.numero ||
 
-    } else {
+        article.numeroArticle;
 
-        ajouterFavori(article);
+    if (!numero) return;
 
-    }
+    if (estFavori(numero)) {
 
-    actualiserBouton();
-
-}
-
-/*=================================================
- METTRE À JOUR LE BOUTON
-==================================================*/
-
-function actualiserBouton() {
-
-    const bouton =
-        document.querySelector("#btnFavoriArticle");
-
-    if (!bouton) return;
-
-    const article =
-        window.CodeTravail.Utils.articleActuel();
-
-    const icone =
-        bouton.querySelector("i");
-
-    if (estFavori(article.numero)) {
-
-        icone.className =
-            "fa-solid fa-star";
-
-        bouton.classList.add("actif");
+        supprimerFavori(numero);
 
     }
 
     else {
 
-        icone.className =
-            "fa-regular fa-star";
-
-        bouton.classList.remove("actif");
+        ajouterFavori(article);
 
     }
 
 }
 
-/*=================================================
- COMPTEUR
-==================================================*/
-
-function mettreAJourCompteur() {
-
-    const compteur =
-        document.querySelector("#statFavoris");
-
-    if (!compteur) return;
-
-    compteur.textContent =
-        chargerFavoris().length;
-
-}
-
-/*=================================================
- NOMBRE TOTAL
-==================================================*/
-
-function nombreFavoris() {
-
-    return chargerFavoris().length;
-
-}
-
-/*=================================================
+/*==================================================
  EXPORT
 ==================================================*/
+
+window.CodeTravail.Favoris.ajouter =
+    ajouterFavori;
 
 window.CodeTravail.Favoris.supprimer =
     supprimerFavori;
@@ -259,121 +343,138 @@ window.CodeTravail.Favoris.supprimer =
 window.CodeTravail.Favoris.basculer =
     basculerFavori;
 
-window.CodeTravail.Favoris.actualiserBouton =
-    actualiserBouton;
-
-window.CodeTravail.Favoris.compteur =
-    mettreAJourCompteur;
-
-window.CodeTravail.Favoris.nombre =
-    nombreFavoris;
-
-/*=================================================
+/*==================================================
  PARTIE 3
- INITIALISATION
- VERSION FINALE
+ BOUTON - COMPTEUR - SYNCHRONISATION UI
 ==================================================*/
 
-/*=================================================
- AFFICHER LES FAVORIS
+/*==================================================
+ METTRE À JOUR LE COMPTEUR
 ==================================================*/
 
-function afficherFavoris() {
+function mettreAJourCompteur() {
 
-    const liste = chargerFavoris();
+    const compteur = document.getElementById(
+        "statFavoris"
+    );
 
-    console.table(liste);
+    if (!compteur) return;
 
-    return liste;
+    compteur.textContent = favorisCache.length;
 
 }
 
-/*=================================================
- VIDER TOUS LES FAVORIS
+/*==================================================
+ ACTUALISER LE BOUTON FAVORI
 ==================================================*/
 
-function viderFavoris() {
+function actualiserBouton(article = null) {
 
-    if (!confirm(
-        "Voulez-vous supprimer tous les favoris ?"
-    )) {
+    const bouton = document.getElementById(
+        "btnFavoriArticle"
+    );
+
+    if (!bouton) return;
+
+    if (!article) {
+
+        article =
+            window.CodeTravail.Utils
+            ?.articleActuel?.() || null;
+
+    }
+
+    if (!article) {
+
+        bouton.classList.remove("actif");
 
         return;
 
     }
 
-    sauvegarderFavoris([]);
+    const numero = String(
 
-    mettreAJourCompteur();
+        article.numero ||
 
-    actualiserBouton();
+        article.numeroArticle ||
 
-    window.CodeTravail.Utils.afficherNotification(
-
-        "Tous les favoris ont été supprimés."
+        ""
 
     );
 
-}
+    const icone = bouton.querySelector("i");
 
-/*=================================================
- INITIALISATION
-==================================================*/
+    const actif = estFavori(numero);
 
-function initialiserFavoris() {
+    if (icone) {
 
-    mettreAJourCompteur();
+        icone.className = actif
 
-    actualiserBouton();
+            ? "fa-solid fa-star"
 
-    const bouton = document.querySelector(
-
-        "#btnFavoriArticle"
-
-    );
-
-    if (bouton) {
-
-        bouton.addEventListener(
-
-            "click",
-
-            basculerFavori
-
-        );
+            : "fa-regular fa-star";
 
     }
 
+    bouton.classList.toggle(
+
+        "actif",
+
+        actif
+
+    );
+
+    bouton.setAttribute(
+
+        "aria-pressed",
+
+        actif
+
+    );
+
+    bouton.title = actif
+
+        ? "Retirer des favoris"
+
+        : "Ajouter aux favoris";
+
 }
 
-/*=================================================
- EXPORT
+/*==================================================
+ RAFRAÎCHIR L'INTERFACE
 ==================================================*/
 
-window.CodeTravail.Favoris.afficher =
-    afficherFavoris;
+function rafraichirFavoris(article = null) {
 
-window.CodeTravail.Favoris.vider =
-    viderFavoris;
+    mettreAJourCompteur();
 
-window.CodeTravail.Favoris.initialiser =
-    initialiserFavoris;
+    actualiserBouton(article);
 
-/*=================================================
- DÉMARRAGE
+}
+
+/*==================================================
+ ARTICLE CHANGÉ
+==================================================*/
+
+function synchroniserArticle(article) {
+
+    rafraichirFavoris(article);
+
+}
+
+/*==================================================
+ ÉVÉNEMENT PERSONNALISÉ
 ==================================================*/
 
 document.addEventListener(
 
-    "DOMContentLoaded",
+    "articleChange",
 
-    () => {
+    event => {
 
-        initialiserFavoris();
+        synchroniserArticle(
 
-        console.log(
-
-            "⭐ favoris.js chargé."
+            event.detail || null
 
         );
 
@@ -381,6 +482,243 @@ document.addEventListener(
 
 );
 
-/*=================================================
- FIN
+/*==================================================
+ EXPORT
 ==================================================*/
+
+window.CodeTravail.Favoris.compteur =
+    mettreAJourCompteur;
+
+window.CodeTravail.Favoris.actualiserBouton =
+    actualiserBouton;
+
+window.CodeTravail.Favoris.rafraichir =
+    rafraichirFavoris;
+
+window.CodeTravail.Favoris.synchroniser =
+    synchroniserArticle;
+
+/*==================================================
+ PARTIE 4
+ LISTE - RECHERCHE - EXPORT / IMPORT - VIDAGE
+==================================================*/
+
+/*==================================================
+ AFFICHER LES FAVORIS
+==================================================*/
+
+function afficherFavoris() {
+
+    const container = document.getElementById("listeFavoris");
+
+    if (!container) return;
+
+    if (favorisCache.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>Aucun favori</h3>
+                <p>Vos articles favoris apparaîtront ici.</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+    container.innerHTML = favorisCache.map(article => {
+
+        return `
+            <div class="favori-card">
+
+                <div class="favori-header">
+
+                    <strong>Article ${article.numero}</strong>
+
+                    <button class="btn-supprimer"
+                        data-numero="${article.numero}">
+                        ✖
+                    </button>
+
+                </div>
+
+                <h4>${article.titre}</h4>
+
+                <p class="categorie">
+                    ${article.categorie || "Non classé"}
+                </p>
+
+                <p class="preview">
+                    ${(article.contenu || "").substring(0, 120)}...
+                </p>
+
+            </div>
+        `;
+
+    }).join("");
+
+    /* événements suppression */
+
+    container.querySelectorAll(".btn-supprimer")
+        .forEach(btn => {
+
+            btn.addEventListener("click", (e) => {
+
+                const numero = e.target.dataset.numero;
+
+                supprimerFavori(numero);
+
+                afficherFavoris();
+
+            });
+
+        });
+
+}
+
+/*==================================================
+ RECHERCHE DANS LES FAVORIS
+==================================================*/
+
+function rechercherFavoris(texte) {
+
+    const q = (texte || "").toLowerCase();
+
+    return favorisCache.filter(article => {
+
+        return (
+
+            article.numero.includes(q) ||
+            article.titre.toLowerCase().includes(q) ||
+            (article.contenu || "").toLowerCase().includes(q)
+
+        );
+
+    });
+
+}
+
+/*==================================================
+ EXPORT JSON
+==================================================*/
+
+function exporterFavoris() {
+
+    const data = JSON.stringify(favorisCache, null, 2);
+
+    const blob = new Blob([data], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = "favoris_inspecteurbot.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+/*==================================================
+ IMPORT JSON
+==================================================*/
+
+function importerFavoris(fichier) {
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        try {
+
+            const data = JSON.parse(e.target.result);
+
+            if (Array.isArray(data)) {
+
+                favorisCache = data;
+
+                sauvegarderFavoris(favorisCache);
+
+                rafraichirFavoris();
+
+                afficherFavoris();
+
+                window.CodeTravail.Utils?.afficherNotification(
+
+                    "Import réussi ✔"
+
+                );
+
+            }
+
+        }
+
+        catch (err) {
+
+            window.CodeTravail.Utils?.afficherNotification(
+
+                "Erreur import fichier",
+
+                "error"
+
+            );
+
+        }
+
+    };
+
+    reader.readAsText(fichier);
+
+}
+
+/*==================================================
+ VIDER LES FAVORIS
+==================================================*/
+
+function viderFavoris() {
+
+    if (!confirm("Voulez-vous supprimer tous les favoris ?")) {
+
+        return;
+
+    }
+
+    favorisCache = [];
+
+    sauvegarderFavoris(favorisCache);
+
+    rafraichirFavoris();
+
+    afficherFavoris();
+
+    window.CodeTravail.Utils?.afficherNotification(
+
+        "Tous les favoris ont été supprimés."
+
+    );
+
+}
+
+/*==================================================
+ EXPORT GLOBAL
+==================================================*/
+
+window.CodeTravail.Favoris.afficher =
+    afficherFavoris;
+
+window.CodeTravail.Favoris.rechercher =
+    rechercherFavoris;
+
+window.CodeTravail.Favoris.exporter =
+    exporterFavoris;
+
+window.CodeTravail.Favoris.importer =
+    importerFavoris;
+
+window.CodeTravail.Favoris.vider =
+    viderFavoris;
+
+
