@@ -1,1099 +1,148 @@
-/*==================================================
-ASSISTANT.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 1
-SECTION ASSISTANT IA
+/*=================================================
+PARTIE 7
+ASSISTANT JURIDIQUE IA (INSPECTEURBOT RDC)
 ==================================================*/
 
-/*==================================================
-SECTION PRINCIPALE
-==================================================*/
-
-.assistant-section{
-
-    position:relative;
-
-    overflow:hidden;
-
-    margin:40px 0;
-
-    padding:38px;
-
-    border-radius:32px;
-
-    background:linear-gradient(
-        145deg,
-        #02173E,
-        #062B68,
-        #041C5C
-    );
-
-    border:1px solid rgba(255,215,0,.12);
-
-    backdrop-filter:blur(24px);
-    -webkit-backdrop-filter:blur(24px);
-
-    box-shadow:
-        var(--shadow-deep),
-        inset 0 1px 0 rgba(255,255,255,.05);
-
+.assistant-section {
+    margin: 40px 0;
 }
 
-/*==================================================
-HALO BLEU IA
-==================================================*/
-
-.assistant-section::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:650px;
-    height:650px;
-
-    top:-260px;
-    left:-220px;
-
-    border-radius:50%;
-
-    background:radial-gradient(
-        rgba(0,120,255,.22),
-        transparent 72%
-    );
-
-    animation:assistantRotate 18s linear infinite;
-
-    pointer-events:none;
-
+.assistant-card {
+    background: linear-gradient(145deg, #061c47, #0d3278);
+    border: 2px solid var(--color-gold);
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), var(--shadow-gold);
+    position: relative;
+    overflow: hidden;
 }
 
-/*==================================================
-HALO OR
-==================================================*/
-
-.assistant-section::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:320px;
-    height:320px;
-
-    right:-120px;
-    bottom:-120px;
-
-    border-radius:50%;
-
-    background:radial-gradient(
-        rgba(255,215,0,.18),
-        transparent 72%
-    );
-
-    animation:assistantGold 6s ease-in-out infinite;
-
-    pointer-events:none;
-
+.assistant-card::after {
+    content: '🤖';
+    position: absolute;
+    bottom: -20px;
+    right: 20px;
+    font-size: 150px;
+    opacity: 0.05;
+    pointer-events: none;
 }
 
-/*==================================================
-TITRE
-==================================================*/
-
-.assistant-section .section-title{
-
-    position:relative;
-
-    z-index:2;
-
-    text-align:center;
-
-    margin-bottom:35px;
-
+.assistant-input {
+    margin: 25px 0;
 }
 
-/*==================================================
-TITRE PRINCIPAL
-==================================================*/
-
-.assistant-section .section-title h2{
-
-    font-size:2rem;
-
-    font-weight:800;
-
-    color:var(--gold-light);
-
-    letter-spacing:.5px;
-
-    text-shadow:
-        0 0 20px rgba(255,215,0,.35);
-
+.assistant-input textarea {
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    background: #ffffff;
+    color: #041c5c;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: vertical;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-/*==================================================
-DESCRIPTION
-==================================================*/
-
-.assistant-section .section-title p{
-
-    max-width:760px;
-
-    margin:14px auto 0;
-
-    color:var(--text-soft);
-
-    font-size:16px;
-
-    line-height:1.9;
-
+.assistant-input textarea:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
 }
 
-/*==================================================
-TRAIT LUMINEUX
-==================================================*/
-
-.assistant-section .section-title::after{
-
-    content:"";
-
-    display:block;
-
-    width:90px;
-
-    height:4px;
-
-    margin:18px auto 0;
-
-    border-radius:999px;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        var(--gold-light),
-        transparent
-    );
-
-    box-shadow:
-        0 0 18px rgba(255,215,0,.35);
-
+.assistant-input textarea::placeholder {
+    color: #6b7a99;
 }
 
-/*==================================================
-ASSISTANT.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 2
-CONVERSATION IA PREMIUM
-==================================================*/
-
-/*==================================================
-ZONE CHAT
-==================================================*/
-
-.ai-chat{
-
-    position:relative;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
-    z-index:2;
-
+.assistant-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-/*==================================================
-MESSAGE COMMUN
-==================================================*/
-
-.ai-message{
-
-    position:relative;
-
-    overflow:hidden;
-
-    max-width:86%;
-
-    padding:18px 22px;
-
-    border-radius:24px;
-
-    backdrop-filter:blur(22px);
-
-    -webkit-backdrop-filter:blur(22px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    transition:all .35s ease;
-
-    animation:messageAppear .45s ease;
-
+.assistant-actions button {
+    padding: 14px 24px;
+    border-radius: 18px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
 }
 
-/*==================================================
-MESSAGE UTILISATEUR
-==================================================*/
-
-.ai-message.user{
-
-    align-self:flex-end;
-
-    background:linear-gradient(
-        135deg,
-        #0B5ED7,
-        #041C5C
-    );
-
-    color:#FFFFFF;
-
-    box-shadow:
-        0 18px 35px rgba(0,0,0,.35),
-        0 0 20px rgba(11,94,215,.18);
-
+#btnQuestionIA {
+    background: var(--color-gold);
+    color: #041c5c;
+    flex: 2;
+    min-width: 200px;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
 }
 
-/*==================================================
-MESSAGE IA
-==================================================*/
-
-.ai-message.bot{
-
-    align-self:flex-start;
-
-    background:linear-gradient(
-        180deg,
-        rgba(255,255,255,.10),
-        rgba(255,255,255,.05)
-    );
-
-    color:#F8FBFF;
-
-    border:1px solid rgba(255,215,0,.10);
-
-    box-shadow:
-        var(--shadow-deep);
-
+#btnQuestionIA:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: #ffe033;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.7);
 }
 
-/*==================================================
-REFLET PREMIUM
-==================================================*/
-
-.ai-message::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:-160%;
-
-    left:-45%;
-
-    width:45%;
-
-    height:340%;
-
-    background:linear-gradient(
-        transparent,
-        rgba(255,255,255,.38),
-        transparent
-    );
-
-    transform:rotate(25deg);
-
-    transition:.9s;
-
+#btnEffacerIA, #btnLectureIA, #btnCopierIA {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
 }
 
-.ai-message:hover::before{
-
-    left:170%;
-
+#btnEffacerIA:hover, #btnLectureIA:hover, #btnCopierIA:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
 }
 
-/*==================================================
-SURVOL
-==================================================*/
-
-.ai-message:hover{
-
-    transform:translateY(-4px);
-
-    border-color:rgba(255,215,0,.25);
-
-    box-shadow:
-        var(--shadow-deep),
-        var(--shadow-gold);
-
+#btnEffacerIA:hover {
+    background: rgba(239, 68, 68, 0.8);
+    border-color: #ef4444;
 }
 
-/*==================================================
-BADGE IA
-==================================================*/
-
-.ai-badge{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    margin-bottom:12px;
-
-    padding:8px 15px;
-
-    border-radius:999px;
-
-    background:rgba(255,215,0,.12);
-
-    border:1px solid rgba(255,215,0,.20);
-
-    color:var(--gold-light);
-
-    font-size:12px;
-
-    font-weight:700;
-
-    backdrop-filter:blur(10px);
-
+/* Zone Résultat IA */
+.ai-result {
+    padding: 30px;
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-left: 8px solid var(--color-gold);
+    position: relative;
+    min-height: 180px;
 }
 
-/*==================================================
-TEXTE
-==================================================*/
-
-.ai-message p{
-
-    line-height:1.9;
-
-    font-size:15px;
-
+.ai-result h3 {
+    color: var(--color-gold);
+    margin-bottom: 18px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/*==================================================
-MISE EN ÉVIDENCE
-==================================================*/
-
-.ai-message mark{
-
-    padding:3px 8px;
-
-    border-radius:8px;
-
-    background:linear-gradient(
-        135deg,
-        #FFD700,
-        #FFF1A0
-    );
-
-    color:#041C5C;
-
-    font-weight:700;
-
+#reponseIA {
+    color: #ffffff;
+    line-height: 1.8;
+    font-size: 16px;
+    white-space: pre-line;
 }
 
-/*==================================================
-ANIMATION APPARITION
-==================================================*/
-
-@keyframes messageAppear{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(18px)
-            scale(.96);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
-    }
-
-                          }
-
-/*==================================================
-ASSISTANT.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 3
-ZONE DE SAISIE IA PREMIUM
-==================================================*/
-
-/*==================================================
-CONTAINER
-==================================================*/
-
-.ai-input-box{
-
-    position:relative;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    margin-top:28px;
-
-    padding:12px;
-
-    border-radius:26px;
-
-    background:linear-gradient(
-        180deg,
-        rgba(255,255,255,.10),
-        rgba(255,255,255,.05)
-    );
-
-    border:1px solid rgba(255,215,0,.12);
-
-    backdrop-filter:blur(24px);
-
-    -webkit-backdrop-filter:blur(24px);
-
-    box-shadow:
-        var(--shadow-deep);
-
-    overflow:hidden;
-
-    z-index:2;
-
+/* Questions rapides section IA */
+.ia-tools {
+    margin: 35px 0;
 }
 
-/*==================================================
-HALO LUMINEUX
-==================================================*/
-
-.ai-input-box::before{
-
-    content:"";
-
-    position:absolute;
-
-    inset:-120%;
-
-    background:radial-gradient(
-
-        circle,
-
-        rgba(255,215,0,.12),
-
-        transparent 70%
-
-    );
-
-    animation:inputHalo 8s linear infinite;
-
-    pointer-events:none;
-
+.ia-tools .suggestions button {
+    background: linear-gradient(135deg, #123f97, #1e58d6);
+    border-color: rgba(255, 215, 0, 0.4);
+    padding: 12px 22px;
+    font-size: 15px;
 }
-
-/*==================================================
-CHAMP IA
-==================================================*/
-
-.ai-input-box input{
-
-    position:relative;
-
-    flex:1;
-
-    height:58px;
-
-    padding:0 22px;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:rgba(255,255,255,.08);
-
-    color:#FFFFFF;
-
-    font-size:15px;
-
-    backdrop-filter:blur(12px);
-
-    transition:.35s;
-
-    z-index:2;
-
-}
-
-/*==================================================
-PLACEHOLDER
-==================================================*/
-
-.ai-input-box input::placeholder{
-
-    color:rgba(255,255,255,.70);
-
-}
-
-/*==================================================
-FOCUS
-==================================================*/
-
-.ai-input-box input:focus{
-
-    background:rgba(255,255,255,.14);
-
-    box-shadow:
-
-        0 0 20px rgba(255,215,0,.20);
-
-}
-
-/*==================================================
-BOUTON ENVOI
-==================================================*/
-
-.ai-send-btn{
-
-    position:relative;
-
-    width:58px;
-
-    height:58px;
-
-    border:none;
-
-    border-radius:18px;
-
-    cursor:pointer;
-
-    background:linear-gradient(
-        135deg,
-        #0D6EFD,
-        #041C5C
-    );
-
-    color:var(--gold-light);
-
-    font-size:20px;
-
-    overflow:hidden;
-
-    transition:.35s;
-
-    box-shadow:
-
-        0 15px 28px rgba(0,0,0,.35);
-
-    z-index:2;
-
-}
-
-/*==================================================
-REFLET
-==================================================*/
-
-.ai-send-btn::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:-150%;
-
-    left:-40%;
-
-    width:45%;
-
-    height:320%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.45),
-
-        transparent
-
-    );
-
-    transform:rotate(25deg);
-
-    transition:.8s;
-
-}
-
-.ai-send-btn:hover::before{
-
-    left:170%;
-
-}
-
-/*==================================================
-SURVOL ENVOI
-==================================================*/
-
-.ai-send-btn:hover{
-
-    transform:
-        translateY(-4px)
-        scale(1.04);
-
-    box-shadow:
-
-        var(--shadow-gold),
-
-        var(--shadow-blue);
-
-}
-
-/*==================================================
-MICROPHONE
-==================================================*/
-
-.ai-micro-btn{
-
-    width:58px;
-
-    height:58px;
-
-    border-radius:18px;
-
-    border:1px solid rgba(255,215,0,.18);
-
-    background:rgba(255,215,0,.10);
-
-    color:var(--gold-light);
-
-    cursor:pointer;
-
-    font-size:20px;
-
-    transition:.35s;
-
-    backdrop-filter:blur(14px);
-
-    z-index:2;
-
-}
-
-/*==================================================
-SURVOL MICRO
-==================================================*/
-
-.ai-micro-btn:hover{
-
-    transform:
-
-        translateY(-4px)
-
-        scale(1.05);
-
-    background:rgba(255,215,0,.18);
-
-    box-shadow:
-
-        0 0 25px rgba(255,215,0,.35);
-
-}
-
-/*==================================================
-APPUI
-==================================================*/
-
-.ai-send-btn:active,
-.ai-micro-btn:active{
-
-    transform:scale(.92);
-
-}
-
-/*==================================================
-INDICATEUR IA
-==================================================*/
-
-.ai-typing{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    margin-top:14px;
-
-    padding-left:6px;
-
-}
-
-.ai-typing span{
-
-    width:8px;
-
-    height:8px;
-
-    border-radius:50%;
-
-    background:var(--gold-light);
-
-    animation:typingPulse 1.2s infinite ease-in-out;
-
-}
-
-.ai-typing span:nth-child(2){
-
-    animation-delay:.2s;
-
-}
-
-.ai-typing span:nth-child(3){
-
-    animation-delay:.4s;
-
-}
-
-/*==================================================
-ANIMATIONS
-==================================================*/
-
-@keyframes typingPulse{
-
-    0%,100%{
-
-        transform:scale(.45);
-
-        opacity:.35;
-
-    }
-
-    50%{
-
-        transform:scale(1.35);
-
-        opacity:1;
-
-    }
-
-}
-
-@keyframes inputHalo{
-
-    from{
-
-        transform:rotate(0deg);
-
-    }
-
-    to{
-
-        transform:rotate(360deg);
-
-    }
-
-    }
-
-/*==================================================
-ASSISTANT.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 4
-RESPONSIVE • ANIMATIONS • ACCESSIBILITÉ
-==================================================*/
-
-/*==================================================
-RESPONSIVE TABLETTE
-==================================================*/
-
-@media(max-width:992px){
-
-    .assistant-section{
-
-        padding:30px;
-
-    }
-
-    .ai-message{
-
-        max-width:92%;
-
-    }
-
-    .ai-input-box{
-
-        flex-wrap:wrap;
-
-    }
-
-    .ai-input-box input{
-
-        width:100%;
-
-    }
-
-}
-
-/*==================================================
-RESPONSIVE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .assistant-section{
-
-        padding:22px;
-
-        border-radius:26px;
-
-    }
-
-    .assistant-section .section-title h2{
-
-        font-size:1.65rem;
-
-    }
-
-    .assistant-section .section-title p{
-
-        font-size:14px;
-
-    }
-
-    .ai-message{
-
-        max-width:100%;
-
-        padding:16px;
-
-        font-size:14px;
-
-    }
-
-    .ai-input-box{
-
-        flex-direction:column;
-
-        padding:14px;
-
-        gap:12px;
-
-    }
-
-    .ai-input-box input{
-
-        width:100%;
-
-        height:54px;
-
-    }
-
-    .ai-send-btn,
-    .ai-micro-btn{
-
-        width:100%;
-
-        height:54px;
-
-        border-radius:16px;
-
-    }
-
-}
-
-/*==================================================
-PETITS SMARTPHONES
-==================================================*/
-
-@media(max-width:480px){
-
-    .assistant-section{
-
-        padding:18px;
-
-        border-radius:22px;
-
-    }
-
-    .assistant-section .section-title h2{
-
-        font-size:1.4rem;
-
-    }
-
-    .assistant-section .section-title p{
-
-        font-size:13px;
-
-    }
-
-    .ai-message{
-
-        font-size:13px;
-
-        line-height:1.8;
-
-    }
-
-}
-
-/*==================================================
-ANIMATION HALO BLEU
-==================================================*/
-
-@keyframes assistantRotate{
-
-    from{
-
-        transform:rotate(0deg);
-
-    }
-
-    to{
-
-        transform:rotate(360deg);
-
-    }
-
-}
-
-/*==================================================
-PULSATION OR
-==================================================*/
-
-@keyframes assistantGold{
-
-    0%{
-
-        transform:scale(1);
-
-        opacity:.18;
-
-    }
-
-    50%{
-
-        transform:scale(1.30);
-
-        opacity:.42;
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-        opacity:.18;
-
-    }
-
-}
-
-/*==================================================
-LUEUR DES MESSAGES
-==================================================*/
-
-.ai-message.bot:hover{
-
-    box-shadow:
-        var(--shadow-deep),
-        0 0 28px rgba(255,215,0,.18),
-        0 0 55px rgba(0,120,255,.10);
-
-}
-
-.ai-message.user:hover{
-
-    box-shadow:
-        var(--shadow-deep),
-        0 0 25px rgba(255,215,0,.20);
-
-}
-
-/*==================================================
-FOCUS ACCESSIBILITÉ
-==================================================*/
-
-.ai-input-box input:focus-visible,
-.ai-send-btn:focus-visible,
-.ai-micro-btn:focus-visible{
-
-    outline:2px solid var(--gold-light);
-
-    outline-offset:3px;
-
-}
-
-/*==================================================
-ÉTAT DÉSACTIVÉ
-==================================================*/
-
-.ai-send-btn:disabled,
-.ai-micro-btn:disabled{
-
-    opacity:.45;
-
-    cursor:not-allowed;
-
-    transform:none;
-
-    box-shadow:none;
-
-}
-
-.ai-input-box input:disabled{
-
-    opacity:.65;
-
-    cursor:not-allowed;
-
-}
-
-/*==================================================
-OPTIMISATION GPU
-==================================================*/
-
-.ai-message,
-.ai-send-btn,
-.ai-micro-btn,
-.ai-input-box{
-
-    will-change:
-        transform,
-        box-shadow;
-
-}
-
-/*==================================================
-MODE RÉDUCTION DES ANIMATIONS
-==================================================*/
-
-@media(prefers-reduced-motion:reduce){
-
-    .assistant-section::before,
-    .assistant-section::after,
-    .ai-message,
-    .ai-typing span,
-    .ai-send-btn::before{
-
-        animation:none !important;
-
-    }
-
-    .ai-message:hover,
-    .ai-send-btn:hover,
-    .ai-micro-btn:hover{
-
-        transform:none !important;
-
-    }
-
-}
-
-/*==================================================
-FIN ASSISTANT.CSS PREMIUM V8
-==================================================*/

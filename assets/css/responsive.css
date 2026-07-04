@@ -1,663 +1,141 @@
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 1
-PREMIUM RESPONSIVE SYSTEM
-InspecteurBot RDC 2026
+/*=================================================
+RESPONSIVE GÉNÉRAL
 ==================================================*/
 
-/*==================================================
-BASE FLUIDE
-==================================================*/
-
-*{
-    -webkit-tap-highlight-color:transparent;
-}
-
-html{
-    font-size:16px;
-    scroll-behavior:smooth;
-}
-
-body{
-    overflow-x:hidden;
-}
-
-img,
-video,
-canvas,
-svg{
-    max-width:100%;
-    height:auto;
-    display:block;
-}
-
-/*==================================================
-CONTAINER PREMIUM
-==================================================*/
-
-.container{
-
-    width:min(95%,1500px);
-
-    margin:auto;
-
-    padding:22px;
-
-}
-
-/*==================================================
-ÉCRANS XXL
-==================================================*/
-
-@media(min-width:1600px){
-
-    html{
-
-        font-size:18px;
-
+@media (max-width: 1024px) {
+    .container {
+        width: 96%;
+        padding: 15px;
     }
-
-    .container{
-
-        max-width:1500px;
-
-    }
-
-}
-
-/*==================================================
-LAPTOP
-==================================================*/
-
-@media(max-width:1400px){
-
-    .container{
-
-        width:96%;
-
-    }
-
-}
-
-/*==================================================
-TABLETTE LARGE
-==================================================*/
-
-@media(max-width:1100px){
-
-    html{
-
-        font-size:15.5px;
-
-    }
-
-    .container{
-
-        width:96%;
-
-        padding:20px;
-
-    }
-
-}
-
-/*==================================================
-TABLETTE
-==================================================*/
-
-@media(max-width:900px){
-
-    html{
-
-        font-size:15px;
-
-    }
-
-    .container{
-
-        width:97%;
-
-        padding:18px;
-
-    }
-
-}
-
-/*==================================================
-SMARTPHONE
-==================================================*/
-
-@media(max-width:768px){
-
-    html{
-
-        font-size:14px;
-
-    }
-
-    .container{
-
-        width:96%;
-
-        padding:15px;
-
-    }
-
-}
-
-/*==================================================
-PETITS SMARTPHONES
-==================================================*/
-
-@media(max-width:480px){
-
-    html{
-
-        font-size:13.4px;
-
-    }
-
-    .container{
-
-        width:97%;
-
-        padding:12px;
-
-    }
-
-}
-
-/*==================================================
-HEADER PREMIUM
-==================================================*/
-
-@media(max-width:1100px){
-
-    .top-header{
-
-        padding:28px 22px;
-
-    }
-
-}
-
-@media(max-width:768px){
-
-    .top-header{
-
-        padding:22px 16px;
-
-        border-radius:24px;
-
-    }
-
-    .logo-box img{
-
-        width:72px;
-
-        height:72px;
-
-    }
-
-    .title-box h1{
-
-        font-size:23px;
-
-    }
-
-    .title-box h2{
-
-        font-size:17px;
-
-    }
-
-    .title-box h3{
-
-        font-size:14px;
-
-    }
-
-}
-
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 2/3
-ARTICLES • ASSISTANT IA • MODALES
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-ARTICLE TABLETTE
-==================================================*/
-@media (max-width:1024px){
-
-    .article-section{
-        padding:26px;
-    }
-
-    .article-card{
-        padding:24px;
-    }
-
-    .article-title{
-        font-size:22px;
-    }
-
-    .article-content{
-        font-size:16px;
-        line-height:1.8;
-    }
-
-}
-
-/*==================================================
-ARTICLE MOBILE
-==================================================*/
-@media (max-width:768px){
-
-    .article-section{
-        padding:18px;
-        border-radius:18px;
-    }
-
-    .article-card{
-        padding:18px;
-        border-radius:16px;
-    }
-
-    .article-number{
-        font-size:13px;
-        padding:6px 14px;
-    }
-
-    .article-title{
-        font-size:18px;
-    }
-
-    .article-content{
-        font-size:14px;
-        line-height:1.7;
-    }
-
-    .assistant-actions{
-        flex-direction:column;
-        gap:10px;
-    }
-
-    .assistant-actions button{
-        width:100%;
-    }
-
-}
-
-/*==================================================
-ASSISTANT IA
-==================================================*/
-@media (max-width:768px){
-
-    .assistant-section{
-        padding:20px;
-    }
-
-    .ai-chat{
-        gap:14px;
-    }
-
-    .ai-message.user,
-    .ai-message.bot{
-        max-width:100%;
-        font-size:14px;
-    }
-
-    .ai-input-box{
-        flex-direction:column;
-    }
-
-    .ai-input-box input{
-        width:100%;
-    }
-
-    .ai-send-btn,
-    .ai-micro-btn{
-        width:100%;
-        height:50px;
-    }
-
-}
-
-/*==================================================
-MODALES
-==================================================*/
-@media (max-width:768px){
-
-    .modal,
-    .modal-content{
-        width:96%;
-        max-height:90vh;
-        border-radius:18px;
-    }
-
-}
-
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 3
-ARTICLES • ASSISTANT IA • RÉSULTATS
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-TABLETTE
-==================================================*/
-
-@media (max-width:1024px){
-
-.article-section,
-.assistant-section{
-padding:28px;
-}
-
-.article-card{
-padding:24px;
-}
-
-.article-title{
-font-size:22px;
-}
-
-.article-content{
-font-size:16px;
-line-height:1.8;
-}
-
-.ai-chat{
-gap:16px;
-}
-
-.ai-message{
-max-width:90%;
-}
-
-}
-
-/*==================================================
-MOBILE
-==================================================*/
-
-@media (max-width:768px){
-
-.article-section,
-.assistant-section{
-padding:20px;
-border-radius:20px;
-}
-
-.article-card{
-padding:18px;
-border-radius:18px;
-}
-
-.article-number{
-font-size:13px;
-padding:6px 12px;
-}
-
-.article-title{
-font-size:18px;
-}
-
-.article-content{
-font-size:14px;
-line-height:1.7;
-text-align:left;
-}
-
-.assistant-actions{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.assistant-actions button{
-width:100%;
-}
-
-.ai-chat{
-gap:14px;
-}
-
-.ai-message{
-max-width:100%;
-font-size:14px;
-padding:14px;
-}
-
-.ai-input-box{
-flex-direction:column;
-gap:10px;
-}
-
-.ai-input-box input{
-width:100%;
-height:50px;
-}
-
-.ai-send-btn,
-.ai-micro-btn{
-width:100%;
-height:50px;
-}
-
-.ai-result{
-padding:18px;
-}
-
-#reponseIA{
-font-size:14px;
-line-height:1.7;
-}
-
-}
-
-/*==================================================
-PETITS SMARTPHONES
-==================================================*/
-
-@media (max-width:480px){
-
-.article-title{
-font-size:17px;
-}
-
-.article-content{
-
     
-font-size:13px;
+    .title-box h1 {
+        font-size: 30px;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
 }
 
-.ai-message{
-font-size:13px;
+@media (max-width: 768px) {
+    .top-header {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+
+    .logo-box img.logo {
+        width: 75px;
+        height: 75px;
+    }
+
+    .title-box h1 {
+        font-size: 24px;
+    }
+
+    .title-box h2 {
+        font-size: 18px;
+    }
+
+    .title-box h3 {
+        font-size: 15px;
+    }
+
+    .datetime-box {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+    }
+
+    #clock {
+        font-size: 32px;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .toolbar-left, .toolbar-right {
+        justify-content: center;
+    }
+
+    .toolbar-left select {
+        width: 100%;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-box button {
+        width: 100%;
+        height: 52px;
+    }
+
+    .categories-grid, .outils-grid, .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .article-card {
+        padding: 20px 15px;
+        border-radius: 20px;
+    }
+
+    .article-title {
+        font-size: 20px;
+    }
+
+    .article-content {
+        font-size: 15px;
+    }
+
+    .article-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .article-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .assistant-card {
+        padding: 20px 15px;
+    }
+
+    .assistant-actions {
+        flex-direction: column;
+    }
+
+    #btnQuestionIA, #btnEffacerIA, #btnLectureIA, #btnCopierIA {
+        width: 100%;
+    }
+
+    .btn-top {
+        right: 15px;
+        bottom: 15px;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    .footer {
+        padding: 30px 15px 20px;
+    }
 }
 
-.ai-result{
-padding:15px;
+@media (max-width: 480px) {
+    .title-box h1 {
+        font-size: 20px;
+    }
+
+    .search-header h2, .section-title h2 {
+        font-size: 22px;
+    }
+
+    .suggestions button {
+        font-size: 13px;
+        padding: 8px 14px;
+    }
 }
-
-}
-
-/*==================================================
-RESPONSIVE.CSS
-PARTIE 4
-FOOTER • NOTIFICATIONS • ACCESSIBILITÉ • FIN
-InspecteurBot RDC 2026
-==================================================*/
-
-/*==================================================
-FOOTER TABLETTE
-==================================================*/
-
-@media (max-width:1024px){
-
-.footer{
-padding:35px 20px;
-}
-
-.footer h2{
-font-size:22px;
-}
-
-.footer h3{
-font-size:18px;
-}
-
-.footer-links{
-gap:10px;
-}
-
-}
-
-/*==================================================
-FOOTER MOBILE
-==================================================*/
-
-@media (max-width:768px){
-
-.footer{
-padding:25px 16px;
-border-radius:22px 22px 0 0;
-}
-
-.footer-logo img{
-width:70px;
-height:70px;
-}
-
-.footer h2{
-font-size:20px;
-}
-
-.footer h3{
-font-size:16px;
-}
-
-.footer p{
-font-size:14px;
-line-height:1.7;
-}
-
-.footer-links{
-flex-direction:column;
-gap:10px;
-}
-
-.footer-links a{
-width:100%;
-justify-content:center;
-}
-
-.btn-top{
-width:48px;
-height:48px;
-font-size:18px;
-right:15px;
-bottom:15px;
-}
-
-}
-
-/*==================================================
-TRÈS PETITS ÉCRANS
-==================================================*/
-
-@media (max-width:480px){
-
-.footer{
-padding:20px 14px;
-}
-
-.footer h2{
-font-size:18px;
-}
-
-.footer h3{
-font-size:15px;
-}
-
-.footer p{
-font-size:13px;
-}
-
-.btn-top{
-width:44px;
-height:44px;
-font-size:16px;
-}
-
-}
-
-/*==================================================
-NOTIFICATIONS RESPONSIVE
-==================================================*/
-
-@media (max-width:768px){
-
-.notification,
-.toast{
-width:90%;
-left:50%;
-transform:translateX(-50%);
-font-size:13px;
-padding:12px;
-}
-
-}
-
-/*==================================================
-ACCESSIBILITÉ
-==================================================*/
-
-@media (prefers-reduced-motion:reduce){
-
-*,
-*::before,
-*::after{
-
-animation:none!important;
-transition:none!important;
-scroll-behavior:auto!important;
-
-}
-
-}
-
-/*==================================================
-MODE IMPRESSION
-==================================================*/
-
-@media print{
-
-.footer,
-.btn-top,
-.ai-input-box,
-.assistant-actions{
-
-display:none!important;
-
-}
-
-.article-card,
-.article-section{
-
-box-shadow:none!important;
-background:#fff!important;
-color:#000!important;
-border:1px solid #ccc;
-
-}
-
-}
-
-/*==================================================
-FIN RESPONSIVE.CSS
-VERSION PREMIUM V6
-==================================================*/

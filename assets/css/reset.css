@@ -1,388 +1,88 @@
-/*==================================================
-RESET.CSS
-VERSION 2026 PREMIUM V7
-INSPECTEURBOT RDC
-BLUE NIGHT + GOLD EDITION
+/*=================================================
+PARTIE 1
+RESET + BODY + CONTAINER + THÈMES
 ==================================================*/
 
-/*==================================================
-RESET GLOBAL
-==================================================*/
-
-*,
-*::before,
-*::after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+:root {
+    --bg-primary: #041c5c;
+    --bg-gradient: linear-gradient(145deg, #0a2b73, #123f97);
+    --bg-glass: rgba(10, 43, 115, 0.85);
+    --border-gold: rgba(255, 215, 0, 0.35);
+    --color-gold: #FFD700;
+    --color-white: #ffffff;
+    --color-light-blue: #dbe8ff;
+    --color-dark-text: #041c5c;
+    --shadow-main: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow-gold: 0 0 20px rgba(255, 215, 0, 0.35);
+    --transition-fast: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/*==================================================
-VARIABLES GLOBALES PREMIUM
-==================================================*/
-
-:root{
-
-    /*==============================
-      PALETTE BLEU NUIT
-    ==============================*/
-
-    --primary:#04163F;
-    --primary-dark:#020C26;
-    --primary-light:#0D3F9E;
-    --secondary:#133E9B;
-
-    /*==============================
-      OR PREMIUM
-    ==============================*/
-
-    --accent:#FFD700;
-    --gold:#D4AF37;
-    --gold-light:#FFE27A;
-    --gold-dark:#B8860B;
-
-    /*==============================
-      TEXTE
-    ==============================*/
-
-    --text:#F8FAFF;
-    --text-soft:#D9E4FF;
-    --text-dark:#061633;
-
-    /*==============================
-      FONDS
-    ==============================*/
-
-    --bg:#020B25;
-
-    --bg-gradient:
-    linear-gradient(
-        145deg,
-        #020B25 0%,
-        #04163F 35%,
-        #0A2F82 70%,
-        #04163F 100%
-    );
-
-    /*==============================
-      GLASSMORPHISM
-    ==============================*/
-
-    --glass:rgba(255,255,255,.08);
-    --glass-light:rgba(255,255,255,.12);
-    --border:rgba(255,215,0,.18);
-
-    /*==============================
-      OMBRES
-    ==============================*/
-
-    --shadow-soft:
-        0 8px 25px rgba(0,0,0,.35);
-
-    --shadow-blue:
-        0 0 30px rgba(0,90,255,.25);
-
-    --shadow-gold:
-        0 0 25px rgba(255,215,0,.18);
-
-    --shadow-deep:
-        0 18px 45px rgba(0,0,0,.55);
-
-    /*==============================
-      BORDURES
-    ==============================*/
-
-    --radius-sm:14px;
-    --radius:22px;
-    --radius-lg:30px;
-    --radius-xl:40px;
-
-    /*==============================
-      EFFETS
-    ==============================*/
-
-    --blur:16px;
-
-    --transition-fast:.25s ease;
-
-    --transition:.40s ease;
-
-    --transition-slow:.65s ease;
+body.light-theme {
+    --bg-primary: #f0f4ff;
+    --bg-gradient: linear-gradient(145deg, #ffffff, #e4edff);
+    --bg-glass: rgba(255, 255, 255, 0.9);
+    --border-gold: rgba(10, 43, 115, 0.25);
+    --color-gold: #0a2b73;
+    --color-white: #041c5c;
+    --color-light-blue: #335599;
+    --color-dark-text: #ffffff;
+    --shadow-main: 0 10px 25px rgba(10, 43, 115, 0.15);
+    --shadow-gold: 0 0 15px rgba(10, 43, 115, 0.2);
 }
 
-/*==================================================
-DARK MODE
-==================================================*/
-
-body.dark-theme{
-
-    --text:#FFFFFF;
-    --text-soft:#E5EEFF;
-
-    --glass:rgba(255,255,255,.08);
-    --glass-light:rgba(255,255,255,.12);
-
-    --border:rgba(255,215,0,.20);
-
-    --bg:#020B25;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/*==================================================
-LIGHT MODE
-==================================================*/
-
-body.light-theme{
-
-    --text:#04163F;
-    --text-soft:#27446D;
-
-    --glass:rgba(255,255,255,.88);
-    --glass-light:rgba(255,255,255,.96);
-
-    --border:rgba(212,175,55,.30);
-
-    --bg:#EEF4FF;
+body {
+    background: var(--bg-primary);
+    color: var(--color-white);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/*==================================================
-HTML
-==================================================*/
-
-html{
-
-    font-size:16px;
-
-    scroll-behavior:smooth;
-
-    -webkit-text-size-adjust:100%;
+.container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/*==================================================
-BODY
-==================================================*/
-
-body{
-
-    font-family:"Poppins",sans-serif;
-
-    color:var(--text);
-
-    line-height:1.7;
-
-    background:var(--bg-gradient);
-    background-size:300% 300%;
-    background-attachment:fixed;
-
-    min-height:100vh;
-
-    overflow-x:hidden;
-
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    text-rendering:optimizeLegibility;
-
-    transition:
-        background var(--transition),
-        color var(--transition);
-
-    animation:
-        gradientMove 18s ease infinite;
+/* Base Headings & Links */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
 }
 
-/*==================================================
-ANIMATION DU FOND
-==================================================*/
-
-@keyframes gradientMove{
-
-    0%{
-        background-position:0% 50%;
-    }
-
-    50%{
-        background-position:100% 50%;
-    }
-
-    100%{
-        background-position:0% 50%;
-    }
+button, input, select, textarea {
+    font-family: inherit;
+    outline: none;
 }
 
-/*==================================================
-CONTAINER
-==================================================*/
-
-.container{
-    width:min(96%,1450px);
-    margin:auto;
-    padding:20px;
+button {
+    cursor: pointer;
 }
 
-/*==================================================
-IMAGES
-==================================================*/
-
-img{
-    display:block;
-    max-width:100%;
-    height:auto;
-    user-select:none;
-    -webkit-user-drag:none;
+/* Scrollbar futuriste */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
 }
-
-/*==================================================
-LIENS
-==================================================*/
-
-a{
-    color:inherit;
-    text-decoration:none;
-    transition:var(--transition);
+::-webkit-scrollbar-track {
+    background: #02123c;
 }
-
-a:hover{
-    color:var(--gold-light);
+::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 5px;
+    border: 2px solid #02123c;
 }
-
-/*==================================================
-LISTES
-==================================================*/
-
-ul,
-ol{
-    list-style:none;
-}
-
-/*==================================================
-BOUTONS PREMIUM
-==================================================*/
-
-button{
-
-    border:none;
-    outline:none;
-
-    font-family:inherit;
-
-    cursor:pointer;
-
-    transition:all var(--transition);
-
-    -webkit-tap-highlight-color:transparent;
-}
-
-button:disabled{
-
-    opacity:.55;
-
-    cursor:not-allowed;
-
-    filter:grayscale(.2);
-}
-
-/*==================================================
-FORMULAIRES
-==================================================*/
-
-input,
-textarea,
-select{
-
-    font-family:inherit;
-
-    color:inherit;
-
-    background:none;
-
-    border:none;
-
-    outline:none;
-
-    transition:var(--transition);
-}
-
-input::placeholder,
-textarea::placeholder{
-
-    color:rgba(255,255,255,.60);
-}
-
-/*==================================================
-TABLEAUX
-==================================================*/
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-/*==================================================
-ICÔNES
-==================================================*/
-
-i{
-
-    transition:var(--transition);
-}
-
-/*==================================================
-SÉLECTION
-==================================================*/
-
-::selection{
-
-    background:var(--gold);
-
-    color:var(--primary-dark);
-}
-
-/*==================================================
-SCROLLBAR PREMIUM
-==================================================*/
-
-::-webkit-scrollbar{
-
-    width:8px;
-}
-
-::-webkit-scrollbar-track{
-
-    background:#02112F;
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:linear-gradient(
-        180deg,
-        var(--gold-light),
-        var(--gold),
-        var(--gold-dark)
-    );
-
-    border-radius:30px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:linear-gradient(
-        180deg,
-        #FFF1A8,
-        var(--accent),
-        var(--gold)
-    );
-}
-
-/*==================================================
-FOCUS ACCESSIBILITÉ
-==================================================*/
-
-:focus-visible{
-
-    outline:2px solid var(--accent);
-
-    outline-offset:3px;
-
-    border-radius:8px;
+::-webkit-scrollbar-thumb:hover {
+    background: #e6c200;
 }

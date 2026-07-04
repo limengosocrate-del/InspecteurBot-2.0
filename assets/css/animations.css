@@ -1,828 +1,113 @@
-/*==================================================
-ANIMATIONS.CSS
-VERSION 2026 PREMIUM V8
-BLUE NIGHT + GOLD EDITION
-PARTIE 1
+/*=================================================
+ANIMATIONS & EFFETS INTÉRACTIFS
 ==================================================*/
 
-/*==================================================
-TRANSITIONS PREMIUM
-==================================================*/
-
-*{
-
-    transition:
-        background .35s ease,
-        color .35s ease,
-        border-color .35s ease,
-        box-shadow .35s ease,
-        transform .35s cubic-bezier(.22,.61,.36,1),
-        opacity .35s ease;
-
+/* Fade In Animation */
+.fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
-/*==================================================
-FADE UP PREMIUM
-==================================================*/
-
-.fade-in{
-
-    animation:fadePremium .6s ease forwards;
-
-}
-
-@keyframes fadePremium{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(22px)
-            scale(.98);
-
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
     }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-
 }
 
-/*==================================================
-APPARITION RAPIDE
-==================================================*/
-
-.fade-in-fast{
-
-    animation:fadeFast .35s ease forwards;
-
+/* Écran de chargement futuriste */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #02123c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-@keyframes fadeFast{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(10px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
-/*==================================================
-ZOOM PREMIUM
-==================================================*/
-
-.zoom-in{
-
-    animation:zoomPremium .45s ease forwards;
-
+.loader {
+    width: 70px;
+    height: 70px;
+    border: 5px solid rgba(255, 215, 0, 0.2);
+    border-top-color: #FFD700;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 25px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
 }
 
-@keyframes zoomPremium{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            scale(.90)
-            rotateX(10deg);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            scale(1)
-            rotateX(0);
-
-    }
-
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-/*==================================================
-SLIDE LEFT
-==================================================*/
-
-.slide-left{
-
-    animation:slideLeftPremium .55s ease forwards;
-
+.loading-screen p {
+    color: #FFD700;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: pulseText 1.5s ease-in-out infinite alternate;
 }
 
-@keyframes slideLeftPremium{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateX(35px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateX(0);
-
-    }
-
+@keyframes pulseText {
+    from { opacity: 0.6; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1.02); }
 }
 
-/*==================================================
-SLIDE RIGHT
-==================================================*/
-
-.slide-right{
-
-    animation:slideRightPremium .55s ease forwards;
-
+/* Notification Toast */
+.notification {
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #0a2b73;
+    border: 2px solid #FFD700;
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
 }
 
-@keyframes slideRightPremium{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateX(-35px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateX(0);
-
-    }
-
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
-/*==================================================
-ANIMATION FLOTTANTE PREMIUM
-==================================================*/
-
-.float{
-
-    animation:floatingPremium 5s ease-in-out infinite;
-
+.notification i {
+    color: #4ade80;
+    font-size: 22px;
 }
 
-@keyframes floatingPremium{
-
-    0%,100%{
-
-        transform:translateY(0);
-
-    }
-
-    50%{
-
-        transform:translateY(-6px);
-
-    }
-
-}
-
-/*==================================================
-DÉLAIS
-==================================================*/
-
-.delay-1{animation-delay:.10s;}
-.delay-2{animation-delay:.20s;}
-.delay-3{animation-delay:.30s;}
-.delay-4{animation-delay:.40s;}
-.delay-5{animation-delay:.50s;}
-
-/*==================================================
-ANIMATIONS.CSS
-VERSION 2026 PREMIUM V8
-BLUE NIGHT + GOLD EDITION
-PARTIE 2
-==================================================*/
-
-/*==================================================
-HALO OR PREMIUM
-==================================================*/
-
-.glow-gold{
-
-    animation:goldGlow 3s ease-in-out infinite;
-
-}
-
-@keyframes goldGlow{
-
-    0%,100%{
-
-        text-shadow:
-            0 0 8px rgba(255,215,0,.25),
-            0 0 18px rgba(255,215,0,.15);
-
-    }
-
-    50%{
-
-        text-shadow:
-            0 0 18px rgba(255,215,0,.60),
-            0 0 35px rgba(255,215,0,.35),
-            0 0 50px rgba(255,215,0,.15);
-
-    }
-
-}
-
-/*==================================================
-HALO BLEU IA
-==================================================*/
-
-.glow-blue{
-
-    animation:blueGlow 3.5s ease-in-out infinite;
-
-}
-
-@keyframes blueGlow{
-
-    0%,100%{
-
-        text-shadow:
-            0 0 8px rgba(0,120,255,.25),
-            0 0 18px rgba(0,120,255,.15);
-
-    }
-
-    50%{
-
-        text-shadow:
-            0 0 18px rgba(0,120,255,.55),
-            0 0 35px rgba(0,120,255,.35),
-            0 0 55px rgba(0,120,255,.18);
-
-    }
-
-}
-
-/*==================================================
-PULSE IA PREMIUM
-==================================================*/
-
-.pulse-ai{
-
-    animation:pulsePremium 2.4s ease-in-out infinite;
-
-}
-
-@keyframes pulsePremium{
-
-    0%,100%{
-
-        transform:scale(1);
-
-        box-shadow:none;
-
-    }
-
-    50%{
-
-        transform:scale(1.04);
-
-        box-shadow:
-            0 0 25px rgba(255,215,0,.18),
-            0 0 40px rgba(0,120,255,.15);
-
-    }
-
-}
-
-/*==================================================
-BALAYAGE LUMINEUX
-==================================================*/
-
-.scan-light{
-
-    position:relative;
-
-    overflow:hidden;
-
-}
-
-.scan-light::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-140%;
-
-    width:45%;
-
-    height:100%;
-
-    background:linear-gradient(
-
-        120deg,
-
-        transparent,
-
-        rgba(255,255,255,.30),
-
-        transparent
-
-    );
-
-    transform:skewX(-25deg);
-
-    animation:scanPremium 3.5s linear infinite;
-
-}
-
-@keyframes scanPremium{
-
-    from{
-
-        left:-140%;
-
-    }
-
-    to{
-
-        left:170%;
-
-    }
-
-}
-
-/*==================================================
-BORDURE NÉON
-==================================================*/
-
-.neon-border{
-
-    border:1px solid rgba(255,215,0,.30);
-
-    animation:neonBorder 3s ease-in-out infinite;
-
-}
-
-@keyframes neonBorder{
-
-    0%,100%{
-
-        box-shadow:
-            0 0 10px rgba(255,215,0,.12);
-
-    }
-
-    50%{
-
-        box-shadow:
-            0 0 20px rgba(255,215,0,.25),
-            0 0 35px rgba(0,120,255,.18);
-
-    }
-
-}
-
-/*==================================================
-HOVER PREMIUM
-==================================================*/
-
-.hover-fx:hover{
-
-    transform:
-        translateY(-6px)
-        scale(1.02);
-
-    box-shadow:
-        var(--shadow-gold),
-        var(--shadow-blue);
-
-}
-
-/*==================================================
-CLIGNOTEMENT IA
-==================================================*/
-
-.blink-ai{
-
-    animation:blinkPremium 1.4s infinite;
-
-}
-
-@keyframes blinkPremium{
-
-    0%,100%{
-
-        opacity:1;
-
-    }
-
-    50%{
-
-        opacity:.45;
-
-    }
-
-}
-
-/*==================================================
-ANIMATIONS.CSS
-VERSION 2026 PREMIUM V8
-BLUE NIGHT + GOLD EDITION
-PARTIE 3
-==================================================*/
-
-/*==================================================
-EFFET CLIC PREMIUM
-==================================================*/
-
-.click-pop{
-
-    animation:clickPremium .28s ease;
-}
-
-@keyframes clickPremium{
-
-    0%{
-
-        transform:scale(1);
-
-    }
-
-    45%{
-
-        transform:scale(.90);
-
-    }
-
-    100%{
-
-        transform:scale(1);
-
-    }
-
-}
-
-/*==================================================
-EFFET D'APPUI
-==================================================*/
-
-.press-effect:active{
-
-    transform:scale(.94);
-
-    filter:brightness(.92);
-
-}
-
-/*==================================================
-LOADING PREMIUM
-==================================================*/
-
-.loading-dots-global{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:6px;
-}
-
-.loading-dots-global span{
-
-    width:8px;
-
-    height:8px;
-
-    border-radius:50%;
-
-    background:var(--accent);
-
-    animation:premiumDots 1.2s ease-in-out infinite;
-}
-
-.loading-dots-global span:nth-child(2){
-
-    animation-delay:.2s;
-}
-
-.loading-dots-global span:nth-child(3){
-
-    animation-delay:.4s;
-}
-
-@keyframes premiumDots{
-
-    0%,100%{
-
-        transform:scale(.5);
-
-        opacity:.4;
-
-    }
-
-    50%{
-
-        transform:scale(1.4);
-
-        opacity:1;
-
-        box-shadow:
-            0 0 14px rgba(255,215,0,.45);
-
-    }
-
-}
-
-/*==================================================
-SKELETON PREMIUM
-==================================================*/
-
-.skeleton{
-
-    border-radius:16px;
-
-    background:linear-gradient(
-
-        90deg,
-
-        rgba(255,255,255,.05) 20%,
-
-        rgba(255,255,255,.18) 50%,
-
-        rgba(255,255,255,.05) 80%
-
-    );
-
-    background-size:400% 100%;
-
-    animation:skeletonPremium 1.4s linear infinite;
-}
-
-@keyframes skeletonPremium{
-
-    from{
-
-        background-position:100% 0;
-
-    }
-
-    to{
-
-        background-position:-100% 0;
-
-    }
-
-}
-
-/*==================================================
-FADE OUT
-==================================================*/
-
-.fade-out{
-
-    animation:fadeOutPremium .35s ease forwards;
-}
-
-@keyframes fadeOutPremium{
-
-    from{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-    to{
-
-        opacity:0;
-
-        transform:translateY(12px);
-
-    }
-
-}
-
-/*==================================================
-SHAKE
-==================================================*/
-
-.shake{
-
-    animation:shakePremium .45s ease;
-}
-
-@keyframes shakePremium{
-
-    0%,100%{
-
-        transform:translateX(0);
-
-    }
-
-    20%{
-
-        transform:translateX(-6px);
-
-    }
-
-    40%{
-
-        transform:translateX(6px);
-
-    }
-
-    60%{
-
-        transform:translateX(-4px);
-
-    }
-
-    80%{
-
-        transform:translateX(4px);
-
-    }
-
-}
-
-/*==================================================
-WARNING PULSE
-==================================================*/
-
-.pulse-warning{
-
-    animation:warningPremium 1.5s infinite;
-}
-
-@keyframes warningPremium{
-
-    0%,100%{
-
-        box-shadow:0 0 0 rgba(255,80,80,0);
-
-    }
-
-    50%{
-
-        box-shadow:
-            0 0 24px rgba(255,80,80,.35);
-
-    }
-
-}
-
-/*==================================================
-ZOOM HOVER
-==================================================*/
-
-.zoom-hover:hover{
-
-    transform:scale(1.04);
-
-}
-
-/*==================================================
-ROTATION
-==================================================*/
-
-.rotate{
-
-    animation:rotatePremium 1s linear infinite;
-}
-
-@keyframes rotatePremium{
-
-    from{
-
-        transform:rotate(0deg);
-
-    }
-
-    to{
-
-        transform:rotate(360deg);
-
-    }
-
-}
-
-/*==================================================
-RESPIRATION
-==================================================*/
-
-.opacity-pulse{
-
-    animation:breathing 2.4s ease-in-out infinite;
-}
-
-@keyframes breathing{
-
-    0%,100%{
-
-        opacity:.65;
-
-    }
-
-    50%{
-
-        opacity:1;
-
-    }
-
-}
-
-/*==================================================
-EFFET FLOTTANT PREMIUM
-==================================================*/
-
-.float-premium{
-
-    animation:floatPremium 6s ease-in-out infinite;
-}
-
-@keyframes floatPremium{
-
-    0%,100%{
-
-        transform:translateY(0);
-
-    }
-
-    25%{
-
-        transform:translateY(-3px);
-
-    }
-
-    50%{
-
-        transform:translateY(-6px);
-
-    }
-
-    75%{
-
-        transform:translateY(-3px);
-
-    }
-
-}
-
-/*==================================================
-HALO LUMINEUX PREMIUM
-==================================================*/
-
-.glow-premium{
-
-    animation:glowPremium 3s ease-in-out infinite;
-}
-
-@keyframes glowPremium{
-
-    0%,100%{
-
-        box-shadow:
-            0 0 10px rgba(255,215,0,.12),
-            0 0 20px rgba(0,120,255,.10);
-
-    }
-
-    50%{
-
-        box-shadow:
-            0 0 24px rgba(255,215,0,.28),
-            0 0 40px rgba(0,120,255,.20);
-
-    }
-
+/* Surlignage de texte (recherche) */
+mark.search-highlight {
+    background-color: #FFD700;
+    color: #041c5c;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
 }

@@ -1,463 +1,131 @@
-/*==================================================
-OUTILS.CSS
-PARTIE 1
-SECTION • STRUCTURE • CARTES
-InspecteurBot RDC Premium V6
+/*=================================================
+PARTIE 8
+OUTILS DE L'INSPECTEUR & STATISTIQUES
 ==================================================*/
 
-/*==================================================
-SECTION OUTILS
-==================================================*/
-
-.outils-section{
-
-position:relative;
-overflow:hidden;
-margin:40px 0;
-padding:35px;
-border-radius:28px;
-background:var(--glass);
-backdrop-filter:blur(18px);
--webkit-backdrop-filter:blur(18px);
-border:1px solid var(--border);
-box-shadow:var(--shadow);
-
+.outils-section {
+    margin: 45px 0;
 }
 
-/*==================================================
-HALO IA
-==================================================*/
-
-.outils-section::before{
-
-content:"";
-position:absolute;
-inset:-40%;
-background:radial-gradient(circle,
-rgba(11,94,215,.18),
-transparent 70%);
-animation:outilsRotate 14s linear infinite;
-pointer-events:none;
-
+.outils-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 25px;
 }
 
-.outils-section::after{
-
-content:"";
-position:absolute;
-width:260px;
-height:260px;
-right:-100px;
-bottom:-100px;
-border-radius:50%;
-background:radial-gradient(
-rgba(255,215,0,.12),
-transparent 70%);
-animation:outilsPulse 6s ease-in-out infinite;
-pointer-events:none;
-
+.outil-card {
+    background: var(--bg-gradient);
+    border: 1px solid var(--border-gold);
+    border-radius: 24px;
+    padding: 28px 22px;
+    text-align: center;
+    transition: all 0.35s ease;
+    box-shadow: var(--shadow-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
-/*==================================================
-TITRE
-==================================================*/
-
-.outils-section .section-title{
-
-position:relative;
-z-index:2;
-text-align:center;
-margin-bottom:35px;
-
+.outil-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    transition: transform 0.4s ease;
 }
 
-.outils-section .section-title h2{
-
-font-size:32px;
-font-weight:800;
-color:var(--accent);
-margin-bottom:12px;
-
+.outil-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-gold);
+    border-color: var(--color-gold);
 }
 
-.outils-section .section-title p{
-
-max-width:760px;
-margin:auto;
-font-size:16px;
-line-height:1.8;
-color:var(--text);
-
+.outil-card:hover::after {
+    transform: scale(3);
 }
 
-/*==================================================
-GRILLE
-==================================================*/
-
-.outils-grid{
-
-position:relative;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:24px;
-z-index:2;
-
+.outil-card i {
+    font-size: 44px;
+    color: var(--color-gold);
+    margin-bottom: 16px;
+    transition: transform 0.3s ease;
 }
 
-/*==================================================
-CARTE
-==================================================*/
-
-.outil-card{
-
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:28px 22px;
-border-radius:22px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.15);
-backdrop-filter:blur(16px);
--webkit-backdrop-filter:blur(16px);
-color:var(--text);
-text-decoration:none;
-cursor:pointer;
-transition:var(--transition);
-box-shadow:0 10px 25px rgba(0,0,0,.20);
-
+.outil-card:hover i {
+    transform: scale(1.2) rotate(-5deg);
 }
 
-.outil-card:hover{
-
-transform:translateY(-6px);
-border-color:var(--accent);
-box-shadow:0 0 25px rgba(255,215,0,.25);
-
+.outil-card h3 {
+    color: var(--color-white);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
-/*==================================================
-ICÔNE
-==================================================*/
-
-.outil-card i{
-
-font-size:46px;
-color:var(--accent);
-margin-bottom:18px;
-transition:var(--transition);
-
+.outil-card p {
+    color: var(--color-light-blue);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-.outil-card:hover i{
-
-transform:scale(1.15);
-
+/* Statistiques Section */
+.statistiques-section {
+    margin: 45px 0;
+    background: rgba(10, 43, 115, 0.4);
+    border: 1px solid var(--border-gold);
+    border-radius: 28px;
+    padding: 35px 25px;
+    box-shadow: var(--shadow-main);
 }
 
-/*==================================================
-TITRE
-==================================================*/
-
-.outil-card h3{
-
-font-size:21px;
-font-weight:700;
-margin-bottom:12px;
-color:var(--accent);
-
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
 }
 
-/*==================================================
-DESCRIPTION
-==================================================*/
-
-.outil-card p{
-
-font-size:15px;
-line-height:1.8;
-color:var(--text);
-
+.stat-card {
+    background: var(--bg-gradient);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 22px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
 }
 
-/*==================================================
-OUTILS.CSS
-PARTIE 2
-ANIMATIONS • BADGES • RESPONSIVE • ACCESSIBILITÉ
-InspecteurBot RDC Premium V6
-==================================================*/
-
-/*==================================================
-LIGNE LUMINEUSE
-==================================================*/
-
-.outil-card::before{
-
-content:"";
-position:absolute;
-top:0;
-left:-120%;
-width:45%;
-height:100%;
-background:linear-gradient(
-transparent,
-rgba(255,255,255,.20),
-transparent
-);
-transform:skewX(-25deg);
-
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-gold);
 }
 
-.outil-card:hover::before{
-
-animation:outilLight .9s linear;
-
+.stat-card i {
+    font-size: 38px;
+    color: var(--color-gold);
+    margin-bottom: 12px;
 }
 
-/*==================================================
-BADGE
-==================================================*/
-
-.outil-badge{
-
-display:inline-flex;
-align-items:center;
-justify-content:center;
-margin-top:18px;
-padding:8px 16px;
-border-radius:30px;
-background:rgba(255,215,0,.15);
-border:1px solid rgba(255,215,0,.30);
-color:var(--accent);
-font-size:13px;
-font-weight:700;
-transition:var(--transition);
-
+.stat-card h3 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.outil-card:hover .outil-badge{
-
-background:var(--accent);
-color:var(--primary);
-
+.stat-card p {
+    color: var(--color-light-blue);
+    font-size: 15px;
+    font-weight: 500;
 }
-
-/*==================================================
-ÉTAT ACTIF
-==================================================*/
-
-.outil-card.active{
-
-border-color:var(--accent);
-background:rgba(255,255,255,.12);
-box-shadow:0 0 25px rgba(255,215,0,.35);
-
-}
-
-.outil-card.active i{
-
-color:#FFD700;
-
-}
-
-/*==================================================
-ANIMATIONS
-==================================================*/
-
-@keyframes outilsRotate{
-
-from{
-
-transform:rotate(0deg);
-
-}
-
-to{
-
-transform:rotate(360deg);
-
-}
-
-}
-
-@keyframes outilsPulse{
-
-0%{
-
-transform:scale(1);
-opacity:.35;
-
-}
-
-50%{
-
-transform:scale(1.25);
-opacity:.15;
-
-}
-
-100%{
-
-transform:scale(1);
-opacity:.35;
-
-}
-
-}
-
-@keyframes outilLight{
-
-from{
-
-left:-120%;
-
-}
-
-to{
-
-left:160%;
-
-}
-
-}
-
-/*==================================================
-EFFET FLOTTANT
-==================================================*/
-
-.outil-card{
-
-animation:outilFloat 6s ease-in-out infinite;
-
-}
-
-@keyframes outilFloat{
-
-0%{
-
-transform:translateY(0);
-
-}
-
-50%{
-
-transform:translateY(-4px);
-
-}
-
-100%{
-
-transform:translateY(0);
-
-}
-
-}
-
-/*==================================================
-RESPONSIVE TABLETTE
-==================================================*/
-
-@media(max-width:900px){
-
-.outils-grid{
-
-grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-
-}
-
-}
-
-/*==================================================
-RESPONSIVE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-.outils-section{
-
-padding:24px;
-
-}
-
-.outils-section .section-title h2{
-
-font-size:24px;
-
-}
-
-.outil-card{
-
-padding:22px 18px;
-
-}
-
-.outil-card i{
-
-font-size:38px;
-
-}
-
-.outil-card h3{
-
-font-size:18px;
-
-}
-
-.outil-card p{
-
-font-size:14px;
-
-}
-
-}
-
-/*==================================================
-PETITS ÉCRANS
-==================================================*/
-
-@media(max-width:480px){
-
-.outils-grid{
-
-grid-template-columns:1fr;
-
-}
-
-.outil-card{
-
-padding:20px 16px;
-
-}
-
-}
-
-/*==================================================
-ACCESSIBILITÉ
-==================================================*/
-
-@media(prefers-reduced-motion:reduce){
-
-.outil-card,
-.outils-section::before,
-.outils-section::after{
-
-animation:none!important;
-
-}
-
-.outil-card:hover{
-
-transform:none!important;
-
-}
-
-}
-
-/*==================================================
-FIN OUTILS.CSS
-VERSION PREMIUM V6
-==================================================*/
-

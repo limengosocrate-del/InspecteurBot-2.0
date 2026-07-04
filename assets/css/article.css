@@ -1,1021 +1,226 @@
-/*==================================================
-ARTICLE.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 1
-STRUCTURE PREMIUM
+/*=================================================
+PARTIE 6
+CONSULTATION DES ARTICLES
 ==================================================*/
 
-/*==================================================
-SECTION PRINCIPALE
-==================================================*/
-
-.article-section{
-
-    position:relative;
-
-    margin:40px 0;
-
-    padding:36px;
-
-    border-radius:32px;
-
-    overflow:hidden;
-
-    background:linear-gradient(
-        145deg,
-        #02173E,
-        #062B68,
-        #041C5C
-    );
-
-    border:1px solid rgba(255,215,0,.12);
-
-    backdrop-filter:blur(22px);
-
-    -webkit-backdrop-filter:blur(22px);
-
-    box-shadow:
-        0 20px 45px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,.05);
-
+.article-section {
+    margin-top: 35px;
 }
 
-/*==================================================
-HALO BLEU
-==================================================*/
-
-.article-section::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:520px;
-
-    height:520px;
-
-    top:-220px;
-
-    left:-180px;
-
-    border-radius:50%;
-
-    background:radial-gradient(
-
-        rgba(0,110,255,.22),
-
-        transparent 70%
-
-    );
-
-    animation:rotateHalo 18s linear infinite;
-
+.article-card {
+    background: var(--bg-gradient);
+    border: 1px solid var(--border-gold);
+    border-radius: 28px;
+    padding: 35px;
+    margin-bottom: 30px;
+    border-left: 10px solid var(--color-gold);
+    box-shadow: var(--shadow-main);
+    transition: all 0.35s ease;
+    position: relative;
 }
 
-/*==================================================
-HALO OR
-==================================================*/
-
-.article-section::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:320px;
-
-    height:320px;
-
-    right:-120px;
-
-    bottom:-120px;
-
-    border-radius:50%;
-
-    background:radial-gradient(
-
-        rgba(255,215,0,.18),
-
-        transparent 70%
-
-    );
-
-    animation:pulseGold 6s ease-in-out infinite;
-
+.article-card:hover {
+    box-shadow: var(--shadow-gold);
 }
 
-/*==================================================
-TITRE
-==================================================*/
-
-.section-title{
-
-    position:relative;
-
-    z-index:2;
-
-    text-align:center;
-
-    margin-bottom:34px;
-
+.article-header-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-.section-title h2{
-
-    font-size:2rem;
-
-    font-weight:800;
-
-    color:var(--gold-light);
-
-    text-shadow:
-
-        0 0 18px rgba(255,215,0,.35);
-
+.article-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-gold);
+    color: #041c5c;
+    font-weight: 800;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
 
-.section-title p{
-
-    margin-top:12px;
-
-    color:var(--text-soft);
-
-    line-height:1.8;
-
+.article-category {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-light-blue);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/*==================================================
-CARTE ARTICLE PREMIUM
-==================================================*/
-
-.article-card{
-
-    position:relative;
-
-    z-index:2;
-
-    overflow:hidden;
-
-    padding:32px;
-
-    margin-top:24px;
-
-    border-radius:28px;
-
-    background:linear-gradient(
-
-        180deg,
-
-        rgba(255,255,255,.12),
-
-        rgba(255,255,255,.05)
-
-    );
-
-    border:1px solid rgba(255,215,0,.18);
-
-    backdrop-filter:blur(25px);
-
-    -webkit-backdrop-filter:blur(25px);
-
-    box-shadow:
-
-        var(--shadow-deep),
-
-        inset 0 1px 0 rgba(255,255,255,.08);
-
-    transition:all .40s ease;
-
+.article-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--color-gold);
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
 }
 
-/*==================================================
-LUMIÈRE GLISSANTE
-==================================================*/
-
-.article-card::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:0;
-
-    left:-150%;
-
-    width:45%;
-
-    height:100%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.28),
-
-        transparent
-
-    );
-
-    transform:skewX(-25deg);
-
+.article-content {
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--color-white);
+    text-align: justify;
+    margin-bottom: 25px;
+    white-space: pre-line;
 }
 
-.article-card:hover::before{
-
-    animation:cardLight .9s linear;
-
+/* Sanction légale */
+.article-sanction {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-left: 6px solid #ef4444;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 25px;
+    display: none; /* Affiché par JS si sanction non nulle */
 }
 
-/*==================================================
-SURVOL PREMIUM
-==================================================*/
-
-.article-card:hover{
-
-    transform:
-
-        translateY(-8px)
-
-        scale(1.01);
-
-    border-color:rgba(255,215,0,.35);
-
-    box-shadow:
-
-        var(--shadow-deep),
-
-        var(--shadow-gold),
-
-        var(--shadow-blue);
-
+.article-sanction.visible {
+    display: block;
+    animation: fadeIn 0.4s ease;
 }
 
-/*==================================================
-BADGE ARTICLE
-==================================================*/
-
-.article-number{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:8px;
-
-    padding:10px 22px;
-
-    margin-bottom:20px;
-
-    border-radius:999px;
-
-    background:linear-gradient(
-
-        135deg,
-
-        #FFD700,
-
-        #FFF2A8
-
-    );
-
-    color:#041C5C;
-
-    font-weight:800;
-
-    font-size:15px;
-
-    box-shadow:
-
-        0 10px 25px rgba(255,215,0,.30);
-
+.article-sanction h4 {
+    color: #f87171;
+    font-size: 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/*==================================================
-TITRE ARTICLE
-==================================================*/
-
-.article-title{
-
-    margin-bottom:14px;
-
-    font-size:30px;
-
-    font-weight:800;
-
-    color:#FFFFFF;
-
-    line-height:1.4;
-
+.article-sanction p {
+    color: #fee2e2;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
-/*==================================================
-CATÉGORIE
-==================================================*/
-
-.article-category{
-
-    display:inline-block;
-
-    margin-bottom:22px;
-
-    padding:8px 16px;
-
-    border-radius:999px;
-
-    background:rgba(0,120,255,.18);
-
-    border:1px solid rgba(255,215,0,.20);
-
-    color:var(--gold-light);
-
-    font-weight:600;
-
-    font-size:13px;
-
-        }
-
-/*==================================================
-ARTICLE.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 2
-CONTENU • IA • ACTIONS
-==================================================*/
-
-/*==================================================
-CONTENU ARTICLE
-==================================================*/
-
-.article-content{
-
-    font-size:17px;
-
-    line-height:2;
-
-    color:rgba(255,255,255,.94);
-
-    text-align:justify;
-
-    letter-spacing:.2px;
-
+/* Questions IA intégrées à l'article */
+.article-questions {
+    margin-bottom: 30px;
 }
 
-/*==================================================
-MISE EN VALEUR
-==================================================*/
-
-.article-content strong{
-
-    color:var(--gold-light);
-
-    font-weight:700;
-
+.article-questions h4 {
+    color: #60a5fa;
+    font-size: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.article-content em{
-
-    color:#8EC5FF;
-
-    font-style:italic;
-
+.questions-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-/*==================================================
-SANCTION
-==================================================*/
-
-.article-sanction{
-
-    margin-top:28px;
-
-    padding:20px;
-
-    border-radius:22px;
-
-    background:linear-gradient(
-
-        135deg,
-
-        rgba(120,0,0,.22),
-
-        rgba(255,60,60,.08)
-
-    );
-
-    border:1px solid rgba(255,90,90,.28);
-
-    color:#FFE5E5;
-
-    backdrop-filter:blur(18px);
-
-    box-shadow:
-
-        0 12px 25px rgba(0,0,0,.25);
-
+.question-tag-btn {
+    background: rgba(96, 165, 250, 0.15);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #93c5fd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/*==================================================
-BOUTONS IA
-==================================================*/
-
-.assistant-actions{
-
-    display:flex;
-
-    justify-content:center;
-
-    flex-wrap:wrap;
-
-    gap:18px;
-
-    margin-top:30px;
-
+.question-tag-btn:hover {
+    background: #3b82f6;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-/*==================================================
-BOUTONS PREMIUM
-==================================================*/
-
-.assistant-actions button{
-
-    position:relative;
-
-    overflow:hidden;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    min-width:180px;
-
-    height:56px;
-
-    padding:0 24px;
-
-    border-radius:18px;
-
-    color:#FFF8D8;
-
-    font-weight:700;
-
-    letter-spacing:.3px;
-
-    background:linear-gradient(
-
-        180deg,
-
-        rgba(255,255,255,.14),
-
-        rgba(255,255,255,.05)
-
-    );
-
-    border:1px solid rgba(255,215,0,.25);
-
-    backdrop-filter:blur(18px);
-
-    -webkit-backdrop-filter:blur(18px);
-
-    box-shadow:
-
-        0 15px 30px rgba(0,0,0,.35),
-
-        inset 0 1px 0 rgba(255,255,255,.08);
-
-    transition:all .35s ease;
-
+/* Actions Article */
+.article-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 25px;
 }
 
-/*==================================================
-REFLET PREMIUM
-==================================================*/
-
-.assistant-actions button::before{
-
-    content:"";
-
-    position:absolute;
-
-    top:-150%;
-
-    left:-40%;
-
-    width:50%;
-
-    height:320%;
-
-    background:linear-gradient(
-
-        transparent,
-
-        rgba(255,255,255,.45),
-
-        transparent
-
-    );
-
-    transform:rotate(25deg);
-
-    transition:.8s;
-
+.article-actions button {
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-gold);
+    background: rgba(13, 61, 153, 0.6);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.assistant-actions button:hover::before{
-
-    left:170%;
-
+.article-actions button:hover {
+    transform: translateY(-3px);
+    background: var(--color-gold);
+    color: #041c5c;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
 }
 
-/*==================================================
-SURVOL
-==================================================*/
-
-.assistant-actions button:hover{
-
-    transform:
-
-        translateY(-6px)
-
-        scale(1.03);
-
-    border-color:rgba(255,215,0,.55);
-
-    box-shadow:
-
-        var(--shadow-gold),
-
-        var(--shadow-blue),
-
-        0 20px 35px rgba(0,0,0,.40);
-
+/* Section Infos */
+.info-section {
+    margin-bottom: 35px;
 }
 
-/*==================================================
-CLIC
-==================================================*/
-
-.assistant-actions button:active{
-
-    transform:scale(.94);
-
+.info-card {
+    background: var(--bg-gradient);
+    border: 1px solid var(--border-gold);
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: var(--shadow-main);
 }
 
-/*==================================================
-ICÔNES
-==================================================*/
-
-.assistant-actions button i{
-
-    color:var(--gold-light);
-
-    font-size:20px;
-
-    transition:.35s;
-
+.info-card h2 {
+    color: var(--color-gold);
+    font-size: 22px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.assistant-actions button:hover i{
-
-    transform:
-
-        rotate(10deg)
-
-        scale(1.15);
-
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
 }
 
-/*==================================================
-ZONE IA
-==================================================*/
-
-.ai-result{
-
-    position:relative;
-
-    margin-top:35px;
-
-    padding:28px;
-
-    border-radius:26px;
-
-    overflow:hidden;
-
-    background:linear-gradient(
-
-        180deg,
-
-        rgba(255,255,255,.10),
-
-        rgba(255,255,255,.05)
-
-    );
-
-    border:1px solid rgba(255,215,0,.18);
-
-    backdrop-filter:blur(22px);
-
-    box-shadow:
-
-        var(--shadow-soft);
-
+.info-box {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
 }
 
-/*==================================================
-LIGNE LUMINEUSE IA
-==================================================*/
-
-.ai-result::before{
-
-    content:"";
-
-    position:absolute;
-
-    left:0;
-
-    top:0;
-
-    width:5px;
-
-    height:100%;
-
-    background:linear-gradient(
-
-        var(--gold-light),
-
-        #3AA7FF
-
-    );
-
+.info-box h4 {
+    color: var(--color-light-blue);
+    font-size: 13px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
 }
 
-/*==================================================
-TITRE IA
-==================================================*/
-
-.ai-result h3{
-
-    margin-bottom:16px;
-
-    color:var(--gold-light);
-
-    font-size:22px;
-
-    font-weight:800;
-
+.info-box p {
+    color: var(--color-gold);
+    font-size: 18px;
+    font-weight: 700;
 }
-
-/*==================================================
-RÉPONSE IA
-==================================================*/
-
-#reponseIA{
-
-    color:rgba(255,255,255,.92);
-
-    font-size:16px;
-
-    line-height:1.9;
-
-    text-align:justify;
-
-    }
-
-/*==================================================
-ARTICLE.CSS
-VERSION 2026 PREMIUM V8
-PARTIE 3
-ANIMATIONS • RESPONSIVE • FINITIONS
-==================================================*/
-
-/*==================================================
-APPARITION PREMIUM
-==================================================*/
-
-.article-card{
-
-    animation:articleFade .55s ease both;
-
-}
-
-@keyframes articleFade{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(22px)
-            scale(.98);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
-    }
-
-}
-
-/*==================================================
-BALAYAGE LUMINEUX
-==================================================*/
-
-@keyframes cardLight{
-
-    from{
-
-        left:-150%;
-
-    }
-
-    to{
-
-        left:180%;
-
-    }
-
-}
-
-/*==================================================
-ROTATION HALO BLEU
-==================================================*/
-
-@keyframes rotateHalo{
-
-    from{
-
-        transform:rotate(0deg);
-
-    }
-
-    to{
-
-        transform:rotate(360deg);
-
-    }
-
-}
-
-/*==================================================
-PULSATION HALO OR
-==================================================*/
-
-@keyframes pulseGold{
-
-    0%,100%{
-
-        transform:scale(1);
-
-        opacity:.20;
-
-    }
-
-    50%{
-
-        transform:scale(1.25);
-
-        opacity:.40;
-
-    }
-
-}
-
-/*==================================================
-SCROLLBAR ARTICLE
-==================================================*/
-
-.article-content::-webkit-scrollbar{
-
-    width:8px;
-
-}
-
-.article-content::-webkit-scrollbar-track{
-
-    background:rgba(255,255,255,.05);
-
-    border-radius:20px;
-
-}
-
-.article-content::-webkit-scrollbar-thumb{
-
-    background:linear-gradient(
-
-        var(--gold-light),
-
-        #FFED9D
-
-    );
-
-    border-radius:20px;
-
-}
-
-/*==================================================
-SÉLECTION TEXTE
-==================================================*/
-
-.article-content::selection{
-
-    background:rgba(255,215,0,.35);
-
-    color:#ffffff;
-
-}
-
-/*==================================================
-FOCUS ACCESSIBILITÉ
-==================================================*/
-
-.assistant-actions button:focus-visible{
-
-    outline:3px solid var(--gold-light);
-
-    outline-offset:4px;
-
-}
-
-.article-card:focus-within{
-
-    border-color:rgba(255,215,0,.40);
-
-}
-
-/*==================================================
-RESPONSIVE TABLETTE
-==================================================*/
-
-@media(max-width:992px){
-
-    .article-section{
-
-        padding:28px;
-
-    }
-
-    .article-card{
-
-        padding:26px;
-
-    }
-
-    .article-title{
-
-        font-size:26px;
-
-    }
-
-}
-
-/*==================================================
-RESPONSIVE MOBILE
-==================================================*/
-
-@media(max-width:768px){
-
-    .article-section{
-
-        padding:20px;
-
-        border-radius:24px;
-
-    }
-
-    .section-title h2{
-
-        font-size:1.6rem;
-
-    }
-
-    .section-title p{
-
-        font-size:14px;
-
-    }
-
-    .article-card{
-
-        padding:20px;
-
-        border-radius:20px;
-
-    }
-
-    .article-number{
-
-        font-size:13px;
-
-        padding:8px 16px;
-
-    }
-
-    .article-title{
-
-        font-size:22px;
-
-    }
-
-    .article-content{
-
-        font-size:15px;
-
-        line-height:1.9;
-
-    }
-
-    .assistant-actions{
-
-        flex-direction:column;
-
-        gap:14px;
-
-    }
-
-    .assistant-actions button{
-
-        width:100%;
-
-        min-width:100%;
-
-    }
-
-    .ai-result{
-
-        padding:20px;
-
-    }
-
-}
-
-/*==================================================
-TRÈS PETITS ÉCRANS
-==================================================*/
-
-@media(max-width:480px){
-
-    .article-section{
-
-        padding:16px;
-
-    }
-
-    .article-card{
-
-        padding:18px;
-
-    }
-
-    .article-title{
-
-        font-size:20px;
-
-    }
-
-    .article-content{
-
-        font-size:14px;
-
-    }
-
-    .ai-result h3{
-
-        font-size:19px;
-
-    }
-
-    #reponseIA{
-
-        font-size:15px;
-
-    }
-
-}
-
-/*==================================================
-OPTIMISATION GPU
-==================================================*/
-
-.article-card,
-.assistant-actions button,
-.ai-result{
-
-    will-change:
-        transform,
-        box-shadow;
-
-}
-
-/*==================================================
-FIN PREMIUM V8
-==================================================*/
