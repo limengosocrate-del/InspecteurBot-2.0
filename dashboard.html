@@ -963,47 +963,44 @@ setInterval(() => {
   
 <script src="assets/js/ia.js"></script>  
   
-<script>  
-  
-document.addEventListener("DOMContentLoaded", () => {  
-  
-    console.log("✅ Dashboard chargé");  
-  
-    const btn = document.getElementById("searchBtn");  
-  
-    if (btn) {  
-        console.log("✅ Bouton de recherche détecté");  
-    } else {  
-        console.log("❌ Bouton de recherche introuvable");  
-    }  
-  
-});  
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-  <script type="module">
+    console.log("✅ Dashboard chargé");
+
+    const btn = document.getElementById("searchBtn");
+
+    if(btn){
+        console.log("✅ Bouton détecté");
+    }
+
+});
+</script>
+
+<script type="module">
 
 import { supabase } from "./assets/js/supabase.js";
 
-// Vérifier si l'utilisateur est connecté
-const { data, error } = await supabase.auth.getSession();
+// Vérifier la session
+const { data } = await supabase.auth.getSession();
 
 if (!data.session) {
     window.location.href = "login.html";
 }
 
-// Récupérer les informations de l'utilisateur
 const user = data.session.user;
 
-// Afficher le nom de l'utilisateur si un élément existe
+// Afficher le nom si l'élément existe
 const nom = document.getElementById("nomUtilisateur");
 
 if (nom) {
     nom.textContent =
-        user.user_metadata.fullname ||
+        user.user_metadata?.fullname ||
         user.email;
 }
 
-// Fonction de déconnexion
-window.logout = async function () {
+// Déconnexion
+window.logout = async () => {
 
     await supabase.auth.signOut();
 
