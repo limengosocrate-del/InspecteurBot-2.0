@@ -1,68 +1,64 @@
-//==================================================
-// INSPECTEURBOT IA RDC
-// login.js
-// Authentification avec Supabase
-//==================================================
+/*==========================================
+ INSPECTEURBOT IA RDC
+ LOGIN SUPABASE
+==========================================*/
 
-const loginForm = document.getElementById("loginForm");
-const message = document.getElementById("message");
+import { supabase } from "./supabase.js";
 
-// Vérifier si l'utilisateur est déjà connecté
-document.addEventListener("DOMContentLoaded", async () => {
-
-    const {
-        data: { session }
-    } = await supabase.auth.getSession();
-
-    if (session) {
-        window.location.href = "dashboard.html";
-    }
-
-});
-
-// Connexion
-loginForm.addEventListener("submit", async (e) => {
+document
+.getElementById("loginForm")
+.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
+    const email =
+        document.getElementById("email").value.trim();
 
-    const password = document.getElementById("password").value;
+    const password =
+        document.getElementById("password").value;
 
-    message.style.color = "#005baa";
+    const message =
+        document.getElementById("message");
+
     message.innerHTML = "Connexion en cours...";
+    message.style.color = "#005baa";
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } =
+        await supabase.auth.signInWithPassword({
 
-        email: email,
-        password: password
+            email,
+            password
 
-    });
+        });
 
-    if (error) {
+    if(error){
+
+        message.innerHTML =
+        "❌ " + error.message;
 
         message.style.color = "red";
-        message.innerHTML = "❌ " + error.message;
 
         return;
-
     }
 
-    // Sauvegarder quelques informations utiles
-    localStorage.setItem("isLoggedIn", "true");
+    const user = data.user;
 
     localStorage.setItem(
         "currentUser",
-        data.user.user_metadata.fullname || ""
+        user.email
     );
 
-    message.style.color = "green";
-    message.innerHTML = "✅ Connexion réussie";
+    message.innerHTML =
+    "✅ Connexion réussie";
 
-    setTimeout(() => {
+    message.style.color =
+    "green";
 
-        window.location.href = "dashboard.html";
+    setTimeout(()=>{
 
-    }, 1000);
+        window.location.href =
+        "dashboard.html";
+
+    },1000);
 
 });
