@@ -1,8 +1,11 @@
-//==================================================
-// INSPECTEURBOT IA RDC
-// register.js
-// Inscription avec Supabase
-//==================================================
+/*====================================================
+ INSPECTEURBOT IA RDC
+ register.js
+ Inscription avec Supabase
+ Développé par Inspecteur Limengo (Pmiller)
+====================================================*/
+
+import { supabase } from "./supabase.js";
 
 const form = document.getElementById("registerForm");
 const message = document.getElementById("registerMessage");
@@ -21,29 +24,42 @@ form.addEventListener("submit", async (e) => {
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
+    message.style.color = "#005baa";
+    message.innerHTML = "Création du compte...";
+
     if (password !== confirmPassword) {
+
         message.style.color = "red";
         message.innerHTML = "❌ Les mots de passe ne correspondent pas.";
+
         return;
     }
 
-    message.style.color = "#005baa";
-    message.innerHTML = "Création du compte...";
+    if (password.length < 6) {
+
+        message.style.color = "red";
+        message.innerHTML = "❌ Le mot de passe doit contenir au moins 6 caractères.";
+
+        return;
+    }
 
     const { data, error } = await supabase.auth.signUp({
 
         email: email,
+
         password: password,
 
         options: {
 
             data: {
+
                 fullname: fullname,
                 matricule: matricule,
                 telephone: telephone,
                 role: role,
                 province: province,
                 direction: direction
+
             }
 
         }
@@ -54,13 +70,14 @@ form.addEventListener("submit", async (e) => {
 
         message.style.color = "red";
         message.innerHTML = "❌ " + error.message;
-        return;
 
+        return;
     }
 
     message.style.color = "green";
+
     message.innerHTML =
-        "✅ Compte créé avec succès. Vérifiez votre e-mail pour activer votre compte.";
+    "✅ Compte créé avec succès.<br>Vérifiez votre boîte e-mail pour confirmer votre compte.";
 
     form.reset();
 
