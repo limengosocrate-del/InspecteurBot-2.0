@@ -1,1 +1,113 @@
+/*=================================================
+ANIMATIONS & EFFETS INTÉRACTIFS
+==================================================*/
 
+/* Fade In Animation */
+.fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Écran de chargement futuriste */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #02123c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader {
+    width: 70px;
+    height: 70px;
+    border: 5px solid rgba(255, 215, 0, 0.2);
+    border-top-color: #FFD700;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 25px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-screen p {
+    color: #FFD700;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    animation: pulseText 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulseText {
+    from { opacity: 0.6; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1.02); }
+}
+
+/* Notification Toast */
+.notification {
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #0a2b73;
+    border: 2px solid #FFD700;
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.notification i {
+    color: #4ade80;
+    font-size: 22px;
+}
+
+/* Surlignage de texte (recherche) */
+mark.search-highlight {
+    background-color: #FFD700;
+    color: #041c5c;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-weight: 700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}

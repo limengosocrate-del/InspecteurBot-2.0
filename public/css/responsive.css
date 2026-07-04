@@ -1,1 +1,141 @@
+/*=================================================
+RESPONSIVE GÉNÉRAL
+==================================================*/
 
+@media (max-width: 1024px) {
+    .container {
+        width: 96%;
+        padding: 15px;
+    }
+    
+    .title-box h1 {
+        font-size: 30px;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-header {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+
+    .logo-box img.logo {
+        width: 75px;
+        height: 75px;
+    }
+
+    .title-box h1 {
+        font-size: 24px;
+    }
+
+    .title-box h2 {
+        font-size: 18px;
+    }
+
+    .title-box h3 {
+        font-size: 15px;
+    }
+
+    .datetime-box {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+    }
+
+    #clock {
+        font-size: 32px;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .toolbar-left, .toolbar-right {
+        justify-content: center;
+    }
+
+    .toolbar-left select {
+        width: 100%;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-box button {
+        width: 100%;
+        height: 52px;
+    }
+
+    .categories-grid, .outils-grid, .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .article-card {
+        padding: 20px 15px;
+        border-radius: 20px;
+    }
+
+    .article-title {
+        font-size: 20px;
+    }
+
+    .article-content {
+        font-size: 15px;
+    }
+
+    .article-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .article-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .assistant-card {
+        padding: 20px 15px;
+    }
+
+    .assistant-actions {
+        flex-direction: column;
+    }
+
+    #btnQuestionIA, #btnEffacerIA, #btnLectureIA, #btnCopierIA {
+        width: 100%;
+    }
+
+    .btn-top {
+        right: 15px;
+        bottom: 15px;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    .footer {
+        padding: 30px 15px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-box h1 {
+        font-size: 20px;
+    }
+
+    .search-header h2, .section-title h2 {
+        font-size: 22px;
+    }
+
+    .suggestions button {
+        font-size: 13px;
+        padding: 8px 14px;
+    }
+}

@@ -1,1 +1,148 @@
+/*=================================================
+PARTIE 7
+ASSISTANT JURIDIQUE IA (INSPECTEURBOT RDC)
+==================================================*/
 
+.assistant-section {
+    margin: 40px 0;
+}
+
+.assistant-card {
+    background: linear-gradient(145deg, #061c47, #0d3278);
+    border: 2px solid var(--color-gold);
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), var(--shadow-gold);
+    position: relative;
+    overflow: hidden;
+}
+
+.assistant-card::after {
+    content: '🤖';
+    position: absolute;
+    bottom: -20px;
+    right: 20px;
+    font-size: 150px;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.assistant-input {
+    margin: 25px 0;
+}
+
+.assistant-input textarea {
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 215, 0, 0.4);
+    background: #ffffff;
+    color: #041c5c;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: vertical;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.assistant-input textarea:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+
+.assistant-input textarea::placeholder {
+    color: #6b7a99;
+}
+
+.assistant-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.assistant-actions button {
+    padding: 14px 24px;
+    border-radius: 18px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+#btnQuestionIA {
+    background: var(--color-gold);
+    color: #041c5c;
+    flex: 2;
+    min-width: 200px;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+}
+
+#btnQuestionIA:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: #ffe033;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.7);
+}
+
+#btnEffacerIA, #btnLectureIA, #btnCopierIA {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+}
+
+#btnEffacerIA:hover, #btnLectureIA:hover, #btnCopierIA:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+#btnEffacerIA:hover {
+    background: rgba(239, 68, 68, 0.8);
+    border-color: #ef4444;
+}
+
+/* Zone Résultat IA */
+.ai-result {
+    padding: 30px;
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-left: 8px solid var(--color-gold);
+    position: relative;
+    min-height: 180px;
+}
+
+.ai-result h3 {
+    color: var(--color-gold);
+    margin-bottom: 18px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#reponseIA {
+    color: #ffffff;
+    line-height: 1.8;
+    font-size: 16px;
+    white-space: pre-line;
+}
+
+/* Questions rapides section IA */
+.ia-tools {
+    margin: 35px 0;
+}
+
+.ia-tools .suggestions button {
+    background: linear-gradient(135deg, #123f97, #1e58d6);
+    border-color: rgba(255, 215, 0, 0.4);
+    padding: 12px 22px;
+    font-size: 15px;
+}
