@@ -1,331 +1,165 @@
-"use strict";
+/**
+ * consultation.js
+ * Rendu détaillé d'un article, affichage des sanctions pénales/civiles et questions IA
+ */
 
-/*=====================================================
- INSPECTEURBOT RDC
- CONSULTATION.JS
-=====================================================*/
+window.CodeTravailConsultation = {
+    init: function() {
+        const btnCopy = document.getElementById("btnCopierArticle");
+        const btnSpeak = document.getElementById("btnLectureArticle");
+        const btnAI = document.getElementById("btnExpliquerIA");
+        const btnShare = document.getElementById("btnPartagerArticle");
+        const btnPrint = document.getElementById("btnImprimerArticle");
+        const btnFav = document.getElementById("btnFavoriArticle");
 
-const Consultation = {};
+        if (btnCopy) {
+            btnCopy.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (!art) return;
+                const text = `Code du Travail RDC — Article ${art.numero} (${art.titre})\n\n${art.contenu}\n\n${art.sanction ? 'Sanction : ' + art.sanction : ''}\n\nSource : InspecteurBot RDC (2026)`;
+                if (window.InspecteurUtils) window.InspecteurUtils.copyToClipboard(text, "Article copié dans le presse-papiers !");
+            });
+        }
 
-window.Consultation = Consultation;
-
-/*=====================================================
- ARTICLE ACTUEL
-=====================================================*/
-
-Consultation.articleActuel = null;
-
-/*=====================================================
- AFFICHER UN ARTICLE
-=====================================================*/
-
-Consultation.afficherArticle = function (article) {
-
-    if (!article) return;
-
-    Consultation.articleActuel = article;
-
-    document.getElementById("numeroArticle").textContent =
-        "Article " + article.numero;
-
-    document.getElementById("titreArticle").textContent =
-        article.titre;
-
-    document.getElementById("categorieArticle").textContent =
-        article.categorie;
-
-    document.getElementById("contenuArticle").textContent =
-        article.contenu;
-
-    const sanction =
-        document.getElementById("sanctionArticle");
-
-    if (article.sanction) {
-
-        sanction.innerHTML = `
-            <h4>
-                <i class="fa-solid fa-gavel"></i>
-                Sanction
-            </h4>
-
-            <p>${article.sanction}</p>
-        `;
-
-        sanction.style.display = "block";
-
-    } else {
-
-        sanction.innerHTML = "";
-
-        sanction.style.display = "none";
-
-    }
-
-    const questions =
-        document.getElementById("questionsIA");
-
-    questions.innerHTML = "";
-
-    if (article.questionsIA &&
-        article.questionsIA.length > 0) {
-
-        const titre =
-            document.createElement("h4");
-
-        titre.innerHTML =
-            '<i class="fa-solid fa-robot"></i> Questions IA';
-
-        questions.appendChild(titre);
-
-        article.questionsIA.forEach(question => {
-
-            const bouton =
-                document.createElement("button");
-
-            bouton.className =
-                "question-ia";
-
-            bouton.textContent =
-                question;
-
-            bouton.onclick = function () {
-
-                const champ =
-                    document.getElementById("questionIA");
-
-                if (champ) {
-
-                    champ.value = question;
-
-                    champ.focus();
-
+        if (btnSpeak) {
+            btnSpeak.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (!art) return;
+                if (window.SpeechEngine && window.SpeechEngine.speak) {
+                    window.SpeechEngine.speak(`Article ${art.numero}. ${art.titre}. ${art.contenu}`);
+                } else {
+                    if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Synthèse vocale en cours de lecture...", "fa-volume-high");
                 }
+            });
+        }
 
-            };
+        if (btnAI) {
+            btnAI.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (!art) return;
+                if (window.IAEngine && window.IAEngine.explainArticle) {
+                    window.IAEngine.explainArticle(art);
+                }
+                const aiSection = document.getElementById("assistantIA");
+                if (aiSection) aiSection.scrollIntoView({ behavior: "smooth" });
+            });
+        }
 
-            questions.appendChild(bouton);
+        if (btnShare && window.ShareEngine) {
+            btnShare.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (art) window.ShareEngine.shareArticle(art);
+            });
+        }
 
-        });
+        if (btnPrint && window.PrintEngine) {
+            btnPrint.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (art) window.PrintEngine.printArticle(art);
+            });
+        }
 
+        if (btnFav && window.FavorisEngine) {
+            btnFav.addEventListener("click", () => {
+                const art = this.getCurrentArticle();
+                if (art) window.FavorisEngine.toggleFavorite(art);
+            });
+        }
+    },
+
+    getCurrentArticle: function() {
+        const idx = window.CodeTravailState.currentArticleIndex;
+        if (idx === -1 || !window.CodeTravailState.articles[idx]) return null;
+        return window.CodeTravailState.articles[idx];
+    },
+
+    showArticle: function(index) {
+        const state = window.CodeTravailState;
+        if (index < 0 || index >= state.articles.length) return;
+
+        state.currentArticleIndex = index;
+        const art = state.articles[index];
+
+        const numEl = document.getElementById("numeroArticle");
+        const titleEl = document.getElementById("titreArticle");
+        const catEl = document.getElementById("categorieArticle");
+        const contentEl = document.getElementById("contenuArticle");
+        const sanctionEl = document.getElementById("sanctionArticle");
+        const questionsEl = document.getElementById("questionsIA");
+
+        if (numEl) numEl.textContent = `Article ${art.numero}`;
+        if (titleEl) titleEl.textContent = art.titre;
+        if (catEl) catEl.textContent = art.categorie || "Dispositions légales";
+        if (contentEl) contentEl.textContent = art.contenu;
+
+        // Sanction
+        if (sanctionEl) {
+            if (art.sanction && art.sanction.trim()) {
+                sanctionEl.innerHTML = `
+                    <h4><i class="fa-solid fa-triangle-exclamation"></i> Sanction légale prévue par le Code</h4>
+                    <p>${window.InspecteurUtils.escapeHtml(art.sanction)}</p>
+                `;
+                sanctionEl.classList.add("visible");
+            } else {
+                sanctionEl.innerHTML = "";
+                sanctionEl.classList.remove("visible");
+            }
+        }
+
+        // Questions IA
+        if (questionsEl) {
+            questionsEl.innerHTML = `<h4><i class="fa-solid fa-circle-question"></i> Questions fréquentes posées à InspecteurBot :</h4>`;
+            const tagsBox = document.createElement("div");
+            tagsBox.className = "questions-tags";
+
+            const qs = art.questionsIA || [
+                `Que dit l'article ${art.numero} en résumé ?`,
+                `Quelles sont les obligations de l'employeur dans l'article ${art.numero} ?`
+            ];
+
+            qs.forEach(q => {
+                const btn = document.createElement("button");
+                btn.className = "question-tag-btn";
+                btn.textContent = `🤖 ${q}`;
+                btn.addEventListener("click", () => {
+                    const input = document.getElementById("questionIA");
+                    if (input) {
+                        input.value = q;
+                        const btnAnalyze = document.getElementById("btnQuestionIA");
+                        if (btnAnalyze) btnAnalyze.click();
+                        const aiSec = document.getElementById("assistantIA");
+                        if (aiSec) aiSec.scrollIntoView({ behavior: "smooth" });
+                    }
+                });
+                tagsBox.appendChild(btn);
+            });
+
+            questionsEl.appendChild(tagsBox);
+        }
+
+        // Mettre à jour la section info
+        const infoArt = document.getElementById("infoArticle");
+        const infoCat = document.getElementById("infoCategorie");
+        if (infoArt) infoArt.textContent = `Article ${art.numero}`;
+        if (infoCat) infoCat.textContent = art.categorie || "—";
+
+        // Mettre à jour l'état du bouton favoris
+        if (window.FavorisEngine) {
+            window.FavorisEngine.updateButtonState(art);
+        }
+
+        // Mettre à jour la navigation
+        if (window.CodeTravailNavigation) {
+            window.CodeTravailNavigation.updateButtonsState();
+        }
+
+        // Incrémenter la statistique de lecture
+        if (window.Statistiques) {
+            window.Statistiques.increment("articles");
+        }
     }
-
-    Consultation.mettreInfos(article);
-
-    window.scrollTo({
-
-        top: document.getElementById("articleCard").offsetTop - 20,
-
-        behavior: "smooth"
-
-    });
-
 };
 
-/*=====================================================
- INFORMATIONS
-=====================================================*/
-
-Consultation.mettreInfos = function (article) {
-
-    const infoArticle =
-        document.getElementById("infoArticle");
-
-    const infoCategorie =
-        document.getElementById("infoCategorie");
-
-    if (infoArticle)
-
-        infoArticle.textContent =
-            "Article " + article.numero;
-
-    if (infoCategorie)
-
-        infoCategorie.textContent =
-            article.categorie;
-
-};
-
-/*=====================================================
- ARTICLE SUIVANT
-=====================================================*/
-
-Consultation.suivant = function () {
-
-    if (!Consultation.articleActuel) return;
-
-    const suivant =
-        CodeTravail.articleSuivant(
-
-            Consultation.articleActuel.numero
-
-        );
-
-    Consultation.afficherArticle(suivant);
-
-};
-
-/*=====================================================
- ARTICLE PRECEDENT
-=====================================================*/
-
-Consultation.precedent = function () {
-
-    if (!Consultation.articleActuel) return;
-
-    const precedent =
-        CodeTravail.articlePrecedent(
-
-            Consultation.articleActuel.numero
-
-        );
-
-    Consultation.afficherArticle(precedent);
-
-};
-
-/*=====================================================
- COPIER
-=====================================================*/
-
-Consultation.copier = function () {
-
-    if (!Consultation.articleActuel) return;
-
-    const texte =
-
-        "Article " +
-
-        Consultation.articleActuel.numero +
-
-        "\n\n" +
-
-        Consultation.articleActuel.titre +
-
-        "\n\n" +
-
-        Consultation.articleActuel.contenu;
-
-    navigator.clipboard.writeText(texte);
-
-};
-
-/*=====================================================
- LECTURE VOCALE
-=====================================================*/
-
-Consultation.lire = function () {
-
-    if (!Consultation.articleActuel) return;
-
-    speechSynthesis.cancel();
-
-    const lecture =
-        new SpeechSynthesisUtterance(
-
-            Consultation.articleActuel.contenu
-
-        );
-
-    lecture.lang = "fr-FR";
-
-    speechSynthesis.speak(lecture);
-
-};
-
-/*=====================================================
- PARTAGER
-=====================================================*/
-
-Consultation.partager = async function () {
-
-    if (!Consultation.articleActuel) return;
-
-    const texte =
-
-        "Article " +
-
-        Consultation.articleActuel.numero +
-
-        " - " +
-
-        Consultation.articleActuel.titre +
-
-        "\n\n" +
-
-        Consultation.articleActuel.contenu;
-
-    if (navigator.share) {
-
-        await navigator.share({
-
-            title:
-                "Code du Travail RDC",
-
-            text:
-                texte
-
-        });
-
-    }
-
-};
-
-/*=====================================================
- INITIALISATION
-=====================================================*/
-
-Consultation.initialiser = function () {
-
-    const precedent =
-        document.getElementById("btnArticlePrecedent");
-
-    const suivant =
-        document.getElementById("btnArticleSuivant");
-
-    const copier =
-        document.getElementById("btnCopierArticle");
-
-    const lecture =
-        document.getElementById("btnLectureArticle");
-
-    const partager =
-        document.getElementById("btnPartagerArticle");
-
-    if (precedent)
-
-        precedent.onclick =
-            Consultation.precedent;
-
-    if (suivant)
-
-        suivant.onclick =
-            Consultation.suivant;
-
-    if (copier)
-
-        copier.onclick =
-            Consultation.copier;
-
-    if (lecture)
-
-        lecture.onclick =
-            Consultation.lire;
-
-    if (partager)
-
-        partager.onclick =
-            Consultation.partager;
-
-};
-
-/*=====================================================
- DOM READY
-=====================================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    Consultation.initialiser
-
-);
+document.addEventListener("DOMContentLoaded", () => {
+    window.CodeTravailConsultation.init();
+});

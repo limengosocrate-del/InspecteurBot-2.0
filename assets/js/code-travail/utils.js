@@ -1,273 +1,70 @@
-"use strict";
+/**
+ * utils.js
+ * Utilitaires pour l'application InspecteurBot RDC
+ */
 
-/*==================================================
- UTILS.JS
- InspecteurBot RDC
-==================================================*/
+window.InspecteurUtils = {
+    // Afficher une notification toast
+    showNotification: function(message, icon = "fa-circle-check") {
+        const notif = document.getElementById("notification");
+        const text = document.getElementById("notificationText");
+        if (!notif || !text) return;
 
-const Utils = {};
+        text.textContent = message;
+        const iconEl = notif.querySelector("i");
+        if (iconEl) iconEl.className = `fa-solid ${icon}`;
 
-window.Utils = Utils;
+        notif.classList.add("show");
+        clearTimeout(this._notifTimer);
+        this._notifTimer = setTimeout(() => {
+            notif.classList.remove("show");
+        }, 3500);
+    },
 
-/*=========================================
- Notification
-=========================================*/
+    // Formater la date en français
+    formatDateFr: function(date = new Date()) {
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('fr-FR', options);
+    },
 
-Utils.notification = function (message) {
+    // Formater l'heure (HH:MM:SS)
+    formatTime: function(date = new Date()) {
+        return date.toLocaleTimeString('fr-FR');
+    },
 
-    const box = document.getElementById("notification");
-    const texte = document.getElementById("notificationText");
+    // Formater le jour de la semaine
+    formatDayFr: function(date = new Date()) {
+        const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+        return days[date.getDay()];
+    },
 
-    if (!box || !texte) return;
+    // Surligner un mot-clé dans un texte
+    highlightText: function(text, query) {
+        if (!query || !text) return text;
+        const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${escaped})`, 'gi');
+        return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+    },
 
-    texte.textContent = message;
+    // Copier du texte dans le presse-papiers
+    copyToClipboard: async function(text, successMessage = "Texte copié avec succès !") {
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showNotification(successMessage);
+        } catch (err) {
+            console.error("Erreur de copie :", err);
+            this.showNotification("Impossible de copier le texte.", "fa-triangle-exclamation");
+        }
+    },
 
-    box.classList.add("show");
-
-    setTimeout(() => {
-
-        box.classList.remove("show");
-
-    }, 3000);
-
-};
-
-/*=========================================
- Copier le texte
-=========================================*/
-
-Utils.copierArticle = function () {
-
-    const numero =
-        document.getElementById("numeroArticle").textContent;
-
-    const titre =
-        document.getElementById("titreArticle").textContent;
-
-    const contenu =
-        document.getElementById("contenuArticle").textContent;
-
-    const texte =
-
-        numero + "\n\n" +
-
-        titre + "\n\n" +
-
-        contenu;
-
-    navigator.clipboard.writeText(texte);
-
-    Utils.notification("Article copié.");
-
-};
-
-/*=========================================
- Partager
-=========================================*/
-
-Utils.partagerArticle = function () {
-
-    const numero =
-        document.getElementById("numeroArticle").textContent;
-
-    const titre =
-        document.getElementById("titreArticle").textContent;
-
-    const contenu =
-        document.getElementById("contenuArticle").textContent;
-
-    const texte =
-
-        numero + "\n\n" +
-
-        titre + "\n\n" +
-
-        contenu;
-
-    if (navigator.share) {
-
-        navigator.share({
-
-            title: titre,
-
-            text: texte
-
-        });
-
-    } else {
-
-        navigator.clipboard.writeText(texte);
-
-        Utils.notification("Article copié.");
-
+    // Échapper le HTML pour la sécurité
+    escapeHtml: function(str) {
+        if (!str) return "";
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
-
 };
-
-/*=========================================
- Impression
-=========================================*/
-
-Utils.imprimerArticle = function () {
-
-    window.print();
-
-};
-
-/*=========================================
- Lecture vocale
-=========================================*/
-
-Utils.lireArticle = function () {
-
-    if (!window.speechSynthesis) return;
-
-    speechSynthesis.cancel();
-
-    const texte =
-
-        document.getElementById("titreArticle").textContent +
-
-        ". " +
-
-        document.getElementById("contenuArticle").textContent;
-
-    const lecture = new SpeechSynthesisUtterance(texte);
-
-    lecture.lang = "fr-FR";
-
-    speechSynthesis.speak(lecture);
-
-};
-
-/*=========================================
- Favoris
-=========================================*/
-
-Utils.favori = function () {
-
-    const numero =
-        document.getElementById("numeroArticle").textContent;
-
-    let favoris =
-
-        JSON.parse(localStorage.getItem("favoris") || "[]");
-
-    if (!favoris.includes(numero)) {
-
-        favoris.push(numero);
-
-        localStorage.setItem(
-
-            "favoris",
-
-            JSON.stringify(favoris)
-
-        );
-
-        Utils.notification("Ajouté aux favoris.");
-
-    } else {
-
-        Utils.notification("Déjà enregistré.");
-
-    }
-
-};
-
-/*=========================================
- Bouton retour en haut
-=========================================*/
-
-Utils.retourHaut = function () {
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-
-};
-
-/*=========================================
- Écran de chargement
-=========================================*/
-
-Utils.loading = function () {
-
-    const ecran =
-        document.getElementById("loadingScreen");
-
-    if (!ecran) return;
-
-    setTimeout(() => {
-
-        ecran.style.display = "none";
-
-    }, 1200);
-
-};
-
-/*=========================================
- Initialisation
-=========================================*/
-
-Utils.initialiser = function () {
-
-    const copier =
-        document.getElementById("btnCopierArticle");
-
-    const partager =
-        document.getElementById("btnPartagerArticle");
-
-    const imprimer =
-        document.getElementById("btnImprimerArticle");
-
-    const lecture =
-        document.getElementById("btnLectureArticle");
-
-    const favori =
-        document.getElementById("btnFavoriArticle");
-
-    const top =
-        document.getElementById("btnTop");
-
-    if (copier)
-        copier.onclick = Utils.copierArticle;
-
-    if (partager)
-        partager.onclick = Utils.partagerArticle;
-
-    if (imprimer)
-        imprimer.onclick = Utils.imprimerArticle;
-
-    if (lecture)
-        lecture.onclick = Utils.lireArticle;
-
-    if (favori)
-        favori.onclick = Utils.favori;
-
-    if (top)
-        top.onclick = Utils.retourHaut;
-
-    Utils.loading();
-
-};
-
-/*=========================================
- Chargement
-=========================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    function () {
-
-        Utils.initialiser();
-
-    }
-
-);
