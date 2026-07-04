@@ -1,379 +1,57 @@
-"use strict";
-
-/*==================================================
-INSPECTEURBOT RDC
-VECTOR SEARCH V2.0
-Compatible code-travail.json
-==================================================*/
-
-window.CodeTravail = window.CodeTravail || {};
-
-CodeTravail.VectorSearch = {};
-
-/*==================================================
-MOTS VIDES
-==================================================*/
-
-const STOP_WORDS = [
-
-"le","la","les","de","du","des","un","une",
-
-"et","ou","en","dans","sur","pour","avec",
-
-"au","aux","par","est","sont","a","à"
-
-];
-
-/*==================================================
-NORMALISER
-==================================================*/
-
-CodeTravail.VectorSearch.normaliser = function (texte) {
-
-    return String(texte || "")
-
-        .toLowerCase()
-
-        .normalize("NFD")
-
-        .replace(/[\u0300-\u036f]/g,"")
-
-        .replace(/[^\w\s]/g," ")
-
-        .replace(/\s+/g," ")
-
-        .trim();
-
-};
-
-/*==================================================
-DÉCOUPAGE
-==================================================*/
-
-CodeTravail.VectorSearch.decouper = function (texte) {
-
-    return this.normaliser(texte)
-
-    .split(" ")
-
-    .filter(mot =>
-
-        mot.length>2 &&
-
-        !STOP_WORDS.includes(mot)
-
-    );
-
-};
-
-/*==================================================
-SYNONYMES
-==================================================*/
-
-CodeTravail.VectorSearch.synonymes = {
-
-licenciement:["renvoi","rupture"],
-
-salaire:["paie","remuneration"],
-
-travailleur:["employe","salarié"],
-
-employeur:["entreprise","patron"],
-
-inspection:["inspecteur","controle"],
-
-conge:["vacances","repos"],
-
-contrat:["cdi","cdd","embauche"],
-
-enfant:["mineur"]
-
-};
-
-/*==================================================
-ENRICHIR
-==================================================*/
-
-CodeTravail.VectorSearch.enrichir = function (mots) {
-
-    let resultat=[...mots];
-
-    mots.forEach(mot=>{
-
-        if(this.synonymes[mot]){
-
-            resultat.push(
-
-                ...this.synonymes[mot]
-
-            );
-
-        }
-
-    });
-
-    return [...new Set(resultat)];
-
-};
-
-/*==================================================
-CALCUL SCORE
-==================================================*/
-
-CodeTravail.VectorSearch.score = function (
-
-article,
-
-mots
-
-){
-
-    let score=0;
-
-    mots.forEach(mot=>{
-
-        if(
-
-            String(article.numero)
-
-            .includes(mot)
-
-        )
-
-            score+=80;
-
-        if(
-
-            article.titre
-
-            ?.toLowerCase()
-
-            .includes(mot)
-
-        )
-
-            score+=50;
-
-        if(
-
-            article.categorie
-
-            ?.toLowerCase()
-
-            .includes(mot)
-
-        )
-
-            score+=40;
-
-        if(
-
-            article.contenu
-
-            ?.toLowerCase()
-
-            .includes(mot)
-
-        )
-
-            score+=20;
-
-        if(article.motsCles){
-
-            article.motsCles.forEach(mc=>{
-
-                if(
-
-                    mc.toLowerCase()
-
-                    .includes(mot)
-
-                )
-
-                    score+=60;
-
+/**
+ * vectorSearch.js
+ * Moteur de recherche vectorielle sémantique simulé pour le Code du Travail RDC
+ * Permet de relier des concepts sans correspondance de mots exacte (ex: "chasser un ouvrier" -> "licenciement")
+ */
+
+window.VectorSearchEngine = {
+    // Concept embeddings simplifiés pour la sémantique juridique congolaise
+    semanticMap: {
+        "licenciement": ["renvoi", "chasser", "virer", "rupture", "fin de contrat", "préavis", "indemnité", "abusif", "faute lourde"],
+        "salaire": ["rémunération", "argent", "paie", "smig", "bulletin", "virement", "retard de salaire", "primes"],
+        "congé": ["vacances", "repos", "pécule", "détente", "jours fériés", "absence"],
+        "maternité": ["enceinte", "grossesse", "accouchement", "allaitement", "femme", "bébé"],
+        "sécurité": ["accident", "blessure", "hôpital", "casque", "gants", "epi", "danger", "machine", "cnss"],
+        "syndicat": ["délégué", "grève", "revendication", "élection", "représentant", "protection"],
+        "inspection": ["inspecteur", "contrôleur", "visite", "pv", "amende", "infraction", "tribunal", "conciliation"],
+        "enfant": ["mineur", "15 ans", "16 ans", "école", "mines", "exploitation", "pires formes"]
+    },
+
+    // Calcule un score de similarité vectorielle (Cosine similarity approchée)
+    searchSemantic: function(query) {
+        if (!query || !window.CodeTravailState.articles) return [];
+        const lower = query.toLowerCase();
+        
+        // Identifier les concepts sémantiques activés
+        const activeConcepts = [];
+        Object.keys(this.semanticMap).forEach(concept => {
+            if (lower.includes(concept)) activeConcepts.push(concept);
+            this.semanticMap[concept].forEach(synonym => {
+                if (lower.includes(synonym)) activeConcepts.push(concept);
+            });
+        });
+
+        if (activeConcepts.length === 0) return [];
+
+        // Scorer les articles par similarité sémantique
+        const scoredArticles = window.CodeTravailState.articles.map(art => {
+            let score = 0;
+            const contentLower = (art.titre + " " + art.contenu + " " + (art.motsCles || []).join(" ")).toLowerCase();
+
+            activeConcepts.forEach(concept => {
+                if (contentLower.includes(concept)) score += 10;
+                this.semanticMap[concept].forEach(syn => {
+                    if (contentLower.includes(syn)) score += 5;
+                });
             });
 
-        }
+            return { article: art, score: score };
+        });
 
-        if(
-
-            article.sanction &&
-
-            article.sanction
-
-            .toLowerCase()
-
-            .includes(mot)
-
-        )
-
-            score+=15;
-
-    });
-
-    return score;
-
-};
-
-/*==================================================
-RECHERCHE
-==================================================*/
-
-CodeTravail.VectorSearch.rechercher = function (
-
-texte,
-
-limite=20
-
-){
-
-    if(
-
-        !window.CodeTravail ||
-
-        !CodeTravail.getTousArticles
-
-    ){
-
-        return [];
-
+        // Trier par score décroissant et retourner les meilleurs
+        return scoredArticles
+            .filter(item => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .map(item => item.article);
     }
-
-    const mots=
-
-        this.enrichir(
-
-            this.decouper(texte)
-
-        );
-
-    const resultat=[];
-
-    CodeTravail
-
-    .getTousArticles()
-
-    .forEach(article=>{
-
-        const score=
-
-            this.score(
-
-                article,
-
-                mots
-
-            );
-
-        if(score>0){
-
-            resultat.push({
-
-                ...article,
-
-                score
-
-            });
-
-        }
-
-    });
-
-    resultat.sort(
-
-        (a,b)=>b.score-a.score
-
-    );
-
-    return resultat.slice(
-
-        0,
-
-        limite
-
-    );
-
 };
-
-/*==================================================
-MEILLEUR ARTICLE
-==================================================*/
-
-CodeTravail.VectorSearch.meilleurResultat = function (
-
-texte
-
-){
-
-    const r=
-
-        this.rechercher(
-
-            texte,
-
-            1
-
-        );
-
-    return r.length ?
-
-        r[0]
-
-        :
-
-        null;
-
-};
-
-/*==================================================
-CATÉGORIE
-==================================================*/
-
-CodeTravail.VectorSearch.rechercherCategorie=function(
-
-categorie
-
-){
-
-    return CodeTravail
-
-    .getTousArticles()
-
-    .filter(a=>
-
-        a.categorie===categorie
-
-    );
-
-};
-
-/*==================================================
-INITIALISATION
-==================================================*/
-
-CodeTravail.VectorSearch.initialiser=function(){
-
-    console.log(
-
-        "VectorSearch V2 prêt."
-
-    );
-
-};
-
-document.addEventListener(
-
-"codeTravailCharge",
-
-()=>{
-
-    CodeTravail
-
-    .VectorSearch
-
-    .initialiser();
-
-}
-
-);

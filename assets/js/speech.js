@@ -1,419 +1,136 @@
-/*=================================================
- INSPECTEURBOT RDC
- speech.js
- VERSION 1.0
- RECONNAISSANCE ET LECTURE VOCALE
-==================================================*/
+/**
+ * speech.js
+ * Reconnaissance vocale + Lecture vocale (Synthèse) HORS-LIGNE
+ * Prise en charge de DEUX VOIX : Masculine et Féminine
+ * Langues : Français, Anglais, Lingala, Kikongo, Tshiluba, Swahili
+ */
 
-"use strict";
+window.SpeechEngine = {
+  isSpeaking: false,
+  isListening: false,
+  currentVoiceGender: "female", // "female" | "male"
+  voices: [],
 
-/*=================================================
- ESPACE DE NOMS
-==================================================*/
-
-window.CodeTravail = window.CodeTravail || {};
-window.CodeTravail.Speech = {};
-
-/*=================================================
- COMPATIBILITÉ NAVIGATEUR
-==================================================*/
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-const synthese =
-    window.speechSynthesis;
-
-/*=================================================
- RECONNAISSANCE VOCALE
-==================================================*/
-
-let reconnaissance = null;
-
-if (SpeechRecognition) {
-
-    reconnaissance = new SpeechRecognition();
-
-    reconnaissance.lang = "fr-FR";
-
-    reconnaissance.continuous = false;
-
-    reconnaissance.interimResults = false;
-
-    reconnaissance.maxAlternatives = 1;
-
-}
-
-/*=================================================
- ÉTAT
-==================================================*/
-
-let ecouteActive = false;
-
-/*=================================================
- DÉMARRER L'ÉCOUTE
-==================================================*/
-
-function demarrerEcoute() {
-
-    if (!reconnaissance) {
-
-        window.CodeTravail.Utils
-            .afficherNotification(
-
-                "Reconnaissance vocale indisponible.",
-
-                "warning"
-
-            );
-
-        return;
-
+  init: function () {
+    this.loadVoices();
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
     }
 
-    try {
+    const btnVoiceSearch = document.getElementById("btnRechercheVocale");
+    if (btnVoiceSearch) btnVoiceSearch.addEventListener("click", () => this.toggleVoiceSearch());
 
-        reconnaissance.start();
+    // Sélecteur de genre de voix (créé dynamiquement si absent)
+    const savedGender = localStorage.getItem("inspecteur_voice_gender");
+    if (savedGender) this.currentVoiceGender = savedGender;
+  },
 
+  loadVoices: function () {
+    if ("speechSynthesis" in window) {
+      this.voices = window.speechSynthesis.getVoices();
     }
+  },
 
-    catch (e) {
-
-        console.error(e);
-
+  setVoiceGender: function (gender) {
+    this.currentVoiceGender = gender;
+    localStorage.setItem("inspecteur_voice_gender", gender);
+    if (window.InspecteurUtils) {
+      window.InspecteurUtils.showNotification(
+        gender === "male" ? "🔊 Voix masculine activée" : "🔊 Voix féminine activée",
+        "fa-volume-high"
+      );
     }
-
-}
-
-/*=================================================
- ARRÊTER L'ÉCOUTE
-==================================================*/
-
-function arreterEcoute() {
-
-    if (!reconnaissance) return;
-
-    reconnaissance.stop();
-
-}
-
-/*=================================================
- ÉVÉNEMENTS
-==================================================*/
-
-if (reconnaissance) {
-
-    reconnaissance.onstart = () => {
-
-        ecouteActive = true;
-
-        window.CodeTravail.Utils
-            .afficherNotification(
-
-                "🎤 Écoute en cours..."
-
-            );
-
-    };
-
-    reconnaissance.onend = () => {
-
-        ecouteActive = false;
-
-    };
-
-}
-
-/*=================================================
- PARTIE 2
- DICTÉE VOCALE ET LECTURE
-==================================================*/
-
-/*=================================================
- RÉSULTAT DE LA DICTÉE
-==================================================*/
-
-if (reconnaissance) {
-
-    reconnaissance.onresult = (event) => {
-
-        const texte = event.results[0][0].transcript;
-
-        const champRecherche =
-            document.querySelector("#rechercheArticle");
-
-        const questionIA =
-            document.querySelector("#questionIA");
-
-        if (champRecherche) {
-
-            champRecherche.value = texte;
-
-        }
-
-        if (
-            window.CodeTravail &&
-            window.CodeTravail.Search &&
-            typeof window.CodeTravail.Search.rechercher === "function"
-        ) {
-
-            window.CodeTravail.Search.rechercher();
-
-        }
-
-        if (questionIA && document.activeElement === questionIA) {
-
-            questionIA.value = texte;
-
-        }
-
-        window.CodeTravail.Utils
-            .afficherNotification(
-
-                "Recherche vocale terminée."
-
-            );
-
-    };
-
-}
-
-/*=================================================
- GESTION DES ERREURS
-==================================================*/
-
-if (reconnaissance) {
-
-    reconnaissance.onerror = (event) => {
-
-        console.error(event.error);
-
-        window.CodeTravail.Utils
-            .afficherNotification(
-
-                "Erreur du microphone.",
-
-                "error"
-
-            );
-
-    };
-
-}
-
-/*=================================================
- LECTURE D'UN TEXTE
-==================================================*/
-
-function lire(texte) {
-
-    if (!synthese || !texte) return;
-
-    synthese.cancel();
-
-    const voix =
-        new SpeechSynthesisUtterance(texte);
-
-    voix.lang = "fr-FR";
-
-    voix.rate = 1;
-
-    voix.pitch = 1;
-
-    voix.volume = 1;
-
-    synthese.speak(voix);
-
-}
-
-/*=================================================
- ARRÊTER LA LECTURE
-==================================================*/
-
-function arreterLecture() {
-
-    if (!synthese) return;
-
-    synthese.cancel();
-
-}
-
-/*=================================================
- LIRE L'ARTICLE
-==================================================*/
-
-function lireArticle() {
-
-    const numero =
-        document.querySelector("#numeroArticle")?.textContent || "";
-
-    const titre =
-        document.querySelector("#titreArticle")?.textContent || "";
-
-    const contenu =
-        document.querySelector("#contenuArticle")?.textContent || "";
-
-    lire(
-
-`${numero}. ${titre}. ${contenu}`
-
-    );
-
-}
-
-/*=================================================
- LIRE LA RÉPONSE IA
-==================================================*/
-
-function lireReponseIA() {
-
-    const texte =
-        document.querySelector("#reponseIA")?.textContent || "";
-
-    lire(texte);
-
-}
-
-/*=================================================
- PARTIE 3
- INITIALISATION
- VERSION FINALE
-==================================================*/
-
-/*=================================================
- INITIALISATION DES BOUTONS
-==================================================*/
-
-function initialiserSpeech() {
-
-    document
-        .querySelector("#btnMicro")
-        ?.addEventListener(
-
-            "click",
-
-            demarrerEcoute
-
-        );
-
-    document
-        .querySelector("#btnRechercheVocale")
-        ?.addEventListener(
-
-            "click",
-
-            demarrerEcoute
-
-        );
-
-    document
-        .querySelector("#btnLecture")
-        ?.addEventListener(
-
-            "click",
-
-            lireArticle
-
-        );
-
-    document
-        .querySelector("#btnLectureArticle")
-        ?.addEventListener(
-
-            "click",
-
-            lireArticle
-
-        );
-
-    document
-        .querySelector("#btnLectureIA")
-        ?.addEventListener(
-
-            "click",
-
-            lireReponseIA
-
-        );
-
-    console.log(
-
-        "🎤 speech.js initialisé."
-
-    );
-
-}
-
-/*=================================================
- CHANGER LA LANGUE
-==================================================*/
-
-function changerLangue(langue = "fr-FR") {
-
-    if (!reconnaissance) return;
-
-    reconnaissance.lang = langue;
-
-}
-
-/*=================================================
- ÉTAT DU MICROPHONE
-==================================================*/
-
-function microphoneActif() {
-
-    return ecouteActive;
-
-}
-
-/*=================================================
- EXPORT
-==================================================*/
-
-window.CodeTravail.Speech.demarrer =
-    demarrerEcoute;
-
-window.CodeTravail.Speech.arreter =
-    arreterEcoute;
-
-window.CodeTravail.Speech.lire =
-    lire;
-
-window.CodeTravail.Speech.lireArticle =
-    lireArticle;
-
-window.CodeTravail.Speech.lireIA =
-    lireReponseIA;
-
-window.CodeTravail.Speech.arreterLecture =
-    arreterLecture;
-
-window.CodeTravail.Speech.changerLangue =
-    changerLangue;
-
-window.CodeTravail.Speech.microphoneActif =
-    microphoneActif;
-
-window.CodeTravail.Speech.initialiser =
-    initialiserSpeech;
-
-/*=================================================
- DÉMARRAGE
-==================================================*/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        initialiserSpeech();
-
+  },
+
+  pickVoice: function (lang) {
+    const langCode = lang === "en" ? "en" : "fr"; // langues nationales lues en base FR
+    const candidates = this.voices.filter(v => v.lang.toLowerCase().startsWith(langCode));
+    if (!candidates.length) return null;
+
+    // Heuristique genre : noms connus
+    const maleHints = ["male","homme","thomas","paul","daniel","google français","rémi","henri","man"];
+    const femaleHints = ["female","femme","amelie","amélie","marie","julie","celine","céline","aurelie","woman","zira","google uk english female"];
+
+    const wantMale = this.currentVoiceGender === "male";
+    const hints = wantMale ? maleHints : femaleHints;
+
+    // 1) match par indice de nom
+    let match = candidates.find(v => hints.some(h => v.name.toLowerCase().includes(h)));
+    if (match) return match;
+
+    // 2) sinon on prend selon l'ordre (souvent index 0 = par défaut)
+    // Pour varier male/female si pas d'indice : alterner
+    if (candidates.length >= 2) {
+      return wantMale ? candidates[candidates.length - 1] : candidates[0];
     }
+    return candidates[0];
+  },
 
-);
+  speak: function (text, lang) {
+    lang = lang || (window.currentLang || "fr");
+    if (!("speechSynthesis" in window)) {
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Lecture vocale non supportée", "fa-volume-xmark");
+      return;
+    }
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      this.isSpeaking = false;
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Lecture arrêtée", "fa-volume-xmark");
+      return;
+    }
+    if (!text || !text.trim()) return;
 
-/*=================================================
- FIN DU FICHIER
-==================================================*/
+    // Nettoyage des emojis/markdown pour une lecture fluide
+    const clean = text.replace(/[#*_>`]/g, "").replace(/[📌📖💡👔👷🚨📚⚖️🏷️🌍🤖]/g, "");
+
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.lang = lang === "en" ? "en-US" : "fr-FR";
+    utter.rate = 0.98;
+    utter.pitch = this.currentVoiceGender === "male" ? 0.85 : 1.15; // grave vs aigu
+    const voice = this.pickVoice(lang);
+    if (voice) utter.voice = voice;
+
+    utter.onstart = () => {
+      this.isSpeaking = true;
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification(
+        `Lecture (voix ${this.currentVoiceGender === "male" ? "masculine" : "féminine"})...`, "fa-volume-high");
+    };
+    utter.onend = () => { this.isSpeaking = false; };
+    utter.onerror = () => { this.isSpeaking = false; };
+
+    window.speechSynthesis.speak(utter);
+  },
+
+  toggleVoiceSearch: function () {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Reconnaissance vocale non supportée", "fa-microphone-slash");
+      return;
+    }
+    if (this.isListening && this.recognition) { this.recognition.stop(); return; }
+
+    const btn = document.getElementById("btnRechercheVocale");
+    const input = document.getElementById("rechercheArticle");
+    this.recognition = new SR();
+    this.recognition.lang = (window.currentLang === "en") ? "en-US" : "fr-FR";
+    this.recognition.interimResults = false;
+    this.recognition.maxAlternatives = 1;
+
+    this.recognition.onstart = () => {
+      this.isListening = true;
+      if (btn) btn.classList.add("listening");
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification("🔴 Parlez maintenant...", "fa-microphone");
+    };
+    this.recognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      if (input) input.value = transcript;
+      if (window.CodeTravailRecherche) window.CodeTravailRecherche.performSearch(transcript);
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification(`Reconnu : "${transcript}"`, "fa-circle-check");
+    };
+    this.recognition.onerror = () => { if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Erreur micro", "fa-triangle-exclamation"); };
+    this.recognition.onend = () => { this.isListening = false; if (btn) btn.classList.remove("listening"); };
+    this.recognition.start();
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => window.SpeechEngine.init());
