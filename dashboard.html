@@ -801,12 +801,6 @@ footer img{
   
 <script>  
   
-/* ================= AUTHENTIFICATION ================= */  
-  
-if (localStorage.getItem("isLoggedIn") !== "true") {  
-    window.location.href = "index.html";  
-}  
-  
 /* ================= SLIDER ================= */  
   
 const images = document.querySelectorAll(".slider img");  
@@ -943,13 +937,13 @@ setInterval(() => {
   
     /* ================= DÉCONNEXION ================= */  
   
-    function logout() {  
-  
-        localStorage.removeItem("isLoggedIn");  
-        localStorage.removeItem("currentUser");  
-  
-        window.location.href = "index.html";  
-    }  
+    async function logout(){
+
+    await supabase.auth.signOut();
+
+    window.location.href = "login.html";
+
+}
   
 </script>  
   
@@ -984,6 +978,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }  
   
 });  
+
+  <script type="module">
+
+import { supabase } from "./assets/js/supabase.js";
+
+// Vérifier si l'utilisateur est connecté
+const { data, error } = await supabase.auth.getSession();
+
+if (!data.session) {
+    window.location.href = "login.html";
+}
+
+// Récupérer les informations de l'utilisateur
+const user = data.session.user;
+
+// Afficher le nom de l'utilisateur si un élément existe
+const nom = document.getElementById("nomUtilisateur");
+
+if (nom) {
+    nom.textContent =
+        user.user_metadata.fullname ||
+        user.email;
+}
+
+// Fonction de déconnexion
+window.logout = async function () {
+
+    await supabase.auth.signOut();
+
+    window.location.href = "login.html";
+
+};
+
+</script>
   
 </script>  
   
