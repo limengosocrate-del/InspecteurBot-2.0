@@ -195,94 +195,15 @@
         </p>
 
     </footer>
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="assets/js/supabase.js"></script>
 
-     <script src="assets/js/supabase.js"></script>
+<script src="assets/js/login.js"></script>
+    
 
-    <script>
-
-const images = [
- "./images/photo1.jpg",
- "./images/photo2.jpg",
-];
-
-let current = 0;
-
-setInterval(() => {
-    current = (current + 1) % images.length;
-    document.querySelector(".hero-image").src = images[current];
-}, 8000);
-
-document
-.getElementById("loginForm")
-.addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    const email =
-        document.getElementById("email").value;
-
-    const password =
-        document.getElementById("password").value;
-
-    const user = JSON.parse(
-    localStorage.getItem("inspecteurbot_user") || "null"
-);
-
-    if(!user){
-
-        document.getElementById("message")
-        .innerHTML =
-        "❌ Aucun compte trouvé.";
-
-        return;
-    }
-
-    if(
-        email === user.email &&
-        password === user.password
-    ){
-
-        localStorage.setItem(
-            "isLoggedIn",
-            "true"
-        );
-
-        localStorage.setItem(
-            "currentUser",
-            user.fullname
-        );
-
-        document.getElementById("message")
-        .innerHTML =
-        "✅ Connexion réussie";
-
-        document.getElementById("message")
-        .style.color =
-        "green";
-
-        setTimeout(() => {
-
-            window.location.href =
-            "./dashboard.html";
-
-        }, 1000);
-
-    }else{
-
-        document.getElementById("message")
-        .innerHTML =
-        "❌ Email ou mot de passe incorrect";
-
-        document.getElementById("message")
-        .style.color =
-        "red";
-    }
-
-});
-
-</script>
+    
 
 </body>
 
