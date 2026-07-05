@@ -863,6 +863,49 @@ setInterval(() => {
   
 }, 3000);  
   
+/* ================= MOTIVATION ================= */  
+  
+const motivations = [  
+  
+    "Le travail construit la nation 🇨🇩",  
+    "Le travail bien fait est une richesse 🇨🇩",  
+    "La discipline mène au succès 🇨🇩",  
+    "La justice sociale renforce la paix 🇨🇩",  
+    "Chaque inspection protège les travailleurs 🇨🇩",  
+    "Servir avec intégrité est un honneur 🇨🇩",  
+    "L'excellence est une habitude 🇨🇩",  
+    "Le progrès naît du travail quotidien 🇨🇩",  
+    "Ensemble bâtissons une nation forte 🇨🇩",  
+    "Le respect des lois protège tous les citoyens 🇨🇩",  
+    "Le travail digne construit l'avenir 🇨🇩",  
+    "La responsabilité crée la confiance 🇨🇩",  
+    "L'effort d'aujourd'hui est la réussite de demain 🇨🇩",  
+    "Agir avec honnêteté est une force 🇨🇩",  
+    "Chaque mission accomplie fait avancer la RDC 🇨🇩",  
+    "Le service public est une vocation 🇨🇩",  
+    "La persévérance mène à la victoire 🇨🇩",  
+    "Protéger les travailleurs est une mission noble 🇨🇩",  
+    "La compétence est une valeur essentielle 🇨🇩",  
+    "Ensemble pour une RDC prospère 🇨🇩"  
+  
+];  
+  
+let motivationIndex = 0;  
+  
+setInterval(() => {  
+  
+    const texte = document.getElementById("motivationText");  
+  
+    if (texte) {  
+  
+        motivationIndex = (motivationIndex + 1) % motivations.length;  
+  
+        texte.textContent = motivations[motivationIndex];  
+  
+    }  
+  
+}, 3000);  
+  
     /* ================= NOTIFICATIONS ================= */  
   
     const notifications = [  
@@ -937,6 +980,14 @@ setInterval(() => {
   
     /* ================= DÉCONNEXION ================= */  
   
+    function logout() {  
+  
+        localStorage.removeItem("isLoggedIn");  
+        localStorage.removeItem("currentUser");  
+  
+        window.location.href = "index.html";  
+    }  
+  
 </script>  
   
 <!-- ================= FICHIERS JAVASCRIPT ================= -->  
@@ -954,8 +1005,22 @@ setInterval(() => {
 <script src="assets/js/traduction.js"></script>  
   
 <script src="assets/js/ia.js"></script>  
-
-
+  
+<script>  
+  
+document.addEventListener("DOMContentLoaded", () => {  
+  
+    console.log("✅ Dashboard chargé");  
+  
+    const btn = document.getElementById("searchBtn");  
+  
+    if (btn) {  
+        console.log("✅ Bouton de recherche détecté");  
+    } else {  
+        console.log("❌ Bouton de recherche introuvable");  
+    }  
+  
+});  
   
 </script>  
   
