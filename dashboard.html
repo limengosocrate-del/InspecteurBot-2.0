@@ -969,38 +969,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script type="module">
-
-import { supabase } from "./assets/js/supabase.js";
-
-// Vérifier la session
-const { data } = await supabase.auth.getSession();
-
-if (!data.session) {
-    window.location.href = "login.html";
-}
-
-const user = data.session.user;
-
-// Afficher le nom si l'élément existe
-const nom = document.getElementById("nomUtilisateur");
-
-if (nom) {
-    nom.textContent =
-        user.user_metadata?.fullname ||
-        user.email;
-}
-
-// Déconnexion
-window.logout = async () => {
-
-    await supabase.auth.signOut();
-
-    window.location.href = "login.html";
-
-};
-
-</script>
   
 </script>  
   
