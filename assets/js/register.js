@@ -61,6 +61,11 @@ form.addEventListener("submit", async (e) => {
 console.log("DATA :", data);
 console.log("ERROR :", error);
 
+alert(JSON.stringify({
+    data: data,
+    error: error
+}));
+
 if (error) {
     message.style.color = "red";
     message.innerHTML = "❌ " + error.message;
