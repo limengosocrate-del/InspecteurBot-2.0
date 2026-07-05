@@ -44,35 +44,34 @@ form.addEventListener("submit", async (e) => {
     }
 
     const { data, error } = await supabase.auth.signUp({
-
-        email: email,
-
-        password: password,
-
-        options: {
-
-            data: {
-
-                fullname: fullname,
-                matricule: matricule,
-                telephone: telephone,
-                role: role,
-                province: province,
-                direction: direction
-
-            }
-
+    email,
+    password,
+    options: {
+        data: {
+            fullname,
+            matricule,
+            telephone,
+            role,
+            province,
+            direction
         }
-
-    });
-
-    if (error) {
-
-        message.style.color = "red";
-        message.innerHTML = "❌ " + error.message;
-
-        return;
     }
+});
+
+console.log("DATA :", data);
+console.log("ERROR :", error);
+
+if (error) {
+    message.style.color = "red";
+    message.innerHTML = "❌ " + error.message;
+    return;
+}
+
+if (!data.user) {
+    message.style.color = "red";
+    message.innerHTML = "❌ Aucun utilisateur créé.";
+    return;
+}
 
     message.style.color = "green";
 
