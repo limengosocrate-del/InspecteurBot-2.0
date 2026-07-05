@@ -6,7 +6,6 @@
 ====================================================*/
 
 import { supabase } from "./supabase.js";
-import { supabase } from "./supabase.js";
 
 alert("register.js chargé");
 
