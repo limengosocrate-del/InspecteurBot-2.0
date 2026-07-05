@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InspecteurBot IA RDC - Tableau de bord</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>INSPECTEURBOT IA RDC</h1>
+        <div class="sub">Inspection Générale du Travail - République Démocratique du Congo</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:2rem;font-weight:900;color:var(--accent);">IGT</div>
+        <div class="sub">Ministère de l'Emploi et Travail</div>
+      </div>
+    </header>
 
+    <div class="langsel">
+      <select id="langSwitcher">
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+        <option value="ln">Lingala</option>
+        <option value="kg">Kikongo</option>
+        <option value="ts">Tshiluba</option>
+        <option value="sw">Swahili</option>
+      </select>
+    </div>
+
+    <h2 style="margin-bottom:1.5rem;color:var(--accent);">Formulaires de Contrôle</h2>
+    <div class="grid"></div>
+
+    <footer>
+      Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.<br>
+      Système d'Inspection du Travail - RDC
+    </footer>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" onclick="toggleTheme()">🌓 Thème</button>
+  </div>
+
+  <script src="lang-data.js"></script>
+  <script src="utils.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+      </html>
