@@ -6,6 +6,9 @@
 ====================================================*/
 
 import { supabase } from "./supabase.js";
+import { supabase } from "./supabase.js";
+
+alert("register.js chargé");
 
 const form = document.getElementById("registerForm");
 const message = document.getElementById("registerMessage");
