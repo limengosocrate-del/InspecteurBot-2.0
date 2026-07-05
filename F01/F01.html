@@ -1,1 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F01 - Contrôle de la Main d'Œuvre</title>
+<link rel="stylesheet" href="../dashboard.css">
+<link rel="stylesheet" href="F01.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div class="page-a4" id="formF01">
+    <!-- EN-TÊTE -->
+    <div class="form-header">
+      <div class="header-left">
+        <div class="coat">IGT</div>
+        <div class="ministere">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO<br>Ministère de l'Emploi et Travail<br><small>Inspection Générale du Travail</small></div>
+      </div>
+      <div class="header-center">
+        <h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1>
+      </div>
+      <div class="header-right">
+        <div class="form-code">F01</div>
+        <div class="form-num">N° <input type="text" class="inline-input" style="width:80px;"> /20..</div>
+      </div>
+    </div>
 
+    <!-- RENSEIGNEMENTS -->
+    <div class="blue-bar">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</div>
+    <div class="info-grid">
+      <div class="info-col">
+        <label>Nom ou Raison Sociale / Adresse Physique :</label>
+        <input type="text" class="full-input" data-voice="raison_sociale">
+        <label>Secteur d'activité :</label>
+        <select class="full-input" id="secteur"><option value="">-- Sélectionner --</option></select>
+        <label>Siège social :</label>
+        <input type="text" class="full-input" placeholder="Av. ... N° ... Q/ ... C/ ...">
+        <label>Nom du Responsable :</label>
+        <input type="text" class="full-input">
+        <label>Contact :</label>
+        <input type="tel" class="full-input" id="tel" placeholder="+243 ...">
+        <label>Personne rencontrée :</label>
+        <input type="text" class="full-input">
+        <label>Qualité :</label>
+        <input type="text" class="full-input">
+      </div>
+      <div class="info-col narrow">
+        <div class="green-boxes">
+          <div class="gbox">0</div><div class="gbox">1/2</div><div class="gbox">3</div>
+          <div class="gbox">4</div><div class="gbox">5</div><div class="gbox">6</div><div class="gbox">7</div><div class="gbox">8</div>
+        </div>
+        <label>Précédente visite effectuée par :</label>
+        <input type="text" class="full-input">
+        <label>le :</label>
+        <input type="date" class="full-input">
+      </div>
+    </div>
+
+    <!-- EFFECTIFS PAR SEXE -->
+    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILÉS PAR SEXE</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIÉS</th><th colspan="3">TOTAL</th><th rowspan="2">RATIO</th>
+        </tr>
+        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="number" class="num-input" onchange="calcF01()"></td>
+          <td><input type="number" class="num-input" onchange="calcF01()"></td>
+          <td class="auto-calc" id="nat-total">0</td>
+          <td><input type="number" class="num-input" onchange="calcF01()"></td>
+          <td><input type="number" class="num-input" onchange="calcF01()"></td>
+          <td class="auto-calc" id="exp-total">0</td>
+          <td class="auto-calc" id="tot-h">0</td>
+          <td class="auto-calc" id="tot-f">0</td>
+          <td class="auto-calc" id="tot-global">0</td>
+          <td><input type="text" class="inline-input" style="width:60px;"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- CATEGORIES PRO -->
+    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILÉS SELON LES CATÉGORIES PROFESSIONNELS</div>
+    <table class="data-table">
+      <thead>
+        <tr><th colspan="3">CLASSIFIÉS</th><th colspan="3">MAÎTRISES</th><th colspan="3">CADRES</th><th rowspan="2">CONFORMITÉ</th></tr>
+        <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
+          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
+          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
+          <td><select><option></option><option>C</option><option>NC</option></select></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- NON PERMANENTS -->
+    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS NON PERMANENTS ET DES ENFANTS EMPLOYÉS</div>
+    <table class="data-table">
+      <thead>
+        <tr><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th><th rowspan="2">CONFORMITÉ</th></tr>
+        <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
+          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
+          <td class="auto-calc">0</td><td class="auto-calc">0</td><td class="auto-calc">0</td>
+          <td><select><option></option><option>C</option><option>NC</option></select></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- DOCUMENTS -->
+    <div class="blue-bar">DOCUMENTS A PRÉSENTER</div>
+    <table class="doc-table">
+      <thead><tr><th>Document</th><th>E</th><th>NE</th><th>ENC</th></tr></thead>
+      <tbody id="docTableBody">
+        <!-- Généré par JS -->
+      </tbody>
+    </table>
+
+    <!-- CONCLUSION -->
+    <div class="blue-bar">CONCLUSION DE LA VISITE</div>
+    <div class="conclusion-box">
+      <label><input type="radio" name="conclusion" value="LO"> LO (Lettre d'Observation)</label>
+      <label><input type="radio" name="conclusion" value="MD"> MD (Mise en Demeure)</label>
+      <label><input type="radio" name="conclusion" value="PVCI"> PV CI (Procès-Verbal)</label>
+    </div>
+
+    <!-- SIGNATURES -->
+    <div class="signatures">
+      <div class="sign-block">
+        <p>Signature de l'Employeur ou son préposé</p>
+        <canvas id="signEmployeur" width="300" height="100"></canvas>
+        <button type="button" class="small-btn" onclick="clearSign('signEmployeur')">Effacer</button>
+        <label><input type="checkbox" id="refusEmployeur"> Refus de signature</label>
+      </div>
+      <div class="sign-block">
+        <p>Fait à <input type="text" class="inline-input" style="width:100px;"> le <input type="date" class="inline-input"></p>
+        <p>Nom et signature de l'Inspecteur ou Contrôleur du Travail</p>
+        <canvas id="signInspecteur" width="300" height="100"></canvas>
+        <button type="button" class="small-btn" onclick="clearSign('signInspecteur')">Effacer</button>
+      </div>
+    </div>
+
+    <!-- ADMIN RESERVE -->
+    <div class="blue-bar">RÉSERVE À L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL</div>
+    <div class="admin-grid">
+      <div>
+        <strong>Observations du Chef d'Antenne</strong>
+        <textarea class="area-reserve"></textarea>
+      </div>
+      <div>
+        <strong>Observations du Directeur Provincial</strong>
+        <textarea class="area-reserve"></textarea>
+      </div>
+    </div>
+    <div class="blue-bar">RÉSERVE À L'INSPECTEUR GÉNÉRAL DU TRAVAIL</div>
+    <table class="data-table">
+      <thead><tr><th>Analyse et Synthèse</th><th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th></tr></thead>
+      <tbody><tr><td><textarea style="width:100%;border:none;min-height:60px;"></textarea></td>
+        <td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr></tbody>
+    </table>
+
+    <!-- IA & DECISIONS -->
+    <div class="ia-panel" id="iaPanel" style="display:none;">
+      <h3>🤖 Analyse Juridique InspecteurBot</h3>
+      <div id="iaResults"></div>
+      <h4>Décision administrative</h4>
+      <select id="decisionAdmin" class="full-input">
+        <option value="">-- Choisir --</option>
+        <option>Conforme</option>
+        <option>Non conforme</option>
+        <option>Observation</option>
+        <option>Mise en demeure</option>
+        <option>Avertissement</option>
+        <option>Recommandation</option>
+        <option>Transmission à la hiérarchie</option>
+      </select>
+      <h4>Procès-verbaux à établir</h4>
+      <label><input type="checkbox" class="pv-check"> PV de constat d'infraction</label>
+      <label><input type="checkbox" class="pv-check"> PV d'audition</label>
+      <label><input type="checkbox" class="pv-check"> PV de mise en demeure</label>
+      <label><input type="checkbox" class="pv-check"> PV de conciliation</label>
+      <label><input type="checkbox" class="pv-check"> PV de fermeture temporaire</label>
+    </div>
+
+  </div><!-- /page-a4 -->
+
+  <!-- BARRE D'OUTILS FLOTTANTE -->
+  <div class="toolbar">
+    <button class="btn" onclick="toggleTheme()">🌓</button>
+    <button class="btn" onclick="startDictation('.page-a4 input:focus, .page-a4 textarea:focus')">🎤</button>
+    <button class="btn" onclick="runAnalysis()">⚖️ Analyser</button>
+    <button class="btn" onclick="saveF01()">💾 Enregistrer</button>
+    <button class="btn" onclick="window.print()">🖨️ A4</button>
+    <button class="btn" onclick="exportPDF('F01_MainOeuvre','#formF01')">📄 PDF</button>
+    <button class="btn" onclick="location.href='../index.html'">⬅️ Retour</button>
+  </div>
+
+  <script src="../lang-data.js"></script>
+  <script src="../utils.js"></script>
+  <script src="F01.js"></script>
+</body>
+          </html>
