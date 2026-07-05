@@ -1,7 +1,15 @@
-document.addEventListener('DOMContentLoaded', ()=>{
-  initTheme();
-  renderCards();
-  $('#langSwitcher').addEventListener('change', e=>setLang(e.target.value));
+document.addEventListener("DOMContentLoaded", function () {
+    initTheme();
+
+    renderCards();
+
+    const lang = document.getElementById("langSwitcher");
+
+    if (lang) {
+        lang.addEventListener("change", function (e) {
+            setLang(e.target.value);
+        });
+    }
 });
 
 const FORMS = [
@@ -17,6 +25,21 @@ const FORMS = [
   {code:'S03', title:'Administration et Finance', type:'S'}
 ];
 
+function renderCards(){
+
+    console.log("renderCards lancé");
+
+    const grid = document.querySelector(".grid");
+
+    if(!grid){
+        console.log("Grid introuvable");
+        return;
+    }
+
+    grid.innerHTML = "";
+
+    FORMS.forEach(f=>{
+      
 function renderCards(){
   const grid = $('.grid');
   FORMS.forEach(f=>{
