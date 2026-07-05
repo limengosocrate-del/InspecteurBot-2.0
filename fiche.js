@@ -27,7 +27,7 @@ function renderCards(){
       <h3>${f.title}</h3>
       <p>Formulaire officiel de l'Inspection Générale du Travail RDC. Remplissage numérique, analyse IA et signature électronique.</p>
     `;
-    card.onclick = ()=> location.href = `./${f.code}/${f.code}.html`;
+    card.onclick = ()=> location.href = `${f.code}/${f.code}.html`;
     grid.appendChild(card);
   });
                 }
