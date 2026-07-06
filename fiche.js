@@ -143,7 +143,9 @@ function renderCards() {
 
         card.addEventListener("click", () => {
 
-            window.location.href = `/InspecteurBot-2.0/${form.code}/${form.code}.html`;
+        window.location.assign(`${form.code}/${form.code}.html`);
+
+});
 
         });
 
