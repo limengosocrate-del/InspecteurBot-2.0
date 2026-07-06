@@ -84,7 +84,7 @@ const JURISPRUDENCE_RDC = [
   {doc:"reglement_entreprise", article:"Art. 157 du CT", infraction:"Absence de règlement d'entreprise", sanction:"Mise en demeure de régularisation"},
   {doc:"contrat_travail", article:"Art. 36 à 49 du CT", infraction:"Contrats de travail non conformes ou non visés", sanction:"Procès-verbal de constat + amende"},
   {doc:"horaire", article:"Art. 119 du CT", infraction:"Horaire non affiché ou non conforme", sanction:"Observation écrite"},
-  {doc:"cnss", article:"Art. Loi CNSS", infraction:"Non affiliation ou non paiement CNSS", sanction:"Mise en demeure + pénalités de retard"},
+  {doc:"preuve_cnss", article:"Art. Loi CNSS", infraction:"Non affiliation ou non paiement CNSS", sanction:"Mise en demeure + pénalités de retard"},
   {doc:"smig", article:"Arrêté SMIG", infraction:"Rémunération inférieure au SMIG", sanction:"PV d'infraction + régularisation salariale"},
   {doc:"enfant", article:"Art. 40 al.2 CT", infraction:"Emploi d'enfants non autorisé", sanction:"PV d'infraction + fermeture temporaire possible"},
   {doc:"hygiene", article:"Art. Code du Travail Hygiène", infraction:"Défaut d'installation sanitaire", sanction:"Mise en demeure"},
