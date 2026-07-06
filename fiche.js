@@ -113,11 +113,8 @@ function renderCards() {
     const grid = document.querySelector(".grid");
 
     if (!grid) {
-
         console.error("Conteneur .grid introuvable.");
-
         return;
-
     }
 
     grid.innerHTML = "";
@@ -129,28 +126,20 @@ function renderCards() {
         card.className = "card";
 
         card.innerHTML = `
-
             <span class="badge">${form.code}</span>
-
             <h3>${form.title}</h3>
-
             <p>
                 Formulaire officiel de l'Inspection Générale du Travail RDC.
                 Remplissage numérique, analyse IA et signature électronique.
             </p>
-
         `;
 
         card.addEventListener("click", () => {
-
-        window.location.assign(`${form.code}/${form.code}.html`);
-
-});
-
+            window.location.href = `${form.code}/${form.code}.html`;
         });
 
         grid.appendChild(card);
 
     });
 
-                                      }
+}
