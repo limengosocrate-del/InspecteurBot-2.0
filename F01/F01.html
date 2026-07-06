@@ -1,154 +1,213 @@
-        <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>F01 - Contrôle de la Main d'Œuvre</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F01 — Contrôle de la Main d'Œuvre | InspecteurBot IA RDC</title>
 <link rel="stylesheet" href="F01.css">
 </head>
 <body>
-<div class="toolbar no-print">
-  <button onclick="F01.dicter()">🎙️ Dictée</button>
-  <button onclick="F01.autoRemplir()">⚡ Auto-remplir</button>
-  <button onclick="F01.analyser()">⚖️ Analyse juridique</button>
-  <button onclick="F01.signer('emp')">✍️ Sign. Employeur</button>
-  <button onclick="F01.signer('insp')">✍️ Sign. Inspecteur</button>
-  <button onclick="F01.archiver()">💾 Archiver</button>
-  <button onclick="window.print()">🖨️ Imprimer / PDF</button>
-  <button onclick="F01.toggleTheme()">🌙 Thème</button>
-</div>
 
-<div class="page" id="F01">
-  <table class="entete">
-    <tr>
-      <td class="logo-cell" rowspan="2">
-        <div class="logo">RDC<br>IGT</div>
-        <div class="ministere">
-          <strong>REPUBLIQUE DEMOCRATIQUE DU CONGO</strong><br>
-          <strong>Ministère de l'Emploi et Travail</strong><br>
-          <em>Inspection Générale du Travail</em><br>
-          <em>Administration Centrale</em>
+<!-- ══════════ BARRE D'OUTILS (non imprimée) ══════════ -->
+<nav class="toolbar no-print">
+  <span class="brand">⚖️ InspecteurBot IA RDC — F01</span>
+  <button id="btnDicter" title="Dictée vocale">🎙️ Dicter</button>
+  <button id="btnIA" title="Analyse juridique IA">🧠 Analyse IA</button>
+  <button id="btnRemplir" title="Détection champs manquants">🔍 Vérifier</button>
+  <button id="btnEnregistrer">💾 Enregistrer</button>
+  <button id="btnArchives">🗂️ Archives</button>
+  <button id="btnImprimer">🖨️ Imprimer / PDF</button>
+  <span id="numeroArchive" class="badge"></span>
+</nav>
+
+<!-- ══════════ PAGE A4 OFFICIELLE ══════════ -->
+<main class="page" id="fiche">
+
+  <!-- EN-TÊTE OFFICIEL -->
+  <header class="entete">
+    <div class="entete-gauche">
+      <div class="logo-igt"><span>I.G.T</span></div>
+      <div class="entete-textes">
+        <p class="l1">REPUBLIQUE DEMOCRATIQUE DU CONGO</p>
+        <p class="l2">Ministère de l'Emploi et Travail</p>
+        <p class="l3">Inspection Générale du Travail</p>
+        <p class="l4">Administration Centrale</p>
+      </div>
+    </div>
+    <div class="entete-titre">
+      <h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1>
+    </div>
+    <div class="entete-code">
+      <p class="code-f">F01</p>
+      <p class="code-num">N°<input id="numFiche" class="pt num" maxlength="10">/20<input id="anFiche" class="pt an" maxlength="2"></p>
+    </div>
+  </header>
+
+  <!-- CORPS : GRILLE 2 COLONNES (formulaire | réserve IT/CT) -->
+  <div class="corps">
+    <div class="col-gauche">
+
+      <div class="bandeau">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</div>
+
+      <div class="renseignements">
+        <p>Nom ou Raison Sociale/Adresse Physique : <input id="raisonSociale" class="pt long" data-ia="raison"></p>
+        <p>Secteur d'activité :
+          <select id="secteur" class="pt long"></select></p>
+        <p>Siège social : av<input id="avenue" class="pt moy"> n°<input id="numero" class="pt mini">
+           Q/<select id="quartierProv" class="pt prov"></select>
+           C/<input id="commune" class="pt moy"></p>
+        <p>Nom du Responsable :<input id="responsable" class="pt moy"> Qualité<input id="qualiteResp" class="pt moy"></p>
+        <p>Contact :<input id="contact" class="pt moy tel" placeholder="+243 "> E-mail :<input id="email" class="pt moy" type="email"></p>
+        <p>Personne rencontrée :<input id="rencontree" class="pt moy"> Qualité :<input id="qualiteRenc" class="pt moy"></p>
+        <p>CNSS :<input id="cnss" class="pt court"> ONM : <input id="onm" class="pt court"> I NPP : <input id="inpp" class="pt court"></p>
+        <p class="gras">Précédente visite effectué par :<input id="precVisite" class="pt moy">
+           le<input id="pj" class="pt dd" maxlength="2">/<input id="pm" class="pt dd" maxlength="2">/20<input id="pa" class="pt dd" maxlength="2"></p>
+      </div>
+
+      <!-- EFFECTIFS PAR SEXE -->
+      <div class="bandeau">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES PAR&nbsp; SEXE</div>
+      <table class="t-eff" id="tabSexe">
+        <tr class="ss-titres"><th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIES</th><th colspan="3">TOTAL</th></tr>
+        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+        <tr>
+          <td><input class="cel n" id="natH"></td><td><input class="cel n" id="natF"></td><td><input class="cel calc" id="natT" readonly></td>
+          <td><input class="cel n" id="expH"></td><td><input class="cel n" id="expF"></td><td><input class="cel calc" id="expT" readonly></td>
+          <td><input class="cel calc" id="totH" readonly></td><td><input class="cel calc" id="totF" readonly></td><td><input class="cel calc" id="totT" readonly></td>
+        </tr>
+      </table>
+
+      <!-- CATEGORIES PROFESSIONNELLES -->
+      <div class="bandeau">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LES CATEGORIES PROFESSIONNELS</div>
+      <table class="t-eff" id="tabCat">
+        <tr class="ss-titres"><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th></tr>
+        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+        <tr>
+          <td><input class="cel n" id="claH"></td><td><input class="cel n" id="claF"></td><td><input class="cel calc" id="claT" readonly></td>
+          <td><input class="cel n" id="maiH"></td><td><input class="cel n" id="maiF"></td><td><input class="cel calc" id="maiT" readonly></td>
+          <td><input class="cel n" id="cadH"></td><td><input class="cel n" id="cadF"></td><td><input class="cel calc" id="cadT" readonly></td>
+        </tr>
+      </table>
+
+      <!-- NON PERMANENTS / ENFANTS -->
+      <div class="bandeau">EFFECTIFS DE TRVAILLEURS NON PERMENANTS ET DES ENFANTS EMPLOYES</div>
+      <table class="t-eff" id="tabNP">
+        <tr class="ss-titres"><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th></tr>
+        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+        <tr>
+          <td><input class="cel n" id="enfH"></td><td><input class="cel n" id="enfF"></td><td><input class="cel calc" id="enfT" readonly></td>
+          <td><input class="cel n" id="npH"></td><td><input class="cel n" id="npF"></td><td><input class="cel calc" id="npT" readonly></td>
+          <td><input class="cel calc" id="np2H" readonly></td><td><input class="cel calc" id="np2F" readonly></td><td><input class="cel calc" id="np2T" readonly></td>
+        </tr>
+      </table>
+
+      <!-- DOCUMENTS A PRESENTER -->
+      <div class="bandeau grand">DOCUMENTS A PRESENTER</div>
+      <table class="t-docs" id="tabDocs">
+        <tr class="tete-docs"><td></td><th class="c-ene">E</th><th class="c-ene">N E</th><th class="c-ene">ENC</th></tr>
+        <!-- Lignes générées par F01.js (liste officielle inchangée) -->
+      </table>
+
+      <!-- RESERVE INSPECTEUR + CONCLUSION -->
+      <table class="t-conclusion">
+        <tr>
+          <td class="lib-reserve">RESERVE A L'INSPECTEUR OU CONTROLEUR DU TRAVAIL</td>
+          <td class="c-ccl bandeau-mini" colspan="3">Conclusion de la visite</td>
+        </tr>
+        <tr>
+          <td rowspan="2" class="zone-reserve"><textarea id="reserveIT" rows="3"></textarea></td>
+          <th class="c-ccl">LO</th><th class="c-ccl">MD</th><th class="c-ccl">PV CI</th>
+        </tr>
+        <tr>
+          <td class="c-ccl"><input type="checkbox" id="cLO" class="coche"></td>
+          <td class="c-ccl"><input type="checkbox" id="cMD" class="coche"></td>
+          <td class="c-ccl"><input type="checkbox" id="cPVCI" class="coche"></td>
+        </tr>
+      </table>
+
+      <!-- FAIT A / SIGNATURES -->
+      <div class="fait-a">
+        <p class="droite gras">Fait à <input id="faitA" class="pt moy"> le<input id="fj" class="pt dd" maxlength="2">/<input id="fm" class="pt dd" maxlength="2">/20<input id="fa" class="pt dd" maxlength="2">.</p>
+        <div class="signatures">
+          <div class="sig-bloc">
+            <p class="gras">Signature de l'Employeur ou son préposé</p>
+            <canvas id="sigEmployeur" width="300" height="80"></canvas>
+            <div class="no-print sig-actions">
+              <button data-clear="sigEmployeur">✖ Effacer</button>
+              <label><input type="checkbox" id="refusSig"> Refus de signature</label>
+            </div>
+            <p class="horodatage" id="hEmployeur"></p>
+          </div>
+          <div class="sig-bloc">
+            <p class="gras">Nom et signature de l'Inspecteur ou Contrôleur du Travail</p>
+            <input id="nomInspecteur" class="pt long">
+            <canvas id="sigInspecteur" width="300" height="80"></canvas>
+            <div class="no-print sig-actions"><button data-clear="sigInspecteur">✖ Effacer</button></div>
+            <p class="horodatage" id="hInspecteur"></p>
+          </div>
         </div>
-      </td>
-      <td class="titre-cell"><h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1></td>
-      <td class="code-cell"><span class="code">F01</span>
-        <div class="num">N° <input type="text" data-f="numero" placeholder="…………………"> /20<input type="text" data-f="annee" size="3" placeholder="…"></div>
-      </td>
-    </tr>
-  </table>
+      </div>
 
-  <table class="bloc">
-    <tr class="th-bleu"><th colspan="4">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</th><th class="th-bleu" colspan="2">RESERVE A L'IT OU CT</th></tr>
-    <tr>
-      <td colspan="4" class="cell-info">
-        <div class="ligne"><label>Nom ou Raison Sociale/Adresse Physique</label><input type="text" data-f="raison"></div>
-        <div class="ligne"><label>Secteur d'activité</label>
-          <select data-f="secteur">
-            <option value="">--</option><option>Agriculture</option><option>Mines</option><option>BTP</option><option>Commerce</option><option>Industrie</option><option>Transport</option><option>Services</option><option>Télécommunications</option><option>Banque</option><option>Éducation</option><option>Santé</option>
-          </select>
-        </div>
-        <div class="ligne"><label>Siège social</label> av. <input size="20" data-f="av"> n° <input size="6" data-f="numav"> Q/<input size="15" data-f="quartier"> C/
-          <select data-f="commune"><option value="">--</option></select>
-        </div>
-        <div class="ligne"><label>Nom du Responsable</label><input data-f="resp"> Qualité <input data-f="qualiteresp"></div>
-        <div class="ligne"><label>Contact</label><input data-f="contact" placeholder="+243..."> E-mail <input data-f="email"></div>
-        <div class="ligne"><label>Personne rencontrée</label><input data-f="pr"> Qualité <input data-f="qpr"></div>
-        <div class="ligne"><label>CNSS</label><input size="10" data-f="cnss"> ONM <input size="10" data-f="onm"> INPP <input size="10" data-f="inpp"></div>
-      </td>
-      <td colspan="2" class="grid-reserve" rowspan="2">
-        <div class="cases">
-          <span class="c">0</span><span class="c">1/2</span><span class="c">3</span>
-          <span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span>
-          <span class="c c8">8</span>
-        </div>
-      </td>
-    </tr>
-    <tr><td colspan="4"><div class="ligne"><label>Précédente visite effectuée par</label><input data-f="prevvisit"> le <input size="3">/<input size="3">/20<input size="3"></div></td></tr>
-  </table>
+      <!-- RESERVE ADMINISTRATION -->
+      <div class="bandeau">RESERVE A L'ADMINISTRATION DE l'INSPECTION DU TRAVAIL</div>
+      <table class="t-admin">
+        <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
+        <tr><td><textarea id="obsAntenne" rows="4"></textarea></td><td><textarea id="obsDirecteur" rows="4"></textarea></td></tr>
+      </table>
 
-  <table class="tab">
-    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES PAR SEXE</th><th class="th-bleu">RATIO</th></tr>
-    <tr class="sub"><th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIES</th><th colspan="3">TOTAL</th><th>C | NC</th></tr>
-    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><td rowspan="2"><input data-f="ratio1"></td></tr>
-    <tr>
-      <td><input type="number" data-calc="n1"></td><td><input type="number" data-calc="n2"></td><td><input data-total="n1,n2" readonly></td>
-      <td><input type="number" data-calc="e1"></td><td><input type="number" data-calc="e2"></td><td><input data-total="e1,e2" readonly></td>
-      <td><input data-total="n1,e1" readonly></td><td><input data-total="n2,e2" readonly></td><td><input data-total="n1,n2,e1,e2" readonly></td>
-    </tr>
-  </table>
+      <!-- RESERVE IGT -->
+      <div class="bandeau">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</div>
+      <table class="t-igt">
+        <tr><th class="w50">ANALYSE ET SYNTHESE</th><th colspan="5">DECISION</th></tr>
+        <tr>
+          <td rowspan="2"><textarea id="analyseIGT" rows="5"></textarea></td>
+          <th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th>
+        </tr>
+        <tr>
+          <td><input type="checkbox" class="coche" id="dVS"></td>
+          <td><input type="checkbox" class="coche" id="dCE"></td>
+          <td><input type="checkbox" class="coche" id="dITCT"></td>
+          <td><input type="checkbox" class="coche" id="dMD"></td>
+          <td><input type="checkbox" class="coche" id="dS"></td>
+        </tr>
+      </table>
+    </div>
 
-  <table class="tab">
-    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LES CATEGORIES PROFESSIONNELLES</th><th class="th-bleu">CONFORMITE</th></tr>
-    <tr class="sub"><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th><th rowspan="2"><input data-f="conf1"></th></tr>
-    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-    <tr>
-      <td><input type="number" data-calc="c1"></td><td><input type="number" data-calc="c2"></td><td><input data-total="c1,c2" readonly></td>
-      <td><input type="number" data-calc="m1"></td><td><input type="number" data-calc="m2"></td><td><input data-total="m1,m2" readonly></td>
-      <td><input type="number" data-calc="cd1"></td><td><input type="number" data-calc="cd2"></td><td><input data-total="cd1,cd2" readonly></td>
-    </tr>
-  </table>
+    <!-- COLONNE DROITE : RESERVE IT/CT + RATIO + CONFORMITES -->
+    <aside class="col-droite">
+      <p class="titre-reserve">RESERVE A L'IT OU CT</p>
+      <div class="cases-vertes">
+        <span data-code="0">0</span><span data-code="1/2">1/2</span><span data-code="3">3</span>
+        <span data-code="4">4</span><span data-code="5">5</span><span data-code="6">6</span><span data-code="7">7</span>
+        <span data-code="8" class="c8">8</span>
+      </div>
+      <div class="ratio-bloc">
+        <p class="titre-ratio">RATIO</p>
+        <table class="t-ratio"><tr><th>C</th><th>NC</th></tr>
+        <tr><td><input class="cel" id="ratioC"></td><td><input class="cel" id="ratioNC"></td></tr></table>
+      </div>
+      <div class="conf-bloc"><p class="titre-ratio">CONFORMITE</p><textarea id="conf1" rows="2"></textarea></div>
+      <div class="conf-bloc"><p class="titre-ratio">CONFORMITE</p><textarea id="conf2" rows="2"></textarea></div>
+    </aside>
+  </div>
 
-  <table class="tab">
-    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRVAILLEURS NON PERMANENTS ET DES ENFANTS EMPLOYES</th><th class="th-bleu">CONFORMITE</th></tr>
-    <tr class="sub"><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th><th rowspan="2"><input data-f="conf2"></th></tr>
-    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-    <tr>
-      <td><input type="number" data-calc="en1"></td><td><input type="number" data-calc="en2"></td><td><input data-total="en1,en2" readonly></td>
-      <td><input type="number" data-calc="np1"></td><td><input type="number" data-calc="np2"></td><td><input data-total="np1,np2" readonly></td>
-      <td><input data-total="en1,np1" readonly></td><td><input data-total="en2,np2" readonly></td><td><input data-total="en1,en2,np1,np2" readonly></td>
-    </tr>
-  </table>
+  <footer class="pied">Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.</footer>
+</main>
 
-  <table class="tab docs">
-    <tr class="th-bleu"><th colspan="2">DOCUMENTS A PRESENTER</th><th>E</th><th>N E</th><th>ENC</th></tr>
-    <tbody id="docs-list"></tbody>
-    <tr><td colspan="2">RESERVE A L'INSPECTEUR OU CONTROLEUR DU TRAVAIL</td><td class="th-bleu" colspan="3">Conclusion de la visite</td></tr>
-    <tr><td colspan="2" rowspan="3" class="reserve"><textarea data-f="reserve"></textarea></td><th>LO</th><th>MD</th><th>PV CI</th></tr>
-    <tr><td><input type="checkbox" data-f="lo"></td><td><input type="checkbox" data-f="md"></td><td><input type="checkbox" data-f="pvci"></td></tr>
-  </table>
+<!-- PANNEAU IA (non imprimé) -->
+<section id="panneauIA" class="panneau-ia no-print" hidden>
+  <h2>🧠 Analyse juridique — Code du Travail RDC</h2>
+  <div id="resultatIA"></div>
+  <button id="btnInjecter">↪ Injecter dans « Réserve IT/CT »</button>
+  <button id="btnFermerIA">Fermer</button>
+</section>
 
-  <table class="tab signatures">
-    <tr>
-      <td class="sign-emp">
-        <div>Signature de l'Employeur ou son préposé</div>
-        <canvas class="sig" id="sigEmp" width="300" height="70"></canvas>
-      </td>
-      <td class="sign-insp">
-        Fait à <input data-f="faitlieu"> le <input size="3">/<input size="3">/20<input size="3"><br>
-        <div>Nom et signature de l'Inspecteur ou Contrôleur du Travail</div>
-        <canvas class="sig" id="sigInsp" width="300" height="70"></canvas>
-      </td>
-    </tr>
-  </table>
+<!-- PANNEAU ARCHIVES -->
+<section id="panneauArchives" class="panneau-ia no-print" hidden>
+  <h2>🗂️ Archives F01</h2>
+  <div id="listeArchives"></div>
+  <button id="btnFermerArch">Fermer</button>
+</section>
 
-  <table class="tab">
-    <tr class="th-bleu"><th colspan="2">RESERVE A L'ADMINISTRATION DE l'INSPECTION DU TRAVAIL</th></tr>
-    <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
-    <tr><td><textarea data-f="obsChef"></textarea></td><td><textarea data-f="obsDir"></textarea></td></tr>
-  </table>
-
-  <table class="tab">
-    <tr class="th-bleu"><th colspan="6">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</th></tr>
-    <tr><th rowspan="2">ANALYSE ET SYNTHESE</th><th colspan="5">DECISION</th></tr>
-    <tr><th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th></tr>
-    <tr>
-      <td rowspan="2"><textarea data-f="analyse"></textarea></td>
-      <td><input type="checkbox" data-f="vs"></td>
-      <td><input type="checkbox" data-f="ce"></td>
-      <td><input type="checkbox" data-f="itct"></td>
-      <td><input type="checkbox" data-f="mdd"></td>
-      <td><input type="checkbox" data-f="s"></td>
-    </tr>
-    <tr><td colspan="5" class="dec-notes"><textarea data-f="decnotes"></textarea></td></tr>
-  </table>
-
-  <div class="footer">Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.</div>
-</div>
-
-<div id="ai-panel" class="no-print"></div>
-
-
-<script src="../lang-data.js"></script>
-<script src="../utils.js"></script>
 <script src="F01.js"></script>
 </body>
-          </html>
+                </html>
