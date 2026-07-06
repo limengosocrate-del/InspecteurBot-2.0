@@ -1,219 +1,151 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F01 — Contrôle de la Main d'Œuvre | InspecteurBot IA RDC</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F01 - Contrôle de la Main d'Œuvre | InspecteurBot IA RDC</title>
 <link rel="stylesheet" href="F01.css">
 </head>
 <body>
+<div class="app-toolbar no-print">
+  <button onclick="F01.dictate()">🎙️ Dictée</button>
+  <button onclick="F01.autoFill()">🤖 IA Remplir</button>
+  <button onclick="F01.analyze()">⚖️ Analyse juridique</button>
+  <button onclick="F01.save()">💾 Enregistrer</button>
+  <button onclick="window.print()">🖨️ Imprimer / PDF</button>
+  <button onclick="F01.toggleDark()">🌙 Mode</button>
+</div>
 
-<!-- ══════════ BARRE D'OUTILS (non imprimée) ══════════ -->
-<nav class="toolbar no-print">
-  <span class="brand">⚖️ InspecteurBot IA RDC — F01</span>
-  <button id="btnDicter" title="Dictée vocale">🎙️ Dicter</button>
-  <button id="btnIA" title="Analyse juridique IA">🧠 Analyse IA</button>
-  <button id="btnRemplir" title="Détection champs manquants">🔍 Vérifier</button>
-  <button id="btnEnregistrer">💾 Enregistrer</button>
-  <button id="btnArchives">🗂️ Archives</button>
-  <button id="btnImprimer">🖨️ Imprimer / PDF</button>
-  <span id="numeroArchive" class="badge"></span>
-</nav>
-
-<!-- ══════════ PAGE A4 OFFICIELLE ══════════ -->
-<main class="page" id="fiche">
-
-  <!-- EN-TÊTE OFFICIEL -->
-  <header class="entete">
-    <div class="entete-gauche">
-      <div class="logo-igt"><span>I.G.T</span></div>
-      <div class="entete-textes">
-        <p class="l1">REPUBLIQUE DEMOCRATIQUE DU CONGO</p>
-        <p class="l2">Ministère de l'Emploi et Travail</p>
-        <p class="l3">Inspection Générale du Travail</p>
-        <p class="l4">Administration Centrale</p>
-      </div>
-    </div>
-    <div class="entete-titre">
-      <h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1>
-    </div>
-    <div class="entete-code">
-      <p class="code-f">F01</p>
-      <p class="code-num">N°<input id="numFiche" class="pt num" maxlength="10">/20<input id="anFiche" class="pt an" maxlength="2"></p>
-    </div>
-  </header>
-
-  <!-- CORPS : GRILLE 2 COLONNES (formulaire | réserve IT/CT) -->
-  <div class="corps">
-    <div class="col-gauche">
-
-      <div class="bandeau">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</div>
-
-      <div class="renseignements">
-        <p>Nom ou Raison Sociale/Adresse Physique : <input id="raisonSociale" class="pt long" data-ia="raison"></p>
-        <p>Secteur d'activité :
-          <select id="secteur" class="pt long"></select></p>
-        <p>Siège social : av<input id="avenue" class="pt moy"> n°<input id="numero" class="pt mini">
-           Q/<select id="quartierProv" class="pt prov"></select>
-           C/<input id="commune" class="pt moy"></p>
-        <p>Nom du Responsable :<input id="responsable" class="pt moy"> Qualité<input id="qualiteResp" class="pt moy"></p>
-        <p>Contact :<input id="contact" class="pt moy tel" placeholder="+243 "> E-mail :<input id="email" class="pt moy" type="email"></p>
-        <p>Personne rencontrée :<input id="rencontree" class="pt moy"> Qualité :<input id="qualiteRenc" class="pt moy"></p>
-        <p>CNSS :<input id="cnss" class="pt court"> ONM : <input id="onm" class="pt court"> I NPP : <input id="inpp" class="pt court"></p>
-        <p class="gras">Précédente visite effectué par :<input id="precVisite" class="pt moy">
-           le<input id="pj" class="pt dd" maxlength="2">/<input id="pm" class="pt dd" maxlength="2">/20<input id="pa" class="pt dd" maxlength="2"></p>
-      </div>
-
-      <!-- EFFECTIFS PAR SEXE -->
-      <div class="bandeau">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES PAR&nbsp; SEXE</div>
-      <table class="t-eff" id="tabSexe">
-        <tr class="ss-titres"><th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIES</th><th colspan="3">TOTAL</th></tr>
-        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-        <tr>
-          <td><input class="cel n" id="natH"></td><td><input class="cel n" id="natF"></td><td><input class="cel calc" id="natT" readonly></td>
-          <td><input class="cel n" id="expH"></td><td><input class="cel n" id="expF"></td><td><input class="cel calc" id="expT" readonly></td>
-          <td><input class="cel calc" id="totH" readonly></td><td><input class="cel calc" id="totF" readonly></td><td><input class="cel calc" id="totT" readonly></td>
-        </tr>
-      </table>
-
-      <!-- CATEGORIES PROFESSIONNELLES -->
-      <div class="bandeau">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LES CATEGORIES PROFESSIONNELS</div>
-      <table class="t-eff" id="tabCat">
-        <tr class="ss-titres"><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th></tr>
-        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-        <tr>
-          <td><input class="cel n" id="claH"></td><td><input class="cel n" id="claF"></td><td><input class="cel calc" id="claT" readonly></td>
-          <td><input class="cel n" id="maiH"></td><td><input class="cel n" id="maiF"></td><td><input class="cel calc" id="maiT" readonly></td>
-          <td><input class="cel n" id="cadH"></td><td><input class="cel n" id="cadF"></td><td><input class="cel calc" id="cadT" readonly></td>
-        </tr>
-      </table>
-
-      <!-- NON PERMANENTS / ENFANTS -->
-      <div class="bandeau">EFFECTIFS DE TRVAILLEURS NON PERMENANTS ET DES ENFANTS EMPLOYES</div>
-      <table class="t-eff" id="tabNP">
-        <tr class="ss-titres"><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th></tr>
-        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-        <tr>
-          <td><input class="cel n" id="enfH"></td><td><input class="cel n" id="enfF"></td><td><input class="cel calc" id="enfT" readonly></td>
-          <td><input class="cel n" id="npH"></td><td><input class="cel n" id="npF"></td><td><input class="cel calc" id="npT" readonly></td>
-          <td><input class="cel calc" id="np2H" readonly></td><td><input class="cel calc" id="np2F" readonly></td><td><input class="cel calc" id="np2T" readonly></td>
-        </tr>
-      </table>
-
-      <!-- DOCUMENTS A PRESENTER -->
-      <div class="bandeau grand">DOCUMENTS A PRESENTER</div>
-      <table class="t-docs" id="tabDocs">
-        <tr class="tete-docs"><td></td><th class="c-ene">E</th><th class="c-ene">N E</th><th class="c-ene">ENC</th></tr>
-        <!-- Lignes générées par F01.js (liste officielle inchangée) -->
-      </table>
-
-      <!-- RESERVE INSPECTEUR + CONCLUSION -->
-      <table class="t-conclusion">
-        <tr>
-          <td class="lib-reserve">RESERVE A L'INSPECTEUR OU CONTROLEUR DU TRAVAIL</td>
-          <td class="c-ccl bandeau-mini" colspan="3">Conclusion de la visite</td>
-        </tr>
-        <tr>
-          <td rowspan="2" class="zone-reserve"><textarea id="reserveIT" rows="3"></textarea></td>
-          <th class="c-ccl">LO</th><th class="c-ccl">MD</th><th class="c-ccl">PV CI</th>
-        </tr>
-        <tr>
-          <td class="c-ccl"><input type="checkbox" id="cLO" class="coche"></td>
-          <td class="c-ccl"><input type="checkbox" id="cMD" class="coche"></td>
-          <td class="c-ccl"><input type="checkbox" id="cPVCI" class="coche"></td>
-        </tr>
-      </table>
-
-      <!-- FAIT A / SIGNATURES -->
-      <div class="fait-a">
-        <p class="droite gras">Fait à <input id="faitA" class="pt moy"> le<input id="fj" class="pt dd" maxlength="2">/<input id="fm" class="pt dd" maxlength="2">/20<input id="fa" class="pt dd" maxlength="2">.</p>
-        <div class="signatures">
-          <div class="sig-bloc">
-            <p class="gras">Signature de l'Employeur ou son préposé</p>
-            <canvas id="sigEmployeur" width="300" height="80"></canvas>
-            <div class="no-print sig-actions">
-              <button data-clear="sigEmployeur">✖ Effacer</button>
-              <label><input type="checkbox" id="refusSig"> Refus de signature</label>
-            </div>
-            <p class="horodatage" id="hEmployeur"></p>
-          </div>
-          <div class="sig-bloc">
-            <p class="gras">Nom et signature de l'Inspecteur ou Contrôleur du Travail</p>
-            <input id="nomInspecteur" class="pt long">
-            <canvas id="sigInspecteur" width="300" height="80"></canvas>
-            <div class="no-print sig-actions"><button data-clear="sigInspecteur">✖ Effacer</button></div>
-            <p class="horodatage" id="hInspecteur"></p>
-          </div>
+<main class="sheet" id="F01Sheet">
+  <table class="entete">
+    <tr>
+      <td class="logo-cell" rowspan="2">
+        <div class="logo">🛡️</div>
+        <div class="ministere">
+          <b>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</b><br>
+          <b>Ministère de l'Emploi et Travail</b><br>
+          <i class="blue">Inspection Générale du Travail</i><br>
+          <i class="red">Administration Centrale</i>
         </div>
-      </div>
+      </td>
+      <td class="titre" rowspan="2"><h1>CONTROLE DE LA MAIN D'OEUVRE</h1></td>
+      <td class="code"><h2>F01</h2></td>
+    </tr>
+    <tr><td class="num">N° <input type="text" class="inp" data-f="numero">/20<input type="text" class="inp mini" data-f="annee"></td></tr>
+  </table>
 
-      <!-- RESERVE ADMINISTRATION -->
-      <div class="bandeau">RESERVE A L'ADMINISTRATION DE l'INSPECTION DU TRAVAIL</div>
-      <table class="t-admin">
-        <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
-        <tr><td><textarea id="obsAntenne" rows="4"></textarea></td><td><textarea id="obsDirecteur" rows="4"></textarea></td></tr>
-      </table>
+  <table class="bloc">
+    <tr><th colspan="3" class="bar">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</th><th class="bar">RESERVE A L'IT OU CT</th></tr>
+    <tr>
+      <td colspan="3" class="fields">
+        <div class="row"><label>Nom ou Raison Sociale/Adresse Physique :</label><input class="inp fill" data-f="raison"></div>
+        <div class="row"><label>Secteur d'activité :</label>
+          <select class="inp fill" data-f="secteur">
+            <option value="">-- Sélectionner --</option>
+            <option>Agriculture</option><option>Mines</option><option>BTP</option>
+            <option>Commerce</option><option>Industrie</option><option>Services</option>
+            <option>Transport</option><option>Banque</option><option>Télécom</option>
+            <option>Santé</option><option>Éducation</option><option>Hôtellerie</option>
+          </select>
+        </div>
+        <div class="row"><label>Siège social : av</label><input class="inp" data-f="avenue">
+          <label>n°</label><input class="inp mini" data-f="numav">
+          <label>Q/</label><input class="inp" data-f="quartier">
+          <label>C/</label><select class="inp" data-f="commune"><option>-- Commune --</option></select>
+        </div>
+        <div class="row"><label>Nom du Responsable :</label><input class="inp" data-f="resp">
+          <label>Qualité</label><input class="inp" data-f="qualresp"></div>
+        <div class="row"><label>Contact :</label><input class="inp tel" data-f="contact" placeholder="+243...">
+          <label>E-mail :</label><input class="inp" type="email" data-f="email"></div>
+        <div class="row"><label>Personne rencontrée :</label><input class="inp" data-f="rencontre">
+          <label>Qualité :</label><input class="inp" data-f="qualrenc"></div>
+        <div class="row"><label>CNSS :</label><input class="inp" data-f="cnss">
+          <label>ONM :</label><input class="inp" data-f="onem">
+          <label>INPP :</label><input class="inp" data-f="inpp"></div>
+        <div class="row"><label>Précédente visite effectuée par :</label><input class="inp" data-f="prec">
+          <label>le</label><input class="inp date" type="date" data-f="datePrec"></div>
+      </td>
+      <td class="reserve">
+        <div class="grid-num">
+          <span>0</span><span>1/2</span><span>3</span>
+          <span>4</span><span>5</span><span>6</span><span>7</span>
+          <span class="c8">8</span>
+        </div>
+      </td>
+    </tr>
+  </table>
 
-      <!-- RESERVE IGT -->
-      <div class="bandeau">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</div>
-      <table class="t-igt">
-        <tr><th class="w50">ANALYSE ET SYNTHESE</th><th colspan="5">DECISION</th></tr>
-        <tr>
-          <td rowspan="2"><textarea id="analyseIGT" rows="5"></textarea></td>
-          <th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="coche" id="dVS"></td>
-          <td><input type="checkbox" class="coche" id="dCE"></td>
-          <td><input type="checkbox" class="coche" id="dITCT"></td>
-          <td><input type="checkbox" class="coche" id="dMD"></td>
-          <td><input type="checkbox" class="coche" id="dS"></td>
-        </tr>
-      </table>
-    </div>
+  <table class="tab">
+    <tr><th colspan="9" class="bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES PAR SEXE</th><th colspan="2" class="bar">RATIO</th></tr>
+    <tr><th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIES</th><th colspan="3">TOTAL</th><th>C</th><th>NC</th></tr>
+    <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th rowspan="2"><input class="inp"></th><th rowspan="2"><input class="inp"></th></tr>
+    <tr>
+      <td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td>
+      <td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td>
+      <td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td><td><input class="inp num" data-c="p"></td>
+    </tr>
+  </table>
 
-    <!-- COLONNE DROITE : RESERVE IT/CT + RATIO + CONFORMITES -->
-    <aside class="col-droite">
-      <p class="titre-reserve">RESERVE A L'IT OU CT</p>
-      <div class="cases-vertes">
-        <span data-code="0">0</span><span data-code="1/2">1/2</span><span data-code="3">3</span>
-        <span data-code="4">4</span><span data-code="5">5</span><span data-code="6">6</span><span data-code="7">7</span>
-        <span data-code="8" class="c8">8</span>
-      </div>
-      <div class="ratio-bloc">
-        <p class="titre-ratio">RATIO</p>
-        <table class="t-ratio"><tr><th>C</th><th>NC</th></tr>
-        <tr><td><input class="cel" id="ratioC"></td><td><input class="cel" id="ratioNC"></td></tr></table>
-      </div>
-      <div class="conf-bloc"><p class="titre-ratio">CONFORMITE</p><textarea id="conf1" rows="2"></textarea></div>
-      <div class="conf-bloc"><p class="titre-ratio">CONFORMITE</p><textarea id="conf2" rows="2"></textarea></div>
-    </aside>
-  </div>
+  <table class="tab">
+    <tr><th colspan="9" class="bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LES CATEGORIES PROFESSIONNELS</th><th colspan="2" class="bar">CONFORMITE</th></tr>
+    <tr><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th><th colspan="2" rowspan="2"><input class="inp"></th></tr>
+    <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
+    <tr>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td colspan="2"></td>
+    </tr>
+  </table>
+
+  <table class="tab">
+    <tr><th colspan="9" class="bar">EFFECTIFS DE TRVAILLEURS NON PERMENANTS ET DES ENFANTS EMPLOYES</th><th colspan="2" class="bar">CONFORMITE</th></tr>
+    <tr><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th><th colspan="2" rowspan="2"><input class="inp"></th></tr>
+    <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
+    <tr>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td><input class="inp num"></td><td><input class="inp num"></td><td><input class="inp num"></td>
+      <td colspan="2"></td>
+    </tr>
+  </table>
+
+  <table class="docs">
+    <tr><th colspan="4" class="bar">DOCUMENTS A PRESENTER</th><th class="bar sub">Observations</th></tr>
+    <tr><th class="lbl"></th><th>E</th><th>NE</th><th>ENC</th><th rowspan="19"><textarea class="inp obs"></textarea></th></tr>
+    <script>document.write(['Déclaration d\'Etablissement (art. 216 CT)','Règlement d\'entreprise (art. 157 CT)','Convention collective (n°199 CT)','Horaire du Travail (art. 119 CT / Arrêté 040/CAB/MINETPS/2013)','Classification Générale des Emplois (art. 90 CT)','Feuille de paie des 3 derniers mois','Bilan social (art. 218 CT)','Preuve de paiement CNSS, ONEM, INPP, IPR','Déclaration annuelle main d\'œuvre (3 années)','Registre Travailleurs non permanents (art. 40 al.2)','Contrat de Travail visé (art. 36-49 CT)','Déclaration mouvement Travailleur visé (art. 217 CT)','Certificat d\'aptitude au Travail','Décompte de rémunération de chaque mois','Titre de congé de 3 dernières années','Application du SMIG','Autres'].map(t=>`<tr><td class="lbl">${t}</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>`).join(''));</script>
+  </table>
+
+  <table class="concl">
+    <tr><td class="reserveIT">RESERVE A L'INSPECTEUR OU CONTROLEUR DU TRAVAIL</td><td colspan="3" class="bar">Conclusion de la visite</td></tr>
+    <tr><td rowspan="2"><textarea class="inp reserve-txt"></textarea></td><th>LO</th><th>MD</th><th>PV CI</th></tr>
+    <tr><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+  </table>
+
+  <table class="sign">
+    <tr><td colspan="2" class="right">Fait à <input class="inp" data-f="lieu"> le <input class="inp date" type="date" data-f="dateSign"></td></tr>
+    <tr>
+      <td><b>Signature de l'Employeur ou son préposé</b><div class="sigbox" data-sig="emp"></div><button class="no-print" onclick="F01.sign('emp')">✍️ Signer</button></td>
+      <td><b>Nom et signature de l'Inspecteur ou Contrôleur du Travail</b><div class="sigbox" data-sig="ins"></div><button class="no-print" onclick="F01.sign('ins')">✍️ Signer</button></td>
+    </tr>
+  </table>
+
+  <table class="admin">
+    <tr><th colspan="2" class="bar">RESERVE A L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL</th></tr>
+    <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
+    <tr><td><textarea class="inp obs"></textarea></td><td><textarea class="inp obs"></textarea></td></tr>
+  </table>
+
+  <table class="igt">
+    <tr><th colspan="6" class="bar">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</th></tr>
+    <tr><th>ANALYSE ET SYNTHESE</th><th colspan="5">DECISION</th></tr>
+    <tr><td rowspan="2"><textarea class="inp obs"></textarea></td><th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th></tr>
+    <tr><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>
+  </table>
 
   <footer class="pied">Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.</footer>
 </main>
 
-<!-- PANNEAU IA (non imprimé) -->
-<section id="panneauIA" class="panneau-ia no-print" hidden>
-  <h2>🧠 Analyse juridique — Code du Travail RDC</h2>
-  <div id="resultatIA"></div>
-  <button id="btnInjecter">↪ Injecter dans « Réserve IT/CT »</button>
-  <button id="btnFermerIA">Fermer</button>
-</section>
-
-<!-- PANNEAU ARCHIVES -->
-<section id="panneauArchives" class="panneau-ia no-print" hidden>
-  <h2>🗂️ Archives F01</h2>
-  <div id="listeArchives"></div>
-  <button id="btnFermerArch">Fermer</button>
-</section>
-
-<script src="../lang-data.js"></script>
-
-<script src="../utils.js"></script>
-
 <script src="F01.js"></script>
-
 </body>
-
-</html>
+                             </html>
