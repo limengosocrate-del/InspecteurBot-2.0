@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InspecteurBot IA RDC - Fiches de Contrôle</title>
 
-    <link rel="stylesheet" href="F01.css">
+    <link rel="stylesheet" href="fiche.css">
 </head>
 
 <body>
@@ -23,14 +23,16 @@
                 </div>
             </div>
 
-            <div style="text-align:right;">
-                <div style="font-size:2rem;font-weight:900;color:var(--accent);">
+            <div class="header-right">
+
+                <div class="logo-igt">
                     IGT
                 </div>
 
                 <div class="sub">
                     Ministère de l'Emploi et Travail
                 </div>
+
             </div>
 
         </header>
@@ -50,7 +52,7 @@
 
         </div>
 
-        <h2 style="margin-bottom:1.5rem;color:var(--accent);">
+        <h2 class="page-title">
             Formulaires de Contrôle
         </h2>
 
@@ -71,15 +73,20 @@
 
     <div class="toolbar">
 
-        <button class="btn" onclick="toggleTheme()">
+        <button
+            type="button"
+            class="btn"
+            onclick="toggleTheme()">
+
             🌓 Thème
+
         </button>
 
     </div>
 
     <script src="lang-data.js"></script>
     <script src="utils.js"></script>
-    <script src="F01.js"></script>
+    <script src="fiche.js"></script>
 
 </body>
 
