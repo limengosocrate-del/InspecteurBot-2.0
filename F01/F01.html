@@ -1,206 +1,151 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>F01 - Contrôle de la Main d'Œuvre</title>
 <link rel="stylesheet" href="F01.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-  <div class="page-a4" id="formF01">
-    <!-- EN-TÊTE -->
-    <div class="form-header">
-      <div class="header-left">
-        <div class="coat">IGT</div>
-        <div class="ministere">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO<br>Ministère de l'Emploi et Travail<br><small>Inspection Générale du Travail</small></div>
-      </div>
-      <div class="header-center">
-        <h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1>
-      </div>
-      <div class="header-right">
-        <div class="form-code">F01</div>
-        <div class="form-num">N° <input type="text" class="inline-input" style="width:80px;"> /20..</div>
-      </div>
-    </div>
+<div class="toolbar no-print">
+  <button onclick="F01.dicter()">🎙️ Dictée</button>
+  <button onclick="F01.autoRemplir()">⚡ Auto-remplir</button>
+  <button onclick="F01.analyser()">⚖️ Analyse juridique</button>
+  <button onclick="F01.signer('emp')">✍️ Sign. Employeur</button>
+  <button onclick="F01.signer('insp')">✍️ Sign. Inspecteur</button>
+  <button onclick="F01.archiver()">💾 Archiver</button>
+  <button onclick="window.print()">🖨️ Imprimer / PDF</button>
+  <button onclick="F01.toggleTheme()">🌙 Thème</button>
+</div>
 
-    <!-- RENSEIGNEMENTS -->
-    <div class="blue-bar">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</div>
-    <div class="info-grid">
-      <div class="info-col">
-        <label>Nom ou Raison Sociale / Adresse Physique :</label>
-        <input type="text" class="full-input" data-voice="raison_sociale">
-        <label>Secteur d'activité :</label>
-        <select class="full-input" id="secteur"><option value="">-- Sélectionner --</option></select>
-        <label>Siège social :</label>
-        <input type="text" class="full-input" placeholder="Av. ... N° ... Q/ ... C/ ...">
-        <label>Nom du Responsable :</label>
-        <input type="text" class="full-input">
-        <label>Contact :</label>
-        <input type="tel" class="full-input" id="tel" placeholder="+243 ...">
-        <label>Personne rencontrée :</label>
-        <input type="text" class="full-input">
-        <label>Qualité :</label>
-        <input type="text" class="full-input">
-      </div>
-      <div class="info-col narrow">
-        <div class="green-boxes">
-          <div class="gbox">0</div><div class="gbox">1/2</div><div class="gbox">3</div>
-          <div class="gbox">4</div><div class="gbox">5</div><div class="gbox">6</div><div class="gbox">7</div><div class="gbox">8</div>
+<div class="page" id="F01">
+  <table class="entete">
+    <tr>
+      <td class="logo-cell" rowspan="2">
+        <div class="logo">RDC<br>IGT</div>
+        <div class="ministere">
+          <strong>REPUBLIQUE DEMOCRATIQUE DU CONGO</strong><br>
+          <strong>Ministère de l'Emploi et Travail</strong><br>
+          <em>Inspection Générale du Travail</em><br>
+          <em>Administration Centrale</em>
         </div>
-        <label>Précédente visite effectuée par :</label>
-        <input type="text" class="full-input">
-        <label>le :</label>
-        <input type="date" class="full-input">
-      </div>
-    </div>
+      </td>
+      <td class="titre-cell"><h1>CONTROLE DE LA<br>MAIN D'OEUVRE</h1></td>
+      <td class="code-cell"><span class="code">F01</span>
+        <div class="num">N° <input type="text" data-f="numero" placeholder="…………………"> /20<input type="text" data-f="annee" size="3" placeholder="…"></div>
+      </td>
+    </tr>
+  </table>
 
-    <!-- EFFECTIFS PAR SEXE -->
-    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILÉS PAR SEXE</div>
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIÉS</th><th colspan="3">TOTAL</th><th rowspan="2">RATIO</th>
-        </tr>
-        <tr><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="number" class="num-input" onchange="calcF01()"></td>
-          <td><input type="number" class="num-input" onchange="calcF01()"></td>
-          <td class="auto-calc" id="nat-total">0</td>
-          <td><input type="number" class="num-input" onchange="calcF01()"></td>
-          <td><input type="number" class="num-input" onchange="calcF01()"></td>
-          <td class="auto-calc" id="exp-total">0</td>
-          <td class="auto-calc" id="tot-h">0</td>
-          <td class="auto-calc" id="tot-f">0</td>
-          <td class="auto-calc" id="tot-global">0</td>
-          <td><input type="text" class="inline-input" style="width:60px;"></td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="bloc">
+    <tr class="th-bleu"><th colspan="4">RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE</th><th class="th-bleu" colspan="2">RESERVE A L'IT OU CT</th></tr>
+    <tr>
+      <td colspan="4" class="cell-info">
+        <div class="ligne"><label>Nom ou Raison Sociale/Adresse Physique</label><input type="text" data-f="raison"></div>
+        <div class="ligne"><label>Secteur d'activité</label>
+          <select data-f="secteur">
+            <option value="">--</option><option>Agriculture</option><option>Mines</option><option>BTP</option><option>Commerce</option><option>Industrie</option><option>Transport</option><option>Services</option><option>Télécommunications</option><option>Banque</option><option>Éducation</option><option>Santé</option>
+          </select>
+        </div>
+        <div class="ligne"><label>Siège social</label> av. <input size="20" data-f="av"> n° <input size="6" data-f="numav"> Q/<input size="15" data-f="quartier"> C/
+          <select data-f="commune"><option value="">--</option></select>
+        </div>
+        <div class="ligne"><label>Nom du Responsable</label><input data-f="resp"> Qualité <input data-f="qualiteresp"></div>
+        <div class="ligne"><label>Contact</label><input data-f="contact" placeholder="+243..."> E-mail <input data-f="email"></div>
+        <div class="ligne"><label>Personne rencontrée</label><input data-f="pr"> Qualité <input data-f="qpr"></div>
+        <div class="ligne"><label>CNSS</label><input size="10" data-f="cnss"> ONM <input size="10" data-f="onm"> INPP <input size="10" data-f="inpp"></div>
+      </td>
+      <td colspan="2" class="grid-reserve" rowspan="2">
+        <div class="cases">
+          <span class="c">0</span><span class="c">1/2</span><span class="c">3</span>
+          <span class="c">4</span><span class="c">5</span><span class="c">6</span><span class="c">7</span>
+          <span class="c c8">8</span>
+        </div>
+      </td>
+    </tr>
+    <tr><td colspan="4"><div class="ligne"><label>Précédente visite effectuée par</label><input data-f="prevvisit"> le <input size="3">/<input size="3">/20<input size="3"></div></td></tr>
+  </table>
 
-    <!-- CATEGORIES PRO -->
-    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILÉS SELON LES CATÉGORIES PROFESSIONNELS</div>
-    <table class="data-table">
-      <thead>
-        <tr><th colspan="3">CLASSIFIÉS</th><th colspan="3">MAÎTRISES</th><th colspan="3">CADRES</th><th rowspan="2">CONFORMITÉ</th></tr>
-        <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
-          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
-          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
-          <td><select><option></option><option>C</option><option>NC</option></select></td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="tab">
+    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES PAR SEXE</th><th class="th-bleu">RATIO</th></tr>
+    <tr class="sub"><th colspan="3">NATIONAUX</th><th colspan="3">EXPATRIES</th><th colspan="3">TOTAL</th><th>C | NC</th></tr>
+    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><td rowspan="2"><input data-f="ratio1"></td></tr>
+    <tr>
+      <td><input type="number" data-calc="n1"></td><td><input type="number" data-calc="n2"></td><td><input data-total="n1,n2" readonly></td>
+      <td><input type="number" data-calc="e1"></td><td><input type="number" data-calc="e2"></td><td><input data-total="e1,e2" readonly></td>
+      <td><input data-total="n1,e1" readonly></td><td><input data-total="n2,e2" readonly></td><td><input data-total="n1,n2,e1,e2" readonly></td>
+    </tr>
+  </table>
 
-    <!-- NON PERMANENTS -->
-    <div class="blue-bar">EFFECTIFS DE TRAVAILLEURS NON PERMANENTS ET DES ENFANTS EMPLOYÉS</div>
-    <table class="data-table">
-      <thead>
-        <tr><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th><th rowspan="2">CONFORMITÉ</th></tr>
-        <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
-          <td><input type="number" class="num-input"></td><td><input type="number" class="num-input"></td><td class="auto-calc">0</td>
-          <td class="auto-calc">0</td><td class="auto-calc">0</td><td class="auto-calc">0</td>
-          <td><select><option></option><option>C</option><option>NC</option></select></td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="tab">
+    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LES CATEGORIES PROFESSIONNELLES</th><th class="th-bleu">CONFORMITE</th></tr>
+    <tr class="sub"><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th><th rowspan="2"><input data-f="conf1"></th></tr>
+    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+    <tr>
+      <td><input type="number" data-calc="c1"></td><td><input type="number" data-calc="c2"></td><td><input data-total="c1,c2" readonly></td>
+      <td><input type="number" data-calc="m1"></td><td><input type="number" data-calc="m2"></td><td><input data-total="m1,m2" readonly></td>
+      <td><input type="number" data-calc="cd1"></td><td><input type="number" data-calc="cd2"></td><td><input data-total="cd1,cd2" readonly></td>
+    </tr>
+  </table>
 
-    <!-- DOCUMENTS -->
-    <div class="blue-bar">DOCUMENTS A PRÉSENTER</div>
-    <table class="doc-table">
-      <thead><tr><th>Document</th><th>E</th><th>NE</th><th>ENC</th></tr></thead>
-      <tbody id="docTableBody">
-        <!-- Généré par JS -->
-      </tbody>
-    </table>
+  <table class="tab">
+    <tr class="th-bleu"><th colspan="9">EFFECTIFS DE TRVAILLEURS NON PERMANENTS ET DES ENFANTS EMPLOYES</th><th class="th-bleu">CONFORMITE</th></tr>
+    <tr class="sub"><th colspan="3">ENFANTS</th><th colspan="3">NON PERMANENTS</th><th colspan="3">TOTAL</th><th rowspan="2"><input data-f="conf2"></th></tr>
+    <tr class="sub2"><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th><th>HOMME</th><th>FEMME</th><th>TOTAL</th></tr>
+    <tr>
+      <td><input type="number" data-calc="en1"></td><td><input type="number" data-calc="en2"></td><td><input data-total="en1,en2" readonly></td>
+      <td><input type="number" data-calc="np1"></td><td><input type="number" data-calc="np2"></td><td><input data-total="np1,np2" readonly></td>
+      <td><input data-total="en1,np1" readonly></td><td><input data-total="en2,np2" readonly></td><td><input data-total="en1,en2,np1,np2" readonly></td>
+    </tr>
+  </table>
 
-    <!-- CONCLUSION -->
-    <div class="blue-bar">CONCLUSION DE LA VISITE</div>
-    <div class="conclusion-box">
-      <label><input type="radio" name="conclusion" value="LO"> LO (Lettre d'Observation)</label>
-      <label><input type="radio" name="conclusion" value="MD"> MD (Mise en Demeure)</label>
-      <label><input type="radio" name="conclusion" value="PVCI"> PV CI (Procès-Verbal)</label>
-    </div>
+  <table class="tab docs">
+    <tr class="th-bleu"><th colspan="2">DOCUMENTS A PRESENTER</th><th>E</th><th>N E</th><th>ENC</th></tr>
+    <tbody id="docs-list"></tbody>
+    <tr><td colspan="2">RESERVE A L'INSPECTEUR OU CONTROLEUR DU TRAVAIL</td><td class="th-bleu" colspan="3">Conclusion de la visite</td></tr>
+    <tr><td colspan="2" rowspan="3" class="reserve"><textarea data-f="reserve"></textarea></td><th>LO</th><th>MD</th><th>PV CI</th></tr>
+    <tr><td><input type="checkbox" data-f="lo"></td><td><input type="checkbox" data-f="md"></td><td><input type="checkbox" data-f="pvci"></td></tr>
+  </table>
 
-    <!-- SIGNATURES -->
-    <div class="signatures">
-      <div class="sign-block">
-        <p>Signature de l'Employeur ou son préposé</p>
-        <canvas id="signEmployeur" width="300" height="100"></canvas>
-        <button type="button" class="small-btn" onclick="clearSign('signEmployeur')">Effacer</button>
-        <label><input type="checkbox" id="refusEmployeur"> Refus de signature</label>
-      </div>
-      <div class="sign-block">
-        <p>Fait à <input type="text" class="inline-input" style="width:100px;"> le <input type="date" class="inline-input"></p>
-        <p>Nom et signature de l'Inspecteur ou Contrôleur du Travail</p>
-        <canvas id="signInspecteur" width="300" height="100"></canvas>
-        <button type="button" class="small-btn" onclick="clearSign('signInspecteur')">Effacer</button>
-      </div>
-    </div>
+  <table class="tab signatures">
+    <tr>
+      <td class="sign-emp">
+        <div>Signature de l'Employeur ou son préposé</div>
+        <canvas class="sig" id="sigEmp" width="300" height="70"></canvas>
+      </td>
+      <td class="sign-insp">
+        Fait à <input data-f="faitlieu"> le <input size="3">/<input size="3">/20<input size="3"><br>
+        <div>Nom et signature de l'Inspecteur ou Contrôleur du Travail</div>
+        <canvas class="sig" id="sigInsp" width="300" height="70"></canvas>
+      </td>
+    </tr>
+  </table>
 
-    <!-- ADMIN RESERVE -->
-    <div class="blue-bar">RÉSERVE À L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL</div>
-    <div class="admin-grid">
-      <div>
-        <strong>Observations du Chef d'Antenne</strong>
-        <textarea class="area-reserve"></textarea>
-      </div>
-      <div>
-        <strong>Observations du Directeur Provincial</strong>
-        <textarea class="area-reserve"></textarea>
-      </div>
-    </div>
-    <div class="blue-bar">RÉSERVE À L'INSPECTEUR GÉNÉRAL DU TRAVAIL</div>
-    <table class="data-table">
-      <thead><tr><th>Analyse et Synthèse</th><th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th></tr></thead>
-      <tbody><tr><td><textarea style="width:100%;border:none;min-height:60px;"></textarea></td>
-        <td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr></tbody>
-    </table>
+  <table class="tab">
+    <tr class="th-bleu"><th colspan="2">RESERVE A L'ADMINISTRATION DE l'INSPECTION DU TRAVAIL</th></tr>
+    <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
+    <tr><td><textarea data-f="obsChef"></textarea></td><td><textarea data-f="obsDir"></textarea></td></tr>
+  </table>
 
-    <!-- IA & DECISIONS -->
-    <div class="ia-panel" id="iaPanel" style="display:none;">
-      <h3>🤖 Analyse Juridique InspecteurBot</h3>
-      <div id="iaResults"></div>
-      <h4>Décision administrative</h4>
-      <select id="decisionAdmin" class="full-input">
-        <option value="">-- Choisir --</option>
-        <option>Conforme</option>
-        <option>Non conforme</option>
-        <option>Observation</option>
-        <option>Mise en demeure</option>
-        <option>Avertissement</option>
-        <option>Recommandation</option>
-        <option>Transmission à la hiérarchie</option>
-      </select>
-      <h4>Procès-verbaux à établir</h4>
-      <label><input type="checkbox" class="pv-check"> PV de constat d'infraction</label>
-      <label><input type="checkbox" class="pv-check"> PV d'audition</label>
-      <label><input type="checkbox" class="pv-check"> PV de mise en demeure</label>
-      <label><input type="checkbox" class="pv-check"> PV de conciliation</label>
-      <label><input type="checkbox" class="pv-check"> PV de fermeture temporaire</label>
-    </div>
+  <table class="tab">
+    <tr class="th-bleu"><th colspan="6">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</th></tr>
+    <tr><th rowspan="2">ANALYSE ET SYNTHESE</th><th colspan="5">DECISION</th></tr>
+    <tr><th>VS</th><th>CE</th><th>IT/CT</th><th>MD</th><th>S</th></tr>
+    <tr>
+      <td rowspan="2"><textarea data-f="analyse"></textarea></td>
+      <td><input type="checkbox" data-f="vs"></td>
+      <td><input type="checkbox" data-f="ce"></td>
+      <td><input type="checkbox" data-f="itct"></td>
+      <td><input type="checkbox" data-f="mdd"></td>
+      <td><input type="checkbox" data-f="s"></td>
+    </tr>
+    <tr><td colspan="5" class="dec-notes"><textarea data-f="decnotes"></textarea></td></tr>
+  </table>
 
-  </div><!-- /page-a4 -->
+  <div class="footer">Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.</div>
+</div>
 
-  <!-- BARRE D'OUTILS FLOTTANTE -->
-  <div class="toolbar">
-    <button class="btn" onclick="toggleTheme()">🌓</button>
-    <button class="btn" onclick="startDictation('.page-a4 input:focus, .page-a4 textarea:focus')">🎤</button>
-    <button class="btn" onclick="runAnalysis()">⚖️ Analyser</button>
-    <button class="btn" onclick="saveF01()">💾 Enregistrer</button>
-    <button class="btn" onclick="window.print()">🖨️ A4</button>
-    <button class="btn" onclick="exportPDF('F01_MainOeuvre','#formF01')">📄 PDF</button>
-    <button class="btn" onclick="location.href='../index.html'">⬅️ Retour</button>
-  </div>
+<div id="ai-panel" class="no-print"></div>
+
 
 <script src="../lang-data.js"></script>
 <script src="../utils.js"></script>
