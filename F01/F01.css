@@ -1,62 +1,149 @@
-:root{--nuit:#0a1128;--or:#d4af37;--bleu:#1e5aa8;--bord:#000;--bg:#fff;}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif;}
-body{background:linear-gradient(135deg,#0a1128,#1a2456);min-height:100vh;padding:20px;}
-body.dark{background:#000;}
-.toolbar{position:sticky;top:0;background:var(--nuit);padding:10px;border:2px solid var(--or);border-radius:8px;margin-bottom:20px;z-index:100;box-shadow:0 4px 20px rgba(212,175,55,.4);}
-.toolbar button{background:linear-gradient(135deg,var(--or),#b8941f);color:var(--nuit);border:none;padding:8px 14px;margin:3px;border-radius:5px;font-weight:bold;cursor:pointer;transition:.3s;}
-.toolbar button:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,.6);}
-
-.page{background:#fff;width:210mm;min-height:297mm;margin:0 auto;padding:8mm;color:#000;font-size:9pt;box-shadow:0 10px 40px rgba(0,0,0,.5);}
-.page table{border-collapse:collapse;width:100%;}
-.page td,.page th{border:1px solid #000;padding:2px 4px;vertical-align:top;}
-.th-bleu,.th-bleu th{background:#1e5aa8!important;color:#fff!important;text-align:center;font-weight:bold;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-.sub th{background:#e8f0ff;text-align:center;font-size:8pt;}
-.sub2 th{background:#f5f8ff;text-align:center;font-size:7.5pt;font-weight:normal;}
-
-.entete td{padding:4px;}
-.logo-cell{width:230px;}
-.logo{display:inline-block;width:50px;height:50px;background:radial-gradient(circle,#0a4d9c,#062b5c);color:#fff;border-radius:50%;text-align:center;line-height:1.1;font-size:8pt;font-weight:bold;padding-top:14px;vertical-align:middle;border:2px solid #ffcc00;}
-.ministere{display:inline-block;font-size:8pt;vertical-align:middle;margin-left:6px;}
-.ministere em{color:#1e5aa8;}
-.titre-cell{text-align:center;}
-.titre-cell h1{color:red;font-size:16pt;font-weight:bold;}
-.code-cell{width:110px;text-align:center;}
-.code{color:red;font-size:28pt;font-weight:bold;display:block;}
-.num{font-size:8pt;}
-.num input{border:none;border-bottom:1px dotted #000;font-size:8pt;}
-
-.bloc .ligne{display:flex;gap:4px;padding:1px 0;font-size:8pt;align-items:center;}
-.bloc label{min-width:150px;}
-.bloc input,.bloc select{flex:1;border:none;border-bottom:1px dotted #666;font-size:8pt;background:transparent;}
-.bloc input:focus,.bloc select:focus{background:#fffbe6;outline:none;}
-
-.grid-reserve{width:170px;text-align:center;vertical-align:middle;}
-.cases{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:4px;}
-.c{background:#4caf50;color:#000;font-weight:bold;padding:6px 0;border:1px solid #2e7d32;cursor:pointer;font-size:9pt;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-.c.active{background:var(--or);}
-.c8{grid-column:2;}
-
-.tab input,.tab textarea{width:100%;border:none;font-size:8pt;background:transparent;}
-.tab input:focus,.tab textarea:focus{background:#fffbe6;outline:none;}
-.tab td input[type=number]{text-align:center;}
-.docs td:first-child{width:60%;}
-.docs td:not(:first-child){text-align:center;width:60px;}
-.reserve textarea{min-height:80px;background:#e8f0ff;}
-.signatures td{width:50%;text-align:center;padding:8px;}
-.sig{border:1px dashed #666;background:#fff;cursor:crosshair;margin-top:5px;}
-textarea{min-height:50px;resize:vertical;}
-.dec-notes textarea{min-height:60px;}
-.footer{text-align:center;font-size:8pt;color:#666;margin-top:10px;padding-top:5px;border-top:1px solid #ccc;}
-
-#ai-panel{position:fixed;right:10px;bottom:10px;background:var(--nuit);color:var(--or);padding:15px;border:2px solid var(--or);border-radius:10px;max-width:350px;font-size:11px;display:none;box-shadow:0 8px 30px rgba(212,175,55,.5);}
-#ai-panel.show{display:block;animation:slide .4s;}
-@keyframes slide{from{transform:translateX(400px);}to{transform:translateX(0);}}
-#ai-panel h4{color:var(--or);margin-bottom:8px;}
-
-@media print{
-  body{background:#fff;padding:0;}
-  .no-print{display:none!important;}
-  .page{width:auto;min-height:auto;box-shadow:none;padding:5mm;margin:0;}
-  @page{size:A4;margin:8mm;}
+/* ═══════════════════════════════════════════════════════════
+   F01.css — Contrôle de la Main d'Œuvre (IGT / RDC)
+   Écran : thème bleu nuit futuriste + or | Impression : fidèle A4
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --bleu-officiel:#1f6fc4;      /* bandeaux bleus du modèle papier */
+  --rouge-officiel:#e00000;     /* titres F01 */
+  --vert-case:#7ab648;          /* cases 0..8 */
+  --nuit:#0a1229; --nuit2:#101c3f; --or:#f2c94c;
+  --encre:#000;
 }
-@media(max-width:768px){.page{width:100%;padding:4mm;}.bloc label{min-width:100px;font-size:7pt;}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(1200px 600px at 20% -10%,var(--nuit2),var(--nuit));
+  font-family:"Trebuchet MS",Verdana,sans-serif;color:var(--encre);
+  min-height:100vh;padding:70px 10px 40px;
+}
+
+/* ── Barre d'outils ── */
+.toolbar{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;gap:8px;align-items:center;
+  padding:10px 16px;background:rgba(10,18,41,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--or)}
+.toolbar .brand{color:var(--or);font-weight:bold;margin-right:auto;letter-spacing:.5px}
+.toolbar button{background:linear-gradient(160deg,#16244e,#0d1735);color:#fff;
+  border:1px solid var(--or);border-radius:8px;padding:8px 12px;cursor:pointer;
+  transition:transform .15s,box-shadow .15s}
+.toolbar button:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(242,201,76,.35)}
+.badge{color:#9fe870;font-size:.8rem}
+
+/* ── Page A4 ── */
+.page{width:210mm;min-height:297mm;margin:0 auto;background:#fff;
+  padding:8mm 8mm 6mm;box-shadow:0 10px 50px rgba(0,0,0,.6);
+  border:2px solid var(--encre);font-size:9.5pt;line-height:1.25}
+
+/* ── En-tête ── */
+.entete{display:grid;grid-template-columns:34% 42% 24%;border-bottom:2px solid var(--encre)}
+.entete-gauche{display:flex;gap:4px;align-items:flex-start;padding:2px}
+.logo-igt{width:58px;height:58px;border-radius:50%;border:3px double #123c8c;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#fff,#dfe9ff);color:#123c8c;
+  font-weight:bold;font-size:8pt}
+.entete-textes .l1{font-weight:bold;font-size:8.5pt}
+.entete-textes .l2{font-weight:bold;font-size:8pt}
+.entete-textes .l3{color:#1f6fc4;font-style:italic;font-family:Georgia,serif;font-size:9pt}
+.entete-textes .l4{color:#e00000;font-style:italic;font-family:Georgia,serif;font-size:8.5pt}
+.entete-titre{display:flex;align-items:center;justify-content:center;border-left:2px solid var(--encre);border-right:2px solid var(--encre)}
+.entete-titre h1{color:var(--rouge-officiel);font-size:20pt;text-align:center;font-family:Arial Black,Arial,sans-serif}
+.entete-code{text-align:center;padding-top:2px}
+.code-f{color:var(--rouge-officiel);font-size:34pt;font-weight:900;font-family:Arial Black,Arial}
+.code-num{font-weight:bold;font-size:9pt}
+
+/* ── Corps 2 colonnes ── */
+.corps{display:grid;grid-template-columns:1fr 46mm;gap:0}
+.col-gauche{border-right:2px solid var(--encre);padding-right:2mm}
+.col-droite{padding:1mm 0 0 2mm}
+
+/* ── Bandeaux bleus ── */
+.bandeau{background:var(--bleu-officiel);color:#fff;font-weight:bold;text-align:center;
+  padding:1.2px 2px;font-size:9pt;margin-top:1px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.bandeau.grand{font-size:13pt}
+.bandeau-mini{background:var(--bleu-officiel);color:#fff;font-weight:bold}
+
+/* ── Renseignements ── */
+.renseignements p{padding:.4mm 0;white-space:nowrap;overflow:hidden}
+.gras{font-weight:bold}
+.pt{border:none;border-bottom:1.2px dotted var(--encre);font:inherit;background:transparent;outline:none}
+.pt:focus{background:#fff8dc}
+.long{width:70%}.moy{width:26%}.court{width:18%}.mini{width:8mm}.dd{width:7mm;text-align:center}
+.num{width:22mm}.an{width:8mm}.prov{width:24%}
+select.pt{appearance:none}
+
+/* ── Tableaux effectifs ── */
+.t-eff{width:100%;border-collapse:collapse;table-layout:fixed}
+.t-eff th,.t-eff td{border:1px solid var(--encre);text-align:center;font-size:8.5pt;padding:.4mm}
+.ss-titres th{font-weight:bold}
+.cel{width:100%;border:none;text-align:center;font:inherit;outline:none;background:transparent}
+.cel:focus{background:#fff8dc}
+.calc{font-weight:bold;background:#f3f6ff}
+
+/* ── Documents ── */
+.t-docs{width:100%;border-collapse:collapse}
+.t-docs td,.t-docs th{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm 1mm}
+.t-docs .c-ene{width:14mm;text-align:center;font-weight:bold}
+.t-docs .lib small{font-size:7.5pt}
+.tete-docs td{border:none}
+.coche{width:12px;height:12px;accent-color:#000}
+
+/* ── Conclusion / réserve ── */
+.t-conclusion{width:100%;border-collapse:collapse;margin-top:1px}
+.t-conclusion td,.t-conclusion th{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm}
+.c-ccl{width:16mm;text-align:center}
+.zone-reserve textarea,.t-admin textarea,.t-igt textarea,.conf-bloc textarea{
+  width:100%;border:none;resize:none;font:inherit;outline:none;background:transparent}
+.lib-reserve{background:#dce6f1;font-weight:bold}
+
+/* ── Signatures ── */
+.fait-a{padding:2mm 0}
+.droite{text-align:right}
+.signatures{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:2mm}
+.sig-bloc canvas{border:1px dashed #999;width:100%;height:60px;touch-action:none}
+.sig-actions{display:flex;gap:8px;align-items:center;font-size:8pt}
+.sig-actions button{border:1px solid #999;background:#f5f5f5;border-radius:4px;cursor:pointer}
+.horodatage{font-size:7.5pt;color:#333;font-style:italic}
+
+/* ── Admin / IGT ── */
+.t-admin,.t-igt{width:100%;border-collapse:collapse}
+.t-admin th,.t-admin td,.t-igt th,.t-igt td{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm;text-align:center}
+.t-igt .w50{width:50%}
+
+/* ── Colonne droite ── */
+.titre-reserve,.titre-ratio{font-weight:bold;text-align:center;font-size:8.5pt;border-bottom:1px solid var(--encre)}
+.cases-vertes{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;padding:2mm 1mm}
+.cases-vertes span{background:var(--vert-case);border:1px solid #4c7a2a;text-align:center;
+  padding:2mm 0;cursor:pointer;user-select:none;font-weight:bold;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.cases-vertes span.actif{outline:3px solid var(--rouge-officiel)}
+.cases-vertes .c8{grid-column:2/3}
+.t-ratio{width:100%;border-collapse:collapse}
+.t-ratio th,.t-ratio td{border:1px solid var(--encre);text-align:center;font-size:8.5pt}
+.conf-bloc{border:1px solid var(--encre);margin-top:2mm}
+
+/* ── Pied ── */
+.pied{text-align:center;font-size:7pt;color:#444;margin-top:3mm;border-top:1px solid #ccc;padding-top:1mm}
+
+/* ── Panneaux IA / Archives ── */
+.panneau-ia{position:fixed;right:16px;top:70px;bottom:16px;width:380px;overflow:auto;z-index:60;
+  background:linear-gradient(170deg,#101c3f,#0a1229);color:#eee;border:1px solid var(--or);
+  border-radius:14px;padding:16px;box-shadow:0 12px 60px rgba(0,0,0,.7);animation:glisse .3s ease}
+@keyframes glisse{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.panneau-ia h2{color:var(--or);font-size:1rem;margin-bottom:10px}
+.panneau-ia button{margin-top:10px;background:var(--or);border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:bold}
+.infraction{border-left:3px solid #e05555;padding:6px 8px;margin:6px 0;background:rgba(224,85,85,.12);font-size:.82rem}
+.conforme-ia{border-left:3px solid #7ab648;padding:6px 8px;margin:6px 0;background:rgba(122,182,72,.12);font-size:.82rem}
+.arch-item{border:1px solid #33406b;border-radius:8px;padding:8px;margin:6px 0;font-size:.8rem;cursor:pointer}
+.arch-item:hover{border-color:var(--or)}
+
+/* ── Responsive écran ── */
+@media(max-width:900px){.page{width:100%;min-height:auto}.corps{grid-template-columns:1fr}
+  .col-gauche{border-right:none}.panneau-ia{width:92vw;right:4vw}}
+
+/* ── IMPRESSION : fidélité stricte au modèle papier ── */
+@media print{
+  @page{size:A4 portrait;margin:0}
+  body{background:#fff;padding:0}
+  .no-print,.toolbar,.panneau-ia{display:none!important}
+  .page{width:210mm;min-height:297mm;margin:0;box-shadow:none;border:2px solid #000}
+  .pt:focus,.cel:focus{background:transparent}
+  .sig-bloc canvas{border:none}
+                    }
