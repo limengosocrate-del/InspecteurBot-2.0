@@ -2,22 +2,88 @@
 <html lang="fr">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F03 - Hygiène et Santé</title>
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<meta
+name="description"
+content="InspecteurBot IA RDC - F03 Hygiène et Santé au Travail">
+
+<meta
+name="theme-color"
+content="#005baa">
+
+<title>InspecteurBot IA RDC | F03 - Hygiène et Santé au Travail</title>
+
 <link rel="stylesheet" href="F03.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+rel="stylesheet">
+
 </head>
 
 <body>
 
-<div class="app-toolbar no-print">
-    <button onclick="F03.dictate()">🎙️</button>
-    <button onclick="F03.analyze()">⚖️</button>
-    <button onclick="F03.save()">💾</button>
-    <button onclick="window.print()">🖨️</button>
-</div>
+<div class="app">
+
+<!-- ===========================================
+BARRE D'OUTILS
+=========================================== -->
+
+<header class="app-toolbar no-print">
+
+<button
+type="button"
+class="tool-btn"
+title="Dictée vocale"
+onclick="F03.dictate()">
+🎙️
+</button>
+
+<button
+type="button"
+class="tool-btn"
+title="Analyse IA"
+onclick="F03.analyze()">
+⚖️
+</button>
+
+<button
+type="button"
+class="tool-btn"
+title="Sauvegarder"
+onclick="F03.save()">
+💾
+</button>
+
+<button
+type="button"
+class="tool-btn"
+title="Imprimer"
+onclick="window.print()">
+🖨️
+</button>
+
+</header>
+
+<!-- ===========================================
+FICHE
+=========================================== -->
 
 <main class="sheet">
+
+<!-- ===========================================
+EN-TÊTE OFFICIEL
+=========================================== -->
 
 <table class="entete">
 
@@ -25,46 +91,88 @@
 
 <td class="logo-cell" rowspan="2">
 
-<div class="logo">🛡️</div>
+<div class="logo">
+
+🛡️
+
+</div>
 
 <div class="ministere">
+
 <b>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</b><br>
-<b>Ministère de l'Emploi et Travail</b><br>
-<i class="blue">Inspection Générale du Travail</i><br>
-<i class="red">Administration Centrale</i>
+
+Ministère de l'Emploi et du Travail<br>
+
+<b>Inspection Générale du Travail</b><br>
+
+<span class="blue">
+Administration Centrale
+</span>
+
 </div>
 
 </td>
 
 <td class="titre" rowspan="2">
-<h1>HYGIENE ET SANTE AU TRAVAIL</h1>
+
+<h1>
+
+FICHE DE CONTRÔLE
+
+<br>
+
+HYGIÈNE ET SANTÉ AU TRAVAIL
+
+</h1>
+
 </td>
 
 <td class="code">
-<h2>F03</h2>
+
+<h2>
+
+F03
+
+</h2>
+
 </td>
 
 </tr>
 
 <tr>
+
 <td class="num">
+
+<label>
+
 N°
-<input class="inp">
+
+</label>
+
+<input
+type="text"
+class="inp">
+
 </td>
+
 </tr>
 
 </table>
+
+<!-- ===========================================
+RENSEIGNEMENTS DE L'ENTREPRISE
+=========================================== -->
 
 <table class="bloc">
 
 <tr>
 
 <th colspan="3" class="bar">
-RENSEIGNEMENT DE L'ENTREPRISE OU ETABLISSEMENT VISITE
+RENSEIGNEMENTS DE L'ENTREPRISE OU ÉTABLISSEMENT VISITÉ
 </th>
 
-<th class="bar">
-RESERVE A L'IT OU CT
+<th class="bar reserve-title">
+RÉSERVÉ À L'IT / CT
 </th>
 
 </tr>
@@ -74,51 +182,114 @@ RESERVE A L'IT OU CT
 <td colspan="3" class="fields">
 
 <div class="row">
-<label>Nom ou Raison Sociale :</label>
-<input class="inp fill">
+
+<label>
+Nom ou Raison Sociale
+</label>
+
+<input
+type="text"
+class="inp fill"
+autocomplete="organization">
+
 </div>
 
 <div class="row">
-<label>Secteur d'activité :</label>
-<input class="inp fill">
+
+<label>
+Secteur d'activité
+</label>
+
+<input
+type="text"
+class="inp fill">
+
 </div>
 
 <div class="row">
-<label>Siège social : av</label>
-<input class="inp">
 
-<label>n°</label>
-<input class="inp mini">
+<label>Siège social : Av.</label>
 
-<label>Q/</label>
-<input class="inp">
+<input
+type="text"
+class="inp avenue">
 
-<label>C/</label>
-<input class="inp">
+<label>N°</label>
+
+<input
+type="text"
+class="inp mini">
+
+<label>Q.</label>
+
+<input
+type="text"
+class="inp quartier">
+
+<label>C.</label>
+
+<input
+type="text"
+class="inp commune">
+
 </div>
 
 <div class="row">
-<label>Nom du Responsable :</label>
-<input class="inp">
 
-<label>Contact :</label>
-<input class="inp tel">
+<label>
+Nom du Responsable
+</label>
+
+<input
+type="text"
+class="inp fill">
+
+<label>
+Contact
+</label>
+
+<input
+type="tel"
+class="inp tel">
+
 </div>
 
 <div class="row">
-<label>Personne rencontrée :</label>
-<input class="inp">
 
-<label>Qualité :</label>
-<input class="inp">
+<label>
+Personne rencontrée
+</label>
+
+<input
+type="text"
+class="inp fill">
+
+<label>
+Qualité
+</label>
+
+<input
+type="text"
+class="inp">
+
 </div>
 
 <div class="row">
-<label>Précédente visite :</label>
-<input class="inp">
 
-<label>le</label>
-<input class="inp date" type="date">
+<label>
+Précédente visite
+</label>
+
+<input
+type="text"
+class="inp">
+
+<label>Le</label>
+
+<input
+type="date"
+class="inp date">
+
 </div>
 
 </td>
@@ -126,14 +297,17 @@ RESERVE A L'IT OU CT
 <td class="reserve">
 
 <div class="grid-num">
+
 <span>0</span>
 <span>1/2</span>
 <span>3</span>
 <span>4</span>
+
 <span>5</span>
 <span>6</span>
 <span>7</span>
 <span>8</span>
+
 </div>
 
 </td>
@@ -142,381 +316,396 @@ RESERVE A L'IT OU CT
 
 </table>
 
-<div id="blocksContainer"></div>
+<!-- ===========================================
+TABLEAUX GÉNÉRÉS PAR JAVASCRIPT
+=========================================== -->
 
-<script>
-const blocks = [
-  ['EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LE SEXE','NATIONAUX','EXPATRIES','TOTAL','RATIO',true],
-  ['EFFETIFS DES CONTRACTANTS','NATIONAUX','EXPATRIES','TOTAL','',false],
-  ['EFFECTIFS DES TRAVAILLEURS SOUS TRAITES (SOUS ENTREPRISES)','NATIONAUX','EXPATRIES','TOTAL','',false],
-  ['EFFECTIFS DES TRAVAILLEURS TEMPORAIRES','NATIONAUX','EXPATRIES','TOTAL','',false]
-];
+<section id="blocksContainer">
 
-const blocksContainer = document.getElementById("blocksContainer");
+<!-- Généré automatiquement par F03.js -->
 
-blocks.forEach(b => {
+</section>
 
-    const table = document.createElement("table");
-    table.className = "tab";
+<!-- ==================================================
+CONTENEUR DES TABLEAUX DYNAMIQUES
+Les tableaux sont générés automatiquement par F03.js
+================================================== -->
 
-    let html = `
-    <tr>
-        <th colspan="9" class="bar">${b[0]}</th>
-        ${b[4] ? `<th colspan="2" class="bar">${b[4]}</th>` : ""}
-    </tr>
+<section id="blocksContainer">
 
-    <tr>
-        <th colspan="3">${b[1]}</th>
-        <th colspan="3">${b[2]}</th>
-        <th colspan="3">${b[3]}</th>
-        ${b[5] ? "<th>CONFORME</th><th>NON CONFORME</th>" : ""}
-    </tr>
+<!--
+F03.js générera automatiquement les tableaux suivants :
 
-    <tr>
-        <th>H</th>
-        <th>F</th>
-        <th>T</th>
+1. EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILÉS SELON LE SEXE
+   - Nationaux
+   - Expatriés
+   - Total
+   - Ratio
+   - Conforme / Non conforme
 
-        <th>H</th>
-        <th>F</th>
-        <th>T</th>
+2. EFFECTIFS DES CONTRACTANTS
 
-        <th>H</th>
-        <th>F</th>
-        <th>T</th>
+3. EFFECTIFS DES TRAVAILLEURS SOUS-TRAITÉS
+   (SOUS-ENTREPRISES)
 
-        ${
-          b[5]
-            ? '<th rowspan="2"><input class="inp"></th><th rowspan="2"><input class="inp"></th>'
-            : ""
-        }
-    </tr>
+4. EFFECTIFS DES TRAVAILLEURS TEMPORAIRES
 
-    <tr>
-    `;
+-->
 
-    for(let i=0;i<9;i++){
-        html += '<td><input class="inp"></td>';
-    }
+</section>
 
-    html += '</tr>';
+<!-- ==================================================
+DOCUMENTS À PRÉSENTER
+================================================== -->
 
-    table.innerHTML = html;
-
-    blocksContainer.appendChild(table);
-
-});
-          </script>
-
-  <table class="docs">
+<table class="docs">
 
 <tr>
-    <th colspan="4" class="bar">DOCUMENTS A PRESENTER</th>
-    <th class="bar">SUITE RESERVE</th>
+
+<th colspan="4" class="bar">
+DOCUMENTS À PRÉSENTER
+</th>
+
+<th class="bar reserve-title">
+SUITE RÉSERVÉE
+</th>
+
 </tr>
 
 <tr>
-    <th></th>
-    <th>E</th>
-    <th>NE</th>
-    <th>ENC</th>
-    <th rowspan="15">
-        <textarea class="inp obs"></textarea>
-    </th>
+
+<th class="doc-title">
+DOCUMENTS
+</th>
+
+<th class="check">
+E
+</th>
+
+<th class="check">
+NE
+</th>
+
+<th class="check">
+ENC
+</th>
+
+<th rowspan="20">
+
+<textarea
+class="inp obs"
+placeholder="Observations de l'Inspecteur du Travail...">
+</textarea>
+
+</th>
+
 </tr>
 
-<tbody id="docsContainer"></tbody>
+<tbody id="docsContainer">
 
-</table>
+<!-- ==================================================
+CONCLUSION DE LA VISITE
+================================================== -->
 
-<script>
-
-const documents = [
-
-'Assurance maladie',
-
-'Convention médicale visée',
-
-'Installation sanitaire',
-
-'Vestiaire des Travailleurs (Homme et Femme)',
-
-'Boite de secours',
-
-"Comité d'hygiène et d'embellissement de lieux de Travail",
-
-'• Composition',
-
-"• PV d'installation",
-
-'• Attestation de fonctionnement de CHSE',
-
-'• PV des réunions',
-
-"• PV de constat d'Infraction",
-
-'• Rapport annuel des activités',
-
-"Service médicale de l'Entreprise",
-
-'Comité de lutte et de prévention contre le VIH/SIDA'
-
-];
-
-const docsContainer = document.getElementById("docsContainer");
-
-documents.forEach(txt=>{
-
-const tr=document.createElement("tr");
-
-tr.innerHTML=`
-
-<td class="lbl">${txt}</td>
-
-<td><input type="checkbox"></td>
-
-<td><input type="checkbox"></td>
-
-<td><input type="checkbox"></td>
-
-`;
-
-docsContainer.appendChild(tr);
-
-});
-
-</script>
 <table class="concl">
 
 <tr>
-    <th colspan="3" class="bar">
-        Conclusion de la visite
-    </th>
+
+<th colspan="3" class="bar">
+CONCLUSION DE LA VISITE
+</th>
+
 </tr>
 
 <tr>
-    <th>LO</th>
-    <th>MD</th>
-    <th>PV CI</th>
+
+<th>LO</th>
+
+<th>MD</th>
+
+<th>PV / CI</th>
+
 </tr>
 
 <tr>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
-    <td><input type="checkbox"></td>
+
+<td class="center">
+<input
+type="checkbox"
+class="check">
+</td>
+
+<td class="center">
+<input
+type="checkbox"
+class="check">
+</td>
+
+<td class="center">
+<input
+type="checkbox"
+class="check">
+</td>
+
 </tr>
 
 </table>
+
+<!-- ==================================================
+SIGNATURES
+================================================== -->
 
 <table class="sign">
 
 <tr>
-    <td colspan="2" class="right">
-        Fait à
-        <input class="inp">
-        le
-        <input class="inp date" type="date">
-    </td>
+
+<td colspan="2" class="right">
+
+Fait à
+
+<input
+type="text"
+class="inp ville"
+placeholder="Ville">
+
+le
+
+<input
+type="date"
+class="inp date">
+
+</td>
+
 </tr>
 
 <tr>
 
-<td>
+<td class="signature-cell">
 
-<b>Signature de l'Employeur ou son Représentant</b>
+<h4>
 
-<div class="sigbox"></div>
+Signature de l'Employeur
+ou son Représentant
+
+</h4>
+
+<div
+class="signature-box"
+id="signatureEmployer">
+
+<canvas
+id="canvasEmployer"
+width="420"
+height="170">
+</canvas>
+
+</div>
+
+<div class="signature-actions no-print">
 
 <button
-class="no-print"
-onclick="F03.sign(this)">
-✍️
+type="button"
+class="btn-sign"
+onclick="F03.openSignature('employer')">
+
+✍️ Signer
+
 </button>
+
+<button
+type="button"
+class="btn-clear"
+onclick="F03.clearSignature('employer')">
+
+🗑️ Effacer
+
+</button>
+
+</div>
 
 </td>
 
-<td>
+<td class="signature-cell">
 
-<b>Signature de l'Inspecteur ou Contrôleur du Travail</b>
+<h4>
 
-<div class="sigbox"></div>
+Signature de l'Inspecteur
+ou Contrôleur du Travail
+
+</h4>
+
+<div
+class="signature-box"
+id="signatureInspector">
+
+<canvas
+id="canvasInspector"
+width="420"
+height="170">
+</canvas>
+
+</div>
+
+<div class="signature-actions no-print">
 
 <button
-class="no-print"
-onclick="F03.sign(this)">
-✍️
+type="button"
+class="btn-sign"
+onclick="F03.openSignature('inspector')">
+
+✍️ Signer
+
 </button>
+
+<button
+type="button"
+class="btn-clear"
+onclick="F03.clearSignature('inspector')">
+
+🗑️ Effacer
+
+</button>
+
+</div>
 
 </td>
 
 </tr>
 
+    </table>
+
+</tbody>
+
 </table>
+
+<!-- ==================================================
+RÉSERVÉ À L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL
+================================================== -->
 
 <table class="admin">
 
 <tr>
+
 <th class="bar">
-RESERVE A L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL
+
+RÉSERVÉ À L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL
+
 </th>
+
 </tr>
 
 <tr>
+
 <td>
+
 <textarea
-class="inp obs"
-style="min-height:60px">
+class="inp obs admin-note"
+placeholder="Observations, décisions ou instructions administratives...">
 </textarea>
+
 </td>
+
 </tr>
 
 </table>
+
+<!-- ==================================================
+RÉSERVÉ À L'INSPECTEUR GÉNÉRAL DU TRAVAIL
+================================================== -->
 
 <table class="igt">
 
 <tr>
+
 <th colspan="6" class="bar">
-RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL
+
+RÉSERVÉ À L'INSPECTEUR GÉNÉRAL DU TRAVAIL
+
 </th>
+
 </tr>
 
 <tr>
-<th>OBSERVATIONS</th>
+
+<th class="obs-col">
+
+OBSERVATIONS
+
+</th>
+
 <th>VS</th>
+
 <th>CE</th>
+
 <th>IT</th>
+
 <th>MD</th>
+
 <th>S</th>
+
 </tr>
 
 <tr>
 
 <td>
-<textarea class="inp obs"></textarea>
+
+<textarea
+class="inp obs"
+placeholder="Observations de l'Inspecteur Général du Travail...">
+</textarea>
+
 </td>
 
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
+<td class="center">
+<input type="checkbox">
+</td>
+
+<td class="center">
+<input type="checkbox">
+</td>
+
+<td class="center">
+<input type="checkbox">
+</td>
+
+<td class="center">
+<input type="checkbox">
+</td>
+
+<td class="center">
+<input type="checkbox">
+</td>
 
 </tr>
 
 </table>
 
-<footer class="pied">
-Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.
+<!-- ==================================================
+PIED DE PAGE
+================================================== -->
+
+<footer class="footer">
+
+<p>
+
+Créé par <strong>Inspecteur Limengo (Pmiller)</strong>
+
+© 2026 — Tous droits réservés.
+
+</p>
+
 </footer>
-
-
-  <script>
-document.addEventListener("DOMContentLoaded",()=>{
-
-const blocks=[
-['EFFECTIFS DE TRAVAILLEURS PERMANENTS VENTILLES SELON LE SEXE','NATIONAUX','EXPATRIES','TOTAL','RATIO',true],
-['EFFETIFS DES CONTRACTANTS','NATIONAUX','EXPATRIES','TOTAL','',false],
-['EFFECTIFS DES TRAVAILLEURS SOUS TRAITES (SOUS ENTREPRISES)','NATIONAUX','EXPATRIES','TOTAL','',false],
-['EFFECTIFS DES TRAVAILLEURS TEMPORAIRES','NATIONAUX','EXPATRIES','TOTAL','',false]
-];
-
-const bc=document.getElementById("blocksContainer");
-
-if(bc){
-
-blocks.forEach(b=>{
-
-const table=document.createElement("table");
-table.className="tab";
-
-let html=`
-<tr>
-<th colspan="9" class="bar">${b[0]}</th>
-${b[4]?`<th colspan="2" class="bar">${b[4]}</th>`:""}
-</tr>
-
-<tr>
-<th colspan="3">${b[1]}</th>
-<th colspan="3">${b[2]}</th>
-<th colspan="3">${b[3]}</th>
-${b[5]?"<th>CONFORME</th><th>NON CONFORME</th>":""}
-</tr>
-
-<tr>
-<th>H</th>
-<th>F</th>
-<th>T</th>
-<th>H</th>
-<th>F</th>
-<th>T</th>
-<th>H</th>
-<th>F</th>
-<th>T</th>
-${b[5]?'<th rowspan="2"><input class="inp"></th><th rowspan="2"><input class="inp"></th>':""}
-</tr>
-
-<tr>
-`;
-
-for(let i=0;i<9;i++){
-html+='<td><input class="inp"></td>';
-}
-
-html+="</tr>";
-
-table.innerHTML=html;
-
-bc.appendChild(table);
-
-});
-
-}
-
-const docs=[
-'Assurance maladie',
-'Convention médicale visée',
-'Installation sanitaire',
-'Vestiaire des Travailleurs (Homme et Femme)',
-'Boite de secours',
-"Comité d'hygiène et d'embellissement de lieux de Travail",
-'• Composition',
-"• PV d'installation",
-'• Attestation de fonctionnement de CHSE',
-'• PV des réunions',
-"• PV de constat d'Infraction",
-'• Rapport annuel des activités',
-"Service médicale de l'Entreprise",
-'Comité de lutte et de prévention contre le VIH/SIDA'
-];
-
-const dc=document.getElementById("docsContainer");
-
-if(dc){
-
-docs.forEach(t=>{
-
-const tr=document.createElement("tr");
-
-tr.innerHTML=`
-<td class="lbl">${t}</td>
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
-<td><input type="checkbox"></td>
-`;
-
-dc.appendChild(tr);
-
-});
-
-}
-
-});
-</script>
-
-<script src="F03.js"></script>
 
 </main>
 
+<!-- ==================================================
+JAVASCRIPT
+================================================== -->
+
+<script src="F03.js"></script>
+
 </body>
+
 </html>
-  
+
+
