@@ -1,1 +1,35 @@
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F02 - Main d'œuvre étrangère</title>
+<link rel="stylesheet" href="F02.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div class="page-a4" id="formFX">
+    <div class="form-header">
+      <div class="header-left">
+        <div class="coat">IGT</div>
+        <div class="ministere">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO<br>Ministère de l'Emploi et Travail</div>
+      </div>
+      <div class="header-center"><h1>Main d'œuvre étrangère</h1></div>
+      <div class="header-right"><div class="form-code">FO2</div><div class="form-num">N° <input type="text" class="inline-input" style="width:80px;"> /20..</div></div>
+    </div>
+    <!-- Reproduire ici les tableaux spécifiques vus sur vos scans -->
+    <div class="blue-bar">RENSEIGNEMENTS DE L'ENTREPRISE</div>
+    <!-- ... etc ... -->
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="toggleTheme()">🌓</button>
+    <button class="btn" onclick="startDictation('input:focus, textarea:focus')">🎤</button>
+    <button class="btn" onclick="window.print()">🖨️ A4</button>
+    <button class="btn" onclick="exportPDF('FX_Titre','#formFX')">📄 PDF</button>
+    <button class="btn" onclick="location.href='../index.html'">⬅️ Retour</button>
+  </div>
+  <script src="../lang-data.js"></script>
+  <script src="../utils.js"></script>
+  <script src="F02.js"></script>
+</body>
+</html>
