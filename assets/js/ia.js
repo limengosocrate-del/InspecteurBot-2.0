@@ -60,7 +60,12 @@ window.IAEngine = {
 
     box.innerHTML = `<div style="display:flex;align-items:center;gap:10px;color:#FFD700;"><div class="loader" style="width:24px;height:24px;margin:0;border-width:3px;"></div><em>InspecteurBot réfléchit (moteur local NeuroJuris)...</em></div>`;
 
-    if (window.Statistiques) window.Statistiques.increment("ia");
+    if (
+    window.Statistiques &&
+    typeof window.Statistiques.increment === "function"
+) {
+    window.Statistiques.increment("ia");
+    }
 
     setTimeout(() => {
       let result = { text: "", confidence: 0 };
