@@ -1,149 +1,61 @@
-/* ═══════════════════════════════════════════════════════════
-   F01.css — Contrôle de la Main d'Œuvre (IGT / RDC)
-   Écran : thème bleu nuit futuriste + or | Impression : fidèle A4
-   ═══════════════════════════════════════════════════════════ */
-:root{
-  --bleu-officiel:#1f6fc4;      /* bandeaux bleus du modèle papier */
-  --rouge-officiel:#e00000;     /* titres F01 */
-  --vert-case:#7ab648;          /* cases 0..8 */
-  --nuit:#0a1229; --nuit2:#101c3f; --or:#f2c94c;
-  --encre:#000;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:radial-gradient(1200px 600px at 20% -10%,var(--nuit2),var(--nuit));
-  font-family:"Trebuchet MS",Verdana,sans-serif;color:var(--encre);
-  min-height:100vh;padding:70px 10px 40px;
-}
-
-/* ── Barre d'outils ── */
-.toolbar{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;gap:8px;align-items:center;
-  padding:10px 16px;background:rgba(10,18,41,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--or)}
-.toolbar .brand{color:var(--or);font-weight:bold;margin-right:auto;letter-spacing:.5px}
-.toolbar button{background:linear-gradient(160deg,#16244e,#0d1735);color:#fff;
-  border:1px solid var(--or);border-radius:8px;padding:8px 12px;cursor:pointer;
-  transition:transform .15s,box-shadow .15s}
-.toolbar button:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(242,201,76,.35)}
-.badge{color:#9fe870;font-size:.8rem}
-
-/* ── Page A4 ── */
-.page{width:210mm;min-height:297mm;margin:0 auto;background:#fff;
-  padding:8mm 8mm 6mm;box-shadow:0 10px 50px rgba(0,0,0,.6);
-  border:2px solid var(--encre);font-size:9.5pt;line-height:1.25}
-
-/* ── En-tête ── */
-.entete{display:grid;grid-template-columns:34% 42% 24%;border-bottom:2px solid var(--encre)}
-.entete-gauche{display:flex;gap:4px;align-items:flex-start;padding:2px}
-.logo-igt{width:58px;height:58px;border-radius:50%;border:3px double #123c8c;flex:none;
-  display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 35% 30%,#fff,#dfe9ff);color:#123c8c;
-  font-weight:bold;font-size:8pt}
-.entete-textes .l1{font-weight:bold;font-size:8.5pt}
-.entete-textes .l2{font-weight:bold;font-size:8pt}
-.entete-textes .l3{color:#1f6fc4;font-style:italic;font-family:Georgia,serif;font-size:9pt}
-.entete-textes .l4{color:#e00000;font-style:italic;font-family:Georgia,serif;font-size:8.5pt}
-.entete-titre{display:flex;align-items:center;justify-content:center;border-left:2px solid var(--encre);border-right:2px solid var(--encre)}
-.entete-titre h1{color:var(--rouge-officiel);font-size:20pt;text-align:center;font-family:Arial Black,Arial,sans-serif}
-.entete-code{text-align:center;padding-top:2px}
-.code-f{color:var(--rouge-officiel);font-size:34pt;font-weight:900;font-family:Arial Black,Arial}
-.code-num{font-weight:bold;font-size:9pt}
-
-/* ── Corps 2 colonnes ── */
-.corps{display:grid;grid-template-columns:1fr 46mm;gap:0}
-.col-gauche{border-right:2px solid var(--encre);padding-right:2mm}
-.col-droite{padding:1mm 0 0 2mm}
-
-/* ── Bandeaux bleus ── */
-.bandeau{background:var(--bleu-officiel);color:#fff;font-weight:bold;text-align:center;
-  padding:1.2px 2px;font-size:9pt;margin-top:1px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.bandeau.grand{font-size:13pt}
-.bandeau-mini{background:var(--bleu-officiel);color:#fff;font-weight:bold}
-
-/* ── Renseignements ── */
-.renseignements p{padding:.4mm 0;white-space:nowrap;overflow:hidden}
-.gras{font-weight:bold}
-.pt{border:none;border-bottom:1.2px dotted var(--encre);font:inherit;background:transparent;outline:none}
-.pt:focus{background:#fff8dc}
-.long{width:70%}.moy{width:26%}.court{width:18%}.mini{width:8mm}.dd{width:7mm;text-align:center}
-.num{width:22mm}.an{width:8mm}.prov{width:24%}
-select.pt{appearance:none}
-
-/* ── Tableaux effectifs ── */
-.t-eff{width:100%;border-collapse:collapse;table-layout:fixed}
-.t-eff th,.t-eff td{border:1px solid var(--encre);text-align:center;font-size:8.5pt;padding:.4mm}
-.ss-titres th{font-weight:bold}
-.cel{width:100%;border:none;text-align:center;font:inherit;outline:none;background:transparent}
-.cel:focus{background:#fff8dc}
-.calc{font-weight:bold;background:#f3f6ff}
-
-/* ── Documents ── */
-.t-docs{width:100%;border-collapse:collapse}
-.t-docs td,.t-docs th{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm 1mm}
-.t-docs .c-ene{width:14mm;text-align:center;font-weight:bold}
-.t-docs .lib small{font-size:7.5pt}
-.tete-docs td{border:none}
-.coche{width:12px;height:12px;accent-color:#000}
-
-/* ── Conclusion / réserve ── */
-.t-conclusion{width:100%;border-collapse:collapse;margin-top:1px}
-.t-conclusion td,.t-conclusion th{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm}
-.c-ccl{width:16mm;text-align:center}
-.zone-reserve textarea,.t-admin textarea,.t-igt textarea,.conf-bloc textarea{
-  width:100%;border:none;resize:none;font:inherit;outline:none;background:transparent}
-.lib-reserve{background:#dce6f1;font-weight:bold}
-
-/* ── Signatures ── */
-.fait-a{padding:2mm 0}
-.droite{text-align:right}
-.signatures{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:2mm}
-.sig-bloc canvas{border:1px dashed #999;width:100%;height:60px;touch-action:none}
-.sig-actions{display:flex;gap:8px;align-items:center;font-size:8pt}
-.sig-actions button{border:1px solid #999;background:#f5f5f5;border-radius:4px;cursor:pointer}
-.horodatage{font-size:7.5pt;color:#333;font-style:italic}
-
-/* ── Admin / IGT ── */
-.t-admin,.t-igt{width:100%;border-collapse:collapse}
-.t-admin th,.t-admin td,.t-igt th,.t-igt td{border:1px solid var(--encre);font-size:8.8pt;padding:.5mm;text-align:center}
-.t-igt .w50{width:50%}
-
-/* ── Colonne droite ── */
-.titre-reserve,.titre-ratio{font-weight:bold;text-align:center;font-size:8.5pt;border-bottom:1px solid var(--encre)}
-.cases-vertes{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;padding:2mm 1mm}
-.cases-vertes span{background:var(--vert-case);border:1px solid #4c7a2a;text-align:center;
-  padding:2mm 0;cursor:pointer;user-select:none;font-weight:bold;
-  print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.cases-vertes span.actif{outline:3px solid var(--rouge-officiel)}
-.cases-vertes .c8{grid-column:2/3}
-.t-ratio{width:100%;border-collapse:collapse}
-.t-ratio th,.t-ratio td{border:1px solid var(--encre);text-align:center;font-size:8.5pt}
-.conf-bloc{border:1px solid var(--encre);margin-top:2mm}
-
-/* ── Pied ── */
-.pied{text-align:center;font-size:7pt;color:#444;margin-top:3mm;border-top:1px solid #ccc;padding-top:1mm}
-
-/* ── Panneaux IA / Archives ── */
-.panneau-ia{position:fixed;right:16px;top:70px;bottom:16px;width:380px;overflow:auto;z-index:60;
-  background:linear-gradient(170deg,#101c3f,#0a1229);color:#eee;border:1px solid var(--or);
-  border-radius:14px;padding:16px;box-shadow:0 12px 60px rgba(0,0,0,.7);animation:glisse .3s ease}
-@keyframes glisse{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
-.panneau-ia h2{color:var(--or);font-size:1rem;margin-bottom:10px}
-.panneau-ia button{margin-top:10px;background:var(--or);border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:bold}
-.infraction{border-left:3px solid #e05555;padding:6px 8px;margin:6px 0;background:rgba(224,85,85,.12);font-size:.82rem}
-.conforme-ia{border-left:3px solid #7ab648;padding:6px 8px;margin:6px 0;background:rgba(122,182,72,.12);font-size:.82rem}
-.arch-item{border:1px solid #33406b;border-radius:8px;padding:8px;margin:6px 0;font-size:.8rem;cursor:pointer}
-.arch-item:hover{border-color:var(--or)}
-
-/* ── Responsive écran ── */
-@media(max-width:900px){.page{width:100%;min-height:auto}.corps{grid-template-columns:1fr}
-  .col-gauche{border-right:none}.panneau-ia{width:92vw;right:4vw}}
-
-/* ── IMPRESSION : fidélité stricte au modèle papier ── */
+:root{--nuit:#0a1633;--or:#d4af37;--blue:#1e5aa8;--red:#e30613;--brd:#000;}
+*{box-sizing:border-box;font-family:Calibri,Arial,sans-serif;}
+body{margin:0;background:linear-gradient(135deg,#0a1633,#1a2a5a);min-height:100vh;padding:15px;}
+body.dark{background:#000;}
+.app-toolbar{position:sticky;top:0;z-index:100;background:rgba(10,22,51,.95);padding:10px;border-bottom:2px solid var(--or);display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;border-radius:8px;}
+.app-toolbar button{background:linear-gradient(45deg,#d4af37,#f4d76e);color:#0a1633;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;transition:.3s;}
+.app-toolbar button:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,.5);}
+.sheet{width:210mm;min-height:297mm;background:#fff;margin:0 auto;padding:8mm;box-shadow:0 0 40px rgba(0,0,0,.5);color:#000;}
+table{width:100%;border-collapse:collapse;font-size:9pt;}
+table.entete td{border:1.5px solid #000;padding:4px;vertical-align:middle;}
+.logo-cell{width:38%;}
+.logo{font-size:32px;display:inline-block;vertical-align:middle;color:var(--blue);}
+.ministere{display:inline-block;font-size:8pt;padding-left:6px;border-left:3px solid var(--blue);}
+.blue{color:var(--blue);}.red{color:var(--red);}
+.titre{text-align:center;width:42%;}
+.titre h1{color:var(--red);margin:0;font-size:18pt;font-weight:900;}
+.code{text-align:center;width:20%;}
+.code h2{color:var(--red);margin:0;font-size:28pt;font-weight:900;}
+.num{text-align:center;font-size:9pt;}
+.bar{background:#1e5aa8;color:#fff;padding:3px 6px;text-align:center;font-weight:bold;border:1px solid #000;}
+.bar.sub{background:#2c7bd6;}
+.fields{padding:4px;}
+.row{display:flex;align-items:center;gap:4px;margin:2px 0;flex-wrap:wrap;}
+.row label{font-size:8.5pt;white-space:nowrap;}
+.inp{border:none;border-bottom:1px dotted #333;background:transparent;font-size:9pt;padding:1px 3px;outline:none;min-width:60px;}
+.inp:focus{background:#fff8dc;border-bottom-color:var(--or);}
+.inp.fill{flex:1;min-width:200px;}
+.inp.mini{width:40px;}
+.inp.num{width:100%;text-align:center;}
+.inp.date{width:110px;}
+.inp.tel{width:130px;}
+.inp.obs{width:100%;min-height:40px;border:none;resize:vertical;}
+.reserve{width:130px;text-align:center;vertical-align:top;}
+.reserve .bar{display:block;}
+.grid-num{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:6px;}
+.grid-num span{background:#2fa84f;color:#fff;padding:6px 0;font-weight:bold;border-radius:3px;font-size:10pt;}
+.grid-num .c8{grid-column:span 4;}
+.tab td,.tab th{border:1px solid #000;padding:2px;text-align:center;font-size:8.5pt;}
+.tab th{background:#f0f0f0;}
+.tab .bar{background:#1e5aa8;color:#fff;}
+.docs td,.docs th{border:1px solid #000;padding:3px;font-size:8.5pt;}
+.docs .lbl{text-align:left;padding-left:6px;}
+.docs input[type=checkbox]{transform:scale(1.2);}
+.concl td,.concl th{border:1px solid #000;padding:3px;text-align:center;}
+.concl .reserveIT{text-align:left;padding-left:6px;background:#eaf0fb;font-weight:bold;width:70%;}
+.reserve-txt{width:100%;min-height:55px;border:none;}
+.sign td{border:1px solid #000;padding:6px;vertical-align:top;font-size:9pt;}
+.sign .right{text-align:right;border:none;padding:4px;}
+.sigbox{border:1px dashed #999;height:55px;margin:4px 0;background:#fafafa;position:relative;}
+.sigbox.signed{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);}
+.sigbox.signed::after{content:"✓ Signé électroniquement";position:absolute;bottom:2px;right:6px;font-size:7pt;color:#2e7d32;}
+.admin td,.admin th{border:1px solid #000;padding:4px;width:50%;}
+.igt td,.igt th{border:1px solid #000;padding:3px;text-align:center;}
+.pied{text-align:center;font-size:8pt;margin-top:8px;padding:6px;border-top:2px solid var(--or);color:#333;font-style:italic;}
 @media print{
-  @page{size:A4 portrait;margin:0}
-  body{background:#fff;padding:0}
-  .no-print,.toolbar,.panneau-ia{display:none!important}
-  .page{width:210mm;min-height:297mm;margin:0;box-shadow:none;border:2px solid #000}
-  .pt:focus,.cel:focus{background:transparent}
-  .sig-bloc canvas{border:none}
-                    }
+  body{background:#fff;padding:0;}
+  .no-print{display:none!important;}
+  .sheet{box-shadow:none;width:auto;padding:5mm;}
+  @page{size:A4;margin:6mm;}
+}
+body.dark .sheet{filter:none;}
