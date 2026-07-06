@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F02 - Contrôle de la Main d'Œuvre Étrangère</title>
+
+<link rel="stylesheet" href="F02.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+<div class="page-a4" id="formF02">
+
+<!-- ======================================================
+EN-TÊTE
+====================================================== -->
+
+<div class="form-header">
+
+<div class="header-left">
+<div class="coat">IGT</div>
+
+<div class="ministere">
+RÉPUBLIQUE DÉMOCRATIQUE DU CONGO<br>
+Ministère de l'Emploi et Travail<br>
+<small>Inspection Générale du Travail</small>
+</div>
+
+</div>
+
+<div class="header-center">
+<h1>
+CONTROLE DE LA<br>
+MAIN D'ŒUVRE ÉTRANGÈRE
+</h1>
+</div>
+
+<div class="header-right">
+
+<div class="form-code">
+F02
+</div>
+
+<div class="form-num">
+N°
+<input type="text"
+class="inline-input"
+style="width:80px;">
+/20..
+</div>
+
+</div>
+
+</div>
+
+<!-- ======================================================
+RENSEIGNEMENTS
+====================================================== -->
+
+<div class="blue-bar">
+RENSEIGNEMENTS DE L'ENTREPRISE OU ETABLISSEMENT VISITE
+</div>
+
+<div class="info-grid">
+
+<div class="info-col">
+
+<label>Nom ou Raison Sociale / Adresse Physique :</label>
+<input
+type="text"
+class="full-input"
+data-voice="raison_sociale">
+
+<label>Secteur d'activité :</label>
+<select
+class="full-input"
+id="secteur">
+
+<option value="">
+-- Sélectionner --
+</option>
+
+</select>
+
+<label>Siège Social :</label>
+
+<input
+type="text"
+class="full-input"
+placeholder="Av. ... N° ... Q/ ... C/ ...">
+
+<label>Nom du Responsable :</label>
+
+<input
+type="text"
+class="full-input">
+
+<label>Contact :</label>
+
+<input
+type="tel"
+id="tel"
+class="full-input"
+placeholder="+243">
+
+<label>Personne rencontrée :</label>
+
+<input
+type="text"
+class="full-input">
+
+<label>Qualité :</label>
+
+<input
+type="text"
+class="full-input">
+
+</div>
+
+<div class="info-col narrow">
+
+<div class="green-boxes">
+
+<div class="gbox">0</div>
+<div class="gbox">1/2</div>
+<div class="gbox">3</div>
+
+<div class="gbox">4</div>
+<div class="gbox">5</div>
+<div class="gbox">6</div>
+
+<div class="gbox">7</div>
+<div class="gbox">8</div>
+
+</div>
+
+<label>
+Précédente visite effectuée par :
+</label>
+
+<input
+type="text"
+class="full-input">
+
+<label>Le :</label>
+
+<input
+type="date"
+class="full-input">
+
+</div>
+
+</div>
+
+<!-- ======================================================
+IDENTITE DES TRAVAILLEURS ETRANGERS
+====================================================== -->
+
+<div class="blue-bar">
+
+IDENTITÉ DES TRAVAILLEURS ÉTRANGERS
+
+</div>
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+
+<th>N°</th>
+
+<th>NOMS ET POSTNOM</th>
+
+<th>SEXE</th>
+
+<th>NATIONALITÉ</th>
+
+<th>NATURE DU VISA</th>
+
+<th>CARTE DE TRAVAIL</th>
+
+<th>E</th>
+
+<th>NE</th>
+
+<th>ENC</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>1</td>
+
+<td>
+<input
+type="text"
+class="full-input">
+</td>
+
+<td>
+
+<select>
+
+<option></option>
+
+<option>H</option>
+
+<option>F</option>
+
+</select>
+
+</td>
+
+<td>
+
+<input
+type="text"
+class="full-input">
+
+</td>
+
+<td>
+
+<input
+type="text"
+class="full-input">
+
+</td>
+
+<td>
+
+<input
+type="text"
+class="full-input">
+
+</td>
+
+<td>
+<input
+type="radio"
+name="ct1">
+</td>
+
+<td>
+<input
+type="radio"
+name="ct1">
+</td>
+
+<td>
+<input
+type="radio"
+name="ct1">
+</td>
+
+</tr>
+
+<tr>
+
+<td>2</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+
+<select>
+
+<option></option>
+
+<option>H</option>
+
+<option>F</option>
+
+</select>
+
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td><input type="radio" name="ct2"></td>
+
+<td><input type="radio" name="ct2"></td>
+
+<td><input type="radio" name="ct2"></td>
+
+</tr>
+
+<tr>
+
+<td>3</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+
+<select>
+
+<option></option>
+
+<option>H</option>
+
+<option>F</option>
+
+</select>
+
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td>
+<input type="text" class="full-input">
+</td>
+
+<td><input type="radio" name="ct3"></td>
+
+<td><input type="radio" name="ct3"></td>
+
+<td><input type="radio" name="ct3"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<!-- ======================================================
+TRAVAILLEURS EXPATRIÉS EXEMPTÉS
+====================================================== -->
+
+<div class="blue-bar">
+TRAVAILLEURS EXPATRIÉS EXEMPTÉS
+</div>
+
+<table class="data-table">
+
+<thead>
+
+<tr>
+
+<th>N°</th>
+
+<th>NOMS ET POSTNOM</th>
+
+<th>FONCTION</th>
+
+<th>NATIONALITÉ</th>
+
+<th>MOTIF DE L'EXEMPTION</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>1</td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+</tr>
+
+<tr>
+
+<td>2</td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+</tr>
+
+<tr>
+
+<td>3</td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+<td><input type="text" class="full-input"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<!-- ======================================================
+DOCUMENTS À PRÉSENTER
+====================================================== -->
+
+<div class="blue-bar">
+DOCUMENTS À PRÉSENTER
+</div>
+
+<table class="doc-table">
+
+<thead>
+
+<tr>
+
+<th>Document</th>
+
+<th>E</th>
+
+<th>NE</th>
+
+<th>ENC</th>
+
+</tr>
+
+</thead>
+
+<tbody id="docTableBody">
+
+<!-- Généré par F02.js -->
+
+</tbody>
+
+</table>
+
+<!-- ======================================================
+CONCLUSION
+====================================================== -->
+
+<div class="blue-bar">
+CONCLUSION DE LA VISITE
+</div>
+
+<div class="conclusion-box">
+
+<label>
+<input type="radio" name="conclusion" value="LO">
+LO (Lettre d'Observation)
+</label>
+
+<label>
+<input type="radio" name="conclusion" value="MD">
+MD (Mise en Demeure)
+</label>
+
+<label>
+<input type="radio" name="conclusion" value="PVCI">
+PV CI (Procès-Verbal)
+</label>
+
+</div>
+
+<!-- ======================================================
+IA
+====================================================== -->
+
+<div class="ia-panel" id="iaPanel" style="display:none;">
+
+<h3>🤖 Analyse Juridique InspecteurBot</h3>
+
+<div id="iaResults"></div>
+
+<h4>Décision administrative</h4>
+
+<select id="decisionAdmin" class="full-input">
+
+<option value="">-- Choisir --</option>
+
+<option>Conforme</option>
+
+<option>Non conforme</option>
+
+<option>Observation</option>
+
+<option>Mise en demeure</option>
+
+<option>Avertissement</option>
+
+<option>Transmission à la hiérarchie</option>
+
+</select>
+
+</div>
+
+</div>
+
+<!-- ======================================================
+BARRE D'OUTILS
+====================================================== -->
+
+<div class="toolbar">
+
+<button class="btn" onclick="toggleTheme()">🌓</button>
+
+<button class="btn" onclick="startDictation('.page-a4 input:focus, .page-a4 textarea:focus')">🎤</button>
+
+<button class="btn" onclick="runAnalysis()">⚖️ Analyser</button>
+
+<button class="btn" onclick="saveF02()">💾 Enregistrer</button>
+
+<button class="btn" onclick="window.print()">🖨️ A4</button>
+
+<button class="btn" onclick="exportPDF('F02_MainOeuvreEtrangere','#formF02')">📄 PDF</button>
+
+<button class="btn" onclick="location.href='../index.html'">⬅️ Retour</button>
+
+</div>
+
+<script src="../lang-data.js"></script>
+
+<script src="../utils.js"></script>
+
+<script src="F02.js"></script>
+
+</body>
+
+</html>
