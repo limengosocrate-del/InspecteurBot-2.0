@@ -1,206 +1,102 @@
-:root{
-    --or:#d4af37;
-    --blue:#1e5aa8;
-    --red:#e30613;
-}
+const F03 = {
 
-*{
-    box-sizing:border-box;
-    font-family:Calibri,Arial,sans-serif;
-}
+    dictate(){
 
-body{
-    margin:0;
-    padding:15px;
-    background:linear-gradient(135deg,#0a1633,#1a2a5a);
-    overflow-x:auto;
-}
+        if(!("webkitSpeechRecognition" in window)){
+            alert("Votre navigateur ne prend pas en charge la dictée vocale.");
+            return;
+        }
 
-.app-toolbar{
-    position:sticky;
-    top:0;
-    background:rgba(10,22,51,.95);
-    padding:10px;
-    display:flex;
-    gap:8px;
-    margin-bottom:15px;
-    border-radius:8px;
-    border-bottom:2px solid var(--or);
-}
+        const recognition = new webkitSpeechRecognition();
 
-.app-toolbar button{
-    background:linear-gradient(45deg,#d4af37,#f4d76e);
-    color:#0a1633;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-}
+        recognition.lang = "fr-FR";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
 
-.sheet{
-    width:210mm;
-    max-width:100%;
-    min-height:297mm;
-    background:#fff;
-    margin:auto;
-    padding:8mm;
-    box-shadow:0 0 40px rgba(0,0,0,.5);
-    color:#000;
-    overflow:hidden;
-}
+        recognition.onresult = (e)=>{
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-    font-size:9pt;
-}
+            const input = document.activeElement;
 
-.entete td{
-    border:1.5px solid #000;
-    padding:4px;
-}
+            if(input && (input.tagName==="INPUT" || input.tagName==="TEXTAREA")){
 
-.logo-cell{
-    width:38%;
-}
+                input.value = e.results[0][0].transcript;
 
-.logo{
-    font-size:32px;
-    display:inline-block;
-    color:var(--blue);
-}
+            }
 
-.ministere{
-    display:inline-block;
-    font-size:8pt;
-    padding-left:6px;
-    border-left:3px solid var(--blue);
-}
+        };
 
-.blue{
-    color:var(--blue);
-}
+        recognition.start();
 
-.red{
-    color:var(--red);
-}
+    },
 
-.titre{
-    text-align:center;
-    width:42%;
-}
+    analyze(){
 
-.titre h1{
-    color:var(--red);
-    margin:0;
-    font-size:16pt;
-}
+        alert(
+`⚖️ F03 – HYGIÈNE ET SANTÉ AU TRAVAIL
 
-.code{
-    text-align:center;
-    width:20%;
-}
+Références :
+• Articles 159 à 176 du Code du Travail
+• Comité d'Hygiène, Sécurité et Environnement (CHSE)
+• Médecine du travail
 
-.code h2{
-    color:var(--red);
-    margin:0;
-    font-size:28pt;
-}
+Points à vérifier :
+✓ Assurance maladie
+✓ Convention médicale
+✓ Installations sanitaires
+✓ Vestiaires H/F
+✓ Boîte de secours
+✓ CHSE
+✓ Service médical
+✓ Prévention VIH/SIDA`
+        );
 
-.bar{
-    background:#1e5aa8;
-    color:#fff;
-    padding:3px;
-    text-align:center;
-    border:1px solid #000;
-    font-weight:bold;
-}
+    },
 
-.row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:4px;
-    align-items:center;
-    margin:2px 0;
-}
+    sign(btn){
 
-.row label{
-    font-size:8.5pt;
-}
+        const box = btn.parentElement.querySelector(".signature-box");
 
-.inp{
-    border:none;
-    border-bottom:1px dotted #333;
-    background:transparent;
-    padding:1px 3px;
-    outline:none;
-    min-width:0;
-    font-size:9pt;
-}
+        const nom = prompt("Nom et prénom du signataire :");
 
-.inp:focus{
-    background:#fff8dc;
-}
+        if(!nom) return;
 
-.inp.fill{
-    flex:1;
-    min-width:120px;
-}
+        box.classList.add("signed");
 
-.inp.mini{
-    width:40px;
-}
+        box.innerHTML = `
+            <div class="signature-name">${nom}</div>
+            <small>${new Date().toLocaleString("fr-FR")}</small>
+        `;
 
-.inp.date{
-    width:110px;
-}
+    },
 
-.inp.tel{
-    width:130px;
-}
+    save(){
 
-.inp.obs{
-    width:100%;
-    min-height:40px;
-    border:none;
-    resize:vertical;
-}
+        const data = {
 
-.reserve{
-    width:130px;
-    text-align:center;
-    vertical-align:top;
-}
+            id: "F03-" + Date.now(),
 
-.grid-num{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:3px;
-    padding:6px;
-}
+            date: new Date().toISOString()
 
-.grid-num span{
-    background:#2fa84f;
-    color:#fff;
-    padding:6px 0;
-    font-weight:bold;
-    border-radius:3px;
-}
+        };
 
-.tab td,
-.tab th,
-.docs td,
-.docs th,
-.concl td,
-.concl th,
-.sign td,
-.admin td,
-.admin th,
-.igt td,
-.igt th{
-    border:1px solid #000;
-    padding:2px 4px;
-    text-align:center;
-    font-size:8.
+        document.querySelectorAll(".inp").forEach((el,index)=>{
+
+            if(el.type==="checkbox"){
+
+                data["f"+index]=el.checked;
+
+            }else{
+
+                data["f"+index]=el.value;
+
+            }
+
+        });
+
+        localStorage.setItem(data.id,JSON.stringify(data));
+
+        alert("💾 Fiche enregistrée : " + data.id);
+
+    }
+
+};
