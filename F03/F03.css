@@ -1,0 +1,28 @@
+:root{--or:#d4af37;--blue:#1e5aa8;--red:#e30613;}
+*{box-sizing:border-box;font-family:Calibri,Arial,sans-serif;}
+body{margin:0;background:linear-gradient(135deg,#0a1633,#1a2a5a);padding:15px;}
+.app-toolbar{position:sticky;top:0;background:rgba(10,22,51,.95);padding:10px;display:flex;gap:8px;margin-bottom:15px;border-radius:8px;border-bottom:2px solid var(--or);}
+.app-toolbar button{background:linear-gradient(45deg,#d4af37,#f4d76e);color:#0a1633;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;}
+.sheet{width:210mm;min-height:297mm;background:#fff;margin:auto;padding:8mm;box-shadow:0 0 40px rgba(0,0,0,.5);color:#000;}
+table{width:100%;border-collapse:collapse;font-size:9pt;}
+.entete td{border:1.5px solid #000;padding:4px;}
+.logo-cell{width:38%;}.logo{font-size:32px;display:inline-block;color:var(--blue);}
+.ministere{display:inline-block;font-size:8pt;padding-left:6px;border-left:3px solid var(--blue);}
+.blue{color:var(--blue);}.red{color:var(--red);}
+.titre{text-align:center;width:42%;}.titre h1{color:var(--red);margin:0;font-size:16pt;}
+.code{text-align:center;width:20%;}.code h2{color:var(--red);margin:0;font-size:28pt;}
+.bar{background:#1e5aa8;color:#fff;padding:3px;text-align:center;border:1px solid #000;font-weight:bold;}
+.row{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin:2px 0;}
+.row label{font-size:8.5pt;}
+.inp{border:none;border-bottom:1px dotted #333;background:transparent;padding:1px 3px;outline:none;min-width:60px;font-size:9pt;}
+.inp:focus{background:#fff8dc;}.inp.fill{flex:1;min-width:200px;}.inp.mini{width:40px;}.inp.date{width:110px;}.inp.tel{width:130px;}
+.inp.obs{width:100%;min-height:40px;border:none;resize:vertical;}
+.reserve{width:130px;text-align:center;vertical-align:top;}
+.grid-num{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:6px;}
+.grid-num span{background:#2fa84f;color:#fff;padding:6px 0;font-weight:bold;border-radius:3px;}
+.tab td,.tab th,.docs td,.docs th,.concl td,.concl th,.sign td,.admin td,.admin th,.igt td,.igt th{border:1px solid #000;padding:2px 4px;text-align:center;font-size:8.5pt;}
+.tab th{background:#f0f0f0;}.docs .lbl{text-align:left;padding-left:6px;}
+.sign td{padding:6px;vertical-align:top;text-align:left;}.sign .right{text-align:right;border:none;}
+.sigbox{border:1px dashed #999;height:50px;margin:4px 0;background:#fafafa;}.sigbox.signed{background:#c8e6c9;}
+.pied{text-align:center;font-size:8pt;margin-top:8px;border-top:2px solid var(--or);padding-top:6px;font-style:italic;}
+@media print{body{background:#fff;padding:0;}.no-print{display:none!important;}.sheet{box-shadow:none;padding:5mm;}@page{size:A4;margin:6mm;}}
