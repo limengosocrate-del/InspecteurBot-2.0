@@ -1,280 +1,286 @@
 /*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
+ INSPECTEURBOT IA RDC 4.0 PREMIUM
  fiche.js
  Partie 1
- Créé par Inspecteur Limengo (Pmiller)
-==================================================*/
+===================================================*/
 
 "use strict";
 
 /*==================================================
-CONFIGURATION
-==================================================*/
+ INITIALISATION
+===================================================*/
 
-const APP = {
+document.addEventListener("DOMContentLoaded", () => {
 
-    nom: "InspecteurBot IA RDC",
+    updateClock();
+    setInterval(updateClock, 1000);
 
-    version: "4.0 Premium",
+    updateDate();
 
-    auteur: "Inspecteur Limengo (Pmiller)",
+    greeting();
 
-    annee: "2026"
+    initSearch();
 
-};
+    animateCards();
 
-/*==================================================
-DEMARRAGE
-==================================================*/
+    console.log("✔ InspecteurBot IA Premium chargé.");
 
-document.addEventListener(
+});
 
-    "DOMContentLoaded",
-
-    () => {
-
-        console.log(
-
-            APP.nom,
-
-            APP.version
-
-        );
-
-        initialiserApplication();
-
-    }
-
-);
 
 /*==================================================
-INITIALISATION
-==================================================*/
+ HORLOGE
+===================================================*/
 
-function initialiserApplication(){
+function updateClock() {
 
-    afficherDateHeure();
+    const element = document.getElementById("currentTime");
 
-    surveillerReseau();
+    if (!element) return;
 
-    chargerPreferences();
+    const now = new Date();
 
-    detecterLangue();
+    let h = now.getHours().toString().padStart(2, "0");
+    let m = now.getMinutes().toString().padStart(2, "0");
+    let s = now.getSeconds().toString().padStart(2, "0");
 
-    detecterAppareil();
+    element.textContent = `${h}:${m}:${s}`;
 
 }
 
+
 /*==================================================
-DATE ET HEURE
-==================================================*/
+ DATE
+===================================================*/
 
-function afficherDateHeure(){
+function updateDate() {
 
-    actualiserDateHeure();
+    const element = document.getElementById("currentDate");
 
-    setInterval(
+    if (!element) return;
 
-        actualiserDateHeure,
+    const jours = [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ];
 
-        1000
+    const mois = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ];
 
-    );
+    const now = new Date();
+
+    element.textContent =
+        jours[now.getDay()] + " " +
+        now.getDate() + " " +
+        mois[now.getMonth()] + " " +
+        now.getFullYear();
 
 }
 
-function actualiserDateHeure(){
 
-    const maintenant = new Date();
+/*==================================================
+ SALUTATION
+===================================================*/
 
-    const heure = document.getElementById("currentTime");
+function greeting() {
 
-    const date = document.getElementById("currentDate");
+    const hero = document.querySelector(".hero h2");
 
-    if(heure){
+    if (!hero) return;
 
-        heure.textContent =
+    const hour = new Date().getHours();
 
-        maintenant.toLocaleTimeString(
+    if (hour < 12) {
 
-            "fr-FR"
-
-        );
+        hero.textContent =
+            "BONJOUR INSPECTEUR";
 
     }
 
-    if(date){
+    else if (hour < 18) {
 
-        date.textContent =
+        hero.textContent =
+            "BON APRÈS-MIDI INSPECTEUR";
 
-        maintenant.toLocaleDateString(
+    }
 
-            "fr-FR",
+    else {
 
-            {
+        hero.textContent =
+            "BONNE SOIRÉE INSPECTEUR";
 
-                weekday:"long",
+    }
 
-                day:"numeric",
+}
 
-                month:"long",
 
-                year:"numeric"
+/*==================================================
+ RECHERCHE
+===================================================*/
+
+function initSearch() {
+
+    const input = document.getElementById("searchInput");
+
+    if (!input) return;
+
+    input.addEventListener("keyup", function () {
+
+        const value = this.value.toLowerCase();
+
+        const cards =
+            document.querySelectorAll(".card");
+
+        cards.forEach(card => {
+
+            const txt =
+                card.innerText.toLowerCase();
+
+            if (txt.indexOf(value) > -1) {
+
+                card.style.display = "";
 
             }
 
-        );
+            else {
 
-    }
+                card.style.display = "none";
 
-}
+            }
 
-/*==================================================
-ETAT DU RESEAU
-==================================================*/
+        });
 
-function surveillerReseau(){
-
-    mettreAJourReseau();
-
-    window.addEventListener(
-
-        "online",
-
-        mettreAJourReseau
-
-    );
-
-    window.addEventListener(
-
-        "offline",
-
-        mettreAJourReseau
-
-    );
+    });
 
 }
 
-function mettreAJourReseau(){
 
-    const el =
+/*==================================================
+ ANIMATION DES CARTES
+===================================================*/
 
-    document.getElementById(
+function animateCards() {
 
-        "networkStatus"
+    const cards =
+        document.querySelectorAll(".card");
 
-    );
+    cards.forEach((card, index) => {
 
-    if(!el) return;
+        card.style.opacity = "0";
 
-    if(navigator.onLine){
+        card.style.transform =
+            "translateY(30px)";
 
-        el.innerHTML="🟢 En ligne";
+        setTimeout(() => {
 
-    }
+            card.style.transition =
+                "0.6s";
 
-    else{
+            card.style.opacity = "1";
 
-        el.innerHTML="🔴 Hors ligne";
+            card.style.transform =
+                "translateY(0)";
 
-    }
+        }, index * 60);
+
+    });
 
 }
 
-/*==================================================
-LANGUE
-==================================================*/
-
-function detecterLangue(){
-
-    const select =
-
-    document.getElementById(
-
-        "langSwitcher"
-
-    );
-
-    if(!select) return;
-
-    const langue =
-
-    localStorage.getItem(
-
-        "langue"
-
-    );
-
-    if(langue){
-
-        select.value = langue;
-
-    }
-
-    select.addEventListener(
-
-        "change",
-
-        ()=>{
-
-            localStorage.setItem(
-
-                "langue",
-
-                select.value
-
-            );
-
-        }
-
-    );
-
-     }
 
 /*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
- fiche.js
- Partie 2
- Géolocalisation - Météo - Thème
- Recherche - Animations
-==================================================*/
+ GESTION DES ERREURS
+===================================================*/
 
-"use strict";
+window.onerror = function (
+    message,
+    source,
+    line,
+    column,
+    error
+) {
 
-/*==================================================
-INITIALISATION COMPLEMENTAIRE
-==================================================*/
-
-const ancienneInitialisation =
-initialiserApplication;
-
-initialiserApplication = function(){
-
-    ancienneInitialisation();
-
-    initialiserTheme();
-
-    initialiserRecherche();
-
-    initialiserAnimations();
-
-    obtenirLocalisation();
+    console.error(
+        "Erreur :",
+        message
+    );
 
 };
 
 /*==================================================
-GEOLOCALISATION
-==================================================*/
+ PARTIE 2
+ THEME - IA - VOIX
+===================================================*/
 
-function obtenirLocalisation(){
+/*==================================================
+ THEME SOMBRE / CLAIR
+===================================================*/
 
-    if(!navigator.geolocation){
+(function () {
 
-        afficherMeteo(
-            "GPS indisponible"
+    const btnTheme = document.getElementById("btnTheme");
+
+    if (!btnTheme) return;
+
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-theme");
+        btnTheme.textContent = "☀️ Thème";
+    }
+
+    btnTheme.addEventListener("click", () => {
+
+        document.body.classList.toggle("dark-theme");
+
+        const dark =
+            document.body.classList.contains("dark-theme");
+
+        localStorage.setItem(
+            "theme",
+            dark ? "dark" : "light"
         );
+
+        btnTheme.textContent =
+            dark ? "☀️ Thème" : "🌙 Thème";
+
+    });
+
+})();
+
+
+/*==================================================
+ LOCALISATION GPS
+===================================================*/
+
+(function () {
+
+    const weather =
+        document.getElementById("weather");
+
+    if (!weather) return;
+
+    if (!navigator.geolocation) {
+
+        weather.textContent =
+            "GPS non disponible";
 
         return;
 
@@ -282,1815 +288,506 @@ function obtenirLocalisation(){
 
     navigator.geolocation.getCurrentPosition(
 
-        position=>{
+        function (position) {
 
-            chargerMeteo(
+            weather.textContent =
+                "📍 Position détectée";
 
-                position.coords.latitude,
-
-                position.coords.longitude
-
-            );
+            console.log(position.coords.latitude);
+            console.log(position.coords.longitude);
 
         },
 
-        ()=>{
+        function () {
 
-            afficherMeteo(
-                "Position refusée"
-            );
-
-        },
-
-        {
-
-            enableHighAccuracy:true,
-
-            timeout:10000,
-
-            maximumAge:300000
+            weather.textContent =
+                "Position refusée";
 
         }
 
     );
 
-}
+})();
+
 
 /*==================================================
-METEO
-==================================================*/
+ ASSISTANT IA
+===================================================*/
 
-async function chargerMeteo(
+(function () {
 
-    latitude,
+    const btn =
+        document.getElementById("btnAssistant");
 
-    longitude
+    if (!btn) return;
 
-){
-
-    try{
-
-        const url=
-
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`;
-
-        const reponse=
-
-        await fetch(url);
-
-        const donnees=
-
-        await reponse.json();
-
-        if(
-
-            donnees.current
-
-        ){
-
-            afficherMeteo(
-
-                `${donnees.current.temperature_2m}°C`
-
-            );
-
-        }
-
-        else{
-
-            afficherMeteo(
-
-                "Indisponible"
-
-            );
-
-        }
-
-    }
-
-    catch(e){
-
-        afficherMeteo(
-
-            "Erreur météo"
-
-        );
-
-    }
-
-}
-
-function afficherMeteo(
-
-    texte
-
-){
-
-    const meteo=
-
-    document.getElementById(
-
-        "weather"
-
-    );
-
-    if(meteo){
-
-        meteo.textContent=
-
-        texte;
-
-    }
-
-}
-
-/*==================================================
-THEME SOMBRE / CLAIR
-==================================================*/
-
-function initialiserTheme(){
-
-    const bouton=
-
-    document.getElementById(
-
-        "btnTheme"
-
-    );
-
-    if(!bouton) return;
-
-    const theme=
-
-    localStorage.getItem(
-
-        "theme"
-
-    ) || "clair";
-
-    appliquerTheme(
-
-        theme
-
-    );
-
-    bouton.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            const nouveau=
-
-            document.body.classList.contains(
-
-                "dark"
-
-            )
-
-            ?
-
-            "clair"
-
-            :
-
-            "dark";
-
-            appliquerTheme(
-
-                nouveau
-
-            );
-
-        }
-
-    );
-
-}
-
-function appliquerTheme(
-
-    theme
-
-){
-
-    if(theme==="dark"){
-
-        document.body.classList.add(
-
-            "dark"
-
-        );
-
-    }
-
-    else{
-
-        document.body.classList.remove(
-
-            "dark"
-
-        );
-
-    }
-
-    localStorage.setItem(
-
-        "theme",
-
-        theme
-
-    );
-
-}
-
-/*==================================================
-RECHERCHE INSTANTANEE
-==================================================*/
-
-function initialiserRecherche(){
-
-    const recherche=
-
-    document.getElementById(
-
-        "searchInput"
-
-    );
-
-    if(!recherche) return;
-
-    recherche.addEventListener(
-
-        "input",
-
-        ()=>{
-
-            const texte=
-
-            recherche.value
-
-            .toLowerCase()
-
-            .trim();
-
-            document
-
-            .querySelectorAll(
-
-                ".card"
-
-            )
-
-            .forEach(
-
-                carte=>{
-
-                    const contenu=
-
-                    carte.textContent
-
-                    .toLowerCase();
-
-                    carte.style.display=
-
-                    contenu.includes(
-
-                        texte
-
-                    )
-
-                    ?
-
-                    ""
-
-                    :
-
-                    "none";
-
-                }
-
-            );
-
-        }
-
-    );
-
-}
-
-/*==================================================
-ANIMATIONS
-==================================================*/
-
-function initialiserAnimations(){
-
-    const cartes=
-
-    document.querySelectorAll(
-
-        ".card"
-
-    );
-
-    cartes.forEach(
-
-        (
-
-            carte,
-
-            index
-
-        )=>{
-
-            carte.style.opacity="0";
-
-            carte.style.transform=
-
-            "translateY(40px)";
-
-            setTimeout(
-
-                ()=>{
-
-                    carte.style.transition=
-
-                    "0.6s";
-
-                    carte.style.opacity="1";
-
-                    carte.style.transform=
-
-                    "translateY(0)";
-
-                },
-
-                index*70
-
-            );
-
-        }
-
-    );
-
-    document
-
-    .querySelectorAll(
-
-        "button"
-
-    )
-
-    .forEach(
-
-        bouton=>{
-
-            bouton.addEventListener(
-
-                "click",
-
-                ()=>{
-
-                    bouton.animate(
-
-                        [
-
-                            {
-
-                                transform:
-
-                                "scale(1)"
-
-                            },
-
-                            {
-
-                                transform:
-
-                                "scale(.92)"
-
-                            },
-
-                            {
-
-                                transform:
-
-                                "scale(1)"
-
-                            }
-
-                        ],
-
-                        {
-
-                            duration:200
-
-                        }
-
-                    );
-
-                }
-
-            );
-
-        }
-
-    );
-
-    }
-
-/*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
- fiche.js
- Partie 3
- Assistant IA - Voix - Caméra
-==================================================*/
-
-"use strict";
-
-/*==================================================
-INITIALISATION DES OUTILS
-==================================================*/
-
-const ancienneInitialisationPartie2 =
-initialiserApplication;
-
-initialiserApplication = function(){
-
-    ancienneInitialisationPartie2();
-
-    initialiserAssistant();
-
-    initialiserCommandeVocale();
-
-    initialiserCamera();
-
-    initialiserRaccourcis();
-
-};
-
-/*==================================================
-ASSISTANT IA
-==================================================*/
-
-function initialiserAssistant(){
-
-    const bouton =
-    document.getElementById(
-        "btnAssistant"
-    );
-
-    if(!bouton) return;
-
-    bouton.addEventListener(
-        "click",
-        ouvrirAssistant
-    );
-
-}
-
-function ouvrirAssistant(){
-
-    vibration();
-
-    window.location.href =
-    "ia/assistant.html";
-
-}
-
-/*==================================================
-COMMANDE VOCALE
-==================================================*/
-
-function initialiserCommandeVocale(){
-
-    const bouton =
-    document.getElementById(
-        "btnVoice"
-    );
-
-    if(!bouton) return;
-
-    const SpeechRecognition =
-
-    window.SpeechRecognition ||
-
-    window.webkitSpeechRecognition;
-
-    if(!SpeechRecognition){
-
-        bouton.disabled = true;
-
-        bouton.title =
-        "Reconnaissance vocale indisponible";
-
-        return;
-
-    }
-
-    const reconnaissance =
-    new SpeechRecognition();
-
-    reconnaissance.lang = "fr-FR";
-
-    reconnaissance.interimResults = false;
-
-    reconnaissance.maxAlternatives = 1;
-
-    bouton.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            vibration();
-
-            reconnaissance.start();
-
-        }
-
-    );
-
-    reconnaissance.onresult =
-
-    evenement=>{
-
-        const texte =
-
-        evenement.results[0][0].transcript;
-
-        const recherche =
-
-        document.getElementById(
-            "searchInput"
-        );
-
-        if(recherche){
-
-            recherche.value = texte;
-
-            recherche.dispatchEvent(
-                new Event("input")
-            );
-
-        }
-
-    };
-
-    reconnaissance.onerror =
-
-    erreur=>{
-
-        console.error(
-
-            "Erreur vocale",
-
-            erreur
-
-        );
-
-    };
-
-}
-
-/*==================================================
-CAMERA
-==================================================*/
-
-function initialiserCamera(){
-
-    const bouton =
-    document.getElementById(
-        "btnCamera"
-    );
-
-    if(!bouton) return;
-
-    bouton.addEventListener(
-
-        "click",
-
-        lancerCamera
-
-    );
-
-}
-
-async function lancerCamera(){
-
-    vibration();
-
-    if(
-
-        !navigator.mediaDevices ||
-
-        !navigator.mediaDevices.getUserMedia
-
-    ){
+    btn.addEventListener("click", () => {
 
         alert(
-
-            "Caméra non disponible."
-
+            "InspecteurBot IA sera disponible dans la prochaine version."
         );
-
-        return;
-
-    }
-
-    try{
-
-        const flux =
-
-        await navigator
-
-        .mediaDevices
-
-        .getUserMedia({
-
-            video:true
-
-        });
-
-        flux.getTracks()
-
-        .forEach(
-
-            piste=>{
-
-                piste.stop();
-
-            }
-
-        );
-
-        alert(
-
-            "Caméra détectée avec succès."
-
-        );
-
-    }
-
-    catch(e){
-
-        alert(
-
-            "Impossible d'accéder à la caméra."
-
-        );
-
-    }
-
-}
-
-/*==================================================
-RACCOURCIS CLAVIER
-==================================================*/
-
-function initialiserRaccourcis(){
-
-    document.addEventListener(
-
-        "keydown",
-
-        evenement=>{
-
-            if(
-
-                evenement.key==="/"
-
-            ){
-
-                evenement.preventDefault();
-
-                document
-
-                .getElementById(
-
-                    "searchInput"
-
-                )
-
-                ?.focus();
-
-            }
-
-            if(
-
-                evenement.key==="Escape"
-
-            ){
-
-                document
-
-                .getElementById(
-
-                    "searchInput"
-
-                )
-
-                ?.blur();
-
-            }
-
-        }
-
-    );
-
-}
-
-/*==================================================
-VIBRATION MOBILE
-==================================================*/
-
-function vibration(){
-
-    if(
-
-        "vibrate" in navigator
-
-    ){
-
-        navigator.vibrate(
-
-            40
-
-        );
-
-    }
-
-}
-
-/*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
- fiche.js
- Partie 4A
- Notifications + Historique
-==================================================*/
-
-"use strict";
-
-/*==================================================
-INITIALISATION
-==================================================*/
-
-const ancienneInitialisationPartie3 =
-initialiserApplication;
-
-initialiserApplication = function(){
-
-    ancienneInitialisationPartie3();
-
-    initialiserNotifications();
-
-    initialiserHistorique();
-
-};
-
-/*==================================================
-NOTIFICATIONS PREMIUM
-==================================================*/
-
-function initialiserNotifications(){
-
-    creerZoneNotifications();
-
-    notifier(
-
-        "Bienvenue sur InspecteurBot IA RDC 4.0 Premium",
-
-        "success"
-
-    );
-
-}
-
-function creerZoneNotifications(){
-
-    if(document.getElementById("notificationContainer")){
-
-        return;
-
-    }
-
-    const zone = document.createElement("div");
-
-    zone.id = "notificationContainer";
-
-    zone.style.position = "fixed";
-    zone.style.top = "20px";
-    zone.style.right = "20px";
-    zone.style.zIndex = "99999";
-    zone.style.display = "flex";
-    zone.style.flexDirection = "column";
-    zone.style.gap = "10px";
-    zone.style.pointerEvents = "none";
-
-    document.body.appendChild(zone);
-
-}
-
-function notifier(
-
-    message,
-
-    type = "info"
-
-){
-
-    const zone =
-
-    document.getElementById(
-
-        "notificationContainer"
-
-    );
-
-    if(!zone){
-
-        return;
-
-    }
-
-    const notification =
-
-    document.createElement("div");
-
-    notification.textContent = message;
-
-    notification.style.padding = "14px 18px";
-
-    notification.style.borderRadius = "12px";
-
-    notification.style.fontWeight = "600";
-
-    notification.style.color = "#ffffff";
-
-    notification.style.pointerEvents = "auto";
-
-    notification.style.transform = "translateX(120%)";
-
-    notification.style.transition = "0.35s";
-
-    notification.style.boxShadow =
-    "0 10px 25px rgba(0,0,0,.25)";
-
-    switch(type){
-
-        case "success":
-
-            notification.style.background =
-            "#1f8f43";
-
-            break;
-
-        case "error":
-
-            notification.style.background =
-            "#c62828";
-
-            break;
-
-        case "warning":
-
-            notification.style.background =
-            "#d97706";
-
-            break;
-
-        default:
-
-            notification.style.background =
-            "#0d47a1";
-
-    }
-
-    zone.appendChild(notification);
-
-    requestAnimationFrame(()=>{
-
-        notification.style.transform =
-        "translateX(0)";
 
     });
+
+})();
+
+
+/*==================================================
+ SYNTHÈSE VOCALE
+===================================================*/
+
+(function () {
+
+    const btn =
+        document.getElementById("btnVoice");
+
+    if (!btn) return;
+
+    if (!("speechSynthesis" in window))
+        return;
+
+    btn.addEventListener("click", () => {
+
+        const speech =
+            new SpeechSynthesisUtterance();
+
+        speech.lang = "fr-FR";
+
+        speech.text =
+            "Bienvenue dans InspecteurBot IA RDC Premium.";
+
+        window.speechSynthesis.cancel();
+
+        window.speechSynthesis.speak(speech);
+
+    });
+
+})();
+
+/*==================================================
+ PARTIE 3
+ VOIX - LANGUES - RACCOURCIS
+===================================================*/
+
+/*==================================================
+ RECONNAISSANCE VOCALE
+===================================================*/
+
+(function () {
+
+    const btnVoice = document.getElementById("btnVoice");
+    const searchInput = document.getElementById("searchInput");
+
+    if (!btnVoice || !searchInput) return;
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        btnVoice.disabled = true;
+        btnVoice.title = "Reconnaissance vocale non disponible";
+        return;
+
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "fr-FR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    btnVoice.addEventListener("dblclick", () => {
+
+        recognition.start();
+
+    });
+
+    recognition.onresult = function (event) {
+
+        const texte = event.results[0][0].transcript;
+
+        searchInput.value = texte;
+
+        searchInput.dispatchEvent(
+            new KeyboardEvent("keyup")
+        );
+
+    };
+
+})();
+
+
+/*==================================================
+ CHANGEMENT DE LANGUE
+===================================================*/
+
+(function () {
+
+    const lang = document.getElementById("langSwitcher");
+
+    if (!lang) return;
+
+    lang.addEventListener("change", function () {
+
+        localStorage.setItem(
+            "langue",
+            this.value
+        );
+
+        alert(
+            "La langue " +
+            this.options[this.selectedIndex].text +
+            " sera appliquée dans les prochaines mises à jour."
+        );
+
+    });
+
+})();
+
+
+/*==================================================
+ RACCOURCIS CLAVIER
+===================================================*/
+
+document.addEventListener("keydown", function (e) {
+
+    if (e.ctrlKey && e.key === "f") {
+
+        e.preventDefault();
+
+        document.getElementById("searchInput").focus();
+
+    }
+
+});
+
+
+/*==================================================
+ NOTIFICATION
+===================================================*/
+
+window.addEventListener("load", () => {
+
+    setTimeout(() => {
+
+        console.log(
+            "Bienvenue dans InspecteurBot IA RDC Premium."
+        );
+
+    }, 1000);
+
+});
+
+
+/*==================================================
+ EFFET SUR LES BOUTONS
+===================================================*/
+
+document.querySelectorAll("button").forEach(btn => {
+
+    btn.addEventListener("mouseenter", () => {
+
+        btn.style.transform = "scale(1.05)";
+
+    });
+
+    btn.addEventListener("mouseleave", () => {
+
+        btn.style.transform = "scale(1)";
+
+    });
+
+});
+
+/*==================================================
+ PARTIE 4
+ HISTORIQUE - PREFERENCES - EFFETS
+===================================================*/
+
+/*==================================================
+ SAUVEGARDE DE LA RECHERCHE
+===================================================*/
+
+(function () {
+
+    const input = document.getElementById("searchInput");
+
+    if (!input) return;
+
+    const lastSearch = localStorage.getItem("lastSearch");
+
+    if (lastSearch) {
+        input.value = lastSearch;
+        input.dispatchEvent(new KeyboardEvent("keyup"));
+    }
+
+    input.addEventListener("input", () => {
+
+        localStorage.setItem(
+            "lastSearch",
+            input.value
+        );
+
+    });
+
+})();
+
+
+/*==================================================
+ COMPTEUR DES CARTES
+===================================================*/
+
+function updateVisibleCards() {
+
+    const cards = document.querySelectorAll(".card");
+
+    let total = 0;
+
+    cards.forEach(card => {
+
+        if (card.style.display !== "none") {
+            total++;
+        }
+
+    });
+
+    console.log(
+        "Cartes visibles : " + total
+    );
+
+}
+
+setInterval(updateVisibleCards, 1000);
+
+
+/*==================================================
+ EFFET PREMIUM SUR LES CARTES
+===================================================*/
+
+document.querySelectorAll(".card").forEach(card => {
+
+    card.addEventListener("mouseenter", () => {
+
+        card.style.transform =
+            "translateY(-8px) scale(1.03)";
+
+        card.style.boxShadow =
+            "0 15px 35px rgba(0,170,255,.35)";
+
+    });
+
+    card.addEventListener("mouseleave", () => {
+
+        card.style.transform =
+            "translateY(0) scale(1)";
+
+        card.style.boxShadow = "";
+
+    });
+
+});
+
+
+/*==================================================
+ SAUVEGARDE DE LA LANGUE
+===================================================*/
+
+(function(){
+
+    const langue = localStorage.getItem("langue");
+
+    const select = document.getElementById("langSwitcher");
+
+    if(!select) return;
+
+    if(langue){
+
+        select.value = langue;
+
+    }
+
+})();
+
+
+/*==================================================
+ MESSAGE DE BIENVENUE
+===================================================*/
+
+window.addEventListener("load",()=>{
 
     setTimeout(()=>{
 
-        notification.style.transform =
-        "translateX(120%)";
-
-        setTimeout(()=>{
-
-            notification.remove();
-
-        },400);
-
-    },3500);
-
-}
-
-/*==================================================
-HISTORIQUE DES FORMULAIRES
-==================================================*/
-
-function initialiserHistorique(){
-
-    document
-
-    .querySelectorAll(".card")
-
-    .forEach(
-
-        carte=>{
-
-            carte.addEventListener(
-
-                "click",
-
-                enregistrerHistorique
-
-            );
-
-        }
-
-    );
-
-}
-
-function enregistrerHistorique(
-
-    evenement
-
-){
-
-    const carte =
-
-    evenement.currentTarget;
-
-    const titre =
-
-    carte.querySelector(
-
-        ".card-title"
-
-    )?.innerText.trim() ||
-
-    "Document";
-
-    const lien =
-
-    carte.getAttribute("href");
-
-    let historique =
-
-    JSON.parse(
-
-        localStorage.getItem(
-
-            "historiqueInspecteurBot"
-
-        ) || "[]"
-
-    );
-
-    historique =
-
-    historique.filter(
-
-        element =>
-
-        element.lien !== lien
-
-    );
-
-    historique.unshift({
-
-        titre,
-
-        lien,
-
-        date:
-
-        new Date()
-
-        .toLocaleString(
-
-            "fr-FR"
-
-        )
-
-    });
-
-    if(historique.length > 30){
-
-        historique.length = 30;
-
-    }
-
-    localStorage.setItem(
-
-        "historiqueInspecteurBot",
-
-        JSON.stringify(
-
-            historique
-
-        )
-
-    );
-
-}
-
-/*==================================================
-CONSULTATION DE L'HISTORIQUE
-==================================================*/
-
-function obtenirHistorique(){
-
-    return JSON.parse(
-
-        localStorage.getItem(
-
-            "historiqueInspecteurBot"
-
-        ) || "[]"
-
-    );
-
-}
-
-function viderHistorique(){
-
-    localStorage.removeItem(
-
-        "historiqueInspecteurBot"
-
-    );
-
-    notifier(
-
-        "Historique supprimé",
-
-        "success"
-
-    );
-
-}
-
-/*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
- fiche.js
- Partie 4B
- Favoris + Documents récents
-==================================================*/
-
-"use strict";
-
-/*==================================================
-INITIALISATION
-==================================================*/
-
-const ancienneInitialisationPartie4A =
-initialiserApplication;
-
-initialiserApplication = function(){
-
-    ancienneInitialisationPartie4A();
-
-    initialiserFavoris();
-
-    chargerDocumentsRecents();
-
-};
-
-/*==================================================
-FAVORIS
-==================================================*/
-
-function initialiserFavoris(){
-
-    document
-    .querySelectorAll(".card")
-    .forEach(
-
-        carte=>{
-
-            carte.addEventListener(
-
-                "dblclick",
-
-                ajouterFavori
-
-            );
-
-        }
-
-    );
-
-}
-
-function ajouterFavori(e){
-
-    e.preventDefault();
-
-    e.stopPropagation();
-
-    const carte =
-
-    e.currentTarget;
-
-    const titre =
-
-    carte.querySelector(
-
-        ".card-title"
-
-    )?.textContent.trim() ||
-
-    "Document";
-
-    const lien =
-
-    carte.getAttribute(
-
-        "href"
-
-    );
-
-    let favoris =
-
-    JSON.parse(
-
-        localStorage.getItem(
-
-            "favorisInspecteurBot"
-
-        ) || "[]"
-
-    );
-
-    const existe =
-
-    favoris.find(
-
-        item =>
-
-        item.lien === lien
-
-    );
-
-    if(existe){
-
-        notifier(
-
-            "Déjà dans les favoris.",
-
-            "warning"
-
+        console.log(
+            "Bienvenue sur InspecteurBot IA RDC Premium 4.0"
         );
 
-        return;
+    },500);
 
-    }
+});
 
-    favoris.push({
 
-        titre,
+/*==================================================
+ ANIMATION DES BOUTONS
+===================================================*/
 
-        lien,
+document.querySelectorAll("button").forEach(btn=>{
 
-        date:
+    btn.addEventListener("mousedown",()=>{
 
-        new Date()
-
-        .toLocaleString(
-
-            "fr-FR"
-
-        )
+        btn.style.transform="scale(.95)";
 
     });
 
-    localStorage.setItem(
+    btn.addEventListener("mouseup",()=>{
 
-        "favorisInspecteurBot",
+        btn.style.transform="scale(1)";
 
-        JSON.stringify(
+    });
 
-            favoris
-
-        )
-
-    );
-
-    notifier(
-
-        "Ajouté aux favoris ⭐",
-
-        "success"
-
-    );
-
-}
+});
 
 /*==================================================
-LECTURE DES FAVORIS
-==================================================*/
-
-function obtenirFavoris(){
-
-    return JSON.parse(
-
-        localStorage.getItem(
-
-            "favorisInspecteurBot"
-
-        ) || "[]"
-
-    );
-
-}
-
-function supprimerFavori(lien){
-
-    let favoris =
-
-    obtenirFavoris();
-
-    favoris =
-
-    favoris.filter(
-
-        item =>
-
-        item.lien !== lien
-
-    );
-
-    localStorage.setItem(
-
-        "favorisInspecteurBot",
-
-        JSON.stringify(
-
-            favoris
-
-        )
-
-    );
-
-}
+ PARTIE 5
+ OUTILS PROFESSIONNELS
+===================================================*/
 
 /*==================================================
-DOCUMENTS RECENTS
-==================================================*/
+ ETAT DE LA CONNEXION
+===================================================*/
 
-function chargerDocumentsRecents(){
+(function () {
 
-    const cartes =
+    function updateConnection() {
 
-    document.querySelectorAll(
+        if (navigator.onLine) {
 
-        ".card"
+            console.log("Connexion Internet disponible.");
 
-    );
+        } else {
 
-    const historique =
+            console.warn("Aucune connexion Internet.");
 
-    obtenirHistorique();
-
-    if(
-
-        historique.length===0
-
-    ){
-
-        return;
+        }
 
     }
 
-    cartes.forEach(
+    updateConnection();
 
-        carte=>{
+    window.addEventListener("online", updateConnection);
+    window.addEventListener("offline", updateConnection);
 
-            const lien =
+})();
 
-            carte.getAttribute(
 
-                "href"
+/*==================================================
+ BATTERIE
+===================================================*/
 
-            );
+(function () {
 
-            const trouve =
+    if (!navigator.getBattery) return;
 
-            historique.find(
+    navigator.getBattery().then(function (battery) {
 
-                item =>
+        console.log(
+            "Batterie : " +
+            Math.round(battery.level * 100) + "%"
+        );
 
-                item.lien===lien
+    });
 
-            );
+})();
 
-            if(trouve){
 
-                carte.classList.add(
+/*==================================================
+ MODE PLEIN ECRAN
+===================================================*/
 
-                    "recent"
+(function () {
 
-                );
+    document.addEventListener("keydown", function (e) {
+
+        if (e.key === "F11") {
+
+            e.preventDefault();
+
+            if (!document.fullscreenElement) {
+
+                document.documentElement.requestFullscreen();
+
+            } else {
+
+                document.exitFullscreen();
 
             }
 
         }
 
-    );
+    });
 
-}
+})();
 
-/*==================================================
-COMPTEURS
-==================================================*/
-
-function nombreFavoris(){
-
-    return obtenirFavoris().length;
-
-}
-
-function nombreDocumentsRecents(){
-
-    return obtenirHistorique().length;
-
-}
 
 /*==================================================
-EXPORT LOCAL
-==================================================*/
+ COPIER LE TEXTE D'UNE CARTE
+===================================================*/
 
-function exporterDonnees(){
+document.querySelectorAll(".card").forEach(card => {
 
-    const donnees={
+    card.addEventListener("contextmenu", function (e) {
 
-        favoris:
+        e.preventDefault();
 
-        obtenirFavoris(),
+        navigator.clipboard.writeText(card.innerText);
 
-        historique:
+        alert("Texte copié.");
 
-        obtenirHistorique(),
+    });
 
-        date:
+});
 
-        new Date()
-
-        .toLocaleString(
-
-            "fr-FR"
-
-        )
-
-    };
-
-    return JSON.stringify(
-
-        donnees,
-
-        null,
-
-        2
-
-    );
-
-}
 
 /*==================================================
-IMPORT LOCAL
-==================================================*/
+ BOUTON RETOUR EN HAUT
+===================================================*/
 
-function importerDonnees(
+const topButton = document.createElement("button");
 
-    json
+topButton.innerHTML = "⬆";
 
-){
+topButton.id = "backTop";
 
-    try{
+document.body.appendChild(topButton);
 
-        const donnees =
+topButton.style.position = "fixed";
+topButton.style.right = "20px";
+topButton.style.bottom = "20px";
+topButton.style.width = "50px";
+topButton.style.height = "50px";
+topButton.style.borderRadius = "50%";
+topButton.style.display = "none";
+topButton.style.cursor = "pointer";
+topButton.style.zIndex = "9999";
 
-        JSON.parse(json);
+window.addEventListener("scroll", () => {
 
-        if(
+    topButton.style.display =
+        window.scrollY > 300 ? "block" : "none";
 
-            donnees.favoris
+});
 
-        ){
+topButton.addEventListener("click", () => {
 
-            localStorage.setItem(
+    window.scrollTo({
 
-                "favorisInspecteurBot",
+        top: 0,
 
-                JSON.stringify(
+        behavior: "smooth"
 
-                    donnees.favoris
+    });
 
-                )
+});
 
-            );
 
-        }
-
-        if(
-
-            donnees.historique
-
-        ){
-
-            localStorage.setItem(
-
-                "historiqueInspecteurBot",
-
-                JSON.stringify(
-
-                    donnees.historique
-
-                )
-
-            );
-
-        }
-
-        notifier(
-
-            "Données restaurées.",
-
-            "success"
-
-        );
-
-    }
-
-    catch{
-
-        notifier(
-
-            "Fichier invalide.",
-
-            "error"
-
-        );
-
-    }
-
-}
-
-/*==================================================
- INSPECTEURBOT IA RDC
- Version 4.0 Premium
- fiche.js
- Partie 4C
- Optimisation - Hors ligne - Préchargement
-==================================================*/
-
-"use strict";
-
-/*==================================================
-INITIALISATION
-==================================================*/
-
-const ancienneInitialisationPartie4B =
-initialiserApplication;
-
-initialiserApplication = function(){
-
-    ancienneInitialisationPartie4B();
-
-    initialiserModeHorsLigne();
-
-    initialiserPrechargement();
-
-    initialiserOptimisation();
-
-    initialiserGestionErreurs();
-
-};
-
-/*==================================================
-MODE HORS LIGNE
-==================================================*/
-
-function initialiserModeHorsLigne(){
-
-    mettreAJourEtatConnexion();
-
-    window.addEventListener(
-
-        "online",
-
-        mettreAJourEtatConnexion
-
-    );
-
-    window.addEventListener(
-
-        "offline",
-
-        mettreAJourEtatConnexion
-
-    );
-
-}
-
-function mettreAJourEtatConnexion(){
-
-    if(navigator.onLine){
-
-        notifier(
-
-            "Connexion Internet disponible.",
-
-            "success"
-
-        );
-
-    }
-
-    else{
-
-        notifier(
-
-            "Mode hors ligne activé.",
-
-            "warning"
-
-        );
-
-    }
-
-}
-
-/*==================================================
-PRECHARGEMENT DES PAGES
-==================================================*/
-
-function initialiserPrechargement(){
-
-    document
-
-    .querySelectorAll(".card")
-
-    .forEach(
-
-        carte=>{
-
-            carte.addEventListener(
-
-                "mouseenter",
-
-                ()=>{
-
-                    prechargerPage(
-
-                        carte.href
-
-                    );
-
-                }
-
-            );
-
-            carte.addEventListener(
-
-                "touchstart",
-
-                ()=>{
-
-                    prechargerPage(
-
-                        carte.href
-
-                    );
-
-                },
-
-                {
-
-                    passive:true
-
-                }
-
-            );
-
-        }
-
-    );
-
-}
-
-function prechargerPage(url){
-
-    if(
-
-        document.querySelector(
-
-            'link[href="' +
-
-            url +
-
-            '"]'
-
-        )
-
-    ){
-
-        return;
-
-    }
-
-    const lien =
-
-    document.createElement(
-
-        "link"
-
-    );
-
-    lien.rel = "prefetch";
-
-    lien.href = url;
-
-    document.head.appendChild(
-
-        lien
-
-    );
-
-}
-
-/*==================================================
-OPTIMISATION
-==================================================*/
-
-function initialiserOptimisation(){
-
-    if(
-
-        "requestIdleCallback"
-
-        in window
-
-    ){
-
-        requestIdleCallback(
-
-            nettoyerApplication
-
-        );
-
-    }
-
-    else{
-
-        setTimeout(
-
-            nettoyerApplication,
-
-            1000
-
-        );
-
-    }
-
-}
-
-function nettoyerApplication(){
-
-    console.log(
-
-        "Optimisation terminée."
-
-    );
-
-}
-
-/*==================================================
-GESTION DES ERREURS
-==================================================*/
-
-function initialiserGestionErreurs(){
-
-    window.addEventListener(
-
-        "error",
-
-        evenement=>{
-
-            console.error(
-
-                evenement.message
-
-            );
-
-        }
-
-    );
-
-    window.addEventListener(
-
-        "unhandledrejection",
-
-        evenement=>{
-
-            console.error(
-
-                evenement.reason
-
-            );
-
-        }
-
-    );
-
-}
-
-/*==================================================
-INFORMATIONS APPLICATION
-==================================================*/
-
-function informationsApplication(){
-
-    return{
-
-        nom:APP.nom,
-
-        version:APP.version,
-
-        auteur:APP.auteur,
-
-        annee:APP.annee,
-
-        langue:
-
-        localStorage.getItem(
-
-            "langue"
-
-        ) || "fr",
-
-        theme:
-
-        localStorage.getItem(
-
-            "theme"
-
-        ) || "clair",
-
-        favoris:
-
-        nombreFavoris(),
-
-        historique:
-
-        nombreDocumentsRecents(),
-
-        connexion:
-
-        navigator.onLine
-
-    };
-
-}
-
-/*==================================================
-API GLOBALE
-==================================================*/
-
-window.InspecteurBot={
-
-    informations:
-
-    informationsApplication,
-
-    favoris:
-
-    obtenirFavoris,
-
-    historique:
-
-    obtenirHistorique,
-
-    exporter:
-
-    exporterDonnees,
-
-    importer:
-
-    importerDonnees,
-
-    notifier:
-
-    notifier
-
-};
