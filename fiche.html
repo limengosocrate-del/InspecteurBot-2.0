@@ -1,670 +1,882 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="theme-color"
-        content="#0B3D91">
+<meta name="theme-color"
+content="#041B3D">
 
-    <meta
-        name="description"
-        content="InspecteurBot IA RDC - Tableau de Bord Intelligent">
+<meta name="description"
+content="InspecteurBot IA RDC 4.0 Premium">
 
-    <title>
+<title>
 
-        InspecteurBot IA RDC
+InspecteurBot IA RDC 4.0 Premium
 
-    </title>
+</title>
 
-    <link
-        rel="stylesheet"
-        href="fiche.css">
+<link rel="stylesheet"
+href="fiche.css?v=40">
 
 </head>
 
 <body>
 
-    <!--==========================================
-        ARRIÈRE PLAN
-    ===========================================-->
+<!--==================================================
+ARRIÈRE PLAN PREMIUM
+===================================================-->
 
-    <div class="background"></div>
+<div class="background"></div>
 
-    <div class="particles"></div>
+<div class="particles"></div>
 
-    <!--==========================================
-        HEADER PRINCIPAL
-    ===========================================-->
+<!--==================================================
+HEADER PREMIUM
+===================================================-->
 
-    <header class="header">
+<header class="header">
 
-        <div class="header-left">
+<div class="header-left">
 
-            <div class="logo">
+<div class="logo">
 
-                IGT
+<img
+src="assets/images/logo-igt.png"
+alt="Inspection Générale du Travail">
 
-            </div>
+</div>
 
-            <div>
+<div class="header-text">
 
-                <h1>
+<h1>
 
-                    INSPECTEURBOT IA RDC
+INSPECTEURBOT IA RDC
 
-                </h1>
+</h1>
 
-                <h2>
+<h2>
 
-                    Inspection Générale du Travail
+Inspection Générale du Travail
 
-                </h2>
+</h2>
 
-                <p>
+<p>
 
-                    République Démocratique du Congo
+République Démocratique du Congo
 
-                </p>
+</p>
 
-            </div>
+</div>
 
-        </div>
+</div>
 
-        <div class="header-right">
+<div class="header-right">
 
-            <div class="info-box">
+<div class="status-panel">
 
-                <span>
+<div class="status-item">
 
-                    📅 Date
+<div class="status-label">
 
-                </span>
+🕒 Heure
 
-                <strong id="currentDate">
+</div>
 
-                    Chargement...
+<div
+id="currentTime"
+class="status-value">
 
-                </strong>
+13:50
 
-            </div>
+</div>
 
-            <div class="info-box">
+</div>
 
-                <span>
+<div class="status-item">
 
-                    🕒 Heure
+<div class="status-label">
 
-                </span>
+📅 Date
 
-                <strong id="currentTime">
+</div>
 
-                    Chargement...
+<div
+id="currentDate"
+class="status-value">
 
-                </strong>
+Mardi 07 Juillet 2026
 
-            </div>
+</div>
 
-            <div class="info-box">
+</div>
 
-                <span>
+<div class="status-item">
 
-                    🌦️ Météo
+<div class="status-label">
 
-                </span>
+🌦 Météo
 
-                <strong id="weather">
+</div>
 
-                    Chargement...
+<div
+id="weather"
+class="status-value">
 
-                </strong>
+Localisation...
 
-            </div>
+</div>
 
-            <div class="info-box">
+</div>
 
-                <span>
+</div>
 
-                    🌐 Réseau
+</div>
 
-                </span>
+</header>
 
-                <strong id="networkStatus">
+<!--==================================================
+BARRE D'ACTIONS
+===================================================-->
 
-                    Vérification...
+<section class="top-toolbar">
 
-                </strong>
+<input
 
-            </div>
+type="search"
 
-        </div>
+id="searchInput"
 
-    </header>
+placeholder="🔎 Rechercher un formulaire, une loi ou un document...">
 
-    <!--==========================================
-        BARRE D'ACTIONS
-    ===========================================-->
+<div class="toolbar-buttons">
 
-    <section class="action-bar">
+<button
+id="btnAssistant">
 
-        <div class="search-area">
+🤖 IA
 
-            <input
-                type="search"
-                id="searchInput"
-                placeholder="🔍 Rechercher un formulaire, un document ou un outil...">
+</button>
 
-        </div>
+<button
+id="btnVoice">
 
-        <div class="action-buttons">
+🎙 Voix
 
-            <button
-                id="btnAssistant"
-                class="action-btn">
+</button>
 
-                🤖 Assistant IA
+<button
+id="btnCamera">
 
-            </button>
+📷 Scanner
 
-            <button
-                id="btnTheme"
-                class="action-btn">
+</button>
 
-                🌙 Thème
+<button
+id="btnTheme">
 
-            </button>
+🌙 Thème
 
-            <select
-                id="langSwitcher">
+</button>
 
-                <option value="fr">
+<select
+id="langSwitcher">
 
-                    🇫🇷 Français
+<option value="fr">
 
-                </option>
+🇫🇷 Français
 
-                <option value="en">
+</option>
 
-                    🇬🇧 English
+<option value="en">
 
-                </option>
+🇬🇧 English
 
-                <option value="ln">
+</option>
 
-                    Lingala
+<option value="ln">
 
-                </option>
+Lingala
 
-                <option value="kg">
+</option>
 
-                    Kikongo
+<option value="kg">
 
-                </option>
+Kikongo
 
-                <option value="ts">
+</option>
 
-                    Tshiluba
+<option value="ts">
 
-                </option>
+Tshiluba
 
-                <option value="sw">
+</option>
 
-                    Swahili
+<option value="sw">
 
-                </option>
+Swahili
 
-            </select>
+</option>
 
-        </div>
+</select>
 
-    </section>
+</div>
 
-    <!--==========================================
-        TITRE
-    ===========================================-->
+</section>
 
-    <section class="hero">
+<!--==================================================
+TITRE PRINCIPAL
+===================================================-->
 
-        <h2>
+<section class="hero">
 
-            TABLEAU DE BORD DES FORMULAIRES
+<h2>
 
-        </h2>
+TABLEAU DE BORD INTELLIGENT
 
-        <p>
+</h2>
 
-            Inspection • ONEM • IA • Juridique • Vérification • SMIG • Statistiques
+<p>
 
-        </p>
+Inspection • ONEM • IA • Juridique • Vérification • SMIG • Statistiques
 
-    </section>
+</p>
 
-    <!--==========================================
-        CONTENU PRINCIPAL
-    ===========================================-->
+</section>
 
-    <main class="dashboard">
+<!--==================================================
+CONTENU
+===================================================-->
 
-            <!--==========================================
-            INSPECTION GÉNÉRALE DU TRAVAIL
-        ===========================================-->
+<main class="dashboard">
 
-        <section class="dashboard-section">
+<!--==================================================
+INSPECTION GENERALE DU TRAVAIL
+===================================================-->
 
-            <div class="section-title">
+<section class="dashboard-section">
 
-                <span>🏛</span>
+<div class="section-title">
 
-                <h2>Inspection Générale du Travail</h2>
+🏛 Inspection Générale du Travail
 
-            </div>
+</div>
 
-            <div class="cards">
+<div class="cards">
 
-                <a href="F01/F01.html" class="card">
+<!--==================================================
+FORMULAIRES IGT
+===================================================-->
 
-                    <div class="card-icon">📄</div>
+<a href="F01/F01.html" class="card">
 
-                    <h3>F01</h3>
+    <div class="card-icon">📄</div>
 
-                    <p>Fiche de Contrôle N°01</p>
+    <div class="card-code">
 
-                </a>
+        F01
 
-                <a href="F02/F02.html" class="card">
+    </div>
 
-                    <div class="card-icon">📄</div>
+    <div class="card-title">
 
-                    <h3>F02</h3>
+        CONTRÔLE DE LA<br>
+        MAIN D'ŒUVRE
 
-                    <p>Fiche de Contrôle N°02</p>
+    </div>
 
-                </a>
+</a>
 
-                <a href="F03/F03.html" class="card">
+<a href="F02/F02.html" class="card">
 
-                    <div class="card-icon">📄</div>
+    <div class="card-icon">👷</div>
 
-                    <h3>F03</h3>
+    <div class="card-code">
 
-                    <p>Fiche de Contrôle N°03</p>
+        F02
 
-                </a>
+    </div>
 
-                <a href="F04/F04.html" class="card">
+    <div class="card-title">
 
-                    <div class="card-icon">📄</div>
+        CONTRÔLE DE LA<br>
+        MAIN D'ŒUVRE<br>
+        ÉTRANGÈRE
 
-                    <h3>F04</h3>
+    </div>
 
-                    <p>Fiche de Contrôle N°04</p>
+</a>
 
-                </a>
+<a href="F03/F03.html" class="card">
 
-                <a href="F05/F05.html" class="card">
+    <div class="card-icon">🏥</div>
 
-                    <div class="card-icon">📄</div>
+    <div class="card-code">
 
-                    <h3>F05</h3>
+        F03
 
-                    <p>Fiche de Contrôle N°05</p>
+    </div>
 
-                </a>
+    <div class="card-title">
 
-                <a href="F06/F06.html" class="card">
+        HYGIÈNE ET SANTÉ<br>
+        AU TRAVAIL
 
-                    <div class="card-icon">📄</div>
+    </div>
 
-                    <h3>F06</h3>
+</a>
 
-                    <p>Fiche de Contrôle N°06</p>
+<a href="F04/F04.html" class="card">
 
-                </a>
+    <div class="card-icon">🏗️</div>
 
-                <a href="F07/F07.html" class="card">
+    <div class="card-code">
 
-                    <div class="card-icon">📄</div>
+        F04
 
-                    <h3>F07</h3>
+    </div>
 
-                    <p>Fiche de Contrôle N°07</p>
+    <div class="card-title">
 
-                </a>
+        SÉCURITÉ TECHNIQUE<br>
+        DANS LE BTP
 
-                <a href="S01/S01.html" class="card">
+    </div>
 
-                    <div class="card-icon">📝</div>
+</a>
 
-                    <h3>S01</h3>
+<a href="F05/F05.html" class="card">
 
-                    <p>Formulaire Spécial N°01</p>
+    <div class="card-icon">⛏️</div>
 
-                </a>
+    <div class="card-code">
 
-                <a href="S02/S02.html" class="card">
+        F05
 
-                    <div class="card-icon">📝</div>
+    </div>
 
-                    <h3>S02</h3>
+    <div class="card-title">
 
-                    <p>Formulaire Spécial N°02</p>
+        SÉCURITÉ TECHNIQUE<br>
+        DANS LES MINES
 
-                </a>
+    </div>
 
-                <a href="S03/S03.html" class="card">
+</a>
 
-                    <div class="card-icon">📝</div>
+<a href="F06/F06.html" class="card">
 
-                    <h3>S03</h3>
+    <div class="card-icon">⚠️</div>
 
-                    <p>Formulaire Spécial N°03</p>
+    <div class="card-code">
 
-                </a>
+        F06
 
-            </div>
+    </div>
 
-        </section>
+    <div class="card-title">
 
-        <!--==========================================
-            OFFICE NATIONAL DE L'EMPLOI
-        ===========================================-->
+        SÉCURITÉ TECHNIQUE<br>
+        DANS LES ENTREPRISES<br>
+        À HAUT RISQUES
 
-        <section class="dashboard-section">
+    </div>
 
-            <div class="section-title">
+</a>
 
-                <span>🏢</span>
+<a href="F07/F07.html" class="card">
 
-                <h2>Office National de l'Emploi (ONEM)</h2>
+    <div class="card-icon">🛡️</div>
 
-            </div>
+    <div class="card-code">
 
-            <div class="cards">
+        F07
 
-                <a href="ONEM/declaration-etablissement.html" class="card">
+    </div>
 
-                    <div class="card-icon">🏭</div>
+    <div class="card-title">
 
-                    <h3>Déclaration</h3>
+        PROTECTION<br>
+        SOCIALE
 
-                    <p>Déclaration d'Établissement</p>
+    </div>
 
-                </a>
+</a>
 
-                <a href="ONEM/dasmo.html" class="card">
+<a href="S01/S01.html" class="card">
 
-                    <div class="card-icon">👥</div>
+    <div class="card-icon">📝</div>
 
-                    <h3>DASMO</h3>
+    <div class="card-code">
 
-                    <p>Situation annuelle de la Main-d'œuvre</p>
+        S01
 
-                </a>
+    </div>
 
-                <a href="ONEM/bilan-social.html" class="card">
+    <div class="card-title">
 
-                    <div class="card-icon">📊</div>
+        VISITE<br>
+        D'INSPECTION<br>
+        SPÉCIALE
 
-                    <h3>Bilan Social</h3>
+    </div>
 
-                    <p>Rapport Social de l'Entreprise</p>
+</a>
 
-                </a>
+<a href="S02/S02.html" class="card">
 
-            </div>
+    <div class="card-icon">🔎</div>
 
-        </section>
+    <div class="card-code">
 
-        <!--==========================================
-            JURIDIQUE
-        ===========================================-->
+        S02
 
-        <section class="dashboard-section">
+    </div>
 
-            <div class="section-title">
+    <div class="card-title">
 
-                <span>⚖️</span>
+        CONTRE-<br>
+        ENQUÊTE
 
-                <h2>Bibliothèque Juridique</h2>
+    </div>
 
-            </div>
+</a>
 
-            <div class="cards">
+<a href="S03/S03.html" class="card">
 
-                <a href="../code-travail/index.html" class="card">
+    <div class="card-icon">💼</div>
 
-                    <div class="card-icon">📚</div>
+    <div class="card-code">
 
-                    <h3>Code du Travail</h3>
+        S03
 
-                    <p>Recherche intelligente des articles</p>
+    </div>
 
-                </a>
+    <div class="card-title">
 
-                <a href="juridique/conventions.html" class="card">
+        ADMINISTRATION<br>
+        ET FINANCE
 
-                    <div class="card-icon">📘</div>
+    </div>
 
-                    <h3>Conventions</h3>
+</a>
 
-                    <p>Conventions Collectives</p>
+</div>
 
-                </a>
+</section>
 
-                <a href="juridique/arretes.html" class="card">
+<!--==================================================
+OFFICE NATIONAL DE L'EMPLOI (ONEM)
+===================================================-->
 
-                    <div class="card-icon">⚖️</div>
+<section class="dashboard-section">
 
-                    <h3>Arrêtés</h3>
+<div class="section-title">
 
-                    <p>Arrêtés Ministériels</p>
+🏢 Office National de l'Emploi (ONEM)
 
-                </a>
+</div>
 
-            </div>
+<div class="cards">
 
-                    </section>    
+ <!--==================================================
+FORMULAIRES OFFICIELS DE L'ONEM
+===================================================-->
 
-                <!--==========================================
-            INTELLIGENCE ARTIFICIELLE
-        ===========================================-->
+<a href="ONEM/declaration-etablissement.html" class="card">
 
-        <section class="dashboard-section">
+    <div class="card-icon">🏭</div>
 
-            <div class="section-title">
+    <div class="card-code">
 
-                <span>🤖</span>
+        ONEM
 
-                <h2>Intelligence Artificielle</h2>
+    </div>
 
-            </div>
+    <div class="card-title">
 
-            <div class="cards">
+        DÉCLARATION<br>
+        D'ÉTABLISSEMENT
 
-                <a href="ia/assistant.html" class="card">
+    </div>
 
-                    <div class="card-icon">🤖</div>
+</a>
 
-                    <h3>Assistant IA</h3>
+<a href="ONEM/dasmo.html" class="card">
 
-                    <p>Assistant intelligent pour les Inspecteurs du Travail.</p>
+    <div class="card-icon">👥</div>
 
-                </a>
+    <div class="card-code">
 
-                <a href="ia/analyse.html" class="card">
+        DASMO
 
-                    <div class="card-icon">🧠</div>
+    </div>
 
-                    <h3>Analyse IA</h3>
+    <div class="card-title">
 
-                    <p>Détection automatique des infractions au Code du Travail.</p>
+        DÉCLARATION<br>
+        ANNUELLE DE LA<br>
+        SITUATION DE LA<br>
+        MAIN-D'ŒUVRE
 
-                </a>
+    </div>
 
-                <a href="ia/recommandations.html" class="card">
+</a>
 
-                    <div class="card-icon">💡</div>
+<a href="ONEM/bilan-social.html" class="card">
 
-                    <h3>Recommandations</h3>
+    <div class="card-icon">📊</div>
 
-                    <p>Suggestions automatiques d'observations et de mesures.</p>
+    <div class="card-code">
 
-                </a>
+        BILAN
 
-            </div>
+    </div>
 
-        </section>
+    <div class="card-title">
 
-        <!--==========================================
-            AUTRES OUTILS
-        ===========================================-->
+        BILAN<br>
+        SOCIAL
 
-        <section class="dashboard-section">
+    </div>
 
-            <div class="section-title">
+</a>
 
-                <span>🧰</span>
+</div>
 
-                <h2>Autres Outils Professionnels</h2>
+</section>
 
-            </div>
+<!--==================================================
+BIBLIOTHÈQUE JURIDIQUE
+===================================================-->
 
-            <div class="cards">
+<section class="dashboard-section">
 
-                <a href="autres/smig.html" class="card">
+<div class="section-title">
 
-                    <div class="card-icon">💵</div>
+⚖️ Bibliothèque Juridique
 
-                    <h3>Application SMIG</h3>
+</div>
 
-                    <p>Calcul automatique du SMIG et des heures supplémentaires.</p>
+<div class="cards">
 
-                </a>
+<a href="code-travail.html" class="card">
 
-                <a href="autres/verification.html" class="card">
+<div class="card-icon">📚</div>
 
-                    <div class="card-icon">✅</div>
+<div class="card-code">
 
-                    <h3>Authenticité</h3>
+CT
 
-                    <p>Vérification des documents administratifs.</p>
+</div>
 
-                </a>
+<div class="card-title">
 
-                <a href="autres/qrcode.html" class="card">
+CODE DU<br>
+TRAVAIL RDC
 
-                    <div class="card-icon">📱</div>
+</div>
 
-                    <h3>QR Code</h3>
+</a>
 
-                    <p>Scanner et générateur de QR Codes.</p>
+<a href="juridique/conventions.html" class="card">
 
-                </a>
+<div class="card-icon">📘</div>
 
-                <a href="autres/gps.html" class="card">
+<div class="card-code">
 
-                    <div class="card-icon">📍</div>
+CC
 
-                    <h3>GPS</h3>
+</div>
 
-                    <p>Localisation des contrôles et coordonnées GPS.</p>
+<div class="card-title">
 
-                </a>
+CONVENTIONS<br>
+COLLECTIVES
 
-                <a href="autres/statistiques.html" class="card">
+</div>
 
-                    <div class="card-icon">📊</div>
+</a>
 
-                    <h3>Statistiques</h3>
+<a href="juridique/arretes.html" class="card">
 
-                    <p>Rapports, graphiques et tableaux de bord.</p>
+<div class="card-icon">⚖️</div>
 
-                </a>
+<div class="card-code">
 
-                <a href="autres/historique.html" class="card">
+AM
 
-                    <div class="card-icon">🗂️</div>
+</div>
 
-                    <h3>Historique</h3>
+<div class="card-title">
 
-                    <p>Consultation de l'historique des contrôles.</p>
+ARRÊTÉS<br>
+MINISTÉRIELS
 
-                </a>
+</div>
 
-            </div>
+</a>
 
-        </section>
+</div>
 
-    </main>
+</section>
 
-    <!--==========================================
-        PIED DE PAGE PREMIUM
-    ===========================================-->
+<!--==================================================
+INTELLIGENCE ARTIFICIELLE
+===================================================-->
 
-    <footer class="footer">
+<section class="dashboard-section">
 
-        <div class="footer-content">
+<div class="section-title">
 
-            <h2>
+🤖 Intelligence Artificielle
 
-                INSPECTEURBOT IA RDC
+</div>
 
-            </h2>
+<div class="cards">
 
-            <p>
+<a href="ia/assistant.html" class="card">
 
-                Plateforme professionnelle destinée aux Inspecteurs du Travail
-                de la République Démocratique du Congo.
+<div class="card-icon">🤖</div>
 
-            </p>
+<div class="card-code">
 
-            <div class="footer-info">
+IA
 
-                <span>⚖️ Inspection Générale du Travail</span>
+</div>
 
-                <span>🏢 Office National de l'Emploi (ONEM)</span>
+<div class="card-title">
 
-                <span>📚 Code du Travail RDC</span>
+ASSISTANT<br>
+INTELLIGENT
 
-                <span>🤖 Intelligence Artificielle</span>
+</div>
 
-            </div>
+</a>
 
-            <hr>
+<a href="ia/analyse.html" class="card">
 
-            <h3>
+<div class="card-icon">🧠</div>
 
-                Créé par Inspecteur Limengo (Pmiller)
+<div class="card-code">
 
-            </h3>
+AI
 
-            <p>
+</div>
 
-                © 2026 Tous droits réservés.
+<div class="card-title">
 
-            </p>
+ANALYSE<br>
+AUTOMATIQUE
 
-            <p>
+</div>
 
-                Version 3.0 Premium
+</a>
 
-            </p>
+<a href="ia/recommandations.html" class="card">
 
-        </div>
+<div class="card-icon">💡</div>
 
-    </footer>
+<div class="card-code">
 
-    <script src="fiche.js"></script>
+IA+
+
+</div>
+
+<div class="card-title">
+
+RECOMMANDATIONS<br>
+INTELLIGENTES
+
+</div>
+
+</a>
+
+</div>
+
+</section>
+
+<!--==================================================
+AUTRES OUTILS
+===================================================-->
+
+<section class="dashboard-section">
+
+<div class="section-title">
+
+🧰 Autres Outils Professionnels
+
+</div>
+
+<div class="cards">
+
+<a href="autres/smig.html" class="card">
+
+<div class="card-icon">💵</div>
+
+<div class="card-code">
+
+SMIG
+
+</div>
+
+<div class="card-title">
+
+APPLICATION<br>
+DU SMIG
+
+</div>
+
+</a>
+
+<a href="autres/verification.html" class="card">
+
+<div class="card-icon">✅</div>
+
+<div class="card-code">
+
+DOC
+
+</div>
+
+<div class="card-title">
+
+VÉRIFICATION<br>
+DES DOCUMENTS<br>
+AUTHENTIQUES
+
+</div>
+
+</a>
+
+<a href="autres/qrcode.html" class="card">
+
+<div class="card-icon">📱</div>
+
+<div class="card-code">
+
+QR
+
+</div>
+
+<div class="card-title">
+
+LECTEUR<br>
+QR CODE
+
+</div>
+
+</a>
+
+<a href="autres/gps.html" class="card">
+
+<div class="card-icon">📍</div>
+
+<div class="card-code">
+
+GPS
+
+</div>
+
+<div class="card-title">
+
+LOCALISATION<br>
+GPS
+
+</div>
+
+</a>
+
+<a href="autres/statistiques.html" class="card">
+
+<div class="card-icon">📈</div>
+
+<div class="card-code">
+
+STAT
+
+</div>
+
+<div class="card-title">
+
+STATISTIQUES<br>
+DES CONTRÔLES
+
+</div>
+
+</a>
+
+<a href="autres/historique.html" class="card">
+
+<div class="card-icon">🗂️</div>
+
+<div class="card-code">
+
+LOG
+
+</div>
+
+<div class="card-title">
+
+HISTORIQUE<br>
+DES MISSIONS
+
+</div>
+
+</a>
+
+</div>
+
+</section>
+
+</main>
+
+<!--==================================================
+FOOTER PREMIUM
+===================================================-->
+
+<footer class="footer">
+
+<h2>
+
+INSPECTEURBOT IA RDC 4.0 PREMIUM
+
+</h2>
+
+<p>
+
+Inspection Générale du Travail • Office National de l'Emploi • Intelligence Artificielle
+
+</p>
+
+<p>
+
+Code du Travail • Contrôle • Statistiques • Vérification • SMIG
+
+</p>
+
+<div class="footer-bottom">
+
+Créé par <strong>Inspecteur Limengo (Pmiller)</strong>
+
+<br>
+
+© 2026 - Tous droits réservés
+
+<br>
+
+Version 4.0 Premium
+
+</div>
+
+</footer>
+
+<script src="fiche.js?v=40"></script>
 
 </body>
 
-    </html>
-
-        
+    </html>   
