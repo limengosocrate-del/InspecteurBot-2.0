@@ -1,0 +1,16 @@
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #0a1628; color: #fff; margin: 0; padding: 20px; }
+.form-container { max-width: 210mm; margin: 0 auto; background: white; color: black; padding: 15px; box-shadow: 0 0 25px rgba(0,0,0,0.4); border: 1px solid #003366; }
+.logo-igt { width: 70px; height: 70px; object-fit: contain; }
+.main-table { width: 100%; border-collapse: collapse; border: 2px solid #003366; font-size: 11px; }
+.main-table td, .main-table th { border: 1px solid #003366; padding: 4px; vertical-align: top; }
+.section-header { background: #003366; color: white; font-weight: bold; text-align: center; }
+.input-field { width: 100%; border: none; border-bottom: 1px solid #666; background: transparent; font-size: 11px; }
+.signature-section { display: flex; justify-content: space-between; margin-top: 20px; gap: 15px; flex-wrap: wrap; }
+canvas { border: 2px solid #003366; background: white; touch-action: none; }
+.qr-container { text-align: center; margin-top: 10px; }
+.reserve { background: #f0f0f0; width: 85px; font-size: 9px; text-align: center; }
+@media print {
+  body { background: white; padding: 0; }
+  .form-container { box-shadow: none; border: none; max-width: 100%; }
+  .signature-section, .qr-container, button { display: none !important; }
+             }
