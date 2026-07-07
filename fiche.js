@@ -1,9 +1,9 @@
 /*==================================================
  INSPECTEURBOT IA RDC
+ Version 4.0 Premium
  fiche.js
- PARTIE 1
+ Partie 1
  Créé par Inspecteur Limengo (Pmiller)
- © 2026
 ==================================================*/
 
 "use strict";
@@ -16,7 +16,7 @@ const APP = {
 
     nom: "InspecteurBot IA RDC",
 
-    version: "3.0 Premium",
+    version: "4.0 Premium",
 
     auteur: "Inspecteur Limengo (Pmiller)",
 
@@ -34,25 +34,37 @@ document.addEventListener(
 
     () => {
 
-        afficherDateHeure();
+        console.log(
 
-        setInterval(
+            APP.nom,
 
-            afficherDateHeure,
-
-            1000
+            APP.version
 
         );
 
-        verifierConnexion();
-
-        chargerMeteo();
-
-        afficherBienvenue();
+        initialiserApplication();
 
     }
 
 );
+
+/*==================================================
+INITIALISATION
+==================================================*/
+
+function initialiserApplication(){
+
+    afficherDateHeure();
+
+    surveillerReseau();
+
+    chargerPreferences();
+
+    detecterLangue();
+
+    detecterAppareil();
+
+}
 
 /*==================================================
 DATE ET HEURE
@@ -60,345 +72,157 @@ DATE ET HEURE
 
 function afficherDateHeure(){
 
+    actualiserDateHeure();
+
+    setInterval(
+
+        actualiserDateHeure,
+
+        1000
+
+    );
+
+}
+
+function actualiserDateHeure(){
+
     const maintenant = new Date();
 
-    const date = maintenant.toLocaleDateString(
+    const heure = document.getElementById("currentTime");
 
-        "fr-FR",
+    const date = document.getElementById("currentDate");
 
-        {
+    if(heure){
 
-            weekday:"long",
+        heure.textContent =
 
-            year:"numeric",
+        maintenant.toLocaleTimeString(
 
-            month:"long",
+            "fr-FR"
 
-            day:"numeric"
+        );
 
-        }
+    }
 
-    );
+    if(date){
 
-    const heure = maintenant.toLocaleTimeString(
+        date.textContent =
 
-        "fr-FR"
+        maintenant.toLocaleDateString(
 
-    );
+            "fr-FR",
 
-    document.getElementById(
+            {
 
-        "currentDate"
+                weekday:"long",
 
-    ).textContent = date;
+                day:"numeric",
 
-    document.getElementById(
+                month:"long",
 
-        "currentTime"
+                year:"numeric"
 
-    ).textContent = heure;
+            }
+
+        );
+
+    }
 
 }
 
 /*==================================================
-CONNEXION INTERNET
+ETAT DU RESEAU
 ==================================================*/
 
-function verifierConnexion(){
+function surveillerReseau(){
 
-    const reseau = document.getElementById(
+    mettreAJourReseau();
+
+    window.addEventListener(
+
+        "online",
+
+        mettreAJourReseau
+
+    );
+
+    window.addEventListener(
+
+        "offline",
+
+        mettreAJourReseau
+
+    );
+
+}
+
+function mettreAJourReseau(){
+
+    const el =
+
+    document.getElementById(
 
         "networkStatus"
 
     );
 
-    if(!reseau) return;
+    if(!el) return;
 
     if(navigator.onLine){
 
-        reseau.innerHTML =
-
-        "🟢 En ligne";
+        el.innerHTML="🟢 En ligne";
 
     }
 
     else{
 
-        reseau.innerHTML =
-
-        "🔴 Hors ligne";
+        el.innerHTML="🔴 Hors ligne";
 
     }
 
 }
 
-window.addEventListener(
-
-    "online",
-
-    verifierConnexion
-
-);
-
-window.addEventListener(
-
-    "offline",
-
-    verifierConnexion
-
-);
-
 /*==================================================
-MESSAGE BIENVENUE
+LANGUE
 ==================================================*/
 
-function afficherBienvenue(){
+function detecterLangue(){
 
-    notification(
+    const select =
 
-        "Bienvenue sur InspecteurBot IA RDC"
+    document.getElementById(
 
-    );
-
-}
-
-/*==================================================
-NOTIFICATION
-==================================================*/
-
-function notification(message){
-
-    const toast = document.createElement(
-
-        "div"
+        "langSwitcher"
 
     );
 
-    toast.className = "toast";
+    if(!select) return;
 
-    toast.innerHTML = message;
+    const langue =
 
-    document.body.appendChild(
+    localStorage.getItem(
 
-        toast
-
-    );
-
-    setTimeout(
-
-        ()=>{
-
-            toast.classList.add(
-
-                "show"
-
-            );
-
-        },
-
-        100
+        "langue"
 
     );
 
-    setTimeout(
+    if(langue){
 
-        ()=>{
-
-            toast.classList.remove(
-
-                "show"
-
-            );
-
-            setTimeout(
-
-                ()=>{
-
-                    toast.remove();
-
-                },
-
-                400
-
-            );
-
-        },
-
-        3500
-
-    );
-
-}
-
-/*==================================================
-MESSAGE SELON L'HEURE
-==================================================*/
-
-const heure = new Date().getHours();
-
-setTimeout(()=>{
-
-if(heure<12){
-
-notification(
-
-"☀️ Bonjour Inspecteur."
-
-);
-
-}
-
-else if(heure<18){
-
-notification(
-
-"👋 Bon après-midi Inspecteur."
-
-);
-
-}
-
-else{
-
-notification(
-
-"🌙 Bonne soirée Inspecteur."
-
-);
-
-}
-
-},1800);
-
-/*==================================================
-VERSION
-==================================================*/
-
-console.log(
-
-APP.nom,
-
-APP.version
-
-);
-
-console.log(
-
-"Créé par Inspecteur Limengo (Pmiller)"
-
-);
-
-console.log(
-
-"© 2026"
-
-);
-
-/*==================================================
-FIN PARTIE 1
-==================================================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.js
- PARTIE 2
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
-==================================================*/
-
-"use strict";
-
-/*==================================================
-MODE SOMBRE / CLAIR
-==================================================*/
-
-const btnTheme = document.getElementById("btnTheme");
-
-if(btnTheme){
-
-    btnTheme.addEventListener(
-
-        "click",
-
-        changerTheme
-
-    );
-
-}
-
-function changerTheme(){
-
-    document.body.classList.toggle("light");
-
-    const mode = document.body.classList.contains("light")
-        ? "light"
-        : "dark";
-
-    localStorage.setItem(
-
-        "theme",
-
-        mode
-
-    );
-
-    notification(
-
-        mode === "light"
-
-        ? "☀️ Mode clair activé"
-
-        : "🌙 Mode sombre activé"
-
-    );
-
-}
-
-(function(){
-
-    const mode = localStorage.getItem("theme");
-
-    if(mode === "light"){
-
-        document.body.classList.add("light");
+        select.value = langue;
 
     }
 
-})();
-
-/*==================================================
-CHANGEMENT DE LANGUE
-==================================================*/
-
-const langue = document.getElementById("langSwitcher");
-
-if(langue){
-
-    const sauvegarde = localStorage.getItem("langue");
-
-    if(sauvegarde){
-
-        langue.value = sauvegarde;
-
-    }
-
-    langue.addEventListener(
+    select.addEventListener(
 
         "change",
 
-        function(){
+        ()=>{
 
             localStorage.setItem(
 
                 "langue",
 
-                this.value
-
-            );
-
-            notification(
-
-                "🌍 Langue enregistrée"
+                select.value
 
             );
 
@@ -406,373 +230,51 @@ if(langue){
 
     );
 
-}
-
-/*==================================================
-RECHERCHE INTELLIGENTE
-==================================================*/
-
-const recherche = document.getElementById("searchInput");
-
-if(recherche){
-
-    recherche.addEventListener(
-
-        "input",
-
-        function(){
-
-            const texte = this.value.toLowerCase();
-
-            document.querySelectorAll(".card").forEach(
-
-                carte=>{
-
-                    const contenu = carte.textContent.toLowerCase();
-
-                    carte.style.display =
-
-                        contenu.includes(texte)
-
-                        ? ""
-
-                        : "none";
-
-                }
-
-            );
-
-        }
-
-    );
-
-}
-
-/*==================================================
-BOUTON ASSISTANT IA
-==================================================*/
-
-const assistant = document.getElementById("btnAssistant");
-
-if(assistant){
-
-    assistant.addEventListener(
-
-        "click",
-
-        ()=>{
-
-            notification(
-
-                "🤖 Assistant IA en cours de développement."
-
-            );
-
-        }
-
-    );
-
-}
-
-/*==================================================
-RACCOURCIS CLAVIER
-==================================================*/
-
-document.addEventListener(
-
-    "keydown",
-
-    function(e){
-
-        if(e.key === "/"){
-
-            e.preventDefault();
-
-            recherche.focus();
-
-        }
-
-        if(e.key.toLowerCase() === "t"){
-
-            changerTheme();
-
-        }
-
-    }
-
-);
-
-/*==================================================
-ANIMATION DES CARTES
-==================================================*/
-
-document.querySelectorAll(".card").forEach(
-
-    carte=>{
-
-        carte.addEventListener(
-
-            "mouseenter",
-
-            ()=>{
-
-                carte.style.transform =
-
-                "translateY(-10px) scale(1.03)";
-
-            }
-
-        );
-
-        carte.addEventListener(
-
-            "mouseleave",
-
-            ()=>{
-
-                carte.style.transform =
-
-                "";
-
-            }
-
-        );
-
-    }
-
-);
-
-/*==================================================
-ANIMATION AU DEFILEMENT
-==================================================*/
-
-const apparition = new IntersectionObserver(
-
-    elements=>{
-
-        elements.forEach(
-
-            element=>{
-
-                if(element.isIntersecting){
-
-                    element.target.classList.add(
-
-                        "show"
-
-                    );
-
-                }
-
-            }
-
-        );
-
-    },
-
-    {
-
-        threshold:0.15
-
-    }
-
-);
-
-document.querySelectorAll(
-
-    ".dashboard-section"
-
-).forEach(
-
-    section=>{
-
-        section.classList.add("fade-up");
-
-        apparition.observe(section);
-
-    }
-
-);
-
-/*==================================================
-FIN PARTIE 2
-==================================================*/
+     }
 
 /*==================================================
  INSPECTEURBOT IA RDC
+ Version 4.0 Premium
  fiche.js
- PARTIE 3
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
+ Partie 2
+ Géolocalisation - Météo - Thème
+ Recherche - Animations
 ==================================================*/
 
 "use strict";
 
 /*==================================================
-METEO (Open-Meteo)
+INITIALISATION COMPLEMENTAIRE
 ==================================================*/
 
-async function chargerMeteo(){
+const ancienneInitialisation =
+initialiserApplication;
 
-    const meteo = document.getElementById("weather");
+initialiserApplication = function(){
 
-    if(!meteo) return;
+    ancienneInitialisation();
+
+    initialiserTheme();
+
+    initialiserRecherche();
+
+    initialiserAnimations();
+
+    obtenirLocalisation();
+
+};
+
+/*==================================================
+GEOLOCALISATION
+==================================================*/
+
+function obtenirLocalisation(){
 
     if(!navigator.geolocation){
 
-        meteo.innerHTML = "GPS indisponible";
-
-        return;
-
-    }
-
-    navigator.geolocation.getCurrentPosition(
-
-        async(position)=>{
-
-            try{
-
-                const latitude = position.coords.latitude;
-
-                const longitude = position.coords.longitude;
-
-                const url =
-
-                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`;
-
-                const reponse = await fetch(url);
-
-                const data = await reponse.json();
-
-                meteo.innerHTML =
-
-                "🌡 " +
-
-                data.current.temperature_2m +
-
-                " °C";
-
-            }
-
-            catch{
-
-                meteo.innerHTML =
-
-                "Météo indisponible";
-
-            }
-
-        },
-
-        ()=>{
-
-            meteo.innerHTML =
-
-            "Localisation refusée";
-
-        }
-
-    );
-
-}
-
-/*==================================================
-STATISTIQUES
-==================================================*/
-
-function afficherStatistiques(){
-
-    const cartes =
-
-    document.querySelectorAll(".card").length;
-
-    console.log(
-
-        "Nombre de modules :",cartes
-
-    );
-
-}
-
-afficherStatistiques();
-
-/*==================================================
-PARTICULES
-==================================================*/
-
-function creerParticules(){
-
-    const fond =
-
-    document.querySelector(".particles");
-
-    if(!fond) return;
-
-    for(let i=0;i<60;i++){
-
-        const p =
-
-        document.createElement("span");
-
-        p.className="particle";
-
-        p.style.left=
-
-        Math.random()*100+"%";
-
-        p.style.top=
-
-        Math.random()*100+"%";
-
-        p.style.animationDuration=
-
-        (6+Math.random()*12)+"s";
-
-        p.style.animationDelay=
-
-        Math.random()*6+"s";
-
-        fond.appendChild(p);
-
-    }
-
-}
-
-creerParticules();
-
-/*==================================================
-RACCOURCIS
-==================================================*/
-
-document.addEventListener(
-
-    "keydown",
-
-    e=>{
-
-        if(e.key==="Home"){
-
-            window.scrollTo({
-
-                top:0,
-
-                behavior:"smooth"
-
-            });
-
-        }
-
-    }
-
-);
-
-/*==================================================
-GPS
-==================================================*/
-
-function afficherGPS(){
-
-    if(!navigator.geolocation){
+        afficherMeteo(
+            "GPS indisponible"
+        );
 
         return;
 
@@ -782,501 +284,31 @@ function afficherGPS(){
 
         position=>{
 
-            console.log(
+            chargerMeteo(
 
-                "Latitude :",position.coords.latitude
+                position.coords.latitude,
 
-            );
-
-            console.log(
-
-                "Longitude :",position.coords.longitude
+                position.coords.longitude
 
             );
 
-        }
-
-    );
-
-}
-
-afficherGPS();
-
-/*==================================================
-MESSAGE VERSION
-==================================================*/
-
-console.log(
-
-"======================================"
-
-);
-
-console.log(
-
-APP.nom
-
-);
-
-console.log(
-
-"Version :",APP.version
-
-);
-
-console.log(
-
-"Créé par Inspecteur Limengo (Pmiller)"
-
-);
-
-console.log(
-
-"© 2026"
-
-);
-
-console.log(
-
-"======================================"
-
-);
-
-/*==================================================
-CHARGEMENT
-==================================================*/
-
-window.addEventListener(
-
-    "load",
-
-    ()=>{
-
-        notification(
-
-            "✅ InspecteurBot IA RDC prêt."
-
-        );
-
-    }
-
-);
-
-/*==================================================
-PREPARATION FUTURE IA
-==================================================*/
-
-const IA = {
-
-    actif : false,
-
-    analyser(){
-
-        console.log(
-
-            "Module IA prêt."
-
-        );
-
-    },
-
-    recommander(){
-
-        console.log(
-
-            "Recommandations IA."
-
-        );
-
-    },
-
-    verifier(){
-
-        console.log(
-
-            "Vérification documentaire."
-
-        );
-
-    }
-
-};
-
-/*==================================================
-PREPARATION FUTURE SMIG
-==================================================*/
-
-const SMIG = {
-
-    calculer(){
-
-        console.log(
-
-            "Calculateur SMIG prêt."
-
-        );
-
-    }
-
-};
-
-/*==================================================
-PREPARATION FUTURE QR CODE
-==================================================*/
-
-const QRCodeModule = {
-
-    scanner(){
-
-        console.log(
-
-            "Scanner QR prêt."
-
-        );
-
-    },
-
-    generer(){
-
-        console.log(
-
-            "Générateur QR prêt."
-
-        );
-
-    }
-
-};
-
-/*==================================================
-FIN
-InspecteurBot IA RDC
-Créé par Inspecteur Limengo (Pmiller)
-© 2026
-==================================================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.js
- PARTIE 4
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
-==================================================*/
-
-"use strict";
-
-/*==================================================
-COMPTEUR DES FORMULAIRES
-==================================================*/
-
-function compterFormulaires(){
-
-    const total = document.querySelectorAll(".card").length;
-
-    const titre = document.querySelector(".hero p");
-
-    if(titre){
-
-        titre.innerHTML +=
-        " • " + total + " modules disponibles";
-
-    }
-
-}
-
-compterFormulaires();
-
-/*==================================================
-RACCOURCIS CLAVIER
-==================================================*/
-
-document.addEventListener("keydown",(e)=>{
-
-    switch(e.key.toLowerCase()){
-
-        case "/":
-
-            e.preventDefault();
-
-            document
-            .getElementById("searchInput")
-            ?.focus();
-
-        break;
-
-        case "t":
-
-            changerTheme();
-
-        break;
-
-        case "f":
-
-            document.documentElement.requestFullscreen?.();
-
-            notification("🖥️ Mode plein écran");
-
-        break;
-
-        case "escape":
-
-            document.exitFullscreen?.();
-
-        break;
-
-    }
-
-});
-
-/*==================================================
-HORLOGE VOCALE
-==================================================*/
-
-function annoncerHeure(){
-
-    if(!("speechSynthesis" in window)) return;
-
-    const maintenant = new Date();
-
-    const texte =
-    "Il est " +
-    maintenant.toLocaleTimeString("fr-FR");
-
-    speechSynthesis.cancel();
-
-    speechSynthesis.speak(
-
-        new SpeechSynthesisUtterance(texte)
-
-    );
-
-}
-
-/*==================================================
-DOUBLE CLIC SUR L'HEURE
-==================================================*/
-
-document
-.getElementById("currentTime")
-?.addEventListener(
-
-"dblclick",
-
-annoncerHeure
-
-);
-
-/*==================================================
-CHANGEMENT TITRE
-==================================================*/
-
-let clignoter = true;
-
-setInterval(()=>{
-
-    document.title = clignoter ?
-
-    "🤖 InspecteurBot IA RDC"
-
-    :
-
-    "📋 Tableau de Bord";
-
-    clignoter = !clignoter;
-
-},5000);
-
-/*==================================================
-ANIMATION DES CARTES
-==================================================*/
-
-document.querySelectorAll(".card")
-
-.forEach((carte,index)=>{
-
-    carte.style.animationDelay =
-
-    (index*0.08)+"s";
-
-});
-
-/*==================================================
-EFFET SONORE
-==================================================*/
-
-function jouerSon(){
-
-    const audio = new Audio(
-
-    "assets/click.mp3"
-
-    );
-
-    audio.volume = .30;
-
-    audio.play().catch(()=>{});
-
-}
-
-document.querySelectorAll(".card")
-
-.forEach(carte=>{
-
-    carte.addEventListener(
-
-    "click",
-
-    jouerSon
-
-    );
-
-});
-
-/*==================================================
-AFFICHAGE VERSION
-==================================================*/
-
-const version = document.createElement("div");
-
-version.className="version-app";
-
-version.innerHTML=
-
-APP.nom+
-
-"<br>"+
-
-"Version "+APP.version;
-
-document.body.appendChild(version);
-
-/*==================================================
-VERIFICATION MISE A JOUR
-==================================================*/
-
-function verifierVersion(){
-
-    console.log(
-
-    "Version actuelle :",
-
-    APP.version
-
-    );
-
-}
-
-verifierVersion();
-
-/*==================================================
-PREPARATION FUTURE
-==================================================*/
-
-const Modules={
-
-    IA:true,
-
-    SMIG:true,
-
-    QRCode:true,
-
-    GPS:true,
-
-    Juridique:true,
-
-    Verification:true,
-
-    Statistiques:true,
-
-    PDF:true,
-
-    Signature:true,
-
-    HorsLigne:true
-
-};
-
-console.table(Modules);
-
-/*==================================================
-FIN PARTIE 4
-Créé par Inspecteur Limengo (Pmiller)
-© 2026
-==================================================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.js
- PARTIE 5
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
-==================================================*/
-
-"use strict";
-
-/*==================================================
-INFORMATIONS SUR L'APPAREIL
-==================================================*/
-
-function detecterAppareil(){
-
-    const agent = navigator.userAgent;
-
-    let appareil = "Ordinateur";
-
-    if(/Android/i.test(agent)){
-
-        appareil = "Android";
-
-    }
-
-    else if(/iPhone|iPad|iPod/i.test(agent)){
-
-        appareil = "iPhone / iPad";
-
-    }
-
-    console.log(
-
-        "Appareil :",appareil
-
-    );
-
-}
-
-detecterAppareil();
-
-/*==================================================
-NIVEAU DE BATTERIE
-==================================================*/
-
-async function batterie(){
-
-    if(!navigator.getBattery) return;
-
-    const b = await navigator.getBattery();
-
-    console.log(
-
-        "Batterie :",
-
-        Math.round(b.level*100)+"%"
-
-    );
-
-    b.addEventListener(
-
-        "levelchange",
+        },
 
         ()=>{
 
-            notification(
-
-                "🔋 Batterie : "+
-
-                Math.round(b.level*100)+"%"
-
+            afficherMeteo(
+                "Position refusée"
             );
+
+        },
+
+        {
+
+            enableHighAccuracy:true,
+
+            timeout:10000,
+
+            maximumAge:300000
 
         }
 
@@ -1284,244 +316,1781 @@ async function batterie(){
 
 }
 
-batterie();
-
 /*==================================================
-SAUVEGARDE AUTOMATIQUE
+METEO
 ==================================================*/
 
-window.addEventListener(
+async function chargerMeteo(
 
-    "beforeunload",
+    latitude,
 
-    ()=>{
+    longitude
 
-        localStorage.setItem(
+){
 
-            "derniereVisite",
+    try{
 
-            new Date().toLocaleString("fr-FR")
+        const url=
 
-        );
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`;
 
-    }
+        const reponse=
 
-);
+        await fetch(url);
 
-/*==================================================
-AFFICHER DERNIERE VISITE
-==================================================*/
+        const donnees=
 
-const visite = localStorage.getItem(
+        await reponse.json();
 
-    "derniereVisite"
+        if(
 
-);
+            donnees.current
 
-if(visite){
+        ){
 
-    console.log(
+            afficherMeteo(
 
-        "Dernière visite :",
+                `${donnees.current.temperature_2m}°C`
 
-        visite
-
-    );
-
-}
-
-/*==================================================
-PLEIN ECRAN
-==================================================*/
-
-function pleinEcran(){
-
-    if(document.documentElement.requestFullscreen){
-
-        document.documentElement.requestFullscreen();
-
-    }
-
-}
-
-const btnPlein = document.getElementById(
-
-    "btnFullscreen"
-
-);
-
-if(btnPlein){
-
-    btnPlein.addEventListener(
-
-        "click",
-
-        pleinEcran
-
-    );
-
-}
-
-/*==================================================
-INFORMATIONS NAVIGATEUR
-==================================================*/
-
-console.log(
-
-    "Navigateur :",
-
-    navigator.appName
-
-);
-
-console.log(
-
-    "Langue :",
-
-    navigator.language
-
-);
-
-console.log(
-
-    "Plateforme :",
-
-    navigator.platform
-
-);
-
-/*==================================================
-COPIER LE TEXTE
-==================================================*/
-
-function copierTexte(texte){
-
-    navigator.clipboard.writeText(texte)
-
-    .then(()=>{
-
-        notification(
-
-            "📋 Texte copié"
-
-        );
-
-    });
-
-}
-
-/*==================================================
-BOUTON RETOUR HAUT
-==================================================*/
-
-const retour = document.createElement("button");
-
-retour.className="btn-top";
-
-retour.innerHTML="⬆";
-
-document.body.appendChild(retour);
-
-retour.onclick=()=>{
-
-    window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
-
-    });
-
-};
-
-/*==================================================
-AFFICHAGE / MASQUAGE
-==================================================*/
-
-window.addEventListener(
-
-    "scroll",
-
-    ()=>{
-
-        if(window.scrollY>300){
-
-            retour.classList.add("show");
+            );
 
         }
 
         else{
 
-            retour.classList.remove("show");
+            afficherMeteo(
+
+                "Indisponible"
+
+            );
 
         }
 
     }
 
-);
+    catch(e){
+
+        afficherMeteo(
+
+            "Erreur météo"
+
+        );
+
+    }
+
+}
+
+function afficherMeteo(
+
+    texte
+
+){
+
+    const meteo=
+
+    document.getElementById(
+
+        "weather"
+
+    );
+
+    if(meteo){
+
+        meteo.textContent=
+
+        texte;
+
+    }
+
+}
 
 /*==================================================
-HEURE DE DERNIERE MISE A JOUR
+THEME SOMBRE / CLAIR
 ==================================================*/
 
-console.log(
+function initialiserTheme(){
 
-    "Application chargée le :",
+    const bouton=
 
-    new Date().toLocaleString("fr-FR")
+    document.getElementById(
 
-);
+        "btnTheme"
+
+    );
+
+    if(!bouton) return;
+
+    const theme=
+
+    localStorage.getItem(
+
+        "theme"
+
+    ) || "clair";
+
+    appliquerTheme(
+
+        theme
+
+    );
+
+    bouton.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            const nouveau=
+
+            document.body.classList.contains(
+
+                "dark"
+
+            )
+
+            ?
+
+            "clair"
+
+            :
+
+            "dark";
+
+            appliquerTheme(
+
+                nouveau
+
+            );
+
+        }
+
+    );
+
+}
+
+function appliquerTheme(
+
+    theme
+
+){
+
+    if(theme==="dark"){
+
+        document.body.classList.add(
+
+            "dark"
+
+        );
+
+    }
+
+    else{
+
+        document.body.classList.remove(
+
+            "dark"
+
+        );
+
+    }
+
+    localStorage.setItem(
+
+        "theme",
+
+        theme
+
+    );
+
+}
 
 /*==================================================
-MODULES FUTURS
+RECHERCHE INSTANTANEE
 ==================================================*/
 
-const FutursModules={
+function initialiserRecherche(){
 
-    ControleSMIG:true,
+    const recherche=
 
-    ControleONEM:true,
+    document.getElementById(
 
-    ControleCNSS:true,
+        "searchInput"
 
-    ControleINPP:true,
+    );
 
-    AnalyseIA:true,
+    if(!recherche) return;
 
-    VerificationDocuments:true,
+    recherche.addEventListener(
 
-    GPS:true,
+        "input",
 
-    QRCode:true,
+        ()=>{
 
-    SignatureNumerique:true,
+            const texte=
 
-    ExportPDF:true,
+            recherche.value
 
-    Notifications:true,
+            .toLowerCase()
 
-    HorsLigne:true
+            .trim();
+
+            document
+
+            .querySelectorAll(
+
+                ".card"
+
+            )
+
+            .forEach(
+
+                carte=>{
+
+                    const contenu=
+
+                    carte.textContent
+
+                    .toLowerCase();
+
+                    carte.style.display=
+
+                    contenu.includes(
+
+                        texte
+
+                    )
+
+                    ?
+
+                    ""
+
+                    :
+
+                    "none";
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+/*==================================================
+ANIMATIONS
+==================================================*/
+
+function initialiserAnimations(){
+
+    const cartes=
+
+    document.querySelectorAll(
+
+        ".card"
+
+    );
+
+    cartes.forEach(
+
+        (
+
+            carte,
+
+            index
+
+        )=>{
+
+            carte.style.opacity="0";
+
+            carte.style.transform=
+
+            "translateY(40px)";
+
+            setTimeout(
+
+                ()=>{
+
+                    carte.style.transition=
+
+                    "0.6s";
+
+                    carte.style.opacity="1";
+
+                    carte.style.transform=
+
+                    "translateY(0)";
+
+                },
+
+                index*70
+
+            );
+
+        }
+
+    );
+
+    document
+
+    .querySelectorAll(
+
+        "button"
+
+    )
+
+    .forEach(
+
+        bouton=>{
+
+            bouton.addEventListener(
+
+                "click",
+
+                ()=>{
+
+                    bouton.animate(
+
+                        [
+
+                            {
+
+                                transform:
+
+                                "scale(1)"
+
+                            },
+
+                            {
+
+                                transform:
+
+                                "scale(.92)"
+
+                            },
+
+                            {
+
+                                transform:
+
+                                "scale(1)"
+
+                            }
+
+                        ],
+
+                        {
+
+                            duration:200
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
+
+    }
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ Version 4.0 Premium
+ fiche.js
+ Partie 3
+ Assistant IA - Voix - Caméra
+==================================================*/
+
+"use strict";
+
+/*==================================================
+INITIALISATION DES OUTILS
+==================================================*/
+
+const ancienneInitialisationPartie2 =
+initialiserApplication;
+
+initialiserApplication = function(){
+
+    ancienneInitialisationPartie2();
+
+    initialiserAssistant();
+
+    initialiserCommandeVocale();
+
+    initialiserCamera();
+
+    initialiserRaccourcis();
 
 };
 
-console.table(
-
-    FutursModules
-
-);
-
 /*==================================================
-MESSAGE FINAL
+ASSISTANT IA
 ==================================================*/
 
-notification(
+function initialiserAssistant(){
 
-    "🚀 InspecteurBot IA RDC Premium prêt."
+    const bouton =
+    document.getElementById(
+        "btnAssistant"
+    );
 
-);
+    if(!bouton) return;
+
+    bouton.addEventListener(
+        "click",
+        ouvrirAssistant
+    );
+
+}
+
+function ouvrirAssistant(){
+
+    vibration();
+
+    window.location.href =
+    "ia/assistant.html";
+
+}
 
 /*==================================================
-FIN PARTIE 5
-Créé par Inspecteur Limengo (Pmiller)
-© 2026
+COMMANDE VOCALE
 ==================================================*/
+
+function initialiserCommandeVocale(){
+
+    const bouton =
+    document.getElementById(
+        "btnVoice"
+    );
+
+    if(!bouton) return;
+
+    const SpeechRecognition =
+
+    window.SpeechRecognition ||
+
+    window.webkitSpeechRecognition;
+
+    if(!SpeechRecognition){
+
+        bouton.disabled = true;
+
+        bouton.title =
+        "Reconnaissance vocale indisponible";
+
+        return;
+
+    }
+
+    const reconnaissance =
+    new SpeechRecognition();
+
+    reconnaissance.lang = "fr-FR";
+
+    reconnaissance.interimResults = false;
+
+    reconnaissance.maxAlternatives = 1;
+
+    bouton.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            vibration();
+
+            reconnaissance.start();
+
+        }
+
+    );
+
+    reconnaissance.onresult =
+
+    evenement=>{
+
+        const texte =
+
+        evenement.results[0][0].transcript;
+
+        const recherche =
+
+        document.getElementById(
+            "searchInput"
+        );
+
+        if(recherche){
+
+            recherche.value = texte;
+
+            recherche.dispatchEvent(
+                new Event("input")
+            );
+
+        }
+
+    };
+
+    reconnaissance.onerror =
+
+    erreur=>{
+
+        console.error(
+
+            "Erreur vocale",
+
+            erreur
+
+        );
+
+    };
+
+}
+
+/*==================================================
+CAMERA
+==================================================*/
+
+function initialiserCamera(){
+
+    const bouton =
+    document.getElementById(
+        "btnCamera"
+    );
+
+    if(!bouton) return;
+
+    bouton.addEventListener(
+
+        "click",
+
+        lancerCamera
+
+    );
+
+}
+
+async function lancerCamera(){
+
+    vibration();
+
+    if(
+
+        !navigator.mediaDevices ||
+
+        !navigator.mediaDevices.getUserMedia
+
+    ){
+
+        alert(
+
+            "Caméra non disponible."
+
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const flux =
+
+        await navigator
+
+        .mediaDevices
+
+        .getUserMedia({
+
+            video:true
+
+        });
+
+        flux.getTracks()
+
+        .forEach(
+
+            piste=>{
+
+                piste.stop();
+
+            }
+
+        );
+
+        alert(
+
+            "Caméra détectée avec succès."
+
+        );
+
+    }
+
+    catch(e){
+
+        alert(
+
+            "Impossible d'accéder à la caméra."
+
+        );
+
+    }
+
+}
+
+/*==================================================
+RACCOURCIS CLAVIER
+==================================================*/
+
+function initialiserRaccourcis(){
+
+    document.addEventListener(
+
+        "keydown",
+
+        evenement=>{
+
+            if(
+
+                evenement.key==="/"
+
+            ){
+
+                evenement.preventDefault();
+
+                document
+
+                .getElementById(
+
+                    "searchInput"
+
+                )
+
+                ?.focus();
+
+            }
+
+            if(
+
+                evenement.key==="Escape"
+
+            ){
+
+                document
+
+                .getElementById(
+
+                    "searchInput"
+
+                )
+
+                ?.blur();
+
+            }
+
+        }
+
+    );
+
+}
+
+/*==================================================
+VIBRATION MOBILE
+==================================================*/
+
+function vibration(){
+
+    if(
+
+        "vibrate" in navigator
+
+    ){
+
+        navigator.vibrate(
+
+            40
+
+        );
+
+    }
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ Version 4.0 Premium
+ fiche.js
+ Partie 4A
+ Notifications + Historique
+==================================================*/
+
+"use strict";
+
+/*==================================================
+INITIALISATION
+==================================================*/
+
+const ancienneInitialisationPartie3 =
+initialiserApplication;
+
+initialiserApplication = function(){
+
+    ancienneInitialisationPartie3();
+
+    initialiserNotifications();
+
+    initialiserHistorique();
+
+};
+
+/*==================================================
+NOTIFICATIONS PREMIUM
+==================================================*/
+
+function initialiserNotifications(){
+
+    creerZoneNotifications();
+
+    notifier(
+
+        "Bienvenue sur InspecteurBot IA RDC 4.0 Premium",
+
+        "success"
+
+    );
+
+}
+
+function creerZoneNotifications(){
+
+    if(document.getElementById("notificationContainer")){
+
+        return;
+
+    }
+
+    const zone = document.createElement("div");
+
+    zone.id = "notificationContainer";
+
+    zone.style.position = "fixed";
+    zone.style.top = "20px";
+    zone.style.right = "20px";
+    zone.style.zIndex = "99999";
+    zone.style.display = "flex";
+    zone.style.flexDirection = "column";
+    zone.style.gap = "10px";
+    zone.style.pointerEvents = "none";
+
+    document.body.appendChild(zone);
+
+}
+
+function notifier(
+
+    message,
+
+    type = "info"
+
+){
+
+    const zone =
+
+    document.getElementById(
+
+        "notificationContainer"
+
+    );
+
+    if(!zone){
+
+        return;
+
+    }
+
+    const notification =
+
+    document.createElement("div");
+
+    notification.textContent = message;
+
+    notification.style.padding = "14px 18px";
+
+    notification.style.borderRadius = "12px";
+
+    notification.style.fontWeight = "600";
+
+    notification.style.color = "#ffffff";
+
+    notification.style.pointerEvents = "auto";
+
+    notification.style.transform = "translateX(120%)";
+
+    notification.style.transition = "0.35s";
+
+    notification.style.boxShadow =
+    "0 10px 25px rgba(0,0,0,.25)";
+
+    switch(type){
+
+        case "success":
+
+            notification.style.background =
+            "#1f8f43";
+
+            break;
+
+        case "error":
+
+            notification.style.background =
+            "#c62828";
+
+            break;
+
+        case "warning":
+
+            notification.style.background =
+            "#d97706";
+
+            break;
+
+        default:
+
+            notification.style.background =
+            "#0d47a1";
+
+    }
+
+    zone.appendChild(notification);
+
+    requestAnimationFrame(()=>{
+
+        notification.style.transform =
+        "translateX(0)";
+
+    });
+
+    setTimeout(()=>{
+
+        notification.style.transform =
+        "translateX(120%)";
+
+        setTimeout(()=>{
+
+            notification.remove();
+
+        },400);
+
+    },3500);
+
+}
+
+/*==================================================
+HISTORIQUE DES FORMULAIRES
+==================================================*/
+
+function initialiserHistorique(){
+
+    document
+
+    .querySelectorAll(".card")
+
+    .forEach(
+
+        carte=>{
+
+            carte.addEventListener(
+
+                "click",
+
+                enregistrerHistorique
+
+            );
+
+        }
+
+    );
+
+}
+
+function enregistrerHistorique(
+
+    evenement
+
+){
+
+    const carte =
+
+    evenement.currentTarget;
+
+    const titre =
+
+    carte.querySelector(
+
+        ".card-title"
+
+    )?.innerText.trim() ||
+
+    "Document";
+
+    const lien =
+
+    carte.getAttribute("href");
+
+    let historique =
+
+    JSON.parse(
+
+        localStorage.getItem(
+
+            "historiqueInspecteurBot"
+
+        ) || "[]"
+
+    );
+
+    historique =
+
+    historique.filter(
+
+        element =>
+
+        element.lien !== lien
+
+    );
+
+    historique.unshift({
+
+        titre,
+
+        lien,
+
+        date:
+
+        new Date()
+
+        .toLocaleString(
+
+            "fr-FR"
+
+        )
+
+    });
+
+    if(historique.length > 30){
+
+        historique.length = 30;
+
+    }
+
+    localStorage.setItem(
+
+        "historiqueInspecteurBot",
+
+        JSON.stringify(
+
+            historique
+
+        )
+
+    );
+
+}
+
+/*==================================================
+CONSULTATION DE L'HISTORIQUE
+==================================================*/
+
+function obtenirHistorique(){
+
+    return JSON.parse(
+
+        localStorage.getItem(
+
+            "historiqueInspecteurBot"
+
+        ) || "[]"
+
+    );
+
+}
+
+function viderHistorique(){
+
+    localStorage.removeItem(
+
+        "historiqueInspecteurBot"
+
+    );
+
+    notifier(
+
+        "Historique supprimé",
+
+        "success"
+
+    );
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ Version 4.0 Premium
+ fiche.js
+ Partie 4B
+ Favoris + Documents récents
+==================================================*/
+
+"use strict";
+
+/*==================================================
+INITIALISATION
+==================================================*/
+
+const ancienneInitialisationPartie4A =
+initialiserApplication;
+
+initialiserApplication = function(){
+
+    ancienneInitialisationPartie4A();
+
+    initialiserFavoris();
+
+    chargerDocumentsRecents();
+
+};
+
+/*==================================================
+FAVORIS
+==================================================*/
+
+function initialiserFavoris(){
+
+    document
+    .querySelectorAll(".card")
+    .forEach(
+
+        carte=>{
+
+            carte.addEventListener(
+
+                "dblclick",
+
+                ajouterFavori
+
+            );
+
+        }
+
+    );
+
+}
+
+function ajouterFavori(e){
+
+    e.preventDefault();
+
+    e.stopPropagation();
+
+    const carte =
+
+    e.currentTarget;
+
+    const titre =
+
+    carte.querySelector(
+
+        ".card-title"
+
+    )?.textContent.trim() ||
+
+    "Document";
+
+    const lien =
+
+    carte.getAttribute(
+
+        "href"
+
+    );
+
+    let favoris =
+
+    JSON.parse(
+
+        localStorage.getItem(
+
+            "favorisInspecteurBot"
+
+        ) || "[]"
+
+    );
+
+    const existe =
+
+    favoris.find(
+
+        item =>
+
+        item.lien === lien
+
+    );
+
+    if(existe){
+
+        notifier(
+
+            "Déjà dans les favoris.",
+
+            "warning"
+
+        );
+
+        return;
+
+    }
+
+    favoris.push({
+
+        titre,
+
+        lien,
+
+        date:
+
+        new Date()
+
+        .toLocaleString(
+
+            "fr-FR"
+
+        )
+
+    });
+
+    localStorage.setItem(
+
+        "favorisInspecteurBot",
+
+        JSON.stringify(
+
+            favoris
+
+        )
+
+    );
+
+    notifier(
+
+        "Ajouté aux favoris ⭐",
+
+        "success"
+
+    );
+
+}
+
+/*==================================================
+LECTURE DES FAVORIS
+==================================================*/
+
+function obtenirFavoris(){
+
+    return JSON.parse(
+
+        localStorage.getItem(
+
+            "favorisInspecteurBot"
+
+        ) || "[]"
+
+    );
+
+}
+
+function supprimerFavori(lien){
+
+    let favoris =
+
+    obtenirFavoris();
+
+    favoris =
+
+    favoris.filter(
+
+        item =>
+
+        item.lien !== lien
+
+    );
+
+    localStorage.setItem(
+
+        "favorisInspecteurBot",
+
+        JSON.stringify(
+
+            favoris
+
+        )
+
+    );
+
+}
+
+/*==================================================
+DOCUMENTS RECENTS
+==================================================*/
+
+function chargerDocumentsRecents(){
+
+    const cartes =
+
+    document.querySelectorAll(
+
+        ".card"
+
+    );
+
+    const historique =
+
+    obtenirHistorique();
+
+    if(
+
+        historique.length===0
+
+    ){
+
+        return;
+
+    }
+
+    cartes.forEach(
+
+        carte=>{
+
+            const lien =
+
+            carte.getAttribute(
+
+                "href"
+
+            );
+
+            const trouve =
+
+            historique.find(
+
+                item =>
+
+                item.lien===lien
+
+            );
+
+            if(trouve){
+
+                carte.classList.add(
+
+                    "recent"
+
+                );
+
+            }
+
+        }
+
+    );
+
+}
+
+/*==================================================
+COMPTEURS
+==================================================*/
+
+function nombreFavoris(){
+
+    return obtenirFavoris().length;
+
+}
+
+function nombreDocumentsRecents(){
+
+    return obtenirHistorique().length;
+
+}
+
+/*==================================================
+EXPORT LOCAL
+==================================================*/
+
+function exporterDonnees(){
+
+    const donnees={
+
+        favoris:
+
+        obtenirFavoris(),
+
+        historique:
+
+        obtenirHistorique(),
+
+        date:
+
+        new Date()
+
+        .toLocaleString(
+
+            "fr-FR"
+
+        )
+
+    };
+
+    return JSON.stringify(
+
+        donnees,
+
+        null,
+
+        2
+
+    );
+
+}
+
+/*==================================================
+IMPORT LOCAL
+==================================================*/
+
+function importerDonnees(
+
+    json
+
+){
+
+    try{
+
+        const donnees =
+
+        JSON.parse(json);
+
+        if(
+
+            donnees.favoris
+
+        ){
+
+            localStorage.setItem(
+
+                "favorisInspecteurBot",
+
+                JSON.stringify(
+
+                    donnees.favoris
+
+                )
+
+            );
+
+        }
+
+        if(
+
+            donnees.historique
+
+        ){
+
+            localStorage.setItem(
+
+                "historiqueInspecteurBot",
+
+                JSON.stringify(
+
+                    donnees.historique
+
+                )
+
+            );
+
+        }
+
+        notifier(
+
+            "Données restaurées.",
+
+            "success"
+
+        );
+
+    }
+
+    catch{
+
+        notifier(
+
+            "Fichier invalide.",
+
+            "error"
+
+        );
+
+    }
+
+}
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ Version 4.0 Premium
+ fiche.js
+ Partie 4C
+ Optimisation - Hors ligne - Préchargement
+==================================================*/
+
+"use strict";
+
+/*==================================================
+INITIALISATION
+==================================================*/
+
+const ancienneInitialisationPartie4B =
+initialiserApplication;
+
+initialiserApplication = function(){
+
+    ancienneInitialisationPartie4B();
+
+    initialiserModeHorsLigne();
+
+    initialiserPrechargement();
+
+    initialiserOptimisation();
+
+    initialiserGestionErreurs();
+
+};
+
+/*==================================================
+MODE HORS LIGNE
+==================================================*/
+
+function initialiserModeHorsLigne(){
+
+    mettreAJourEtatConnexion();
+
+    window.addEventListener(
+
+        "online",
+
+        mettreAJourEtatConnexion
+
+    );
+
+    window.addEventListener(
+
+        "offline",
+
+        mettreAJourEtatConnexion
+
+    );
+
+}
+
+function mettreAJourEtatConnexion(){
+
+    if(navigator.onLine){
+
+        notifier(
+
+            "Connexion Internet disponible.",
+
+            "success"
+
+        );
+
+    }
+
+    else{
+
+        notifier(
+
+            "Mode hors ligne activé.",
+
+            "warning"
+
+        );
+
+    }
+
+}
+
+/*==================================================
+PRECHARGEMENT DES PAGES
+==================================================*/
+
+function initialiserPrechargement(){
+
+    document
+
+    .querySelectorAll(".card")
+
+    .forEach(
+
+        carte=>{
+
+            carte.addEventListener(
+
+                "mouseenter",
+
+                ()=>{
+
+                    prechargerPage(
+
+                        carte.href
+
+                    );
+
+                }
+
+            );
+
+            carte.addEventListener(
+
+                "touchstart",
+
+                ()=>{
+
+                    prechargerPage(
+
+                        carte.href
+
+                    );
+
+                },
+
+                {
+
+                    passive:true
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+function prechargerPage(url){
+
+    if(
+
+        document.querySelector(
+
+            'link[href="' +
+
+            url +
+
+            '"]'
+
+        )
+
+    ){
+
+        return;
+
+    }
+
+    const lien =
+
+    document.createElement(
+
+        "link"
+
+    );
+
+    lien.rel = "prefetch";
+
+    lien.href = url;
+
+    document.head.appendChild(
+
+        lien
+
+    );
+
+}
+
+/*==================================================
+OPTIMISATION
+==================================================*/
+
+function initialiserOptimisation(){
+
+    if(
+
+        "requestIdleCallback"
+
+        in window
+
+    ){
+
+        requestIdleCallback(
+
+            nettoyerApplication
+
+        );
+
+    }
+
+    else{
+
+        setTimeout(
+
+            nettoyerApplication,
+
+            1000
+
+        );
+
+    }
+
+}
+
+function nettoyerApplication(){
+
+    console.log(
+
+        "Optimisation terminée."
+
+    );
+
+}
+
+/*==================================================
+GESTION DES ERREURS
+==================================================*/
+
+function initialiserGestionErreurs(){
+
+    window.addEventListener(
+
+        "error",
+
+        evenement=>{
+
+            console.error(
+
+                evenement.message
+
+            );
+
+        }
+
+    );
+
+    window.addEventListener(
+
+        "unhandledrejection",
+
+        evenement=>{
+
+            console.error(
+
+                evenement.reason
+
+            );
+
+        }
+
+    );
+
+}
+
+/*==================================================
+INFORMATIONS APPLICATION
+==================================================*/
+
+function informationsApplication(){
+
+    return{
+
+        nom:APP.nom,
+
+        version:APP.version,
+
+        auteur:APP.auteur,
+
+        annee:APP.annee,
+
+        langue:
+
+        localStorage.getItem(
+
+            "langue"
+
+        ) || "fr",
+
+        theme:
+
+        localStorage.getItem(
+
+            "theme"
+
+        ) || "clair",
+
+        favoris:
+
+        nombreFavoris(),
+
+        historique:
+
+        nombreDocumentsRecents(),
+
+        connexion:
+
+        navigator.onLine
+
+    };
+
+}
+
+/*==================================================
+API GLOBALE
+==================================================*/
+
+window.InspecteurBot={
+
+    informations:
+
+    informationsApplication,
+
+    favoris:
+
+    obtenirFavoris,
+
+    historique:
+
+    obtenirHistorique,
+
+    exporter:
+
+    exporterDonnees,
+
+    importer:
+
+    importerDonnees,
+
+    notifier:
+
+    notifier
+
+};
