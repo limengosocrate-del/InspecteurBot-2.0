@@ -2,90 +2,621 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InspecteurBot IA RDC - Fiches de Contrôle</title>
 
-    <link rel="stylesheet" href="fiche.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="InspecteurBot IA RDC - Tableau de bord des formulaires de contrôle de l'Inspection Générale du Travail">
+
+    <meta
+        name="theme-color"
+        content="#0a2342">
+
+    <title>
+        InspecteurBot IA RDC | Tableau de Bord
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="fiche.css">
+
 </head>
 
 <body>
 
-    <div class="container">
+    <!--==================================================
+        ARRIÈRE PLAN ANIMÉ
+    ==================================================-->
 
-        <header>
+    <div class="background-animation"></div>
+
+    <!--==================================================
+        HEADER
+    ==================================================-->
+
+    <header class="main-header">
+
+        <div class="header-left">
+
+            <div class="logo-circle">
+
+                IGT
+
+            </div>
 
             <div>
-                <h1>INSPECTEURBOT IA RDC</h1>
 
-                <div class="sub">
-                    Inspection Générale du Travail - République Démocratique du Congo
-                </div>
-            </div>
+                <h1>
 
-            <div class="header-right">
+                    INSPECTEURBOT IA RDC
 
-                <div class="logo-igt">
-                    IGT
-                </div>
+                </h1>
 
-                <div class="sub">
-                    Ministère de l'Emploi et Travail
-                </div>
+                <p>
+
+                    Inspection Générale du Travail
+                    <br>
+                    République Démocratique du Congo
+
+                </p>
 
             </div>
-
-        </header>
-
-        <div class="langsel">
-
-            <select id="langSwitcher">
-
-                <option value="fr">Français</option>
-                <option value="en">English</option>
-                <option value="ln">Lingala</option>
-                <option value="kg">Kikongo</option>
-                <option value="ts">Tshiluba</option>
-                <option value="sw">Swahili</option>
-
-            </select>
 
         </div>
 
-        <h2 class="page-title">
-            Formulaires de Contrôle
+        <div class="header-right">
+
+            <div class="info-card">
+
+                <span>
+
+                    📅 Date
+
+                </span>
+
+                <strong id="currentDate">
+
+                    --/--/----
+
+                </strong>
+
+            </div>
+
+            <div class="info-card">
+
+                <span>
+
+                    🕒 Heure
+
+                </span>
+
+                <strong id="currentTime">
+
+                    --:--
+
+                </strong>
+
+            </div>
+
+            <div class="info-card">
+
+                <span>
+
+                    🌦️ Météo
+
+                </span>
+
+                <strong id="weather">
+
+                    Chargement...
+
+                </strong>
+
+            </div>
+
+            <div class="info-card">
+
+                <span>
+
+                    🌐 Réseau
+
+                </span>
+
+                <strong id="networkStatus">
+
+                    Vérification...
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!--==================================================
+        BARRE D'OUTILS
+    ==================================================-->
+
+    <section class="top-toolbar">
+
+        <div class="search-box">
+
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Rechercher un formulaire...">
+
+        </div>
+
+        <div class="toolbar-right">
+
+            <select id="langSwitcher">
+
+                <option value="fr">
+
+                    🇫🇷 Français
+
+                </option>
+
+                <option value="en">
+
+                    🇬🇧 English
+
+                </option>
+
+                <option value="ln">
+
+                    Lingala
+
+                </option>
+
+                <option value="kg">
+
+                    Kikongo
+
+                </option>
+
+                <option value="ts">
+
+                    Tshiluba
+
+                </option>
+
+                <option value="sw">
+
+                    Swahili
+
+                </option>
+
+            </select>
+
+            <button
+                id="themeButton">
+
+                🌙 Thème
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!--==================================================
+        TITRE
+    ==================================================-->
+
+    <section class="page-title">
+
+        <h2>
+
+            Formulaires et Services
+
         </h2>
 
-        <div class="grid"></div>
+        <p>
 
-        <footer>
+            Inspection Générale du Travail • ONEM • Outils Professionnels
 
-            Créé par Inspecteur Limengo (Pmiller) © 2026.
-            Tous droits réservés.
+        </p>
 
-            <br><br>
+    </section>
 
-            Système d'Inspection du Travail - RDC
+    <!--==================================================
+        LES CATÉGORIES COMMENCENT ICI
+        (Suite Partie 2)
+    ==================================================-->
 
-        </footer>
+    <main id="dashboard">
 
-    </div>
+    </main>
 
-    <div class="toolbar">
+        <!--==================================================
+        INSPECTION GÉNÉRALE DU TRAVAIL
+    ==================================================-->
+
+    <section class="category">
+
+        <h3>
+            🏛 Inspection Générale du Travail
+        </h3>
+
+        <div class="grid">
+
+            <a href="F01/F01.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F01</h4>
+                <p>Fiche de Contrôle N°1</p>
+            </a>
+
+            <a href="F02/F02.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F02</h4>
+                <p>Fiche de Contrôle N°2</p>
+            </a>
+
+            <a href="F03/F03.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F03</h4>
+                <p>Fiche de Contrôle N°3</p>
+            </a>
+
+            <a href="F04/F04.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F04</h4>
+                <p>Fiche de Contrôle N°4</p>
+            </a>
+
+            <a href="F05/F05.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F05</h4>
+                <p>Fiche de Contrôle N°5</p>
+            </a>
+
+            <a href="F06/F06.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F06</h4>
+                <p>Fiche de Contrôle N°6</p>
+            </a>
+
+            <a href="F07/F07.html" class="card">
+                <span class="icon">📄</span>
+                <h4>F07</h4>
+                <p>Fiche de Contrôle N°7</p>
+            </a>
+
+            <a href="S01/S01.html" class="card">
+                <span class="icon">📝</span>
+                <h4>S01</h4>
+                <p>Formulaire Spécial 1</p>
+            </a>
+
+            <a href="S02/S02.html" class="card">
+                <span class="icon">📝</span>
+                <h4>S02</h4>
+                <p>Formulaire Spécial 2</p>
+            </a>
+
+            <a href="S03/S03.html" class="card">
+                <span class="icon">📝</span>
+                <h4>S03</h4>
+                <p>Formulaire Spécial 3</p>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!--==================================================
+        OFFICE NATIONAL DE L'EMPLOI
+    ==================================================-->
+
+    <section class="category">
+
+        <h3>
+            🏢 Office National de l'Emploi (ONEM)
+        </h3>
+
+        <div class="grid">
+
+            <a href="ONEM/declaration-etablissement.html" class="card">
+
+                <span class="icon">🏭</span>
+
+                <h4>Déclaration d'Établissement</h4>
+
+                <p>Article 216 du Code du Travail</p>
+
+            </a>
+
+            <a href="ONEM/dasmo.html" class="card">
+
+                <span class="icon">👥</span>
+
+                <h4>DASMO</h4>
+
+                <p>Déclaration annuelle de la situation de la main-d'œuvre</p>
+
+            </a>
+
+            <a href="ONEM/bilan-social.html" class="card">
+
+                <span class="icon">📊</span>
+
+                <h4>Bilan Social</h4>
+
+                <p>Bilan Social de l'entreprise</p>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <!--==================================================
+        AUTRES OUTILS
+    ==================================================-->
+
+    <section class="category">
+
+        <h3>
+            🧰 Autres Outils
+        </h3>
+
+        <div class="grid">
+
+            <a href="autres/verifier-document.html" class="card">
+
+                <span class="icon">✅</span>
+
+                <h4>Authenticité</h4>
+
+                <p>Vérification des documents</p>
+
+            </a>
+
+            <a href="autres/smig.html" class="card">
+
+                <span class="icon">💵</span>
+
+                <h4>Application SMIG</h4>
+
+                <p>Calculateur du SMIG RDC</p>
+
+            </a>
+
+            <a href="autres/qr-generator.html" class="card">
+
+                <span class="icon">📱</span>
+
+                <h4>QR Code</h4>
+
+                <p>Générateur de QR Code</p>
+
+            </a>
+
+            <a href="autres/scan-qr.html" class="card">
+
+                <span class="icon">📷</span>
+
+                <h4>Scanner QR</h4>
+
+                <p>Lecture des QR Codes</p>
+
+            </a>
+
+            <a href="autres/historique.html" class="card">
+
+                <span class="icon">🗂</span>
+
+                <h4>Historique</h4>
+
+                <p>Contrôles effectués</p>
+
+            </a>
+
+            <a href="autres/statistiques.html" class="card">
+
+                <span class="icon">📈</span>
+
+                <h4>Statistiques</h4>
+
+                <p>Rapports et analyses</p>
+
+            </a>
+
+        </div>
+
+        </section>
+
+        <!--==================================================
+        FOOTER PREMIUM
+    ==================================================-->
+
+    <footer class="main-footer">
+
+        <div class="footer-grid">
+
+            <div class="footer-card">
+
+                <h3>
+                    🤖 InspecteurBot IA RDC
+                </h3>
+
+                <p>
+
+                    Plateforme intelligente destinée aux Inspecteurs
+                    du Travail de la République Démocratique du Congo.
+
+                </p>
+
+            </div>
+
+            <div class="footer-card">
+
+                <h3>
+                    ⚡ Accès Rapide
+                </h3>
+
+                <ul>
+
+                    <li>Inspection Générale du Travail</li>
+
+                    <li>Office National de l'Emploi</li>
+
+                    <li>Authentification des documents</li>
+
+                    <li>Application SMIG RDC</li>
+
+                </ul>
+
+            </div>
+
+            <div class="footer-card">
+
+                <h3>
+                    📞 Institutions
+                </h3>
+
+                <ul>
+
+                    <li>Inspection Générale du Travail</li>
+
+                    <li>Office National de l'Emploi</li>
+
+                    <li>CNSS</li>
+
+                    <li>INPP</li>
+
+                </ul>
+
+            </div>
+
+            <div class="footer-card">
+
+                <h3>
+                    ℹ Informations
+                </h3>
+
+                <p>
+
+                    Version :
+                    <strong>
+                        2.0 Premium
+                    </strong>
+
+                </p>
+
+                <p>
+
+                    Année :
+                    <strong>
+                        2026
+                    </strong>
+
+                </p>
+
+                <p id="onlineStatus">
+
+                    🟢 En ligne
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="copyright">
+
+            <h3>
+
+                Créé par Inspecteur Limengo (Pmiller) © 2026
+
+            </h3>
+
+            <p>
+
+                InspecteurBot IA RDC
+
+                <br>
+
+                République Démocratique du Congo
+
+            </p>
+
+            <p>
+
+                Tous droits réservés.
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <!--==================================================
+        BOUTONS FLOTTANTS
+    ==================================================-->
+
+    <div class="floating-buttons">
 
         <button
-            type="button"
-            class="btn"
-            onclick="toggleTheme()">
+            id="btnHome"
+            class="fab"
+            title="Accueil">
 
-            🌓 Thème
+            🏠
+
+        </button>
+
+        <button
+            id="btnSearch"
+            class="fab"
+            title="Recherche">
+
+            🔍
+
+        </button>
+
+        <button
+            id="btnAssistant"
+            class="fab"
+            title="InspecteurBot IA">
+
+            🤖
+
+        </button>
+
+        <button
+            id="btnTheme"
+            class="fab"
+            title="Changer le thème">
+
+            🌙
+
+        </button>
+
+        <button
+            id="btnTop"
+            class="fab"
+            title="Retour en haut">
+
+            ⬆
 
         </button>
 
     </div>
 
-    
+    <!--==================================================
+        CHARGEMENT JAVASCRIPT
+    ==================================================-->
+
+    <script src="fiche.js"></script>
 
 </body>
-
-  </html>
+ </html>
