@@ -3617,59 +3617,6 @@ bottom:
  EFFET FINAL PREMIUM
 ==================================================*/
 
-
-body::after{
-
-
-content:"";
-
-
-
-position:fixed;
-
-
-
-inset:0;
-
-
-
-pointer-events:none;
-
-
-
-background:
-
-
-linear-gradient(
-
-120deg,
-
-transparent,
-
-rgba(0,229,255,.05),
-
-transparent
-
-);
-
-
-
-animation:
-
-screenScan 8s linear infinite;
-
-
-
-z-index:
-
-9999;
-
-
-
-}
-
-
-
 @keyframes screenScan{
 
 
