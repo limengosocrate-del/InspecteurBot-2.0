@@ -1,21 +1,24 @@
 /*==================================================
-INSPECTEURBOT IA RDC
-fiche.js
-PARTIE 1
-Créé par Inspecteur Limengo (Pmiller) © 2026
+ INSPECTEURBOT IA RDC
+ fiche.js
+ PARTIE 1
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
 ==================================================*/
 
 "use strict";
 
 /*==================================================
-OBJET PRINCIPAL
+CONFIGURATION
 ==================================================*/
 
-const InspecteurBot = {
+const APP = {
 
-    version: "2.0 Premium",
+    nom: "InspecteurBot IA RDC",
 
-    auteur: "Limengo (Pmiller)",
+    version: "3.0 Premium",
+
+    auteur: "Inspecteur Limengo (Pmiller)",
 
     annee: "2026"
 
@@ -31,15 +34,21 @@ document.addEventListener(
 
     () => {
 
-        updateClock();
+        afficherDateHeure();
 
-        setInterval(updateClock,1000);
+        setInterval(
 
-        updateNetworkStatus();
+            afficherDateHeure,
 
-        restoreTheme();
+            1000
 
-        welcomeMessage();
+        );
+
+        verifierConnexion();
+
+        chargerMeteo();
+
+        afficherBienvenue();
 
     }
 
@@ -49,11 +58,11 @@ document.addEventListener(
 DATE ET HEURE
 ==================================================*/
 
-function updateClock(){
+function afficherDateHeure(){
 
-    const now = new Date();
+    const maintenant = new Date();
 
-    const date = now.toLocaleDateString(
+    const date = maintenant.toLocaleDateString(
 
         "fr-FR",
 
@@ -61,75 +70,63 @@ function updateClock(){
 
             weekday:"long",
 
-            day:"2-digit",
+            year:"numeric",
 
             month:"long",
 
-            year:"numeric"
+            day:"numeric"
 
         }
 
     );
 
-    const heure = now.toLocaleTimeString(
+    const heure = maintenant.toLocaleTimeString(
 
         "fr-FR"
 
     );
 
-    const dateElement = document.getElementById(
+    document.getElementById(
 
         "currentDate"
 
-    );
+    ).textContent = date;
 
-    const timeElement = document.getElementById(
+    document.getElementById(
 
         "currentTime"
 
-    );
-
-    if(dateElement){
-
-        dateElement.textContent = date;
-
-    }
-
-    if(timeElement){
-
-        timeElement.textContent = heure;
-
-    }
+    ).textContent = heure;
 
 }
 
 /*==================================================
-ETAT INTERNET
+CONNEXION INTERNET
 ==================================================*/
 
-function updateNetworkStatus(){
+function verifierConnexion(){
 
-    const el = document.getElementById(
+    const reseau = document.getElementById(
 
         "networkStatus"
 
     );
 
-    if(!el){
-
-        return;
-
-    }
+    if(!reseau) return;
 
     if(navigator.onLine){
 
-        el.textContent = "🟢 En ligne";
+        reseau.innerHTML =
+
+        "🟢 En ligne";
 
     }
 
     else{
 
-        el.textContent = "🔴 Hors ligne";
+        reseau.innerHTML =
+
+        "🔴 Hors ligne";
 
     }
 
@@ -139,7 +136,7 @@ window.addEventListener(
 
     "online",
 
-    updateNetworkStatus
+    verifierConnexion
 
 );
 
@@ -147,7 +144,7 @@ window.addEventListener(
 
     "offline",
 
-    updateNetworkStatus
+    verifierConnexion
 
 );
 
@@ -155,33 +152,23 @@ window.addEventListener(
 MESSAGE BIENVENUE
 ==================================================*/
 
-function welcomeMessage(){
+function afficherBienvenue(){
 
-    setTimeout(
+    notification(
 
-        ()=>{
-
-            showToast(
-
-                "Bienvenue sur InspecteurBot IA RDC"
-
-            );
-
-        },
-
-        800
+        "Bienvenue sur InspecteurBot IA RDC"
 
     );
 
 }
 
 /*==================================================
-TOAST
+NOTIFICATION
 ==================================================*/
 
-function showToast(message){
+function notification(message){
 
-    let toast = document.createElement(
+    const toast = document.createElement(
 
         "div"
 
@@ -197,7 +184,7 @@ function showToast(message){
 
     );
 
-    requestAnimationFrame(
+    setTimeout(
 
         ()=>{
 
@@ -207,7 +194,9 @@ function showToast(message){
 
             );
 
-        }
+        },
+
+        100
 
     );
 
@@ -229,7 +218,7 @@ function showToast(message){
 
                 },
 
-                500
+                400
 
             );
 
@@ -242,62 +231,88 @@ function showToast(message){
 }
 
 /*==================================================
-SCROLL DOUX
+MESSAGE SELON L'HEURE
 ==================================================*/
 
-function scrollTopPage(){
+const heure = new Date().getHours();
 
-    window.scrollTo({
+setTimeout(()=>{
 
-        top:0,
+if(heure<12){
 
-        behavior:"smooth"
+notification(
 
-    });
+"☀️ Bonjour Inspecteur."
+
+);
 
 }
+
+else if(heure<18){
+
+notification(
+
+"👋 Bon après-midi Inspecteur."
+
+);
+
+}
+
+else{
+
+notification(
+
+"🌙 Bonne soirée Inspecteur."
+
+);
+
+}
+
+},1800);
 
 /*==================================================
-RESTAURATION DU THEME
+VERSION
 ==================================================*/
 
-function restoreTheme(){
+console.log(
 
-    const theme = localStorage.getItem(
+APP.nom,
 
-        "theme"
+APP.version
 
-    );
+);
 
-    if(theme==="light"){
+console.log(
 
-        document.body.classList.add(
+"Créé par Inspecteur Limengo (Pmiller)"
 
-            "light"
+);
 
-        );
+console.log(
 
-    }
+"© 2026"
 
-}
+);
 
 /*==================================================
 FIN PARTIE 1
-Créé par Inspecteur Limengo (Pmiller) © 2026
 ==================================================*/
 
 /*==================================================
-INSPECTEURBOT IA RDC
-fiche.js
-PARTIE 2
-Créé par Inspecteur Limengo (Pmiller) © 2026
+ INSPECTEURBOT IA RDC
+ fiche.js
+ PARTIE 2
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
 ==================================================*/
+
+"use strict";
 
 /*==================================================
-THEME SOMBRE / CLAIR
+MODE SOMBRE / CLAIR
 ==================================================*/
 
-const btnTheme=document.getElementById("btnTheme");
+const btnTheme = document.getElementById("btnTheme");
 
 if(btnTheme){
 
@@ -305,105 +320,83 @@ if(btnTheme){
 
         "click",
 
-        toggleTheme
+        changerTheme
 
     );
 
 }
 
-function toggleTheme(){
+function changerTheme(){
 
-    document.body.classList.toggle(
+    document.body.classList.toggle("light");
 
-        "light"
+    const mode = document.body.classList.contains("light")
+        ? "light"
+        : "dark";
+
+    localStorage.setItem(
+
+        "theme",
+
+        mode
 
     );
 
-    if(
+    notification(
 
-        document.body.classList.contains(
+        mode === "light"
 
-            "light"
+        ? "☀️ Mode clair activé"
 
-        )
+        : "🌙 Mode sombre activé"
 
-    ){
-
-        localStorage.setItem(
-
-            "theme",
-
-            "light"
-
-        );
-
-        showToast(
-
-            "☀️ Mode clair activé"
-
-        );
-
-    }
-
-    else{
-
-        localStorage.setItem(
-
-            "theme",
-
-            "dark"
-
-        );
-
-        showToast(
-
-            "🌙 Mode sombre activé"
-
-        );
-
-    }
+    );
 
 }
+
+(function(){
+
+    const mode = localStorage.getItem("theme");
+
+    if(mode === "light"){
+
+        document.body.classList.add("light");
+
+    }
+
+})();
 
 /*==================================================
-LANGUE
+CHANGEMENT DE LANGUE
 ==================================================*/
 
-const lang=document.getElementById(
+const langue = document.getElementById("langSwitcher");
 
-    "langSwitcher"
+if(langue){
 
-);
+    const sauvegarde = localStorage.getItem("langue");
 
-if(lang){
+    if(sauvegarde){
 
-    const saved=localStorage.getItem(
-
-        "language"
-
-    );
-
-    if(saved){
-
-        lang.value=saved;
+        langue.value = sauvegarde;
 
     }
 
-    lang.addEventListener(
+    langue.addEventListener(
 
         "change",
 
-        ()=>{
+        function(){
 
             localStorage.setItem(
 
-                "language",
+                "langue",
 
-                lang.value
+                this.value
 
             );
 
-            showToast(
+            notification(
 
                 "🌍 Langue enregistrée"
 
@@ -416,269 +409,218 @@ if(lang){
 }
 
 /*==================================================
-RECHERCHE
+RECHERCHE INTELLIGENTE
 ==================================================*/
 
-const search=document.getElementById(
+const recherche = document.getElementById("searchInput");
 
-    "searchInput"
+if(recherche){
+
+    recherche.addEventListener(
+
+        "input",
+
+        function(){
+
+            const texte = this.value.toLowerCase();
+
+            document.querySelectorAll(".card").forEach(
+
+                carte=>{
+
+                    const contenu = carte.textContent.toLowerCase();
+
+                    carte.style.display =
+
+                        contenu.includes(texte)
+
+                        ? ""
+
+                        : "none";
+
+                }
+
+            );
+
+        }
+
+    );
+
+}
+
+/*==================================================
+BOUTON ASSISTANT IA
+==================================================*/
+
+const assistant = document.getElementById("btnAssistant");
+
+if(assistant){
+
+    assistant.addEventListener(
+
+        "click",
+
+        ()=>{
+
+            notification(
+
+                "🤖 Assistant IA en cours de développement."
+
+            );
+
+        }
+
+    );
+
+}
+
+/*==================================================
+RACCOURCIS CLAVIER
+==================================================*/
+
+document.addEventListener(
+
+    "keydown",
+
+    function(e){
+
+        if(e.key === "/"){
+
+            e.preventDefault();
+
+            recherche.focus();
+
+        }
+
+        if(e.key.toLowerCase() === "t"){
+
+            changerTheme();
+
+        }
+
+    }
 
 );
 
-if(search){
+/*==================================================
+ANIMATION DES CARTES
+==================================================*/
 
-search.addEventListener(
+document.querySelectorAll(".card").forEach(
 
-"keyup",
+    carte=>{
 
-function(){
+        carte.addEventListener(
 
-const value=this.value.toLowerCase();
+            "mouseenter",
+
+            ()=>{
+
+                carte.style.transform =
+
+                "translateY(-10px) scale(1.03)";
+
+            }
+
+        );
+
+        carte.addEventListener(
+
+            "mouseleave",
+
+            ()=>{
+
+                carte.style.transform =
+
+                "";
+
+            }
+
+        );
+
+    }
+
+);
+
+/*==================================================
+ANIMATION AU DEFILEMENT
+==================================================*/
+
+const apparition = new IntersectionObserver(
+
+    elements=>{
+
+        elements.forEach(
+
+            element=>{
+
+                if(element.isIntersecting){
+
+                    element.target.classList.add(
+
+                        "show"
+
+                    );
+
+                }
+
+            }
+
+        );
+
+    },
+
+    {
+
+        threshold:0.15
+
+    }
+
+);
 
 document.querySelectorAll(
 
-".card"
+    ".dashboard-section"
 
 ).forEach(
 
-card=>{
+    section=>{
 
-const txt=card.innerText.toLowerCase();
+        section.classList.add("fade-up");
 
-card.style.display=
+        apparition.observe(section);
 
-txt.includes(value)
-
-?
-
-"flex"
-
-:
-
-"none";
-
-}
-
-);
-
-}
-
-);
-
-}
-
-/*==================================================
-BOUTON RETOUR HAUT
-==================================================*/
-
-const btnTop=document.getElementById(
-
-"btnTop"
-
-);
-
-if(btnTop){
-
-btnTop.addEventListener(
-
-"click",
-
-scrollTopPage
-
-);
-
-}
-
-/*==================================================
-BOUTON ACCUEIL
-==================================================*/
-
-const btnHome=document.getElementById(
-
-"btnHome"
-
-);
-
-if(btnHome){
-
-btnHome.addEventListener(
-
-"click",
-
-()=>{
-
-window.location.href="fiche.html";
-
-}
-
-);
-
-}
-
-/*==================================================
-ASSISTANT IA
-==================================================*/
-
-const btnIA=document.getElementById(
-
-"btnAssistant"
-
-);
-
-if(btnIA){
-
-btnIA.addEventListener(
-
-"click",
-
-()=>{
-
-showToast(
-
-"🤖 Assistant InspecteurBot bientôt disponible."
-
-);
-
-}
-
-);
-
-}
-
-/*==================================================
-BOUTON RECHERCHE
-==================================================*/
-
-const btnSearch=document.getElementById(
-
-"btnSearch"
-
-);
-
-if(btnSearch){
-
-btnSearch.addEventListener(
-
-"click",
-
-()=>{
-
-search.focus();
-
-}
-
-);
-
-}
-
-/*==================================================
-ANIMATION APPARITION
-==================================================*/
-
-const observer=
-
-new IntersectionObserver(
-
-entries=>{
-
-entries.forEach(
-
-entry=>{
-
-if(entry.isIntersecting){
-
-entry.target.classList.add(
-
-"show"
-
-);
-
-}
-
-}
-
-);
-
-},
-
-{
-
-threshold:.15
-
-}
-
-);
-
-document.querySelectorAll(
-
-".card,.category,.footer-card"
-
-)
-
-.forEach(
-
-element=>{
-
-element.classList.add(
-
-"fade-up"
-
-);
-
-observer.observe(
-
-element
-
-);
-
-}
-
-);
-
-/*==================================================
-MESSAGE VERSION
-==================================================*/
-
-console.log(
-
-"InspecteurBot IA RDC",
-
-InspecteurBot.version,
-
-"Créé par",
-
-InspecteurBot.auteur,
-
-InspecteurBot.annee
+    }
 
 );
 
 /*==================================================
 FIN PARTIE 2
-Créé par Inspecteur Limengo (Pmiller) © 2026
 ==================================================*/
 
 /*==================================================
-INSPECTEURBOT IA RDC
-fiche.js
-PARTIE 3
-Créé par Inspecteur Limengo (Pmiller) © 2026
+ INSPECTEURBOT IA RDC
+ fiche.js
+ PARTIE 3
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
 ==================================================*/
+
+"use strict";
 
 /*==================================================
-METEO
-(Open-Meteo : API gratuite)
+METEO (Open-Meteo)
 ==================================================*/
 
-async function loadWeather(){
+async function chargerMeteo(){
 
-    const weather=document.getElementById("weather");
+    const meteo = document.getElementById("weather");
 
-    if(!weather) return;
+    if(!meteo) return;
 
     if(!navigator.geolocation){
 
-        weather.textContent="Position indisponible";
+        meteo.innerHTML = "GPS indisponible";
 
         return;
 
@@ -690,27 +632,33 @@ async function loadWeather(){
 
             try{
 
-                const lat=position.coords.latitude;
+                const latitude = position.coords.latitude;
 
-                const lon=position.coords.longitude;
+                const longitude = position.coords.longitude;
 
-                const url=
+                const url =
 
-                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+                `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m`;
 
-                const response=await fetch(url);
+                const reponse = await fetch(url);
 
-                const data=await response.json();
+                const data = await reponse.json();
 
-                const t=data.current_weather.temperature;
+                meteo.innerHTML =
 
-                weather.textContent=`🌡 ${t}°C`;
+                "🌡 " +
+
+                data.current.temperature_2m +
+
+                " °C";
 
             }
 
             catch{
 
-                weather.textContent="Météo indisponible";
+                meteo.innerHTML =
+
+                "Météo indisponible";
 
             }
 
@@ -718,7 +666,9 @@ async function loadWeather(){
 
         ()=>{
 
-            weather.textContent="Localisation refusée";
+            meteo.innerHTML =
+
+            "Localisation refusée";
 
         }
 
@@ -726,28 +676,72 @@ async function loadWeather(){
 
 }
 
-loadWeather();
-
 /*==================================================
-COMPTEUR DES FORMULAIRES
+STATISTIQUES
 ==================================================*/
 
-function countForms(){
+function afficherStatistiques(){
 
-    const total=document.querySelectorAll(".card").length;
+    const cartes =
+
+    document.querySelectorAll(".card").length;
 
     console.log(
 
-        "Nombre de formulaires :",total
+        "Nombre de modules :",cartes
 
     );
 
 }
 
-countForms();
+afficherStatistiques();
 
 /*==================================================
-RACCOURCIS CLAVIER
+PARTICULES
+==================================================*/
+
+function creerParticules(){
+
+    const fond =
+
+    document.querySelector(".particles");
+
+    if(!fond) return;
+
+    for(let i=0;i<60;i++){
+
+        const p =
+
+        document.createElement("span");
+
+        p.className="particle";
+
+        p.style.left=
+
+        Math.random()*100+"%";
+
+        p.style.top=
+
+        Math.random()*100+"%";
+
+        p.style.animationDuration=
+
+        (6+Math.random()*12)+"s";
+
+        p.style.animationDelay=
+
+        Math.random()*6+"s";
+
+        fond.appendChild(p);
+
+    }
+
+}
+
+creerParticules();
+
+/*==================================================
+RACCOURCIS
 ==================================================*/
 
 document.addEventListener(
@@ -756,144 +750,778 @@ document.addEventListener(
 
     e=>{
 
-        if(e.key==="/"){
+        if(e.key==="Home"){
+
+            window.scrollTo({
+
+                top:0,
+
+                behavior:"smooth"
+
+            });
+
+        }
+
+    }
+
+);
+
+/*==================================================
+GPS
+==================================================*/
+
+function afficherGPS(){
+
+    if(!navigator.geolocation){
+
+        return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        position=>{
+
+            console.log(
+
+                "Latitude :",position.coords.latitude
+
+            );
+
+            console.log(
+
+                "Longitude :",position.coords.longitude
+
+            );
+
+        }
+
+    );
+
+}
+
+afficherGPS();
+
+/*==================================================
+MESSAGE VERSION
+==================================================*/
+
+console.log(
+
+"======================================"
+
+);
+
+console.log(
+
+APP.nom
+
+);
+
+console.log(
+
+"Version :",APP.version
+
+);
+
+console.log(
+
+"Créé par Inspecteur Limengo (Pmiller)"
+
+);
+
+console.log(
+
+"© 2026"
+
+);
+
+console.log(
+
+"======================================"
+
+);
+
+/*==================================================
+CHARGEMENT
+==================================================*/
+
+window.addEventListener(
+
+    "load",
+
+    ()=>{
+
+        notification(
+
+            "✅ InspecteurBot IA RDC prêt."
+
+        );
+
+    }
+
+);
+
+/*==================================================
+PREPARATION FUTURE IA
+==================================================*/
+
+const IA = {
+
+    actif : false,
+
+    analyser(){
+
+        console.log(
+
+            "Module IA prêt."
+
+        );
+
+    },
+
+    recommander(){
+
+        console.log(
+
+            "Recommandations IA."
+
+        );
+
+    },
+
+    verifier(){
+
+        console.log(
+
+            "Vérification documentaire."
+
+        );
+
+    }
+
+};
+
+/*==================================================
+PREPARATION FUTURE SMIG
+==================================================*/
+
+const SMIG = {
+
+    calculer(){
+
+        console.log(
+
+            "Calculateur SMIG prêt."
+
+        );
+
+    }
+
+};
+
+/*==================================================
+PREPARATION FUTURE QR CODE
+==================================================*/
+
+const QRCodeModule = {
+
+    scanner(){
+
+        console.log(
+
+            "Scanner QR prêt."
+
+        );
+
+    },
+
+    generer(){
+
+        console.log(
+
+            "Générateur QR prêt."
+
+        );
+
+    }
+
+};
+
+/*==================================================
+FIN
+InspecteurBot IA RDC
+Créé par Inspecteur Limengo (Pmiller)
+© 2026
+==================================================*/
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ fiche.js
+ PARTIE 4
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
+==================================================*/
+
+"use strict";
+
+/*==================================================
+COMPTEUR DES FORMULAIRES
+==================================================*/
+
+function compterFormulaires(){
+
+    const total = document.querySelectorAll(".card").length;
+
+    const titre = document.querySelector(".hero p");
+
+    if(titre){
+
+        titre.innerHTML +=
+        " • " + total + " modules disponibles";
+
+    }
+
+}
+
+compterFormulaires();
+
+/*==================================================
+RACCOURCIS CLAVIER
+==================================================*/
+
+document.addEventListener("keydown",(e)=>{
+
+    switch(e.key.toLowerCase()){
+
+        case "/":
 
             e.preventDefault();
 
             document
-
             .getElementById("searchInput")
-
             ?.focus();
 
-        }
+        break;
 
-        if(e.key==="t"){
+        case "t":
 
-            toggleTheme();
+            changerTheme();
 
-        }
+        break;
 
-        if(e.key==="Home"){
+        case "f":
 
-            scrollTopPage();
+            document.documentElement.requestFullscreen?.();
 
-        }
+            notification("🖥️ Mode plein écran");
+
+        break;
+
+        case "escape":
+
+            document.exitFullscreen?.();
+
+        break;
 
     }
-
-);
-
-/*==================================================
-EFFET CARTE
-==================================================*/
-
-document.querySelectorAll(".card")
-
-.forEach(card=>{
-
-card.addEventListener(
-
-"mouseenter",
-
-()=>{
-
-card.style.transform=
-
-"translateY(-12px) scale(1.04)";
-
-}
-
-);
-
-card.addEventListener(
-
-"mouseleave",
-
-()=>{
-
-card.style.transform="";
-
-}
-
-);
 
 });
 
 /*==================================================
-MESSAGE SELON L'HEURE
+HORLOGE VOCALE
 ==================================================*/
 
-function greeting(){
+function annoncerHeure(){
 
-    const h=new Date().getHours();
+    if(!("speechSynthesis" in window)) return;
 
-    if(h<12){
+    const maintenant = new Date();
 
-        showToast(
+    const texte =
+    "Il est " +
+    maintenant.toLocaleTimeString("fr-FR");
 
-            "☀️ Bonjour Inspecteur."
+    speechSynthesis.cancel();
 
-        );
+    speechSynthesis.speak(
 
-    }
+        new SpeechSynthesisUtterance(texte)
 
-    else if(h<18){
-
-        showToast(
-
-            "👋 Bon après-midi."
-
-        );
-
-    }
-
-    else{
-
-        showToast(
-
-            "🌙 Bonne soirée."
-
-        );
-
-    }
+    );
 
 }
 
-setTimeout(
+/*==================================================
+DOUBLE CLIC SUR L'HEURE
+==================================================*/
 
-    greeting,
+document
+.getElementById("currentTime")
+?.addEventListener(
 
-    1800
+"dblclick",
+
+annoncerHeure
 
 );
+
+/*==================================================
+CHANGEMENT TITRE
+==================================================*/
+
+let clignoter = true;
+
+setInterval(()=>{
+
+    document.title = clignoter ?
+
+    "🤖 InspecteurBot IA RDC"
+
+    :
+
+    "📋 Tableau de Bord";
+
+    clignoter = !clignoter;
+
+},5000);
+
+/*==================================================
+ANIMATION DES CARTES
+==================================================*/
+
+document.querySelectorAll(".card")
+
+.forEach((carte,index)=>{
+
+    carte.style.animationDelay =
+
+    (index*0.08)+"s";
+
+});
+
+/*==================================================
+EFFET SONORE
+==================================================*/
+
+function jouerSon(){
+
+    const audio = new Audio(
+
+    "assets/click.mp3"
+
+    );
+
+    audio.volume = .30;
+
+    audio.play().catch(()=>{});
+
+}
+
+document.querySelectorAll(".card")
+
+.forEach(carte=>{
+
+    carte.addEventListener(
+
+    "click",
+
+    jouerSon
+
+    );
+
+});
+
+/*==================================================
+AFFICHAGE VERSION
+==================================================*/
+
+const version = document.createElement("div");
+
+version.className="version-app";
+
+version.innerHTML=
+
+APP.nom+
+
+"<br>"+
+
+"Version "+APP.version;
+
+document.body.appendChild(version);
 
 /*==================================================
 VERIFICATION MISE A JOUR
 ==================================================*/
 
-console.log(
+function verifierVersion(){
 
-"InspecteurBot IA RDC",
+    console.log(
 
-InspecteurBot.version,
+    "Version actuelle :",
 
-"chargé avec succès."
+    APP.version
+
+    );
+
+}
+
+verifierVersion();
+
+/*==================================================
+PREPARATION FUTURE
+==================================================*/
+
+const Modules={
+
+    IA:true,
+
+    SMIG:true,
+
+    QRCode:true,
+
+    GPS:true,
+
+    Juridique:true,
+
+    Verification:true,
+
+    Statistiques:true,
+
+    PDF:true,
+
+    Signature:true,
+
+    HorsLigne:true
+
+};
+
+console.table(Modules);
+
+/*==================================================
+FIN PARTIE 4
+Créé par Inspecteur Limengo (Pmiller)
+© 2026
+==================================================*/
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ fiche.js
+ PARTIE 5
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
+==================================================*/
+
+"use strict";
+
+/*==================================================
+INFORMATIONS SUR L'APPAREIL
+==================================================*/
+
+function detecterAppareil(){
+
+    const agent = navigator.userAgent;
+
+    let appareil = "Ordinateur";
+
+    if(/Android/i.test(agent)){
+
+        appareil = "Android";
+
+    }
+
+    else if(/iPhone|iPad|iPod/i.test(agent)){
+
+        appareil = "iPhone / iPad";
+
+    }
+
+    console.log(
+
+        "Appareil :",appareil
+
+    );
+
+}
+
+detecterAppareil();
+
+/*==================================================
+NIVEAU DE BATTERIE
+==================================================*/
+
+async function batterie(){
+
+    if(!navigator.getBattery) return;
+
+    const b = await navigator.getBattery();
+
+    console.log(
+
+        "Batterie :",
+
+        Math.round(b.level*100)+"%"
+
+    );
+
+    b.addEventListener(
+
+        "levelchange",
+
+        ()=>{
+
+            notification(
+
+                "🔋 Batterie : "+
+
+                Math.round(b.level*100)+"%"
+
+            );
+
+        }
+
+    );
+
+}
+
+batterie();
+
+/*==================================================
+SAUVEGARDE AUTOMATIQUE
+==================================================*/
+
+window.addEventListener(
+
+    "beforeunload",
+
+    ()=>{
+
+        localStorage.setItem(
+
+            "derniereVisite",
+
+            new Date().toLocaleString("fr-FR")
+
+        );
+
+    }
 
 );
 
 /*==================================================
-PIED DE PAGE
+AFFICHER DERNIERE VISITE
+==================================================*/
+
+const visite = localStorage.getItem(
+
+    "derniereVisite"
+
+);
+
+if(visite){
+
+    console.log(
+
+        "Dernière visite :",
+
+        visite
+
+    );
+
+}
+
+/*==================================================
+PLEIN ECRAN
+==================================================*/
+
+function pleinEcran(){
+
+    if(document.documentElement.requestFullscreen){
+
+        document.documentElement.requestFullscreen();
+
+    }
+
+}
+
+const btnPlein = document.getElementById(
+
+    "btnFullscreen"
+
+);
+
+if(btnPlein){
+
+    btnPlein.addEventListener(
+
+        "click",
+
+        pleinEcran
+
+    );
+
+}
+
+/*==================================================
+INFORMATIONS NAVIGATEUR
 ==================================================*/
 
 console.log(
 
-"Créé par Inspecteur Limengo (Pmiller) © 2026"
+    "Navigateur :",
+
+    navigator.appName
+
+);
+
+console.log(
+
+    "Langue :",
+
+    navigator.language
+
+);
+
+console.log(
+
+    "Plateforme :",
+
+    navigator.platform
 
 );
 
 /*==================================================
-FIN
+COPIER LE TEXTE
 ==================================================*/
 
+function copierTexte(texte){
 
+    navigator.clipboard.writeText(texte)
+
+    .then(()=>{
+
+        notification(
+
+            "📋 Texte copié"
+
+        );
+
+    });
+
+}
+
+/*==================================================
+BOUTON RETOUR HAUT
+==================================================*/
+
+const retour = document.createElement("button");
+
+retour.className="btn-top";
+
+retour.innerHTML="⬆";
+
+document.body.appendChild(retour);
+
+retour.onclick=()=>{
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+};
+
+/*==================================================
+AFFICHAGE / MASQUAGE
+==================================================*/
+
+window.addEventListener(
+
+    "scroll",
+
+    ()=>{
+
+        if(window.scrollY>300){
+
+            retour.classList.add("show");
+
+        }
+
+        else{
+
+            retour.classList.remove("show");
+
+        }
+
+    }
+
+);
+
+/*==================================================
+HEURE DE DERNIERE MISE A JOUR
+==================================================*/
+
+console.log(
+
+    "Application chargée le :",
+
+    new Date().toLocaleString("fr-FR")
+
+);
+
+/*==================================================
+MODULES FUTURS
+==================================================*/
+
+const FutursModules={
+
+    ControleSMIG:true,
+
+    ControleONEM:true,
+
+    ControleCNSS:true,
+
+    ControleINPP:true,
+
+    AnalyseIA:true,
+
+    VerificationDocuments:true,
+
+    GPS:true,
+
+    QRCode:true,
+
+    SignatureNumerique:true,
+
+    ExportPDF:true,
+
+    Notifications:true,
+
+    HorsLigne:true
+
+};
+
+console.table(
+
+    FutursModules
+
+);
+
+/*==================================================
+MESSAGE FINAL
+==================================================*/
+
+notification(
+
+    "🚀 InspecteurBot IA RDC Premium prêt."
+
+);
+
+/*==================================================
+FIN PARTIE 5
+Créé par Inspecteur Limengo (Pmiller)
+© 2026
+==================================================*/
