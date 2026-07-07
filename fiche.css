@@ -1,47 +1,132 @@
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.css
- PARTIE 1
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
-==================================================*/
-
-/*==================================================
-RESET
+/*=================================================
+PARTIE 1
+RESET + VARIABLES + BODY
+INSPECTEURBOT IA RDC 4.0 PREMIUM
 ==================================================*/
 
 *{
-
     margin:0;
-
     padding:0;
-
     box-sizing:border-box;
+}
+
+:root{
+
+    /*=================================================
+    COULEURS PRINCIPALES
+    ==================================================*/
+
+    --bleu:#041B3D;
+    --bleu-clair:#0B2E63;
+    --bleu-fonce:#021127;
+
+    --gris:#1E1E1E;
+    --gris-clair:#2C2C2C;
+    --gris-fonce:#111111;
+
+    --or:#FFD700;
+    --or-clair:#FFE56A;
+
+    --blanc:#FFFFFF;
+    --texte:#EDEDED;
+
+    --vert:#00D26A;
+    --rouge:#E53935;
+
+    /*=================================================
+    OMBRES
+    ==================================================*/
+
+    --ombre:
+
+    0 12px 35px rgba(0,0,0,.35);
+
+    --ombre-hover:
+
+    0 18px 45px rgba(255,215,0,.25);
+
+    /*=================================================
+    RAYON
+    ==================================================*/
+
+    --radius:18px;
+
+    /*=================================================
+    TRANSITIONS
+    ==================================================*/
+
+    --transition:.35s ease;
 
 }
 
-html{
-
-    scroll-behavior:smooth;
-
-}
+/*=================================================
+BODY
+==================================================*/
 
 body{
 
-    font-family:"Segoe UI",Arial,sans-serif;
+    font-family:
 
-    background:linear-gradient(135deg,#001a4d,#003b8e,#0057d9);
+    "Segoe UI",
 
-    color:#ffffff;
+    Arial,
 
-    min-height:100vh;
+    sans-serif;
+
+    background:
+
+    var(--bleu);
+
+    color:
+
+    var(--blanc);
 
     overflow-x:hidden;
 
+    min-height:100vh;
+
+    position:relative;
+
 }
 
-/*==================================================
-ARRIERE PLAN
+/*=================================================
+MODE SOMBRE
+==================================================*/
+
+body.dark{
+
+    background:#000814;
+
+    color:#FFFFFF;
+
+}
+
+/*=================================================
+LIENS
+==================================================*/
+
+a{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+/*=================================================
+IMAGES
+==================================================*/
+
+img{
+
+    max-width:100%;
+
+    display:block;
+
+}
+
+/*=================================================
+ARRIERE PLAN PREMIUM
 ==================================================*/
 
 .background{
@@ -50,15 +135,27 @@ ARRIERE PLAN
 
     inset:0;
 
+    z-index:-3;
+
     background:
 
-    radial-gradient(circle at top,#3d7bff22,transparent 45%),
+    radial-gradient(
 
-    radial-gradient(circle at bottom,#00b7ff22,transparent 35%);
+        circle at top,
 
-    z-index:-2;
+        #0B2E63 0%,
+
+        #041B3D 45%,
+
+        #020D1F 100%
+
+    );
 
 }
+
+/*=================================================
+PARTICULES
+==================================================*/
 
 .particles{
 
@@ -66,27 +163,142 @@ ARRIERE PLAN
 
     inset:0;
 
-    overflow:hidden;
+    z-index:-2;
 
-    z-index:-1;
+    pointer-events:none;
+
+    background-image:
+
+    radial-gradient(
+
+        rgba(255,215,0,.18) 1px,
+
+        transparent 1px
+
+    );
+
+    background-size:
+
+    35px 35px;
+
+    animation:
+
+    particules 18s linear infinite;
+
+    opacity:.45;
 
 }
 
-/*==================================================
+@keyframes particules{
+
+    from{
+
+        transform:
+
+        translateY(0);
+
+    }
+
+    to{
+
+        transform:
+
+        translateY(-35px);
+
+    }
+
+}
+
+/*=================================================
+TYPOGRAPHIE
+==================================================*/
+
+h1{
+
+    font-size:28px;
+
+    font-weight:700;
+
+}
+
+h2{
+
+    font-size:20px;
+
+    font-weight:600;
+
+}
+
+p{
+
+    line-height:1.6;
+
+    color:var(--texte);
+
+}
+
+/*=================================================
+SELECTION
+==================================================*/
+
+::selection{
+
+    background:
+
+    var(--or);
+
+    color:#000;
+
+}
+
+/*=================================================
+SCROLLBAR
+==================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:
+
+    #061E44;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+
+    var(--or);
+
+    border-radius:50px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:
+
+    var(--or-clair);
+
+ }
+
+/*=================================================
+PARTIE 2
+HEADER PREMIUM
+==================================================*/
+
+/*=================================================
 HEADER
 ==================================================*/
 
 .header{
 
-    width:95%;
-
-    max-width:1500px;
-
-    margin:25px auto;
-
-    padding:25px;
-
-    border-radius:22px;
+    width:100%;
 
     display:flex;
 
@@ -94,19 +306,29 @@ HEADER
 
     align-items:center;
 
-    flex-wrap:wrap;
-
     gap:20px;
 
-    background:rgba(255,255,255,.10);
+    padding:18px 24px;
 
-    backdrop-filter:blur(18px);
+    background:rgba(8,24,56,.92);
 
-    border:1px solid rgba(255,255,255,.25);
+    backdrop-filter:blur(12px);
 
-    box-shadow:0 10px 35px rgba(0,0,0,.35);
+    border-bottom:1px solid rgba(255,215,0,.20);
+
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
 
 }
+
+/*=================================================
+ZONE GAUCHE
+==================================================*/
 
 .header-left{
 
@@ -114,21 +336,25 @@ HEADER
 
     align-items:center;
 
-    gap:25px;
+    gap:18px;
 
 }
 
-/*==================================================
+/*=================================================
 LOGO
 ==================================================*/
 
 .logo{
 
-    width:95px;
+    width:72px;
 
-    height:95px;
+    height:72px;
 
     border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    border:2px solid var(--or);
 
     display:flex;
 
@@ -136,155 +362,258 @@ LOGO
 
     align-items:center;
 
-    background:linear-gradient(135deg,#0b3d91,#1976d2);
+    overflow:hidden;
 
-    color:#fff;
-
-    font-size:32px;
-
-    font-weight:bold;
-
-    box-shadow:0 0 30px rgba(0,162,255,.7);
+    box-shadow:0 0 20px rgba(255,215,0,.35);
 
 }
 
-/*==================================================
-TITRES
+.logo img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+/*=================================================
+TEXTE
 ==================================================*/
 
-.header h1{
+.header-text h1{
 
-    font-size:46px;
+    font-size:26px;
 
-    color:#ffffff;
+    color:var(--blanc);
 
-    letter-spacing:2px;
-
-    text-transform:uppercase;
-
-    text-shadow:
-
-    2px 2px 0 #000,
-
-    4px 4px 10px rgba(0,0,0,.45);
+    letter-spacing:.5px;
 
 }
 
-.header h2{
+.header-text h2{
 
-    margin-top:8px;
+    margin-top:4px;
 
-    font-size:24px;
+    font-size:16px;
 
-    color:#f5f5f5;
+    color:var(--or);
 
-    text-shadow:
-
-    1px 1px 4px #000;
+    font-weight:600;
 
 }
 
-.header p{
+.header-text p{
 
-    margin-top:6px;
+    margin-top:4px;
 
-    font-size:18px;
+    font-size:13px;
 
-    color:#dfefff;
+    color:#d8d8d8;
 
 }
 
-/*==================================================
-CARTES D'INFORMATIONS
+/*=================================================
+ZONE DROITE
 ==================================================*/
 
 .header-right{
 
-    display:grid;
+    display:flex;
 
-    grid-template-columns:
+    justify-content:flex-end;
 
-    repeat(2,1fr);
-
-    gap:15px;
+    align-items:center;
 
 }
 
-.info-box{
+/*=================================================
+PANNEAU D'INFORMATIONS
+==================================================*/
 
-    min-width:180px;
+.status-panel{
 
-    padding:18px;
+    display:flex;
 
-    border-radius:16px;
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+/*=================================================
+CARTE INFORMATION
+==================================================*/
+
+.status-item{
+
+    min-width:110px;
+
+    padding:12px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,215,0,.18);
 
     text-align:center;
 
-    background:rgba(255,255,255,.12);
-
-    border:1px solid rgba(255,255,255,.20);
-
-    transition:.35s;
+    transition:var(--transition);
 
 }
 
-.info-box:hover{
+.status-item:hover{
 
-    transform:translateY(-6px);
+    transform:translateY(-3px);
 
-    box-shadow:0 0 25px rgba(0,180,255,.6);
+    border-color:var(--or);
+
+    box-shadow:0 0 18px rgba(255,215,0,.25);
 
 }
 
-.info-box span{
+/*=================================================
+LIBELLE
+==================================================*/
 
-    display:block;
+.status-label{
+
+    font-size:12px;
+
+    color:#d7d7d7;
+
+    margin-bottom:6px;
+
+}
+
+/*=================================================
+VALEUR
+==================================================*/
+
+.status-value{
 
     font-size:15px;
 
-    margin-bottom:8px;
+    font-weight:700;
 
-    color:#cde6ff;
-
-}
-
-.info-box strong{
-
-    font-size:20px;
-
-    color:#ffffff;
-
-    text-shadow:
-
-    1px 1px 5px #000;
+    color:var(--or);
 
 }
 
-/*==================================================
-FIN PARTIE 1
+/*=================================================
+RESPONSIVE TABLETTE
 ==================================================*/
 
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.css
- PARTIE 2
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
+@media(max-width:992px){
+
+    .header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .header-right{
+
+        width:100%;
+
+    }
+
+    .status-panel{
+
+        width:100%;
+
+        justify-content:space-between;
+
+    }
+
+}
+
+/*=================================================
+RESPONSIVE MOBILE
 ==================================================*/
 
-/*==================================================
+@media(max-width:768px){
+
+    .header{
+
+        padding:16px;
+
+    }
+
+    .header-left{
+
+        width:100%;
+
+    }
+
+    .logo{
+
+        width:60px;
+
+        height:60px;
+
+    }
+
+    .header-text h1{
+
+        font-size:20px;
+
+    }
+
+    .header-text h2{
+
+        font-size:14px;
+
+    }
+
+    .header-text p{
+
+        font-size:12px;
+
+    }
+
+    .status-panel{
+
+        display:grid;
+
+        grid-template-columns:repeat(3,1fr);
+
+        gap:10px;
+
+        width:100%;
+
+    }
+
+    .status-item{
+
+        min-width:0;
+
+        padding:10px;
+
+    }
+
+    .status-value{
+
+        font-size:13px;
+
+    }
+
+ }
+
+/*=================================================
+PARTIE 3
+BARRE D'ACTIONS PREMIUM
+==================================================*/
+
+/*=================================================
 BARRE D'ACTIONS
 ==================================================*/
 
-.action-bar{
-
-    width:95%;
-
-    max-width:1500px;
-
-    margin:20px auto;
-
-    padding:20px;
+.top-toolbar{
 
     display:flex;
 
@@ -292,211 +621,336 @@ BARRE D'ACTIONS
 
     align-items:center;
 
-    flex-wrap:wrap;
-
     gap:20px;
 
-    border-radius:20px;
+    padding:20px 24px;
 
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(16px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    box-shadow:0 8px 30px rgba(0,0,0,.30);
+    flex-wrap:wrap;
 
 }
 
-.search-area{
+/*=================================================
+RECHERCHE
+==================================================*/
+
+#searchInput{
 
     flex:1;
 
-    min-width:320px;
+    min-width:300px;
 
-}
-
-.search-area input{
-
-    width:100%;
-
-    padding:18px 24px;
+    padding:16px 20px;
 
     border:none;
 
     outline:none;
 
-    border-radius:50px;
+    border-radius:16px;
 
-    font-size:18px;
+    background:rgba(255,255,255,.08);
 
-    font-weight:600;
+    color:var(--blanc);
 
-    color:#111;
+    font-size:16px;
 
-    background:#ffffff;
+    border:2px solid transparent;
 
-    box-shadow:0 0 20px rgba(0,132,255,.35);
+    transition:var(--transition);
 
-    transition:.35s;
-
-}
-
-.search-area input:focus{
-
-    transform:scale(1.02);
-
-    box-shadow:0 0 30px rgba(0,170,255,.75);
+    box-shadow:var(--ombre);
 
 }
 
-.action-buttons{
+#searchInput::placeholder{
+
+    color:#cfcfcf;
+
+}
+
+#searchInput:focus{
+
+    border-color:var(--or);
+
+    box-shadow:0 0 20px rgba(255,215,0,.35);
+
+    background:rgba(255,255,255,.12);
+
+}
+
+/*=================================================
+BOUTONS
+==================================================*/
+
+.toolbar-buttons{
 
     display:flex;
 
     align-items:center;
 
-    gap:15px;
+    gap:12px;
 
     flex-wrap:wrap;
 
 }
 
-/*==================================================
-BOUTONS PREMIUM
-==================================================*/
+.toolbar-buttons button{
 
-.action-btn{
-
-    padding:15px 28px;
+    padding:14px 18px;
 
     border:none;
 
-    border-radius:50px;
+    border-radius:14px;
 
     cursor:pointer;
 
-    font-size:17px;
+    background:linear-gradient(
 
-    font-weight:bold;
+        135deg,
 
-    color:#ffffff;
+        var(--bleu-clair),
 
-    background:linear-gradient(135deg,#0066ff,#00b4ff);
+        var(--bleu)
 
-    transition:.35s;
+    );
 
-    box-shadow:0 8px 20px rgba(0,0,0,.35);
+    color:var(--blanc);
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:var(--transition);
+
+    box-shadow:var(--ombre);
+
+}
+
+.toolbar-buttons button:hover{
+
+    transform:translateY(-3px);
+
+    background:linear-gradient(
+
+        135deg,
+
+        var(--or),
+
+        #ffbf00
+
+    );
+
+    color:#000;
+
+    box-shadow:var(--ombre-hover);
 
 }
 
-.action-btn:hover{
+.toolbar-buttons button:active{
 
-    transform:translateY(-5px) scale(1.05);
-
-    box-shadow:0 0 25px rgba(0,195,255,.85);
+    transform:scale(.96);
 
 }
 
-.action-btn:active{
-
-    transform:scale(.95);
-
-}
+/*=================================================
+SELECTEUR LANGUE
+==================================================*/
 
 #langSwitcher{
 
-    padding:15px;
+    padding:14px 18px;
 
-    border:none;
+    border-radius:14px;
+
+    border:2px solid rgba(255,215,0,.25);
 
     outline:none;
 
-    border-radius:50px;
+    background:rgba(255,255,255,.08);
 
-    font-size:16px;
+    color:var(--blanc);
 
-    font-weight:bold;
-
-    background:#ffffff;
-
-    color:#111;
+    font-size:15px;
 
     cursor:pointer;
 
+    transition:var(--transition);
+
 }
 
-/*==================================================
+#langSwitcher:hover,
+
+#langSwitcher:focus{
+
+    border-color:var(--or);
+
+    box-shadow:0 0 18px rgba(255,215,0,.30);
+
+}
+
+#langSwitcher option{
+
+    background:#0B2E63;
+
+    color:#ffffff;
+
+}
+
+/*=================================================
 HERO
 ==================================================*/
 
 .hero{
 
-    width:95%;
-
-    max-width:1500px;
-
-    margin:30px auto;
-
     text-align:center;
+
+    padding:30px 20px 40px;
 
 }
 
 .hero h2{
 
-    font-size:42px;
+    font-size:34px;
 
-    color:#ffffff;
+    color:var(--or);
 
-    letter-spacing:2px;
+    margin-bottom:12px;
 
-    text-shadow:
-
-    2px 2px 0 #000,
-
-    5px 5px 12px rgba(0,0,0,.50);
+    text-shadow:0 0 18px rgba(255,215,0,.35);
 
 }
 
 .hero p{
 
-    margin-top:15px;
+    max-width:900px;
 
-    font-size:22px;
+    margin:auto;
 
-    color:#e8f4ff;
+    font-size:17px;
+
+    color:#dddddd;
 
 }
 
-/*==================================================
+/*=================================================
+RESPONSIVE TABLETTE
+==================================================*/
+
+@media(max-width:992px){
+
+    .top-toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    #searchInput{
+
+        min-width:100%;
+
+    }
+
+    .toolbar-buttons{
+
+        justify-content:center;
+
+    }
+
+}
+
+/*=================================================
+RESPONSIVE MOBILE
+==================================================*/
+
+@media(max-width:768px){
+
+    .top-toolbar{
+
+        padding:18px 16px;
+
+    }
+
+    .toolbar-buttons{
+
+        display:grid;
+
+        grid-template-columns:repeat(2,1fr);
+
+        width:100%;
+
+        gap:12px;
+
+    }
+
+    .toolbar-buttons button{
+
+        width:100%;
+
+    }
+
+    #langSwitcher{
+
+        width:100%;
+
+        grid-column:1 / -1;
+
+    }
+
+    .hero{
+
+        padding:25px 16px 35px;
+
+    }
+
+    .hero h2{
+
+        font-size:26px;
+
+    }
+
+    .hero p{
+
+        font-size:15px;
+
+    }
+
+ }
+
+/*=================================================
+PARTIE 4
+TABLEAU DE BORD + CARTES PREMIUM
+==================================================*/
+
+/*=================================================
 TABLEAU DE BORD
 ==================================================*/
 
 .dashboard{
 
-    width:95%;
+    width:100%;
 
     max-width:1500px;
 
-    margin:auto;
+    margin:0 auto;
+
+    padding:10px 24px 40px;
 
 }
+
+/*=================================================
+SECTIONS
+==================================================*/
 
 .dashboard-section{
 
-    margin-bottom:45px;
-
-    padding:25px;
-
-    border-radius:22px;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(15px);
-
-    border:1px solid rgba(255,255,255,.15);
+    margin-bottom:40px;
 
 }
+
+/*=================================================
+TITRES DES SECTIONS
+==================================================*/
 
 .section-title{
 
@@ -504,140 +958,84 @@ TABLEAU DE BORD
 
     align-items:center;
 
-    gap:15px;
+    gap:10px;
 
-    margin-bottom:25px;
+    margin-bottom:20px;
 
-}
+    padding:14px 18px;
 
-.section-title span{
+    font-size:22px;
 
-    font-size:42px;
+    font-weight:700;
 
-}
+    color:var(--or);
 
-.section-title h2{
+    background:rgba(255,255,255,.05);
 
-    font-size:32px;
+    border-left:6px solid var(--or);
 
-    color:#ffffff;
+    border-radius:14px;
 
-    text-shadow:
-
-    2px 2px 5px #000;
+    box-shadow:var(--ombre);
 
 }
 
-/*==================================================
-CARTES
+/*=================================================
+GRILLE DES CARTES
 ==================================================*/
 
 .cards{
 
     display:grid;
 
-    grid-template-columns:
-
-    repeat(auto-fit,minmax(240px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 
     gap:22px;
 
 }
 
+/*=================================================
+CARTE
+==================================================*/
+
 .card{
+
+    position:relative;
 
     display:flex;
 
     flex-direction:column;
 
-    align-items:center;
-
     justify-content:center;
 
-    text-align:center;
+    align-items:center;
 
-    text-decoration:none;
+    min-height:220px;
 
-    padding:30px;
-
-    border-radius:22px;
-
-    color:#ffffff;
+    padding:24px 18px;
 
     background:linear-gradient(
-
-        135deg,
-
-        rgba(255,255,255,.18),
-
-        rgba(255,255,255,.08)
-
+        180deg,
+        #242424,
+        #171717
     );
 
-    border:1px solid rgba(255,255,255,.20);
+    border:1px solid rgba(255,215,0,.15);
 
-    transition:.35s;
+    border-radius:20px;
 
     overflow:hidden;
 
-    position:relative;
+    transition:var(--transition);
+
+    box-shadow:var(--ombre);
+
+    cursor:pointer;
 
 }
 
-.card:hover{
-
-    transform:translateY(-10px);
-
-    box-shadow:0 0 30px rgba(0,180,255,.80);
-
-}
-
-.card-icon{
-
-    font-size:56px;
-
-    margin-bottom:15px;
-
-}
-
-.card h3{
-
-    font-size:28px;
-
-    margin-bottom:10px;
-
-    color:#ffffff;
-
-    text-shadow:
-
-    2px 2px 4px #000;
-
-}
-
-.card p{
-
-    font-size:18px;
-
-    line-height:1.6;
-
-    color:#eef6ff;
-
-}
-
-/*==================================================
-FIN PARTIE 2
-==================================================*/
-
-/*==================================================
- INSPECTEURBOT IA RDC
- fiche.css
- PARTIE 3
- Créé par Inspecteur Limengo (Pmiller)
- © 2026
-==================================================*/
-
-/*==================================================
-ANIMATION DES CARTES
+/*=================================================
+EFFET LUMIERE
 ==================================================*/
 
 .card::before{
@@ -650,11 +1048,11 @@ ANIMATION DES CARTES
 
     left:-40%;
 
-    width:60%;
+    width:80%;
 
-    height:320%;
+    height:300%;
 
-    background:rgba(255,255,255,.25);
+    background:rgba(255,255,255,.08);
 
     transform:rotate(25deg);
 
@@ -664,479 +1062,547 @@ ANIMATION DES CARTES
 
 .card:hover::before{
 
-    left:140%;
+    left:150%;
 
 }
+
+/*=================================================
+SURVOL
+==================================================*/
 
 .card:hover{
 
-    transform:
+    transform:translateY(-10px);
 
-    translateY(-12px)
+    border-color:var(--or);
 
-    scale(1.03);
+    box-shadow:
+
+    0 18px 45px rgba(255,215,0,.25);
 
 }
 
-/*==================================================
-ANIMATION APPARITION
+/*=================================================
+ICONE
 ==================================================*/
-
-.fade-up{
-
-    opacity:0;
-
-    transform:translateY(50px);
-
-    transition:all .8s ease;
-
-}
-
-.fade-up.show{
-
-    opacity:1;
-
-    transform:translateY(0);
-
-}
-
-/*==================================================
-TOAST
-==================================================*/
-
-.toast{
-
-    position:fixed;
-
-    right:25px;
-
-    bottom:30px;
-
-    min-width:280px;
-
-    padding:18px 25px;
-
-    border-radius:16px;
-
-    background:rgba(0,30,70,.95);
-
-    color:#fff;
-
-    font-size:17px;
-
-    font-weight:bold;
-
-    box-shadow:0 0 25px rgba(0,150,255,.60);
-
-    opacity:0;
-
-    transform:translateY(40px);
-
-    transition:.4s;
-
-    z-index:9999;
-
-}
-
-.toast.show{
-
-    opacity:1;
-
-    transform:translateY(0);
-
-}
-
-/*==================================================
-BOUTON RETOUR HAUT
-==================================================*/
-
-.btn-top{
-
-    position:fixed;
-
-    right:25px;
-
-    bottom:30px;
-
-    width:65px;
-
-    height:65px;
-
-    border:none;
-
-    border-radius:50%;
-
-    cursor:pointer;
-
-    font-size:26px;
-
-    color:#fff;
-
-    background:linear-gradient(
-
-    135deg,
-
-    #005eff,
-
-    #00c6ff
-
-    );
-
-    box-shadow:0 0 25px rgba(0,180,255,.75);
-
-    opacity:0;
-
-    visibility:hidden;
-
-    transition:.35s;
-
-    z-index:999;
-
-}
-
-.btn-top.show{
-
-    opacity:1;
-
-    visibility:visible;
-
-}
-
-.btn-top:hover{
-
-    transform:
-
-    scale(1.12)
-
-    rotate(360deg);
-
-}
-
-/*==================================================
-VERSION
-==================================================*/
-
-.version-app{
-
-    position:fixed;
-
-    left:20px;
-
-    bottom:20px;
-
-    padding:12px 18px;
-
-    border-radius:14px;
-
-    background:rgba(255,255,255,.12);
-
-    backdrop-filter:blur(10px);
-
-    font-size:14px;
-
-    color:#ffffff;
-
-    box-shadow:0 0 15px rgba(0,180,255,.45);
-
-}
-
-/*==================================================
-FOOTER PREMIUM
-==================================================*/
-
-.footer{
-
-    margin-top:70px;
-
-    padding:60px 20px;
-
-    background:rgba(0,15,40,.92);
-
-    border-top:2px solid rgba(255,255,255,.15);
-
-}
-
-.footer-content{
-
-    max-width:1400px;
-
-    margin:auto;
-
-    text-align:center;
-
-}
-
-.footer h2{
-
-    font-size:36px;
-
-    margin-bottom:20px;
-
-    color:#ffffff;
-
-    text-shadow:
-
-    2px 2px 6px #000;
-
-}
-
-.footer h3{
-
-    margin-top:25px;
-
-    font-size:28px;
-
-    color:#00d4ff;
-
-}
-
-.footer p{
-
-    margin:12px 0;
-
-    font-size:18px;
-
-    color:#d9ecff;
-
-}
-
-.footer-info{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:20px;
-
-    flex-wrap:wrap;
-
-    margin:30px 0;
-
-}
-
-.footer-info span{
-
-    padding:12px 20px;
-
-    border-radius:30px;
-
-    background:rgba(255,255,255,.10);
-
-    font-size:16px;
-
-}
-
-/*==================================================
-MODE CLAIR
-==================================================*/
-
-body.light{
-
-    background:#eef5ff;
-
-    color:#111;
-
-}
-
-body.light .header,
-
-body.light .action-bar,
-
-body.light .dashboard-section{
-
-    background:#ffffff;
-
-    color:#111;
-
-}
-
-body.light h1,
-
-body.light h2,
-
-body.light h3,
-
-body.light p,
-
-body.light strong{
-
-    color:#111;
-
-    text-shadow:none;
-
-}
-
-body.light .card{
-
-    color:#111;
-
-    background:#f5f9ff;
-
-}
-
-body.light .card p{
-
-    color:#333;
-
-}
-
-/*==================================================
-RESPONSIVE
-==================================================*/
-
-@media(max-width:900px){
-
-.header{
-
-    flex-direction:column;
-
-}
-
-.header-right{
-
-    grid-template-columns:1fr;
-
-    width:100%;
-
-}
-
-.action-bar{
-
-    flex-direction:column;
-
-}
-
-.search-area{
-
-    width:100%;
-
-}
-
-.action-buttons{
-
-    width:100%;
-
-    justify-content:center;
-
-}
-
-.hero h2{
-
-    font-size:32px;
-
-}
-
-.section-title h2{
-
-    font-size:25px;
-
-}
-
-.card h3{
-
-    font-size:24px;
-
-}
-
-}
-
-@media(max-width:600px){
-
-.header h1{
-
-    font-size:32px;
-
-}
-
-.header h2{
-
-    font-size:18px;
-
-}
-
-.hero p{
-
-    font-size:18px;
-
-}
-
-.card{
-
-    padding:20px;
-
-}
 
 .card-icon{
 
     font-size:48px;
 
+    margin-bottom:18px;
+
+    transition:.35s;
+
+}
+
+.card:hover .card-icon{
+
+    transform:scale(1.15);
+
+}
+
+/*=================================================
+CODE
+==================================================*/
+
+.card-code{
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-width:70px;
+
+    padding:8px 14px;
+
+    margin-bottom:16px;
+
+    border-radius:50px;
+
+    background:var(--or);
+
+    color:#000;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+}
+
+/*=================================================
+TITRE
+==================================================*/
+
+.card-title{
+
+    text-align:center;
+
+    font-size:16px;
+
+    line-height:1.6;
+
+    font-weight:700;
+
+    color:var(--blanc);
+
+}
+
+/*=================================================
+CARTE RECENTE
+==================================================*/
+
+.card.recent{
+
+    border:2px solid var(--vert);
+
+}
+
+/*=================================================
+CARTE FAVORI
+==================================================*/
+
+.card.favorite{
+
+    border:2px solid var(--or);
+
+}
+
+/*=================================================
+ANIMATION
+==================================================*/
+
+.card{
+
+    animation:apparition .7s ease both;
+
+}
+
+@keyframes apparition{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(35px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/*=================================================
+RESPONSIVE TABLETTE
+==================================================*/
+
+@media(max-width:992px){
+
+    .cards{
+
+        grid-template-columns:
+
+        repeat(auto-fit,minmax(190px,1fr));
+
+    }
+
+}
+
+/*=================================================
+RESPONSIVE MOBILE
+==================================================*/
+
+@media(max-width:768px){
+
+    .dashboard{
+
+        padding:10px 16px 30px;
+
+    }
+
+    .section-title{
+
+        font-size:18px;
+
+    }
+
+    .cards{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+    .card{
+
+        min-height:180px;
+
+    }
+
+    .card-icon{
+
+        font-size:40px;
+
+    }
+
+    .card-title{
+
+        font-size:15px;
+
+    }
+
+}
+
+/*=================================================
+PARTIE 5
+FOOTER + NOTIFICATIONS + ANIMATIONS
+==================================================*/
+
+/*=================================================
+FOOTER
+==================================================*/
+
+.footer{
+
+    margin-top:50px;
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    background:rgba(6,18,45,.95);
+
+    border-top:2px solid rgba(255,215,0,.20);
+
+    box-shadow:0 -8px 30px rgba(0,0,0,.35);
+
 }
 
 .footer h2{
 
-    font-size:28px;
-
-}
-
-.footer h3{
+    color:var(--or);
 
     font-size:22px;
 
-}
+    margin-bottom:15px;
 
 }
 
-/*==================================================
-PARTICULES
+.footer p{
+
+    color:#d9d9d9;
+
+    margin:8px 0;
+
+    font-size:15px;
+
+}
+
+.footer-bottom{
+
+    margin-top:20px;
+
+    padding-top:18px;
+
+    border-top:1px solid rgba(255,255,255,.12);
+
+    color:#cfcfcf;
+
+    font-size:14px;
+
+    line-height:1.8;
+
+}
+
+.footer strong{
+
+    color:var(--or);
+
+}
+
+/*=================================================
+NOTIFICATIONS
 ==================================================*/
 
-.particle{
+#notificationContainer{
 
-    position:absolute;
+    position:fixed;
 
-    width:5px;
+    top:20px;
 
-    height:5px;
+    right:20px;
 
-    border-radius:50%;
+    display:flex;
 
-    background:#ffffff;
+    flex-direction:column;
 
-    opacity:.4;
+    gap:12px;
 
-    animation:floatParticle linear infinite;
+    z-index:99999;
 
-}
-
-@keyframes floatParticle{
-
-0%{
-
-transform:translateY(100vh);
-
-opacity:0;
+    pointer-events:none;
 
 }
 
-20%{
+#notificationContainer div{
 
-opacity:.6;
+    min-width:260px;
+
+    max-width:340px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    color:#ffffff;
+
+    font-weight:600;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
 
 }
 
-100%{
-
-transform:translateY(-120px);
-
-opacity:0;
-
-}
-
-}
-
-/*==================================================
-FIN
-InspecteurBot IA RDC
-Créé par Inspecteur Limengo (Pmiller)
-© 2026
+/*=================================================
+ANIMATIONS
 ==================================================*/
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes pulseGold{
+
+    0%{
+
+        box-shadow:0 0 0 rgba(255,215,0,0);
+
+    }
+
+    50%{
+
+        box-shadow:0 0 25px rgba(255,215,0,.45);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 rgba(255,215,0,0);
+
+    }
+
+}
+
+@keyframes rotateIcon{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+/*=================================================
+EFFETS
+==================================================*/
+
+button:hover{
+
+    animation:pulseGold .8s;
+
+}
+
+.logo:hover{
+
+    animation:rotateIcon 1.2s linear;
+
+}
+
+.hero{
+
+    animation:fadeIn .8s ease;
+
+}
+
+.section-title{
+
+    animation:fadeIn .6s ease;
+
+}
+
+/*=================================================
+FOCUS ACCESSIBILITE
+==================================================*/
+
+button:focus,
+
+select:focus,
+
+input:focus,
+
+a:focus{
+
+    outline:2px solid var(--or);
+
+    outline-offset:3px;
+
+}
+
+/*=================================================
+TRANSITIONS
+==================================================*/
+
+button,
+
+.card,
+
+.status-item,
+
+.section-title,
+
+.logo,
+
+#searchInput,
+
+#langSwitcher{
+
+    transition:all .35s ease;
+
+}
+
+/*=================================================
+RESPONSIVE GRAND ECRAN
+==================================================*/
+
+@media(min-width:1600px){
+
+    .dashboard{
+
+        max-width:1700px;
+
+    }
+
+    .cards{
+
+        grid-template-columns:
+
+        repeat(5,1fr);
+
+    }
+
+}
+
+/*=================================================
+RESPONSIVE MOBILE
+==================================================*/
+
+@media(max-width:768px){
+
+    .footer{
+
+        padding:30px 18px;
+
+    }
+
+    .footer h2{
+
+        font-size:18px;
+
+    }
+
+    .footer p{
+
+        font-size:14px;
+
+    }
+
+    .footer-bottom{
+
+        font-size:13px;
+
+    }
+
+    #notificationContainer{
+
+        top:12px;
+
+        left:12px;
+
+        right:12px;
+
+    }
+
+    #notificationContainer div{
+
+        min-width:auto;
+
+        width:100%;
+
+    }
+
+}
+
+/*=================================================
+IMPRESSION
+==================================================*/
+
+@media print{
+
+    .top-toolbar,
+
+    .particles,
+
+    .background,
+
+    .footer,
+
+    #notificationContainer{
+
+        display:none !important;
+
+    }
+
+    body{
+
+        background:#ffffff;
+
+        color:#000000;
+
+    }
+
+     }
