@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 
 <head>
@@ -10,15 +11,17 @@
         content="width=device-width, initial-scale=1.0">
 
     <meta
-        name="description"
-        content="InspecteurBot IA RDC - Tableau de bord des formulaires de contrôle de l'Inspection Générale du Travail">
+        name="theme-color"
+        content="#0B3D91">
 
     <meta
-        name="theme-color"
-        content="#0a2342">
+        name="description"
+        content="InspecteurBot IA RDC - Tableau de Bord Intelligent">
 
     <title>
-        InspecteurBot IA RDC | Tableau de Bord
+
+        InspecteurBot IA RDC
+
     </title>
 
     <link
@@ -29,21 +32,23 @@
 
 <body>
 
-    <!--==================================================
-        ARRIÈRE PLAN ANIMÉ
-    ==================================================-->
+    <!--==========================================
+        ARRIÈRE PLAN
+    ===========================================-->
 
-    <div class="background-animation"></div>
+    <div class="background"></div>
 
-    <!--==================================================
-        HEADER
-    ==================================================-->
+    <div class="particles"></div>
 
-    <header class="main-header">
+    <!--==========================================
+        HEADER PRINCIPAL
+    ===========================================-->
+
+    <header class="header">
 
         <div class="header-left">
 
-            <div class="logo-circle">
+            <div class="logo">
 
                 IGT
 
@@ -57,10 +62,14 @@
 
                 </h1>
 
-                <p>
+                <h2>
 
                     Inspection Générale du Travail
-                    <br>
+
+                </h2>
+
+                <p>
+
                     République Démocratique du Congo
 
                 </p>
@@ -71,7 +80,7 @@
 
         <div class="header-right">
 
-            <div class="info-card">
+            <div class="info-box">
 
                 <span>
 
@@ -81,13 +90,13 @@
 
                 <strong id="currentDate">
 
-                    --/--/----
+                    Chargement...
 
                 </strong>
 
             </div>
 
-            <div class="info-card">
+            <div class="info-box">
 
                 <span>
 
@@ -97,13 +106,13 @@
 
                 <strong id="currentTime">
 
-                    --:--
+                    Chargement...
 
                 </strong>
 
             </div>
 
-            <div class="info-card">
+            <div class="info-box">
 
                 <span>
 
@@ -119,7 +128,7 @@
 
             </div>
 
-            <div class="info-card">
+            <div class="info-box">
 
                 <span>
 
@@ -139,24 +148,41 @@
 
     </header>
 
-    <!--==================================================
-        BARRE D'OUTILS
-    ==================================================-->
+    <!--==========================================
+        BARRE D'ACTIONS
+    ===========================================-->
 
-    <section class="top-toolbar">
+    <section class="action-bar">
 
-        <div class="search-box">
+        <div class="search-area">
 
             <input
                 type="search"
                 id="searchInput"
-                placeholder="Rechercher un formulaire...">
+                placeholder="🔍 Rechercher un formulaire, un document ou un outil...">
 
         </div>
 
-        <div class="toolbar-right">
+        <div class="action-buttons">
 
-            <select id="langSwitcher">
+            <button
+                id="btnAssistant"
+                class="action-btn">
+
+                🤖 Assistant IA
+
+            </button>
+
+            <button
+                id="btnTheme"
+                class="action-btn">
+
+                🌙 Thème
+
+            </button>
+
+            <select
+                id="langSwitcher">
 
                 <option value="fr">
 
@@ -196,362 +222,438 @@
 
             </select>
 
-            <button
-                id="themeButton">
-
-                🌙 Thème
-
-            </button>
-
         </div>
 
     </section>
 
-    <!--==================================================
+    <!--==========================================
         TITRE
-    ==================================================-->
+    ===========================================-->
 
-    <section class="page-title">
+    <section class="hero">
 
         <h2>
 
-            Formulaires et Services
+            TABLEAU DE BORD DES FORMULAIRES
 
         </h2>
 
         <p>
 
-            Inspection Générale du Travail • ONEM • Outils Professionnels
+            Inspection • ONEM • IA • Juridique • Vérification • SMIG • Statistiques
 
         </p>
 
     </section>
 
-    <!--==================================================
-        LES CATÉGORIES COMMENCENT ICI
-        (Suite Partie 2)
-    ==================================================-->
+    <!--==========================================
+        CONTENU PRINCIPAL
+    ===========================================-->
 
-    <main id="dashboard">
+    <main class="dashboard">
 
-    </main>
+            <!--==========================================
+            INSPECTION GÉNÉRALE DU TRAVAIL
+        ===========================================-->
 
-        <!--==================================================
-        INSPECTION GÉNÉRALE DU TRAVAIL
-    ==================================================-->
+        <section class="dashboard-section">
 
-    <section class="category">
+            <div class="section-title">
 
-        <h3>
-            🏛 Inspection Générale du Travail
-        </h3>
+                <span>🏛</span>
 
-        <div class="grid">
+                <h2>Inspection Générale du Travail</h2>
 
-            <a href="F01/F01.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F01</h4>
-                <p>Fiche de Contrôle N°1</p>
-            </a>
+            </div>
 
-            <a href="F02/F02.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F02</h4>
-                <p>Fiche de Contrôle N°2</p>
-            </a>
+            <div class="cards">
 
-            <a href="F03/F03.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F03</h4>
-                <p>Fiche de Contrôle N°3</p>
-            </a>
+                <a href="F01/F01.html" class="card">
 
-            <a href="F04/F04.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F04</h4>
-                <p>Fiche de Contrôle N°4</p>
-            </a>
+                    <div class="card-icon">📄</div>
 
-            <a href="F05/F05.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F05</h4>
-                <p>Fiche de Contrôle N°5</p>
-            </a>
+                    <h3>F01</h3>
 
-            <a href="F06/F06.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F06</h4>
-                <p>Fiche de Contrôle N°6</p>
-            </a>
+                    <p>Fiche de Contrôle N°01</p>
 
-            <a href="F07/F07.html" class="card">
-                <span class="icon">📄</span>
-                <h4>F07</h4>
-                <p>Fiche de Contrôle N°7</p>
-            </a>
+                </a>
 
-            <a href="S01/S01.html" class="card">
-                <span class="icon">📝</span>
-                <h4>S01</h4>
-                <p>Formulaire Spécial 1</p>
-            </a>
+                <a href="F02/F02.html" class="card">
 
-            <a href="S02/S02.html" class="card">
-                <span class="icon">📝</span>
-                <h4>S02</h4>
-                <p>Formulaire Spécial 2</p>
-            </a>
+                    <div class="card-icon">📄</div>
 
-            <a href="S03/S03.html" class="card">
-                <span class="icon">📝</span>
-                <h4>S03</h4>
-                <p>Formulaire Spécial 3</p>
-            </a>
+                    <h3>F02</h3>
 
-        </div>
+                    <p>Fiche de Contrôle N°02</p>
 
-    </section>
+                </a>
 
-    <!--==================================================
-        OFFICE NATIONAL DE L'EMPLOI
-    ==================================================-->
+                <a href="F03/F03.html" class="card">
 
-    <section class="category">
+                    <div class="card-icon">📄</div>
 
-        <h3>
-            🏢 Office National de l'Emploi (ONEM)
-        </h3>
+                    <h3>F03</h3>
 
-        <div class="grid">
+                    <p>Fiche de Contrôle N°03</p>
 
-            <a href="ONEM/declaration-etablissement.html" class="card">
+                </a>
 
-                <span class="icon">🏭</span>
+                <a href="F04/F04.html" class="card">
 
-                <h4>Déclaration d'Établissement</h4>
+                    <div class="card-icon">📄</div>
 
-                <p>Article 216 du Code du Travail</p>
+                    <h3>F04</h3>
 
-            </a>
+                    <p>Fiche de Contrôle N°04</p>
 
-            <a href="ONEM/dasmo.html" class="card">
+                </a>
 
-                <span class="icon">👥</span>
+                <a href="F05/F05.html" class="card">
 
-                <h4>DASMO</h4>
+                    <div class="card-icon">📄</div>
 
-                <p>Déclaration annuelle de la situation de la main-d'œuvre</p>
+                    <h3>F05</h3>
 
-            </a>
+                    <p>Fiche de Contrôle N°05</p>
 
-            <a href="ONEM/bilan-social.html" class="card">
+                </a>
 
-                <span class="icon">📊</span>
+                <a href="F06/F06.html" class="card">
 
-                <h4>Bilan Social</h4>
+                    <div class="card-icon">📄</div>
 
-                <p>Bilan Social de l'entreprise</p>
+                    <h3>F06</h3>
 
-            </a>
+                    <p>Fiche de Contrôle N°06</p>
 
-        </div>
+                </a>
 
-    </section>
+                <a href="F07/F07.html" class="card">
 
-    <!--==================================================
-        AUTRES OUTILS
-    ==================================================-->
+                    <div class="card-icon">📄</div>
 
-    <section class="category">
+                    <h3>F07</h3>
 
-        <h3>
-            🧰 Autres Outils
-        </h3>
+                    <p>Fiche de Contrôle N°07</p>
 
-        <div class="grid">
+                </a>
 
-            <a href="autres/verifier-document.html" class="card">
+                <a href="S01/S01.html" class="card">
 
-                <span class="icon">✅</span>
+                    <div class="card-icon">📝</div>
 
-                <h4>Authenticité</h4>
+                    <h3>S01</h3>
 
-                <p>Vérification des documents</p>
+                    <p>Formulaire Spécial N°01</p>
 
-            </a>
+                </a>
 
-            <a href="autres/smig.html" class="card">
+                <a href="S02/S02.html" class="card">
 
-                <span class="icon">💵</span>
+                    <div class="card-icon">📝</div>
 
-                <h4>Application SMIG</h4>
+                    <h3>S02</h3>
 
-                <p>Calculateur du SMIG RDC</p>
+                    <p>Formulaire Spécial N°02</p>
 
-            </a>
+                </a>
 
-            <a href="autres/qr-generator.html" class="card">
+                <a href="S03/S03.html" class="card">
 
-                <span class="icon">📱</span>
+                    <div class="card-icon">📝</div>
 
-                <h4>QR Code</h4>
+                    <h3>S03</h3>
 
-                <p>Générateur de QR Code</p>
+                    <p>Formulaire Spécial N°03</p>
 
-            </a>
+                </a>
 
-            <a href="autres/scan-qr.html" class="card">
-
-                <span class="icon">📷</span>
-
-                <h4>Scanner QR</h4>
-
-                <p>Lecture des QR Codes</p>
-
-            </a>
-
-            <a href="autres/historique.html" class="card">
-
-                <span class="icon">🗂</span>
-
-                <h4>Historique</h4>
-
-                <p>Contrôles effectués</p>
-
-            </a>
-
-            <a href="autres/statistiques.html" class="card">
-
-                <span class="icon">📈</span>
-
-                <h4>Statistiques</h4>
-
-                <p>Rapports et analyses</p>
-
-            </a>
-
-        </div>
+            </div>
 
         </section>
 
-        <!--==================================================
-        FOOTER PREMIUM
-    ==================================================-->
+        <!--==========================================
+            OFFICE NATIONAL DE L'EMPLOI
+        ===========================================-->
 
-    <footer class="main-footer">
+        <section class="dashboard-section">
 
-        <div class="footer-grid">
+            <div class="section-title">
 
-            <div class="footer-card">
+                <span>🏢</span>
 
-                <h3>
-                    🤖 InspecteurBot IA RDC
-                </h3>
-
-                <p>
-
-                    Plateforme intelligente destinée aux Inspecteurs
-                    du Travail de la République Démocratique du Congo.
-
-                </p>
+                <h2>Office National de l'Emploi (ONEM)</h2>
 
             </div>
 
-            <div class="footer-card">
+            <div class="cards">
 
-                <h3>
-                    ⚡ Accès Rapide
-                </h3>
+                <a href="ONEM/declaration-etablissement.html" class="card">
 
-                <ul>
+                    <div class="card-icon">🏭</div>
 
-                    <li>Inspection Générale du Travail</li>
+                    <h3>Déclaration</h3>
 
-                    <li>Office National de l'Emploi</li>
+                    <p>Déclaration d'Établissement</p>
 
-                    <li>Authentification des documents</li>
+                </a>
 
-                    <li>Application SMIG RDC</li>
+                <a href="ONEM/dasmo.html" class="card">
 
-                </ul>
+                    <div class="card-icon">👥</div>
 
-            </div>
+                    <h3>DASMO</h3>
 
-            <div class="footer-card">
+                    <p>Situation annuelle de la Main-d'œuvre</p>
 
-                <h3>
-                    📞 Institutions
-                </h3>
+                </a>
 
-                <ul>
+                <a href="ONEM/bilan-social.html" class="card">
 
-                    <li>Inspection Générale du Travail</li>
+                    <div class="card-icon">📊</div>
 
-                    <li>Office National de l'Emploi</li>
+                    <h3>Bilan Social</h3>
 
-                    <li>CNSS</li>
+                    <p>Rapport Social de l'Entreprise</p>
 
-                    <li>INPP</li>
-
-                </ul>
+                </a>
 
             </div>
 
-            <div class="footer-card">
+        </section>
 
-                <h3>
-                    ℹ Informations
-                </h3>
+        <!--==========================================
+            JURIDIQUE
+        ===========================================-->
 
-                <p>
+        <section class="dashboard-section">
 
-                    Version :
-                    <strong>
-                        2.0 Premium
-                    </strong>
+            <div class="section-title">
 
-                </p>
+                <span>⚖️</span>
 
-                <p>
-
-                    Année :
-                    <strong>
-                        2026
-                    </strong>
-
-                </p>
-
-                <p id="onlineStatus">
-
-                    🟢 En ligne
-
-                </p>
+                <h2>Bibliothèque Juridique</h2>
 
             </div>
 
-        </div>
+            <div class="cards">
 
-        <div class="copyright">
+                <a href="../code-travail/index.html" class="card">
+
+                    <div class="card-icon">📚</div>
+
+                    <h3>Code du Travail</h3>
+
+                    <p>Recherche intelligente des articles</p>
+
+                </a>
+
+                <a href="juridique/conventions.html" class="card">
+
+                    <div class="card-icon">📘</div>
+
+                    <h3>Conventions</h3>
+
+                    <p>Conventions Collectives</p>
+
+                </a>
+
+                <a href="juridique/arretes.html" class="card">
+
+                    <div class="card-icon">⚖️</div>
+
+                    <h3>Arrêtés</h3>
+
+                    <p>Arrêtés Ministériels</p>
+
+                </a>
+
+            </div>
+
+                    </section>    
+
+                <!--==========================================
+            INTELLIGENCE ARTIFICIELLE
+        ===========================================-->
+
+        <section class="dashboard-section">
+
+            <div class="section-title">
+
+                <span>🤖</span>
+
+                <h2>Intelligence Artificielle</h2>
+
+            </div>
+
+            <div class="cards">
+
+                <a href="ia/assistant.html" class="card">
+
+                    <div class="card-icon">🤖</div>
+
+                    <h3>Assistant IA</h3>
+
+                    <p>Assistant intelligent pour les Inspecteurs du Travail.</p>
+
+                </a>
+
+                <a href="ia/analyse.html" class="card">
+
+                    <div class="card-icon">🧠</div>
+
+                    <h3>Analyse IA</h3>
+
+                    <p>Détection automatique des infractions au Code du Travail.</p>
+
+                </a>
+
+                <a href="ia/recommandations.html" class="card">
+
+                    <div class="card-icon">💡</div>
+
+                    <h3>Recommandations</h3>
+
+                    <p>Suggestions automatiques d'observations et de mesures.</p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!--==========================================
+            AUTRES OUTILS
+        ===========================================-->
+
+        <section class="dashboard-section">
+
+            <div class="section-title">
+
+                <span>🧰</span>
+
+                <h2>Autres Outils Professionnels</h2>
+
+            </div>
+
+            <div class="cards">
+
+                <a href="autres/smig.html" class="card">
+
+                    <div class="card-icon">💵</div>
+
+                    <h3>Application SMIG</h3>
+
+                    <p>Calcul automatique du SMIG et des heures supplémentaires.</p>
+
+                </a>
+
+                <a href="autres/verification.html" class="card">
+
+                    <div class="card-icon">✅</div>
+
+                    <h3>Authenticité</h3>
+
+                    <p>Vérification des documents administratifs.</p>
+
+                </a>
+
+                <a href="autres/qrcode.html" class="card">
+
+                    <div class="card-icon">📱</div>
+
+                    <h3>QR Code</h3>
+
+                    <p>Scanner et générateur de QR Codes.</p>
+
+                </a>
+
+                <a href="autres/gps.html" class="card">
+
+                    <div class="card-icon">📍</div>
+
+                    <h3>GPS</h3>
+
+                    <p>Localisation des contrôles et coordonnées GPS.</p>
+
+                </a>
+
+                <a href="autres/statistiques.html" class="card">
+
+                    <div class="card-icon">📊</div>
+
+                    <h3>Statistiques</h3>
+
+                    <p>Rapports, graphiques et tableaux de bord.</p>
+
+                </a>
+
+                <a href="autres/historique.html" class="card">
+
+                    <div class="card-icon">🗂️</div>
+
+                    <h3>Historique</h3>
+
+                    <p>Consultation de l'historique des contrôles.</p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!--==========================================
+        PIED DE PAGE PREMIUM
+    ===========================================-->
+
+    <footer class="footer">
+
+        <div class="footer-content">
+
+            <h2>
+
+                INSPECTEURBOT IA RDC
+
+            </h2>
+
+            <p>
+
+                Plateforme professionnelle destinée aux Inspecteurs du Travail
+                de la République Démocratique du Congo.
+
+            </p>
+
+            <div class="footer-info">
+
+                <span>⚖️ Inspection Générale du Travail</span>
+
+                <span>🏢 Office National de l'Emploi (ONEM)</span>
+
+                <span>📚 Code du Travail RDC</span>
+
+                <span>🤖 Intelligence Artificielle</span>
+
+            </div>
+
+            <hr>
 
             <h3>
 
-                Créé par Inspecteur Limengo (Pmiller) © 2026
+                Créé par Inspecteur Limengo (Pmiller)
 
             </h3>
 
             <p>
 
-                InspecteurBot IA RDC
-
-                <br>
-
-                République Démocratique du Congo
+                © 2026 Tous droits réservés.
 
             </p>
 
             <p>
 
-                Tous droits réservés.
+                Version 3.0 Premium
 
             </p>
 
@@ -559,64 +661,10 @@
 
     </footer>
 
-    <!--==================================================
-        BOUTONS FLOTTANTS
-    ==================================================-->
-
-    <div class="floating-buttons">
-
-        <button
-            id="btnHome"
-            class="fab"
-            title="Accueil">
-
-            🏠
-
-        </button>
-
-        <button
-            id="btnSearch"
-            class="fab"
-            title="Recherche">
-
-            🔍
-
-        </button>
-
-        <button
-            id="btnAssistant"
-            class="fab"
-            title="InspecteurBot IA">
-
-            🤖
-
-        </button>
-
-        <button
-            id="btnTheme"
-            class="fab"
-            title="Changer le thème">
-
-            🌙
-
-        </button>
-
-        <button
-            id="btnTop"
-            class="fab"
-            title="Retour en haut">
-
-            ⬆
-
-        </button>
-
-    </div>
-
-    <!--==================================================
-        CHARGEMENT JAVASCRIPT
-    ==================================================-->
-
     <script src="fiche.js"></script>
 
 </body>
- </html>
+
+    </html>
+
+        
