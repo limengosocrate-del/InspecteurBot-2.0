@@ -1,69 +1,54 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"><title>F02 - Main d'Œuvre Étrangère</title><link rel="stylesheet" href="F02.css"></head>
-<body>
-<div class="app-toolbar no-print">
-  <button onclick="F02.dictate()">🎙️ Dictée</button><button onclick="F02.analyze()">⚖️ Analyse</button>
-  <button onclick="F02.save()">💾 Enregistrer</button><button onclick="window.print()">🖨️ PDF</button>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>F02 - Main d’Œuvre Étrangère</title>
+  <link rel="stylesheet" href="../common/common.css">
+  <link rel="stylesheet" href="F02.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+</head>
+<body onload="initForm('F02')">
+<div class="form-container">
+  <table class="main-table">
+    <tr>
+      <td style="width:80px"><img src="../assets/images/logo-igt.png" class="logo-igt"></td>
+      <td style="text-align:center"><strong>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</strong><br>Ministère de l’Emploi et Travail<br>Inspection Générale du Travail</td>
+      <td style="width:110px;text-align:right"><h1 style="color:red;margin:0">F02</h1><div id="qrcode"></div></td>
+    </tr>
+  </table>
+  <h2 style="text-align:center;color:red">CONTRÔLE DE LA MAIN D’ŒUVRE ÉTRANGÈRE</h2>
+
+  <table class="main-table">
+    <tr><td colspan="13" class="section-header">RENSEIGNEMENT DE L’ENTREPRISE OU ÉTABLISSEMENT VISITÉ</td></tr>
+    <tr><td colspan="13">Nom ou Raison Sociale : <input type="text" class="input-field" id="nomEntreprise"></td></tr>
+    <tr><td colspan="13">Siège social : <input type="text" class="input-field"></td></tr>
+
+    <!-- 12 COLONNES EXPATRIÉS -->
+    <tr><td colspan="13" class="section-header">EFFECTIFS DE TRAVAILLEURS EXPATRIÉS VENTILÉS SELON LE SEXE</td></tr>
+    <tr>
+      <th>N°</th><th colspan="4">NOMS</th><th>SEXE</th><th>NATIONALITÉ</th><th>VISA</th><th>E</th><th>NE</th><th>ENC</th><th colspan="2">CARTE TRAVAIL</th>
+    </tr>
+    <script>
+      for(let i=1; i<=12; i++){
+        document.write(`<tr><td>${i.toString().padStart(2,'0')}</td><td colspan="4"><input class="input-field"></td><td><input class="input-field"></td><td><input class="input-field"></td><td><input class="input-field"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td colspan="2"></td></tr>`);
+      }
+    </script>
+  </table>
+
+  <div class="signature-section">
+    <div><strong>Signature Employeur</strong><br><canvas id="signatureEmployer" width="280" height="110"></canvas><br><button onclick="clearSignature('signatureEmployer')">Effacer</button></div>
+    <div><strong>Signature Inspecteur</strong><br><canvas id="signatureInspector" width="280" height="110"></canvas><br><button onclick="clearSignature('signatureInspector')">Effacer</button></div>
+  </div>
+
+  <div style="text-align:center;margin-top:15px">
+    <button onclick="exportToPDF('F02')">🖨️ Exporter / Imprimer PDF A4</button>
+    <button onclick="startVoiceDictation('nomEntreprise')">🎤 Dicter</button>
+    <button onclick="runIAnalysis()">🔍 Analyser infractions</button>
+  </div>
+  <div class="qr-container"><div id="qrcode"></div><small id="timestamp"></small></div>
 </div>
-<main class="sheet">
-  <table class="entete">
-    <tr><td class="logo-cell" rowspan="2"><div class="logo">🛡️</div><div class="ministere"><b>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</b><br><b>Ministère de l'Emploi et Travail</b><br><i class="blue">Inspection Générale du Travail</i><br><i class="red">Administration Centrale</i></div></td>
-        <td class="titre" rowspan="2"><h1>CONTROLE DE LA MAIN D'ŒUVRE ETRANGERE</h1></td>
-        <td class="code"><h2>F02</h2></td></tr>
-    <tr><td class="num">N° <input class="inp">/20<input class="inp mini"></td></tr>
-  </table>
-
-  <table class="bloc"><tr><th colspan="3" class="bar">RENSEIGNEMENT DE L'ENTREPRISE OU ETABLISSEMENT VISITE</th><th class="bar">RESERVE A L'IT OU CT</th></tr>
-    <tr><td colspan="3" class="fields">
-      <div class="row"><label>Nom ou Raison Sociale :</label><input class="inp fill"></div>
-      <div class="row"><label>Secteur d'activité :</label><input class="inp fill"></div>
-      <div class="row"><label>Siège social : av</label><input class="inp"><label>n°</label><input class="inp mini"><label>Q/</label><input class="inp"><label>C/</label><input class="inp"></div>
-      <div class="row"><label>Nom du Responsable :</label><input class="inp"><label>Contact :</label><input class="inp tel"></div>
-      <div class="row"><label>Personne rencontrée :</label><input class="inp"><label>Qualité :</label><input class="inp"></div>
-      <div class="row"><label>CNSS :</label><input class="inp"><label>ONM :</label><input class="inp"><label>INPP :</label><input class="inp"></div>
-      <div class="row"><label>Précédente visite effectuée par :</label><input class="inp"><label>le</label><input class="inp date" type="date"></div>
-    </td><td class="reserve"><div class="grid-num"><span>0</span><span>1/2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span class="c8">8</span></div></td></tr>
-  </table>
-
-  <table class="tab expats">
-    <tr><th colspan="7" class="bar">EFFECTIFS DE TRAVAILLEURS EXPATRIES VENTILLES SELON LE SEXE</th><th class="bar">RATIO</th></tr>
-    <tr><th colspan="4">IDENTITE</th><th colspan="3">CARTE DU TRAVAIL</th><th rowspan="14"><textarea class="inp obs"></textarea></th></tr>
-    <tr><th>N°</th><th>NOMS</th><th>SEXE</th><th>NATIONALITE</th><th class="red">NATURE DE VISA</th><th>E</th><th>NE/ENC</th></tr>
-    <script>for(let i=1;i<=12;i++)document.write(`<tr><td>${String(i).padStart(2,'0')}</td><td><input class="inp"></td><td><select class="inp"><option></option><option>M</option><option>F</option></select></td><td><input class="inp"></td><td><input class="inp"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>`);</script>
-  </table>
-
-  <table class="tab"><tr><th colspan="9" class="bar">EFFECTIFS DE TRAVAILLEURS EXPATRIES VENTILLES SELON LES CATEGORIES PROFESSIONNELS</th><th class="bar">CONFORMITE</th></tr>
-    <tr><th colspan="3">CLASSIFIES</th><th colspan="3">MAITRISES</th><th colspan="3">CADRES</th><th rowspan="3"><input class="inp"></th></tr>
-    <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
-    <tr><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td></tr>
-  </table>
-
-  <table class="tab"><tr><th colspan="9" class="bar">EFFECTIFS DE TRAVAILLEURS EXPATRIES EXEMPTE DE LA CARTE DU TRAVAIL</th><th class="bar">CONFORMITE</th></tr>
-    <tr><th colspan="3">ASSOCIES PASSIFS</th><th colspan="3">PERSONNEL TOURISTIQUE</th><th colspan="3">AUTRES</th><th rowspan="3"><input class="inp"></th></tr>
-    <tr><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th><th>H</th><th>F</th><th>T</th></tr>
-    <tr><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td><td><input class="inp"></td></tr>
-  </table>
-
-  <table class="docs"><tr><th colspan="4" class="bar">DOCUMENTS A PRESENTER</th><th class="bar">SUITE RESERVE</th></tr>
-    <tr><th class="lbl"></th><th>E</th><th>NE</th><th>ENC</th><th rowspan="11"><textarea class="inp obs"></textarea></th></tr>
-    <script>['Contrat du Travail pour expatriés visé par l\'ONEM','Procès-verbal de la CNEE','Note de perception de la DGRAD','Preuve de paiement de la carte pour expatriés','Preuve de paiement de cotisation CNSS, ONEM, INPP et IPR','Preuve d\'immatriculation à la CNSS','Feuille de paie de trois derniers mois','Décompte de rémunération de chaque mois','Titre de congé de trois derniers Année'].forEach(t=>document.write(`<tr><td class="lbl">${t}</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr>`));</script>
-  </table>
-
-  <table class="concl"><tr><th colspan="3" class="bar">Conclusion de la visite</th></tr><tr><th>LO</th><th>MD</th><th>PV CI</th></tr><tr><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr></table>
-
-  <table class="sign"><tr><td colspan="2" class="right">Fait à <input class="inp"> le <input class="inp date" type="date"></td></tr>
-    <tr><td><b>Signature de l'Employeur ou son Représentant</b><div class="sigbox"></div><button class="no-print" onclick="F02.sign(this)">✍️ Signer</button></td>
-        <td><b>Signature de l'Inspecteur ou Contrôleur du Travail</b><div class="sigbox"></div><button class="no-print" onclick="F02.sign(this)">✍️ Signer</button></td></tr>
-  </table>
-
-  <table class="admin"><tr><th colspan="2" class="bar">RESERVE A L'ADMINISTRATION DE L'INSPECTION DU TRAVAIL</th></tr>
-    <tr><th>OBSERVATIONS DU CHEF D'ANTENNE</th><th>OBSERVATIONS DU DIRECTEUR PROVINCIAL</th></tr>
-    <tr><td><textarea class="inp obs"></textarea></td><td><textarea class="inp obs"></textarea></td></tr></table>
-
-  <table class="igt"><tr><th colspan="6" class="bar">RESERVE A L'INSPECTEUR GENERAL DU TRAVAIL</th></tr>
-    <tr><th>OBSERVATIONS</th><th>VS</th><th>CE</th><th>IT</th><th>MD</th><th>S</th></tr>
-    <tr><td><textarea class="inp obs"></textarea></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td></tr></table>
-
-  <footer class="pied">Créé par Inspecteur Limengo (Pmiller) © 2026. Tous droits réservés.</footer>
-</main>
-<script src="F02.js"></script></body></html>
+<script src="../common/common.js"></script>
+<script src="F02.js"></script>
+</body>
+      </html>
