@@ -1,67 +1,14 @@
-/*====================================================
-INSPECTEURBOT IA RDC
-FICHE.CSS
-PARTIE 1
-Créé par Inspecteur Limengo (Pmiller) © 2026
-====================================================*/
+/*==================================================
+ INSPECTEURBOT IA RDC
+ fiche.css
+ PARTIE 1
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
+==================================================*/
 
-/*====================================================
-VARIABLES
-====================================================*/
-
-:root{
-
-    --primary:#0b3d91;
-
-    --secondary:#0f6efd;
-
-    --accent:#ffd54a;
-
-    --success:#00c853;
-
-    --danger:#ff5252;
-
-    --white:#ffffff;
-
-    --light:#f4f7fb;
-
-    --dark:#07121f;
-
-    --card:#10233d;
-
-    --text:#ecf4ff;
-
-    --border:rgba(255,255,255,.12);
-
-    --shadow:0 15px 35px rgba(0,0,0,.30);
-
-    --radius:18px;
-
-    --transition:.35s;
-
-}
-
-/*====================================================
-MODE CLAIR
-====================================================*/
-
-body.light{
-
-    --dark:#edf3fb;
-
-    --card:#ffffff;
-
-    --text:#10233d;
-
-    --border:#d7e3f5;
-
-    background:#edf3fb;
-
-}
-
-/*====================================================
+/*==================================================
 RESET
-====================================================*/
+==================================================*/
 
 *{
 
@@ -81,29 +28,23 @@ html{
 
 body{
 
-    font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
+    font-family:"Segoe UI",Arial,sans-serif;
 
-    background:
-    linear-gradient(135deg,#07121f,#0b3d91,#102d5e);
+    background:linear-gradient(135deg,#001a4d,#003b8e,#0057d9);
 
-    color:var(--text);
+    color:#ffffff;
 
     min-height:100vh;
 
     overflow-x:hidden;
 
-    transition:.40s;
-
 }
 
-/*====================================================
-FOND ANIMÉ
-====================================================*/
+/*==================================================
+ARRIERE PLAN
+==================================================*/
 
-.background-animation{
+.background{
 
     position:fixed;
 
@@ -111,54 +52,41 @@ FOND ANIMÉ
 
     background:
 
-    radial-gradient(circle at top left,
-    rgba(255,213,74,.10),
-    transparent 35%),
+    radial-gradient(circle at top,#3d7bff22,transparent 45%),
 
-    radial-gradient(circle at bottom right,
-    rgba(0,153,255,.12),
-    transparent 35%);
+    radial-gradient(circle at bottom,#00b7ff22,transparent 35%);
 
     z-index:-2;
 
-    animation:
-    moveBackground 16s linear infinite;
+}
+
+.particles{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    z-index:-1;
 
 }
 
-@keyframes moveBackground{
-
-    0%{
-
-        transform:translateY(0);
-
-    }
-
-    50%{
-
-        transform:translateY(-20px);
-
-    }
-
-    100%{
-
-        transform:translateY(0);
-
-    }
-
-}
-
-/*====================================================
+/*==================================================
 HEADER
-====================================================*/
+==================================================*/
 
-.main-header{
+.header{
 
-    width:min(1400px,96%);
+    width:95%;
 
-    margin:30px auto;
+    max-width:1500px;
+
+    margin:25px auto;
 
     padding:25px;
+
+    border-radius:22px;
 
     display:flex;
 
@@ -168,23 +96,17 @@ HEADER
 
     flex-wrap:wrap;
 
-    gap:25px;
+    gap:20px;
 
-    background:rgba(255,255,255,.05);
+    background:rgba(255,255,255,.10);
 
-    backdrop-filter:blur(16px);
+    backdrop-filter:blur(18px);
 
-    border:1px solid var(--border);
+    border:1px solid rgba(255,255,255,.25);
 
-    border-radius:var(--radius);
-
-    box-shadow:var(--shadow);
+    box-shadow:0 10px 35px rgba(0,0,0,.35);
 
 }
-
-/*====================================================
-LOGO
-====================================================*/
 
 .header-left{
 
@@ -192,11 +114,15 @@ LOGO
 
     align-items:center;
 
-    gap:20px;
+    gap:25px;
 
 }
 
-.logo-circle{
+/*==================================================
+LOGO
+==================================================*/
+
+.logo{
 
     width:95px;
 
@@ -210,113 +136,155 @@ LOGO
 
     align-items:center;
 
-    background:
+    background:linear-gradient(135deg,#0b3d91,#1976d2);
 
-    linear-gradient(135deg,
-    var(--accent),
-    #ff9800);
-
-    color:#10233d;
-
-    font-size:28px;
-
-    font-weight:bold;
-
-    box-shadow:
-
-    0 0 25px rgba(255,213,74,.40);
-
-}
-
-.header-left h1{
+    color:#fff;
 
     font-size:32px;
 
-    color:white;
+    font-weight:bold;
 
-    letter-spacing:1px;
+    box-shadow:0 0 30px rgba(0,162,255,.7);
 
 }
 
-.header-left p{
+/*==================================================
+TITRES
+==================================================*/
+
+.header h1{
+
+    font-size:46px;
+
+    color:#ffffff;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    text-shadow:
+
+    2px 2px 0 #000,
+
+    4px 4px 10px rgba(0,0,0,.45);
+
+}
+
+.header h2{
+
+    margin-top:8px;
+
+    font-size:24px;
+
+    color:#f5f5f5;
+
+    text-shadow:
+
+    1px 1px 4px #000;
+
+}
+
+.header p{
 
     margin-top:6px;
 
-    color:#cdddf8;
+    font-size:18px;
 
-    line-height:1.5;
+    color:#dfefff;
 
 }
 
-/*====================================================
-INFORMATIONS
-====================================================*/
+/*==================================================
+CARTES D'INFORMATIONS
+==================================================*/
 
 .header-right{
 
-    display:flex;
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(2,1fr);
 
     gap:15px;
 
-    flex-wrap:wrap;
-
-    justify-content:flex-end;
-
 }
 
-.info-card{
+.info-box{
 
-    min-width:145px;
+    min-width:180px;
 
-    background:rgba(255,255,255,.08);
+    padding:18px;
 
-    border:1px solid var(--border);
-
-    border-radius:15px;
-
-    padding:12px;
+    border-radius:16px;
 
     text-align:center;
+
+    background:rgba(255,255,255,.12);
+
+    border:1px solid rgba(255,255,255,.20);
 
     transition:.35s;
 
 }
 
-.info-card:hover{
+.info-box:hover{
 
-    transform:translateY(-5px);
+    transform:translateY(-6px);
 
-    background:rgba(255,255,255,.12);
+    box-shadow:0 0 25px rgba(0,180,255,.6);
 
 }
 
-.info-card span{
+.info-box span{
 
     display:block;
 
-    font-size:12px;
-
-    color:#cbd9ef;
-
-    margin-bottom:6px;
-
-}
-
-.info-card strong{
-
     font-size:15px;
 
+    margin-bottom:8px;
+
+    color:#cde6ff;
+
 }
 
-/*====================================================
-BARRE D'OUTILS
-====================================================*/
+.info-box strong{
 
-.top-toolbar{
+    font-size:20px;
 
-    width:min(1400px,96%);
+    color:#ffffff;
 
-    margin:auto;
+    text-shadow:
+
+    1px 1px 5px #000;
+
+}
+
+/*==================================================
+FIN PARTIE 1
+==================================================*/
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ fiche.css
+ PARTIE 2
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
+==================================================*/
+
+/*==================================================
+BARRE D'ACTIONS
+==================================================*/
+
+.action-bar{
+
+    width:95%;
+
+    max-width:1500px;
+
+    margin:20px auto;
+
+    padding:20px;
 
     display:flex;
 
@@ -328,212 +296,349 @@ BARRE D'OUTILS
 
     gap:20px;
 
+    border-radius:20px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:0 8px 30px rgba(0,0,0,.30);
+
 }
 
-.search-box{
+.search-area{
 
     flex:1;
 
+    min-width:320px;
+
 }
 
-.search-box input{
+.search-area input{
 
     width:100%;
 
-    padding:15px 18px;
+    padding:18px 24px;
 
     border:none;
 
     outline:none;
 
-    border-radius:14px;
+    border-radius:50px;
 
-    font-size:15px;
-
-    background:rgba(255,255,255,.08);
-
-    color:white;
-
-    border:1px solid var(--border);
-
-}
-
-.search-box input::placeholder{
-
-    color:#b9c7de;
-
-}
-
-.toolbar-right{
-
-    display:flex;
-
-    gap:12px;
-
-}
-
-.toolbar-right select,
-
-.toolbar-right button{
-
-    padding:14px 18px;
-
-    border:none;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-    background:var(--primary);
-
-    color:white;
+    font-size:18px;
 
     font-weight:600;
+
+    color:#111;
+
+    background:#ffffff;
+
+    box-shadow:0 0 20px rgba(0,132,255,.35);
 
     transition:.35s;
 
 }
 
-.toolbar-right button:hover,
+.search-area input:focus{
 
-.toolbar-right select:hover{
+    transform:scale(1.02);
 
-    background:var(--secondary);
+    box-shadow:0 0 30px rgba(0,170,255,.75);
 
-    transform:translateY(-2px);
+}
 
-      }
+.action-buttons{
 
-/*====================================================
-INSPECTEURBOT IA RDC
-FICHE.CSS
-PARTIE 2
-Créé par Limengo (Pmiller) © 2026
-====================================================*/
+    display:flex;
 
-/*====================================================
-TITRE PRINCIPAL
-====================================================*/
+    align-items:center;
 
-.page-title{
+    gap:15px;
 
-    width:min(1400px,96%);
+    flex-wrap:wrap;
 
-    margin:40px auto;
+}
+
+/*==================================================
+BOUTONS PREMIUM
+==================================================*/
+
+.action-btn{
+
+    padding:15px 28px;
+
+    border:none;
+
+    border-radius:50px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:#ffffff;
+
+    background:linear-gradient(135deg,#0066ff,#00b4ff);
+
+    transition:.35s;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+
+}
+
+.action-btn:hover{
+
+    transform:translateY(-5px) scale(1.05);
+
+    box-shadow:0 0 25px rgba(0,195,255,.85);
+
+}
+
+.action-btn:active{
+
+    transform:scale(.95);
+
+}
+
+#langSwitcher{
+
+    padding:15px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:50px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    background:#ffffff;
+
+    color:#111;
+
+    cursor:pointer;
+
+}
+
+/*==================================================
+HERO
+==================================================*/
+
+.hero{
+
+    width:95%;
+
+    max-width:1500px;
+
+    margin:30px auto;
 
     text-align:center;
 
 }
 
-.page-title h2{
+.hero h2{
 
-    font-size:38px;
+    font-size:42px;
 
-    color:var(--white);
+    color:#ffffff;
 
-    margin-bottom:10px;
+    letter-spacing:2px;
 
-    letter-spacing:1px;
+    text-shadow:
 
-}
+    2px 2px 0 #000,
 
-.page-title p{
-
-    font-size:17px;
-
-    color:#cfdaf0;
+    5px 5px 12px rgba(0,0,0,.50);
 
 }
 
-/*====================================================
-CATEGORIES
-====================================================*/
+.hero p{
 
-.category{
+    margin-top:15px;
 
-    width:min(1400px,96%);
+    font-size:22px;
 
-    margin:45px auto;
+    color:#e8f4ff;
 
 }
 
-.category h3{
+/*==================================================
+TABLEAU DE BORD
+==================================================*/
 
-    display:inline-flex;
+.dashboard{
+
+    width:95%;
+
+    max-width:1500px;
+
+    margin:auto;
+
+}
+
+.dashboard-section{
+
+    margin-bottom:45px;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+}
+
+.section-title{
+
+    display:flex;
 
     align-items:center;
 
-    gap:10px;
-
-    font-size:24px;
-
-    color:var(--accent);
+    gap:15px;
 
     margin-bottom:25px;
 
-    padding-bottom:8px;
+}
 
-    border-bottom:3px solid var(--accent);
+.section-title span{
+
+    font-size:42px;
 
 }
 
-/*====================================================
-GRILLE
-====================================================*/
+.section-title h2{
 
-.grid{
+    font-size:32px;
+
+    color:#ffffff;
+
+    text-shadow:
+
+    2px 2px 5px #000;
+
+}
+
+/*==================================================
+CARTES
+==================================================*/
+
+.cards{
 
     display:grid;
 
     grid-template-columns:
 
-    repeat(auto-fit,minmax(260px,1fr));
+    repeat(auto-fit,minmax(240px,1fr));
 
-    gap:25px;
+    gap:22px;
 
 }
 
-/*====================================================
-CARTE
-====================================================*/
-
 .card{
-
-    position:relative;
 
     display:flex;
 
     flex-direction:column;
 
-    justify-content:center;
-
     align-items:center;
+
+    justify-content:center;
 
     text-align:center;
 
     text-decoration:none;
 
-    padding:30px 20px;
+    padding:30px;
 
-    background:rgba(255,255,255,.05);
+    border-radius:22px;
 
-    border:1px solid var(--border);
+    color:#ffffff;
 
-    border-radius:20px;
+    background:linear-gradient(
 
-    backdrop-filter:blur(15px);
+        135deg,
+
+        rgba(255,255,255,.18),
+
+        rgba(255,255,255,.08)
+
+    );
+
+    border:1px solid rgba(255,255,255,.20);
+
+    transition:.35s;
 
     overflow:hidden;
 
-    transition:.40s;
-
-    box-shadow:var(--shadow);
+    position:relative;
 
 }
 
-/*====================================================
-LUMIERE
-====================================================*/
+.card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:0 0 30px rgba(0,180,255,.80);
+
+}
+
+.card-icon{
+
+    font-size:56px;
+
+    margin-bottom:15px;
+
+}
+
+.card h3{
+
+    font-size:28px;
+
+    margin-bottom:10px;
+
+    color:#ffffff;
+
+    text-shadow:
+
+    2px 2px 4px #000;
+
+}
+
+.card p{
+
+    font-size:18px;
+
+    line-height:1.6;
+
+    color:#eef6ff;
+
+}
+
+/*==================================================
+FIN PARTIE 2
+==================================================*/
+
+/*==================================================
+ INSPECTEURBOT IA RDC
+ fiche.css
+ PARTIE 3
+ Créé par Inspecteur Limengo (Pmiller)
+ © 2026
+==================================================*/
+
+/*==================================================
+ANIMATION DES CARTES
+==================================================*/
 
 .card::before{
 
@@ -541,35 +646,27 @@ LUMIERE
 
     position:absolute;
 
-    width:180px;
+    top:-120%;
 
-    height:180px;
+    left:-40%;
 
-    background:
+    width:60%;
 
-    radial-gradient(circle,
+    height:320%;
 
-    rgba(255,213,74,.25),
+    background:rgba(255,255,255,.25);
 
-    transparent 70%);
+    transform:rotate(25deg);
 
-    top:-80px;
-
-    right:-80px;
-
-    transition:.45s;
+    transition:.8s;
 
 }
 
 .card:hover::before{
 
-    transform:scale(1.5);
+    left:140%;
 
 }
-
-/*====================================================
-SURVOL
-====================================================*/
 
 .card:hover{
 
@@ -579,594 +676,19 @@ SURVOL
 
     scale(1.03);
 
-    border-color:var(--accent);
-
-    background:
-
-    rgba(255,255,255,.10);
-
 }
 
-/*====================================================
-ICONE
-====================================================*/
-
-.icon{
-
-    font-size:58px;
-
-    margin-bottom:18px;
-
-    transition:.40s;
-
-}
-
-.card:hover .icon{
-
-    transform:
-
-    rotate(8deg)
-
-    scale(1.15);
-
-}
-
-/*====================================================
-TITRE CARTE
-====================================================*/
-
-.card h4{
-
-    color:var(--white);
-
-    font-size:22px;
-
-    margin-bottom:12px;
-
-}
-
-.card p{
-
-    color:#d9e3f5;
-
-    font-size:14px;
-
-    line-height:1.6;
-
-}
-
-/*====================================================
-BADGE
-====================================================*/
-
-.card::after{
-
-    content:"Disponible";
-
-    position:absolute;
-
-    top:15px;
-
-    right:15px;
-
-    padding:5px 12px;
-
-    border-radius:30px;
-
-    background:var(--success);
-
-    color:white;
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    letter-spacing:.5px;
-
-}
-
-/*====================================================
-ANIMATION
-====================================================*/
-
-.card{
-
-    animation:
-
-    cardFade .8s ease;
-
-}
-
-@keyframes cardFade{
-
-    from{
-
-        opacity:0;
-
-        transform:
-
-        translateY(35px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-
-        translateY(0);
-
-    }
-
-}
-
-/*====================================================
-OMBRE PREMIUM
-====================================================*/
-
-.card:hover{
-
-    box-shadow:
-
-    0 20px 45px
-
-    rgba(0,0,0,.45);
-
-}
-
-/*====================================================
-LIENS
-====================================================*/
-
-.card:visited{
-
-    color:inherit;
-
-}
-
-.card:active{
-
-    transform:
-
-    scale(.97);
-
-}
-
-/*====================================================
-RESPONSIVE TABLETTE
-====================================================*/
-
-@media(max-width:900px){
-
-.page-title h2{
-
-    font-size:30px;
-
-}
-
-.category h3{
-
-    font-size:21px;
-
-}
-
-.grid{
-
-    grid-template-columns:
-
-    repeat(auto-fit,
-
-    minmax(220px,1fr));
-
-}
-
-}
-
-/*====================================================
-RESPONSIVE MOBILE
-====================================================*/
-
-@media(max-width:600px){
-
-.page-title{
-
-    margin:30px auto;
-
-}
-
-.page-title h2{
-
-    font-size:26px;
-
-}
-
-.page-title p{
-
-    font-size:15px;
-
-}
-
-.category{
-
-    margin:35px auto;
-
-}
-
-.category h3{
-
-    font-size:20px;
-
-}
-
-.card{
-
-    padding:24px 15px;
-
-}
-
-.icon{
-
-    font-size:48px;
-
-}
-
-.card h4{
-
-    font-size:20px;
-
-}
-
-}
-
-/*====================================================
-INSPECTEURBOT IA RDC
-FICHE.CSS
-PARTIE 3
-Créé par Limengo (Pmiller) © 2026
-====================================================*/
-
-/*====================================================
-FOOTER PREMIUM
-====================================================*/
-
-.main-footer{
-
-    width:min(1400px,96%);
-
-    margin:70px auto 40px;
-
-    background:rgba(255,255,255,.05);
-
-    border:1px solid var(--border);
-
-    border-radius:25px;
-
-    backdrop-filter:blur(18px);
-
-    overflow:hidden;
-
-    box-shadow:var(--shadow);
-
-}
-
-/*====================================================
-FOOTER GRID
-====================================================*/
-
-.footer-grid{
-
-    display:grid;
-
-    grid-template-columns:
-
-    repeat(auto-fit,minmax(250px,1fr));
-
-    gap:25px;
-
-    padding:35px;
-
-}
-
-.footer-card{
-
-    padding:15px;
-
-}
-
-.footer-card h3{
-
-    color:var(--accent);
-
-    margin-bottom:18px;
-
-    font-size:20px;
-
-}
-
-.footer-card p{
-
-    color:#d7e3f6;
-
-    line-height:1.8;
-
-}
-
-.footer-card ul{
-
-    list-style:none;
-
-}
-
-.footer-card ul li{
-
-    padding:10px 0;
-
-    color:#d7e3f6;
-
-    border-bottom:1px solid rgba(255,255,255,.08);
-
-    transition:.30s;
-
-}
-
-.footer-card ul li:hover{
-
-    padding-left:12px;
-
-    color:var(--accent);
-
-}
-
-/*====================================================
-COPYRIGHT
-====================================================*/
-
-.copyright{
-
-    text-align:center;
-
-    padding:30px;
-
-    border-top:1px solid rgba(255,255,255,.10);
-
-    background:rgba(0,0,0,.18);
-
-}
-
-.copyright h3{
-
-    color:var(--accent);
-
-    margin-bottom:10px;
-
-    font-size:22px;
-
-}
-
-.copyright p{
-
-    color:#cfdaf0;
-
-    line-height:1.8;
-
-}
-
-/*====================================================
-BOUTONS FLOTTANTS
-====================================================*/
-
-.floating-buttons{
-
-    position:fixed;
-
-    right:25px;
-
-    bottom:25px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:15px;
-
-    z-index:999;
-
-}
-
-.fab{
-
-    width:60px;
-
-    height:60px;
-
-    border:none;
-
-    border-radius:50%;
-
-    cursor:pointer;
-
-    font-size:24px;
-
-    color:#fff;
-
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--secondary)
-    );
-
-    box-shadow:
-
-    0 10px 25px rgba(0,0,0,.35);
-
-    transition:.35s;
-
-}
-
-/*====================================================
-HOVER
-====================================================*/
-
-.fab:hover{
-
-    transform:
-
-    translateY(-6px)
-
-    scale(1.10);
-
-    background:linear-gradient(
-        135deg,
-        var(--accent),
-        #ff9800
-    );
-
-    color:#10233d;
-
-}
-
-/*====================================================
-ANIMATION
-====================================================*/
-
-.fab{
-
-    animation:
-
-    floating 3s ease-in-out infinite;
-
-}
-
-.fab:nth-child(2){
-
-    animation-delay:.3s;
-
-}
-
-.fab:nth-child(3){
-
-    animation-delay:.6s;
-
-}
-
-.fab:nth-child(4){
-
-    animation-delay:.9s;
-
-}
-
-.fab:nth-child(5){
-
-    animation-delay:1.2s;
-
-}
-
-@keyframes floating{
-
-    0%{
-
-        transform:translateY(0);
-
-    }
-
-    50%{
-
-        transform:translateY(-10px);
-
-    }
-
-    100%{
-
-        transform:translateY(0);
-
-    }
-
-}
-
-/*====================================================
-SCROLLBAR
-====================================================*/
-
-::-webkit-scrollbar{
-
-    width:10px;
-
-}
-
-::-webkit-scrollbar-track{
-
-    background:#07121f;
-
-}
-
-::-webkit-scrollbar-thumb{
-
-    background:var(--primary);
-
-    border-radius:30px;
-
-}
-
-::-webkit-scrollbar-thumb:hover{
-
-    background:var(--accent);
-
-}
-
-/*====================================================
-TOAST
-====================================================*/
-
-.toast{
-
-    position:fixed;
-
-    top:30px;
-
-    right:30px;
-
-    background:rgba(16,35,61,.96);
-
-    color:white;
-
-    padding:15px 22px;
-
-    border-radius:14px;
-
-    border-left:5px solid var(--accent);
-
-    box-shadow:var(--shadow);
-
-    z-index:9999;
-
-    opacity:0;
-
-    transform:translateX(100px);
-
-    transition:.45s;
-
-}
-
-.toast.show{
-
-    opacity:1;
-
-    transform:translateX(0);
-
-}
-
-/*====================================================
-EFFET APPARITION
-====================================================*/
+/*==================================================
+ANIMATION APPARITION
+==================================================*/
 
 .fade-up{
 
     opacity:0;
 
-    transform:translateY(30px);
+    transform:translateY(50px);
 
-    transition:.8s;
+    transition:all .8s ease;
 
 }
 
@@ -1178,19 +700,293 @@ EFFET APPARITION
 
 }
 
-/*====================================================
-RESPONSIVE
-====================================================*/
+/*==================================================
+TOAST
+==================================================*/
 
-@media(max-width:768px){
+.toast{
 
-.main-header{
+    position:fixed;
+
+    right:25px;
+
+    bottom:30px;
+
+    min-width:280px;
+
+    padding:18px 25px;
+
+    border-radius:16px;
+
+    background:rgba(0,30,70,.95);
+
+    color:#fff;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    box-shadow:0 0 25px rgba(0,150,255,.60);
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+    transition:.4s;
+
+    z-index:9999;
+
+}
+
+.toast.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+/*==================================================
+BOUTON RETOUR HAUT
+==================================================*/
+
+.btn-top{
+
+    position:fixed;
+
+    right:25px;
+
+    bottom:30px;
+
+    width:65px;
+
+    height:65px;
+
+    border:none;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    font-size:26px;
+
+    color:#fff;
+
+    background:linear-gradient(
+
+    135deg,
+
+    #005eff,
+
+    #00c6ff
+
+    );
+
+    box-shadow:0 0 25px rgba(0,180,255,.75);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.35s;
+
+    z-index:999;
+
+}
+
+.btn-top.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+.btn-top:hover{
+
+    transform:
+
+    scale(1.12)
+
+    rotate(360deg);
+
+}
+
+/*==================================================
+VERSION
+==================================================*/
+
+.version-app{
+
+    position:fixed;
+
+    left:20px;
+
+    bottom:20px;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(10px);
+
+    font-size:14px;
+
+    color:#ffffff;
+
+    box-shadow:0 0 15px rgba(0,180,255,.45);
+
+}
+
+/*==================================================
+FOOTER PREMIUM
+==================================================*/
+
+.footer{
+
+    margin-top:70px;
+
+    padding:60px 20px;
+
+    background:rgba(0,15,40,.92);
+
+    border-top:2px solid rgba(255,255,255,.15);
+
+}
+
+.footer-content{
+
+    max-width:1400px;
+
+    margin:auto;
 
     text-align:center;
 
 }
 
-.header-left{
+.footer h2{
+
+    font-size:36px;
+
+    margin-bottom:20px;
+
+    color:#ffffff;
+
+    text-shadow:
+
+    2px 2px 6px #000;
+
+}
+
+.footer h3{
+
+    margin-top:25px;
+
+    font-size:28px;
+
+    color:#00d4ff;
+
+}
+
+.footer p{
+
+    margin:12px 0;
+
+    font-size:18px;
+
+    color:#d9ecff;
+
+}
+
+.footer-info{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin:30px 0;
+
+}
+
+.footer-info span{
+
+    padding:12px 20px;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,.10);
+
+    font-size:16px;
+
+}
+
+/*==================================================
+MODE CLAIR
+==================================================*/
+
+body.light{
+
+    background:#eef5ff;
+
+    color:#111;
+
+}
+
+body.light .header,
+
+body.light .action-bar,
+
+body.light .dashboard-section{
+
+    background:#ffffff;
+
+    color:#111;
+
+}
+
+body.light h1,
+
+body.light h2,
+
+body.light h3,
+
+body.light p,
+
+body.light strong{
+
+    color:#111;
+
+    text-shadow:none;
+
+}
+
+body.light .card{
+
+    color:#111;
+
+    background:#f5f9ff;
+
+}
+
+body.light .card p{
+
+    color:#333;
+
+}
+
+/*==================================================
+RESPONSIVE
+==================================================*/
+
+@media(max-width:900px){
+
+.header{
 
     flex-direction:column;
 
@@ -1198,54 +994,149 @@ RESPONSIVE
 
 .header-right{
 
-    justify-content:center;
+    grid-template-columns:1fr;
+
+    width:100%;
 
 }
 
-.top-toolbar{
+.action-bar{
 
     flex-direction:column;
 
 }
 
-.toolbar-right{
+.search-area{
+
+    width:100%;
+
+}
+
+.action-buttons{
 
     width:100%;
 
     justify-content:center;
 
-    flex-wrap:wrap;
+}
+
+.hero h2{
+
+    font-size:32px;
 
 }
 
-.footer-grid{
+.section-title h2{
 
-    grid-template-columns:1fr;
-
-}
-
-.floating-buttons{
-
-    right:15px;
-
-    bottom:15px;
+    font-size:25px;
 
 }
 
-.fab{
+.card h3{
 
-    width:55px;
-
-    height:55px;
-
-    font-size:21px;
+    font-size:24px;
 
 }
 
 }
 
-/*====================================================
+@media(max-width:600px){
+
+.header h1{
+
+    font-size:32px;
+
+}
+
+.header h2{
+
+    font-size:18px;
+
+}
+
+.hero p{
+
+    font-size:18px;
+
+}
+
+.card{
+
+    padding:20px;
+
+}
+
+.card-icon{
+
+    font-size:48px;
+
+}
+
+.footer h2{
+
+    font-size:28px;
+
+}
+
+.footer h3{
+
+    font-size:22px;
+
+}
+
+}
+
+/*==================================================
+PARTICULES
+==================================================*/
+
+.particle{
+
+    position:absolute;
+
+    width:5px;
+
+    height:5px;
+
+    border-radius:50%;
+
+    background:#ffffff;
+
+    opacity:.4;
+
+    animation:floatParticle linear infinite;
+
+}
+
+@keyframes floatParticle{
+
+0%{
+
+transform:translateY(100vh);
+
+opacity:0;
+
+}
+
+20%{
+
+opacity:.6;
+
+}
+
+100%{
+
+transform:translateY(-120px);
+
+opacity:0;
+
+}
+
+}
+
+/*==================================================
 FIN
-INSPECTEURBOT IA RDC
-Créé par Inspecteur Limengo (Pmiller) © 2026
-====================================================*/
+InspecteurBot IA RDC
+Créé par Inspecteur Limengo (Pmiller)
+© 2026
+==================================================*/
