@@ -70,3 +70,96 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
+
+/*==================================================
+ INSPECTEURBOT IA RDC 4.0 PREMIUM
+ Service Worker
+===================================================*/
+
+
+const CACHE_NAME =
+"inspecteurbot-v4";
+
+
+const FILES = [
+
+
+    "/",
+
+    "fiche.html",
+
+    "fiche.css",
+
+    "fiche.js",
+
+    "js/utils.js",
+
+    "js/theme.js",
+
+    "js/search.js",
+
+    "js/weather.js",
+
+    "js/voice.js",
+
+    "js/scanner.js",
+
+    "js/assistant.js",
+
+    "js/notification.js",
+
+    "js/offline.js"
+
+
+];
+
+
+
+self.addEventListener(
+"install",
+event=>{
+
+
+    event.waitUntil(
+
+        caches.open(
+            CACHE_NAME
+        )
+        .then(cache=>{
+
+            return cache.addAll(
+                FILES
+            );
+
+        })
+
+    );
+
+
+});
+
+
+
+self.addEventListener(
+"fetch",
+event=>{
+
+
+    event.respondWith(
+
+        caches.match(
+            event.request
+        )
+        .then(response=>{
+
+
+            return response ||
+            fetch(event.request);
+
+
+        })
+
+    );
+
+
+});
