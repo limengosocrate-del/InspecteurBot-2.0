@@ -1,194 +1,140 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  voice.js
  Reconnaissance + Synthèse vocale
 ===================================================*/
 
-"use strict";
-
-
-let recognition;
-
+let recognition = null;
 
 /*==================================================
  INITIALISATION VOIX
 ===================================================*/
 
-function initVoice(){
-
-
-    const btnVoice =
-        document.getElementById(
-            "btnVoice"
-        );
-
-
-    if(!btnVoice) return;
-
-
+function initVoice() {
 
     const SpeechRecognition =
         window.SpeechRecognition ||
         window.webkitSpeechRecognition;
 
+    if (!SpeechRecognition) {
 
-
-    if(!SpeechRecognition){
-
-
-        btnVoice.disabled = true;
-
-
-        btnVoice.title =
-            "Reconnaissance vocale non disponible";
-
+        console.warn(
+            "Reconnaissance vocale non disponible."
+        );
 
         return;
-
     }
 
+    recognition = new SpeechRecognition();
 
+    recognition.lang = "fr-FR";
+    recognition.continuous = false;
+    recognition.interimResults = false;
 
-    recognition =
-        new SpeechRecognition();
+    recognition.onstart = () => {
 
+        const btn =
+            document.getElementById("btnVoice");
 
+        if (btn) {
 
-    recognition.lang =
-        "fr-FR";
+            btn.textContent =
+                "🎙 Écoute...";
 
+        }
 
-    recognition.continuous =
-        false;
+        if (typeof showNotification === "function") {
 
+            showNotification(
+                "Voix",
+                "Parlez maintenant..."
+            );
 
-    recognition.interimResults =
-        false;
-
-
-
-    btnVoice.addEventListener(
-        "click",
-        startListening
-    );
-
-
-
-    recognition.onstart = ()=>{
-
-
-        btnVoice.textContent =
-            "🎙 Écoute...";
-
-
-        showMessage(
-            "Parlez maintenant..."
-        );
-
+        }
 
     };
 
+    recognition.onend = () => {
 
+        const btn =
+            document.getElementById("btnVoice");
 
-    recognition.onend = ()=>{
+        if (btn) {
 
+            btn.textContent =
+                "🎙 Voix";
 
-        btnVoice.textContent =
-            "🎙 Voix";
-
-
-    };
-
-
-
-    recognition.onerror = (error)=>{
-
-
-        console.error(error);
-
-
-        showMessage(
-            "Erreur de reconnaissance vocale",
-            "error"
-        );
-
+        }
 
     };
 
+    recognition.onerror = (event) => {
 
+        console.error(event);
 
-    recognition.onresult = (event)=>{
+        if (typeof showNotification === "function") {
 
+            showNotification(
+                "Voix",
+                "Erreur de reconnaissance vocale"
+            );
+
+        }
+
+    };
+
+    recognition.onresult = (event) => {
 
         const text =
-            event.results[0][0]
-            .transcript;
+            event.results[0][0].transcript;
 
-
-
-        executeVoiceCommand(
-            text
-        );
-
+        executeVoiceCommand(text);
 
     };
 
-
 }
-
-
 
 /*==================================================
  DEMARRER ECOUTE
 ===================================================*/
 
-function startListening(){
+function startListening() {
 
-
-    if(recognition){
-
+    if (recognition) {
 
         recognition.start();
-
 
     }
 
 }
 
+/*==================================================
+ COMPATIBILITÉ AVEC app.js
+===================================================*/
 
+function startVoice() {
+
+    startListening();
+
+}
 
 /*==================================================
  COMMANDES VOCALES
 ===================================================*/
 
-function executeVoiceCommand(command){
-
+function executeVoiceCommand(command) {
 
     command =
         command.toLowerCase();
-
-
-
-    logAction(
-        "Commande vocale : "
-        + command
-    );
-
-
 
     const search =
         document.getElementById(
             "searchInput"
         );
 
-
-
-    if(
-        command.includes(
-            "cherche"
-        )
-    ){
-
+    if (command.includes("cherche")) {
 
         const text =
             command.replace(
@@ -196,135 +142,95 @@ function executeVoiceCommand(command){
                 ""
             ).trim();
 
+        if (search) {
 
-
-        if(search){
-
-
-            search.value =
-                text;
-
+            search.value = text;
 
             search.dispatchEvent(
                 new Event("input")
             );
 
-
         }
-
 
         speak(
             "Recherche de " + text
         );
 
-
         return;
 
     }
 
+    if (command.includes("thème sombre")) {
 
+        if (typeof toggleTheme === "function") {
 
-    if(
-        command.includes(
-            "thème sombre"
-        )
-    ){
+            toggleTheme();
 
-
-        toggleTheme();
-
+        }
 
         speak(
             "Mode sombre activé"
         );
 
-
         return;
 
     }
 
-
-
-    if(
-        command.includes(
-            "bonjour"
-        )
-    ){
-
+    if (command.includes("bonjour")) {
 
         speak(
-            "Bonjour Inspecteur. InspecteurBot IA RDC est prêt."
+            "Bonjour Inspecteur. Je suis prêt."
         );
-
 
         return;
 
     }
-
-
 
     speak(
         "Commande non reconnue"
     );
 
-
 }
-
-
 
 /*==================================================
  SYNTHESE VOCALE
 ===================================================*/
 
-function speak(text){
+function speak(text) {
 
-
-    if(
-        !("speechSynthesis" in window)
-    )
-
-    return;
-
-
+    if (!("speechSynthesis" in window))
+        return;
 
     const message =
-        new SpeechSynthesisUtterance(
-            text
-        );
+        new SpeechSynthesisUtterance(text);
 
-
-
-    message.lang =
-        "fr-FR";
-
-
-    message.rate =
-        1;
-
-
+    message.lang = "fr-FR";
+    message.rate = 1;
 
     window.speechSynthesis.cancel();
 
-
-    window.speechSynthesis.speak(
-        message
-    );
-
+    window.speechSynthesis.speak(message);
 
 }
 
-
-
 /*==================================================
- TEST VOCAL AU CHARGEMENT
+ DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    () => {
 
+        initVoice();
 
-    initVoice();
+    }
+);
 
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
 
-});
+window.startVoice = startVoice;
+window.startListening = startListening;
+window.speak = speak;
+window.executeVoiceCommand = executeVoiceCommand;
