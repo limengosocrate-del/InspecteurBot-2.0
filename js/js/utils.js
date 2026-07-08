@@ -6,93 +6,93 @@
 
 "use strict";
 
-
 /*==================================================
- SELECTION RAPIDE DES ELEMENTS
+ SELECTION RAPIDE
 ===================================================*/
 
-function $(selector) {
-
+function $(selector){
     return document.querySelector(selector);
-
 }
 
-
-function $$(selector) {
-
+function $$(selector){
     return document.querySelectorAll(selector);
-
 }
-
 
 /*==================================================
  STOCKAGE LOCAL
 ===================================================*/
 
-const Storage = {
+const Storage={
 
-    save(key, value) {
+    save(key,value){
 
-        localStorage.setItem(
-            key,
-            JSON.stringify(value)
-        );
+        try{
 
-    },
+            localStorage.setItem(
+                key,
+                JSON.stringify(value)
+            );
 
+        }catch(e){
 
-    get(key) {
-
-        const data =
-            localStorage.getItem(key);
-
-        if (!data) return null;
-
-        try {
-
-            return JSON.parse(data);
-
-        }
-
-        catch {
-
-            return data;
+            console.error(e);
 
         }
 
     },
 
+    get(key){
 
-    remove(key) {
+        try{
+
+            const data=
+                localStorage.getItem(key);
+
+            return data
+                ? JSON.parse(data)
+                : null;
+
+        }catch(e){
+
+            console.error(e);
+            return null;
+
+        }
+
+    },
+
+    remove(key){
 
         localStorage.removeItem(key);
+
+    },
+
+    clear(){
+
+        localStorage.clear();
 
     }
 
 };
 
-
 /*==================================================
- NOTIFICATION INTERNE
+ MESSAGE
 ===================================================*/
 
-function showMessage(message, type="info") {
+function showMessage(message,type="info"){
 
-
-    const box =
+    const box=
         document.createElement("div");
 
+    box.className=
+        "bot-message "+type;
 
-    box.className =
-        "bot-message " + type;
-
-
-    box.textContent =
+    box.textContent=
         message;
-
 
     document.body.appendChild(box);
 
+    reveal(box);
 
     setTimeout(()=>{
 
@@ -100,38 +100,31 @@ function showMessage(message, type="info") {
 
     },3000);
 
-
 }
 
-
 /*==================================================
- FORMAT DATE
+ DATE
 ===================================================*/
 
-function formatDate(date=new Date()) {
-
+function formatDate(date=new Date()){
 
     return new Intl.DateTimeFormat(
         "fr-FR",
         {
             weekday:"long",
-            day:"numeric",
+            day:"2-digit",
             month:"long",
             year:"numeric"
         }
-
     ).format(date);
-
 
 }
 
-
 /*==================================================
- FORMAT HEURE
+ HEURE
 ===================================================*/
 
-function formatTime(date=new Date()) {
-
+function formatTime(date=new Date()){
 
     return new Intl.DateTimeFormat(
         "fr-FR",
@@ -140,15 +133,12 @@ function formatTime(date=new Date()) {
             minute:"2-digit",
             second:"2-digit"
         }
-
     ).format(date);
-
 
 }
 
-
 /*==================================================
- VERIFICATION INTERNET
+ INTERNET
 ===================================================*/
 
 function isOnline(){
@@ -157,12 +147,11 @@ function isOnline(){
 
 }
 
-
 /*==================================================
- DEBOUNCE POUR RECHERCHE
+ DEBOUNCE
 ===================================================*/
 
-function debounce(func, delay=300){
+function debounce(callback,delay=300){
 
     let timer;
 
@@ -172,7 +161,7 @@ function debounce(func, delay=300){
 
         timer=setTimeout(()=>{
 
-            func.apply(this,args);
+            callback.apply(this,args);
 
         },delay);
 
@@ -180,39 +169,26 @@ function debounce(func, delay=300){
 
 }
 
-
 /*==================================================
- ANIMATION APPARITION
+ ANIMATION
 ===================================================*/
 
 function reveal(element){
 
     if(!element) return;
 
-
     element.style.opacity="0";
+    element.style.transform="translateY(15px)";
+    element.style.transition="all .35s ease";
 
-    element.style.transform=
-        "translateY(20px)";
-
-
-    setTimeout(()=>{
-
-        element.style.transition=
-            "0.5s ease";
-
+    requestAnimationFrame(()=>{
 
         element.style.opacity="1";
+        element.style.transform="translateY(0)";
 
-        element.style.transform=
-            "translateY(0)";
-
-
-    },50);
-
+    });
 
 }
-
 
 /*==================================================
  JOURNAL SYSTEME
@@ -220,22 +196,32 @@ function reveal(element){
 
 function logAction(action){
 
-    let logs =
+    let logs=
         Storage.get("logs") || [];
-
 
     logs.push({
 
-        action: action,
-
-        date: new Date().toISOString()
+        action:action,
+        date:new Date().toLocaleString("fr-FR")
 
     });
 
+    if(logs.length>300){
 
-    Storage.save(
-        "logs",
-        logs
-    );
+        logs=logs.slice(-300);
 
-      }
+    }
+
+    Storage.save("logs",logs);
+
+}
+
+/*==================================================
+ INITIALISATION
+===================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    console.log("Utils chargé.");
+
+});
