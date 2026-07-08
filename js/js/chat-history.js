@@ -1,170 +1,188 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  chat-history.js
- Historique conversations IA
+ Historique des conversations IA
 ===================================================*/
 
-"use strict";
+/*==================================================
+ INITIALISATION
+===================================================*/
 
+function initChatHistory() {
 
-function saveChatMessage(role,message){
+    if (!Storage.get("chatHistory")) {
 
+        Storage.save(
+            "chatHistory",
+            []
+        );
 
-    let history =
-        Storage.get(
-            "chatHistory"
-        ) || [];
+    }
 
+}
 
+/*==================================================
+ AJOUTER UN MESSAGE
+===================================================*/
+
+function saveChat(role, message) {
+
+    const history =
+        Storage.get("chatHistory") || [];
 
     history.push({
 
-        role:role,
+        role: role,
 
-        message:message,
+        message: message,
 
-        date:new Date()
+        date: new Date().toLocaleString()
 
     });
-
-
 
     Storage.save(
         "chatHistory",
         history
     );
 
-
 }
-
-
-
-function getChatHistory(){
-
-
-    return Storage.get(
-        "chatHistory"
-    ) || [];
-
-}
-
-
 
 /*==================================================
- AFFICHER HISTORIQUE
+ OUVRIR L'HISTORIQUE
 ===================================================*/
 
-function showChatHistory(){
+function openHistory() {
 
-
-    const history =
-        getChatHistory();
-
-
-
-    const box =
-        document.createElement(
-            "div"
+    const old =
+        document.getElementById(
+            "historyBox"
         );
 
+    if (old) {
 
-    box.className =
-        "chat-history-box";
+        old.remove();
 
+    }
 
+    const history =
+        Storage.get("chatHistory") || [];
 
-    box.innerHTML = `
+    const box =
+        document.createElement("div");
 
-<h2>
-💬 Historique IA
-</h2>
+    box.id = "historyBox";
+    box.className = "history-box";
 
+    let html = `
 
-<button id="closeChatHistory">
+        <h2>💬 Historique IA</h2>
 
-Fermer
+    `;
 
-</button>
+    if (history.length === 0) {
 
+        html += `
 
-<hr>
+            <p>Aucune conversation enregistrée.</p>
 
+        `;
 
-${
-history.length
+    } else {
 
-?
+        history.forEach(item => {
 
-history.map(item=>`
+            html += `
 
-<p>
+                <p>
 
-<b>${item.role}</b>
+                <strong>${item.role}</strong>
 
-<br>
+                <br>
 
-${item.message}
+                ${item.message}
 
-<br>
+                <br>
 
-<small>
-${new Date(item.date)
-.toLocaleString()}
-</small>
+                <small>${item.date}</small>
 
-</p>
+                </p>
 
-`).join("")
+                <hr>
 
-:
+            `;
 
-"<p>Aucune conversation</p>"
+        });
 
-}
+    }
 
+    html += `
 
-`;
+        <button id="closeHistory">
 
+        Fermer
 
+        </button>
 
-    document.body.appendChild(
-        box
-    );
+    `;
 
+    box.innerHTML = html;
 
+    document.body.appendChild(box);
 
     document
-    .getElementById(
-        "closeChatHistory"
-    )
-    .onclick =
-    ()=>{
+        .getElementById("closeHistory")
+        .addEventListener(
+            "click",
+            () => {
 
-        box.remove();
+                box.remove();
 
-    };
-
+            }
+        );
 
 }
-
-
 
 /*==================================================
- NETTOYER HISTORIQUE
+ SUPPRIMER L'HISTORIQUE
 ===================================================*/
 
-function clearChatHistory(){
+function clearHistory() {
 
-
-    Storage.remove(
-        "chatHistory"
+    Storage.save(
+        "chatHistory",
+        []
     );
 
+    if (typeof showNotification === "function") {
 
-    showMessage(
-        "Historique supprimé",
-        "success"
-    );
+        showNotification(
+            "Historique",
+            "Historique supprimé."
+        );
 
+    }
 
 }
+
+/*==================================================
+ DEMARRAGE
+===================================================*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initChatHistory();
+
+    }
+);
+
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
+
+window.saveChat = saveChat;
+window.openHistory = openHistory;
+window.clearHistory = clearHistory;
