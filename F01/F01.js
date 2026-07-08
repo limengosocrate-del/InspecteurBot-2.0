@@ -885,7 +885,7 @@ function renderEffectifBlock(kind, idx) {
     return `
       <div class="meta-panel no-print">
         <label>N° unique dossier<input name="record_id" readonly></label>
-        <label>Inspecteur<input name="inspecteur_nom"></label>
+        <label>Inspecteur / Contrôleur<input name="inspecteur_nom"></label>
         <label>Province<input name="province" list="dl-provinces"></label>
         <label>Antenne / Direction<input name="antenne"></label>
         <label>Statut
