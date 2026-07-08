@@ -83,7 +83,7 @@ textarea {
   position: relative;
   width: 194mm;
   min-height: 281mm;
-  margin: 0 auto 28px auto;
+  margin: 0 auto 27px auto;
   padding: 0;
   background: var(--paper);
   color: var(--ink);
@@ -102,7 +102,7 @@ textarea {
   margin-bottom: 8px;
   color: #fff;
   background: #071b34;
-  border: 1px solid rgba(244,197,66,.4);
+  border: 1px solid rgba(243,196,65,.3);
   border-radius: 10px;
 }
 
