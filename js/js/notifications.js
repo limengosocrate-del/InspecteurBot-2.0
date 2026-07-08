@@ -6,207 +6,119 @@
 
 "use strict";
 
-
 /*==================================================
  INITIALISATION
 ===================================================*/
 
 function initNotifications(){
 
-
-    if(
-        !("Notification" in window)
-    ){
-
-        console.warn(
-            "Notifications non supportées"
-        );
-
+    if(!("Notification" in window)){
+        console.warn("Notifications non supportées");
         return;
-
     }
 
-
-
-    if(
-        Notification.permission === "default"
-    ){
-
+    if(Notification.permission === "default"){
         Notification.requestPermission();
-
     }
-
 
 }
-
-
 
 /*==================================================
  CREER NOTIFICATION
 ===================================================*/
 
-function sendNotification(
-    title,
-    message
-){
-
+function sendNotification(title, message){
 
     if(
-        Notification.permission ===
-        "granted"
+        "Notification" in window &&
+        Notification.permission === "granted"
     ){
 
+        new Notification(title,{
+            body: message,
+            icon: "assets/images/logo-igt.png"
+        });
 
-        new Notification(
-            title,
-            {
+    }else{
 
-                body: message,
-
-                icon:
-                "assets/images/logo-igt.png"
-
-            }
-
-        );
-
+        if(typeof showMessage === "function"){
+            showMessage(message,"info");
+        }else{
+            console.log(message);
+        }
 
     }
 
-    else{
-
-
-        showMessage(
-            message
-        );
-
-
+    if(typeof logAction === "function"){
+        logAction("Notification : " + title);
     }
-
-
-
-    logAction(
-        "Notification : "
-        + title
-    );
-
 
 }
 
-
-
 /*==================================================
- NOTIFICATIONS SYSTEME
+ BIENVENUE
 ===================================================*/
 
 function welcomeNotification(){
 
-
     setTimeout(()=>{
 
-
         sendNotification(
-
             "InspecteurBot IA RDC",
-
             "Bienvenue dans votre tableau de bord intelligent."
-
         );
 
-
-    },3000);
-
-
+    },2000);
 
 }
 
-
-
 /*==================================================
- NOTIFICATION CONNEXION
+ ETAT CONNEXION
 ===================================================*/
 
 function connectionNotification(){
 
+    window.addEventListener("online",()=>{
 
-    window.addEventListener(
-        "online",
-        ()=>{
+        sendNotification(
+            "Connexion rétablie",
+            "Votre application est de nouveau en ligne."
+        );
 
+    });
 
-            sendNotification(
+    window.addEventListener("offline",()=>{
 
-                "Connexion rétablie",
+        sendNotification(
+            "Mode hors ligne",
+            "La connexion Internet est interrompue."
+        );
 
-                "Votre application est de nouveau en ligne."
-
-            );
-
-
-        }
-    );
-
-
-
-    window.addEventListener(
-        "offline",
-        ()=>{
-
-
-            sendNotification(
-
-                "Mode hors ligne",
-
-                "La connexion Internet est interrompue."
-
-            );
-
-
-        }
-    );
+    });
 
 }
-
-
 
 /*==================================================
- ALERTES PROFESSIONNELLES
+ ALERTE MISSION
 ===================================================*/
 
-function missionAlert(
-    entreprise
-){
-
+function missionAlert(entreprise){
 
     sendNotification(
-
         "Nouvelle mission",
-
         "Contrôle prévu chez : " + entreprise
-
     );
 
-
 }
-
-
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
+document.addEventListener("DOMContentLoaded",()=>{
 
     initNotifications();
-
-
     welcomeNotification();
-
-
     connectionNotification();
-
 
 });
