@@ -1,316 +1,147 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  stats.js
- Statistiques du tableau de bord
+ Gestion des statistiques
 ===================================================*/
 
-"use strict";
+const stats = {
 
+    visits: 0,
+    cardsOpened: 0,
+    searches: 0
+
+};
 
 /*==================================================
- INITIALISATION STATISTIQUES
+ INITIALISATION
 ===================================================*/
 
-function initStats(){
-
-
-    createStatsStorage();
-
-
-    trackCards();
-
-
-    displayStats();
-
-
-}
-
-
-
-/*==================================================
- CREATION STOCKAGE
-===================================================*/
-
-function createStatsStorage(){
-
-
-    if(!Storage.get("stats")){
-
-
-        Storage.save(
-            "stats",
-            {
-
-                visits:0,
-
-                cardsOpened:0,
-
-                searches:0,
-
-                lastVisit:
-                new Date()
-
-            }
-        );
-
-
-    }
-
-
-
-    let stats =
-        Storage.get("stats");
-
-
+function initStats() {
 
     stats.visits++;
 
+    trackCards();
 
-    stats.lastVisit =
-        new Date();
-
-
-
-    Storage.save(
-        "stats",
-        stats
-    );
-
+    trackSearch();
 
 }
 
-
-
 /*==================================================
- SUIVI OUVERTURE DES CARTES
+ SUIVI DES CARTES
 ===================================================*/
 
-function trackCards(){
+function trackCards() {
 
+    document
+        .querySelectorAll(".card")
+        .forEach(card => {
 
-    const cards =
-        document.querySelectorAll(
-            ".card"
-        );
+            card.addEventListener(
+                "click",
+                () => {
 
+                    stats.cardsOpened++;
 
+                }
+            );
 
-    cards.forEach(card=>{
-
-
-        card.addEventListener(
-            "click",
-            ()=>{
-
-
-                let stats =
-                    Storage.get(
-                        "stats"
-                    );
-
-
-
-                stats.cardsOpened++;
-
-
-
-                Storage.save(
-                    "stats",
-                    stats
-                );
-
-
-
-                logAction(
-                    "Ouverture : "
-                    +
-                    card.innerText
-                );
-
-
-            }
-        );
-
-
-    });
-
+        });
 
 }
 
-
-
 /*==================================================
- SUIVI RECHERCHE
+ SUIVI DES RECHERCHES
 ===================================================*/
 
-function trackSearch(){
-
+function trackSearch() {
 
     const input =
         document.getElementById(
             "searchInput"
         );
 
-
-
-    if(!input) return;
-
-
+    if (!input) return;
 
     input.addEventListener(
-        "change",
-        ()=>{
-
-
-            let stats =
-                Storage.get(
-                    "stats"
-                );
-
-
+        "input",
+        () => {
 
             stats.searches++;
-
-
-
-            Storage.save(
-                "stats",
-                stats
-            );
-
 
         }
     );
 
-
 }
 
-
-
 /*==================================================
- AFFICHAGE STATISTIQUES
+ AFFICHER LES STATISTIQUES
 ===================================================*/
 
-function displayStats(){
+function openStats() {
 
-
-    const stats =
-        Storage.get(
-            "stats"
+    const old =
+        document.getElementById(
+            "statsBox"
         );
 
-
-
-    console.log(
-        "===== STATISTIQUES ====="
-    );
-
-
-    console.log(
-        "Visites : ",
-        stats.visits
-    );
-
-
-    console.log(
-        "Formulaires ouverts : ",
-        stats.cardsOpened
-    );
-
-
-    console.log(
-        "Recherches : ",
-        stats.searches
-    );
-
-
-}
-
-
-
-/*==================================================
- CREATION PANNEAU STATS
-===================================================*/
-
-function createStatsPanel(){
-
-
-    const footer =
-        document.querySelector(
-            ".footer"
-        );
-
-
-    if(!footer) return;
-
-
-
-    const stats =
-        Storage.get(
-            "stats"
-        );
-
-
+    if (old) old.remove();
 
     const box =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
-
-    box.className =
-        "stats-panel";
-
-
+    box.id = "statsBox";
+    box.className = "stats-panel";
 
     box.innerHTML = `
 
-    📊 Statistiques IA
+        <h2>📊 Statistiques</h2>
 
-    <br>
+        <p>Visites : ${stats.visits}</p>
 
-    Visites :
-    ${stats.visits}
+        <p>Cartes ouvertes : ${stats.cardsOpened}</p>
 
-    <br>
+        <p>Recherches : ${stats.searches}</p>
 
-    Formulaires :
-    ${stats.cardsOpened}
+        <button id="closeStats">
 
-    <br>
+        Fermer
 
-    Recherches :
-    ${stats.searches}
+        </button>
 
     `;
 
+    document.body.appendChild(box);
 
+    document
+        .getElementById("closeStats")
+        .addEventListener(
+            "click",
+            () => {
 
-    footer.appendChild(
-        box
-    );
+                box.remove();
 
+            }
+        );
 
 }
-
-
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    () => {
 
+        initStats();
 
-    initStats();
+    }
+);
 
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
 
-    trackSearch();
-
-
-    createStatsPanel();
-
-
-});
+window.openStats = openStats;
