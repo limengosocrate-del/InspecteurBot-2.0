@@ -1,109 +1,59 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  export.js
- Exportation et impression
+ Exportation
 ===================================================*/
-
-"use strict";
-
 
 /*==================================================
- TELECHARGER UN FICHIER
+ TÉLÉCHARGER UN FICHIER
 ===================================================*/
 
-function downloadFile(
-    content,
-    filename,
-    type="text/plain"
-){
+function downloadFile(content, filename, type = "text/plain") {
 
-
-    const blob =
-        new Blob(
-            [content],
-            {
-                type:type
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href=url;
-
-
-    link.download=
-        filename;
-
-
-    document.body.appendChild(
-        link
+    const blob = new Blob(
+        [content],
+        { type: type }
     );
 
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
 
     link.click();
 
-
     link.remove();
 
-
-    URL.revokeObjectURL(
-        url
-    );
-
+    URL.revokeObjectURL(url);
 
 }
 
-
-
 /*==================================================
- EXPORT DONNEES APPLICATION
+ EXPORT DONNÉES
 ===================================================*/
 
-function exportData(){
-
+function exportData() {
 
     const data = {
 
-
         application:
-        "InspecteurBot IA RDC 4.0 Premium",
-
+            "InspecteurBot IA RDC 4.0 Premium",
 
         date:
-        new Date(),
+            new Date().toLocaleString(),
 
-
-        statistiques:
-        Storage.get(
-            "stats"
-        ),
-
-
-        historique:
-        Storage.get(
-            "logs"
-        ),
-
-
-        recherches:
-        Storage.get(
-            "searchHistory"
-        )
+        version:
+            "4.0 Premium"
 
     };
-
-
 
     downloadFile(
 
@@ -113,213 +63,63 @@ function exportData(){
             4
         ),
 
-
         "inspecteurbot-export.json",
-
 
         "application/json"
 
     );
 
+    if (typeof showNotification === "function") {
 
-
-    showMessage(
-        "Export terminé",
-        "success"
-    );
-
-
-}
-
-
-
-/*==================================================
- EXPORT STATISTIQUES
-===================================================*/
-
-function exportStats(){
-
-
-    const stats =
-        Storage.get(
-            "stats"
+        showNotification(
+            "Export",
+            "Export terminé avec succès."
         );
-
-
-    if(!stats){
-
-        showMessage(
-            "Aucune statistique disponible",
-            "error"
-        );
-
-        return;
 
     }
 
+}
 
+/*==================================================
+ EXPORT TEXTE
+===================================================*/
+
+function exportStats() {
 
     const text = `
 
 INSPECTEURBOT IA RDC 4.0 PREMIUM
 
-RAPPORT STATISTIQUE
+Rapport généré le :
 
-Date :
 ${new Date().toLocaleString()}
 
-
-Visites :
-${stats.visits}
-
-
-Formulaires ouverts :
-${stats.cardsOpened}
-
-
-Recherches :
-${stats.searches}
-
-
 `;
-
-
 
     downloadFile(
 
         text,
 
-        "rapport-statistique.txt"
+        "rapport.txt"
 
     );
 
-
 }
 
-
-
 /*==================================================
- IMPRESSION PROFESSIONNELLE
+ IMPRESSION
 ===================================================*/
 
-function printReport(){
-
+function printReport() {
 
     window.print();
 
-
-
-    logAction(
-        "Impression rapport"
-    );
-
-
 }
 
-
-
 /*==================================================
- CREATION BOUTONS EXPORT
+ EXPORT GLOBAL
 ===================================================*/
 
-function createExportButtons(){
-
-
-    const footer =
-        document.querySelector(
-            ".footer"
-        );
-
-
-    if(!footer) return;
-
-
-
-    const box =
-        document.createElement(
-            "div"
-        );
-
-
-    box.className=
-        "export-buttons";
-
-
-
-    box.innerHTML = `
-
-
-        <button id="exportDataBtn">
-
-        📥 Export Données
-
-        </button>
-
-
-        <button id="exportStatsBtn">
-
-        📊 Export Stats
-
-        </button>
-
-
-        <button id="printBtn">
-
-        🖨 Imprimer
-
-        </button>
-
-
-    `;
-
-
-
-    footer.appendChild(
-        box
-    );
-
-
-
-    document
-    .getElementById(
-        "exportDataBtn"
-    )
-    .onclick =
-        exportData;
-
-
-
-    document
-    .getElementById(
-        "exportStatsBtn"
-    )
-    .onclick =
-        exportStats;
-
-
-
-    document
-    .getElementById(
-        "printBtn"
-    )
-    .onclick =
-        printReport;
-
-
-}
-
-
-
-/*==================================================
- DEMARRAGE
-===================================================*/
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-    createExportButtons();
-
-
-});
+window.exportData = exportData;
+window.exportStats = exportStats;
+window.printReport = printReport;
