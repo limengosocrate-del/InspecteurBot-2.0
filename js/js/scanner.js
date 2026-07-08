@@ -1,210 +1,176 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  scanner.js
  Scanner QR Code
 ===================================================*/
 
-"use strict";
-
-
 let qrScanner = null;
 
-
 /*==================================================
- INITIALISATION SCANNER
+ INITIALISATION
 ===================================================*/
 
-function initScanner(){
+function initScanner() {
 
+    if (typeof Html5Qrcode === "undefined") {
 
-    const btnCamera =
-        document.getElementById(
-            "btnCamera"
+        console.warn(
+            "Bibliothèque Html5Qrcode absente."
         );
 
+        return;
 
-    if(!btnCamera) return;
-
-
-
-    btnCamera.addEventListener(
-        "click",
-        openScanner
-    );
-
+    }
 
 }
-
-
 
 /*==================================================
  OUVRIR SCANNER
 ===================================================*/
 
-function openScanner(){
+function openScanner() {
 
+    if (typeof Html5Qrcode === "undefined") {
+
+        if (typeof showNotification === "function") {
+
+            showNotification(
+                "Scanner",
+                "Bibliothèque du scanner non chargée."
+            );
+
+        }
+
+        return;
+
+    }
 
     let container =
         document.getElementById(
             "qr-reader"
         );
 
-
-
-    if(!container){
-
+    if (!container) {
 
         container =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
+        container.id = "qr-reader";
 
-        container.id =
-            "qr-reader";
-
+        container.style.width = "320px";
+        container.style.margin = "20px auto";
 
         document.body.appendChild(
             container
         );
 
-
     }
-
-
 
     qrScanner =
         new Html5Qrcode(
             "qr-reader"
         );
 
-
-
     qrScanner.start(
 
         {
-            facingMode:
-            "environment"
+            facingMode: "environment"
         },
-
 
         {
-            fps:10,
-            qrbox:250
+            fps: 10,
+            qrbox: 250
         },
 
+        (decodedText) => {
 
-        qrCodeMessage=>{
+            if (typeof showNotification === "function") {
 
+                showNotification(
+                    "Scanner",
+                    "QR détecté : " + decodedText
+                );
 
-            showMessage(
-                "QR détecté : "
-                + qrCodeMessage,
-                "success"
-            );
-
-
-            logAction(
-                "QR Code : "
-                + qrCodeMessage
-            );
-
-
+            }
 
             stopScanner();
 
-
         },
 
+        () => {
+            /* aucune action */
+        }
 
-        errorMessage=>{
+    ).catch(error => {
 
+        console.error(error);
 
-            console.log(
-                errorMessage
+        if (typeof showNotification === "function") {
+
+            showNotification(
+                "Scanner",
+                "Impossible d'accéder à la caméra."
             );
-
 
         }
 
-
-    )
-    .catch(error=>{
-
-
-        console.error(
-            error
-        );
-
-
-        showMessage(
-            "Caméra inaccessible",
-            "error"
-        );
-
-
     });
-
 
 }
 
-
-
 /*==================================================
- ARRETER SCANNER
+ FERMER SCANNER
 ===================================================*/
 
-function stopScanner(){
+function stopScanner() {
 
-
-    if(qrScanner){
-
+    if (qrScanner) {
 
         qrScanner.stop()
 
-        .then(()=>{
+            .then(() => {
 
+                qrScanner.clear();
 
-            qrScanner.clear();
+                qrScanner = null;
 
+            })
 
-        });
-
+            .catch(console.error);
 
     }
-
-
 
     const container =
         document.getElementById(
             "qr-reader"
         );
 
-
-
-    if(container){
-
+    if (container) {
 
         container.remove();
 
-
     }
 
-
 }
-
-
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    () => {
 
+        initScanner();
 
-    initScanner();
+    }
+);
 
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
 
-});
+window.openScanner = openScanner;
+window.stopScanner = stopScanner;
