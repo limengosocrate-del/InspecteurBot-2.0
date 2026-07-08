@@ -1,11 +1,10 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  ia-engine.js
  Moteur IA juridique local
 ===================================================*/
-
-"use strict";
-
 
 /*==================================================
  BASE DE CONNAISSANCES
@@ -13,10 +12,9 @@
 
 const legalKnowledge = {
 
-
     salaire: {
 
-        keywords:[
+        keywords: [
             "salaire",
             "paiement",
             "rémunération",
@@ -24,14 +22,13 @@ const legalKnowledge = {
         ],
 
         analysis:
-        "Vérifier le respect des obligations relatives au paiement des salaires et au minimum légal applicable."
+        "Vérifier le respect des obligations relatives au paiement des salaires et du SMIG."
 
     },
 
-
     contrat: {
 
-        keywords:[
+        keywords: [
             "contrat",
             "embauche",
             "travailleur",
@@ -39,14 +36,13 @@ const legalKnowledge = {
         ],
 
         analysis:
-        "Vérifier l'existence, la conformité et les conditions du contrat de travail."
+        "Vérifier l'existence et la conformité du contrat de travail."
 
     },
 
-
     securite: {
 
-        keywords:[
+        keywords: [
             "sécurité",
             "accident",
             "danger",
@@ -54,14 +50,13 @@ const legalKnowledge = {
         ],
 
         analysis:
-        "Analyser les conditions de santé et sécurité au travail."
+        "Contrôler les mesures de santé et sécurité au travail."
 
     },
 
-
     temps: {
 
-        keywords:[
+        keywords: [
             "heure",
             "durée",
             "repos",
@@ -73,10 +68,9 @@ const legalKnowledge = {
 
     },
 
-
     etranger: {
 
-        keywords:[
+        keywords: [
             "étranger",
             "visa",
             "autorisation"
@@ -87,218 +81,100 @@ const legalKnowledge = {
 
     }
 
-
 };
 
-
-
 /*==================================================
- ANALYSE TEXTE
+ ANALYSE
 ===================================================*/
 
-function analyzeText(text){
+function analyzeText(text) {
 
+    text = text.toLowerCase();
 
-    text =
-    text.toLowerCase();
+    const results = [];
 
+    Object.values(legalKnowledge).forEach(item => {
 
-
-    let results = [];
-
-
-
-    Object.keys(
-        legalKnowledge
-    )
-    .forEach(key=>{
-
-
-        const item =
-            legalKnowledge[key];
-
-
-
-        const found =
-            item.keywords.some(
-                word=>
+        if (
+            item.keywords.some(word =>
                 text.includes(word)
-            );
+            )
+        ) {
 
-
-
-        if(found){
-
-
-            results.push({
-
-                domaine:key,
-
-                analyse:
-                item.analysis
-
-            });
-
+            results.push(item.analysis);
 
         }
 
-
     });
-
-
-
-    if(results.length===0){
-
-
-        results.push({
-
-            domaine:
-            "Général",
-
-
-            analyse:
-            "Aucun élément juridique détecté automatiquement. Une analyse approfondie est nécessaire."
-
-        });
-
-
-    }
-
-
 
     return results;
 
-
 }
 
-
-
 /*==================================================
- GENERER RAPPORT IA
+ RAPPORT IA
 ===================================================*/
 
-function generateIAReport(text){
+function generateIAReport(text) {
 
+    const analyses =
+        analyzeText(text);
 
-    const analysis =
-        analyzeText(
-            text
-        );
+    if (analyses.length === 0) {
 
+        return "Aucune analyse juridique automatique disponible.";
 
+    }
 
-    let report = `
+    let report =
+        "🤖 RAPPORT D'ANALYSE IA\n\n";
 
-🤖 RAPPORT ANALYSE IA
+    analyses.forEach(item => {
 
-Date :
-${new Date().toLocaleString()}
-
-
-`;
-
-
-
-    analysis.forEach(item=>{
-
-
-        report += `
-
-📌 Domaine :
-${item.domaine}
-
-
-Analyse :
-${item.analyse}
-
-
-`;
+        report += "• " + item + "\n\n";
 
     });
-
-
 
     return report;
 
-
 }
 
-
-
 /*==================================================
- CONSEILS INSPECTEUR
+ REPONSE IA
 ===================================================*/
 
-function inspectorAdvice(text){
+function generateAnswer(question) {
 
-
-    const result =
-        analyzeText(
-            text
-        );
-
-
-
-    let advice =
-    "Recommandations :\n";
-
-
-
-    result.forEach(item=>{
-
-
-        advice +=
-
-        "- Vérifier : "
-        +
-        item.domaine
-        +
-        "\n";
-
-
-    });
-
-
-
-    return advice;
-
+    return generateIAReport(question);
 
 }
 
+function askIA(question) {
 
+    return generateAnswer(question);
+
+}
 
 /*==================================================
- CONNEXION ASSISTANT IA
+ EXPORT GLOBAL
 ===================================================*/
 
-function askIA(question){
-
-
-    const answer =
-        generateIAReport(
-            question
-        );
-
-
-    return answer;
-
-
-}
-
-
+window.analyzeText = analyzeText;
+window.generateIAReport = generateIAReport;
+window.generateAnswer = generateAnswer;
+window.askIA = askIA;
 
 /*==================================================
- TEST AUTOMATIQUE
+ DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    () => {
 
+        console.log(
+            "IA Engine chargé."
+        );
 
-    console.log(
-        "IA Engine chargé"
-    );
-
-
-});
+    }
+);
