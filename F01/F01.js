@@ -1385,7 +1385,7 @@ function renderEffectifBlock(kind, idx) {
       `FORMULAIRE : ${CURRENT_CODE}`,
       `DOSSIER : ${f.record_id || ""}`,
       `ENTREPRISE / ENTITE : ${f.raison || f.province_entite || ""}`,
-      `INSPECTEUR : ${f.inspecteur_nom || ""}`,
+      `Inspecteur / Contrôleur : ${f.inspecteur_nom || ""}`,
       "",
       "1. Informations manquantes détectées :",
       missing.length ? missing.map(x => `- ${x}`).join("\n") : "- Néant",
