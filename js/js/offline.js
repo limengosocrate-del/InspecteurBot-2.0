@@ -6,28 +6,23 @@
 
 "use strict";
 
-
 /*==================================================
- VERIFICATION CONNEXION
+ ETAT DE LA CONNEXION
 ===================================================*/
 
 function checkConnection(){
 
-
-    const status =
-        navigator.onLine
-        ? "🟢 En ligne"
-        : "🔴 Hors ligne";
-
+    const online=navigator.onLine;
 
     console.log(
-        "Statut réseau : " + status
+        online
+        ? "🟢 En ligne"
+        : "🔴 Hors ligne"
     );
 
+    return online;
 
 }
-
-
 
 /*==================================================
  EVENEMENTS RESEAU
@@ -35,88 +30,75 @@ function checkConnection(){
 
 function networkEvents(){
 
+    window.addEventListener("online",()=>{
 
-    window.addEventListener(
-        "online",
-        ()=>{
-
-
+        if(typeof showMessage==="function"){
             showMessage(
                 "Connexion Internet rétablie",
                 "success"
             );
-
-
         }
-    );
 
+        if(typeof logAction==="function"){
+            logAction("Connexion rétablie");
+        }
 
+    });
 
-    window.addEventListener(
-        "offline",
-        ()=>{
+    window.addEventListener("offline",()=>{
 
-
+        if(typeof showMessage==="function"){
             showMessage(
                 "Mode hors ligne activé",
                 "warning"
             );
-
-
         }
-    );
 
+        if(typeof logAction==="function"){
+            logAction("Mode hors ligne");
+        }
+
+    });
 
 }
 
-
-
 /*==================================================
- ENREGISTREMENT SERVICE WORKER
+ SERVICE WORKER
 ===================================================*/
 
 function registerServiceWorker(){
 
+    if(!("serviceWorker" in navigator)){
+        console.warn("Service Worker non supporté.");
+        return;
+    }
 
-    if(
-        "serviceWorker" in navigator
-    ){
-
+    window.addEventListener("load",()=>{
 
         navigator.serviceWorker
-        .register(
-            "service-worker.js"
-        )
+        .register("./service-worker.js")
 
-        .then(()=>{
-
+        .then(reg=>{
 
             console.log(
-                "Service Worker activé"
+                "Service Worker activé",
+                reg.scope
             );
-
 
         })
 
-
         .catch(error=>{
-
 
             console.error(
                 "Erreur Service Worker",
                 error
             );
 
-
         });
 
-
-    }
-
+    });
 
 }
-
-
 
 /*==================================================
  INFORMATIONS APPAREIL
@@ -124,46 +106,26 @@ function registerServiceWorker(){
 
 function deviceInfo(){
 
+    console.table({
 
-    console.log({
-
-        navigateur:
-        navigator.userAgent,
-
-
-        langue:
-        navigator.language,
-
-
-        plateforme:
-        navigator.platform
+        navigateur:navigator.userAgent,
+        langue:navigator.language,
+        plateforme:navigator.platform,
+        enLigne:navigator.onLine
 
     });
 
-
 }
-
-
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
+document.addEventListener("DOMContentLoaded",()=>{
 
     checkConnection();
-
-
     networkEvents();
-
-
     registerServiceWorker();
-
-
     deviceInfo();
-
 
 });
