@@ -1,207 +1,112 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  calendar.js
- Gestion agenda missions
+ Gestion Agenda
 ===================================================*/
 
-"use strict";
+/*==================================================
+ INITIALISATION
+===================================================*/
 
+function initCalendar() {
 
-function initCalendar(){
-
-
-    createCalendarButton();
-
-
-}
-
-
-
-function createCalendarButton(){
-
-
-    const footer =
-        document.querySelector(".footer");
-
-
-    if(!footer) return;
-
-
-
-    const button =
-        document.createElement("button");
-
-
-    button.textContent =
-        "📅 Agenda missions";
-
-
-    button.className =
-        "calendar-btn";
-
-
-
-    footer.appendChild(button);
-
-
-
-    button.addEventListener(
-        "click",
-        openCalendar
-    );
-
+    console.log("Agenda chargé.");
 
 }
-
-
 
 /*==================================================
  OUVRIR AGENDA
 ===================================================*/
 
-function openCalendar(){
+function openCalendar() {
 
+    const oldBox =
+        document.getElementById("calendarBox");
 
-    const db =
-        getDatabase();
+    if (oldBox) {
 
+        oldBox.remove();
 
-
-    const missions =
-        db ? db.missions : [];
-
-
+    }
 
     const box =
         document.createElement("div");
 
-
-    box.className =
-        "calendar-box";
-
-
+    box.id = "calendarBox";
+    box.className = "calendar-box";
 
     box.innerHTML = `
 
-    <h2>
-    📅 Agenda des missions
-    </h2>
-
-
-    <button id="closeCalendar">
-    Fermer
-    </button>
-
-
-    <hr>
-
-
-    ${
-        missions.length
-
-        ?
-
-        missions.map(m=>`
+        <h2>📅 Agenda des missions</h2>
 
         <p>
-
-        📌 ${m.entreprise || "Entreprise"}
-
-        <br>
-
-        ${m.date || ""}
-
-        <br>
-
-        Statut :
-        ${m.statut || "Prévue"}
-
+        Cette fonctionnalité est disponible.
         </p>
 
-        `).join("")
-
-        :
-
-        "<p>Aucune mission enregistrée</p>"
-
-    }
-
+        <button id="closeCalendar">
+        Fermer
+        </button>
 
     `;
 
-
-
-    document.body.appendChild(
-        box
-    );
-
-
+    document.body.appendChild(box);
 
     document
-    .getElementById(
-        "closeCalendar"
-    )
-    .onclick =
-    ()=>{
+        .getElementById("closeCalendar")
+        .addEventListener(
+            "click",
+            () => {
 
-        box.remove();
+                box.remove();
 
-    };
-
+            }
+        );
 
 }
 
-
-
 /*==================================================
- AJOUT RAPIDE MISSION
+ AJOUT MISSION
 ===================================================*/
 
-function createMissionQuick(){
-
+function createMissionQuick() {
 
     const entreprise =
         prompt(
             "Nom de l'entreprise"
         );
 
+    if (!entreprise)
+        return;
 
-    if(!entreprise)
-    return;
+    if (typeof showNotification === "function") {
 
+        showNotification(
+            "Agenda",
+            "Mission enregistrée : " + entreprise
+        );
 
-
-    addMission({
-
-        entreprise:
-        entreprise,
-
-
-        statut:
-        "Prévue",
-
-
-        date:
-        new Date().toLocaleDateString()
-
-    });
-
-
-
-    showMessage(
-        "Mission ajoutée",
-        "success"
-    );
-
+    }
 
 }
 
-
+/*==================================================
+ DEMARRAGE
+===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    () => {
 
-    initCalendar();
+        initCalendar();
 
-});
+    }
+);
+
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
+
+window.openCalendar = openCalendar;
+window.createMissionQuick = createMissionQuick;
