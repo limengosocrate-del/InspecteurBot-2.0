@@ -57,12 +57,14 @@ textarea {
   margin-right: 6px;
 }
 
-.screen-toolbar button{
-
-    padding:6px 10px;
-
-    font-size:14px;
-
+.screen-toolbar button {
+  border: 1px solid rgba(244, 197, 66, .55);
+  border-radius: 9px;
+  background: linear-gradient(180deg, #102a4d, #071b34);
+  color: #fff;
+  padding: 8px 10px;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(244, 197, 66, .08);
 }
 
 .screen-toolbar button:hover {
@@ -73,18 +75,20 @@ textarea {
 .sheet-wrap{
     width:100%;
     overflow:auto;
-    padding:12px;
+    padding:15px;
     display:flex;
     justify-content:center;
 }
 
-.sheet{
-    position:relative;
-    width:194mm;
-    min-height:281mm;
-    margin:0 auto 25px;
-    background:#fff;
-    transform-origin:top center;
+.sheet {
+  position: relative;
+  width: 194mm;
+  min-height: 281mm;
+  margin: 0 auto 26px auto;
+  padding: 0;
+  background:#fff;
+  transform-origin:top center;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, .45);
 }
 
 #inspectionForm {
@@ -602,22 +606,14 @@ textarea.line-area {
   border-bottom: .45mm solid #000;
 }
 
-@media screen and (max-width:900px){
+@media screen and (max-width: 900px) {
+  .sheet {
+    transform-origin: top left;
+  }
 
-    .sheet{
-
-        transform:scale(.90);
-
-        margin-bottom:-75mm;
-
-    }
-
-    .meta-panel{
-
-        grid-template-columns:1fr;
-
-    }
-
+  .meta-panel {
+    grid-template-columns: 1fr;
+  }
 }
 
 @page {
