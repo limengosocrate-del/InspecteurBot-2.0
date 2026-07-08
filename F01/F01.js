@@ -777,9 +777,9 @@ function renderEffectifBlock(kind, idx) {
               le <input class="line-input" name="date_signature" style="width:28mm;">
             </div>
             <div>${esc(d.inspectorLabel)}</div>
-            <canvas class="signature-pad" data-signature="inspecteur"></canvas>
+            <canvas class="signature-pad" data-signature="inspecteur/contrôleur"></canvas>
             <div class="sig-actions no-print">
-              <button type="button" data-clear-signature="inspecteur">Effacer</button>
+              <button type="button" data-clear-signature="inspecteur/contrôleur">Effacer</button>
               <input class="line-input" name="horodatage_signature" readonly>
             </div>
           </td>
