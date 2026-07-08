@@ -1,95 +1,63 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  theme.js
  Gestion du thème
 ===================================================*/
 
-"use strict";
-
-
 /*==================================================
- INITIALISATION DU THEME
+ INITIALISATION DU THÈME
 ===================================================*/
 
-function initTheme(){
-
+function initTheme() {
 
     const btnTheme =
         document.getElementById("btnTheme");
 
-
     const savedTheme =
-        Storage.get("theme");
+        localStorage.getItem("theme");
 
+    if (savedTheme === "dark") {
 
-    if(savedTheme === "dark"){
+        document.body.classList.add("dark");
 
-        document.body.classList.add(
-            "dark-theme"
-        );
+        if (btnTheme) {
+            btnTheme.textContent = "☀️ Thème";
+        }
 
+    } else {
 
-        if(btnTheme){
+        document.body.classList.remove("dark");
 
-            btnTheme.textContent =
-                "☀️ Thème";
-
+        if (btnTheme) {
+            btnTheme.textContent = "🌙 Thème";
         }
 
     }
-
-
-    if(savedTheme === "light"){
-
-        document.body.classList.remove(
-            "dark-theme"
-        );
-
-
-        if(btnTheme){
-
-            btnTheme.textContent =
-                "🌙 Thème";
-
-        }
-
-    }
-
 
 }
 
-
-
 /*==================================================
- CHANGEMENT DU THEME
+ CHANGEMENT DU THÈME
 ===================================================*/
 
-function toggleTheme(){
-
+function toggleTheme() {
 
     const btnTheme =
         document.getElementById("btnTheme");
 
-
-    document.body.classList.toggle(
-        "dark-theme"
-    );
-
+    document.body.classList.toggle("dark");
 
     const dark =
-        document.body.classList.contains(
-            "dark-theme"
-        );
+        document.body.classList.contains("dark");
 
-
-    Storage.save(
+    localStorage.setItem(
         "theme",
         dark ? "dark" : "light"
     );
 
-
-
-    if(btnTheme){
+    if (btnTheme) {
 
         btnTheme.textContent =
             dark
@@ -98,53 +66,35 @@ function toggleTheme(){
 
     }
 
+    if (typeof showNotification === "function") {
 
-    showMessage(
-        dark
-        ? "Mode sombre activé"
-        : "Mode clair activé",
-        "success"
-    );
-
-
-    logAction(
-        "Changement thème : " +
-        (dark ? "sombre" : "clair")
-    );
-
-
-}
-
-
-
-/*==================================================
- ACTIVATION
-===================================================*/
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-    initTheme();
-
-
-    const btnTheme =
-        document.getElementById(
-            "btnTheme"
+        showNotification(
+            "Thème",
+            dark
+                ? "Mode sombre activé"
+                : "Mode clair activé"
         );
-
-
-    if(btnTheme){
-
-
-        btnTheme.addEventListener(
-            "click",
-            toggleTheme
-        );
-
 
     }
 
+}
 
-});
+/*==================================================
+ DÉMARRAGE
+===================================================*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initTheme();
+
+    }
+);
+
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
+
+window.toggleTheme = toggleTheme;
+window.initTheme = initTheme;
