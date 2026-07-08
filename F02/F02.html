@@ -1,54 +1,14 @@
-<!DOCTYPE html>
+<!-- F02/F02.html -->
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>F02 - Main d’Œuvre Étrangère</title>
-  <link rel="stylesheet" href="../common/common.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InspecteurBot IA RDC - F02</title>
   <link rel="stylesheet" href="F02.css">
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+  <script defer src="F02.js"></script>
 </head>
-<body onload="initForm('F02')">
-<div class="form-container">
-  <table class="main-table">
-    <tr>
-      <td style="width:80px"><img src="../assets/images/logo-igt.png" class="logo-igt"></td>
-      <td style="text-align:center"><strong>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</strong><br>Ministère de l’Emploi et Travail<br>Inspection Générale du Travail</td>
-      <td style="width:110px;text-align:right"><h1 style="color:red;margin:0">F02</h1><div id="qrcode"></div></td>
-    </tr>
-  </table>
-  <h2 style="text-align:center;color:red">CONTRÔLE DE LA MAIN D’ŒUVRE ÉTRANGÈRE</h2>
-
-  <table class="main-table">
-    <tr><td colspan="13" class="section-header">RENSEIGNEMENT DE L’ENTREPRISE OU ÉTABLISSEMENT VISITÉ</td></tr>
-    <tr><td colspan="13">Nom ou Raison Sociale : <input type="text" class="input-field" id="nomEntreprise"></td></tr>
-    <tr><td colspan="13">Siège social : <input type="text" class="input-field"></td></tr>
-
-    <!-- 12 COLONNES EXPATRIÉS -->
-    <tr><td colspan="13" class="section-header">EFFECTIFS DE TRAVAILLEURS EXPATRIÉS VENTILÉS SELON LE SEXE</td></tr>
-    <tr>
-      <th>N°</th><th colspan="4">NOMS</th><th>SEXE</th><th>NATIONALITÉ</th><th>VISA</th><th>E</th><th>NE</th><th>ENC</th><th colspan="2">CARTE TRAVAIL</th>
-    </tr>
-    <script>
-      for(let i=1; i<=12; i++){
-        document.write(`<tr><td>${i.toString().padStart(2,'0')}</td><td colspan="4"><input class="input-field"></td><td><input class="input-field"></td><td><input class="input-field"></td><td><input class="input-field"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td><td colspan="2"></td></tr>`);
-      }
-    </script>
-  </table>
-
-  <div class="signature-section">
-    <div><strong>Signature Employeur</strong><br><canvas id="signatureEmployer" width="280" height="110"></canvas><br><button onclick="clearSignature('signatureEmployer')">Effacer</button></div>
-    <div><strong>Signature Inspecteur</strong><br><canvas id="signatureInspector" width="280" height="110"></canvas><br><button onclick="clearSignature('signatureInspector')">Effacer</button></div>
-  </div>
-
-  <div style="text-align:center;margin-top:15px">
-    <button onclick="exportToPDF('F02')">🖨️ Exporter / Imprimer PDF A4</button>
-    <button onclick="startVoiceDictation('nomEntreprise')">🎤 Dicter</button>
-    <button onclick="runIAnalysis()">🔍 Analyser infractions</button>
-  </div>
-  <div class="qr-container"><div id="qrcode"></div><small id="timestamp"></small></div>
-</div>
-<script src="../common/common.js"></script>
-<script src="F02.js"></script>
+<body>
+  <main id="app" data-form-code="F02"></main>
 </body>
-      </html>
+</html>
