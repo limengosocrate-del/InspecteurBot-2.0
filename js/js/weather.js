@@ -1,251 +1,170 @@
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  weather.js
- GPS + METEO AUTOMATIQUE
+ GPS + MÉTÉO AUTOMATIQUE
 ===================================================*/
 
 "use strict";
 
-
 /*==================================================
- INITIALISATION METEO
+ INITIALISATION MÉTÉO
 ===================================================*/
 
 function initWeather(){
 
-
     const weatherBox =
-        document.getElementById(
-            "weather"
-        );
-
+        document.getElementById("weather");
 
     if(!weatherBox) return;
 
-
-
     if(!navigator.geolocation){
 
-
         weatherBox.textContent =
-            "GPS non disponible";
-
+            "📍 GPS indisponible";
 
         return;
 
     }
 
-
-
     weatherBox.textContent =
-        "📍 Recherche localisation...";
-
-
+        "📍 Localisation...";
 
     navigator.geolocation.getCurrentPosition(
 
-        position => {
-
-
-            const latitude =
-                position.coords.latitude;
-
-
-            const longitude =
-                position.coords.longitude;
-
-
+        position=>{
 
             getWeather(
-                latitude,
-                longitude
-            );
 
+                position.coords.latitude,
+                position.coords.longitude
+
+            );
 
         },
 
-
         ()=>{
-
 
             weatherBox.textContent =
                 "📍 Localisation refusée";
 
+        },
+
+        {
+
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:600000
 
         }
 
-
     );
-
 
 }
 
-
-
 /*==================================================
- APPEL METEO
+ RÉCUPÉRATION MÉTÉO
 ===================================================*/
 
-async function getWeather(
-    lat,
-    lon
-){
-
+async function getWeather(lat,lon){
 
     const weatherBox =
-        document.getElementById(
-            "weather"
-        );
+        document.getElementById("weather");
 
-
+    if(!weatherBox) return;
 
     try{
 
+        const url=
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
 
-        const url =
-
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
-
-
-
-        const response =
+        const response=
             await fetch(url);
 
+        if(!response.ok){
 
+            throw new Error("Erreur réseau");
 
-        const data =
+        }
+
+        const data=
             await response.json();
 
-
-
-        const temp =
+        const temp=
             data.current.temperature_2m;
 
-
-
-        const code =
+        const code=
             data.current.weather_code;
 
-
-
-        const icon =
+        const icon=
             weatherIcon(code);
 
+        weatherBox.textContent=
+            `${icon} ${temp}°C`;
 
+        if(typeof Storage!=="undefined"){
 
-        weatherBox.textContent =
+            Storage.save("weather",{
 
-        `${icon} ${temp}°C`;
-
-
-
-        Storage.save(
-            "weather",
-            {
                 temperature:temp,
                 code:code,
-                date:new Date()
-            }
-        );
+                latitude:lat,
+                longitude:lon,
+                date:new Date().toISOString()
 
+            });
 
+        }
+
+        if(typeof logAction==="function"){
+
+            logAction(
+                "Météo mise à jour"
+            );
+
+        }
 
     }
 
     catch(error){
 
+        console.error(error);
 
-        weatherBox.textContent =
-            "Météo indisponible";
-
-
-        console.error(
-            error
-        );
-
+        weatherBox.textContent=
+            "🌦️ Météo indisponible";
 
     }
 
-
 }
 
-
-
 /*==================================================
- ICONES METEO
+ ICÔNES MÉTÉO
 ===================================================*/
 
 function weatherIcon(code){
 
+    if(code===0) return "☀️";
 
-    if(code===0)
+    if(code>=1 && code<=3) return "⛅";
 
-        return "☀️";
+    if(code>=45 && code<=48) return "🌫️";
 
+    if(code>=51 && code<=67) return "🌧️";
 
-    if(
-        code>=1 &&
-        code<=3
-    )
+    if(code>=71 && code<=77) return "❄️";
 
-        return "⛅";
+    if(code>=80 && code<=82) return "🌦️";
 
-
-    if(
-        code>=45 &&
-        code<=48
-    )
-
-        return "🌫️";
-
-
-    if(
-        code>=51 &&
-        code<=67
-    )
-
-        return "🌧️";
-
-
-    if(
-        code>=71 &&
-        code<=77
-    )
-
-        return "❄️";
-
-
-    if(
-        code>=80 &&
-        code<=82
-    )
-
-        return "🌦️";
-
-
-    if(
-        code>=95
-    )
-
-        return "⛈️";
-
+    if(code>=95) return "⛈️";
 
     return "🌍";
 
 }
 
-
-
 /*==================================================
- DEMARRAGE
+ DÉMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-    initWeather();
-
-
-});
+    "DOMContentLoaded",
+    initWeather
+);
