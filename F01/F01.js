@@ -1467,7 +1467,7 @@ N° dossier : ${data.fields.record_id || ""}
 Entreprise / Entité : ${data.fields.raison || data.fields.province_entite || ""}
 Province : ${data.fields.province || ""}
 Antenne / Direction : ${data.fields.antenne || ""}
-Inspecteur : ${data.fields.inspecteur_nom || ""}
+Inspecteur / Contrôleur : ${data.fields.inspecteur_nom || ""}
 Statut : ${data.fields.statut_dossier || ""}
 
 ${ai}
