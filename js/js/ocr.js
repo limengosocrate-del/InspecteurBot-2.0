@@ -1,313 +1,177 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  ocr.js
- Reconnaissance de texte OCR
+ Reconnaissance OCR
 ===================================================*/
 
-"use strict";
-
-
-let ocrResult = "";
-
-
+let ocrInput;
 
 /*==================================================
- INITIALISATION OCR
+ INITIALISATION
 ===================================================*/
 
-function initOCR(){
+function initOCR() {
 
+    ocrInput =
+        document.createElement("input");
 
-    createOCRInterface();
+    ocrInput.type = "file";
+    ocrInput.accept = "image/*";
+    ocrInput.capture = "environment";
+    ocrInput.style.display = "none";
 
+    document.body.appendChild(ocrInput);
 
-}
-
-
-
-/*==================================================
- CREATION INTERFACE OCR
-===================================================*/
-
-function createOCRInterface(){
-
-
-    const btnCamera =
-        document.getElementById(
-            "btnCamera"
-        );
-
-
-    if(!btnCamera) return;
-
-
-
-    const input =
-        document.createElement(
-            "input"
-        );
-
-
-    input.type =
-        "file";
-
-
-    input.accept =
-        "image/*";
-
-
-    input.capture =
-        "environment";
-
-
-    input.id =
-        "ocrInput";
-
-
-    input.style.display =
-        "none";
-
-
-    document.body.appendChild(
-        input
-    );
-
-
-
-    btnCamera.addEventListener(
-        "click",
-        ()=>{
-
-
-            input.click();
-
-
-        }
-    );
-
-
-
-    input.addEventListener(
+    ocrInput.addEventListener(
         "change",
-        event=>{
-
-
-            const file =
-                event.target.files[0];
-
-
-            if(file){
-
-                readDocument(file);
-
-            }
-
-
-        }
+        handleOCR
     );
-
 
 }
 
-
-
 /*==================================================
- LECTURE DOCUMENT
+ OUVRIR OCR
 ===================================================*/
 
-async function readDocument(file){
+function openOCR() {
 
+    if (ocrInput) {
 
-    showMessage(
-        "Analyse du document en cours..."
+        ocrInput.click();
+
+    }
+
+}
+
+/*==================================================
+ LECTURE OCR
+===================================================*/
+
+async function handleOCR(event) {
+
+    const file =
+        event.target.files[0];
+
+    if (!file) return;
+
+    showNotification(
+        "OCR",
+        "Analyse du document..."
     );
 
-
-    try{
-
+    try {
 
         const result =
             await Tesseract.recognize(
-
                 file,
-
-                "fra",
-
-                {
-
-                    logger:
-                    data=>{
-
-
-                        console.log(
-                            data
-                        );
-
-
-                    }
-
-                }
-
+                "fra"
             );
 
-
-
-        ocrResult =
+        const text =
             result.data.text;
-
-
 
         Storage.save(
             "lastOCR",
-            ocrResult
+            text
         );
 
-
-
-        showOCRResult(
-            ocrResult
-        );
-
-
-
-        logAction(
-            "Document analysé par OCR"
-        );
-
+        showOCRResult(text);
 
     }
 
-    catch(error){
+    catch (error) {
 
+        console.error(error);
 
-        console.error(
-            error
+        showNotification(
+            "OCR",
+            "Erreur pendant l'analyse."
         );
-
-
-        showMessage(
-            "Erreur OCR",
-            "error"
-        );
-
 
     }
-
 
 }
-
-
 
 /*==================================================
  AFFICHER RESULTAT
 ===================================================*/
 
-function showOCRResult(text){
+function showOCRResult(text) {
 
-
-    const box =
-        document.createElement(
-            "div"
+    const old =
+        document.querySelector(
+            ".ocr-result"
         );
 
+    if (old) {
+
+        old.remove();
+
+    }
+
+    const box =
+        document.createElement("div");
 
     box.className =
         "ocr-result";
 
-
     box.innerHTML = `
 
+        <h3>📄 Texte détecté</h3>
 
-    <h3>
-    📄 Texte détecté
-    </h3>
+        <textarea rows="12">${text}</textarea>
 
+        <br><br>
 
-    <textarea>
+        <button id="closeOCR">
 
-${text}
+        Fermer
 
-    </textarea>
-
-
-    <button id="analyzeOCR">
-
-    🤖 Analyser avec IA
-
-    </button>
-
+        </button>
 
     `;
 
-
-
-    document.body.appendChild(
-        box
-    );
-
-
+    document.body.appendChild(box);
 
     document
-    .getElementById(
-        "analyzeOCR"
-    )
-    .onclick =
-    ()=>{
+        .getElementById("closeOCR")
+        .addEventListener(
+            "click",
+            () => {
 
+                box.remove();
 
-        if(
-            typeof generateAnswer
-            === "function"
-        ){
-
-
-            const response =
-                generateAnswer(
-                    text
-                );
-
-
-            alert(
-                response
-            );
-
-
-        }
-
-
-    };
-
+            }
+        );
 
 }
 
-
-
 /*==================================================
- RECUPERER DERNIER OCR
+ DERNIER OCR
 ===================================================*/
 
-function getLastOCR(){
-
+function getLastOCR() {
 
     return Storage.get(
         "lastOCR"
     );
 
-
 }
-
-
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    "DOMContentLoaded",
+    initOCR
+);
 
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
 
-    initOCR();
-
-
-});
+window.openOCR = openOCR;
+window.getLastOCR = getLastOCR;
