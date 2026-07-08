@@ -1,222 +1,149 @@
+"use strict";
+
 /*==================================================
  INSPECTEURBOT IA RDC 4.0 PREMIUM
  search.js
  Moteur de recherche intelligent
 ===================================================*/
 
-"use strict";
-
-
 let searchHistory = [];
 
-
 /*==================================================
- INITIALISATION RECHERCHE
+ INITIALISATION
 ===================================================*/
 
-function initSearch(){
-
+function initSearch() {
 
     const input =
         document.getElementById(
             "searchInput"
         );
 
-
-    if(!input) return;
-
+    if (!input) return;
 
     searchHistory =
         Storage.get("searchHistory") || [];
 
-
-
     input.addEventListener(
         "input",
-        debounce(
-            function(){
+        function () {
 
-                searchCards(
-                    this.value
-                );
+            searchCards(this.value);
 
-            },
-            200
-        )
+        }
     );
-
-
 
     input.addEventListener(
         "keydown",
-        function(e){
+        function (e) {
 
-            if(e.key === "Enter"){
+            if (e.key === "Enter") {
 
-                saveSearch(
-                    this.value
-                );
+                saveSearch(this.value);
 
             }
 
         }
     );
 
-
 }
 
-
-
 /*==================================================
- RECHERCHE DES CARTES
+ RECHERCHE
 ===================================================*/
 
-function searchCards(text){
-
+function searchCards(text) {
 
     const value =
         text
         .toLowerCase()
         .trim();
 
-
     const cards =
         document.querySelectorAll(
             ".card"
         );
 
-
     let count = 0;
 
-
-
-    cards.forEach(card=>{
-
+    cards.forEach(card => {
 
         const content =
-            card.innerText
-            .toLowerCase();
+            card.innerText.toLowerCase();
 
-
-
-        if(
+        if (
+            value === "" ||
             content.includes(value)
-            ||
-            value === ""
-        ){
+        ) {
 
-
-            card.style.display =
-                "";
-
-
-            reveal(card);
-
+            card.style.display = "";
 
             count++;
 
-
         }
 
-        else{
+        else {
 
-
-            card.style.display =
-                "none";
-
+            card.style.display = "none";
 
         }
-
 
     });
 
-
-
-    updateSearchCount(
-        count
-    );
-
+    updateSearchCount(count);
 
 }
 
-
-
 /*==================================================
- SAUVEGARDE HISTORIQUE
+ HISTORIQUE
 ===================================================*/
 
-function saveSearch(text){
+function saveSearch(text) {
 
+    text = text.trim();
 
-    text =
-        text.trim();
+    if (!text) return;
 
-
-    if(!text) return;
-
-
-
-    searchHistory.unshift(
-        text
-    );
-
-
+    searchHistory.unshift(text);
 
     searchHistory =
         [...new Set(searchHistory)]
-        .slice(0,20);
-
-
+        .slice(0, 20);
 
     Storage.save(
         "searchHistory",
         searchHistory
     );
 
-
-    logAction(
-        "Recherche : " + text
-    );
-
-
 }
 
-
-
 /*==================================================
- COMPTEUR RESULTATS
+ COMPTEUR
 ===================================================*/
 
-function updateSearchCount(number){
-
+function updateSearchCount(number) {
 
     let counter =
         document.getElementById(
             "searchCounter"
         );
 
-
-
-    if(!counter){
-
+    if (!counter) {
 
         counter =
             document.createElement(
                 "span"
             );
 
-
         counter.id =
             "searchCounter";
-
 
         const toolbar =
             document.querySelector(
                 ".top-toolbar"
             );
 
-
-        if(toolbar){
+        if (toolbar) {
 
             toolbar.appendChild(
                 counter
@@ -224,65 +151,55 @@ function updateSearchCount(number){
 
         }
 
-
     }
-
-
 
     counter.textContent =
         "Résultats : " + number;
 
-
 }
 
-
-
 /*==================================================
- RACCOURCI CLAVIER
+ RACCOURCI CTRL+F
 ===================================================*/
 
 document.addEventListener(
-"keydown",
-function(e){
+    "keydown",
+    function (e) {
 
+        if (
+            e.ctrlKey &&
+            e.key.toLowerCase() === "f"
+        ) {
 
-    if(
-        e.ctrlKey &&
-        e.key.toLowerCase()==="f"
-    ){
+            e.preventDefault();
 
+            const input =
+                document.getElementById(
+                    "searchInput"
+                );
 
-        e.preventDefault();
+            if (input) {
 
+                input.focus();
 
-        const input =
-            document.getElementById(
-                "searchInput"
-            );
-
-
-        if(input){
-
-            input.focus();
+            }
 
         }
 
-
     }
+);
 
+/*==================================================
+ EXPORT GLOBAL
+===================================================*/
 
-});
-
-
+window.globalSearch = searchCards;
 
 /*==================================================
  DEMARRAGE
 ===================================================*/
 
 document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-    initSearch();
-
-});
+    "DOMContentLoaded",
+    initSearch
+);
