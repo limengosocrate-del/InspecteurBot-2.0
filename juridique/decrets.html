@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Décrets – Bibliothèque juridique</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📜 Décrets</h1>
+    <div class="glass" style="margin-top:14px">
+      <input id="q" placeholder="Rechercher un décret (SMIG, 25/22…)">
+      <button class="btn-gold" id="go" type="button" style="margin-top:10px">Rechercher IA</button>
+      <div id="list" style="margin-top:16px"></div>
+      <div id="out" class="result-box" style="display:none"></div>
+    </div>
+  </div>
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/decompte-engine.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    function renderList() {
+      KnowledgeBaseExt.install();
+      const items = KnowledgeBaseExt.listAll("decrets") || [];
+      list.innerHTML = items.map(d => `
+        <div class="glass" style="margin-bottom:10px;padding:14px;cursor:pointer" data-id="${d.id}">
+          <strong style="color:var(--gold)">Décret n° ${d.id}</strong> — ${d.date}<br>
+          <span>${d.titre}</span>
+          <ul style="margin-top:8px;color:var(--muted)">${(d.points||[]).map(p=>`<li>${p}</li>`).join("")}</ul>
+        </div>`).join("");
+      list.querySelectorAll("[data-id]").forEach(el => el.onclick = () => {
+        q.value = "Décret " + el.getAttribute("data-id");
+        run();
+      });
+    }
+    function run() {
+      KnowledgeBaseExt.install();
+      const r = KnowledgeBase.search(q.value || "décret SMIG 25/22");
+      const ai = InspecteurAI.ask(q.value || "Explique le décret 25/22 SMIG");
+      out.style.display = "block";
+      out.innerHTML = `<pre>${r.answer}</pre><hr style="border-color:var(--glass-border);margin:12px 0"><pre>${ai.text}</pre>`;
+    }
+    go.onclick = run;
+    q.addEventListener("keydown", e => e.key === "Enter" && run());
+    renderList();
+  </script>
+</body>
+    </html>
