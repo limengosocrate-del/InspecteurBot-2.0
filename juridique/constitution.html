@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constitution RDC</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📖 Constitution RDC — Droits sociaux</h1>
+    <div class="glass" style="margin-top:14px" id="box"></div>
+    <div class="glass" style="margin-top:14px">
+      <input id="q" placeholder="article 36, grève, syndicat…">
+      <button class="btn-gold" id="go" type="button" style="margin-top:10px">Interroger l'IA</button>
+      <pre id="out" style="margin-top:12px;white-space:pre-wrap"></pre>
+    </div>
+  </div>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    const C = KnowledgeBaseExt.listAll("constitution");
+    box.innerHTML = `<p style="color:var(--muted);margin-bottom:12px">${C.titre}</p>` +
+      Object.entries(C.articles).map(([n,t]) => `
+        <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--glass-border)">
+          <strong style="color:var(--gold)">Article ${n}</strong>
+          <p style="margin-top:6px">${t}</p>
+        </div>`).join("");
+    go.onclick = () => {
+      KnowledgeBaseExt.install();
+      out.textContent = InspecteurAI.ask(q.value || "article 36 constitution travail").text;
+    };
+  </script>
+</body>
+</html>
