@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Génération documents IA</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📄 Génération automatique de documents</h1>
+    <div class="glass" style="margin-top:14px">
+      <div class="grid-2">
+        <div class="field"><label>Type</label>
+          <select id="type">
+            <option value="pv">Procès-verbal d'infraction</option>
+            <option value="convocation">Convocation</option>
+            <option value="demeure">Mise en demeure</option>
+            <option value="rapport">Rapport d'inspection</option>
+            <option value="recommandation">Lettre de recommandations</option>
+            <option value="certificat">Modèle certificat de travail (contrôle)</option>
+          </select>
+        </div>
+        <div class="field"><label>Inspecteur</label><input id="insp" placeholder="Nom de l'inspecteur"></div>
+        <div class="field"><label>Employeur / Établissement</label><input id="emp"></div>
+        <div class="field"><label>Travailleur (si applicable)</label><input id="trav"></div>
+        <div class="field"><label>Lieu</label><input id="lieu" value="Kinshasa"></div>
+        <div class="field"><label>Faits / objet (libre)</label><input id="faits" placeholder="Non-paiement SMIG, absence registre…"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-gold" type="button" id="gen">⚡ Générer</button>
+        <button class="btn-gold" type="button" id="pdf">📄 PDF</button>
+        <button class="btn-gold" type="button" id="copy">📋 Copier</button>
+      </div>
+      <pre id="out" class="result-box" style="display:none;margin-top:14px"></pre>
+    </div>
+  </div>
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/decompte-engine.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script src="../js/pdf-export.js"></script>
+  <script>
+    let lastNum = "";
+    gen.onclick = () => {
+      KnowledgeBaseExt.install();
+      const ctx = { inspecteur: insp.value, employeur: emp.value, travailleur: trav.value, lieu: lieu.value };
+      const map = {
+        pv: "génère un procès-verbal",
+        convocation: "génère une convocation",
+        demeure: "génère une mise en demeure",
+        rapport: "génère un rapport d'inspection",
+        recommandation: "génère des recommandations administratives pour " + (faits.value || "mise en conformité"),
+        certificat: "contrôle certificat de travail points obligatoires art Code du Travail"
+      };
+      const r = InspecteurAI.ask(map[type.value] + " " + (faits.value || ""), ctx);
+      // enrichir demeure/pv avec articles
+      let extra = "";
+      if (type.value === "demeure" || type.value === "pv") {
+        extra = "\n\n" + KnowledgeBase.search(faits.value || "SMIG article 87").answer;
+      }
+      if (type.value === "recommandation") {
+        extra += "\n\n" + (KnowledgeBase.getProcedure("inspection_ordinaire") || []).join("\n");
+      }
+      lastNum = DecompteEngine.genererNumeroUnique("DOC");
+      out.style.display = "block";
+      out.textContent = "N° " + lastNum + "\n\n" + r.text + extra;
+    };
+    pdf.onclick = () => {
+      if (!out.textContent) return;
+      PDFExport.fromText(lastNum || "DOC", type.options[type.selectedIndex].text, out.textContent);
+    };
+    copy.onclick = async () => {
+      await navigator.clipboard.writeText(out.textContent || "");
+      IBTUtils.toast("Copié", "ok");
+    };
+  </script>
+</body>
+                                                                                                                                      </html>
