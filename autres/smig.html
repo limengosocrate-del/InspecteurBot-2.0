@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur SMIG 2025 — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+<style>
+  .smig-table { width:100%; border-collapse:collapse; margin-top:15px; background:rgba(0,0,0,0.2); }
+  .smig-table th, .smig-table td { padding:8px; border:1px solid rgba(255,215,0,0.2); color:#fff; font-size:13px; }
+  .smig-table th { background:rgba(255,215,0,0.15); color:#FFD700; position:sticky; top:0; }
+  .smig-table td.num { text-align:right; font-family:'Courier New',monospace; }
+  .smig-table td.strong { color:#FFD700; font-weight:bold; }
+  .smig-table td.fonc { font-size:12px; }
+  .smig-search { display:flex; gap:10px; margin-bottom:15px; }
+  .smig-search input { flex:1; padding:10px; border-radius:6px; border:1px solid #FFD700; background:rgba(0,0,0,0.3); color:#fff; }
+  .info-card { background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; margin:15px 0; color:#fff; }
+</style>
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>💰 CALCULATEUR SMIG 2025</h1>
+      <h2>Décret n° 25/22 du 30 mai 2025</h2>
+      <p>Barème complet — 17 classes professionnelles</p>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+
+  <div class="info-card">
+    📌 <strong>SMIG manœuvre ordinaire</strong> : 
+    <span id="smig-actuel"></span> FC/jour actuellement — 
+    passera à <strong>21 500 FC/jour</strong> dès janvier 2026.
+    <br>Allocations familiales : 1/27 du SMIG × nombre d'enfants — Contre-valeur logement : 1/5 des allocations.
+  </div>
+
+  <div class="df-form-section">
+    <h3>🔍 Rechercher une fonction / classe</h3>
+    <div class="smig-search">
+      <input type="text" id="filtre" placeholder="Ex: chauffeur, cadre, maîtrise, CC1...">
+      <button class="tool-btn" onclick="document.getElementById('filtre').value='';render();">✖ Effacer</button>
+    </div>
+    <div id="tableau"></div>
+  </div>
+
+  <div class="df-form-section">
+    <h3>🧮 Calcul personnalisé</h3>
+    <div class="grid-2">
+      <div class="field"><label>Fonction</label>
+        <input type="text" id="calc-fonction" list="calc-list" placeholder="Ex: Chauffeur">
+        <datalist id="calc-list"></datalist>
+      </div>
+      <div class="field"><label>Nombre d'enfants</label><input type="number" id="calc-enfants" value="0" min="0"></div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" onclick="calculer()">🧮 Calculer</button>
+    </div>
+    <div id="calc-resultat"></div>
+  </div>
+
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/smig-calc.js?v=1"></script>
+<script>
+document.getElementById("smig-actuel").textContent = SMIG_DATA.getSmigActuel().toLocaleString("fr-FR");
+
+// Datalist
+const dl = document.getElementById("calc-list");
+const set = new Set();
+SMIG_DATA.bareme.forEach(r => r.fonctions.split(",").forEach(f => set.add(f.trim())));
+set.forEach(f => { const o = document.createElement("option"); o.value = f; dl.appendChild(o); });
+
+function render() {
+  document.getElementById("tableau").innerHTML = SMIGCALC.genererTableau(document.getElementById("filtre").value);
+}
+document.getElementById("filtre").addEventListener("input", render);
+render();
+
+function calculer() {
+  const f = document.getElementById("calc-fonction").value;
+  const e = parseInt(document.getElementById("calc-enfants").value, 10) || 0;
+  const r = SMIGCALC.calculer(f, e);
+  const box = document.getElementById("calc-resultat");
+  if (!r) { box.innerHTML = "<div class='alert-smig'>❌ Fonction non reconnue.</div>"; return; }
+  box.innerHTML = `
+    <div class="info-card" style="margin-top:15px;">
+      <h3 style="color:#FFD700; margin-top:0;">✅ ${r.classe.fonctions.split(",")[0]}</h3>
+      <p><strong>Catégorie ${r.classe.cat}</strong> • Échelon ${r.classe.ech} • Classe ${r.classe.classe} • Tension ${r.classe.tension}</p>
+      <table class="smig-table" style="margin-top:10px;">
+        <tr><td>SMIG journalier</td><td class="num strong">${r.classe.smigJour.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>SMIG mensuel (×26)</td><td class="num strong">${r.classe.smigMois.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>Logement (30% SB)</td><td class="num">${r.logement30pct.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>Allocations familiales/jour</td><td class="num">${r.allocationsFamilialesJour.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>Allocations familiales/mois (${e} enf.)</td><td class="num">${r.allocationsFamilialesMois.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>Contre-valeur logement/jour</td><td class="num">${r.contreValeurLogementJour.toLocaleString("fr-FR")} FC</td></tr>
+        <tr style="background:#041B3D;"><td style="color:#FFD700;"><strong>SALAIRE TOTAL MENSUEL</strong></td>
+            <td class="num strong" style="color:#FFD700; font-size:16px;">${r.salaireTotal.toLocaleString("fr-FR")} FC</td></tr>
+      </table>
+    </div>`;
+}
+</script>
+</body>
+</html>
