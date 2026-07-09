@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041B3D">
+  <title>DASMO – InspecteurBot IA RDC 4.0</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">👥 DASMO — Déclaration Annuelle de la Situation de la Main-d'Œuvre</h1>
+    <p style="color:var(--muted);margin:8px 0 18px">
+      Calculs automatiques • Contrôles de cohérence • Alertes SMIG / F02 • N° unique • QR • IA locale
+    </p>
+
+    <div class="glass">
+      <h3 style="color:var(--gold);margin-bottom:12px">1. Identification</h3>
+      <div class="grid-2">
+        <div class="field"><label>Raison sociale *</label><input id="raisonSociale" placeholder="Nom de l'entreprise"></div>
+        <div class="field"><label>N° RCCM / Id. nationale</label><input id="rccm"></div>
+        <div class="field"><label>Province</label>
+          <select id="province">
+            <option>Kinshasa</option><option>Kongo-Central</option><option>Kwango</option>
+            <option>Kwilu</option><option>Mai-Ndombe</option><option>Équateur</option>
+            <option>Mongala</option><option>Nord-Ubangi</option><option>Sud-Ubangi</option>
+            <option>Tshuapa</option><option>Tshopo</option><option>Bas-Uele</option>
+            <option>Haut-Uele</option><option>Ituri</option><option>Nord-Kivu</option>
+            <option>Sud-Kivu</option><option>Maniema</option><option>Haut-Lomami</option>
+            <option>Lualaba</option><option>Haut-Katanga</option><option>Tanganyika</option>
+            <option>Lomami</option><option>Sankuru</option><option>Kasaï</option>
+            <option>Kasaï-Central</option><option>Kasaï-Oriental</option>
+          </select>
+        </div>
+        <div class="field"><label>Année de référence *</label><input id="annee" type="number" value="2025"></div>
+      </div>
+
+      <h3 style="color:var(--gold);margin:18px 0 12px">2. Effectifs</h3>
+      <div class="grid-3">
+        <div class="field"><label>Hommes</label><input id="effectifH" type="number" value="0"></div>
+        <div class="field"><label>Femmes</label><input id="effectifF" type="number" value="0"></div>
+        <div class="field"><label>Total (auto)</label><input id="effectifTotal" type="number" readonly style="opacity:.8"></div>
+        <div class="field"><label>Nationaux</label><input id="nationaux" type="number" value="0"></div>
+        <div class="field"><label>Étrangers</label><input id="etrangers" type="number" value="0"></div>
+        <div class="field"><label>CDI</label><input id="cdi" type="number" value="0"></div>
+        <div class="field"><label>CDD</label><input id="cdd" type="number" value="0"></div>
+        <div class="field"><label>Cadres</label><input id="cadres" type="number" value="0"></div>
+        <div class="field"><label>Maîtrises</label><input id="maitrises" type="number" value="0"></div>
+        <div class="field"><label>Agents</label><input id="agents" type="number" value="0"></div>
+        <div class="field"><label>Manœuvres</label><input id="manoeuvres" type="number" value="0"></div>
+      </div>
+
+      <h3 style="color:var(--gold);margin:18px 0 12px">3. Mouvements de l'année</h3>
+      <div class="grid-3">
+        <div class="field"><label>Embauches</label><input id="embauches" type="number" value="0"></div>
+        <div class="field"><label>Départs totaux</label><input id="departs" type="number" value="0"></div>
+        <div class="field"><label>Licenciements</label><input id="licenciements" type="number" value="0"></div>
+        <div class="field"><label>Démissions</label><input id="demissions" type="number" value="0"></div>
+      </div>
+
+      <h3 style="color:var(--gold);margin:18px 0 12px">4. Social & formation</h3>
+      <div class="grid-3">
+        <div class="field"><label>Masse salariale annuelle (FC)</label><input id="masseSalariale" type="number" value="0"></div>
+        <div class="field"><label>Accidents du travail</label><input id="accidentsTravail" type="number" value="0"></div>
+        <div class="field"><label>Jours d'arrêt</label><input id="joursArret" type="number" value="0"></div>
+        <div class="field"><label>Heures de formation</label><input id="formationHeures" type="number" value="0"></div>
+        <div class="field"><label>Bénéficiaires formation</label><input id="formationBenef" type="number" value="0"></div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-gold" type="button" id="btnCalc">⚡ Calculer & contrôler</button>
+        <button class="btn-gold" type="button" id="btnAI">🤖 Assistance IA</button>
+        <button class="btn-gold" type="button" id="btnSave">💾 Sauvegarder</button>
+        <button class="btn-gold" type="button" id="btnExport">📥 Exporter</button>
+        <button class="btn-gold" type="button" id="btnPDF">📄 PDF</button>
+        <button class="btn-gold" type="button" id="btnPrint">🖨 Imprimer</button>
+        <button class="btn-gold" type="button" id="btnDemo">📋 Données démo</button>
+      </div>
+    </div>
+
+    <div id="result" class="result-box" style="display:none">
+      <h3>Résultat DASMO</h3>
+      <div id="kpis" class="grid-3" style="margin-bottom:12px"></div>
+      <div id="alertes"></div>
+      <pre id="resultText"></pre>
+      <div class="qr-box"><div id="qrcode"></div><small id="numDoc" style="color:var(--muted)"></small></div>
+      <div id="reco" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/decompte-engine.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script src="../js/onem-engine.js"></script>
+  <script src="../js/pdf-export.js"></script>
+  <script>
+    let last = null;
+    function syncTotal() {
+      effectifTotal.value = (+effectifH.value || 0) + (+effectifF.value || 0);
+    }
+    effectifH.oninput = effectifF.oninput = syncTotal;
+
+    function collect() {
+      return {
+        raisonSociale: raisonSociale.value.trim(),
+        rccm: rccm.value.trim(),
+        province: province.value,
+        annee: +annee.value,
+        effectifH: +effectifH.value, effectifF: +effectifF.value,
+        nationaux: +nationaux.value, etrangers: +etrangers.value,
+        cadres: +cadres.value, maitrises: +maitrises.value,
+        agents: +agents.value, manoeuvres: +manoeuvres.value,
+        cdd: +cdd.value, cdi: +cdi.value,
+        embauches: +embauches.value, departs: +departs.value,
+        licenciements: +licenciements.value, demissions: +demissions.value,
+        masseSalariale: +masseSalariale.value,
+        accidentsTravail: +accidentsTravail.value, joursArret: +joursArret.value,
+        formationHeures: +formationHeures.value, formationBenef: +formationBenef.value
+      };
+    }
+
+    function render(r) {
+      last = r;
+      result.style.display = "block";
+      resultText.textContent = ONEMEngine.exporterTexteDASMO(r);
+      numDoc.textContent = r.meta.numero;
+      IBTUtils.renderQR("#qrcode", r.qrPayload, 150);
+      kpis.innerHTML = `
+        <div class="status-item"><div class="status-label">Effectif</div><div class="status-value">${r.effectifs.total}</div></div>
+        <div class="status-item"><div class="status-label">Rotation</div><div class="status-value">${r.indicateurs.tauxRotation}%</div></div>
+        <div class="status-item"><div class="status-label">Étrangers</div><div class="status-value">${r.indicateurs.partEtrangers}%</div></div>
+        <div class="status-item"><div class="status-label">Femmes</div><div class="status-value">${r.indicateurs.partFemmes}%</div></div>
+        <div class="status-item"><div class="status-label">Salaire moy./mois</div><div class="status-value">${IBTUtils.formatFC(r.indicateurs.salaireMoyenMensuel)}</div></div>
+        <div class="status-item"><div class="status-label">Solde mouvements</div><div class="status-value">${r.mouvements.solde}</div></div>`;
+      alertes.innerHTML = r.alertes.map(a =>
+        `<div class="alert-smig" style="${a.niveau==='info'?'border-color:var(--gold);color:var(--text)':''}">[${a.niveau}] ${a.msg}</div>`
+      ).join("");
+      reco.innerHTML = "<strong style='color:var(--gold)'>🤖 Recommandations</strong><ul>" +
+        r.recommendations.map(x => `<li>${x}</li>`).join("") + "</ul>";
+      result.scrollIntoView({ behavior: "smooth" });
+    }
+
+    btnCalc.onclick = () => {
+      const d = collect();
+      if (!d.raisonSociale) return IBTUtils.toast("Raison sociale obligatoire", "error");
+      render(ONEMEngine.calculerDASMO(d));
+      IBTUtils.toast("DASMO calculée", "ok");
+    };
+
+    btnAI.onclick = () => {
+      const d = collect();
+      const r = ONEMEngine.calculerDASMO(d);
+      render(r);
+      const ai = InspecteurAI.ask(
+        `Analyse cette DASMO : effectif ${r.effectifs.total}, étrangers ${r.indicateurs.partEtrangers}%, rotation ${r.indicateurs.tauxRotation}%, accidents ${r.social.accidentsTravail}. Que doit faire l'inspecteur ?`,
+        { module: "DASMO" }
+      );
+      alert(ai.text);
+    };
+
+    btnSave.onclick = () => {
+      if (!last) return IBTUtils.toast("Calculez d'abord", "error");
+      const all = IBTUtils.loadJSON("ibt_dasmo", []);
+      all.unshift(last);
+      IBTUtils.saveJSON("ibt_dasmo", all.slice(0, 50));
+      const st = IBTUtils.loadJSON("ibt_stats", {});
+      st.dasmo = (st.dasmo || 0) + 1;
+      IBTUtils.saveJSON("ibt_stats", st);
+      IBTUtils.toast("DASMO sauvegardée", "ok");
+    };
+
+    btnExport.onclick = () => {
+      if (!last) return IBTUtils.toast("Calculez d'abord", "error");
+      IBTUtils.downloadText(last.meta.numero + ".txt", ONEMEngine.exporterTexteDASMO(last));
+    };
+
+    btnPDF.onclick = () => {
+      if (!last) return IBTUtils.toast("Calculez d'abord", "error");
+      if (window.PDFExport) PDFExport.fromText(last.meta.numero, "DASMO ONEM", ONEMEngine.exporterTexteDASMO(last));
+      else IBTUtils.toast("pdf-export.js requis", "error");
+    };
+
+    btnPrint.onclick = () => last && IBTUtils.printElement(result);
+
+    btnDemo.onclick = () => {
+      raisonSociale.value = "SOCIÉTÉ MINIÈRE EXEMPLE SARL";
+      rccm.value = "CD/KNG/RCCM/20-B-1234";
+      province.value = "Haut-Katanga";
+      annee.value = 2025;
+      effectifH.value = 80; effectifF.value = 20;
+      nationaux.value = 90; etrangers.value = 10;
+      cadres.value = 8; maitrises.value = 12; agents.value = 40; manoeuvres.value = 40;
+      cdi.value = 70; cdd.value = 30;
+      embauches.value = 15; departs.value = 10; licenciements.value = 3; demissions.value = 5;
+      masseSalariale.value = 480000000;
+      accidentsTravail.value = 2; joursArret.value = 45;
+      formationHeures.value = 800; formationBenef.value = 35;
+      syncTotal();
+      btnCalc.click();
+    };
+  </script>
+</body>
+                                      </html>
