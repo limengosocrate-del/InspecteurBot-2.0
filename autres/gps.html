@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Localisation GPS — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>📍 LOCALISATION GPS</h1>
+      <h2>Géolocalisation des missions</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div class="df-form-section">
+    <h3>🌐 Position actuelle</h3>
+    <div class="actions">
+      <button class="btn-primary" id="btnLocate">📍 Me localiser</button>
+    </div>
+    <div id="pos" style="margin-top:15px; color:#fff;"></div>
+  </div>
+
+  <div class="df-form-section">
+    <h3>💾 Enregistrer cette position comme mission</h3>
+    <div class="grid-2">
+      <div class="field"><label>Nom de la mission / entreprise</label><input type="text" id="nomM" placeholder="Ex: Contrôle SARL XYZ"></div>
+      <div class="field"><label>Notes</label><input type="text" id="notesM"></div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="btnSave">💾 Enregistrer</button>
+    </div>
+  </div>
+
+  <div class="df-form-section">
+    <h3>📚 Missions enregistrées</h3>
+    <div id="listMissions"></div>
+  </div>
+</main>
+
+<script src="../js/gps.js?v=1"></script>
+<script>
+async function locate() {
+  const box = document.getElementById("pos");
+  box.innerHTML = "⏳ Localisation...";
+  try {
+    const p = await GPS.getPosition();
+    const adr = await GPS.getAddress(p.lat, p.lng);
+    box.innerHTML = `
+      <div class="info-card" style="background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; color:#fff;">
+        📍 <strong>Latitude:</strong> ${p.lat.toFixed(6)}<br>
+        📍 <strong>Longitude:</strong> ${p.lng.toFixed(6)}<br>
+        🎯 <strong>Précision:</strong> ${Math.round(p.accuracy)} m<br>
+        🏠 <strong>Adresse:</strong> ${adr}<br>
+        <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" style="color:#FFD700; text-decoration:underline;">🗺️ Voir sur Google Maps</a>
+      </div>`;
+  } catch(e) { box.innerHTML = `<div class="alert-smig">❌ ${e}</div>`; }
+}
+document.getElementById("btnLocate").onclick = locate;
+document.getElementById("btnSave").onclick = async () => {
+  const nom = document.getElementById("nomM").value.trim();
+  if (!nom) return alert("Nom de mission requis.");
+  if (!GPS.currentPosition) await locate();
+  const m = GPS.saveMission(nom, document.getElementById("notesM").value);
+  if (m) { alert("✅ Mission enregistrée : " + m.id); renderList(); }
+};
+function renderList() {
+  const list = GPS.getMissions();
+  const box = document.getElementById("listMissions");
+  if (!list.length) { box.innerHTML = "<p style='color:#fff;'>Aucune mission.</p>"; return; }
+  box.innerHTML = list.map(m => `
+    <div class="hist-item">
+      <strong>${m.nom}</strong> — ${m.id}<br>
+      📅 ${new Date(m.timestamp).toLocaleString("fr-FR")}<br>
+      📍 ${m.lat.toFixed(6)}, ${m.lng.toFixed(6)}
+      <a href="https://www.google.com/maps?q=${m.lat},${m.lng}" target="_blank" style="color:#FFD700; margin-left:10px;">🗺️ Carte</a>
+      ${m.notes ? `<br><em>${m.notes}</em>` : ""}
+    </div>`).join("");
+}
+renderList();
+</script>
+</body>
+</html>
