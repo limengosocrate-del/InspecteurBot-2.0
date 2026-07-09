@@ -1,0 +1,30 @@
+/* Barre IA flottante pour fiches F/S existantes */
+#ibt-ai-fab {
+  position: fixed; bottom: 22px; right: 22px; z-index: 99999;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+}
+#ibt-ai-fab .fab-btn {
+  background: linear-gradient(135deg, #f5c518, #ffdb4d);
+  color: #041B3D; border: none; border-radius: 999px;
+  padding: 12px 18px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 8px 28px rgba(245,197,24,.45);
+  font-size: 0.9rem;
+}
+#ibt-ai-panel {
+  display: none; width: min(380px, 92vw); max-height: 60vh; overflow: auto;
+  background: #0a2348; color: #e8eef8; border: 1px solid #f5c518;
+  border-radius: 16px; padding: 14px; box-shadow: 0 16px 48px rgba(0,0,0,.5);
+  font-family: "Segoe UI", system-ui, sans-serif; font-size: 0.88rem;
+}
+#ibt-ai-panel.open { display: block; }
+#ibt-ai-panel h4 { color: #f5c518; margin: 0 0 8px; }
+#ibt-ai-panel pre { white-space: pre-wrap; margin: 8px 0; }
+#ibt-ai-panel input {
+  width: 100%; padding: 8px; border-radius: 8px; border: 1px solid rgba(245,197,24,.4);
+  background: rgba(0,0,0,.3); color: #fff; margin-top: 8px;
+}
+#ibt-ai-panel .row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+#ibt-ai-panel .row button {
+  background: #f5c518; color: #041B3D; border: none; border-radius: 8px;
+  padding: 6px 10px; font-weight: 700; cursor: pointer; font-size: 0.75rem;
+  }
