@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analyse Documentaire IA — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="../autres/decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>🧠 ANALYSE DOCUMENTAIRE IA</h1>
+      <h2>Détection • Résumé • Alertes • Recommandations</h2>
+      <p>Texte, PDF ou Photo (OCR)</p>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+
+  <div class="df-form-section">
+    <h3>📥 Source du document</h3>
+    <div class="df-toolbar">
+      <button class="tool-btn" id="btnPhoto">📷 Photo (OCR)</button>
+      <button class="tool-btn" id="btnFile">📄 Fichier texte</button>
+      <button class="tool-btn" id="btnPaste">📋 Coller du texte</button>
+      <input type="file" id="fileInput" hidden accept="image/*,.txt,.pdf">
+    </div>
+    <div class="field" style="margin-top:15px;">
+      <label>Texte à analyser</label>
+      <textarea id="texte" rows="10" style="background:rgba(0,0,0,0.3); color:#fff; border:1px solid #FFD700; padding:12px; border-radius:8px; font-family:inherit; width:100%; resize:vertical;" placeholder="Collez ici ou utilisez les boutons ci-dessus..."></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="btnAnalyser">🔍 ANALYSER</button>
+      <button class="btn-secondary" id="btnCompare">📊 Comparer 2 textes</button>
+    </div>
+    <div id="ocr-status" style="margin-top:10px; color:#FFD700;"></div>
+  </div>
+
+  <div id="resultat" style="display:none;">
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">📊 Rapport d'analyse</h2>
+      <div id="reportBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal comparaison -->
+  <div id="modalCompare" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:900px;">
+      <div class="modal-head">
+        <h2>📊 Comparaison de textes</h2>
+        <button class="close-btn" onclick="document.getElementById('modalCompare').style.display='none';">✕</button>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Texte A</label><textarea id="txtA" rows="8" style="background:rgba(0,0,0,0.3); color:#fff; border:1px solid #FFD700; padding:10px; border-radius:6px; width:100%;"></textarea></div>
+        <div class="field"><label>Texte B</label><textarea id="txtB" rows="8" style="background:rgba(0,0,0,0.3); color:#fff; border:1px solid #FFD700; padding:10px; border-radius:6px; width:100%;"></textarea></div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" onclick="lancerComparaison()">🔍 Comparer</button>
+      </div>
+      <div id="compareResult"></div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/ai-knowledge.js?v=1"></script>
+<script src="../js/ai-nlp.js?v=1"></script>
+<script src="../js/ai-core.js?v=1"></script>
+<script src="../js/ocr-engine.js?v=1"></script>
+<script src="../js/analyse.js?v=1"></script>
+<script>
+document.getElementById("btnPhoto").onclick = () => {
+  const f = document.getElementById("fileInput"); f.accept = "image/*"; f.click();
+};
+document.getElementById("btnFile").onclick = () => {
+  const f = document.getElementById("fileInput"); f.accept = ".txt"; f.click();
+};
+document.getElementById("btnPaste").onclick = () => {
+  navigator.clipboard.readText().then(t => document.getElementById("texte").value = t)
+    .catch(() => alert("Autorisez l'accès au presse-papiers."));
+};
+
+document.getElementById("fileInput").addEventListener("change", async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const status = document.getElementById("ocr-status");
+  if (file.type.startsWith("image/")) {
+    status.textContent = "⏳ Lecture OCR en cours...";
+    try {
+      const texte = await OCR.lire(file, m => {
+        if (m.status) status.textContent = `⏳ ${m.status} ${m.progress ? (m.progress*100).toFixed(0)+"%" : ""}`;
+      });
+      document.getElementById("texte").value = texte;
+      status.textContent = "✅ OCR terminé. Cliquez sur ANALYSER.";
+    } catch(err) { status.textContent = "❌ Erreur: " + err.message; }
+  } else {
+    const reader = new FileReader();
+    reader.onload = ev => { document.getElementById("texte").value = ev.target.result; status.textContent = "✅ Fichier chargé."; };
+    reader.readAsText(file);
+  }
+});
+
+document.getElementById("btnAnalyser").onclick = () => {
+  const txt = document.getElementById("texte").value.trim();
+  if (!txt) return alert("Veuillez fournir un texte.");
+  const r = ANALYSE.analyser(txt);
+  afficher(r);
+};
+
+function afficher(r) {
+  document.getElementById("resultat").style.display = "block";
+  const b = document.getElementById("reportBody");
+  b.innerHTML = `
+    <div class="info-card" style="background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; margin:15px 0; color:#fff;">
+      📄 <strong>Type détecté :</strong> ${r.type}
+    </div>
+    <h3>📊 Statistiques</h3>
+    <table class="result-table">
+      <tr><td>Caractères</td><td class="num">${r.stats.caracteres.toLocaleString("fr-FR")}</td></tr>
+      <tr><td>Mots</td><td class="num">${r.stats.mots.toLocaleString("fr-FR")}</td></tr>
+      <tr><td>Phrases</td><td class="num">${r.stats.phrases}</td></tr>
+      <tr><td>Paragraphes</td><td class="num">${r.stats.paragraphes}</td></tr>
+    </table>
+
+    <h3>📝 Résumé automatique</h3>
+    <div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; color:#fff; line-height:1.6;">
+      ${r.resume || "<em>Résumé non disponible</em>"}
+    </div>
+
+    <h3>🔎 Références juridiques détectées</h3>
+    <div style="color:#fff;">
+      ${r.refs.articles.length ? `<p><strong>Articles :</strong> ${r.refs.articles.join(", ")}</p>` : ""}
+      ${r.refs.lois.length ? `<p><strong>Lois :</strong> ${r.refs.lois.join(", ")}</p>` : ""}
+      ${r.refs.decrets.length ? `<p><strong>Décrets :</strong> ${r.refs.decrets.join(", ")}</p>` : ""}
+      ${r.refs.arretes.length ? `<p><strong>Arrêtés :</strong> ${r.refs.arretes.join(", ")}</p>` : ""}
+      ${!r.refs.articles.length && !r.refs.lois.length && !r.refs.decrets.length && !r.refs.arretes.length ? "<em>Aucune référence détectée</em>" : ""}
+    </div>
+
+    <h3>🔑 Mots-clés (fréquence)</h3>
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      ${r.motsCles.map(m => `<span style="background:rgba(255,215,0,0.2); color:#FFD700; padding:6px 12px; border-radius:20px; font-size:13px;">${m.mot} <strong>(${m.count})</strong></span>`).join("")}
+    </div>
+
+    <h3>🏷️ Entités extraites</h3>
+    <table class="result-table">
+      <tr><td>Montants</td><td>${r.entites.montants.join(", ") || "-"}</td></tr>
+      <tr><td>Dates</td><td>${r.entites.dates.join(", ") || "-"}</td></tr>
+      <tr><td>Fonctions</td><td>${r.entites.fonctions.map(f => f.fonction).join(", ") || "-"}</td></tr>
+    </table>
+
+    <h3>⚠️ Alertes & non-conformités</h3>
+    <div style="background:rgba(220,53,69,0.15); border-left:5px solid #dc3545; padding:15px; border-radius:8px; color:#fff;">
+      <ul style="margin:0; padding-left:20px;">${r.alertes.map(a => `<li>${a}</li>`).join("")}</ul>
+    </div>
+
+    <h3>💡 Recommandations</h3>
+    <div class="reco-box">
+      <ul>${r.recos.map(x => `<li>${x}</li>`).join("")}</ul>
+    </div>
+  `;
+  document.getElementById("resultat").scrollIntoView({behavior:"smooth"});
+}
+
+document.getElementById("btnCompare").onclick = () => {
+  document.getElementById("modalCompare").style.display = "flex";
+};
+
+function lancerComparaison() {
+  const a = document.getElementById("txtA").value.trim();
+  const b = document.getElementById("txtB").value.trim();
+  if (!a || !b) return alert("Remplissez les 2 textes.");
+  const r = ANALYSE.comparer(a, b);
+  document.getElementById("compareResult").innerHTML = `
+    <div class="info-card" style="background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; margin:15px 0; color:#fff;">
+      <h3 style="color:#FFD700; margin-top:0;">Résultat : ${r.verdict}</h3>
+      <p>📊 <strong>Similitude : ${r.similarite}</strong></p>
+      <p>Mots communs : ${r.motsCommuns} / A: ${r.tailleA} mots uniques / B: ${r.tailleB} mots uniques</p>
+      <p><strong>Uniques à A :</strong> ${r.uniqueA.join(", ") || "-"}</p>
+      <p><strong>Uniques à B :</strong> ${r.uniqueB.join(", ") || "-"}</p>
+    </div>`;
+}
+</script>
+</body>
+  </html>
