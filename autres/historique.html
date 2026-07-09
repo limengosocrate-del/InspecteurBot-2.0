@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historique — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>🗂️ HISTORIQUE GLOBAL</h1>
+      <h2>Traçabilité complète des actions</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div class="df-form-section">
+    <div class="smig-search" style="display:flex; gap:10px;">
+      <input type="text" id="filtre" placeholder="🔎 Filtrer..." style="flex:1; padding:10px; border-radius:6px; border:1px solid #FFD700; background:rgba(0,0,0,0.3); color:#fff;">
+      <button class="btn-primary" onclick="render()">🔍</button>
+      <button class="btn-secondary" onclick="exportAll()">📥 Exporter tout</button>
+      <button class="tool-btn" style="background:#dc3545; color:#fff;" onclick="clearAll()">🗑️ Vider</button>
+    </div>
+  </div>
+
+  <div id="listBody"></div>
+</main>
+
+<script src="../js/history.js?v=1"></script>
+<script>
+function render() {
+  // Fusionner toutes les sources
+  const decomptes = JSON.parse(localStorage.getItem("igt_decomptes") || "[]")
+    .map(d => ({type:"Décompte Final", desc:`${d.numero} — ${d.travailleur.nomComplet} (NET: ${d.netAPayer.toLocaleString("fr-FR")} FC)`, date:d.dateEmission, data:d}));
+  const missions = JSON.parse(localStorage.getItem("igt_missions") || "[]")
+    .map(m => ({type:"Mission GPS", desc:`${m.nom} @ ${m.lat.toFixed(4)},${m.lng.toFixed(4)}`, date:m.timestamp, data:m}));
+  const conv = JSON.parse(localStorage.getItem("igt_ai_memory") || "[]")
+    .map(c => ({type:"IA", desc:c.q.substring(0,80), date:c.ts, data:c}));
+  const hist = HISTORY.getAll();
+  const all = [...decomptes, ...missions, ...conv, ...hist].sort((a,b) => new Date(b.date) - new Date(a.date));
+  
+  const filtre = document.getElementById("filtre").value.toLowerCase();
+  const filtered = filtre 
+    ? all.filter(x => x.type.toLowerCase().includes(filtre) || x.desc.toLowerCase().includes(filtre))
+    : all;
+
+  const box = document.getElementById("listBody");
+  if (!filtered.length) { box.innerHTML = "<div class='info-card' style='background:rgba(255,215,0,0.1); padding:15px; color:#fff;'>Aucune activité.</div>"; return; }
+  box.innerHTML = `<div class="df-resultats"><h2 style="color:#FFD700;">📋 ${filtered.length} entrée(s)</h2>` +
+    filtered.slice(0, 200).map(x => `
+      <div class="hist-item">
+        <div><strong style="color:#FFD700;">[${x.type}]</strong> ${x.desc}</div>
+        <div style="font-size:12px; color:#ccc;">${new Date(x.date).toLocaleString("fr-FR")}</div>
+      </div>`).join("") + `</div>`;
+}
+function exportAll() {
+  const decomptes = JSON.parse(localStorage.getItem("igt_decomptes") || "[]");
+  const missions = JSON.parse(localStorage.getItem("igt_missions") || "[]");
+  const conv = JSON.parse(localStorage.getItem("igt_ai_memory") || "[]");
+  const hist = HISTORY.getAll();
+  const data = { decomptes, missions, conv, hist, exportDate: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `historique_igt_${Date.now()}.json`;
+  a.click();
+}
+function clearAll() {
+  if (!confirm("⚠️ Effacer TOUT l'historique ? Cette action est irréversible.")) return;
+  localStorage.removeItem("igt_decomptes");
+  localStorage.removeItem("igt_missions");
+  localStorage.removeItem("igt_ai_memory");
+  localStorage.removeItem("igt_historique");
+  render();
+}
+document.getElementById("filtre").addEventListener("input", render);
+render();
+</script>
+</body>
+</html>
