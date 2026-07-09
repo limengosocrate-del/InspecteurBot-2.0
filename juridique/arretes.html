@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arrêtés ministériels</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">⚖️ Arrêtés ministériels</h1>
+    <div class="glass" style="margin-top:14px" id="list"></div>
+    <div class="glass" style="margin-top:14px">
+      <input id="q" placeholder="étrangers, hygiène, salaire…">
+      <button class="btn-gold" id="go" type="button" style="margin-top:8px">Recherche IA</button>
+      <pre id="out" style="margin-top:12px;white-space:pre-wrap"></pre>
+    </div>
+  </div>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    list.innerHTML = KnowledgeBaseExt.listAll("arretes").map(a => `
+      <div class="glass" style="margin-bottom:10px">
+        <span class="card-code">${a.id}</span>
+        <h3 style="color:var(--gold);margin:8px 0;font-size:1rem">${a.titre}</h3>
+        <p>${a.resume}</p>
+      </div>`).join("");
+    go.onclick = () => {
+      KnowledgeBaseExt.install();
+      out.textContent = KnowledgeBase.search(q.value || "arrêté").answer + "\n\n" + InspecteurAI.ask(q.value).text;
+    };
+  </script>
+</body>
+</html>
