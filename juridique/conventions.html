@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conventions collectives</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📘 Conventions collectives</h1>
+    <p style="color:var(--muted);margin:8px 0 14px">Les CC peuvent être plus favorables que la loi — jamais en deçà du SMIG / ordre public social.</p>
+    <div class="glass">
+      <div id="list"></div>
+      <div class="field" style="margin-top:14px">
+        <label>Analyser une clause (collez le texte)</label>
+        <textarea id="clause" rows="5" placeholder="Ex: préavis cadres = 6 mois…"></textarea>
+      </div>
+      <button class="btn-gold" id="go" type="button">🤖 Analyser clause vs Code du Travail</button>
+      <pre id="out" style="margin-top:12px;white-space:pre-wrap"></pre>
+    </div>
+  </div>
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    list.innerHTML = KnowledgeBaseExt.listAll("conventions").map(c => `
+      <div style="padding:12px;border-bottom:1px solid var(--glass-border)">
+        <strong style="color:var(--gold)">${c.id}</strong> — ${c.secteur}<br>
+        <span style="color:var(--muted)">${c.resume}</span>
+      </div>`).join("");
+    go.onclick = () => {
+      const t = clause.value.trim();
+      if (!t) return;
+      const analysis = InspecteurAI.analyzeDocument(t);
+      const legal = KnowledgeBase.search(t);
+      out.textContent = analysis.summary + "\n" + analysis.findings.map(f => f.msg).join("\n") +
+        "\n\n" + legal.answer + "\n\n" +
+        InspecteurAI.ask("Cette clause de convention collective est-elle plus favorable que le Code du Travail RDC ? " + t).text;
+    };
+  </script>
+</body>
+</html>
