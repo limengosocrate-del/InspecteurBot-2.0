@@ -1,1 +1,168 @@
+/* ==================================================================
+   DECOMPTE-FINAL.CSS — Styles du module Décompte Final
+   ================================================================== */
 
+.df-main { max-width: 1200px; margin: 20px auto; padding: 20px; }
+
+.btn-retour {
+  background: #FFD700; color: #041B3D; padding: 10px 20px;
+  border-radius: 8px; text-decoration: none; font-weight: bold;
+  transition: all 0.3s;
+}
+.btn-retour:hover { background: #FFC300; transform: translateY(-2px); }
+
+/* Toolbar */
+.df-toolbar {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+  padding: 15px; border-radius: 12px; margin-bottom: 20px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+.tool-btn {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #041B3D; border: none; padding: 10px 18px;
+  border-radius: 8px; font-weight: bold; cursor: pointer;
+  transition: all 0.3s; font-size: 14px;
+}
+.tool-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,215,0,0.4); }
+
+/* Form */
+.df-form-section, .df-resultats {
+  background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
+  padding: 25px; border-radius: 15px; margin-bottom: 20px;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.df-form-section h3, .df-resultats h3 {
+  color: #FFD700; margin: 20px 0 15px; font-size: 18px;
+  border-bottom: 2px solid rgba(255,215,0,0.3); padding-bottom: 8px;
+}
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; }
+.field { display: flex; flex-direction: column; }
+.field label { color: #FFD700; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+.field input, .field select {
+  background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,215,0,0.3);
+  padding: 10px; border-radius: 6px; font-size: 14px;
+}
+.field input:focus, .field select:focus { outline: none; border-color: #FFD700; }
+
+.checkboxes { display: flex; flex-wrap: wrap; gap: 15px; margin: 10px 0; }
+.checkboxes label {
+  background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 6px;
+  color: #fff; cursor: pointer; border: 1px solid rgba(255,215,0,0.3);
+}
+
+.actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+.btn-primary {
+  background: linear-gradient(135deg, #FFD700, #FFA500); color: #041B3D;
+  border: none; padding: 12px 25px; border-radius: 8px;
+  font-weight: bold; font-size: 15px; cursor: pointer;
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.1); color: #FFD700;
+  border: 1px solid #FFD700; padding: 12px 25px; border-radius: 8px;
+  font-weight: bold; cursor: pointer;
+}
+.btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
+
+/* Résultats */
+.result-header {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 15px; margin-bottom: 20px;
+}
+.result-header h2 { color: #FFD700; margin: 0; }
+.qr-box { background: #fff; padding: 8px; border-radius: 10px; }
+
+.alert-smig {
+  background: rgba(220,53,69,0.2); border-left: 5px solid #dc3545;
+  padding: 12px; border-radius: 6px; color: #fff; margin: 15px 0;
+}
+
+.result-table {
+  width: 100%; border-collapse: collapse; margin: 15px 0;
+  background: rgba(0,0,0,0.2);
+}
+.result-table th, .result-table td {
+  padding: 10px; border: 1px solid rgba(255,215,0,0.2);
+  color: #fff; font-size: 14px;
+}
+.result-table th { background: rgba(255,215,0,0.15); color: #FFD700; }
+.result-table td.num { text-align: right; font-weight: 600; font-family: 'Courier New', monospace; }
+.result-table tr.ret { background: rgba(220,53,69,0.1); }
+.result-table tfoot tr.brut td { background: rgba(255,215,0,0.2); font-weight: bold; text-align: right; color:#FFD700; }
+.result-table tfoot tr.retenues td { background: rgba(220,53,69,0.2); font-weight: bold; text-align: right; }
+.result-table tfoot tr.net td { background: #041B3D; color: #FFD700; font-weight: bold; font-size: 18px; text-align: right; }
+
+.reco-box {
+  background: rgba(40,167,69,0.15); border-left: 5px solid #28a745;
+  padding: 15px; border-radius: 8px; margin: 15px 0;
+}
+.reco-box h3 { color: #28a745; margin-top: 0; }
+.reco-box ul { color: #fff; margin: 5px 0; padding-left: 25px; }
+.reco-box li { margin: 6px 0; }
+
+/* Modales */
+.modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-content {
+  background: #0B1F42; border: 2px solid #FFD700; border-radius: 15px;
+  padding: 25px; max-width: 700px; width: 100%;
+  max-height: 90vh; overflow-y: auto; color: #fff;
+}
+.modal-head {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(255,215,0,0.3); padding-bottom: 10px; margin-bottom: 15px;
+}
+.modal-head h2 { color: #FFD700; margin: 0; }
+.close-btn {
+  background: transparent; color: #FFD700; border: 1px solid #FFD700;
+  width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 16px;
+}
+
+/* Historique */
+.hist-item {
+  background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px;
+  margin-bottom: 10px; border-left: 3px solid #FFD700;
+}
+.hist-actions { display: flex; gap: 8px; margin-top: 8px; }
+.hist-actions button {
+  background: #FFD700; color: #041B3D; border: none;
+  padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;
+}
+
+/* OCR */
+#ocr-preview img { display: block; margin: 10px auto; }
+#ocr-text {
+  background: rgba(0,0,0,0.4); padding: 12px; border-radius: 6px;
+  max-height: 200px; overflow: auto; white-space: pre-wrap;
+  color: #FFD700; font-size: 12px; font-family: 'Courier New', monospace;
+}
+
+/* Assistant IA */
+.ai-messages {
+  height: 350px; overflow-y: auto; padding: 10px;
+  background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 10px;
+}
+.msg {
+  padding: 10px 14px; border-radius: 10px; margin: 6px 0; max-width: 85%;
+  line-height: 1.5;
+}
+.msg.user { background: rgba(255,215,0,0.2); margin-left: auto; text-align: right; }
+.msg.bot { background: rgba(255,255,255,0.1); border-left: 3px solid #FFD700; }
+.ai-input { display: flex; gap: 8px; }
+.ai-input input {
+  flex: 1; background: rgba(0,0,0,0.3); color: #fff;
+  border: 1px solid #FFD700; padding: 10px; border-radius: 6px;
+}
+.ai-input button {
+  background: #FFD700; color: #041B3D; border: none;
+  padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;
+}
+
+@media (max-width:768px) {
+  .df-toolbar { justify-content: center; }
+  .tool-btn { flex: 1; min-width: 130px; }
+  .result-header { flex-direction: column; }
+                   }
