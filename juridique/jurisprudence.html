@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jurisprudence travail</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">🏛️ Jurisprudence & principes applicables</h1>
+    <div class="glass" style="margin-top:14px" id="list"></div>
+  </div>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    list.innerHTML = KnowledgeBaseExt.listAll("jurisprudence").map(j => `
+      <div class="glass" style="margin-bottom:12px">
+        <div class="card-code">${j.id}</div>
+        <h3 style="color:var(--gold);margin:8px 0">${j.principe}</h3>
+        <p>${j.resume}</p>
+        <p style="color:var(--muted);margin-top:8px"><strong>Application inspecteur :</strong> ${j.application}</p>
+        <button class="btn-gold" type="button" style="margin-top:10px" data-q="${j.principe}">🤖 Approfondir</button>
+      </div>`).join("");
+    list.querySelectorAll("button[data-q]").forEach(b => b.onclick = () => {
+      alert(InspecteurAI.ask("Jurisprudence et pratique IGT : " + b.dataset.q).text);
+    });
+  </script>
+</body>
+</html>
