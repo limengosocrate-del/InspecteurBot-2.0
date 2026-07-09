@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes circulaires</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📑 Notes & circulaires IGT</h1>
+    <div class="glass" style="margin-top:14px" id="list"></div>
+  </div>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    list.innerHTML = KnowledgeBaseExt.listAll("notes").map(n => `
+      <div class="glass" style="margin-bottom:12px">
+        <span class="card-code">${n.id}</span>
+        <h3 style="color:var(--gold);margin:8px 0">${n.titre}</h3>
+        <p>${n.resume}</p>
+        <button class="btn-gold" type="button" style="margin-top:8px" data-id="${n.id}">🤖 Guide d'application</button>
+      </div>`).join("");
+    list.querySelectorAll("button").forEach(b => b.onclick = () => {
+      alert(InspecteurAI.ask("Note circulaire " + b.dataset.id + " : guide pratique pour inspecteur du travail RDC").text);
+    });
+  </script>
+</body>
+</html>
