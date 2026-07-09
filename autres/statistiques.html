@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistiques — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>📈 STATISTIQUES</h1>
+      <h2>Tableau de bord analytique</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div id="statsBody"></div>
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/stats.js?v=1"></script>
+<script>
+function render() {
+  const s = STATS.calculer();
+  const body = document.getElementById("statsBody");
+  body.innerHTML = `
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">📊 Chiffres clés</h2>
+      <div class="grid-2">
+        <div class="info-card" style="background:rgba(255,215,0,0.1); padding:20px; border-left:4px solid #FFD700; border-radius:8px; color:#fff;">
+          <div style="font-size:36px; color:#FFD700; font-weight:bold;">${s.totaux.decomptes}</div>
+          <div>Décomptes finaux</div>
+        </div>
+        <div class="info-card" style="background:rgba(40,167,69,0.15); padding:20px; border-left:4px solid #28a745; border-radius:8px; color:#fff;">
+          <div style="font-size:36px; color:#28a745; font-weight:bold;">${s.totaux.missions}</div>
+          <div>Missions GPS</div>
+        </div>
+        <div class="info-card" style="background:rgba(0,123,255,0.15); padding:20px; border-left:4px solid #007bff; border-radius:8px; color:#fff;">
+          <div style="font-size:36px; color:#007bff; font-weight:bold;">${s.totaux.conversations}</div>
+          <div>Interactions IA</div>
+        </div>
+        <div class="info-card" style="background:rgba(220,53,69,0.15); padding:20px; border-left:4px solid #dc3545; border-radius:8px; color:#fff;">
+          <div style="font-size:36px; color:#dc3545; font-weight:bold;">${s.totaux.sousPaiementDetecte}</div>
+          <div>Sous-paiements SMIG détectés</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">💰 Montants cumulés</h2>
+      <table class="result-table">
+        <tr><td>Total brut calculé (décomptes)</td><td class="num strong">${s.totaux.totalBrutCalcule.toLocaleString("fr-FR")} FC</td></tr>
+        <tr><td>Total net versé (décomptes)</td><td class="num strong">${s.totaux.totalNetVerse.toLocaleString("fr-FR")} FC</td></tr>
+      </table>
+    </div>
+
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">📊 Décomptes par mois</h2>
+      ${STATS.barChart(s.parMois, 700, 200)}
+    </div>
+
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">🏷️ Répartition par motif</h2>
+      ${STATS.barChart(s.motifs, 700, 200)}
+    </div>
+
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">🕐 Dernières activités</h2>
+      ${s.dernieresActivites.length ? s.dernieresActivites.map(a => `
+        <div class="hist-item">
+          <strong>[${a.type}]</strong> ${a.desc} — ${a.ref}<br>
+          <em>${new Date(a.date).toLocaleString("fr-FR")}</em>
+        </div>`).join("") : "<p style='color:#fff;'>Aucune activité.</p>"}
+    </div>
+  `;
+}
+render();
+</script>
+</body>
+</html>
