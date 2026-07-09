@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner QR Code — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>📱 SCANNER QR CODE</h1>
+      <h2>Vérification instantanée des documents IGT</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div class="df-form-section">
+    <h3>📷 Caméra</h3>
+    <video id="video" style="width:100%; max-width:500px; margin:0 auto; display:block; border-radius:12px; border:3px solid #FFD700; background:#000;"></video>
+    <div class="actions" style="justify-content:center;">
+      <button class="btn-primary" id="btnStart">▶️ Démarrer scan</button>
+      <button class="btn-secondary" id="btnStop">⏹️ Arrêter</button>
+    </div>
+    <div id="status" style="color:#FFD700; text-align:center; margin-top:10px;"></div>
+  </div>
+
+  <div id="result" style="display:none;">
+    <div class="df-resultats">
+      <h2 style="color:#FFD700;">✅ QR Code détecté</h2>
+      <div id="qrContent" style="background:rgba(0,0,0,0.4); padding:20px; border-radius:8px; color:#fff; font-family:'Courier New',monospace; word-break:break-all;"></div>
+      <div id="qrParsed"></div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/qrcode.js?v=1"></script>
+<script>
+document.getElementById("btnStart").onclick = () => {
+  const status = document.getElementById("status");
+  status.textContent = "⏳ Activation caméra...";
+  QRScanner.start(
+    document.getElementById("video"),
+    data => {
+      status.textContent = "✅ QR détecté !";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("qrContent").textContent = data;
+      // Parser format IGT
+      if (data.startsWith("IGT-RDC|")) {
+        const parts = data.split("|");
+        document.getElementById("qrParsed").innerHTML = `
+          <div class="info-card" style="background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; margin:15px 0; color:#fff;">
+            ✅ <strong>Document IGT authentique</strong><br>
+            📄 N° : ${parts[1] || "-"}<br>
+            👤 Travailleur : ${parts[2] || "-"}<br>
+            💰 ${parts[3] || "-"}<br>
+            📅 Émis : ${parts[4] || "-"}
+          </div>`;
+      } else {
+        document.getElementById("qrParsed").innerHTML = `<div class="alert-smig">⚠️ QR Code externe (non IGT). Contenu affiché ci-dessus.</div>`;
+      }
+    },
+    err => { status.textContent = "❌ " + err; }
+  );
+};
+document.getElementById("btnStop").onclick = () => { QRScanner.stop(); document.getElementById("status").textContent = "⏹️ Arrêté."; };
+</script>
+</body>
+</html>
