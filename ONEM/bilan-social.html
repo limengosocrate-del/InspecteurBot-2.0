@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041B3D">
+  <title>Bilan Social – InspecteurBot IA RDC</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">📊 Bilan Social Intelligent</h1>
+    <p style="color:var(--muted);margin:8px 0 18px">
+      Scores IA • Dialogue social • Santé-sécurité • Formation • Lien DASMO • QR
+    </p>
+
+    <div class="glass">
+      <h3 style="color:var(--gold);margin-bottom:12px">Établissement & effectifs (base DASMO)</h3>
+      <div class="grid-2">
+        <div class="field"><label>Raison sociale *</label><input id="raisonSociale"></div>
+        <div class="field"><label>Année</label><input id="annee" type="number" value="2025"></div>
+        <div class="field"><label>Hommes</label><input id="effectifH" type="number" value="0"></div>
+        <div class="field"><label>Femmes</label><input id="effectifF" type="number" value="0"></div>
+        <div class="field"><label>Étrangers</label><input id="etrangers" type="number" value="0"></div>
+        <div class="field"><label>Nationaux</label><input id="nationaux" type="number" value="0"></div>
+        <div class="field"><label>Embauches</label><input id="embauches" type="number" value="0"></div>
+        <div class="field"><label>Départs</label><input id="departs" type="number" value="0"></div>
+        <div class="field"><label>CDI</label><input id="cdi" type="number" value="0"></div>
+        <div class="field"><label>CDD</label><input id="cdd" type="number" value="0"></div>
+        <div class="field"><label>Masse salariale annuelle</label><input id="masseSalariale" type="number" value="0"></div>
+        <div class="field"><label>Accidents du travail</label><input id="accidentsTravail" type="number" value="0"></div>
+        <div class="field"><label>Heures formation</label><input id="formationHeures" type="number" value="0"></div>
+        <div class="field"><label>Bénéficiaires formation</label><input id="formationBenef" type="number" value="0"></div>
+      </div>
+
+      <h3 style="color:var(--gold);margin:18px 0 12px">Dialogue social & santé</h3>
+      <div class="grid-2">
+        <div class="field"><label><input type="checkbox" id="dialogueSocial"> Dialogue social actif</label></div>
+        <div class="field"><label><input type="checkbox" id="conventionCollective"> Convention collective</label></div>
+        <div class="field"><label><input type="checkbox" id="hygieneComite"> Comité hygiène & sécurité</label></div>
+        <div class="field"><label><input type="checkbox" id="medecineTravail"> Médecine du travail</label></div>
+        <div class="field"><label><input type="checkbox" id="epiFournis"> EPI fournis</label></div>
+        <div class="field"><label>Délégués du personnel</label><input id="delegues" type="number" value="0"></div>
+        <div class="field"><label>Réunions CE / délégués</label><input id="reunionsCE" type="number" value="0"></div>
+        <div class="field"><label>Grèves / conflits</label><input id="greves" type="number" value="0"></div>
+        <div class="field"><label>Investissement formation (FC)</label><input id="investissementFormation" type="number" value="0"></div>
+        <div class="field"><label>Promotions</label><input id="promotions" type="number" value="0"></div>
+        <div class="field"><label>Stagiaires</label><input id="stagiaires" type="number" value="0"></div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-gold" type="button" id="btnCalc">⚡ Générer bilan</button>
+        <button class="btn-gold" type="button" id="btnAI">🤖 Analyse IA</button>
+        <button class="btn-gold" type="button" id="btnSave">💾 Sauvegarder</button>
+        <button class="btn-gold" type="button" id="btnPDF">📄 PDF</button>
+        <button class="btn-gold" type="button" id="btnPrint">🖨 Imprimer</button>
+      </div>
+    </div>
+
+    <div id="result" class="result-box" style="display:none">
+      <h3>Bilan social</h3>
+      <div id="scores" class="grid-3"></div>
+      <pre id="resultText"></pre>
+      <div class="qr-box"><div id="qrcode"></div><small id="numDoc"></small></div>
+    </div>
+  </div>
+
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/decompte-engine.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script src="../js/onem-engine.js"></script>
+  <script src="../js/pdf-export.js"></script>
+  <script>
+    let last = null;
+    function collect() {
+      return {
+        raisonSociale: raisonSociale.value.trim(),
+        annee: +annee.value,
+        effectifH: +effectifH.value, effectifF: +effectifF.value,
+        etrangers: +etrangers.value, nationaux: +nationaux.value,
+        embauches: +embauches.value, departs: +departs.value,
+        cdi: +cdi.value, cdd: +cdd.value,
+        masseSalariale: +masseSalariale.value,
+        accidentsTravail: +accidentsTravail.value,
+        formationHeures: +formationHeures.value,
+        formationBenef: +formationBenef.value,
+        dialogueSocial: dialogueSocial.checked,
+        conventionCollective: conventionCollective.checked,
+        hygieneComite: hygieneComite.checked,
+        medecineTravail: medecineTravail.checked,
+        epiFournis: epiFournis.checked,
+        delegues: +delegues.value,
+        reunionsCE: +reunionsCE.value,
+        greves: +greves.value,
+        investissementFormation: +investissementFormation.value,
+        promotions: +promotions.value,
+        stagiaires: +stagiaires.value
+      };
+    }
+
+    btnCalc.onclick = () => {
+      const d = collect();
+      if (!d.raisonSociale) return IBTUtils.toast("Raison sociale requise", "error");
+      last = ONEMEngine.calculerBilanSocial(d);
+      result.style.display = "block";
+      resultText.textContent = ONEMEngine.exporterTexteBilan(last);
+      numDoc.textContent = last.meta.numero;
+      IBTUtils.renderQR("#qrcode", last.qrPayload, 150);
+      const s = last.scores;
+      const color = v => v >= 70 ? "var(--ok)" : v >= 40 ? "var(--gold)" : "var(--danger)";
+      scores.innerHTML = ["emploi","sante","formation","dialogue","global"].map(k =>
+        `<div class="status-item"><div class="status-label">${k}</div>
+         <div class="status-value" style="color:${color(s[k])}">${Math.round(s[k])}</div></div>`
+      ).join("");
+      IBTUtils.toast("Bilan généré", "ok");
+    };
+
+    btnAI.onclick = () => {
+      btnCalc.click();
+      if (!last) return;
+      const ai = InspecteurAI.ask(
+        `Bilan social score global ${last.scores.global}, médecine ${last.santeSecurite.medecineTravail}, EPI ${last.santeSecurite.epiFournis}, convention ${last.dialogue.conventionCollective}. Recommandations d'inspection.`
+      );
+      alert(ai.text);
+    };
+
+    btnSave.onclick = () => {
+      if (!last) return IBTUtils.toast("Générez d'abord", "error");
+      const all = IBTUtils.loadJSON("ibt_bilan", []);
+      all.unshift(last);
+      IBTUtils.saveJSON("ibt_bilan", all.slice(0, 30));
+      IBTUtils.toast("Sauvegardé", "ok");
+    };
+
+    btnPDF.onclick = () => {
+      if (!last) return IBTUtils.toast("Générez d'abord", "error");
+      PDFExport.fromText(last.meta.numero, "Bilan Social", ONEMEngine.exporterTexteBilan(last));
+    };
+    btnPrint.onclick = () => last && IBTUtils.printElement(result);
+  </script>
+</body>
+</html>
