@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recherche Juridique IA — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="../autres/decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>🔍 RECHERCHE JURIDIQUE IA</h1>
+      <h2>Code du Travail • OIT • Décrets • Fiches</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div class="df-form-section">
+    <h3>🔎 Recherche intelligente</h3>
+    <div class="smig-search" style="display:flex; gap:10px;">
+      <input type="text" id="q" placeholder="Ex: préavis cadre, article 71, convention OIT 138, faute lourde..." style="flex:1; padding:12px; border-radius:8px; border:1px solid #FFD700; background:rgba(0,0,0,0.3); color:#fff; font-size:15px;">
+      <button class="btn-primary" onclick="rechercher()">🔍 Rechercher</button>
+    </div>
+    <div style="margin-top:10px; color:#fff; font-size:13px;">
+      <strong>Sources :</strong> Code du travail RDC (Loi 015/2002), Décret SMIG 25/22, Fiches F01-F07/S01-S03, Conventions OIT, ONEM
+    </div>
+  </div>
+
+  <div id="results"></div>
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/ai-knowledge.js?v=1"></script>
+<script src="../js/ai-nlp.js?v=1"></script>
+<script src="../js/ai-core.js?v=1"></script>
+<script>
+document.getElementById("q").addEventListener("keypress", e => { if (e.key === "Enter") rechercher(); });
+
+function rechercher() {
+  const q = document.getElementById("q").value.trim();
+  if (!q) return;
+  const box = document.getElementById("results");
+  box.innerHTML = "<p style='color:#FFD700;'>⏳ Recherche en cours...</p>";
+  
+  setTimeout(() => {
+    let html = "";
+
+    // 1) Réponse IA directe
+    const ai = AI_CORE.ask(q);
+    html += `<div class="df-resultats"><h2 style="color:#FFD700;">🤖 Réponse IA</h2>
+             <div style="color:#fff; line-height:1.6;">${ai.text.replace(/\n/g,"<br>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</div></div>`;
+
+    // 2) Articles du Code du travail
+    const arts = NLP.search(q, KNOWLEDGE_BASE.codeTravail, a => `${a.titre} ${a.texte}`);
+    if (arts.length) {
+      html += `<div class="df-resultats"><h2 style="color:#FFD700;">📖 Articles pertinents du Code du Travail</h2>`;
+      arts.slice(0, 5).forEach(r => {
+        html += `<div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; margin:10px 0; border-left:4px solid #FFD700;">
+          <div style="color:#FFD700; font-weight:bold; font-size:16px;">Article ${r.item.art} — ${r.item.titre}</div>
+          <div style="color:#fff; margin-top:8px; line-height:1.5;">${r.item.texte}</div>
+          <div style="color:#FFD700; font-size:12px; margin-top:5px;">Pertinence : ${(r.score*100).toFixed(0)}%</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // 3) Fiches
+    const fiches = Object.values(KNOWLEDGE_BASE.fiches);
+    const fichesR = NLP.search(q, fiches, f => `${f.code} ${f.nom} ${f.objectif} ${f.pointsCles.join(" ")}`);
+    if (fichesR.length && fichesR[0].score > 0.1) {
+      html += `<div class="df-resultats"><h2 style="color:#FFD700;">📋 Fiches de contrôle pertinentes</h2>`;
+      fichesR.slice(0,3).forEach(r => {
+        html += `<div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; margin:10px 0; border-left:4px solid #FFD700;">
+          <div style="color:#FFD700; font-weight:bold;">Fiche ${r.item.code} — ${r.item.nom}</div>
+          <div style="color:#fff; margin:8px 0;">${r.item.objectif}</div>
+          <div style="color:#fff; font-size:13px;">${r.item.pointsCles.map(p => "• "+p).join("<br>")}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // 4) OIT
+    const oitR = NLP.search(q, KNOWLEDGE_BASE.oit, c => `${c.num} ${c.nom}`);
+    if (oitR.length && oitR[0].score > 0.1) {
+      html += `<div class="df-resultats"><h2 style="color:#FFD700;">🌍 Conventions OIT</h2>`;
+      oitR.slice(0,5).forEach(r => {
+        html += `<div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; margin:8px 0;">
+          <strong style="color:#FFD700;">${r.item.num}</strong> — ${r.item.nom} <em style="color:#FFD700;">(ratif. RDC ${r.item.ratif})</em>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // 5) FAQ
+    const faqR = NLP.search(q, KNOWLEDGE_BASE.faq, f => `${f.q} ${f.r}`);
+    if (faqR.length && faqR[0].score > 0.15) {
+      html += `<div class="df-resultats"><h2 style="color:#FFD700;">❓ FAQ</h2>`;
+      faqR.slice(0,3).forEach(r => {
+        html += `<div style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; margin:8px 0;">
+          <strong style="color:#FFD700;">❓ ${r.item.q}</strong><br>
+          <span style="color:#fff;">${r.item.r}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    if (!arts.length && (!fichesR.length || fichesR[0].score <= 0.1) && (!oitR.length || oitR[0].score <= 0.1)) {
+      html += `<div class="alert-smig">❌ Aucun résultat trouvé dans les sources juridiques. Reformulez votre recherche.</div>`;
+    }
+
+    box.innerHTML = html;
+  }, 200);
+}
+</script>
+</body>
+</html>
