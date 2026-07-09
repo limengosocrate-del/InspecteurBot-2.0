@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérification Documents — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="decompte-final.css?v=1">
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>✅ VÉRIFICATION DE DOCUMENTS</h1>
+      <h2>Authentification par N° ou QR Code</h2>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="df-main">
+  <div class="df-form-section">
+    <h3>🔎 Rechercher un document IGT</h3>
+    <div class="smig-search" style="display:flex; gap:10px;">
+      <input type="text" id="ref" placeholder="Ex: DF-2025-000001" style="flex:1; padding:12px; border:1px solid #FFD700; border-radius:8px; background:rgba(0,0,0,0.3); color:#fff;">
+      <button class="btn-primary" onclick="verifier()">🔍 Vérifier</button>
+      <a href="qrcode.html" class="btn-secondary">📱 Scanner QR</a>
+    </div>
+  </div>
+
+  <div id="result"></div>
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/decompte-final.js?v=1"></script>
+<script>
+function verifier() {
+  const ref = document.getElementById("ref").value.trim().toUpperCase();
+  if (!ref) return;
+  const hist = DECOMPTE.historique();
+  const found = hist.find(d => d.numero === ref);
+  const box = document.getElementById("result");
+  if (found) {
+    box.innerHTML = `
+      <div class="df-resultats">
+        <h2 style="color:#28a745;">✅ DOCUMENT AUTHENTIQUE</h2>
+        <div class="info-card" style="background:rgba(40,167,69,0.15); padding:15px; border-left:4px solid #28a745; border-radius:8px; color:#fff;">
+          <strong>N° :</strong> ${found.numero}<br>
+          <strong>Émis le :</strong> ${new Date(found.dateEmission).toLocaleString("fr-FR")}<br>
+          <strong>Travailleur :</strong> ${found.travailleur.nomComplet}<br>
+          <strong>Fonction :</strong> ${found.travailleur.fonction}<br>
+          <strong>Employeur :</strong> ${found.employeur}<br>
+          <strong>Motif :</strong> ${found.travailleur.motif}<br>
+          <strong>Total brut :</strong> ${DECOMPTE.fmt(found.totalBrut)}<br>
+          <strong>Net à payer :</strong> ${DECOMPTE.fmt(found.netAPayer)}
+        </div>
+      </div>`;
+  } else {
+    box.innerHTML = `<div class="alert-smig">❌ Aucun document trouvé avec la référence "${ref}". Vérifiez la saisie ou scannez le QR Code.</div>`;
+  }
+}
+</script>
+</body>
+</html>
