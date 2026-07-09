@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conventions OIT</title>
+  <link rel="stylesheet" href="../fiche.css?v=41">
+</head>
+<body>
+  <div class="background"></div>
+  <div class="page">
+    <a class="back-link" href="../index.html">← Tableau de bord</a>
+    <h1 style="color:var(--gold)">🌍 Conventions OIT</h1>
+    <div class="glass" style="margin-top:14px">
+      <input id="q" placeholder="C81 inspection, travail des enfants, C182…">
+      <button class="btn-gold" id="go" type="button" style="margin-top:10px">Rechercher</button>
+      <div id="list" class="grid-2" style="margin-top:16px"></div>
+      <div id="out" class="result-box" style="display:none"></div>
+    </div>
+  </div>
+  <script src="../js/smig-data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/knowledge-base.js"></script>
+  <script src="../js/knowledge-base-ext.js"></script>
+  <script src="../js/ai-engine.js"></script>
+  <script>
+    KnowledgeBaseExt.install();
+    list.innerHTML = KnowledgeBaseExt.listAll("oit").map(c => `
+      <div class="card" style="min-height:auto;padding:14px;cursor:pointer" data-q="${c.num}">
+        <div class="card-code">${c.num}</div>
+        <div class="card-title" style="font-size:0.85rem">${c.titre}</div>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:6px">${c.resume}</p>
+      </div>`).join("");
+    list.querySelectorAll("[data-q]").forEach(el => el.onclick = () => { q.value = el.dataset.q; run(); });
+    function run() {
+      KnowledgeBaseExt.install();
+      const r = KnowledgeBase.search(q.value);
+      out.style.display = "block";
+      out.innerHTML = `<pre>${r.answer}</pre><pre style="margin-top:10px">${InspecteurAI.ask("Convention OIT " + q.value + " et application en RDC pour l'inspecteur").text}</pre>`;
+    }
+    go.onclick = run;
+  </script>
+</body>
+</html>
