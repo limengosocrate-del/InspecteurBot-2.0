@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant IA — InspecteurBot RDC</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<link rel="stylesheet" href="../autres/decompte-final.css?v=1">
+<style>
+  .chat-container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+  .chat-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
+              border: 1px solid rgba(255,215,0,0.3); border-radius: 15px; padding: 20px; }
+  .chat-messages { height: 60vh; overflow-y: auto; padding: 15px; 
+                   background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 15px; }
+  .msg { padding: 12px 16px; border-radius: 12px; margin: 8px 0; max-width: 85%;
+         line-height: 1.6; animation: fadeIn 0.3s; word-wrap: break-word; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.user { background: linear-gradient(135deg,#FFD700,#FFA500); color:#041B3D; margin-left:auto; text-align:right; }
+  .msg.bot { background: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid #FFD700; }
+  .msg-time { font-size: 11px; opacity: 0.6; margin-top: 5px; }
+  .chat-input { display: flex; gap: 10px; align-items: center; }
+  .chat-input input { flex: 1; padding: 14px 18px; border-radius: 30px;
+                     border: 2px solid #FFD700; background: rgba(0,0,0,0.4); color: #fff; font-size: 15px; }
+  .chat-input button { background: linear-gradient(135deg,#FFD700,#FFA500); color: #041B3D;
+                      border: none; width: 50px; height: 50px; border-radius: 50%;
+                      font-size: 20px; cursor: pointer; font-weight: bold; }
+  .chat-input button:hover { transform: scale(1.1); }
+  .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .suggestions button { background: rgba(255,215,0,0.15); color: #FFD700;
+                       border: 1px solid #FFD700; padding: 6px 12px; border-radius: 20px;
+                       cursor: pointer; font-size: 12px; }
+  .suggestions button:hover { background: #FFD700; color: #041B3D; }
+  .chat-actions { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .listening { background: #dc3545 !important; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+</style>
+</head>
+<body>
+<div class="background"></div>
+<div class="particles"></div>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
+    <div class="header-text">
+      <h1>🤖 ASSISTANT IA</h1>
+      <h2>Expert Droit du Travail RDC</h2>
+      <p>Conversation intelligente • Vocal • Multilingue</p>
+    </div>
+  </div>
+  <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
+</header>
+
+<main class="chat-container">
+  <div class="chat-box">
+    <div class="chat-actions">
+      <button class="tool-btn" id="btnNewChat">🆕 Nouvelle conversation</button>
+      <button class="tool-btn" id="btnExportChat">📥 Exporter</button>
+      <button class="tool-btn" id="btnSpeakToggle">🔊 Lecture auto : OFF</button>
+    </div>
+
+    <div class="chat-messages" id="messages"></div>
+
+    <div class="suggestions" id="suggestions"></div>
+
+    <div class="chat-input">
+      <button id="btnVoice" title="Reconnaissance vocale">🎙️</button>
+      <input type="text" id="input" placeholder="Posez votre question à l'IA..." autofocus>
+      <button id="btnSend" title="Envoyer">➤</button>
+    </div>
+  </div>
+</main>
+
+<script src="../js/smig-data.js?v=1"></script>
+<script src="../js/ai-knowledge.js?v=1"></script>
+<script src="../js/ai-nlp.js?v=1"></script>
+<script src="../js/ai-core.js?v=1"></script>
+<script src="../js/assistant.js?v=1"></script>
+<script>
+let speakAuto = false;
+
+function render() {
+  const box = document.getElementById("messages");
+  box.innerHTML = "";
+  const conv = ASSISTANT.loadConversation();
+  if (!conv.length) {
+    ASSISTANT.addMessage("bot", AI_CORE.greet());
+  }
+  ASSISTANT.conversation.forEach(m => addBubble(m.role, m.text, m.ts));
+  box.scrollTop = box.scrollHeight;
+}
+
+function addBubble(role, text, ts) {
+  const box = document.getElementById("messages");
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  const html = text.replace(/\n/g,"<br>")
+                   .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                   .replace(/`(.+?)`/g, "<code style='background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:3px;'>$1</code>");
+  div.innerHTML = html + `<div class="msg-time">${ts ? new Date(ts).toLocaleTimeString("fr-FR") : ""}</div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function send() {
+  const input = document.getElementById("input");
+  const q = input.value.trim();
+  if (!q) return;
+  addBubble("user", q, new Date().toISOString());
+  input.value = "";
+  setTimeout(() => {
+    const r = ASSISTANT.ask(q);
+    addBubble("bot", r.text, new Date().toISOString());
+    if (speakAuto) ASSISTANT.speak(r.text);
+  }, 300);
+}
+
+document.getElementById("btnSend").addEventListener("click", send);
+document.getElementById("input").addEventListener("keypress", e => { if (e.key === "Enter") send(); });
+
+// Suggestions
+const sugBox = document.getElementById("suggestions");
+ASSISTANT.suggestions.forEach(s => {
+  const b = document.createElement("button");
+  b.textContent = s;
+  b.onclick = () => { document.getElementById("input").value = s; send(); };
+  sugBox.appendChild(b);
+});
+
+// Reconnaissance vocale
+document.getElementById("btnVoice").addEventListener("click", () => {
+  const btn = document.getElementById("btnVoice");
+  btn.classList.add("listening");
+  btn.textContent = "🔴";
+  ASSISTANT.startVoice(
+    txt => { 
+      document.getElementById("input").value = txt; 
+      btn.classList.remove("listening"); btn.textContent = "🎙️"; 
+      send();
+    },
+    err => { 
+      alert("Erreur vocale: " + err); 
+      btn.classList.remove("listening"); btn.textContent = "🎙️"; 
+    }
+  );
+});
+
+// Lecture auto
+document.getElementById("btnSpeakToggle").addEventListener("click", () => {
+  speakAuto = !speakAuto;
+  document.getElementById("btnSpeakToggle").textContent = speakAuto ? "🔊 Lecture auto : ON" : "🔊 Lecture auto : OFF";
+  if (!speakAuto) ASSISTANT.stopSpeaking();
+});
+
+// Nouvelle conversation
+document.getElementById("btnNewChat").addEventListener("click", () => {
+  if (confirm("Effacer la conversation actuelle ?")) {
+    ASSISTANT.clearConversation();
+    render();
+  }
+});
+
+// Export
+document.getElementById("btnExportChat").addEventListener("click", () => {
+  const conv = ASSISTANT.loadConversation();
+  let txt = "=== CONVERSATION INSPECTEURBOT IA RDC ===\n\n";
+  conv.forEach(m => {
+    txt += `[${new Date(m.ts).toLocaleString("fr-FR")}] ${m.role.toUpperCase()}: ${m.text}\n\n`;
+  });
+  const blob = new Blob([txt], {type:"text/plain"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `conversation_${Date.now()}.txt`;
+  a.click();
+});
+
+render();
+</script>
+</body>
+</html>
