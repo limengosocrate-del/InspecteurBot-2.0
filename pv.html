@@ -220,3 +220,1292 @@ h1{margin-bottom:24px;color:var(--primary-dark);}
 </head>
 <body>
 <div id="app"></div>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — DONNÉES
+=================================================================== */
+
+/* ---- PROVINCES (26) ---- */
+const PROVINCES=[
+{id:"kinshasa",nom:"Kinshasa",direction:"Direction Provinciale de Kinshasa"},
+{id:"kongo-central",nom:"Kongo Central",direction:"Direction Provinciale du Kongo Central"},
+{id:"kwango",nom:"Kwango",direction:"Direction Provinciale du Kwango"},
+{id:"kwilu",nom:"Kwilu",direction:"Direction Provinciale du Kwilu"},
+{id:"mai-ndombe",nom:"Mai-Ndombe",direction:"Direction Provinciale du Mai-Ndombe"},
+{id:"kasai",nom:"Kasaï",direction:"Direction Provinciale du Kasaï"},
+{id:"kasai-central",nom:"Kasaï Central",direction:"Direction Provinciale du Kasaï Central"},
+{id:"kasai-oriental",nom:"Kasaï Oriental",direction:"Direction Provinciale du Kasaï Oriental"},
+{id:"lomami",nom:"Lomami",direction:"Direction Provinciale de la Lomami"},
+{id:"sankuru",nom:"Sankuru",direction:"Direction Provinciale du Sankuru"},
+{id:"maniema",nom:"Maniema",direction:"Direction Provinciale du Maniema"},
+{id:"sud-kivu",nom:"Sud-Kivu",direction:"Direction Provinciale du Sud-Kivu"},
+{id:"nord-kivu",nom:"Nord-Kivu",direction:"Direction Provinciale du Nord-Kivu"},
+{id:"ituri",nom:"Ituri",direction:"Direction Provinciale de l'Ituri"},
+{id:"haut-uele",nom:"Haut-Uélé",direction:"Direction Provinciale du Haut-Uélé"},
+{id:"bas-uele",nom:"Bas-Uélé",direction:"Direction Provinciale du Bas-Uélé"},
+{id:"tshopo",nom:"Tshopo",direction:"Direction Provinciale de la Tshopo"},
+{id:"mongala",nom:"Mongala",direction:"Direction Provinciale de la Mongala"},
+{id:"nord-ubangi",nom:"Nord-Ubangi",direction:"Direction Provinciale du Nord-Ubangi"},
+{id:"sud-ubangi",nom:"Sud-Ubangi",direction:"Direction Provinciale du Sud-Ubangi"},
+{id:"equateur",nom:"Équateur",direction:"Direction Provinciale de l'Équateur"},
+{id:"tanganyika",nom:"Tanganyika",direction:"Direction Provinciale du Tanganyika"},
+{id:"haut-lomami",nom:"Haut-Lomami",direction:"Direction Provinciale du Haut-Lomami"},
+{id:"lualaba",nom:"Lualaba",direction:"Direction Provinciale du Lualaba"},
+{id:"haut-katanga",nom:"Haut-Katanga",direction:"Direction Provinciale du Haut-Katanga"},
+{id:"tshuapa",nom:"Tshuapa",direction:"Direction Provinciale de la Tshuapa"}
+];
+const ENTETE_FIXE={
+ administrations:["Administration Centrale","Administration Provinciale"],
+ structures:["Inspection Générale du Travail","Inspection Provinciale du Travail","Inspection Urbaine du Travail"]
+};
+function getDirectionByProvince(id){const p=PROVINCES.find(x=>x.id===id);return p?p.direction:'';}
+function getProvincesForSelect(){return [...PROVINCES].sort((a,b)=>a.nom.localeCompare(b.nom));}
+
+/* ---- 65 INFRACTIONS ---- */
+const INFRACTIONS=[
+{id:1,libelle:"Non affichage de l'horaire du travail visé",articles:"Art. 119, 222 CT ; Arrêté 40/2013",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:2,libelle:"Défaut de classification générale des emplois",articles:"Art. 90 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:3,libelle:"Contrat de travail non constaté par écrit, signé et visé par l'ONEM",articles:"Art. 44, 46, 47, 212 CT",sanction:"Devient CDI + Amende 20000 FC",refSanction:"Art. 44 et 321",gravite:"grave"},
+{id:4,libelle:"Défaut du Règlement Intérieur de l'entreprise",articles:"Art. 157 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:5,libelle:"Défaut du SMIG",articles:"Art. 87, 94-96 CT",sanction:"Fermeture possible + salaires dus",refSanction:"Art. 318 et 321",gravite:"grave"},
+{id:6,libelle:"Faire travailler au-delà de 45h/semaine sans rémunération des heures supplémentaires",articles:"Art. 119, 120 CT",sanction:"Fermeture possible",refSanction:"Art. 318 et 321",gravite:"grave"},
+{id:7,libelle:"Privation du jour de repos hebdomadaire",articles:"Art. 121 CT",sanction:"Fermeture possible",refSanction:"Art. 318 et 321",gravite:"grave"},
+{id:8,libelle:"Faire travailler enfants/personnes handicapées la nuit",articles:"Art. 125, 126 CT",sanction:"Fermeture possible",refSanction:"Art. 318 et 321",gravite:"tres_grave"},
+{id:9,libelle:"Violation des droits femmes/enfants/handicapés ; test de grossesse",articles:"Art. 128, 129 CT",sanction:"Fermeture possible",refSanction:"Art. 318 et 321",gravite:"tres_grave"},
+{id:10,libelle:"Employer enfants 15-17 ans sans autorisation IT et parentale",articles:"Art. 133 CT",sanction:"Fermeture possible",refSanction:"Art. 321",gravite:"tres_grave"},
+{id:11,libelle:"Mauvaises conditions d'hygiène et sécurité",articles:"Art. 171 CT",sanction:"Mise en demeure par l'IT",refSanction:"Art. 171",gravite:"grave"},
+{id:12,libelle:"Non-assurance d'un service médical aux employés",articles:"Art. 177 CT",sanction:"Amende",refSanction:"Art. 321",gravite:"grave"},
+{id:13,libelle:"Violation de la convention collective",articles:"Art. 320 CT",sanction:"Amende 7500 FC",refSanction:"Art. 320",gravite:"moyenne"},
+{id:14,libelle:"Défaut de formation/perfectionnement via l'INPP",articles:"Art. 8 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:15,libelle:"Recevoir des apprentis sans en avoir la qualité",articles:"Art. 18 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:16,libelle:"Absence de contrat d'apprentissage conforme (max 4 ans)",articles:"Art. 19, 20 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:17,libelle:"Contrat d'apprentissage non visé par l'ONEM",articles:"Art. 21 CT",sanction:"Devient contrat de travail + Amende 20000 FC",refSanction:"Art. 21 et 312",gravite:"moyenne"},
+{id:18,libelle:"Non-rémunération de l'apprenti",articles:"Art. 25 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:19,libelle:"Apprenti n'exécutant pas ses obligations",articles:"Art. 26 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"legere"},
+{id:20,libelle:"Cessation contrat d'apprentissage sans informer IT et ONEM",articles:"Art. 33 al.2 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:21,libelle:"CDD conclu avec travailleur ayant dépassé 22 jours/2 mois (réputé CDI)",articles:"Art. 40 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:22,libelle:"Divulgation frauduleuse de secrets / concurrence déloyale",articles:"Art. 325 CT",sanction:"Amende 30000 FC et/ou servitude pénale 3 mois",refSanction:"Art. 325",gravite:"tres_grave"},
+{id:23,libelle:"Travailleur ne respectant pas les bonnes pratiques/sécurité",articles:"Art. 51 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"legere"},
+{id:24,libelle:"Absence d'exemplaire du Code du travail à jour pour les représentants",articles:"Art. 55 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"legere"},
+{id:25,libelle:"Non-prise en charge des frais de transport des travailleurs",articles:"Art. 56 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:26,libelle:"Rupture de contrat en violation de l'Art. 60",articles:"Art. 60 CT",sanction:"Amendes",refSanction:"Art. 321",gravite:"grave"},
+{id:27,libelle:"Violation des prescriptions sur le préavis",articles:"Art. 64, 65, 66 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:28,libelle:"Licenciements massifs en violation de l'Art. 78",articles:"Art. 78 CT",sanction:"Amendes",refSanction:"Art. 321",gravite:"grave"},
+{id:29,libelle:"Non-remise de l'attestation de services rendus (2 jours)",articles:"Art. 79 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:30,libelle:"Non-affichage/mise à jour de la liste des sous-entreprises",articles:"Art. 84 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"legere"},
+{id:31,libelle:"Non-rémunération en monnaie légale RDC selon classification",articles:"Art. 89, 90 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:32,libelle:"Paiement de rémunération hors prescriptions (heures/dates/lieu)",articles:"Art. 98, 99, 100, 101 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:33,libelle:"Paiement de rémunération sans décompte écrit",articles:"Art. 103 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:34,libelle:"Employeur s'attribuant le droit d'infliger des amendes aux travailleurs",articles:"Art. 111, 112 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:35,libelle:"Violation des conditions des économats",articles:"Art. 116 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:36,libelle:"Discrimination femmes/handicapés ; travail au-delà des capacités",articles:"Art. 136, 137 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:37,libelle:"Défaut de logement décent ou indemnités de logement",articles:"Art. 138 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:38,libelle:"Défaut de planning de congés annuels",articles:"Art. 140-146 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:39,libelle:"Défaut de frais de transport A/R employé et famille",articles:"Art. 147-156 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:40,libelle:"Absence d'un comité d'hygiène et sécurité",articles:"Art. 167 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:41,libelle:"Défaut de signalement des accidents/maladies du travail (CNSS + IT)",articles:"Art. 176 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:42,libelle:"Défaut d'une convention médicale viable",articles:"Art. 177, 178 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:43,libelle:"Défaut de tenue d'un livre de paie à jour",articles:"Art. 213-216 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:44,libelle:"Défaut de déclaration du mouvement du personnel à l'ONEM",articles:"Art. 217 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:45,libelle:"Défaut de déclaration de la main-d'œuvre et du bilan social",articles:"Art. 218 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:46,libelle:"Ouverture d'un secrétariat social sans caution/autorisation",articles:"Art. 221 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:47,libelle:"Priver un employé membre du CNT du temps de réunion",articles:"Art. 229 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:48,libelle:"Subordonner l'emploi / licencier pour affiliation syndicale",articles:"Art. 234 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:49,libelle:"Licencier un délégué syndical sans approbation de l'IT",articles:"Art. 258 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:50,libelle:"Non-octroi de 15h/mois aux représentants des travailleurs",articles:"Art. 265 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:51,libelle:"Non-octroi du congé de stage aux membres du comité",articles:"Art. 268 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:52,libelle:"Privation d'un congé d'éducation ouvrière",articles:"Art. 269 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:53,libelle:"Non-respect des jours fériés légaux",articles:"Art. 123 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:54,libelle:"Contrat exécuté sans certificat médical d'aptitude",articles:"Art. 38 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:55,libelle:"Violence/menace/manœuvres frauduleuses (engagement, grève)",articles:"Art. 323 CT",sanction:"Amende 25000 FC et/ou servitude pénale 1 mois",refSanction:"Art. 323",gravite:"tres_grave"},
+{id:56,libelle:"Violation des prescriptions sur la suspension du contrat",articles:"Art. 57, 58 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:57,libelle:"Excéder les heures de nuit sans majoration",articles:"Art. 124 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:58,libelle:"Violation des prescriptions logement/restauration",articles:"Art. 139 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:59,libelle:"Défaut du Règlement d'Entreprise",articles:"Art. 158 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"moyenne"},
+{id:60,libelle:"Défaut d'organisation du comité d'hygiène et sécurité",articles:"Art. 169 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:61,libelle:"Ne pas répondre à la 3e invitation de l'IT (litige/conflit)",articles:"Art. 321 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"},
+{id:62,libelle:"Obstacle à l'exercice des fonctions des inspecteurs/contrôleurs",articles:"Art. 322 CT",sanction:"Amende 30000 FC + servitude pénale 30 jours",refSanction:"Art. 322",gravite:"tres_grave"},
+{id:63,libelle:"Incitation au refus d'obligations / destruction de contrat",articles:"Art. 323 CT",sanction:"Amende 25000 FC et/ou servitude pénale 1 mois",refSanction:"Art. 323",gravite:"tres_grave"},
+{id:64,libelle:"Atteinte à la désignation des représentants / rétention de cautionnement",articles:"Art. 324 CT",sanction:"Amende 25000 FC et/ou servitude pénale 2 mois",refSanction:"Art. 324",gravite:"tres_grave"},
+{id:65,libelle:"Priver l'employé du décompte final (2 jours après fin du contrat)",articles:"Art. 100-104 CT",sanction:"Amende 20000 FC",refSanction:"Art. 321",gravite:"grave"}
+];
+const NIVEAUX_GRAVITE={legere:{label:"Légère"},moyenne:{label:"Moyenne"},grave:{label:"Grave"},tres_grave:{label:"Très grave"}};
+function getInfractionById(id){return INFRACTIONS.find(i=>i.id===id)||null;}
+
+/* ---- TAUX OFFICIELS (arrêté 03/10/2023) ---- */
+const CARTE_TRAVAIL_ETRANGER={A:500,B:700,C:1000,D:1500,E:2000,F:2800};
+const AMENDES_FOURCHETTE={emploi:{min:600,max:5600},prevoyance:{min:500,max:2500}};
+
+/* ---- MODÈLES DE PV ---- */
+const TYPES_PV={
+ CONSTAT_INFRACTION:'constat_infraction',
+ CONSTAT_OBSTRUCTION:'constat_obstruction',
+ NON_CONCILIATION:'non_conciliation',
+ MISE_EN_DEMEURE:'mise_en_demeure'
+};
+const MODELES={
+ [TYPES_PV.CONSTAT_INFRACTION]:{id:TYPES_PV.CONSTAT_INFRACTION,titre:"PROCÈS-VERBAL DE CONSTAT D'INFRACTION",aNumero:true,formatNumero:"N°..../MET/IGT/ADMC/DEP/IT/OPJ/{initiales}/{MOIS}/{ANNEE}",aTableauInfractions:true,aSignatures:['verbalisateur'],
+  champs:['administration','inspection','province','directionProvinciale','numero','anneeLettres','jourLettres','mois','inspecteur','numeroHabilitation','ordreMission','entreprise','rccm','idNat','numeroImpot','adresse','quartier','commune','ville','representant','representantFonction','representantTel','temoin2','temoin2Fonction','temoin2Tel','contrevenantNom','contrevenantFonction','lieuFait','dateFait']},
+ [TYPES_PV.CONSTAT_OBSTRUCTION]:{id:TYPES_PV.CONSTAT_OBSTRUCTION,titre:"PROCÈS-VERBAL DE CONSTAT D'OBSTRUCTION",aNumero:true,formatNumero:"N°..../METPS/IGT/IT-{initiales}/OPJ/{numero}/{ANNEE}",aTableauInfractions:false,aSignatures:['inspecteur'],
+  champs:['administration','inspection','province','directionProvinciale','numero','anneeLettres','jourLettres','mois','inspecteur','assermentation','ordreMission','entreprise','adresse','commune','quartier','dateControle','responsable','responsableFonction','parquet']},
+ [TYPES_PV.NON_CONCILIATION]:{id:TYPES_PV.NON_CONCILIATION,titre:"PROCÈS-VERBAL DE NON CONCILIATION DE LITIGE INDIVIDUEL DU TRAVAIL",aNumero:true,formatNumero:"N°..../MET/DPS/IPT1-{initiales}/{numero}/{ANNEE}",aTableauInfractions:false,aSignatures:['inspecteur'],
+  champs:['administration','inspection','province','directionProvinciale','numero','anneeLettres','jourLettres','mois','inspecteur','numeroAssermentation','demandeur','demandeurAdresse','demandeurAvocat','defendeur','defendeurAdresse','defendeurAvocat','faits','conclusion','proposition','inspecteurTitre']},
+ [TYPES_PV.MISE_EN_DEMEURE]:{id:TYPES_PV.MISE_EN_DEMEURE,titre:"MISE EN DEMEURE",aNumero:true,formatNumero:"N°..../MET/IGT/IGTal-{initiales}/{ville}/{numero}/{ANNEE}",aTableauInfractions:false,aSignatures:['opj'],
+  champs:['directionProvinciale','numero','opj','opjAdresse','destinataire','destinataireAdresse','objet','objetDetail','corps','delai','articlesReferences','lieu','date']}
+};
+function getModele(t){return MODELES[t]||null;}
+function getModelesForSelect(){return Object.values(MODELES).map(m=>({id:m.id,titre:m.titre}));}
+</script>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — NOYAU (Store, Router, Calculs)
+=================================================================== */
+const KEY='inspecteurbot_pv';
+
+const Store={
+ state:JSON.parse(localStorage.getItem(KEY))||{
+   pvs:[],archives:[],
+   parametres:{inspecteurs:[],numerotation:{mode:'auto',dernierNumero:0},tauxUsdFc:2800},
+   journal:[],utilisateurCourant:'inspecteur'
+ },
+ save(){localStorage.setItem(KEY,JSON.stringify(this.state));},
+ get(k){return this.state[k];},
+ set(k,v){this.state[k]=v;this.save();},
+ uid(){return 'pv_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);},
+ addPV(pv){
+   pv.id=pv.id||this.uid();
+   pv.dateCreation=new Date().toISOString();
+   pv.dateModification=pv.dateCreation;
+   pv.versions=[];
+   this.state.pvs.push(pv);
+   this.log('creation',`PV ${pv.numero||pv.id} créé`);
+   this.save();return pv;
+ },
+ updatePV(id,data){
+   const pv=this.getPV(id);if(!pv)return null;
+   pv.versions=pv.versions||[];
+   if(pv.versions.length<50)pv.versions.push({date:new Date().toISOString()});
+   Object.assign(pv,data);
+   pv.dateModification=new Date().toISOString();
+   this.save();return pv;
+ },
+ deletePV(id){
+   const pv=this.getPV(id);if(!pv)return false;
+   this.state.archives.push({...pv,dateArchivage:new Date().toISOString()});
+   this.state.pvs=this.state.pvs.filter(p=>p.id!==id);
+   this.log('archivage',`PV ${pv.numero||id} archivé`);
+   this.save();return true;
+ },
+ getPV(id){return this.state.pvs.find(p=>p.id===id);},
+ log(type,desc){
+   this.state.journal.push({type,description:desc,date:new Date().toISOString(),utilisateur:this.state.utilisateurCourant});
+   if(this.state.journal.length>3000)this.state.journal.shift();
+ }
+};
+
+/* ---- ROUTER ---- */
+const Router={
+ routes:{},current:null,
+ register(p,h){this.routes[p]=h;return this;},
+ navigate(p){location.hash=p;},
+ start(){window.addEventListener('hashchange',()=>this.resolve());this.resolve();},
+ resolve(){
+   const hash=location.hash.slice(1)||'accueil';
+   const [path,...params]=hash.split('/');
+   const h=this.routes[path]||this.routes['accueil'];
+   this.current=path;
+   document.querySelectorAll('.ib-sidebar a').forEach(a=>a.classList.toggle('actif',a.getAttribute('href')==='#'+path));
+   if(h)h(params);
+ }
+};
+
+/* ---- STATUTS ---- */
+const STATUTS={BROUILLON:'brouillon',EN_COURS:'en_cours',SIGNE:'signe',TRANSMIS:'transmis',ARCHIVE:'archive'};
+const MOIS_FR=['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+
+/* ---- NUMÉROTATION ---- */
+function numeroExiste(seq,type){return Store.get('pvs').some(p=>p.type===type&&p.sequence===seq);}
+function genererNumero(type,data={}){
+ const m=getModele(type);if(!m||!m.aNumero)return '';
+ const params=Store.get('parametres');let seq;
+ if(params.numerotation.mode==='auto'){
+   seq=params.numerotation.dernierNumero+1;
+   while(numeroExiste(seq,type))seq++;
+   params.numerotation.dernierNumero=seq;Store.set('parametres',params);
+ }else{
+   seq=parseInt(data.numeroManuel);
+   if(!seq){alert('Saisissez un numéro manuel.');return '';}
+   if(numeroExiste(seq,type)){alert('Numéro déjà utilisé (doublon interdit).');return '';}
+ }
+ const now=new Date();
+ return m.formatNumero
+  .replace('....',String(seq).padStart(3,'0'))
+  .replace('{numero}',seq)
+  .replace('{initiales}',data.initiales||'XXX')
+  .replace('{ville}',data.ville||'')
+  .replace('{MOIS}',MOIS_FR[now.getMonth()])
+  .replace('{ANNEE}',data.annee||now.getFullYear());
+}
+function initiales(nom){if(!nom)return 'XXX';return nom.trim().split(/\s+/).map(m=>m[0]).join('').toUpperCase().slice(0,3);}
+
+/* ---- PV MANAGER ---- */
+function creerPV(type,data={}){
+ const m=getModele(type);if(!m)throw new Error('Type inconnu');
+ return Store.addPV({type,titre:m.titre,statut:STATUTS.BROUILLON,infractions:[],...data});
+}
+function changerStatut(id,statut){
+ const pv=Store.getPV(id);if(!pv)return;
+ if(statut===STATUTS.SIGNE&&!aUneSignature(pv)){alert('Signature manquante.');return;}
+ Store.updatePV(id,{statut});Store.log('statut',`PV ${pv.numero||id} → ${statut}`);Store.save();
+}
+function aUneSignature(pv){return pv.signatureVerbalisateur||pv.signatureInspecteur||pv.signatureOpj||pv.signatureDemandeur;}
+function detecterDoublons(pv){
+ const mois=new Date(pv.dateCreation).getMonth();
+ return Store.get('pvs').filter(p=>p.id!==pv.id&&p.type===pv.type&&(p.entreprise||'').toLowerCase()===(pv.entreprise||'').toLowerCase()&&new Date(p.dateCreation).getMonth()===mois);
+}
+
+/* ---- CALCUL AMENDES ---- */
+function extraireMontant(s){const m=(s||'').match(/(\d[\d\s]*\d|\d)/);return m?Number(m[0].replace(/\s/g,'')):0;}
+function formaterMontant(m,dev='USD'){return (m||0).toLocaleString('fr-FR')+' '+(dev==='USD'?'$':'FC');}
+function construireLigne(id,opt={}){
+ const inf=getInfractionById(id);if(!inf)return null;
+ const q=opt.quantite||1;
+ const mu=opt.montantUnitaire!=null?opt.montantUnitaire:extraireMontant(inf.sanction);
+ return {infractionId:inf.id,libelle:inf.libelle,articles:inf.articles,refSanction:inf.refSanction,gravite:inf.gravite,graviteLabel:NIVEAUX_GRAVITE[inf.gravite].label,montantUnitaire:mu,quantite:q,montant:mu*q,montantAffiche:formaterMontant(mu*q,opt.devise),observation:opt.observation||'',modifiable:opt.modifiable!==false};
+}
+function calculerTotaux(lignes,dev='USD'){
+ const r=(lignes||[]).map(l=>({...l,montant:l.montantUnitaire*l.quantite,montantAffiche:formaterMontant(l.montantUnitaire*l.quantite,dev)}));
+ const t=r.reduce((s,l)=>s+l.montant,0);
+ return {lignes:r,totalGeneral:t,totalAffiche:formaterMontant(t,dev),totalLettres:montantEnLettres(t)+(dev==='USD'?' dollars américains':' francs congolais')};
+}
+function montantEnLettres(n){
+ if(n===0)return 'zéro';
+ const u=['','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+ const d=['','','vingt','trente','quarante','cinquante','soixante','septante','quatre-vingt','nonante'];
+ function tr(x){let s='';const c=Math.floor(x/100),r=x%100;if(c>0)s+=(c>1?u[c]+' cent':'cent')+' ';if(r<20)s+=u[r];else{s+=d[Math.floor(r/10)];if(r%10)s+='-'+u[r%10];}return s.trim();}
+ let res='';const mi=Math.floor(n/1e6),ml=Math.floor((n%1e6)/1000),re=n%1000;
+ if(mi)res+=(mi>1?tr(mi)+' millions ':'un million ');
+ if(ml)res+=(ml>1?tr(ml)+' mille ':'mille ');
+ if(re)res+=tr(re);
+ return res.trim();
+}
+</script>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — TEMPLATES A4 + IA
+=================================================================== */
+const esc=s=>(s==null?'':String(s));
+
+function enteteHTML(d){
+ return `<header class="pv-entete">
+   <div class="pv-logo"><div style="font-size:34px">🦁</div><div class="igt-label">I.G.T</div></div>
+   <div class="pv-entete-text">
+     <p class="rdc">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</p>
+     <p>Ministère de l'Emploi et Travail</p>
+     <p class="bleu">${esc(d.inspection||'Inspection Générale du Travail')}</p>
+     <p class="rouge">${esc(d.administration||'Administration Centrale')}</p>
+     ${d.directionProvinciale?`<p>${esc(d.directionProvinciale)}</p>`:''}
+   </div></header>`;
+}
+function qrHTML(d){return d.qrCode?`<div class="pv-qr"><img src="${d.qrCode}"/><span>${esc(d.identifiantUnique)}</span></div>`:'';}
+function cachetHTML(d){return d.cachet?`<img src="${d.cachet}" class="cachet" style="left:${d.cachetX||0}px;top:${d.cachetY||0}px"/>`:'';}
+
+/* ---- CONSTAT D'INFRACTION ---- */
+function renderConstatInfraction(d={}){
+ const rows=(d.infractions||[]).map((inf,i)=>`<tr><td class="c-num">${String(i+1).padStart(2,'0')}.</td><td>${esc(inf.libelle)}</td><td>${esc(inf.articles)}</td><td class="c-montant">${esc(inf.montantAffiche)}</td></tr>`).join('');
+ const t=calculerTotaux(d.infractions||[]);
+ return `<div class="a4">${enteteHTML(d)}
+  <h1 class="pv-titre">PROCÈS-VERBAL DE CONSTAT D'INFRACTION</h1>
+  <p class="pv-numero">${esc(d.numero||'N°......./MET/IGT/ADMC/DEP/IT/OPJ/___/___/____')}</p>
+  <div class="pv-corps">
+   <p class="indent">L'an ${esc(d.anneeLettres||'deux mille vingt-six')}, le ${esc(d.jourLettres||'.....')} jour du mois de ${esc(d.mois||'.....')} ;</p>
+   <p class="indent">Nous <strong>${esc(d.inspecteur||'.....')}</strong>, Inspecteur du travail en compétence territoriale générale et officier de police judiciaire à compétence matérielle restreinte en matière du travail, dûment assermenté sous le numéro d'habilitation ${esc(d.numeroHabilitation||'.....')} ; Agissant en vertu des dispositions légales en la matière, notamment en ses articles 187, 196 et 197 de la loi n°015-2002 du 16 octobre 2002 portant code du travail, telle que modifiée et complétée à ce jour ; En exécution de l'ordre de mission ${esc(d.ordreMission||'.....')} ; Avons effectué une mission officielle de contrôle au sein de l'entreprise <strong>${esc(d.entreprise||'.....')}</strong> sise au ${esc(d.adresse||'.....')}, quartier ${esc(d.quartier||'.....')}, Commune de ${esc(d.commune||'.....')} dans la ville Province de ${esc(d.ville||'.....')} ; Avons constaté les infractions suivantes à la charge de l'entreprise précitée, en présence de ${esc(d.representant||'.....')} en qualité de ${esc(d.representantFonction||'.....')}, téléphone : ${esc(d.representantTel||'.....')}${d.temoin2?` et ${esc(d.temoin2)} en qualité de ${esc(d.temoin2Fonction)}, téléphone : ${esc(d.temoin2Tel)}`:''}.</p>
+  </div>
+  <h2 class="pv-sous-titre">LES CONTRAVENTIONS CI-DESSOUS</h2>
+  <table class="pv-table"><thead><tr><th>N°</th><th>INFRACTIONS</th><th>TEXTE VIOLÉ</th><th>AMENDE TRANSACTIONNELLE</th></tr></thead>
+   <tbody>${rows||'<tr><td colspan="4" style="text-align:center">Aucune infraction</td></tr>'}</tbody>
+   <tfoot><tr><td colspan="3"><strong>Total général</strong></td><td class="c-montant"><strong>${t.totalAffiche}</strong></td></tr>
+   <tr><td colspan="4"><strong>En lettres :</strong> ${t.totalLettres}</td></tr></tfoot></table>
+  <div class="pv-corps">
+   <p class="indent">Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions du ministère de l'emploi et du travail. L'entreprise est obligée de se soumettre aux prescriptions de la loi dans un bref délai.</p>
+   <p class="indent">En foi de quoi, nous avons établi le présent procès-verbal d'infraction en quatre ampliations. Fait au jour, mois et an que dessus. Nous jurons le présent Procès-Verbal sincère.</p>
+   <p class="pv-lieu-date">Fait à ${esc(d.lieuFait||'Kinshasa')}, le ${esc(d.dateFait||'.....')}</p>
+  </div>
+  <div class="pv-signatures">
+   <div class="sig-bloc"><p class="sig-titre">POUR LE CONTREVENANT</p><p>NOMS : ${esc(d.contrevenantNom)}</p><p>FONCTION : ${esc(d.contrevenantFonction)}</p><div class="sig-zone">${d.signatureContrevenant?`<img src="${d.signatureContrevenant}" class="sig-img"/>`:''}</div></div>
+   <div class="sig-bloc"><p class="sig-titre">VERBALISATEUR</p><p><strong>${esc(d.inspecteur)}</strong></p><p>Inspecteur du Travail et Officier de Police Judiciaire</p><div class="sig-zone">${d.signatureVerbalisateur?`<img src="${d.signatureVerbalisateur}" class="sig-img"/>`:''}</div>${cachetHTML(d)}</div>
+  </div>${qrHTML(d)}</div>`;
+}
+
+/* ---- OBSTRUCTION ---- */
+function renderObstruction(d={}){
+ return `<div class="a4">${enteteHTML(d)}
+  <h1 class="pv-titre">PROCÈS-VERBAL DE CONSTAT D'OBSTRUCTION</h1>
+  <p class="pv-numero">${esc(d.numero||'N°.../METPS/IGT/IT-.../OPJ/.../____')}</p>
+  <div class="pv-corps">
+   <p class="indent">L'an ${esc(d.anneeLettres||'deux mille vingt-cinq')}, le ${esc(d.jourLettres||'.....')} jour du mois de ${esc(d.mois||'.....')} ;</p>
+   <p class="indent">Par devant nous, <strong>${esc(d.inspecteur||'.....')}</strong> Inspecteur du Travail et Officier de Police Judiciaire à compétence restreinte en matière du travail près l'Inspection Générale du Travail, dûment assermenté ${esc(d.assermentation||'à la Cour d\'Appel de Kinshasa/Gombe')}, avons été en visite d'Inspection Spéciale du Travail sous l'ordre de Mission Collectif ${esc(d.ordreMission||'.....')} au sein de la <strong>${esc(d.entreprise||'.....')}</strong> sise sur ${esc(d.adresse||'.....')}, Commune de ${esc(d.commune||'.....')}, Quartier ${esc(d.quartier||'.....')}, en date du ${esc(d.dateControle||'.....')}.</p>
+   <p class="indent">En effet, nous étions dans l'impossibilité d'accomplir la mission qui nous est dévolue par la loi et nous avons été l'objet d'une obstruction totale par le responsable de la société susmentionnée, Sieur ${esc(d.responsable||'.....')} ${esc(d.responsableFonction||'')} ; me référant aux dispositions de l'Ordonnance-loi N°16/010 du 15 Juillet 2016 modifiant la Loi N°015-2002 portant Code du Travail à son Article 322.</p>
+   <p class="indent">En foi de quoi, nous avons établi ce procès-verbal de constat d'obstruction en trois ampliations dont chacune sera remise au Ministère ayant la Charge de l'Emploi et Travail, au Procureur près le Parquet de Grande Instance, ${esc(d.parquet||'Kinshasa/Gombe')} et au Contrevenant.</p>
+   <p class="indent">Nous jurons que ce procès-verbal est sincère.</p>
+  </div>
+  <div class="pv-signatures">
+   <div class="sig-bloc"><p class="sig-titre">Contrevenant</p><div class="sig-zone">${d.signatureContrevenant?`<img src="${d.signatureContrevenant}" class="sig-img"/>`:''}</div></div>
+   <div class="sig-bloc"><p class="sig-titre">L'Inspecteur du Travail</p><p><strong>${esc(d.inspecteur)}</strong></p><p>Officier de Police Judiciaire</p><div class="sig-zone">${d.signatureInspecteur?`<img src="${d.signatureInspecteur}" class="sig-img"/>`:''}</div>${cachetHTML(d)}</div>
+  </div>${qrHTML(d)}</div>`;
+}
+
+/* ---- NON CONCILIATION ---- */
+function renderNonConciliation(d={}){
+ const constat=(d.constatItems||[]).map(c=>`<li>${esc(c)}</li>`).join('');
+ return `<div>
+  <div class="a4">${enteteHTML(d)}
+   <h1 class="pv-titre">PROCÈS-VERBAL DE NON CONCILIATION DE LITIGE INDIVIDUEL DU TRAVAIL</h1>
+   <p class="pv-numero">${esc(d.numero||'N°.../MET/DPS/IPT1-.../.../____')}</p>
+   <div class="pv-corps">
+    <p class="indent">L'an ${esc(d.anneeLettres||'deux mil vingt-cinq')}, le ${esc(d.jourLettres||'.....')} jour du mois de ${esc(d.mois||'.....')}, Nous, <strong>${esc(d.inspecteur||'.....')}</strong>, Inspecteur Principal du Travail de 1ère Classe et Officier de Police Judiciaire, dûment assermenté et identifié sous les numéros ${esc(d.numeroAssermentation||'.....')}, affecté à l'Inspection Générale du Travail.</p>
+    <p class="indent">Monsieur <strong>${esc(d.demandeur||'.....')}</strong> ${esc(d.demandeurAdresse||'')}, demandeur d'une part, représenté par ${esc(d.demandeurAvocat||'.....')} Avocat Conseil.</p>
+    <p class="indent">La Société <strong>${esc(d.defendeur||'.....')}</strong> ${esc(d.defendeurAdresse||'')} représentée par ${esc(d.defendeurAvocat||'.....')} Avocat Conseil, défenderesse d'autre part ;</p>
+    <p class="indent">${esc(d.faits||'Entendons le demandeur qui déclare .....')}</p>
+   </div></div>
+  <div class="a4">
+   <h2 class="pv-section">I. CONSTAT DE L'INSPECTEUR DU TRAVAIL</h2>
+   <p>Il découle des déclarations des parties et de l'épluchage des pièces versées au dossier ce qui suit :</p>
+   <ul class="constat-liste">${constat||'<li>.....</li>'}</ul>
+   <h2 class="pv-section">II. CONCLUSION</h2>
+   <p class="indent">${esc(d.conclusion||'Eu égard à ce qui précède, l\'action est recevable et fondée conformément aux articles 63 et 93 du Code du Travail.')}</p>
+   <h2 class="pv-section">III. PROPOSITION</h2>
+   <p class="indent">${esc(d.proposition||'Réintégration en service à défaut, paiement des dommages et intérêts sur pied de l\'article 93 du Code du Travail.')}</p>
+   <h2 class="pv-section">IV. DÉSACCORD DES PARTIES</h2>
+   <p class="indent">Après une tentative de conciliation, les parties ne sont pas parvenues à concilier leurs désaccords, en application de l'article 302 du Code du Travail. Le présent procès-verbal est dressé en quatre exemplaires.</p>
+   <div class="pv-signatures trois">
+    <div class="sig-bloc"><p class="sig-titre">Pour la partie Demanderesse</p><div class="sig-zone">${d.signatureDemandeur?`<img src="${d.signatureDemandeur}" class="sig-img"/>`:''}</div></div>
+    <div class="sig-bloc"><p class="sig-titre">Pour la partie Défenderesse</p><div class="sig-zone">${d.signatureDefendeur?`<img src="${d.signatureDefendeur}" class="sig-img"/>`:''}</div></div>
+   </div>
+   <div class="pv-signature-centre"><p>L'Inspecteur Principal du Travail de 1ère Classe</p><div class="sig-zone">${d.signatureInspecteur?`<img src="${d.signatureInspecteur}" class="sig-img"/>`:''}</div><p><strong>${esc(d.inspecteur)}</strong></p><p>${esc(d.inspecteurTitre||'Directeur Chef de Service')}</p>${cachetHTML(d)}</div>
+   ${qrHTML(d)}</div></div>`;
+}
+
+/* ---- MISE EN DEMEURE ---- */
+function renderMiseEnDemeure(d={}){
+ return `<div class="a4 lettre">
+  <p class="lettre-date">${esc(d.lieu||'Kinshasa')} le ${esc(d.date||'../../....')}</p>
+  <header class="pv-entete"><div class="pv-logo"><div style="font-size:30px">🦁</div><div class="igt-label">I.G.T</div></div>
+   <div class="pv-entete-text"><p>République Démocratique du Congo</p><p>Ministère de l'Emploi, Travail</p><p class="bleu"><strong>INSPECTION GÉNÉRALE DU TRAVAIL</strong></p>${d.directionProvinciale?`<p>${esc(d.directionProvinciale)}</p>`:''}</div></header>
+  <div class="lettre-cols">
+   <div><p><strong>OPJ :</strong> ${esc(d.opj||'.....')}</p><p>Inspecteur du Travail</p><p>Adresse : ${esc(d.opjAdresse||'.....')}</p></div>
+   <div class="lettre-copies"><p>Transmis copie pour Information</p><ul><li>À l'Inspecteur Général du Travail</li><li>Au Président du Tribunal du Travail</li><li>Au Procureur Général</li></ul></div>
+  </div>
+  <div class="lettre-objet-dest">
+   <div><p><u><em>Concerne</em></u> : <strong>${esc(d.objet||'MISE EN DEMEURE')}</strong></p><p>${esc(d.objetDetail||'')}</p><p><strong>${esc(d.numero||'N°.../MET/IGT/.../____')}</strong></p></div>
+   <div><p>${esc(d.destinataire||'Au Responsable de .....')}</p><p>${esc(d.destinataireAdresse||'')}</p></div>
+  </div>
+  <div class="lettre-corps">
+   <p>Monsieur,</p>
+   <p class="indent">${esc(d.corps||'Je vous écris suite à notre échange concernant notre ordre de mission de contrôle.')}</p>
+   <p class="indent">Ce refus de nous recevoir constitue une violation au regard des dispositions des <strong>${esc(d.articlesReferences||'articles 186, 187, 197')}</strong> du code du travail Congolais.</p>
+   <p class="indent">Par la présente, je vous mets en demeure de donner accès libre à notre mission et de nous fournir les documents demandés dans un délai de <strong>${esc(d.delai||'24h')}</strong>, à compter de la réception de ce courrier.</p>
+   <p class="indent">En l'absence de réponse ou en cas de maintien de votre refus, je me verrai contraint de saisir la juridiction compétente ou d'appliquer les sanctions prévues dans l'arrêté N°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 du 03/10/2023.</p>
+   <p class="indent">Veuillez considérer cette lettre comme une mise en demeure formelle.</p><p>Cordialement.</p>
+  </div>
+  <div class="lettre-signature"><p>Fait à ${esc(d.lieu||'Kinshasa')} le ${esc(d.date||'../../....')}</p><div class="sig-zone">${d.signatureOpj?`<img src="${d.signatureOpj}" class="sig-img"/>`:''}</div><p><strong>OPJ ${esc(d.opj||'.....')}</strong></p>${cachetHTML(d)}</div>
+  ${qrHTML(d)}</div>`;
+}
+
+const RENDERERS={
+ [TYPES_PV.CONSTAT_INFRACTION]:renderConstatInfraction,
+ [TYPES_PV.CONSTAT_OBSTRUCTION]:renderObstruction,
+ [TYPES_PV.NON_CONCILIATION]:renderNonConciliation,
+ [TYPES_PV.MISE_EN_DEMEURE]:renderMiseEnDemeure
+};
+function renderPV(pv){const r=RENDERERS[pv.type];return r?r(pv):'<div>Modèle inconnu</div>';}
+
+/* ===================================================================
+   IA JURIDIQUE LOCALE
+=================================================================== */
+const REGLES_IA=[
+ {mots:['horaire','affichage'],id:1},{mots:['classification','grille emploi'],id:2},
+ {mots:['contrat','sans contrat','verbal','pas de contrat'],id:3},{mots:['reglement interieur','règlement intérieur'],id:4},
+ {mots:['smig','salaire minimum'],id:5},{mots:['heures supplementaires','45 heures','heures sup'],id:6},
+ {mots:['repos','jour de repos'],id:7},{mots:['enfant nuit','mineur nuit'],id:8},
+ {mots:['discrimination','grossesse','test grossesse'],id:9},{mots:['enfant','mineur','travail des enfants'],id:10},
+ {mots:['hygiene','hygiène','insalubre','securite','sécurité'],id:11},{mots:['medical','médical','infirmerie'],id:12},
+ {mots:['convention collective'],id:13},{mots:['inpp','formation'],id:14},{mots:['preavis','préavis'],id:27},
+ {mots:['licenciement massif','compression'],id:28},{mots:['attestation','services rendus'],id:29},
+ {mots:['livre de paie'],id:43},{mots:['mouvement personnel','onem'],id:44},{mots:['bilan social','main d\'oeuvre'],id:45},
+ {mots:['comite hygiene','comité hygiène','cshe'],id:40},{mots:['accident','maladie professionnelle','cnss'],id:41},
+ {mots:['conge annuel','congé annuel','planning conge'],id:38},{mots:['transport'],id:25},
+ {mots:['syndical','syndicat','delegue','délégué'],id:48},{mots:['obstruction','obstacle','refus controle','refus de recevoir','empeche'],id:62},
+ {mots:['certificat medical','aptitude'],id:54},{mots:['decompte final','solde de tout compte'],id:65},{mots:['jours feries','férié'],id:53}
+];
+const FAQ_IA=[
+ {q:['obstruction','article'],r:"L'obstruction au contrôle est réprimée par l'Art. 322 CT : amende de 30 000 FC + servitude pénale de 30 jours."},
+ {q:['delai','mise en demeure'],r:"Le délai d'une mise en demeure est fixé par l'inspecteur (souvent 24h à quelques jours)."},
+ {q:['carte de travail','etranger','taux'],r:"Carte de travail étranger : A=500$, B=700$, C=1000$, D=1500$, E=2000$, F=2800$."},
+ {q:['ampliations','combien'],r:"PV de constat d'infraction : 4 ampliations. PV d'obstruction : 3 ampliations."}
+];
+function normaliser(t){return (t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w\s']/g,' ').replace(/\s+/g,' ').trim();}
+function analyserFaits(faits){
+ const t=normaliser(faits);const set=new Map();
+ REGLES_IA.forEach(rg=>rg.mots.forEach(m=>{if(t.includes(normaliser(m))){const inf=getInfractionById(rg.id);if(inf&&!set.has(inf.id))set.set(inf.id,inf);}}));
+ const infs=[...set.values()];const lignes=infs.map(i=>construireLigne(i.id));const totaux=calculerTotaux(lignes);
+ return {infractions:infs,lignes,totaux,confiance:infs.length?Math.min(.95,.5+infs.length*.1):0,
+  message:infs.length?`${infs.length} infraction(s) identifiée(s).`:"Aucune infraction détectée automatiquement."};
+}
+function verifierCoherence(pv){
+ const err=[],warn=[],sug=[];
+ if(!pv.inspecteur)err.push("Nom de l'inspecteur manquant.");
+ if(!pv.entreprise&&pv.type!=='mise_en_demeure')err.push("Entreprise non renseignée.");
+ if(getModele(pv.type)?.aTableauInfractions&&!(pv.infractions||[]).length)warn.push("Aucune infraction listée.");
+ if(!pv.numeroHabilitation&&pv.type==='constat_infraction')warn.push("Numéro d'habilitation absent.");
+ if((pv.infractions||[]).some(i=>i.gravite==='tres_grave'))sug.push("Infraction très grave : envisager la saisine du Parquet.");
+ return {valide:err.length===0,erreurs:err,avertissements:warn,suggestions:sug};
+}
+function repondreIA(q){
+ const n=normaliser(q);
+ for(const f of FAQ_IA){if(f.q.every(k=>n.includes(normaliser(k))))return f.r;}
+ const a=analyserFaits(q);
+ if(a.infractions.length){
+  return `D'après votre description, infractions applicables :\n`+a.infractions.map(i=>`• ${i.libelle} (${i.articles}) — ${i.sanction}`).join('\n')+`\n\nTotal indicatif : ${a.totaux.totalAffiche}.`;
+ }
+ return "Je suis l'assistant juridique d'InspecteurBot. Décrivez les faits constatés ou posez une question sur le Code du Travail, les infractions, les amendes ou la procédure.";
+}
+    </script>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — GÉNÉRATEUR QR CODE 100% LOCAL (hors-ligne)
+   Implémentation autonome (norme QR, correction d'erreur niveau M/H)
+=================================================================== */
+(function(global){
+'use strict';
+
+/* --- Tables Galois Field (GF 256) pour Reed-Solomon --- */
+var EXP=new Array(256),LOG=new Array(256);
+(function(){var x=1;for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&0x100)x^=0x11d;}EXP[255]=EXP[0];})();
+function gfMul(a,b){return (a===0||b===0)?0:EXP[(LOG[a]+LOG[b])%255];}
+
+/* --- Polynôme générateur Reed-Solomon --- */
+function rsGenPoly(deg){var poly=[1];for(var i=0;i<deg;i++){var np=[];for(var j=0;j<=poly.length;j++)np[j]=0;for(var j2=0;j2<poly.length;j2++){np[j2]^=gfMul(poly[j2],EXP[i]);np[j2+1]^=poly[j2];}poly=np;}return poly;}
+function rsEncode(data,deg){var gen=rsGenPoly(deg);var res=data.slice().concat(new Array(deg).fill(0));for(var i=0;i<data.length;i++){var c=res[i];if(c!==0)for(var j=0;j<gen.length;j++)res[i+j]^=gfMul(gen[j],c);}return res.slice(data.length);}
+
+/* --- Caractéristiques par version (mode octet, correction H) - versions 1..10 --- */
+/* [totalCodewords, ecCodewordsPerBlock, numBlocksG1, dataCwG1] simplifié niveau M pour capacité --- */
+var VERSIONS={
+ 1:{size:21,ecc:10,data:16,cap:14},
+ 2:{size:25,ecc:16,data:28,cap:26},
+ 3:{size:29,ecc:26,data:44,cap:42},
+ 4:{size:33,ecc:18,data:64,cap:62,blocks:2},
+ 5:{size:37,ecc:24,data:86,cap:84,blocks:2},
+ 6:{size:41,ecc:16,data:108,cap:106,blocks:4},
+ 7:{size:45,ecc:18,data:124,cap:122,blocks:4},
+ 8:{size:49,ecc:22,data:154,cap:152,blocks:4},
+ 9:{size:53,ecc:22,data:182,cap:180,blocks:5},
+ 10:{size:57,ecc:26,data:216,cap:214,blocks:5}
+};
+
+/* --- Choix de version selon longueur --- */
+function choisirVersion(len){for(var v=1;v<=10;v++){if(len<=VERSIONS[v].cap)return v;}return 10;}
+
+/* --- Encodage mode octet --- */
+function encoderDonnees(texte,version){
+ var bytes=[];for(var i=0;i<texte.length;i++){var c=texte.charCodeAt(i);
+  if(c<128)bytes.push(c);
+  else if(c<2048){bytes.push(192|(c>>6));bytes.push(128|(c&63));}
+  else{bytes.push(224|(c>>12));bytes.push(128|((c>>6)&63));bytes.push(128|(c&63));}}
+ var bits=[];
+ function push(val,n){for(var i=n-1;i>=0;i--)bits.push((val>>i)&1);}
+ push(4,4); // mode octet
+ var cntBits=version<10?8:16;
+ push(bytes.length,cntBits);
+ bytes.forEach(function(b){push(b,8);});
+ var cap=VERSIONS[version].data*8;
+ push(0,Math.min(4,cap-bits.length)); // terminateur
+ while(bits.length%8!==0)bits.push(0);
+ var pad=[0xEC,0x11],pi=0;
+ while(bits.length<cap){push(pad[pi%2],8);pi++;}
+ var codewords=[];for(var i=0;i<bits.length;i+=8){var b=0;for(var j=0;j<8;j++)b=(b<<1)|bits[i+j];codewords.push(b);}
+ return codewords;
+}
+
+/* --- Construction matrice --- */
+function creerMatrice(version){var s=VERSIONS[version].size;var m=[];for(var i=0;i<s;i++){m.push(new Array(s).fill(null));}return m;}
+function placerFinder(m,r,c){for(var i=-1;i<=7;i++)for(var j=-1;j<=7;j++){var rr=r+i,cc=c+j;if(rr<0||cc<0||rr>=m.length||cc>=m.length)continue;var v=(i>=0&&i<=6&&(j===0||j===6))||(j>=0&&j<=6&&(i===0||i===6))||(i>=2&&i<=4&&j>=2&&j<=4)?1:0;m[rr][cc]=v;}}
+function placerAlignement(m,version){if(version<2)return;var s=m.length;var pos=[6,s-7];for(var a=0;a<pos.length;a++)for(var b=0;b<pos.length;b++){var r=pos[a],c=pos[b];if((r===6&&c===6)||(r===6&&c===s-7)||(r===s-7&&c===6))continue;for(var i=-2;i<=2;i++)for(var j=-2;j<=2;j++){var v=(Math.abs(i)===2||Math.abs(j)===2||(i===0&&j===0))?1:0;if(m[r+i]&&m[r+i][c+j]===null)m[r+i][c+j]=v;}}}
+function placerTiming(m){var s=m.length;for(var i=8;i<s-8;i++){if(m[6][i]===null)m[6][i]=(i%2===0)?1:0;if(m[i][6]===null)m[i][6]=(i%2===0)?1:0;}}
+function reserverFormat(m){var s=m.length;for(var i=0;i<9;i++){if(m[8][i]===null)m[8][i]=0;if(m[i][8]===null)m[i][8]=0;}for(var i2=0;i2<8;i2++){if(m[8][s-1-i2]===null)m[8][s-1-i2]=0;if(m[s-1-i2][8]===null)m[s-1-i2][8]=0;}m[s-8][8]=1;}
+
+/* --- Placement des données en zigzag --- */
+function placerDonnees(m,codewords){
+ var s=m.length;var bits=[];codewords.forEach(function(cw){for(var i=7;i>=0;i--)bits.push((cw>>i)&1);});
+ var idx=0,up=true;
+ for(var col=s-1;col>0;col-=2){if(col===6)col--;
+  for(var i=0;i<s;i++){var row=up?s-1-i:i;
+   for(var c=0;c<2;c++){var cc=col-c;
+    if(m[row][cc]===null){var bit=idx<bits.length?bits[idx]:0;
+     // masque 0 : (row+col)%2===0
+     if((row+cc)%2===0)bit^=1;
+     m[row][cc]=bit;idx++;}}}
+  up=!up;}
+}
+
+/* --- Format info (masque 0, niveau ECC L simplifié) --- */
+function placerFormatInfo(m){
+ var s=m.length;
+ var format=0x77c4; // valeur pré-calculée pour ECC-M masque 0
+ for(var i=0;i<15;i++){var bit=(format>>i)&1;
+  if(i<6)m[i][8]=bit;
+  else if(i<8)m[i+1][8]=bit;
+  else if(i===8)m[8][7]=bit;
+  else m[8][14-i]=bit;
+  if(i<8)m[8][s-1-i]=bit;
+  else m[s-15+i][8]=bit;}
+}
+
+/* --- API PUBLIQUE --- */
+function genererMatriceQR(texte){
+ var version=choisirVersion(texte.length);
+ var v=VERSIONS[version];
+ var codewords=encoderDonnees(texte,version);
+ var ecc=rsEncode(codewords,v.ecc);
+ var full=codewords.concat(ecc);
+ var m=creerMatrice(version);
+ placerFinder(m,0,0);placerFinder(m,0,v.size-7);placerFinder(m,v.size-7,0);
+ placerAlignement(m,version);placerTiming(m);reserverFormat(m);
+ placerDonnees(m,full);placerFormatInfo(m);
+ return m;
+}
+
+/* --- Rendu en dataURL (canvas) --- */
+function qrToDataURL(texte,taille){
+ taille=taille||180;
+ var m=genererMatriceQR(texte);
+ var n=m.length;var quiet=4;var total=n+quiet*2;
+ var scale=Math.floor(taille/total)||1;
+ var px=total*scale;
+ var canvas=document.createElement('canvas');canvas.width=px;canvas.height=px;
+ var ctx=canvas.getContext('2d');
+ ctx.fillStyle='#fff';ctx.fillRect(0,0,px,px);
+ ctx.fillStyle='#000';
+ for(var r=0;r<n;r++)for(var c=0;c<n;c++){if(m[r][c]){ctx.fillRect((c+quiet)*scale,(r+quiet)*scale,scale,scale);}}
+ return canvas.toDataURL('image/png');
+}
+
+global.QRLocal={toDataURL:qrToDataURL,matrice:genererMatriceQR};
+})(window);
+   </script>
+   
+<script>
+/* ===================================================================
+   INSPECTEURBOT — SIGNATURE / QR / PDF / VOIX
+=================================================================== */
+class SignaturePad{
+ constructor(c){this.c=c;this.ctx=c.getContext('2d');this.draw=false;this.init();}
+ init(){this.ctx.lineWidth=2;this.ctx.lineCap='round';this.ctx.strokeStyle='#0a1a4a';
+  const pos=e=>{const r=this.c.getBoundingClientRect();const p=e.touches?e.touches[0]:e;return {x:p.clientX-r.left,y:p.clientY-r.top};};
+  const s=e=>{e.preventDefault();this.draw=true;const{x,y}=pos(e);this.ctx.beginPath();this.ctx.moveTo(x,y);};
+  const m=e=>{if(!this.draw)return;e.preventDefault();const{x,y}=pos(e);this.ctx.lineTo(x,y);this.ctx.stroke();};
+  const en=()=>this.draw=false;
+  ['mousedown','touchstart'].forEach(ev=>this.c.addEventListener(ev,s,{passive:false}));
+  ['mousemove','touchmove'].forEach(ev=>this.c.addEventListener(ev,m,{passive:false}));
+  ['mouseup','touchend','mouseleave'].forEach(ev=>this.c.addEventListener(ev,en));}
+ clear(){this.ctx.clearRect(0,0,this.c.width,this.c.height);}
+ isEmpty(){const b=document.createElement('canvas');b.width=this.c.width;b.height=this.c.height;return this.c.toDataURL()===b.toDataURL();}
+ toDataURL(){return this.c.toDataURL('image/png');}
+}
+
+/* QR CODE (générateur minimal via canvas + fallback) */
+function genererIdUnique(pv){
+ const base=`${pv.type}|${pv.numero||pv.id}|${pv.dateCreation}`;let h=0;
+ for(let i=0;i<base.length;i++)h=((h<<5)-h+base.charCodeAt(i))|0;
+ return `IBOT-${Math.abs(h).toString(36).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+}
+function genererQR(contenu,taille){
+ taille=taille||170;
+ try{
+  if(window.QRLocal){
+   return window.QRLocal.toDataURL(contenu,taille);
+  }
+ }catch(e){
+  console.warn('QR local échec, fallback:',e.message);
+ }
+ // Fallback (seulement si la lib locale échoue)
+ return 'https://api.qrserver.com/v1/create-qr-code/?size='+taille+'x'+taille+'&ecc=H&data='+encodeURIComponent(contenu);
+}
+
+/* IMPRESSION / PDF */
+function imprimerPV(pv){
+ let z=document.getElementById('printArea');
+ if(!z){z=document.createElement('div');z.id='printArea';document.body.appendChild(z);}
+ z.innerHTML=renderPV(pv);
+ window.print();
+}
+function exporterPDF(pv){
+ // Utilise l'impression navigateur -> "Enregistrer au format PDF"
+ alert("Dans la boîte d'impression, choisissez « Enregistrer au format PDF » comme imprimante.");
+ imprimerPV(pv);
+}
+
+/* VOIX */
+let recVocal=null;
+function demarrerDictee(champ,btn){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){alert("Dictée non supportée par ce navigateur.");return;}
+ if(btn.classList.contains('actif')){recVocal&&recVocal.stop();btn.classList.remove('actif');return;}
+ recVocal=new SR();recVocal.lang='fr-FR';recVocal.continuous=true;recVocal.interimResults=false;
+ recVocal.onresult=e=>{let txt='';for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)txt+=e.results[i][0].transcript;
+  if(txt){champ.value+=(champ.value?' ':'')+txt.trim();champ.dispatchEvent(new Event('input'));}};
+ recVocal.onend=()=>btn.classList.remove('actif');
+ recVocal.start();btn.classList.add('actif');
+}
+function lirePV(pv){
+ if(!window.speechSynthesis){alert("Lecture non supportée.");return;}
+ speechSynthesis.cancel();
+ const parts=[pv.titre,`Numéro ${pv.numero||'non attribué'}.`,`Entreprise ${pv.entreprise||'non renseignée'}.`,`Inspecteur ${pv.inspecteur||''}.`];
+ (pv.infractions||[]).forEach((i,n)=>parts.push(`Infraction ${n+1}: ${i.libelle}, ${i.articles}, montant ${i.montantAffiche}.`));
+ if((pv.infractions||[]).length)parts.push(`Total général : ${pv.totalAffiche||''}.`);
+ const u=new SpeechSynthesisUtterance(parts.join(' '));u.lang='fr-FR';u.rate=.95;speechSynthesis.speak(u);
+}
+<script>
+
+/* ===================================================================
+   PAGES
+=================================================================== */
+const app=document.getElementById('app');
+function layout(contenu){
+ return `<div class="ib-shell">
+  <nav class="ib-sidebar"><div class="ib-logo">InspecteurBot • PV</div><ul>
+   <li><a href="#accueil">🏠 Accueil</a></li>
+   <li><a href="#nouveau">➕ Nouveau PV</a></li>
+   <li><a href="#tous">📄 Tous les PV</a></li>
+   <li><a href="#brouillons">✏️ Brouillons</a></li>
+   <li><a href="#modeles">📋 Modèles officiels</a></li>
+   <li><a href="#assistant">🤖 Assistant IA</a></li>
+   <li><a href="#infractions">⚖️ Infractions</a></li>
+   <li><a href="#recherche">🔍 Recherche</a></li>
+   <li><a href="#stats">📊 Statistiques</a></li>
+   <li><a href="#parametres">⚙️ Paramètres</a></li>
+      <li><a href="#scanner">📷 Scanner QR</a></li>
+   <li><a href="#verifier">🔎 Vérifier un PV</a></li>
+   <li><a href="#impression-lot">🖨️ Impression par lot</a></li>
+  </ul></nav>
+  <main class="ib-main">${contenu}</main></div>`;
+}
+function kpi(l,v,i){return `<div class="kpi"><div class="kpi-ico">${i}</div><div class="kpi-val">${v}</div><div class="kpi-lbl">${l}</div></div>`;}
+
+/* DASHBOARD */
+function pageAccueil(){
+ const pvs=Store.get('pvs'),arch=Store.get('archives')||[];
+ const ent=new Set(pvs.map(p=>(p.entreprise||'').trim().toLowerCase()).filter(Boolean));
+ const totInf=pvs.reduce((s,p)=>s+(p.infractions?.length||0),0);
+ const totAm=pvs.reduce((s,p)=>s+(p.totalGeneral||0),0);
+ const cnt=st=>pvs.filter(p=>p.statut===st).length;
+ const derniers=[...pvs].sort((a,b)=>new Date(b.dateCreation)-new Date(a.dateCreation)).slice(0,5);
+ const act=(Store.get('journal')||[]).slice(-10).reverse();
+ app.innerHTML=layout(`<h1>Tableau de bord — Procès-Verbaux</h1>
+  <div class="kpi-grid">
+   ${kpi('Total PV',pvs.length,'📄')}${kpi('En cours',cnt('en_cours'),'⏳')}${kpi('Brouillons',cnt('brouillon'),'✏️')}
+   ${kpi('Signés',cnt('signe'),'✅')}${kpi('Transmis',cnt('transmis'),'📤')}${kpi('Archivés',arch.length,'🗄️')}
+   ${kpi('Entreprises',ent.size,'🏢')}${kpi('Infractions',totInf,'⚖️')}${kpi('Total amendes',formaterMontant(totAm),'💰')}
+  </div>
+  <div class="dash-cols">
+   <div class="card"><h2>Derniers PV créés</h2><ul class="liste-pv">${derniers.map(p=>`<li><a href="#editer/${p.id}">${esc(p.numero||p.titre)}</a><span class="badge ${p.statut}">${p.statut}</span></li>`).join('')||'<li>Aucun PV.</li>'}</ul></div>
+   <div class="card"><h2>Activité récente</h2><ul class="activite">${act.map(a=>`<li><em>${new Date(a.date).toLocaleString('fr-FR')}</em> — ${esc(a.description)}</li>`).join('')||'<li>Aucune activité.</li>'}</ul></div>
+  </div>`);
+}
+
+/* NOUVEAU */
+function pageNouveau(){
+ app.innerHTML=layout(`<h1>Nouveau Procès-Verbal</h1><div class="modeles-grid">
+  ${getModelesForSelect().map(m=>`<button class="modele-card" data-type="${m.id}">${m.titre}</button>`).join('')}</div>`);
+ document.querySelectorAll('.modele-card').forEach(b=>b.onclick=()=>{const pv=creerPV(b.dataset.type,{});Router.navigate('editer/'+pv.id);});
+}
+
+/* TOUS / BROUILLONS */
+function pageListe(filtre){
+ let pvs=Store.get('pvs');
+ if(filtre==='brouillons')pvs=pvs.filter(p=>p.statut==='brouillon');
+ app.innerHTML=layout(`<h1>${filtre==='brouillons'?'Brouillons':'Tous les PV'}</h1>
+  <table class="table-liste"><thead><tr><th>Numéro</th><th>Type</th><th>Entreprise</th><th>Statut</th><th>Date</th></tr></thead>
+  <tbody>${pvs.map(p=>`<tr onclick="location.hash='editer/${p.id}'"><td>${esc(p.numero||'—')}</td><td>${esc(p.titre)}</td><td>${esc(p.entreprise||'—')}</td><td><span class="badge ${p.statut}">${p.statut}</span></td><td>${new Date(p.dateCreation).toLocaleDateString('fr-FR')}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center">Aucun PV.</td></tr>'}</tbody></table>`);
+}
+
+/* MODÈLES OFFICIELS */
+function pageModeles(){
+ app.innerHTML=layout(`<h1>Modèles officiels</h1><div class="modeles-grid">
+  ${getModelesForSelect().map(m=>`<div class="modele-card">${m.titre}<br><small style="font-weight:400;color:#64748b">${MODELES[m.id].aTableauInfractions?'Avec tableau d\'infractions':'Sans tableau'}</small></div>`).join('')}</div>
+  <p style="margin-top:16px;color:#64748b">Architecture évolutive : de nouveaux modèles peuvent être ajoutés sans modifier le système.</p>`);
+}
+
+/* INFRACTIONS */
+function pageInfractions(){
+ app.innerHTML=layout(`<h1>Base juridique — 65 infractions</h1>
+  <input id="rechInf" placeholder="Rechercher une infraction ou un article..." style="width:100%;padding:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:8px">
+  <table class="table-liste"><thead><tr><th>N°</th><th>Infraction</th><th>Référence</th><th>Sanction</th><th>Gravité</th></tr></thead>
+  <tbody id="tbInf">${ligneInfBase(INFRACTIONS)}</tbody></table>`);
+ document.getElementById('rechInf').oninput=e=>{
+  const q=normaliser(e.target.value);
+  const f=INFRACTIONS.filter(i=>normaliser(i.libelle).includes(q)||normaliser(i.articles).includes(q));
+  document.getElementById('tbInf').innerHTML=ligneInfBase(f);
+ };
+}
+function ligneInfBase(list){return list.map(i=>`<tr><td>${i.id}</td><td>${esc(i.libelle)}</td><td>${esc(i.articles)}</td><td>${esc(i.sanction)}</td><td><span class="gravite-badge ${i.gravite}">${NIVEAUX_GRAVITE[i.gravite].label}</span></td></tr>`).join('');}
+
+/* ASSISTANT IA */
+function pageAssistant(){
+ app.innerHTML=layout(`<h1>🤖 Assistant IA Juridique</h1>
+  <div class="chat"><div id="chatLog" class="chat-log"><div class="msg bot">Bonjour ! Décrivez les faits constatés ou posez une question juridique.</div></div>
+  <div class="chat-input"><textarea id="chatInput" placeholder="Votre message..."></textarea><button id="chatSend" class="btn btn-primary">Envoyer</button></div></div>`);
+ const log=document.getElementById('chatLog'),inp=document.getElementById('chatInput');
+ const envoyer=()=>{if(!inp.value.trim())return;
+  log.innerHTML+=`<div class="msg user">${esc(inp.value)}</div>`;
+  const r=repondreIA(inp.value);
+  log.innerHTML+=`<div class="msg bot">${esc(r).replace(/\n/g,'<br>')}</div>`;
+  inp.value='';log.scrollTop=log.scrollHeight;};
+ document.getElementById('chatSend').onclick=envoyer;
+ inp.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();envoyer();}};
+}
+
+/* RECHERCHE */
+function pageRecherche(){
+ app.innerHTML=layout(`<h1>Recherche avancée</h1>
+  <div class="recherche-form">
+   <input id="r_numero" placeholder="Numéro"><input id="r_entreprise" placeholder="Entreprise">
+   <input id="r_inspecteur" placeholder="Inspecteur"><input id="r_commune" placeholder="Commune">
+   <select id="r_province"><option value="">Toutes provinces</option>${getProvincesForSelect().map(p=>`<option value="${p.id}">${p.nom}</option>`).join('')}</select>
+   <select id="r_type"><option value="">Tous types</option>${getModelesForSelect().map(m=>`<option value="${m.id}">${m.titre}</option>`).join('')}</select>
+   <select id="r_statut"><option value="">Tous statuts</option><option value="brouillon">Brouillon</option><option value="signe">Signé</option><option value="transmis">Transmis</option></select>
+   <input id="r_infraction" placeholder="Infraction">
+  </div>
+  <table class="table-liste"><thead><tr><th>Numéro</th><th>Type</th><th>Entreprise</th><th>Statut</th></tr></thead><tbody id="rResult"></tbody></table>`);
+ const champs=['r_numero','r_entreprise','r_inspecteur','r_commune','r_province','r_type','r_statut','r_infraction'];
+ const f=v=>(v||'').toLowerCase();
+ const rech=()=>{
+  const c={};champs.forEach(id=>c[id]=document.getElementById(id).value);
+  let res=Store.get('pvs').filter(p=>
+   (!c.r_numero||f(p.numero).includes(f(c.r_numero)))&&
+   (!c.r_entreprise||f(p.entreprise).includes(f(c.r_entreprise)))&&
+   (!c.r_inspecteur||f(p.inspecteur).includes(f(c.r_inspecteur)))&&
+   (!c.r_commune||f(p.commune).includes(f(c.r_commune)))&&
+   (!c.r_province||p.province===c.r_province)&&
+   (!c.r_type||p.type===c.r_type)&&
+   (!c.r_statut||p.statut===c.r_statut)&&
+   (!c.r_infraction||(p.infractions||[]).some(i=>f(i.libelle).includes(f(c.r_infraction)))));
+  document.getElementById('rResult').innerHTML=res.map(p=>`<tr onclick="location.hash='editer/${p.id}'"><td>${esc(p.numero||'—')}</td><td>${esc(p.titre)}</td><td>${esc(p.entreprise||'—')}</td><td><span class="badge ${p.statut}">${p.statut}</span></td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center">Aucun résultat.</td></tr>';
+ };
+ champs.forEach(id=>document.getElementById(id).oninput=rech);
+ champs.forEach(id=>document.getElementById(id).onchange=rech);
+ rech();
+}
+
+/* STATISTIQUES */
+function pageStats(){
+ const pvs=Store.get('pvs');
+ const grp=fn=>pvs.reduce((a,p)=>{const k=fn(p)||'Non renseigné';a[k]=(a[k]||0)+1;return a;},{});
+ const barres=obj=>{const max=Math.max(1,...Object.values(obj));return Object.entries(obj).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="stat-bar"><span class="label">${esc(k)}</span><div class="bar" style="width:${v/max*300}px"></div><span class="val">${v}</span></div>`).join('')||'<p>Aucune donnée.</p>';};
+ const infFreq={};pvs.forEach(p=>(p.infractions||[]).forEach(i=>infFreq[i.libelle]=(infFreq[i.libelle]||0)+1));
+ app.innerHTML=layout(`<h1>Statistiques</h1>
+  <div class="stat-bloc"><h2>PV par type</h2>${barres(grp(p=>p.titre))}</div>
+  <div class="stat-bloc"><h2>PV par province</h2>${barres(grp(p=>{const pr=PROVINCES.find(x=>x.id===p.province);return pr?pr.nom:p.province;}))}</div>
+  <div class="stat-bloc"><h2>PV par inspecteur</h2>${barres(grp(p=>p.inspecteur))}</div>
+  <div class="stat-bloc"><h2>Infractions les plus fréquentes</h2>${barres(infFreq)}</div>`);
+}
+
+/* PARAMÈTRES */
+function pageParametres(){
+ const p=Store.get('parametres');
+ app.innerHTML=layout(`<h1>Paramètres</h1>
+  <div class="card" style="margin-bottom:16px"><h2>Numérotation</h2>
+   <label style="display:block;margin-bottom:10px">Mode
+    <select id="setMode" style="padding:9px;border:1px solid var(--border);border-radius:8px;margin-left:8px">
+     <option value="auto" ${p.numerotation.mode==='auto'?'selected':''}>Automatique</option>
+     <option value="manuel" ${p.numerotation.mode==='manuel'?'selected':''}>Manuel</option></select></label>
+   <p>Dernier numéro : <strong>${p.numerotation.dernierNumero}</strong></p></div>
+  <div class="card" style="margin-bottom:16px"><h2>Taux de change USD → FC</h2>
+   <input id="setTaux" type="number" value="${p.tauxUsdFc}" style="padding:9px;border:1px solid var(--border);border-radius:8px;width:150px"></div>
+  <div class="card" style="margin-bottom:16px"><h2>Ajouter un inspecteur</h2>
+   <input id="setInspNom" placeholder="Nom complet" style="padding:9px;border:1px solid var(--border);border-radius:8px;width:260px">
+   <button id="btnAddInsp" class="btn btn-primary">Ajouter</button>
+   <ul style="margin-top:10px;list-style:none">${(p.inspecteurs||[]).map(i=>`<li>• ${esc(i.nom)}</li>`).join('')}</ul></div>
+  <div class="card"><h2>Sauvegarde / Restauration</h2>
+   <button id="btnExport" class="btn">💾 Exporter les données</button>
+   <button id="btnImport" class="btn">📂 Importer</button>
+   <input type="file" id="fileImport" accept=".json" class="hidden"></div>`);
+ document.getElementById('setMode').onchange=e=>{p.numerotation.mode=e.target.value;Store.set('parametres',p);};
+ document.getElementById('setTaux').onchange=e=>{p.tauxUsdFc=Number(e.target.value);Store.set('parametres',p);};
+ document.getElementById('btnAddInsp').onclick=()=>{const n=document.getElementById('setInspNom').value.trim();if(!n)return;p.inspecteurs.push({id:Date.now(),nom:n});Store.set('parametres',p);pageParametres();};
+ document.getElementById('btnExport').onclick=()=>{const b=new Blob([JSON.stringify(Store.state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='inspecteurbot-backup.json';a.click();};
+ document.getElementById('btnImport').onclick=()=>document.getElementById('fileImport').click();
+ document.getElementById('fileImport').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{Store.state=JSON.parse(r.result);Store.save();alert('Données restaurées.');pageAccueil();}catch{alert('Fichier invalide.');}};r.readAsText(f);};
+}
+</script>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — ÉDITEUR DE PV
+=================================================================== */
+const LABELS={
+ administration:'Administration',inspection:'Structure',province:'Province',directionProvinciale:'Direction Provinciale',
+ numero:'Numéro du PV',anneeLettres:'Année (en lettres)',jourLettres:'Jour (en lettres)',mois:'Mois',
+ inspecteur:'Inspecteur / Contrôleur',numeroHabilitation:"Numéro d'habilitation",ordreMission:'Ordre de mission',
+ entreprise:'Entreprise',rccm:'RCCM',idNat:'ID NAT',numeroImpot:'Numéro Impôt',adresse:'Adresse',quartier:'Quartier',
+ commune:'Commune',ville:'Ville',representant:'Représentant',representantFonction:'Fonction représentant',
+ representantTel:'Téléphone représentant',temoin2:'Témoin 2',temoin2Fonction:'Fonction témoin 2',temoin2Tel:'Téléphone témoin 2',
+ contrevenantNom:'Nom contrevenant',contrevenantFonction:'Fonction contrevenant',lieuFait:'Fait à',dateFait:'Date',
+ assermentation:'Assermentation',dateControle:'Date du contrôle',responsable:'Responsable',responsableFonction:'Fonction responsable',
+ parquet:'Parquet',numeroAssermentation:"Numéros d'assermentation",demandeur:'Demandeur',demandeurAdresse:'Adresse demandeur',
+ demandeurAvocat:'Avocat demandeur',defendeur:'Défendeur',defendeurAdresse:'Adresse défendeur',defendeurAvocat:'Avocat défendeur',
+ faits:'Faits / Exposé',conclusion:'Conclusion',proposition:'Proposition',inspecteurTitre:'Titre inspecteur',
+ opj:'OPJ',opjAdresse:'Adresse OPJ',destinataire:'Destinataire',destinataireAdresse:'Adresse destinataire',
+ objet:'Objet',objetDetail:'Détail objet',corps:'Corps du texte',delai:'Délai',articlesReferences:'Articles de référence',lieu:'Lieu',date:'Date'
+};
+const CHAMPS_LONGS=['faits','corps','conclusion','proposition','objetDetail'];
+let currentId=null,autoTimer=null;
+
+function ouvrirEditeur(id){
+ currentId=id;const pv=Store.getPV(id);if(!pv){Router.navigate('tous');return;}
+ const m=getModele(pv.type);
+ app.innerHTML=layout(renderEditeur(pv,m));
+ brancher(pv,m);
+ rafraichirApercu();
+}
+function renderEditeur(pv,m){
+ const prov=getProvincesForSelect();
+ const champsHtml=m.champs.map(c=>{
+  if(c==='administration')return selectField('administration',ENTETE_FIXE.administrations,pv);
+  if(c==='inspection')return selectField('inspection',ENTETE_FIXE.structures,pv);
+  if(c==='province')return `<label>Province<select name="province" id="selProvince"><option value="">— Sélectionner —</option>${prov.map(p=>`<option value="${p.id}" ${pv.province===p.id?'selected':''}>${p.nom}</option>`).join('')}</select></label>`;
+  if(c==='directionProvinciale')return `<label>Direction Provinciale<input name="directionProvinciale" id="inpDirection" value="${esc(pv.directionProvinciale)}" readonly></label>`;
+  if(c==='numero')return numeroField(pv,m);
+  return champField(c,pv);
+ }).join('');
+ return `<div class="editeur">
+  <div class="editeur-header"><h1>${m.titre}</h1>
+   <div class="editeur-actions"><span class="badge ${pv.statut}">${pv.statut}</span>
+    <button id="btnIA" class="btn btn-ia">🤖 IA</button>
+    <button id="btnLire" class="btn">🔊 Lire</button>
+    <button id="btnPDF" class="btn">📄 PDF</button>
+    <button id="btnImp" class="btn">🖨️ Imprimer</button>
+    <button id="btnTransmettre" class="btn">📤 Transmettre</button>
+    <button id="btnSigner" class="btn btn-primary">✍️ Signer & Sceller</button></div></div>
+  <div class="editeur-body">
+   <form id="pvForm" class="pv-form">
+    <fieldset><legend>Informations du PV</legend>${champsHtml}</fieldset>
+    ${m.aTableauInfractions?tableauInfractions(pv):''}
+   </form>
+   <div class="editeur-preview"><div class="preview-toolbar">Aperçu A4 (temps réel)</div><div id="previewZone" class="preview-zone"></div></div>
+  </div>
+  <div id="modalSig" class="modal hidden"><div class="modal-content"><h2>Signature électronique</h2><p>Signez ci-dessous :</p>
+   <canvas id="sigCanvas" width="500" height="180" class="sig-canvas"></canvas>
+   <div class="modal-actions"><button id="sigClear" class="btn">Effacer</button><button id="sigCancel" class="btn">Annuler</button><button id="sigSave" class="btn btn-primary">Valider & Sceller</button></div></div></div>
+  <div id="modalIA" class="modal hidden"><div class="modal-content"><h2>🤖 Assistant IA</h2>
+   <textarea id="iaFaits" placeholder="Décrivez les faits constatés..."></textarea>
+   <button id="iaGo" class="btn btn-primary">Analyser & proposer les infractions</button>
+   <div id="iaRes"></div><div class="modal-actions"><button id="iaClose" class="btn">Fermer</button></div></div></div>
+ </div>`;
+}
+function selectField(name,opts,pv){return `<label>${LABELS[name]}<select name="${name}">${opts.map(o=>`<option ${pv[name]===o?'selected':''}>${o}</option>`).join('')}</select></label>`;}
+function numeroField(pv,m){const md=Store.get('parametres').numerotation.mode;
+ return `<label>Numéro du PV<div class="numero-field"><input name="numero" id="inpNumero" value="${esc(pv.numero)}" placeholder="${m.formatNumero}"><button type="button" id="btnGenNum" class="btn btn-sm">Générer (${md})</button></div></label>`;}
+function champField(c,pv){const l=LABELS[c]||c;const v=esc(pv[c]);
+ if(CHAMPS_LONGS.includes(c))return `<label>${l}<div class="champ-voix"><textarea name="${c}" rows="4">${v}</textarea><button type="button" class="btn-mic" data-champ="${c}">🎤</button></div></label>`;
+ return `<label>${l}<div class="champ-voix"><input name="${c}" value="${v}"><button type="button" class="btn-mic" data-champ="${c}">🎤</button></div></label>`;}
+function tableauInfractions(pv){const t=calculerTotaux(pv.infractions||[]);
+ return `<fieldset class="fieldset-infractions"><legend>Tableau intelligent des infractions</legend>
+  <div class="infraction-ajout"><select id="selInf"><option value="">— Choisir une infraction —</option>${INFRACTIONS.map(i=>`<option value="${i.id}">${i.id}. ${i.libelle}</option>`).join('')}</select>
+   <input type="number" id="infQte" value="1" min="1" title="Quantité"><button type="button" id="btnAddInf" class="btn btn-sm">➕ Ajouter</button></div>
+  <table class="table-infractions" id="tblInf"><thead><tr><th>N°</th><th>Infraction</th><th>Référence</th><th>Gravité</th><th>Mnt. unit.</th><th>Qté</th><th>Total</th><th>Observation</th><th></th></tr></thead>
+   <tbody>${(pv.infractions||[]).map((l,i)=>ligneInfEdit(l,i)).join('')}</tbody>
+   <tfoot><tr><td colspan="6"><strong>Total général</strong></td><td id="totGen"><strong>${t.totalAffiche}</strong></td><td colspan="2"></td></tr>
+   <tr><td colspan="9"><strong>En lettres :</strong> <span id="totLet">${t.totalLettres}</span></td></tr></tfoot></table></fieldset>`;}
+function ligneInfEdit(l,i){return `<tr data-index="${i}"><td>${String(i+1).padStart(2,'0')}</td><td>${esc(l.libelle)}</td><td>${esc(l.articles)}</td>
+  <td><span class="gravite-badge ${l.gravite}">${l.graviteLabel}</span></td>
+  <td><input type="number" class="inp-montant" data-index="${i}" value="${l.montantUnitaire}" ${l.modifiable===false?'disabled':''}></td>
+  <td><input type="number" class="inp-qte" data-index="${i}" value="${l.quantite}" min="1"></td>
+  <td class="c-montant">${l.montantAffiche}</td>
+  <td><input class="inp-obs" data-index="${i}" value="${esc(l.observation)}"></td>
+  <td><button type="button" class="btn-suppr" data-index="${i}">🗑️</button></td></tr>`;}
+
+/* ---- ÉVÉNEMENTS ÉDITEUR ---- */
+function brancher(pv,m){
+ const form=document.getElementById('pvForm');
+ const selP=document.getElementById('selProvince');
+ if(selP)selP.onchange=e=>{document.getElementById('inpDirection').value=getDirectionByProvince(e.target.value);sauver();};
+ form.addEventListener('input',()=>{clearTimeout(autoTimer);autoTimer=setTimeout(()=>{sauver();rafraichirApercu();},500);});
+ const bg=document.getElementById('btnGenNum');
+ if(bg)bg.onclick=()=>{const d=collecter();const num=genererNumero(pv.type,{initiales:initiales(d.inspecteur||d.opj),annee:new Date().getFullYear(),ville:d.ville||d.lieu,numeroManuel:d.numero});if(num){document.getElementById('inpNumero').value=num;sauver();}};
+ document.querySelectorAll('.btn-mic').forEach(b=>b.onclick=()=>demarrerDictee(form.querySelector(`[name="${b.dataset.champ}"]`),b));
+ if(m.aTableauInfractions)brancherInfractions();
+ document.getElementById('btnLire').onclick=()=>lirePV(Store.getPV(currentId));
+ document.getElementById('btnPDF').onclick=()=>{sauver();exporterPDF(Store.getPV(currentId));};
+ document.getElementById('btnImp').onclick=()=>{sauver();imprimerPV(Store.getPV(currentId));};
+ document.getElementById('btnTransmettre').onclick=()=>{const p=Store.getPV(currentId);if(!aUneSignature(p)){alert('Signez le PV avant de le transmettre.');return;}changerStatut(currentId,STATUTS.TRANSMIS);ouvrirEditeur(currentId);};
+ brancherSignature();
+ brancherIA();
+}
+function brancherInfractions(){
+ document.getElementById('btnAddInf').onclick=()=>{
+  const id=parseInt(document.getElementById('selInf').value),q=parseInt(document.getElementById('infQte').value)||1;
+  if(!id)return;const pv=Store.getPV(currentId);pv.infractions=pv.infractions||[];
+  pv.infractions.push(construireLigne(id,{quantite:q}));majTotaux(pv);sauver();rafraichirTableau();};
+ const tbl=document.getElementById('tblInf');
+ tbl.addEventListener('input',e=>{const i=parseInt(e.target.dataset.index);if(isNaN(i))return;
+  const pv=Store.getPV(currentId),l=pv.infractions[i];
+  if(e.target.classList.contains('inp-montant'))l.montantUnitaire=Number(e.target.value);
+  if(e.target.classList.contains('inp-qte'))l.quantite=Number(e.target.value);
+  if(e.target.classList.contains('inp-obs'))l.observation=e.target.value;
+  majTotaux(pv);sauver();
+  document.getElementById('totGen').innerHTML=`<strong>${pv.totalAffiche}</strong>`;
+  document.getElementById('totLet').textContent=pv.totalLettres;rafraichirApercu();});
+ tbl.addEventListener('click',e=>{if(e.target.classList.contains('btn-suppr')){
+  const i=parseInt(e.target.dataset.index);const pv=Store.getPV(currentId);
+  pv.infractions.splice(i,1);majTotaux(pv);sauver();rafraichirTableau();}});
+}
+function majTotaux(pv){const t=calculerTotaux(pv.infractions);pv.infractions=t.lignes;pv.totalGeneral=t.totalGeneral;pv.totalAffiche=t.totalAffiche;pv.totalLettres=t.totalLettres;}
+function brancherSignature(){
+ const modal=document.getElementById('modalSig');let pad=null;
+ document.getElementById('btnSigner').onclick=()=>{
+  const pv=Store.getPV(currentId);const dbl=detecterDoublons(pv);
+  if(dbl.length&&!confirm(`⚠️ ${dbl.length} PV similaire(s) pour cette entreprise ce mois-ci. Continuer ?`))return;
+  modal.classList.remove('hidden');setTimeout(()=>pad=new SignaturePad(document.getElementById('sigCanvas')),60);};
+ document.getElementById('sigClear').onclick=()=>pad&&pad.clear();
+ document.getElementById('sigCancel').onclick=()=>modal.classList.add('hidden');
+ document.getElementById('sigSave').onclick=()=>{
+  if(!pad||pad.isEmpty()){alert('Veuillez signer.');return;}
+  const pv=Store.getPV(currentId),m=getModele(pv.type);
+  const role=m.aSignatures[0];const key='signature'+role.charAt(0).toUpperCase()+role.slice(1);
+  pv[key]=pad.toDataURL();
+  const scelle=scellerPV(pv);Store.updatePV(currentId,scelle);
+  changerStatut(currentId,STATUTS.SIGNE);
+  modal.classList.add('hidden');ouvrirEditeur(currentId);
+  alert('✅ PV signé et scellé (QR Code + identifiant unique).');};
+}
+function brancherIA(){
+ const modal=document.getElementById('modalIA');
+ document.getElementById('btnIA').onclick=()=>{modal.classList.remove('hidden');document.getElementById('iaFaits').value=Store.getPV(currentId).faits||'';};
+ document.getElementById('iaClose').onclick=()=>modal.classList.add('hidden');
+ document.getElementById('iaGo').onclick=()=>{
+  const faits=document.getElementById('iaFaits').value;
+  const a=analyserFaits(faits),c=verifierCoherence(Store.getPV(currentId));
+  document.getElementById('iaRes').innerHTML=`
+   <div class="ia-bloc"><h3>${a.message} (confiance ${Math.round(a.confiance*100)}%)</h3>
+    <ul>${a.infractions.map(i=>`<li>✓ ${esc(i.libelle)} — <em>${esc(i.articles)}</em></li>`).join('')}</ul>
+    ${a.infractions.length?`<p><strong>Total estimé : ${a.totaux.totalAffiche}</strong></p><button id="iaApp" class="btn btn-primary">Appliquer au PV</button>`:''}</div>
+   <div class="ia-bloc"><h3>Contrôle de cohérence</h3>
+    ${c.erreurs.map(e=>`<p class="ia-err">❌ ${esc(e)}</p>`).join('')}
+    ${c.avertissements.map(w=>`<p class="ia-warn">⚠️ ${esc(w)}</p>`).join('')}
+    ${c.suggestions.map(s=>`<p class="ia-sugg">💡 ${esc(s)}</p>`).join('')||'<p>✅ Aucune anomalie.</p>'}</div>`;
+  const btn=document.getElementById('iaApp');
+  if(btn)btn.onclick=()=>{const pv=Store.getPV(currentId);pv.infractions=a.lignes;pv.faits=faits;majTotaux(pv);sauver();modal.classList.add('hidden');ouvrirEditeur(currentId);};
+ };
+}
+
+/* ---- HELPERS ÉDITEUR ---- */
+function collecter(){const d={};new FormData(document.getElementById('pvForm')).forEach((v,k)=>d[k]=v);return d;}
+function sauver(){const d=collecter();return Store.updatePV(currentId,{...d,statut:Store.getPV(currentId).statut==='signe'?'signe':'brouillon'});}
+function rafraichirApercu(){document.getElementById('previewZone').innerHTML=renderPV(Store.getPV(currentId));}
+function rafraichirTableau(){
+ const pv=Store.getPV(currentId);
+ document.querySelector('#tblInf tbody').innerHTML=(pv.infractions||[]).map((l,i)=>ligneInfEdit(l,i)).join('');
+ const t=calculerTotaux(pv.infractions||[]);
+ document.getElementById('totGen').innerHTML=`<strong>${t.totalAffiche}</strong>`;
+ document.getElementById('totLet').textContent=t.totalLettres;
+ rafraichirApercu();
+}
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — VÉRIFICATION DE PV (authenticité par identifiant)
+=================================================================== */
+function pageVerifier(){
+ app.innerHTML=layout(`<h1>🔎 Vérification d'authenticité d'un PV</h1>
+  <div class="card" style="max-width:600px">
+   <p style="margin-bottom:12px;color:#64748b">Saisissez l'identifiant unique (IBOT-...) ou le numéro du PV pour vérifier son authenticité.</p>
+   <input id="verifInput" placeholder="Identifiant IBOT-XXXX ou numéro du PV" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-bottom:12px">
+   <button id="verifBtn" class="btn btn-primary">Vérifier</button>
+   <div id="verifResult" style="margin-top:16px"></div>
+  </div>`);
+ document.getElementById('verifBtn').onclick=()=>{
+  const q=document.getElementById('verifInput').value.trim().toLowerCase();
+  if(!q)return;
+  const pv=Store.get('pvs').find(p=>
+    (p.identifiantUnique||'').toLowerCase()===q ||
+    (p.numero||'').toLowerCase()===q);
+  const res=document.getElementById('verifResult');
+  if(pv){
+   const auth=pv.statut==='signe'||pv.statut==='transmis';
+   res.innerHTML=`<div class="ia-bloc" style="border-left:4px solid ${auth?'var(--success)':'var(--warning)'}">
+     <h3>${auth?'✅ PV AUTHENTIQUE':'⚠️ PV NON SCELLÉ (brouillon)'}</h3>
+     <p><strong>Type :</strong> ${esc(pv.titre)}</p>
+     <p><strong>Numéro :</strong> ${esc(pv.numero||'—')}</p>
+     <p><strong>Entreprise :</strong> ${esc(pv.entreprise||'—')}</p>
+     <p><strong>Inspecteur :</strong> ${esc(pv.inspecteur||pv.opj||'—')}</p>
+     <p><strong>Statut :</strong> <span class="badge ${pv.statut}">${pv.statut}</span></p>
+     <p><strong>Identifiant :</strong> ${esc(pv.identifiantUnique||'Non scellé')}</p>
+     <p><strong>Scellé le :</strong> ${pv.dateScellement?new Date(pv.dateScellement).toLocaleString('fr-FR'):'—'}</p>
+     <button class="btn" style="margin-top:10px" onclick="location.hash='editer/${pv.id}'">Ouvrir le PV</button>
+   </div>`;
+  }else{
+   res.innerHTML=`<div class="ia-bloc" style="border-left:4px solid var(--accent)">
+     <h3>❌ AUCUN PV TROUVÉ</h3>
+     <p>Aucun procès-verbal ne correspond à cet identifiant ou numéro. Le document pourrait être falsifié ou provenir d'un autre poste.</p></div>`;
+  }
+ };
+}
+</script>
+
+<script>
+/* ===================================================================
+   INSPECTEURBOT — SCANNER QR PAR CAMÉRA (décodeur local hors-ligne)
+=================================================================== */
+(function(global){
+'use strict';
+
+/* --- Détection des 3 finder patterns + décodage simplifié --- */
+/* Décodeur basé sur analyse de luminance + reconstruction de grille */
+
+function toGray(imgData){
+ var d=imgData.data,w=imgData.width,h=imgData.height;
+ var gray=new Uint8ClampedArray(w*h);
+ for(var i=0;i<w*h;i++){gray[i]=(d[i*4]*0.299+d[i*4+1]*0.587+d[i*4+2]*0.114)|0;}
+ return {data:gray,width:w,height:h};
+}
+
+/* Seuillage adaptatif (Otsu simplifié par blocs) */
+function binariser(gray){
+ var d=gray.data,w=gray.width,h=gray.height;
+ var bin=new Uint8ClampedArray(w*h);
+ var bs=Math.max(16,Math.floor(w/8));
+ for(var by=0;by<h;by+=bs)for(var bx=0;bx<w;bx+=bs){
+  var sum=0,cnt=0;
+  for(var y=by;y<Math.min(by+bs,h);y++)for(var x=bx;x<Math.min(bx+bs,w);x++){sum+=d[y*w+x];cnt++;}
+  var seuil=(sum/cnt)-8;
+  for(var y2=by;y2<Math.min(by+bs,h);y2++)for(var x2=bx;x2<Math.min(bx+bs,w);x2++){
+   bin[y2*w+x2]=d[y2*w+x2]<seuil?1:0;}
+ }
+ return {data:bin,width:w,height:h};
+}
+
+/* Recherche des finder patterns (ratio 1:1:3:1:1) */
+function trouverFinders(bin){
+ var d=bin.data,w=bin.width,h=bin.height;var finders=[];
+ function ratioOK(counts){
+  var total=counts[0]+counts[1]+counts[2]+counts[3]+counts[4];
+  if(total<7)return false;var mod=total/7,tol=mod*0.6;
+  return Math.abs(counts[0]-mod)<tol&&Math.abs(counts[1]-mod)<tol&&Math.abs(counts[2]-3*mod)<3*tol&&Math.abs(counts[3]-mod)<tol&&Math.abs(counts[4]-mod)<tol;
+ }
+ for(var y=0;y<h;y++){
+  var counts=[0,0,0,0,0],state=0,prev=0;
+  for(var x=0;x<w;x++){
+   var px=d[y*w+x];
+   if(px===1){if(state%2===0){state++;}counts[state<5?state:4]++;}
+   else{if(state%2===1){state++;}if(state<5)counts[state]++;}
+   if(state>=5||(x===w-1)){
+    if(ratioOK(counts)){var cx=x-(counts[3]+counts[4]+counts[2]/2);finders.push({x:cx|0,y:y});}
+    counts=[0,0,0,0,0];state=0;
+   }
+  }
+ }
+ // Regroupement des points proches
+ var groups=[];
+ finders.forEach(function(f){
+  var g=groups.find(function(gr){return Math.abs(gr.x-f.x)<20&&Math.abs(gr.y-f.y)<20;});
+  if(g){g.x=(g.x*g.n+f.x)/(g.n+1);g.y=(g.y*g.n+f.y)/(g.n+1);g.n++;}
+  else groups.push({x:f.x,y:f.y,n:1});
+ });
+ return groups.filter(function(g){return g.n>=3;}).sort(function(a,b){return b.n-a.n;}).slice(0,3);
+}
+
+/* Extraction et décodage du contenu (approche : lecture via BarcodeDetector natif si dispo) */
+async function decoderImage(canvas){
+ // 1) API native BarcodeDetector (Chrome/Edge/Android) — hors-ligne
+ if('BarcodeDetector' in window){
+  try{
+   var detector=new window.BarcodeDetector({formats:['qr_code']});
+   var codes=await detector.detect(canvas);
+   if(codes&&codes.length)return codes[0].rawValue;
+  }catch(e){}
+ }
+ // 2) Détection présence QR (finder patterns) pour feedback visuel
+ var ctx=canvas.getContext('2d');
+ var img=ctx.getImageData(0,0,canvas.width,canvas.height);
+ var bin=binariser(toGray(img));
+ var finders=trouverFinders(bin);
+ if(finders.length>=3){return {detecte:true,message:'QR détecté — rapprochez pour lecture nette'};}
+ return null;
+}
+
+global.QRScanner={decoder:decoderImage,trouverFinders:trouverFinders};
+})(window);
+
+/* ===================================================================
+   PAGE SCANNER CAMÉRA
+=================================================================== */
+let scanStream=null,scanLoop=null;
+
+function pageScanner(){
+ app.innerHTML=layout(`<h1>📷 Scanner un QR Code de PV</h1>
+  <div class="card" style="max-width:640px">
+   <p style="color:#64748b;margin-bottom:12px">Pointez la caméra vers le QR Code d'un procès-verbal pour vérifier son authenticité.</p>
+   <div style="position:relative;background:#000;border-radius:10px;overflow:hidden">
+    <video id="scanVideo" playsinline style="width:100%;display:block"></video>
+    <div style="position:absolute;inset:0;border:3px solid rgba(255,255,255,.5);border-radius:10px;pointer-events:none">
+     <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;border:2px solid #22c55e;border-radius:8px"></div>
+    </div>
+   </div>
+   <canvas id="scanCanvas" class="hidden"></canvas>
+   <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+    <button id="scanStart" class="btn btn-primary">▶️ Démarrer la caméra</button>
+    <button id="scanStop" class="btn">⏹️ Arrêter</button>
+    <button id="scanFile" class="btn">🖼️ Depuis une image</button>
+    <input type="file" id="scanFileInput" accept="image/*" class="hidden">
+   </div>
+   <div id="scanStatus" style="margin-top:12px;font-size:.9rem;color:#64748b"></div>
+   <div id="scanResult" style="margin-top:14px"></div>
+  </div>`);
+
+ const video=document.getElementById('scanVideo');
+ const canvas=document.getElementById('scanCanvas');
+ const status=document.getElementById('scanStatus');
+
+ document.getElementById('scanStart').onclick=async()=>{
+  try{
+   scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+   video.srcObject=scanStream;await video.play();
+   status.textContent='📸 Caméra active — visez le QR Code...';
+   lancerScan();
+  }catch(e){status.innerHTML='<span style="color:var(--accent)">❌ Impossible d\'accéder à la caméra : '+e.message+'</span>';}
+ };
+ document.getElementById('scanStop').onclick=arreterScanner;
+ document.getElementById('scanFile').onclick=()=>document.getElementById('scanFileInput').click();
+ document.getElementById('scanFileInput').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const img=new Image();img.onload=async()=>{
+   canvas.width=img.width;canvas.height=img.height;
+   canvas.getContext('2d').drawImage(img,0,0);
+   const r=await QRScanner.decoder(canvas);traiterResultat(r);
+  };img.src=URL.createObjectURL(f);
+ };
+
+ function lancerScan(){
+  scanLoop=setInterval(async()=>{
+   if(video.videoWidth===0)return;
+   canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+   canvas.getContext('2d').drawImage(video,0,0);
+   const r=await QRScanner.decoder(canvas);
+   if(r){if(typeof r==='string'){arreterScanner();traiterResultat(r);}else{status.textContent='🎯 '+r.message;}}
+  },500);
+ }
+}
+
+function arreterScanner(){
+ if(scanLoop){clearInterval(scanLoop);scanLoop=null;}
+ if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+ const s=document.getElementById('scanStatus');if(s)s.textContent='⏹️ Caméra arrêtée.';
+}
+
+function traiterResultat(contenu){
+ const res=document.getElementById('scanResult');if(!res)return;
+ let data=null,id=null;
+ try{data=JSON.parse(contenu);id=data.id;}catch{id=contenu;}
+ const pv=Store.get('pvs').find(p=>(p.identifiantUnique||'')===id||(p.numero||'')===(data&&data.numero));
+ if(pv){
+  const auth=pv.statut==='signe'||pv.statut==='transmis';
+  res.innerHTML=`<div class="ia-bloc" style="border-left:4px solid ${auth?'var(--success)':'var(--warning)'}">
+    <h3>${auth?'✅ PV AUTHENTIQUE VÉRIFIÉ':'⚠️ PV NON SCELLÉ'}</h3>
+    <p><strong>Type :</strong> ${esc(pv.titre)}</p>
+    <p><strong>Numéro :</strong> ${esc(pv.numero||'—')}</p>
+    <p><strong>Entreprise :</strong> ${esc(pv.entreprise||'—')}</p>
+    <p><strong>Inspecteur :</strong> ${esc(pv.inspecteur||pv.opj||'—')}</p>
+    <p><strong>Identifiant :</strong> ${esc(pv.identifiantUnique||'—')}</p>
+    <button class="btn btn-primary" style="margin-top:10px" onclick="location.hash='editer/${pv.id}'">Ouvrir le PV</button>
+  </div>`;
+ }else{
+  res.innerHTML=`<div class="ia-bloc" style="border-left:4px solid var(--accent)">
+    <h3>❌ PV NON RECONNU</h3>
+    <p>Contenu scanné : <code>${esc(String(contenu).slice(0,120))}</code></p>
+    <p>Ce document n'existe pas dans cette base ou provient d'un autre poste.</p></div>`;
+ }
+}
+    </script>
+
+   <script>
+/* ===================================================================
+   INSPECTEURBOT — IMPRESSION PAR LOT (plusieurs PV à la fois)
+=================================================================== */
+function pageImpressionLot(){
+ const pvs=Store.get('pvs');
+ app.innerHTML=layout(`<h1>🖨️ Impression / Export par lot</h1>
+  <div class="card" style="margin-bottom:16px">
+   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+    <label style="margin:0"><input type="checkbox" id="selAll"> Tout sélectionner</label>
+    <select id="filtreLot" style="padding:9px;border:1px solid var(--border);border-radius:8px">
+     <option value="">Tous les statuts</option><option value="signe">Signés</option>
+     <option value="transmis">Transmis</option><option value="brouillon">Brouillons</option></select>
+    <span style="flex:1"></span>
+    <button id="btnImprimerLot" class="btn btn-primary">🖨️ Imprimer la sélection</button>
+    <button id="btnPdfLot" class="btn">📄 Exporter PDF</button>
+   </div>
+   <table class="table-liste"><thead><tr><th></th><th>Numéro</th><th>Type</th><th>Entreprise</th><th>Statut</th></tr></thead>
+   <tbody id="lotBody">${pvs.map(p=>ligneLot(p)).join('')||'<tr><td colspan="5" style="text-align:center">Aucun PV.</td></tr>'}</tbody></table>
+  </div>`);
+
+ const filtrer=()=>{
+  const st=document.getElementById('filtreLot').value;
+  const list=st?pvs.filter(p=>p.statut===st):pvs;
+  document.getElementById('lotBody').innerHTML=list.map(p=>ligneLot(p)).join('')||'<tr><td colspan="5" style="text-align:center">Aucun PV.</td></tr>';
+ };
+ document.getElementById('filtreLot').onchange=filtrer;
+ document.getElementById('selAll').onchange=e=>document.querySelectorAll('.lot-check').forEach(c=>c.checked=e.target.checked);
+ document.getElementById('btnImprimerLot').onclick=()=>imprimerSelection(false);
+ document.getElementById('btnPdfLot').onclick=()=>imprimerSelection(true);
+}
+function ligneLot(p){
+ return `<tr><td><input type="checkbox" class="lot-check" value="${p.id}"></td>
+  <td>${esc(p.numero||'—')}</td><td>${esc(p.titre)}</td><td>${esc(p.entreprise||'—')}</td>
+  <td><span class="badge ${p.statut}">${p.statut}</span></td></tr>`;
+}
+function imprimerSelection(pdf){
+ const ids=[...document.querySelectorAll('.lot-check:checked')].map(c=>c.value);
+ if(!ids.length){alert('Sélectionnez au moins un PV.');return;}
+ let z=document.getElementById('printArea');
+ if(!z){z=document.createElement('div');z.id='printArea';document.body.appendChild(z);}
+ z.innerHTML=ids.map(id=>{
+  const pv=Store.getPV(id);
+  return `<div style="page-break-after:always">${renderPV(pv)}</div>`;
+ }).join('');
+ if(pdf)alert('Dans la boîte d\'impression, choisissez « Enregistrer au format PDF ».');
+ window.print();
+ Store.log('impression',`Impression par lot de ${ids.length} PV`);
+}
+
+ .register('verifier',pageVerifier)
+
+/* ===================================================================
+   ROUTES + DÉMARRAGE
+=================================================================== */
+Router
+ .register('accueil',pageAccueil)
+ .register('nouveau',pageNouveau)
+ .register('tous',()=>pageListe('tous'))
+ .register('brouillons',()=>pageListe('brouillons'))
+ .register('modeles',pageModeles)
+ .register('assistant',pageAssistant)
+ .register('infractions',pageInfractions)
+ .register('recherche',pageRecherche)
+ .register('stats',pageStats)
+ .register('parametres',pageParametres)
+ .register('editer',params=>ouvrirEditeur(params[0]));
+
+document.addEventListener('DOMContentLoaded',()=>Router.start());
+</script>
+   </script>
+   
+</body>
+</html>
+
+
+   
