@@ -11,6 +11,11 @@ import { creerPV } from '../modules/pvManager.js';
 import { renderConstatInfraction } from '../templates/pvConstatInfraction.js';
 import * as AI from '../ai/aiEngine.js';
 
+console.log("✅ app.js chargé");
+window.onerror = (msg, src, line) => {
+  console.error("ERREUR :", msg, src, line);
+};
+
 const app = document.getElementById('app');
 
 function layout(contenu) {
