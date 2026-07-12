@@ -1,0 +1,67 @@
+/* ===== ÉDITEUR ===== */
+.editeur-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.editeur-header h1 { font-size: 1.3rem; color: var(--primary-dark); }
+.editeur-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.editeur-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+/* Formulaire */
+.pv-form fieldset { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; background: #fff; }
+.pv-form legend { font-weight: 700; color: var(--primary); padding: 0 8px; }
+.pv-form label { display: block; margin-bottom: 12px; font-size: .85rem; font-weight: 600; color: #475569; }
+.pv-form input, .pv-form select, .pv-form textarea {
+  width: 100%; padding: 9px 11px; margin-top: 4px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: .9rem; font-weight: 400; font-family: inherit;
+}
+.pv-form input:focus, .pv-form select:focus, .pv-form textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(10,61,145,.1); }
+.pv-form input[readonly] { background: var(--gray-light); }
+
+.champ-voix { position: relative; display: flex; gap: 6px; }
+.champ-voix input, .champ-voix textarea { flex: 1; }
+.btn-mic { background: var(--gray-light); border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; font-size: 1rem; }
+.btn-mic.actif { background: var(--accent); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.numero-field { display: flex; gap: 8px; }
+.numero-field input { flex: 1; }
+
+/* Tableau infractions */
+.infraction-ajout { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.infraction-ajout select { flex: 1; min-width: 200px; }
+.infraction-ajout input { width: 70px; }
+.table-infractions { font-size: .82rem; }
+.table-infractions th, .table-infractions td { padding: 8px; border: 1px solid var(--border); }
+.table-infractions input { width: 100%; padding: 5px; }
+.inp-montant, .inp-qte { max-width: 80px; }
+.btn-suppr { background: transparent; border: none; font-size: 1rem; }
+
+/* Aperçu */
+.editeur-preview { position: sticky; top: 20px; }
+.preview-toolbar { background: var(--primary-dark); color: #fff; padding: 8px 14px; border-radius: 8px 8px 0 0; font-size: .8rem; }
+.preview-zone { background: #64748b; padding: 20px; border-radius: 0 0 8px 8px; max-height: 80vh; overflow-y: auto; }
+.preview-zone .a4 { transform: scale(.7); transform-origin: top center; box-shadow: 0 4px 20px rgba(0,0,0,.3); }
+
+/* IA */
+.ia-resultat { margin: 16px 0; }
+.ia-bloc { background: var(--gray-light); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+.ia-bloc h3 { font-size: .95rem; margin-bottom: 8px; }
+.ia-bloc ul { list-style: none; }
+.ia-bloc li { padding: 4px 0; font-size: .85rem; }
+.ia-err { color: var(--accent); }
+.ia-warn { color: var(--warning); }
+.ia-sugg { color: var(--primary); }
+#iaFaits { width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .editeur-body { grid-template-columns: 1fr; }
+  .editeur-preview { position: static; }
+  .dash-cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .ib-shell { flex-direction: column; }
+  .ib-sidebar { width: 100%; height: auto; position: static; }
+  .ib-sidebar ul { display: flex; flex-wrap: wrap; }
+  .ib-sidebar li a { border-left: none; border-bottom: 3px solid transparent; }
+  .ib-main { max-width: 100%; padding: 16px; }
+  .preview-zone .a4 { transform: scale(.45); }
+}
