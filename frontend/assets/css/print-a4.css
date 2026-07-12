@@ -1,0 +1,38 @@
+/* Format A4 strict pour impression et PDF */
+.a4 {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm 18mm;
+  margin: 0 auto;
+  background: #fff;
+  box-sizing: border-box;
+  font-family: "Times New Roman", serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+}
+.pv-entete { display: flex; gap: 12px; align-items: flex-start; }
+.pv-entete .rdc { font-weight: bold; }
+.pv-entete .bleu { color: #1a4b9c; font-weight: bold; }
+.pv-entete .rouge { color: #c0202a; font-weight: bold; }
+.pv-titre { text-align: center; font-size: 15pt; font-weight: bold; text-decoration: underline; margin: 18px 0 4px; }
+.pv-numero { text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 16px; }
+.pv-corps p.indent { text-indent: 2.5em; text-align: justify; }
+.pv-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 11pt; }
+.pv-table th, .pv-table td { border: 1px solid #000; padding: 6px 8px; vertical-align: top; }
+.pv-table .c-num { text-align: center; width: 40px; }
+.pv-table .c-montant { text-align: right; white-space: nowrap; }
+.pv-signatures { display: flex; justify-content: space-between; margin-top: 40px; }
+.sig-zone { min-height: 60px; border-bottom: 1px solid #999; margin-top: 8px; position: relative; }
+.sig-img { max-height: 58px; }
+.cachet { position: absolute; max-width: 120px; opacity: 0.85; }
+.pv-qr { position: absolute; bottom: 15mm; right: 18mm; text-align: center; font-size: 8pt; }
+.pv-qr img { width: 90px; height: 90px; }
+
+@media print {
+  body * { visibility: hidden; }
+  #pv-render, #pv-render * { visibility: visible; }
+  #pv-render { position: absolute; top: 0; left: 0; }
+  .a4 { margin: 0; box-shadow: none; }
+  @page { size: A4; margin: 0; }
+           }
