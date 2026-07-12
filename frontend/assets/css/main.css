@@ -1,0 +1,74 @@
+/* ===== VARIABLES & RESET ===== */
+:root {
+  --primary: #0a3d91;
+  --primary-dark: #072a66;
+  --accent: #c0202a;
+  --success: #2e7d32;
+  --warning: #ed6c02;
+  --gray: #64748b;
+  --gray-light: #f1f5f9;
+  --border: #e2e8f0;
+  --shadow: 0 2px 8px rgba(0,0,0,.08);
+  --radius: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  background: #f8fafc; color: #1e293b; line-height: 1.5;
+}
+a { color: var(--primary); text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
+
+/* ===== SHELL ===== */
+.ib-shell { display: flex; min-height: 100vh; }
+.ib-sidebar {
+  width: 250px; background: var(--primary-dark); color: #fff;
+  padding: 20px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.ib-logo { font-weight: 700; font-size: 1.2rem; padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,.15); }
+.ib-sidebar ul { list-style: none; margin-top: 12px; }
+.ib-sidebar li a {
+  display: block; color: #cbd5e1; padding: 12px 20px; transition: .2s;
+  border-left: 3px solid transparent;
+}
+.ib-sidebar li a:hover { background: rgba(255,255,255,.08); color: #fff; border-left-color: var(--accent); }
+.ib-main { flex: 1; padding: 28px; max-width: calc(100vw - 250px); }
+
+/* ===== BOUTONS ===== */
+.btn {
+  padding: 9px 16px; border: 1px solid var(--border); background: #fff;
+  border-radius: 8px; font-size: .9rem; transition: .2s; color: #334155;
+}
+.btn:hover { background: var(--gray-light); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-ia { background: #6d28d9; color: #fff; border-color: #6d28d9; }
+.btn-sm { padding: 6px 12px; font-size: .8rem; }
+
+/* ===== BADGES ===== */
+.badge { padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600; text-transform: capitalize; }
+.badge.brouillon { background: #fef3c7; color: #92400e; }
+.badge.en_cours { background: #dbeafe; color: #1e40af; }
+.badge.signe { background: #d1fae5; color: #065f46; }
+.badge.transmis { background: #e0e7ff; color: #3730a3; }
+.badge.archive { background: #e2e8f0; color: #475569; }
+
+.gravite-badge { padding: 2px 8px; border-radius: 6px; font-size: .72rem; color: #fff; font-weight: 600; }
+.gravite-badge.legere { background: #4caf50; }
+.gravite-badge.moyenne { background: #ff9800; }
+.gravite-badge.grave { background: #f44336; }
+.gravite-badge.tres_grave { background: #b71c1c; }
+
+/* ===== TABLES ===== */
+.table-liste, .table-infractions { width: 100%; border-collapse: collapse; background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.table-liste th, .table-liste td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+.table-liste th { background: var(--gray-light); font-size: .85rem; text-transform: uppercase; color: var(--gray); }
+.table-liste tr { cursor: pointer; transition: .15s; }
+.table-liste tr:hover { background: #f8fafc; }
+
+/* ===== MODALES ===== */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal.hidden { display: none; }
+.modal-content { background: #fff; padding: 28px; border-radius: 14px; max-width: 640px; width: 90%; max-height: 88vh; overflow-y: auto; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
+.sig-canvas { border: 2px dashed var(--border); border-radius: 8px; width: 100%; touch-action: none; background: #fff; }
