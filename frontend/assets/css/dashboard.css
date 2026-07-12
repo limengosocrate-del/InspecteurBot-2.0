@@ -1,0 +1,18 @@
+.dashboard h1 { margin-bottom: 24px; color: var(--primary-dark); }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.kpi { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); text-align: center; border-top: 3px solid var(--primary); transition: .2s; }
+.kpi:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,.12); }
+.kpi-ico { font-size: 1.8rem; }
+.kpi-val { font-size: 1.8rem; font-weight: 700; color: var(--primary-dark); margin: 6px 0; }
+.kpi-lbl { font-size: .85rem; color: var(--gray); }
+.dash-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.card { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+.card h2 { font-size: 1.05rem; margin-bottom: 14px; color: var(--primary-dark); }
+.liste-pv, .activite { list-style: none; }
+.liste-pv li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.activite li { padding: 6px 0; font-size: .85rem; border-bottom: 1px solid var(--border); }
+.activite em { color: var(--gray); font-size: .75rem; }
+
+.modeles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 16px; }
+.modele-card { background: #fff; border: 2px solid var(--border); border-radius: var(--radius); padding: 28px 20px; font-size: 1rem; font-weight: 600; color: var(--primary-dark); transition: .2s; text-align: left; }
+.modele-card:hover { border-color: var(--primary); background: #f0f5ff; transform: translateY(-2px); }
