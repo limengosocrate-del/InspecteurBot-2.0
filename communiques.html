@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<title>InspecteurBot RDC | Communiqués Officiels</title>
+
+<!-- Font Awesome -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<style>
+
+/*==================================================
+INSPECTEURBOT RDC
+MODULE COMMUNIQUÉS OFFICIELS
+==================================================*/
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:#031B58;
+color:#ffffff;
+
+}
+
+/*=========================================
+HEADER
+=========================================*/
+
+.header{
+
+background:linear-gradient(135deg,#02123e,#063b98,#0a63d8);
+padding:35px 20px;
+text-align:center;
+box-shadow:0 8px 25px rgba(0,0,0,.35);
+
+}
+
+.header img{
+
+width:90px;
+margin-bottom:12px;
+
+}
+
+.header h1{
+
+font-size:28px;
+font-weight:700;
+color:#FFD700;
+
+}
+
+.header p{
+
+margin-top:8px;
+font-size:15px;
+color:#dfe9ff;
+
+}
+
+/*=========================================
+BARRE DE RECHERCHE
+=========================================*/
+
+.search-box{
+
+width:92%;
+max-width:850px;
+margin:25px auto;
+
+display:flex;
+align-items:center;
+
+background:#ffffff;
+border-radius:60px;
+
+padding:6px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.30);
+
+}
+
+.search-box input{
+
+flex:1;
+border:none;
+outline:none;
+
+padding:15px;
+
+font-size:15px;
+
+border-radius:60px;
+
+}
+
+.search-box button{
+
+width:60px;
+height:60px;
+
+border:none;
+cursor:pointer;
+
+border-radius:50%;
+
+background:#FFD700;
+color:#062A73;
+
+font-size:22px;
+
+transition:.35s;
+
+}
+
+.search-box button:hover{
+
+transform:scale(1.05);
+
+background:#ffc400;
+
+}
+
+/*=========================================
+CATÉGORIES
+=========================================*/
+
+.categories{
+
+display:flex;
+
+overflow-x:auto;
+
+gap:12px;
+
+padding:15px;
+
+}
+
+.categories::-webkit-scrollbar{
+
+display:none;
+
+}
+
+.category{
+
+white-space:nowrap;
+
+padding:12px 22px;
+
+border-radius:50px;
+
+background:#0a3c9e;
+
+cursor:pointer;
+
+font-size:14px;
+
+font-weight:600;
+
+transition:.35s;
+
+border:1px solid rgba(255,255,255,.25);
+
+}
+
+.category:hover{
+
+background:#FFD700;
+color:#04215f;
+
+}
+
+.category.active{
+
+background:#FFD700;
+
+color:#04215f;
+
+}
+
+/*=========================================
+SECTION PRINCIPALE
+=========================================*/
+
+.container{
+
+width:94%;
+
+max-width:1200px;
+
+margin:auto;
+
+padding-bottom:40px;
+
+}
+
+/*=========================================
+CARTE COMMUNIQUÉ
+=========================================*/
+
+.card{
+
+background:linear-gradient(145deg,#052766,#0b4ebd);
+
+border-radius:22px;
+
+padding:22px;
+
+margin-top:20px;
+
+box-shadow:0 12px 30px rgba(0,0,0,.30);
+
+transition:.35s;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+box-shadow:
+
+0 0 20px rgba(0,183,255,.6),
+
+0 0 40px rgba(0,183,255,.35);
+
+}
+
+.card::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:60%;
+height:100%;
+
+background:rgba(255,255,255,.12);
+
+transform:skewX(-25deg);
+
+transition:.8s;
+
+}
+
+.card:hover::before{
+
+left:170%;
+
+}
+
+.card h2{
+
+font-size:22px;
+
+color:#FFD700;
+
+margin-bottom:10px;
+
+}
+
+.card .infos{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:20px;
+
+margin-bottom:18px;
+
+font-size:14px;
+
+color:#d9e7ff;
+
+}
+
+.card .infos span{
+
+display:flex;
+
+align-items:center;
+
+gap:6px;
+
+}
+
+/*=========================================
+BADGES
+=========================================*/
+
+.badge{
+
+display:inline-block;
+
+padding:6px 16px;
+
+border-radius:30px;
+
+font-size:12px;
+
+font-weight:700;
+
+margin-bottom:18px;
+
+}
+
+.urgent{
+
+background:#d50000;
+
+}
+
+.important{
+
+background:#ff9800;
+
+}
+
+.information{
+
+background:#00a651;
+
+}
+
+/*=========================================
+AUDIO
+=========================================*/
+
+audio{
+
+width:100%;
+
+margin-top:12px;
+
+margin-bottom:20px;
+
+border-radius:12px;
+
+}
+
+/*=========================================
+BOUTONS
+=========================================*/
+
+.actions{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:12px;
+
+}
+
+.actions button{
+
+border:none;
+
+cursor:pointer;
+
+padding:12px 18px;
+
+border-radius:40px;
+
+font-weight:600;
+
+background:#FFD700;
+
+color:#04215f;
+
+transition:.3s;
+
+}
+
+.actions button:hover{
+
+background:#ffffff;
+
+}
+
+/*=========================================
+RESPONSIVE
+=========================================*/
+
+@media(max-width:768px){
+
+.header h1{
+
+font-size:22px;
+
+}
+
+.card h2{
+
+font-size:18px;
+
+}
+
+.actions{
+
+flex-direction:column;
+
+}
+
+.actions button{
+
+width:100%;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =====================================================
+PARTIE 2
+HEADER + RECHERCHE + FILTRES
+====================================================== -->
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <img src="images/logo-igt.png"
+         alt="Logo Inspection Générale du Travail">
+
+    <h1>
+        <i class="fa-solid fa-bullhorn"></i>
+        Communiqués Officiels
+    </h1>
+
+    <p>
+        Inspection Générale du Travail
+    </p>
+
+    <p>
+        République Démocratique du Congo
+    </p>
+
+</header>
+
+<!-- ================= RECHERCHE ================= -->
+
+<section class="search-box">
+
+    <input
+        type="text"
+        id="searchCommunique"
+        placeholder="Rechercher un communiqué par numéro, date, mot-clé ou auteur...">
+
+    <button id="btnSearch">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+    </button>
+
+</section>
+
+<!-- ================= FILTRES ================= -->
+
+<div class="categories">
+
+    <div class="category active"
+         data-filter="all">
+
+        <i class="fa-solid fa-list"></i>
+        Tous
+
+    </div>
+
+    <div class="category"
+         data-filter="urgent">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Urgents
+
+    </div>
+
+    <div class="category"
+         data-filter="administratif">
+
+        <i class="fa-solid fa-building-columns"></i>
+        Administratifs
+
+    </div>
+
+    <div class="category"
+         data-filter="juridique">
+
+        <i class="fa-solid fa-scale-balanced"></i>
+        Juridiques
+
+    </div>
+
+    <div class="category"
+         data-filter="mission">
+
+        <i class="fa-solid fa-briefcase"></i>
+        Missions
+
+    </div>
+
+    <div class="category"
+         data-filter="formation">
+
+        <i class="fa-solid fa-graduation-cap"></i>
+        Formations
+
+    </div>
+
+    <div class="category"
+         data-filter="note">
+
+        <i class="fa-solid fa-file-lines"></i>
+        Notes de service
+
+    </div>
+
+</div>
+
+<!-- ================= INFORMATIONS ================= -->
+
+<div class="container">
+
+<div class="card"
+     style="
+     background:linear-gradient(135deg,#083a91,#0a5cd8);
+     border:2px solid rgba(255,255,255,.15);
+     ">
+
+<h2>
+
+<i class="fa-solid fa-circle-info"></i>
+
+Centre des Communiqués Officiels
+
+</h2>
+
+<p style="
+line-height:1.9;
+margin-top:15px;
+font-size:15px;
+color:#e8f2ff;
+">
+
+Cette plateforme permet à tous les Inspecteurs et Contrôleurs
+du Travail d'accéder rapidement aux communiqués officiels de
+l'Inspection Générale du Travail.
+
+Vous pouvez :
+
+<br><br>
+
+🎧 Écouter les communiqués en audio.
+
+<br>
+
+📄 Lire la version écrite.
+
+<br>
+
+⬇ Télécharger les fichiers audio.
+
+<br>
+
+🔍 Rechercher un communiqué.
+
+<br>
+
+📅 Consulter les anciens communiqués archivés.
+
+<br>
+
+🔔 Recevoir automatiquement les nouveaux communiqués.
+
+</p>
+
+</div>
+
+<!-- ================= STATISTIQUES ================= -->
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+margin-top:25px;
+">
+
+<div class="card" style="text-align:center;">
+
+<i class="fa-solid fa-bullhorn"
+style="
+font-size:40px;
+color:#FFD700;
+margin-bottom:15px;
+"></i>
+
+<h2 id="totalCommuniques">
+
+0
+
+</h2>
+
+<p>
+
+Communiqués publiés
+
+</p>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<i class="fa-solid fa-headphones"
+style="
+font-size:40px;
+color:#FFD700;
+margin-bottom:15px;
+"></i>
+
+<h2 id="totalLectures">
+
+0
+
+</h2>
+
+<p>
+
+Écoutes réalisées
+
+</p>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<i class="fa-solid fa-download"
+style="
+font-size:40px;
+color:#FFD700;
+margin-bottom:15px;
+"></i>
+
+<h2 id="totalTelechargements">
+
+0
+
+</h2>
+
+<p>
+
+Téléchargements
+
+</p>
+
+</div>
+
+<div class="card" style="text-align:center;">
+
+<i class="fa-solid fa-calendar-days"
+style="
+font-size:40px;
+color:#FFD700;
+margin-bottom:15px;
+"></i>
+
+<h2 id="lastDate">
+
+13/07/2026
+
+</h2>
+
+<p>
+
+Dernière publication
+
+</p>
+
+</div>
+
+</div>
+
+<!-- ===================================================
+À partir de la Partie 3 commenceront les véritables
+cartes des communiqués avec lecteur audio,
+texte, téléchargement et partage.
+=================================================== -->
+
+<!-- ==========================================================
+PARTIE 3
+CARTES DES COMMUNIQUÉS OFFICIELS
+=========================================================== -->
+
+<!-- ================= COMMUNIQUÉ 1 ================= -->
+
+<div class="card" data-category="urgent">
+
+    <span class="badge urgent">
+        🔴 URGENT
+    </span>
+
+    <h2>
+        📢 Communiqué N°001/IGT/2026
+    </h2>
+
+    <div class="infos">
+
+        <span>
+            <i class="fa-solid fa-calendar-days"></i>
+            13 Juillet 2026
+        </span>
+
+        <span>
+            <i class="fa-solid fa-user-tie"></i>
+            Inspection Générale du Travail
+        </span>
+
+        <span>
+            <i class="fa-solid fa-clock"></i>
+            03 min 28 sec
+        </span>
+
+    </div>
+
+    <audio controls preload="metadata">
+
+        <source
+            src="audio/communique001.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <p style="line-height:1.9;color:#eaf2ff;">
+
+        Communiqué officiel relatif aux activités des
+        Inspecteurs et Contrôleurs du Travail sur
+        toute l'étendue de la République.
+
+    </p>
+
+    <div class="actions">
+
+        <button onclick="chargerCommunique('audio/communique001.mp3')">
+
+    <i class="fa-solid fa-headphones"></i>
+
+          Écouter
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            Lire
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-download"></i>
+
+            Télécharger
+
+        </button>
+
+        <button>
+
+            <i class="fa-solid fa-share-nodes"></i>
+
+            Partager
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= COMMUNIQUÉ 2 ================= -->
+
+<div class="card" data-category="administratif">
+
+<span class="badge important">
+
+🟠 IMPORTANT
+
+</span>
+
+<h2>
+
+📢 Communiqué N°002/IGT/2026
+
+</h2>
+
+<div class="infos">
+
+<span>
+
+<i class="fa-solid fa-calendar-days"></i>
+
+10 Juillet 2026
+
+</span>
+
+<span>
+
+<i class="fa-solid fa-user"></i>
+
+Direction Administrative
+
+</span>
+
+<span>
+
+<i class="fa-solid fa-clock"></i>
+
+02 min 15 sec
+
+</span>
+
+</div>
+
+<audio controls preload="metadata">
+
+<source
+src="audio/communique002.mp3"
+type="audio/mpeg">
+
+</audio>
+
+<p style="line-height:1.9;color:#eaf2ff;">
+
+Organisation des missions d'inspection,
+consignes administratives et rappel des
+procédures officielles.
+
+</p>
+
+<div class="actions">
+
+<button onclick="chargerCommunique('audio/communique002.mp3')">
+
+    <i class="fa-solid fa-headphones"></i>
+
+    Écouter
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-file-lines"></i>
+
+Lire
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-download"></i>
+
+Télécharger
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-share-nodes"></i>
+
+Partager
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= COMMUNIQUÉ 3 ================= -->
+
+<div class="card" data-category="formation">
+
+<span class="badge information">
+
+🟢 INFORMATION
+
+</span>
+
+<h2>
+
+📢 Formation Continue des Inspecteurs
+
+</h2>
+
+<div class="infos">
+
+<span>
+
+<i class="fa-solid fa-calendar-days"></i>
+
+05 Juillet 2026
+
+</span>
+
+<span>
+
+<i class="fa-solid fa-graduation-cap"></i>
+
+Centre de Formation IGT
+
+</span>
+
+<span>
+
+<i class="fa-solid fa-clock"></i>
+
+04 min 42 sec
+
+</span>
+
+</div>
+
+<audio controls preload="metadata">
+
+<source
+src="audio/formation001.mp3"
+type="audio/mpeg">
+
+</audio>
+
+<p style="line-height:1.9;color:#eaf2ff;">
+
+Présentation du programme national de
+renforcement des capacités des Inspecteurs
+du Travail.
+
+</p>
+
+<div class="actions">
+
+<button onclick="chargerCommunique('audio/communique003.mp3')">
+    <i class="fa-solid fa-headphones"></i>
+    Écouter
+</button>
+
+<button>
+
+<i class="fa-solid fa-file-lines"></i>
+
+Lire
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-download"></i>
+
+Télécharger
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-share-nodes"></i>
+
+Partager
+
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= FIN DE LA LISTE ================= -->
+
+</div>
+
+<!-- ===========================================================
+PARTIE 4
+LECTEUR AUDIO PROFESSIONNEL INSPECTEURBOT
+À placer après la liste des communiqués
+=========================================================== -->
+
+<section style="margin-top:35px;">
+
+<div class="card">
+
+<h2 style="text-align:center;">
+
+🎙️ Lecteur Audio Professionnel
+
+</h2>
+
+<p style="
+text-align:center;
+margin-top:10px;
+color:#dce8ff;
+">
+
+Écoutez les communiqués officiels de
+l'Inspection Générale du Travail.
+
+</p>
+
+<div style="margin-top:30px;">
+
+<audio
+id="mainPlayer"
+controls
+style="width:100%;">
+
+Votre navigateur ne supporte pas la lecture audio.
+
+</audio>
+
+</div>
+
+<div style="
+margin-top:25px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:15px;
+">
+
+<button
+onclick="playAudio()"
+class="player-btn">
+
+▶ Lecture
+
+</button>
+
+<button
+onclick="pauseAudio()"
+class="player-btn">
+
+⏸ Pause
+
+</button>
+
+<button
+onclick="stopAudio()"
+class="player-btn">
+
+⏹ Arrêter
+
+</button>
+
+<button
+onclick="backAudio()"
+class="player-btn">
+
+⏪ -10 sec
+
+</button>
+
+<button
+onclick="forwardAudio()"
+class="player-btn">
+
+⏩ +10 sec
+
+</button>
+
+<button
+onclick="muteAudio()"
+class="player-btn">
+
+🔇 Muet
+
+</button>
+
+</div>
+
+<hr style="
+margin:30px 0;
+border:.5px solid rgba(255,255,255,.15);
+">
+
+<h3>
+
+⚙️ Réglages
+
+</h3>
+
+<div style="margin-top:20px;">
+
+<label>
+
+🔊 Volume
+
+</label>
+
+<input
+type="range"
+id="volumeControl"
+min="0"
+max="1"
+step="0.1"
+value="1"
+style="width:100%;">
+
+</div>
+
+<div style="margin-top:20px;">
+
+<label>
+
+⚡ Vitesse de lecture
+
+</label>
+
+<select
+id="speedControl"
+style="
+width:100%;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+border:none;
+font-size:15px;
+">
+
+<option value="0.5">0.5x</option>
+
+<option value="0.75">0.75x</option>
+
+<option value="1" selected>
+
+1x (Normal)
+
+</option>
+
+<option value="1.25">1.25x</option>
+
+<option value="1.5">1.5x</option>
+
+<option value="1.75">1.75x</option>
+
+<option value="2">
+
+2x
+
+</option>
+
+</select>
+
+</div>
+
+<div style="
+margin-top:25px;
+display:flex;
+justify-content:space-between;
+font-size:14px;
+color:#dbe8ff;
+">
+
+<span id="currentTime">
+
+00:00
+
+</span>
+
+<span id="duration">
+
+00:00
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+.player-btn{
+
+background:#FFD700;
+
+color:#04215f;
+
+padding:14px;
+
+border:none;
+
+border-radius:40px;
+
+font-weight:700;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.player-btn:hover{
+
+background:#ffffff;
+
+transform:translateY(-3px);
+
+}
+
+  </style>
+
+<script>
+
+/*==================================================
+INSPECTEURBOT RDC
+MODULE COMMUNIQUÉS
+PARTIE 5.1
+LECTEUR AUDIO
+==================================================*/
+
+const player = document.getElementById("mainPlayer");
+
+const volumeControl = document.getElementById("volumeControl");
+
+const speedControl = document.getElementById("speedControl");
+
+const currentTime = document.getElementById("currentTime");
+
+const duration = document.getElementById("duration");
+
+/*====================================
+LECTURE
+====================================*/
+
+function playAudio(){
+
+if(player){
+
+player.play();
+
+}
+
+}
+
+/*====================================
+PAUSE
+====================================*/
+
+function pauseAudio(){
+
+if(player){
+
+player.pause();
+
+}
+
+}
+
+/*====================================
+ARRÊT
+====================================*/
+
+function stopAudio(){
+
+if(player){
+
+player.pause();
+
+player.currentTime = 0;
+
+}
+
+}
+
+/*====================================
+AVANCE 10 SECONDES
+====================================*/
+
+function forwardAudio(){
+
+if(player){
+
+player.currentTime += 10;
+
+}
+
+}
+
+/*====================================
+RETOUR 10 SECONDES
+====================================*/
+
+function backAudio(){
+
+if(player){
+
+player.currentTime -= 10;
+
+}
+
+}
+
+/*====================================
+MODE MUET
+====================================*/
+
+function muteAudio(){
+
+if(player){
+
+player.muted = !player.muted;
+
+}
+
+}
+
+/*====================================
+VOLUME
+====================================*/
+
+if(volumeControl){
+
+volumeControl.addEventListener("input",function(){
+
+player.volume = this.value;
+
+});
+
+}
+
+/*====================================
+VITESSE
+====================================*/
+
+if(speedControl){
+
+speedControl.addEventListener("change",function(){
+
+player.playbackRate = this.value;
+
+});
+
+}
+
+/*====================================
+AFFICHAGE TEMPS
+====================================*/
+
+function formatTime(seconds){
+
+const min = Math.floor(seconds/60);
+
+const sec = Math.floor(seconds%60);
+
+return String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+
+}
+
+if(player){
+
+player.addEventListener("loadedmetadata",function(){
+
+duration.textContent = formatTime(player.duration);
+
+});
+
+player.addEventListener("timeupdate",function(){
+
+currentTime.textContent = formatTime(player.currentTime);
+
+});
+
+}
+
+/*====================================
+LECTURE D'UN COMMUNIQUÉ
+====================================*/
+
+function chargerCommunique(fichier){
+
+player.src = fichier;
+
+player.load();
+
+player.play();
+
+}
+
+/*====================================
+MESSAGE CONSOLE
+====================================*/
+
+console.log("✅ Module Audio InspecteurBot chargé");
+
+</script>
+
+<script>
+
+/*==================================================
+INSPECTEURBOT RDC
+MODULE COMMUNIQUÉS
+PARTIE 5.2
+RECHERCHE + FILTRES
+==================================================*/
+
+/*=========================
+RECHERCHE
+=========================*/
+
+const recherche = document.getElementById("searchCommunique");
+
+const cartes = document.querySelectorAll(".card");
+
+if(recherche){
+
+recherche.addEventListener("keyup",function(){
+
+const texte = this.value.toLowerCase();
+
+cartes.forEach(function(carte){
+
+const contenu = carte.innerText.toLowerCase();
+
+if(contenu.indexOf(texte)>-1){
+
+carte.style.display="block";
+
+}else{
+
+carte.style.display="none";
+
+}
+
+});
+
+});
+
+}
+
+/*=========================
+FILTRES
+=========================*/
+
+const categories=document.querySelectorAll(".category");
+
+categories.forEach(function(btn){
+
+btn.addEventListener("click",function(){
+
+categories.forEach(function(b){
+
+b.classList.remove("active");
+
+});
+
+this.classList.add("active");
+
+const filtre=this.dataset.filter;
+
+cartes.forEach(function(carte){
+
+if(filtre==="all"){
+
+carte.style.display="block";
+
+return;
+
+}
+
+const categorie=carte.dataset.category;
+
+if(categorie===filtre){
+
+carte.style.display="block";
+
+}else{
+
+carte.style.display="none";
+
+}
+
+});
+
+});
+
+});
+
+/*=========================
+STATISTIQUES
+=========================*/
+
+const total=document.querySelectorAll(".card[data-category]").length;
+
+const totalCommuniques=document.getElementById("totalCommuniques");
+
+if(totalCommuniques){
+
+totalCommuniques.textContent=total;
+
+}
+
+/*=========================
+ANIMATION
+=========================*/
+
+cartes.forEach(function(carte){
+
+carte.addEventListener("mouseenter",function(){
+
+this.style.transform="translateY(-6px)";
+
+});
+
+carte.addEventListener("mouseleave",function(){
+
+this.style.transform="translateY(0px)";
+
+});
+
+});
+
+console.log("✅ Recherche et filtres activés");
+
+</script>
+
+<script>
+
+/*==================================================
+INSPECTEURBOT RDC
+MODULE COMMUNIQUÉS
+PARTIE 5.3
+
+NOTIFICATIONS + PARTAGE + STATISTIQUES
+==================================================*/
+
+
+/*==============================
+COMPTEUR D'ÉCOUTES
+==============================*/
+
+let lectures = 
+localStorage.getItem("lecturesCommuniques") || 0;
+
+
+const totalLectures = 
+document.getElementById("totalLectures");
+
+
+if(totalLectures){
+
+totalLectures.textContent = lectures;
+
+}
+
+
+/*==============================
+INCRÉMENTER UNE ÉCOUTE
+==============================*/
+
+function ajouterLecture(){
+
+
+lectures++;
+
+
+localStorage.setItem(
+"lecturesCommuniques",
+lectures
+);
+
+
+if(totalLectures){
+
+totalLectures.textContent = lectures;
+
+}
+
+
+}
+
+
+/* Détection lecture audio */
+
+if(player){
+
+player.addEventListener(
+"play",
+function(){
+
+ajouterLecture();
+
+}
+
+);
+
+}
+
+
+/*==============================
+SAUVEGARDE DERNIÈRE ÉCOUTE
+==============================*/
+
+
+if(player){
+
+player.addEventListener(
+"timeupdate",
+function(){
+
+
+localStorage.setItem(
+"dernierePositionAudio",
+player.currentTime
+);
+
+
+}
+
+);
+
+}
+
+
+/*==============================
+REPRENDRE LA DERNIÈRE ÉCOUTE
+==============================*/
+
+
+window.addEventListener(
+"load",
+function(){
+
+
+const position =
+localStorage.getItem(
+"dernierePositionAudio"
+);
+
+
+if(position && player){
+
+
+player.currentTime = position;
+
+
+}
+
+
+});
+
+
+/*==============================
+TÉLÉCHARGEMENT AUDIO
+==============================*/
+
+
+function telechargerAudio(fichier){
+
+
+const lien=document.createElement("a");
+
+
+lien.href=fichier;
+
+
+lien.download="communique-igt.mp3";
+
+
+document.body.appendChild(lien);
+
+
+lien.click();
+
+
+document.body.removeChild(lien);
+
+
+}
+
+
+/*==============================
+PARTAGE
+==============================*/
+
+
+function partagerCommunique(titre){
+
+
+if(navigator.share){
+
+
+navigator.share({
+
+title:titre,
+
+text:
+"Communiqué officiel InspecteurBot RDC",
+
+url:window.location.href
+
+
+});
+
+
+}else{
+
+
+alert(
+"Le partage n'est pas disponible sur cet appareil."
+);
+
+
+}
+
+
+}
+
+
+/*==============================
+FAVORIS
+==============================*/
+
+
+function ajouterFavori(id){
+
+
+let favoris =
+JSON.parse(
+localStorage.getItem("favorisCommuniques")
+) || [];
+
+
+if(!favoris.includes(id)){
+
+
+favoris.push(id);
+
+
+localStorage.setItem(
+"favorisCommuniques",
+JSON.stringify(favoris)
+);
+
+
+alert(
+"⭐ Communiqué ajouté aux favoris"
+);
+
+
+}else{
+
+
+alert(
+"Ce communiqué est déjà dans vos favoris"
+);
+
+
+}
+
+
+}
+
+
+/*==============================
+NOTIFICATION NOUVEAU COMMUNIQUÉ
+==============================*/
+
+
+function notificationCommunique(message){
+
+
+const box=document.createElement("div");
+
+
+box.style.position="fixed";
+
+box.style.bottom="20px";
+
+box.style.right="20px";
+
+box.style.background="#25D366";
+
+box.style.color="#fff";
+
+box.style.padding="15px 20px";
+
+box.style.borderRadius="15px";
+
+box.style.zIndex="9999";
+
+box.innerHTML=
+"🔔 "+message;
+
+
+document.body.appendChild(box);
+
+
+setTimeout(()=>{
+
+
+box.remove();
+
+
+},5000);
+
+
+}
+
+
+/* Exemple notification */
+
+setTimeout(()=>{
+
+
+notificationCommunique(
+"Nouveau communiqué officiel disponible"
+);
+
+
+},3000);
+
+
+
+console.log(
+"✅ Module Communiqués professionnel activé"
+);
+
+
+</script>
+
+<!-- ==================================================
+FOOTER OFFICIEL INSPECTEURBOT RDC
+================================================== -->
+
+<footer class="footer">
+
+    <img
+        src="images/logo-igt.png"
+        class="footer-logo"
+        alt="Logo Inspection Générale du Travail">
+
+    <h3>
+        Inspection Générale du Travail
+    </h3>
+
+    <p>
+        InspecteurBot RDC
+    </p>
+
+    <p>
+        Plateforme numérique intelligente
+        des Inspecteurs et Contrôleurs du Travail
+        de la République Démocratique du Congo.
+    </p>
+
+    <hr>
+
+    <p>
+        Créé par
+        <strong>
+            Inspecteur Limengo (Pmiller)
+        </strong>
+        <br>
+        &copy; 2026
+    </p>
+
+</footer>
+
+
+<!-- ==================================================
+FIN DE LA PAGE
+================================================== -->
+
+</body>
+
+</html>  
