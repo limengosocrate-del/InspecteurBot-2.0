@@ -99,3 +99,87 @@ const RAGCommuniques = {
     }
 
 };
+
+/*==================================================
+RECHERCHE AVANCÉE PAR SCORE DE PERTINENCE
+==================================================*/
+
+RAGCommuniques.searchAdvanced = function(question){
+
+    if(!question || this.documents.length===0){
+        return [];
+    }
+
+    const mots = this.normalize(question)
+        .split(/\s+/)
+        .filter(mot => mot.length > 2);
+
+    const resultats = [];
+
+    this.documents.forEach(doc => {
+
+        const texte = this.normalize(
+            (doc.titre || "") + " " +
+            (doc.description || "") + " " +
+            (doc.contenu || "") + " " +
+            (doc.auteur || "") + " " +
+            (doc.categorie || "") + " " +
+            (doc.date || "")
+        );
+
+        let score = 0;
+
+        mots.forEach(mot => {
+
+            if(texte.includes(mot)){
+                score++;
+            }
+
+        });
+
+        if(score > 0){
+
+            resultats.push({
+                score: score,
+                document: doc
+            });
+
+        }
+
+    });
+
+    resultats.sort((a,b)=>b.score-a.score);
+
+    return resultats;
+
+};
+
+
+/*==================================================
+RECHERCHE DU MEILLEUR RÉSULTAT
+==================================================*/
+
+RAGCommuniques.bestResult = function(question){
+
+    const resultats = this.searchAdvanced(question);
+
+    if(resultats.length===0){
+        return null;
+    }
+
+    return resultats[0].document;
+
+};
+
+
+/*==================================================
+INITIALISATION AUTOMATIQUE
+==================================================*/
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+
+    await RAGCommuniques.load();
+
+    console.log("✅ Module RAG Communiqués initialisé.");
+
+});
