@@ -1,0 +1,97 @@
+{
+  "module": "Communiqués Officiels",
+  "version": "1.0",
+  "organisation": "Inspection Générale du Travail RDC",
+
+  "parametres": {
+    "langue": "fr",
+    "audioFormat": "mp3",
+    "lecteurAudio": true,
+    "telechargement": true,
+    "partage": true
+  },
+
+  "communiques": [
+
+    {
+      "id": 1,
+
+      "numero": "001/IGT/2026",
+
+      "titre": "Communiqué officiel relatif aux activités des Inspecteurs et Contrôleurs du Travail",
+
+      "categorie": "urgent",
+
+      "priorite": "haute",
+
+      "datePublication": "13-07-2026",
+
+      "auteur": "Inspection Générale du Travail",
+
+      "duree": "03:28",
+
+      "audio": "audio/communique001.mp3",
+
+      "document": "",
+
+      "description": "Communiqué officiel relatif aux activités des Inspecteurs et Contrôleurs du Travail sur toute l'étendue de la République Démocratique du Congo.",
+
+      "texte": "La Direction Générale de l'Inspection Générale du Travail porte à la connaissance de tous les Inspecteurs et Contrôleurs du Travail les nouvelles orientations relatives aux missions de contrôle et d'inspection.",
+
+      "motsCles": [
+        "inspection",
+        "inspecteurs",
+        "contrôle",
+        "travail",
+        "mission"
+      ],
+
+      "statistiques": {
+        "lectures": 0,
+        "telechargements": 0,
+        "favoris": 0
+      }
+    },
+
+
+    {
+      "id": 2,
+
+      "numero": "002/IGT/2026",
+
+      "titre": "Organisation administrative des missions d'inspection",
+
+      "categorie": "administratif",
+
+      "priorite": "importante",
+
+      "datePublication": "10-07-2026",
+
+      "auteur": "Direction Administrative IGT",
+
+      "duree": "02:15",
+
+      "audio": "audio/communique002.mp3",
+
+      "document": "",
+
+      "description": "Informations administratives concernant l'organisation des missions et les procédures internes.",
+
+      "texte": "Les Inspecteurs du Travail sont invités à respecter les nouvelles dispositions administratives relatives aux missions de terrain.",
+
+      "motsCles": [
+        "administration",
+        "mission",
+        "procédure",
+        "inspection"
+      ],
+
+      "statistiques": {
+        "lectures": 0,
+        "telechargements": 0,
+        "favoris": 0
+      }
+    }
+
+  ]
+}
