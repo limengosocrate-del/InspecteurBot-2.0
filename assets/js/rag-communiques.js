@@ -1,311 +1,101 @@
 /*==================================================
  INSPECTEURBOT RDC
- MODULE RAG IA - COMMUNIQUÉS OFFICIELS
-
- Fichier : assets/js/rag-communiques.js
-
- Fonction :
- - Chargement JSON
- - Indexation des communiqués
- - Recherche intelligente
+ RAG COMMUNIQUÉS OFFICIELS
+ Module intelligent de recherche dans les communiqués
 ==================================================*/
 
 
-let baseCommuniquesRAG = [];
+const RAGCommuniques = {
 
+    documents: [],
 
 
-/*========================================
- CHARGEMENT COMMUNIQUÉS JSON
-========================================*/
+    /**
+     * Charger les communiqués depuis JSON
+     */
+    async load(){
 
+        try{
 
-async function chargerBaseCommuniquesRAG(){
+            const response = await fetch(
+                "assets/data/communiques.json"
+            );
 
 
-try{
+            this.documents = await response.json();
 
 
-const response = await fetch(
-"assets/data/communiques.json"
-);
+            console.log(
+                "✅ Communiqués chargés :",
+                this.documents.length
+            );
 
 
+        }catch(error){
 
-const data =
-await response.json();
+            console.error(
+                "❌ Erreur chargement communiqués",
+                error
+            );
 
+        }
 
+    },
 
-baseCommuniquesRAG =
-data.communiques;
 
 
+    /**
+     * Nettoyage du texte
+     */
+    normalize(text){
 
-console.log(
-"✅ Base RAG Communiqués chargée :",
-baseCommuniquesRAG.length
-);
+        return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"");
 
+    },
 
 
-return baseCommuniquesRAG;
 
+    /**
+     * Recherche intelligente
+     */
+    search(question){
 
 
-}
+        if(!question || this.documents.length===0){
 
-catch(error){
+            return [];
 
+        }
 
-console.error(
-"❌ Erreur chargement RAG Communiqués",
-error
-);
 
+        let query=this.normalize(question);
 
 
-return [];
+        return this.documents.filter(doc=>{
 
-}
 
+            let contenu=this.normalize(
 
-}
+                doc.titre
+                +" "
+                +doc.description
+                +" "
+                +doc.auteur
+                +" "
+                +doc.categorie
 
+            );
 
 
+            return contenu.includes(query);
 
 
-/*========================================
- NORMALISATION TEXTE IA
-========================================*/
+        });
 
 
-function normaliserTexteRAG(texte){
-
-
-return texte
-
-.toLowerCase()
-
-.normalize("NFD")
-
-.replace(/[\u0300-\u036f]/g,"")
-
-.replace(/[^\w\s]/gi,"")
-
-.trim();
-
-
-}
-
-
-
-
-
-
-/*========================================
- CRÉATION DES DOCUMENTS IA
-========================================*/
-
-
-function creerDocumentsRAGCommuniques(){
-
-
-return baseCommuniquesRAG.map(c=>{
-
-
-return {
-
-
-id:c.id,
-
-
-titre:c.titre,
-
-
-contenu:
-
-
-`
-
-${c.titre}
-
-Numéro :
-${c.numero}
-
-Date :
-${c.datePublication}
-
-Auteur :
-${c.auteur}
-
-Catégorie :
-${c.categorie}
-
-
-Description :
-
-${c.description}
-
-
-Texte officiel :
-
-${c.texte}
-
-
-Mots clés :
-
-${c.motsCles.join(", ")}
-
-`
-
-
+    }
 
 };
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-/*========================================
- RECHERCHE RAG SIMPLE
-========================================*/
-
-
-function rechercherCommuniqueRAG(question){
-
-
-
-let recherche =
-normaliserTexteRAG(question);
-
-
-
-let documents =
-creerDocumentsRAGCommuniques();
-
-
-
-let resultats =
-documents.filter(doc=>{
-
-
-let contenu =
-normaliserTexteRAG(
-doc.contenu
-);
-
-
-
-return contenu.includes(recherche);
-
-
-
-});
-
-
-
-return resultats;
-
-
-
-}
-
-
-
-
-
-
-/*========================================
- REPONSE IA COMMUNIQUÉS
-========================================*/
-
-
-function reponseIACommuniques(question){
-
-
-let resultats =
-rechercherCommuniqueRAG(question);
-
-
-
-if(resultats.length===0){
-
-
-return `
-
-Aucun communiqué correspondant
-n'a été trouvé dans la base officielle
-InspecteurBot RDC.
-
-`;
-
-
-}
-
-
-
-let reponse =
-
-`
-
-📢 Résultat du Communiqué Officiel :
-
-`;
-
-
-
-resultats.forEach(doc=>{
-
-
-reponse +=
-
-`
-
-Titre :
-${doc.titre}
-
-
-${doc.contenu}
-
-
-----------------------------
-
-`;
-
-
-});
-
-
-
-return reponse;
-
-
-
-}
-
-
-
-
-
-/*========================================
- INITIALISATION
-========================================*/
-
-
-chargerBaseCommuniquesRAG();
-
-console.log(
-"🤖 RAG Communiqués InspecteurBot activé"
-);
-
