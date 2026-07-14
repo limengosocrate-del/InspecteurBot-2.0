@@ -51,43 +51,82 @@
 <script src="../js/gps.js?v=1"></script>
 <script>
 async function locate() {
+
   const box = document.getElementById("pos");
-  box.innerHTML = "⏳ Localisation...";
+
+  box.innerHTML = "⏳ Recherche de votre position GPS...";
+
   try {
+
     const p = await GPS.getPosition();
+
     const adr = await GPS.getAddress(p.lat, p.lng);
+
+    const heure = new Date(p.timestamp).toLocaleString("fr-FR");
+
     box.innerHTML = `
-      <div class="info-card" style="background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; color:#fff;">
-        📍 <strong>Latitude:</strong> ${p.lat.toFixed(6)}<br>
-        📍 <strong>Longitude:</strong> ${p.lng.toFixed(6)}<br>
-        🎯 <strong>Précision:</strong> ${Math.round(p.accuracy)} m<br>
-        🏠 <strong>Adresse:</strong> ${adr}<br>
-        <a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" style="color:#FFD700; text-decoration:underline;">🗺️ Voir sur Google Maps</a>
-      </div>`;
-  } catch(e) { box.innerHTML = `<div class="alert-smig">❌ ${e}</div>`; }
+
+      <div class="info-card" style="background:rgba(255,215,0,0.08);padding:18px;border-left:5px solid #FFD700;border-radius:10px;color:#fff;line-height:1.8;">
+
+        <h4 style="margin-top:0;color:#FFD700;">
+        📍 Ma position actuelle
+        </h4>
+
+        <p>🟢 <strong>Statut :</strong> ${p.status}</p>
+
+        <p>🌍 <strong>Latitude :</strong> ${p.lat.toFixed(6)}</p>
+
+        <p>🌍 <strong>Longitude :</strong> ${p.lng.toFixed(6)}</p>
+
+        <p>🎯 <strong>Précision :</strong> ${Math.round(p.accuracy)} mètres</p>
+
+        <p>🏙️ <strong>Ville :</strong> ${adr.ville}</p>
+
+        <p>🏘️ <strong>Commune :</strong> ${adr.commune}</p>
+
+        <p>🌍 <strong>Pays :</strong> ${adr.pays}</p>
+
+        <p>🏠 <strong>Adresse :</strong><br>${adr.complet}</p>
+
+        <p>🕒 <strong>Heure :</strong> ${heure}</p>
+
+        <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+
+          <a href="https://www.google.com/maps?q=${p.lat},${p.lng}"
+             target="_blank"
+             class="btn-primary">
+             🗺️ Ouvrir Google Maps
+          </a>
+
+          <button class="btn-primary"
+                  onclick="GPS.copyPosition()">
+            📋 Copier
+          </button>
+
+          <button class="btn-primary"
+                  onclick="GPS.sharePosition()">
+            📤 Partager
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+  catch(e){
+
+    box.innerHTML = `
+      <div class="alert-smig">
+        ❌ ${e}
+      </div>
+    `;
+
+  }
+
 }
-document.getElementById("btnLocate").onclick = locate;
-document.getElementById("btnSave").onclick = async () => {
-  const nom = document.getElementById("nomM").value.trim();
-  if (!nom) return alert("Nom de mission requis.");
-  if (!GPS.currentPosition) await locate();
-  const m = GPS.saveMission(nom, document.getElementById("notesM").value);
-  if (m) { alert("✅ Mission enregistrée : " + m.id); renderList(); }
-};
-function renderList() {
-  const list = GPS.getMissions();
-  const box = document.getElementById("listMissions");
-  if (!list.length) { box.innerHTML = "<p style='color:#fff;'>Aucune mission.</p>"; return; }
-  box.innerHTML = list.map(m => `
-    <div class="hist-item">
-      <strong>${m.nom}</strong> — ${m.id}<br>
-      📅 ${new Date(m.timestamp).toLocaleString("fr-FR")}<br>
-      📍 ${m.lat.toFixed(6)}, ${m.lng.toFixed(6)}
-      <a href="https://www.google.com/maps?q=${m.lat},${m.lng}" target="_blank" style="color:#FFD700; margin-left:10px;">🗺️ Carte</a>
-      ${m.notes ? `<br><em>${m.notes}</em>` : ""}
-    </div>`).join("");
-}
-renderList();
 </script>
 </body>
 </html>
