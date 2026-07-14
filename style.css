@@ -1441,5 +1441,13 @@ background:#083ea5;
     box-shadow:0 12px 30px rgba(59,130,246,.45);
  }
 
+.quick-grid .decompte-card{
+    min-height:180px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
 <div class="datetime-box">
 
