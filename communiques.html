@@ -143,6 +143,103 @@ background:#ffc400;
 }
 
 /*=========================================
+MICROPHONE IA
+=========================================*/
+
+.voice-btn{
+
+width:60px;
+height:60px;
+
+border:none;
+
+border-radius:50%;
+
+margin-left:10px;
+
+background:linear-gradient(135deg,#FFD700,#ff9800);
+
+color:#062A73;
+
+font-size:24px;
+
+cursor:pointer;
+
+transition:.35s;
+
+box-shadow:
+0 0 15px rgba(255,215,0,.45);
+
+}
+
+.voice-btn:hover{
+
+transform:scale(1.08);
+
+box-shadow:
+
+0 0 20px #FFD700,
+
+0 0 40px #FFD700,
+
+0 0 60px rgba(255,215,0,.6);
+
+}
+
+/*=============================
+Micro en écoute
+=============================*/
+
+.voice-btn.listening{
+
+background:#ff0000;
+
+color:#ffffff;
+
+animation:voicePulse 1s infinite;
+
+}
+
+@keyframes voicePulse{
+
+0%{
+
+transform:scale(1);
+
+box-shadow:
+
+0 0 10px red;
+
+}
+
+50%{
+
+transform:scale(1.18);
+
+box-shadow:
+
+0 0 25px red,
+
+0 0 45px red,
+
+0 0 70px red;
+
+}
+
+100%{
+
+transform:scale(1);
+
+box-shadow:
+
+0 0 10px red;
+
+}
+
+}    
+
+
+/*=========================================
 CATÉGORIES
 =========================================*/
 
@@ -481,12 +578,14 @@ HEADER + RECHERCHE + FILTRES
     <input
         type="text"
         id="searchCommunique"
-        placeholder="Rechercher un communiqué par numéro, date, mot-clé ou auteur...">
+        placeholder="Rechercher un communiqué...">
 
     <button id="btnSearch">
-
         <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
 
+    <button id="btnVoice" class="voice-btn">
+        <i class="fa-solid fa-microphone"></i>
     </button>
 
 </section>
@@ -1049,28 +1148,12 @@ FOOTER OFFICIEL INSPECTEURBOT RDC
 
 </footer>
 
-<!-- Données communiqués -->
-<script src="assets/data/communiques.js"></script>
-
-<!-- Module Communiqués -->
 <script src="assets/js/communiques.js"></script>
-
-<!-- Moteur RAG général InspecteurBot -->
 <script src="assets/js/rag.js"></script>
-
-<!-- RAG spécialisé Communiqués -->
 <script src="assets/js/rag-communiques.js"></script>
-
-<!-- IA spécialisée Communiqués -->
 <script src="assets/js/ia-communiques.js"></script>
-
-<!-- Routeur IA -->
 <script src="assets/js/rag-router.js"></script>
-
-<!-- Recherche -->
 <script src="assets/js/search.js"></script>
-
-<!-- IA principale existante -->
 <script src="assets/js/ia.js"></script>
 
 
