@@ -62,3 +62,101 @@ const IACommuniques = {
     }
 
 };
+
+/*==================================================
+ ANALYSE INTELLIGENTE DES QUESTIONS
+==================================================*/
+
+IACommuniques.analyser = function(question){
+
+    if(!question){
+        return;
+    }
+
+    question = question.toLowerCase().trim();
+
+    /* Dernier communiqué */
+
+    if(question.includes("dernier") ||
+       question.includes("récent") ||
+       question.includes("nouveau")){
+
+        const dernier = RAGCommuniques.documents[0];
+
+        if(dernier){
+
+            this.ouvrir(dernier.titre);
+
+            return this.repondre(dernier.titre);
+
+        }
+
+    }
+
+    /* Recherche par numéro */
+
+    const numero = question.match(/\d+/);
+
+    if(numero){
+
+        const recherche = "N°" + numero[0];
+
+        this.ouvrir(recherche);
+
+        return this.repondre(recherche);
+
+    }
+
+    /* Recherche générale */
+
+    this.ouvrir(question);
+
+    return this.repondre(question);
+
+};
+
+
+/*==================================================
+ BOUTON DE RECHERCHE
+==================================================*/
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    const input = document.getElementById("searchCommunique");
+    const bouton = document.getElementById("btnSearch");
+
+    if(!input || !bouton){
+        return;
+    }
+
+    bouton.addEventListener("click", ()=>{
+
+        const reponse = IACommuniques.analyser(input.value);
+
+        if(reponse){
+
+            alert(reponse);
+
+        }
+
+    });
+
+    input.addEventListener("keypress", e=>{
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+
+            const reponse = IACommuniques.analyser(input.value);
+
+            if(reponse){
+
+                alert(reponse);
+
+            }
+
+        }
+
+    });
+
+});
