@@ -4,71 +4,505 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
 SMART GPS IGT | InspecteurBot RDC
 </title>
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 <link rel="stylesheet"
-href="../fiche.css?v=50">
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-<link rel="stylesheet"
-href="decompte-final.css?v=4">
-
-
-<!-- Leaflet -->
-
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 <style>
 
-#map{
-
-width:100%;
-
-height:420px;
-
-border-radius:15px;
-
-margin-top:15px;
-
-border:2px solid rgba(255,215,0,.3);
-
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
 }
 
+html{
+scroll-behavior:smooth;
+}
 
-.info-card{
+body{
 
-background:rgba(255,255,255,.06);
+background:
+linear-gradient(135deg,#020617,#07152d,#081f42,#001d3d);
 
-border-left:5px solid #FFD700;
+background-size:400% 400%;
 
-border-radius:12px;
+animation:bgMove 15s ease infinite;
 
-padding:18px;
+overflow-x:hidden;
 
 color:white;
 
-margin-top:15px;
+min-height:100vh;
 
-line-height:1.8;
+}
+
+@keyframes bgMove{
+
+0%{background-position:0% 50%;}
+
+50%{background-position:100% 50%;}
+
+100%{background-position:0% 50%;}
+
+}
+
+/*==========================
+BACKGROUND EFFECT
+==========================*/
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at 20% 20%,
+rgba(0,183,255,.18),
+transparent 40%),
+
+radial-gradient(circle at 80% 40%,
+rgba(255,215,0,.15),
+transparent 40%),
+
+radial-gradient(circle at 50% 90%,
+rgba(0,255,170,.10),
+transparent 45%);
+
+pointer-events:none;
+
+z-index:-2;
+
+}
+
+body::after{
+
+content:"";
+
+position:fixed;
+
+width:200%;
+
+height:200%;
+
+left:-50%;
+
+top:-50%;
+
+background-image:
+
+linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+
+linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+
+background-size:45px 45px;
+
+transform:rotate(15deg);
+
+animation:gridMove 18s linear infinite;
+
+z-index:-1;
+
+}
+
+@keyframes gridMove{
+
+0%{
+
+transform:rotate(15deg)
+translateY(0);
+
+}
+
+100%{
+
+transform:rotate(15deg)
+translateY(-45px);
+
+}
+
+}
+
+/*==========================
+HEADER
+==========================*/
+
+header{
+
+position:sticky;
+
+top:0;
+
+z-index:999;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px 35px;
+
+background:rgba(5,15,35,.70);
+
+backdrop-filter:blur(18px);
+
+border-bottom:1px solid rgba(255,215,0,.25);
+
+box-shadow:0 8px 35px rgba(0,0,0,.35);
+
+}
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.logo img{
+
+width:70px;
+
+height:70px;
+
+border-radius:50%;
+
+border:3px solid gold;
+
+box-shadow:0 0 20px gold;
+
+animation:pulseLogo 3s infinite;
+
+}
+
+@keyframes pulseLogo{
+
+0%{
+
+transform:scale(1);
+
+box-shadow:0 0 10px gold;
+
+}
+
+50%{
+
+transform:scale(1.08);
+
+box-shadow:0 0 30px gold;
+
+}
+
+100%{
+
+transform:scale(1);
+
+box-shadow:0 0 10px gold;
+
+}
+
+}
+
+.logo h1{
+
+font-size:28px;
+
+font-weight:800;
+
+letter-spacing:1px;
+
+color:#FFD700;
+
+}
+
+.logo p{
+
+font-size:14px;
+
+color:#d6d6d6;
+
+}
+
+/*==========================
+MENU BUTTON
+==========================*/
+
+.btn{
+
+padding:13px 22px;
+
+border:none;
+
+border-radius:14px;
+
+cursor:pointer;
+
+font-size:15px;
+
+font-weight:700;
+
+transition:.35s;
+
+background:linear-gradient(135deg,#FFD700,#ffae00);
+
+color:#111;
+
+box-shadow:0 0 18px rgba(255,215,0,.45);
+
+}
+
+.btn:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 0 30px gold;
+
+}
+
+.btn:active{
+
+transform:scale(.96);
+
+}
+
+/*==========================
+CONTAINER
+==========================*/
+
+.container{
+
+width:95%;
+
+max-width:1600px;
+
+margin:30px auto;
+
+}
+
+/*==========================
+SECTIONS PRINCIPALES
+==========================*/
+
+.section{
+
+background:
+rgba(255,255,255,.06);
+
+border:1px solid rgba(255,215,0,.18);
+
+border-radius:25px;
+
+padding:25px;
+
+margin-bottom:25px;
+
+backdrop-filter:blur(18px);
+
+box-shadow:
+
+0 15px 40px rgba(0,0,0,.35),
+
+inset 0 0 25px rgba(255,255,255,.03);
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+
+.section::before{
+
+content:"";
+
+position:absolute;
+
+width:180px;
+
+height:180px;
+
+right:-80px;
+
+top:-80px;
+
+background:
+
+radial-gradient(circle,
+
+rgba(255,215,0,.25),
+
+transparent 70%);
+
+}
+
+
+.section h2{
+
+font-size:24px;
+
+color:#FFD700;
+
+margin-bottom:20px;
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
 
 }
 
 
 
-.stats-grid{
+/*==========================
+GLASS CARDS
+==========================*/
+
+
+.card-grid{
 
 display:grid;
 
 grid-template-columns:
-repeat(auto-fit,minmax(180px,1fr));
+
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+}
+
+
+
+.card{
+
+background:
+
+rgba(255,255,255,.07);
+
+border-radius:20px;
+
+padding:25px;
+
+text-align:center;
+
+border:
+
+1px solid rgba(255,255,255,.12);
+
+transition:.4s;
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+
+
+.card:hover{
+
+transform:
+
+translateY(-8px);
+
+box-shadow:
+
+0 15px 35px rgba(0,0,0,.45),
+
+0 0 25px rgba(255,215,0,.25);
+
+}
+
+
+
+.card i{
+
+font-size:35px;
+
+color:#FFD700;
+
+margin-bottom:15px;
+
+}
+
+
+
+.card h3{
+
+font-size:32px;
+
+color:white;
+
+}
+
+
+
+.card p{
+
+color:#ccc;
+
+font-size:14px;
+
+}
+
+
+
+/*==========================
+GPS MAP
+==========================*/
+
+
+#map{
+
+height:520px;
+
+width:100%;
+
+border-radius:25px;
+
+border:
+
+2px solid rgba(255,215,0,.35);
+
+box-shadow:
+
+0 0 30px rgba(0,0,0,.5);
+
+overflow:hidden;
+
+}
+
+
+
+/*==========================
+BOUTONS FUTURISTES
+==========================*/
+
+
+.action-zone{
+
+display:flex;
+
+flex-wrap:wrap;
 
 gap:15px;
 
@@ -78,107 +512,774 @@ margin-top:20px;
 
 
 
-.stat-card{
+.btn-gps{
 
-background:rgba(255,255,255,.05);
+position:relative;
 
-border-radius:12px;
+overflow:hidden;
 
-padding:20px;
+padding:15px 25px;
 
-text-align:center;
+border-radius:18px;
+
+border:none;
+
+cursor:pointer;
+
+font-weight:700;
+
+font-size:15px;
+
+color:#06111f;
+
+background:
+
+linear-gradient(
+
+135deg,
+
+#FFD700,
+
+#ff9d00
+
+);
+
+transition:.35s;
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.35);
+
+}
+
+
+
+.btn-gps:hover{
+
+transform:
+
+translateY(-5px)
+
+scale(1.03);
+
+box-shadow:
+
+0 0 35px rgba(255,215,0,.75);
+
+}
+
+
+
+.btn-gps::after{
+
+content:"";
+
+position:absolute;
+
+top:0;
+
+left:-100%;
+
+width:100%;
+
+height:100%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.6),
+
+transparent
+
+);
+
+transition:.5s;
+
+}
+
+
+
+.btn-gps:hover::after{
+
+left:100%;
+
+}
+
+
+
+/*==========================
+INPUTS
+==========================*/
+
+
+input,
+textarea,
+select{
+
+width:100%;
+
+padding:15px;
+
+border-radius:15px;
+
+border:
+
+1px solid rgba(255,215,0,.25);
+
+outline:none;
+
+background:
+
+rgba(0,0,0,.35);
 
 color:white;
 
+font-size:15px;
+
+transition:.3s;
+
 }
 
 
 
-.stat-card h2{
+input:focus,
+textarea:focus,
+select:focus{
+
+border-color:#FFD700;
+
+box-shadow:
+
+0 0 20px rgba(255,215,0,.35);
+
+}
+
+
+
+label{
+
+display:block;
+
+margin-bottom:8px;
 
 color:#FFD700;
 
-font-size:30px;
+font-weight:600;
 
 }
 
 
 
-.action-buttons{
+/*==========================
+FORMULAIRE GRID
+==========================*/
+
+
+.form-grid{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:20px;
+
+}
+
+
+
+/*==========================
+GPS INFO BOX
+==========================*/
+
+
+.info-box{
+
+background:
+
+rgba(0,0,0,.25);
+
+border-left:
+
+5px solid #FFD700;
+
+padding:20px;
+
+border-radius:15px;
+
+line-height:2;
+
+}
+
+
+
+.info-box span{
+
+color:#FFD700;
+
+font-weight:700;
+
+}
+
+
+
+/*==========================
+ANIMATION APPARITION
+==========================*/
+
+
+.fade-in{
+
+animation:
+
+fadeIn .8s ease forwards;
+
+}
+
+
+
+@keyframes fadeIn{
+
+from{
+
+opacity:0;
+
+transform:
+
+translateY(30px);
+
+}
+
+
+to{
+
+opacity:1;
+
+transform:
+
+translateY(0);
+
+}
+
+}
+
+/*==========================
+MISSION STATUS
+==========================*/
+
+.status-panel{
 
 display:flex;
 
-gap:10px;
+justify-content:space-between;
+
+align-items:center;
 
 flex-wrap:wrap;
+
+gap:15px;
+
+background:
+
+rgba(255,255,255,.05);
+
+padding:20px;
+
+border-radius:20px;
+
+border:
+
+1px solid rgba(255,215,0,.2);
+
+}
+
+
+
+.status-active{
+
+color:#00ff99;
+
+font-weight:800;
+
+animation:
+
+blink 1.5s infinite;
+
+}
+
+
+@keyframes blink{
+
+0%,100%{
+
+opacity:1;
+
+}
+
+50%{
+
+opacity:.4;
+
+}
+
+}
+
+
+
+/*==========================
+MISSION TIMER
+==========================*/
+
+
+.timer{
+
+font-size:38px;
+
+font-weight:800;
+
+letter-spacing:3px;
+
+color:#FFD700;
+
+text-shadow:
+
+0 0 15px rgba(255,215,0,.8);
+
+}
+
+
+
+/*==========================
+PROGRESS BAR
+==========================*/
+
+
+.progress-container{
+
+width:100%;
+
+height:14px;
+
+background:
+
+rgba(255,255,255,.12);
+
+border-radius:20px;
+
+overflow:hidden;
 
 margin-top:15px;
 
 }
 
 
+.progress-bar{
 
-.action-buttons button{
+height:100%;
 
-flex:1;
+width:0%;
 
-min-width:160px;
+background:
+
+linear-gradient(
+
+90deg,
+
+#00ff99,
+
+#FFD700
+
+);
+
+border-radius:20px;
+
+transition:.5s;
+
+box-shadow:
+
+0 0 20px #FFD700;
 
 }
 
 
-.hist-item{
 
-background:rgba(255,255,255,.05);
+/*==========================
+HISTORIQUE MISSIONS
+==========================*/
 
-padding:15px;
 
-border-radius:10px;
+.history-item{
 
-margin-top:10px;
+background:
+
+rgba(255,255,255,.06);
+
+padding:18px;
+
+border-radius:18px;
+
+margin-top:12px;
+
+border-left:
+
+4px solid #FFD700;
+
+transition:.3s;
+
+}
+
+
+
+.history-item:hover{
+
+transform:
+
+translateX(8px);
+
+background:
+
+rgba(255,215,0,.10);
+
+}
+
+
+
+.history-item h4{
+
+color:#FFD700;
+
+margin-bottom:8px;
+
+}
+
+
+
+/*==========================
+NOTIFICATION SYSTEM
+==========================*/
+
+
+.notification{
+
+position:fixed;
+
+right:25px;
+
+bottom:25px;
+
+padding:18px 25px;
+
+border-radius:18px;
+
+background:
+
+rgba(0,0,0,.75);
+
+border:
+
+1px solid #FFD700;
 
 color:white;
 
+z-index:9999;
+
+transform:
+
+translateY(120px);
+
+transition:.4s;
+
+box-shadow:
+
+0 0 25px rgba(255,215,0,.4);
+
 }
 
+
+.notification.show{
+
+transform:
+
+translateY(0);
+
+}
+
+
+
+/*==========================
+LOADING GPS
+==========================*/
+
+
+.loader{
+
+width:45px;
+
+height:45px;
+
+border-radius:50%;
+
+border:
+
+4px solid rgba(255,255,255,.2);
+
+border-top-color:#FFD700;
+
+animation:
+
+spin 1s linear infinite;
+
+margin:auto;
+
+}
+
+
+
+@keyframes spin{
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+
+
+/*==========================
+FOOTER
+==========================*/
+
+
+.footer{
+
+text-align:center;
+
+padding:35px 20px;
+
+margin-top:40px;
+
+color:#ccc;
+
+background:
+
+rgba(0,0,0,.35);
+
+border-top:
+
+1px solid rgba(255,215,0,.25);
+
+font-size:14px;
+
+line-height:1.8;
+
+}
+
+
+.footer strong{
+
+color:#FFD700;
+
+font-size:16px;
+
+}
+
+
+
+/*==========================
+RESPONSIVE MOBILE
+==========================*/
+
+
+@media(max-width:900px){
+
+
+header{
+
+padding:15px;
+
+}
+
+
+.logo h1{
+
+font-size:20px;
+
+}
+
+
+.container{
+
+width:92%;
+
+}
+
+
+.section{
+
+padding:18px;
+
+}
+
+
+#map{
+
+height:380px;
+
+}
+
+
+.timer{
+
+font-size:28px;
+
+}
+
+
+.btn-gps{
+
+width:100%;
+
+}
+
+
+.action-zone{
+
+flex-direction:column;
+
+}
+
+
+}
+
+
+
+@media(max-width:500px){
+
+
+.logo img{
+
+width:55px;
+
+height:55px;
+
+}
+
+
+.logo p{
+
+display:none;
+
+}
+
+
+.section h2{
+
+font-size:20px;
+
+}
+
+
+.card h3{
+
+font-size:25px;
+
+}
+
+
+}
+
+
+
+/*==========================
+LEAFLET CUSTOM
+==========================*/
+
+
+.leaflet-control-zoom a{
+
+background:#06111f!important;
+
+color:#FFD700!important;
+
+border-color:#FFD700!important;
+
+}
+
+
+
+.leaflet-popup-content-wrapper{
+
+background:#06111f;
+
+color:white;
+
+border-radius:15px;
+
+}
+
+
+
+.leaflet-popup-tip{
+
+background:#06111f;
+
+}
+
+
+/* FIN CSS */
 
 </style>
 
 
 </head>
 
-
 <body>
 
 
-<div class="background"></div>
+<!-- ==========================
+BACKGROUND FUTURISTE
+========================== -->
 
 <div class="particles"></div>
 
 
-<header class="header">
+
+<!-- ==========================
+HEADER SMART GPS IGT
+========================== -->
 
 
-<div class="header-left">
+<header>
 
 
 <div class="logo">
 
-<img src="../assets/images/logo-igt.png">
 
-</div>
+<img src="../assets/images/logo-igt.png"
+alt="Logo IGT">
 
 
-<div class="header-text">
+
+<div>
 
 <h1>
 🌍 SMART GPS IGT
 </h1>
 
 
-<h2>
+<p>
 Centre Intelligent des Missions Terrain
-</h2>
+<br>
+InspecteurBot RDC
+</p>
 
 
 </div>
@@ -187,195 +1288,122 @@ Centre Intelligent des Missions Terrain
 </div>
 
 
-<div class="header-right">
 
 
 <a href="../index.html"
-class="btn-retour">
+class="btn">
 
-← Retour
+<i class="fa-solid fa-arrow-left"></i>
+
+Retour
 
 </a>
-
-
-</div>
 
 
 </header>
 
 
 
-<main class="df-main">
 
 
-<!-- POSITION ACTUELLE -->
-
-<section class="df-form-section">
-
-
-<h3>
-📍 Ma position actuelle
-</h3>
+<!-- ==========================
+CONTENEUR PRINCIPAL
+========================== -->
 
 
-<button
-id="btnLocate"
-class="btn-primary">
-
-📡 Obtenir ma position
-
-</button>
+<div class="container">
 
 
-<div id="pos"></div>
 
 
-  </section>
 
-  
-<!-- ====================================================== -->
-<!-- MISSION EN COURS -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>
-🚗 Mission en cours
-</h3>
+<!-- ==========================
+TITRE PRINCIPAL
+========================== -->
 
 
-<div class="info-card">
+<section class="section fade-in">
 
 
-<p>
+<h2>
 
-<strong>État :</strong>
+<i class="fa-solid fa-satellite-dish"></i>
 
-<span id="missionEtat"
-style="color:#FFD700;">
+Système GPS Intelligent
 
-Aucune mission
+</h2>
 
+
+
+<p style="color:#ccc;line-height:1.8;">
+
+Plateforme professionnelle de suivi,
+d'enregistrement et de gestion des missions
+terrain des Inspecteurs du Travail.
+
+</p>
+
+
+
+<div class="status-panel">
+
+
+<div>
+
+
+<span>
+État GPS :
 </span>
 
-</p>
+
+<strong id="gpsStatus"
+class="status-active">
+
+Recherche...
+
+</strong>
+
+
+</div>
 
 
 
-<p>
+<div>
 
-<strong>Durée :</strong>
 
-<span id="missionTemps">
-
-00:00:00
-
+<span>
+Mission :
 </span>
 
-</p>
 
+<strong id="missionStatus">
 
+Aucune
 
-<div class="stats-grid">
-
-
-<div class="stat-card">
-
-<h2 id="distanceMission">
-
-0 km
-
-</h2>
-
-<p>
-
-Distance parcourue
-
-</p>
-
-</div>
-
-
-
-<div class="stat-card">
-
-<h2 id="pointsMission">
-
-0
-
-</h2>
-
-<p>
-
-Points GPS
-
-</p>
-
-</div>
-
-
-
-<div class="stat-card">
-
-<h2 id="vitesseMission">
-
-0 km/h
-
-</h2>
-
-<p>
-
-Vitesse
-
-</p>
-
-</div>
+</strong>
 
 
 </div>
 
 
 
-
-<div class="action-buttons">
-
-
-<button
-
-id="btnStartMission"
-
-class="btn-primary">
-
-▶️ Démarrer mission
-
-</button>
+<div>
 
 
-
-<button
-
-id="btnPauseMission"
-
-class="btn-primary">
-
-⏸️ Pause
-
-</button>
+<span>
+Connexion :
+</span>
 
 
+<strong id="networkStatus">
 
-<button
+En ligne
 
-id="btnStopMission"
-
-class="btn-primary">
-
-⏹️ Terminer
-
-</button>
+</strong>
 
 
 </div>
+
 
 
 </div>
@@ -387,56 +1415,597 @@ class="btn-primary">
 
 
 
-<!-- ====================================================== -->
-<!-- CARTE GPS -->
-<!-- ====================================================== -->
+<!-- ==========================
+POSITION ACTUELLE
+========================== -->
 
 
-<section class="df-form-section">
+<section class="section fade-in">
 
 
-<h3>
+<h2>
 
-🗺️ Carte interactive
+<i class="fa-solid fa-location-dot"></i>
+
+Ma position actuelle
+
+</h2>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+Latitude :
+
+<span id="latitude">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Longitude :
+
+<span id="longitude">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Précision GPS :
+
+<span id="accuracy">
+
+--
+
+</span>
+
+m
+
+</p>
+
+
+
+<p>
+
+Adresse :
+
+<span id="address">
+
+Recherche...
+
+</span>
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+<div class="action-zone">
+
+
+<button
+class="btn-gps"
+id="btnLocate">
+
+
+<i class="fa-solid fa-crosshairs"></i>
+
+Obtenir ma position
+
+
+</button>
+
+
+
+
+<button
+class="btn-gps"
+id="btnShare">
+
+
+<i class="fa-solid fa-share-nodes"></i>
+
+Partager
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+<!-- ==========================
+DASHBOARD GPS TEMPS RÉEL
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-chart-line"></i>
+
+Tableau de bord GPS
+
+</h2>
+
+
+
+
+<div class="card-grid">
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-road"></i>
+
+
+<h3 id="distanceValue">
+
+0 km
 
 </h3>
+
+
+<p>
+Distance parcourue
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-gauge-high"></i>
+
+
+<h3 id="speedValue">
+
+0 km/h
+
+</h3>
+
+
+<p>
+Vitesse actuelle
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-clock"></i>
+
+
+<h3 id="timerValue">
+
+00:00:00
+
+</h3>
+
+
+<p>
+Durée mission
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-location-crosshairs"></i>
+
+
+<h3 id="pointsValue">
+
+0
+
+</h3>
+
+
+<p>
+Points GPS enregistrés
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-signal"></i>
+
+
+<h3 id="signalValue">
+
+--
+
+</h3>
+
+
+<p>
+Qualité GPS
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<i class="fa-solid fa-mountain"></i>
+
+
+<h3 id="altitudeValue">
+
+--
+
+</h3>
+
+
+<p>
+Altitude
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- ==========================
+CONTROLE MISSION
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-car"></i>
+
+Mission terrain
+
+</h2>
+
+
+
+
+<div class="status-panel">
+
+
+<div>
+
+
+État :
+
+<strong id="missionState">
+
+Arrêtée
+
+</strong>
+
+
+</div>
+
+
+
+<div>
+
+
+Temps actif :
+
+<strong id="activeTime">
+
+00:00:00
+
+</strong>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="progress-container">
+
+
+<div id="missionProgress"
+class="progress-bar">
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="action-zone">
+
+
+<button
+class="btn-gps"
+id="btnStart">
+
+
+<i class="fa-solid fa-play"></i>
+
+Démarrer mission
+
+
+</button>
+
+
+
+
+
+<button
+class="btn-gps"
+id="btnPause">
+
+
+<i class="fa-solid fa-pause"></i>
+
+Pause
+
+
+</button>
+
+
+
+
+
+<button
+class="btn-gps"
+id="btnStop">
+
+
+<i class="fa-solid fa-stop"></i>
+
+Terminer
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<!-- ==========================
+INFORMATIONS TECHNIQUES GPS
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-microchip"></i>
+
+Informations techniques
+
+</h2>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+Dernière mise à jour :
+
+<span id="lastUpdate">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Direction :
+
+<span id="direction">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Statut batterie :
+
+<span id="battery">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Mode réseau :
+
+<span id="connectionType">
+
+--
+
+</span>
+
+</p>
+
+
+
+</div>
+
+
+
+</section>
+
+<!-- ==========================
+CARTE GPS INTERACTIVE
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-map-location-dot"></i>
+
+Carte interactive terrain
+
+</h2>
+
+
 
 
 <div id="map"></div>
 
 
-</section>
+
+
+
+<div class="action-zone">
+
+
+
+<button
+class="btn-gps"
+id="btnMapCenter">
+
+
+<i class="fa-solid fa-location-arrow"></i>
+
+Centrer ma position
+
+
+</button>
 
 
 
 
 
-<!-- ====================================================== -->
-<!-- INFORMATIONS GPS -->
-<!-- ====================================================== -->
+<button
+class="btn-gps"
+id="btnFullscreen">
 
 
-<section class="df-form-section">
+<i class="fa-solid fa-expand"></i>
+
+Plein écran
 
 
-<h3>
-
-🛰️ Informations GPS
-
-</h3>
+</button>
 
 
 
-<div id="gpsInfos"
-
-class="info-card">
 
 
-<p>
+<a
+href="#"
+target="_blank"
+id="googleMapsLink"
+class="btn-gps">
 
-Aucune position disponible.
 
-</p>
+<i class="fa-brands fa-google"></i>
+
+Google Maps
+
+
+</a>
+
 
 
 </div>
@@ -446,67 +2015,210 @@ Aucune position disponible.
 </section>
 
 
-<!-- ====================================================== -->
-<!-- TABLEAU DE BORD -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>
-📊 Tableau de bord GPS
-</h3>
 
 
-<div class="stats-grid">
 
 
-<div class="stat-card">
+<!-- ==========================
+MISSION PARCOURS
+========================== -->
 
-<h2 id="statMission">
-0
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-route"></i>
+
+Parcours de mission
+
 </h2>
 
-<p>
-Missions enregistrées
-</p>
-
-</div>
 
 
 
-<div class="stat-card">
+<div class="info-box">
 
-<h2 id="statDistance">
-0 km
-</h2>
 
 <p>
-Distance totale
+
+Départ :
+
+<span id="startPoint">
+
+Non défini
+
+</span>
+
+
 </p>
 
-</div>
 
-
-
-<div class="stat-card">
-
-<h2 id="statAujourd">
-0
-</h2>
 
 <p>
-Missions aujourd'hui
-</p>
 
-</div>
+Position actuelle :
 
+<span id="currentPoint">
 
-
-<div class="stat-card">
-
-<h2 id="statPrecision">
 --
+
+</span>
+
+
+</p>
+
+
+
+<p>
+
+Arrivée :
+
+<span id="endPoint">
+
+En attente
+
+</span>
+
+
+</p>
+
+
+
+<p>
+
+Nombre de déplacements :
+
+<span id="movementCount">
+
+0
+
+</span>
+
+
+</p>
+
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+<!-- ==========================
+BOUTONS RAPIDES GPS
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-bolt"></i>
+
+Actions rapides
+
 </h2>
+
+
+
+
+<div class="action-zone">
+
+
+
+<button
+class="btn-gps"
+id="btnCopy">
+
+
+<i class="fa-solid fa-copy"></i>
+
+Copier coordonnées
+
+
+</button>
+
+
+
+
+
+<button
+class="btn-gps"
+id="btnNavigate">
+
+
+<i class="fa-solid fa-location-arrow"></i>
+
+Navigation
+
+
+</button>
+
+
+
+
+
+<button
+class="btn-gps"
+id="btnRefresh">
+
+
+<i class="fa-solid fa-rotate"></i>
+
+Actualiser GPS
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+ <!-- ==========================
+GÉOLOCALISATION AVANCÉE
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-satellite"></i>
+
+Géolocalisation avancée
+
+</h2>
+
+
+
+
+<div class="card-grid">
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-crosshairs"></i>
+
+<h3 id="geoAccuracy">
+
+--
+
+</h3>
 
 <p>
 Précision GPS
@@ -515,7 +2227,128 @@ Précision GPS
 </div>
 
 
+
+
+<div class="card">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+<h3 id="lastPositionTime">
+
+--
+
+</h3>
+
+<p>
+Dernière position
+</p>
+
 </div>
+
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-compass"></i>
+
+<h3 id="compassDirection">
+
+--
+
+</h3>
+
+<p>
+Orientation
+</p>
+
+</div>
+
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-satellite-dish"></i>
+
+<h3 id="satelliteCount">
+
+--
+
+</h3>
+
+<p>
+Satellites détectés
+</p>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+Latitude précise :
+<span id="preciseLat">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Longitude précise :
+<span id="preciseLng">
+
+--
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Adresse automatique :
+<span id="fullAddress">
+
+Recherche...
+
+</span>
+
+</p>
+
+
+
+<p>
+
+Zone administrative :
+<span id="adminZone">
+
+--
+
+</span>
+
+</p>
+
+
+
+</div>
+
+
 
 
 </section>
@@ -524,41 +2357,627 @@ Précision GPS
 
 
 
-<!-- ====================================================== -->
-<!-- ENREGISTRER UNE MISSION -->
-<!-- ====================================================== -->
+
+<!-- ==========================
+SOS INSPECTEUR
+========================== -->
 
 
-<section class="df-form-section">
+<section class="section fade-in">
 
 
-<h3>
+<h2>
 
-💾 Enregistrer une mission terrain
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+Assistance urgente Inspecteur/contrôleur 
+
+</h2>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+En cas de danger ou difficulté pendant une mission,
+envoyez instantanément votre position à votre hiérarchie.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="action-zone">
+
+
+
+<button
+class="btn-gps"
+id="btnSOS">
+
+
+<i class="fa-solid fa-bell"></i>
+
+SOS GPS
+
+
+</button>
+
+
+
+
+<button
+class="btn-gps"
+id="btnEmergencyShare">
+
+
+<i class="fa-solid fa-share"></i>
+
+Partager urgence
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- ==========================
+ENREGISTREMENT MISSION
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-file-circle-plus"></i>
+
+Nouvelle mission terrain
+
+</h2>
+
+
+
+
+<div class="form-grid">
+
+
+
+<div>
+
+<label>
+Entreprise / Site contrôlé
+</label>
+
+<input
+id="companyName"
+type="text"
+placeholder="Ex : BRALIMA">
+
+
+</div>
+
+
+
+
+<div>
+
+<label>
+Inspecteur responsable
+</label>
+
+<input
+id="inspectorName"
+type="text"
+placeholder="Nom complet">
+
+
+</div>
+
+
+
+
+<div>
+
+<label>
+Type de mission
+</label>
+
+<select id="missionType">
+
+<option>
+Inspection
+</option>
+
+<option>
+Contrôle
+</option>
+
+<option>
+Enquête
+</option>
+
+<option>
+Constat
+</option>
+
+</select>
+
+</div>
+
+
+
+
+<div>
+
+<label>
+Référence dossier
+</label>
+
+<input
+id="fileReference"
+type="text"
+placeholder="Numéro dossier">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div style="margin-top:20px;">
+
+
+<label>
+
+Objet de la mission
+
+</label>
+
+
+<textarea
+id="missionObject"
+rows="3"
+placeholder="Décrire l'objectif de la mission...">
+</textarea>
+
+
+</div>
+
+
+
+
+
+
+<div style="margin-top:20px;">
+
+
+<label>
+
+Notes terrain
+
+</label>
+
+
+<textarea
+id="fieldNotes"
+rows="5"
+placeholder="Observations, constatations, remarques...">
+</textarea>
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+
+<!-- ==========================
+SIGNATURE INSPECTEUR
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-signature"></i>
+
+Signature numérique Inspecteur/ Contrôleur
+
+</h2>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+Signez directement dans la zone ci-dessous
+pour authentifier le rapport de mission.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<canvas
+id="signaturePad"
+width="700"
+height="250"
+style="
+width:100%;
+background:rgba(0,0,0,.35);
+border:2px dashed #FFD700;
+border-radius:20px;
+margin-top:20px;
+cursor:crosshair;
+">
+</canvas>
+
+
+
+
+
+<div class="action-zone">
+
+
+<button
+class="btn-gps"
+id="clearSignature">
+
+
+<i class="fa-solid fa-eraser"></i>
+
+Effacer signature
+
+
+</button>
+
+
+
+
+<button
+class="btn-gps"
+id="saveMission">
+
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Enregistrer mission
+
+
+</button>
+
+
+
+</div>
+
+
+
+  </section>
+
+
+  <!-- ==========================
+GÉOLOCALISATION AVANCÉE
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-satellite"></i>
+
+Géolocalisation avancée
+
+</h2>
+
+
+
+<div class="card-grid">
+
+
+<div class="card">
+
+<i class="fa-solid fa-crosshairs"></i>
+
+<h3 id="geoStatus">
+
+Actif
 
 </h3>
 
+<p>
+Statut localisation
+</p>
+
+</div>
 
 
-<div class="grid-2">
+
+<div class="card">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+<h3 id="lastGPS">
+
+--
+
+</h3>
+
+<p>
+Dernière synchronisation
+</p>
+
+</div>
 
 
-<div class="field">
+
+<div class="card">
+
+<i class="fa-solid fa-compass"></i>
+
+<h3 id="compass">
+
+--
+
+</h3>
+
+<p>
+Orientation
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-location-dot"></i>
+
+<h3 id="geoZone">
+
+--
+
+</h3>
+
+<p>
+Zone actuelle
+</p>
+
+</div>
+
+
+</div>
+
+
+
+<div class="info-box">
+
+
+<p>
+
+Mode suivi :
+
+<span id="trackingMode">
+
+Standard
+
+</span>
+
+
+</p>
+
+
+
+<p>
+
+Fréquence actualisation :
+
+<span>
+
+5 secondes
+
+</span>
+
+
+</p>
+
+
+
+<p>
+
+Géorepérage :
+
+<span id="geoFence">
+
+Désactivé
+
+</span>
+
+
+</p>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ==========================
+SOS INSPECTEUR
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+Assistance SOS Inspecteur/Contrôleur 
+
+</h2>
+
+
+
+
+<div class="info-box">
+
+
+<p>
+
+En cas de danger ou difficulté terrain,
+l'inspecteur peut envoyer immédiatement
+sa position GPS à sa hiérarchie.
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="action-zone">
+
+
+
+<button
+
+class="btn-gps"
+
+id="btnSOS">
+
+
+<i class="fa-solid fa-bell"></i>
+
+SOS GPS URGENCE
+
+
+</button>
+
+
+
+
+
+<button
+
+class="btn-gps"
+
+id="btnSendPosition">
+
+
+<i class="fa-solid fa-paper-plane"></i>
+
+Envoyer position
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ==========================
+ENREGISTREMENT MISSION
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-file-circle-plus"></i>
+
+Nouvelle mission terrain
+
+</h2>
+
+
+
+
+
+<div class="form-grid">
+
+
+
+<div>
 
 <label>
 
-Entreprise / Mission
+Entreprise / Organisme
 
 </label>
 
 
 <input
 
-id="nomM"
+id="companyName"
 
 type="text"
 
-placeholder="Ex : Contrôle BRALIMA">
+placeholder="Ex : BRALIMA">
 
 
 </div>
@@ -566,37 +2985,105 @@ placeholder="Ex : Contrôle BRALIMA">
 
 
 
-<div class="field">
+<div>
 
 <label>
 
-Inspecteur responsable
+Inspecteur/ Contrôleur responsable
 
 </label>
 
 
 <input
 
-id="inspecteur"
+id="inspectorName"
 
 type="text"
 
-placeholder="Nom de l'inspecteur">
+placeholder="Nom complet">
 
 
 </div>
 
 
+
+
+<div>
+
+<label>
+
+Type de mission
+
+</label>
+
+
+<select id="missionType">
+
+
+<option>
+
+Inspection
+
+</option>
+
+
+<option>
+
+Contrôle
+
+</option>
+
+
+<option>
+
+Enquête
+
+</option>
+
+
+<option>
+
+Médiation
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+<div>
+
+<label>
+
+Date mission
+
+</label>
+
+
+<input
+
+id="missionDate"
+
+type="date">
+
+
+</div>
+
+
+
 </div>
 
 
 
 
 
-<div class="grid-2">
+<br>
 
-
-<div class="field">
 
 
 <label>
@@ -608,74 +3095,35 @@ Objet de la mission
 
 <input
 
-id="objetMission"
+id="missionObject"
 
 type="text"
 
-placeholder="Inspection, contrôle, enquête...">
-
-
-</div>
+placeholder="Objet du contrôle ou inspection">
 
 
 
 
-<div class="field">
 
 
 <label>
 
-Notes
+Notes terrain
 
 </label>
 
 
-<input
+<textarea
 
-id="notesM"
+id="fieldNotes"
 
-type="text"
+rows="5"
 
-placeholder="Observations terrain">
+placeholder="Observations, constatations, remarques...">
 
-
-</div>
-
+</textarea>
 
 
-</div>
-
-
-
-
-
-<div class="action-buttons">
-
-
-<button
-
-id="btnSave"
-
-class="btn-primary">
-
-💾 Sauvegarder
-
-</button>
-
-
-
-<button
-
-id="btnClear"
-
-class="btn-primary">
-
-🗑️ Effacer
-
-</button>
-
-
-</div>
 
 
 
@@ -685,627 +3133,109 @@ class="btn-primary">
 
 
 
-<!-- ====================================================== -->
-<!-- RECHERCHE -->
-<!-- ====================================================== -->
 
 
-<section class="df-form-section">
 
+<!-- ==========================
+SIGNATURE INSPECTEUR
+========================== -->
 
-<h3>
 
-🔍 Recherche intelligente
+<section class="section fade-in">
 
-</h3>
 
+<h2>
 
-<input
+<i class="fa-solid fa-signature"></i>
 
-id="searchMission"
+Signature numérique Inspecteur/Contrôleur 
 
-class="search-box"
+</h2>
 
-type="search"
 
-placeholder="Rechercher une mission...">
 
 
-
-</section>
-
-
-
-
-
-<!-- ====================================================== -->
-<!-- HISTORIQUE -->
-<!-- ====================================================== -->
-
-
-<section class="df-form-section">
-
-
-<h3>
-
-📚 Historique des missions
-
-</h3>
-
-
-<div id="listMissions">
-
-
-<p style="color:#ccc;text-align:center;">
-
-Aucune mission enregistrée.
-
-</p>
-
-
-</div>
-
-
-</section>
-
-<!-- ====================================================== -->
-<!-- ACTIONS RAPIDES -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>
-⚡ Actions rapides
-</h3>
-
-
-<div class="action-buttons">
-
-
-<button
-class="btn-primary"
-onclick="locate()">
-
-📍 Actualiser position
-
-</button>
-
-
-
-<button
-class="btn-primary"
-onclick="GPS.copyPosition()">
-
-📋 Copier coordonnées
-
-</button>
-
-
-
-<button
-class="btn-primary"
-onclick="GPS.sharePosition()">
-
-📤 Partager position
-
-</button>
-
-
-<a
-id="btnGoogleMaps"
-class="btn-primary"
-href="#"
-target="_blank">
-
-🗺️ Google Maps
-
-</a>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-<!-- ====================================================== -->
-<!-- SOS INSPECTEUR -->
-<!-- ====================================================== -->
-
-
-<section class="df-form-section">
-
-
-<h3>
-
-🆘 Assistance Inspecteur
-
-</h3>
-
-
-<div class="info-card">
+<div class="info-box">
 
 
 <p>
 
-En cas de problème pendant une mission,
-envoyez votre position GPS à votre hiérarchie.
+Signer électroniquement le rapport
+de mission avant archivage.
 
 </p>
 
 
-
-<div class="action-buttons">
-
-
-<button
-
-id="btnSOS"
-
-class="btn-primary">
-
-🚨 SOS GPS
-
-</button>
-
-
-
-<button
-
-id="btnRapport"
-
-class="btn-primary">
-
-📄 Rapport GPS
-
-</button>
-
-
 </div>
 
 
-</div>
 
 
-</section>
+<canvas
 
-
-
-
-
-<footer
+id="signaturePad"
 
 style="
-text-align:center;
-padding:25px;
-color:#ccc;
+
+width:100%;
+
+height:220px;
+
+background:white;
+
+border-radius:15px;
+
+cursor:crosshair;
+
 ">
 
 
-SMART GPS IGT © 2026
+</canvas>
 
-<br>
 
-InspecteurBot RDC
 
-<br>
 
-Version 4.0
 
+<div class="action-zone">
 
-</footer>
 
 
+<button
 
+class="btn-gps"
 
-<!-- ====================================================== -->
-<!-- SCRIPTS -->
-<!-- ====================================================== -->
+id="clearSignature">
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
+<i class="fa-solid fa-eraser"></i>
 
+Effacer signature
 
-<script src="../js/gps.js?v=4">
-</script>
 
+</button>
 
 
-<script>
 
 
-let map;
 
-let marker;
+<button
 
+class="btn-gps"
 
+id="saveSignature">
 
 
+<i class="fa-solid fa-check"></i>
 
-// ======================================================
-// INITIALISER CARTE
-// ======================================================
+Valider signature
 
 
-function initMap(lat,lng){
+</button>
 
 
-if(!map){
 
+</div>
 
-map = L.map("map")
 
-.setView(
 
-[lat,lng],
-
-16
-
-);
-
-
-
-L.tileLayer(
-
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
-{
-
-attribution:
-"© OpenStreetMap"
-
-}
-
-)
-
-.addTo(map);
-
-
-
-}
-
-else{
-
-
-map.setView(
-
-[lat,lng],
-
-16
-
-);
-
-
-}
-
-
-
-if(marker){
-
-map.removeLayer(marker);
-
-}
-
-
-
-marker = L.marker(
-
-[lat,lng]
-
-)
-
-.addTo(map);
-
-
-}
-
-
-
-
-
-// ======================================================
-// LOCALISATION
-// ======================================================
-
-
-async function locate(){
-
-
-try{
-
-
-const p =
-await GPS.getPosition();
-
-
-
-const adr =
-await GPS.getAddress(
-
-p.lat,
-
-p.lng
-
-);
-
-
-
-initMap(
-
-p.lat,
-
-p.lng
-
-);
-
-
-
-document
-.getElementById("btnGoogleMaps")
-.href =
-
-`https://www.google.com/maps?q=${p.lat},${p.lng}`;
-
-
-
-document
-.getElementById("statPrecision")
-.textContent =
-
-Math.round(
-
-p.accuracy
-
-)
-
-+" m";
-
-
-
-document
-.getElementById("gpsInfos")
-.innerHTML = `
-
-
-<p>
-Latitude :
-${p.lat}
-</p>
-
-
-<p>
-Longitude :
-${p.lng}
-</p>
-
-
-<p>
-Adresse :
-${adr.complet}
-</p>
-
-
-<p>
-Ville :
-${adr.ville}
-</p>
-
-
-<p>
-Pays :
-${adr.pays}
-</p>
-
-
-`;
-
-
-
-}
-
-
-catch(e){
-
-
-alert(e);
-
-
-}
-
-
-}
-
-
-
-
-
-// ======================================================
-// SUIVI MISSION
-// ======================================================
-
-
-document
-.getElementById("btnStartMission")
-.onclick = ()=>{
-
-
-GPS.startTracking();
-
-
-document
-.getElementById("missionEtat")
-.textContent =
-"🟢 Mission en cours";
-
-
-};
-
-
-
-document
-.getElementById("btnPauseMission")
-.onclick = ()=>{
-
-
-GPS.pauseTracking();
-
-
-};
-
-
-
-
-document
-.getElementById("btnStopMission")
-.onclick = ()=>{
-
-
-GPS.stopTracking();
-
-
-document
-.getElementById("missionEtat")
-.textContent =
-"🔴 Mission terminée";
-
-
-};
-
-
-
-
-
-
-// ======================================================
-// MISE A JOUR TEMPS REEL
-// ======================================================
-
-
-window.updateTrackingUI = function(data){
-
-
-
-document
-.getElementById("distanceMission")
-.textContent =
-
-GPS.formatDistance(
-
-data.distance
-
-);
-
-
-
-document
-.getElementById("pointsMission")
-.textContent =
-
-data.points;
-
-
-
-document
-.getElementById("missionTemps")
-.textContent =
-
-GPS.formatDuration(
-
-data.duree
-
-);
-
-
-
-};
-
-
-
-
-
-// ======================================================
-// ENREGISTRER MISSION
-// ======================================================
-
-
-document
-.getElementById("btnSave")
-.onclick = ()=>{
-
-
-const mission =
-
-GPS.saveMission(
-
-document
-.getElementById("nomM")
-.value,
-
-
-document
-.getElementById("notesM")
-.value,
-
-
-{
-
-
-inspecteur:
-
-document
-.getElementById("inspecteur")
-.value,
-
-
-objet:
-
-document
-.getElementById("objetMission")
-.value
-
-
-}
-
-
-);
-
-
-
-if(mission){
-
-
-alert(
-
-"✅ Mission enregistrée"
-
-);
-
-
-}
-
-
-
-};
-
-
-
-
-
-// ======================================================
-// INITIALISATION
-// ======================================================
-
-
-locate();
-
-
-</script>
-
-
-</body>
-
-</html>
+  </section>
