@@ -534,22 +534,85 @@ partagerCommunique;
 
 
 /*==================================================
- LECTURE TEXTE
+ LECTURE PROFESSIONNELLE D'UN COMMUNIQUÉ
 ==================================================*/
-
 
 function lireCommunique(id){
 
-    const c = listeCommuniques.find(
-        x => x.id === id
-    );
+    const communique = listeCommuniques.find(c => c.id === id);
 
-    if(!c){
+    if(!communique){
         return;
     }
 
-    ouvrirLecture(c);
+    // Ouverture de la fenêtre
+    document.getElementById("lectureModal").style.display = "flex";
+
+    // Remplissage des informations
+    document.getElementById("lectureTitre").textContent =
+        communique.titre;
+
+    document.getElementById("lectureNumero").textContent =
+        "Communiqué N° " + communique.numero;
+
+    document.getElementById("lectureDate").innerHTML =
+        "📅 " + communique.datePublication;
+
+    document.getElementById("lectureAuteur").innerHTML =
+        "👤 " + communique.auteur;
+
+    document.getElementById("lectureCategorie").innerHTML =
+        "📂 " + communique.categorie;
+
+    document.getElementById("lectureTexte").textContent =
+        communique.texte;
+
+    // Bouton Écouter
+    document.getElementById("btnEcouterLecture").onclick = function(){
+
+        chargerCommunique(communique.audio);
+
+    };
 
 }
 
 window.lireCommunique = lireCommunique;
+
+/*==================================================
+ FERMETURE DE LA FENÊTRE
+==================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const fermer =
+    document.getElementById("btnFermerLecture");
+
+    if(fermer){
+
+        fermer.onclick = function(){
+
+            document.getElementById("lectureModal")
+            .style.display = "none";
+
+        };
+
+    }
+
+});
+
+/*==================================================
+ FERMER EN CLIQUANT À L'EXTÉRIEUR
+==================================================*/
+
+window.onclick = function(event){
+
+    const modal =
+    document.getElementById("lectureModal");
+
+    if(event.target === modal){
+
+        modal.style.display = "none";
+
+    }
+
+};
