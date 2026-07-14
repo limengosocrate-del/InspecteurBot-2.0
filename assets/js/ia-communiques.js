@@ -1,75 +1,205 @@
-/*==================================================
+/*==========================================================
  INSPECTEURBOT RDC
  IA SPÉCIALISÉE - COMMUNIQUÉS OFFICIELS
-==================================================*/
+ Version : 1.0
+ Auteur : InspecteurBot IA
+==========================================================*/
+
+"use strict";
+
+/*==========================================================
+ OBJET PRINCIPAL
+==========================================================*/
 
 const IACommuniques = {
 
-    repondre(question){
+    historique: [],
 
-        if(!question){
+    dernierResultat: null,
 
-            return "Veuillez saisir une question.";
+    /*======================================================
+     NORMALISATION
+    ======================================================*/
 
-        }
+    normaliser(texte){
 
-        const resultat = RAGCommuniques.bestResult(question);
+        if(!texte) return "";
 
-        if(!resultat){
-
-            return "Aucun communiqué correspondant n'a été trouvé.";
-
-        }
-
-        return `
-📢 ${resultat.titre}
-
-📅 Date : ${resultat.date}
-
-👤 Auteur : ${resultat.auteur}
-
-📂 Catégorie : ${resultat.categorie}
-
-📝 ${resultat.description}
-`;
+        return texte
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .trim();
 
     },
 
-    ouvrir(question){
+    /*======================================================
+     ENREGISTREMENT HISTORIQUE
+    ======================================================*/
 
-        const resultat = RAGCommuniques.bestResult(question);
+    ajouterHistorique(question,resultat){
 
-        if(!resultat){
+        this.historique.push({
 
-            alert("Aucun communiqué trouvé.");
+            date:new Date(),
 
-            return;
+            question,
+
+            resultat
+
+        });
+
+        if(this.historique.length>50){
+
+            this.historique.shift();
 
         }
 
-        const lecteur = document.getElementById("mainPlayer");
+    },
 
-        if(lecteur){
+    /*======================================================
+     RECHERCHE RAG
+    ======================================================*/
 
-            lecteur.src = resultat.audio;
-            lecteur.load();
-            lecteur.play();
+    rechercher(question){
+
+        if(!question){
+
+            return null;
+
+        }
+
+        if(typeof RAGCommuniques==="undefined"){
+
+            console.error("RAGCommuniques introuvable.");
+
+            return null;
+
+        }
+
+        const resultat=RAGCommuniques.bestResult(question);
+
+        if(resultat){
+
+            this.dernierResultat=resultat;
+
+            this.ajouterHistorique(question,resultat);
 
         }
 
         return resultat;
 
+    },
+
+    /*======================================================
+     RÉPONSE IA
+    ======================================================*/
+
+    repondre(question){
+
+        const doc=this.rechercher(question);
+
+        if(!doc){
+
+            return{
+
+                succes:false,
+
+                message:"Aucun communiqué correspondant n'a été trouvé."
+
+            };
+
+        }
+
+        return{
+
+            succes:true,
+
+            document:doc,
+
+            message:
+`📢 ${doc.titre}
+
+📅 Date : ${doc.date}
+
+👤 Auteur : ${doc.auteur}
+
+📂 Catégorie : ${doc.categorie}
+
+📝 ${doc.description}`
+
+        };
+
+    },
+
+    /*======================================================
+     ANALYSE INTELLIGENTE
+    ======================================================*/
+
+    analyser(question){
+
+        if(!question){
+
+            return{
+
+                succes:false,
+
+                message:"Veuillez saisir une recherche."
+
+            };
+
+        }
+
+        question=this.normaliser(question);
+
+        /* Dernier communiqué */
+
+        if(
+            question.includes("dernier") ||
+            question.includes("recent") ||
+            question.includes("nouveau")
+        ){
+
+            if(
+                RAGCommuniques.documents &&
+                RAGCommuniques.documents.length
+            ){
+
+                return this.repondre(
+                    RAGCommuniques.documents[0].titre
+                );
+
+            }
+
+        }
+
+        /* Recherche numéro */
+
+        const numero=question.match(/\d+/);
+
+        if(numero){
+
+            return this.repondre(numero[0]);
+
+        }
+
+        /* Recherche générale */
+
+        return this.repondre(question);
+
     }
 
- /*==================================================
+};
+
+/*==========================================================
  INSPECTEURBOT RDC
- ASSISTANT VOCAL - COMMUNIQUÉS
-==================================================*/
+ SYNTHÈSE VOCALE
+==========================================================*/
 
 IACommuniques.lireTexte = function(texte){
 
     if(!("speechSynthesis" in window)){
-        console.warn("Synthèse vocale non supportée.");
+        console.warn("Synthèse vocale non disponible.");
         return;
     }
 
@@ -87,9 +217,9 @@ IACommuniques.lireTexte = function(texte){
 };
 
 
-/*==================================================
- MICROPHONE
-==================================================*/
+/*==========================================================
+ RECONNAISSANCE VOCALE
+==========================================================*/
 
 IACommuniques.demarrerMicro = function(){
 
@@ -109,7 +239,22 @@ IACommuniques.demarrerMicro = function(){
 
     recognition.lang = "fr-FR";
     recognition.interimResults = false;
+    recognition.continuous = false;
     recognition.maxAlternatives = 1;
+
+    const btn = document.getElementById("btnVoice");
+
+    if(btn){
+
+        btn.classList.add("listening");
+
+    }
+
+    recognition.onstart = function(){
+
+        console.log("🎤 Microphone actif");
+
+    };
 
     recognition.onresult = function(event){
 
@@ -118,30 +263,48 @@ IACommuniques.demarrerMicro = function(){
         const input = document.getElementById("searchCommunique");
 
         if(input){
+
             input.value = texte;
+
         }
 
-        const doc = RAGCommuniques.bestResult(texte);
+        const resultat = IACommuniques.analyser(texte);
 
-        if(doc){
+        if(resultat.succes){
 
-            IACommuniques.afficherReponse(doc);
+            IACommuniques.afficherReponse(resultat.document);
 
-            IACommuniques.lireTexte(doc.description);
+            IACommuniques.lireTexte(resultat.document.description);
+
+        }else{
+
+            alert(resultat.message);
 
         }
 
     };
 
- if(btn){
+    recognition.onerror = function(e){
 
-btn.classList.remove("listening");
+        console.error("Erreur microphone :", e.error);
 
- }
- 
-    recognition.onerror = function(){
+        if(btn){
 
-        console.log("Erreur reconnaissance vocale.");
+            btn.classList.remove("listening");
+
+        }
+
+    };
+
+    recognition.onend = function(){
+
+        console.log("🎤 Micro arrêté");
+
+        if(btn){
+
+            btn.classList.remove("listening");
+
+        }
 
     };
 
@@ -149,259 +312,319 @@ btn.classList.remove("listening");
 
 };
 
+
+/*==========================================================
+ ARRÊTER LA VOIX
+==========================================================*/
+
+IACommuniques.stopVoix = function(){
+
+    if("speechSynthesis" in window){
+
+        window.speechSynthesis.cancel();
+
+    }
+
 };
 
-/*==================================================
- ANALYSE INTELLIGENTE DES QUESTIONS
-==================================================*/
 
-IACommuniques.analyser = function(question){
+/*==========================================================
+ LECTURE AUTOMATIQUE D'UN COMMUNIQUÉ
+==========================================================*/
 
-    if(!question){
+IACommuniques.ouvrir = function(document){
+
+    if(!document){
+
+        return;
+
+    }
+
+    const lecteur = document.getElementById("mainPlayer");
+
+    if(lecteur){
+
+        lecteur.src = document.audio;
+
+        lecteur.load();
+
+        lecteur.play();
+
+    }
+
+};
+
+/*==========================================================
+ INSPECTEURBOT RDC
+ FENÊTRE IA PROFESSIONNELLE
+==========================================================*/
+
+IACommuniques.afficherReponse = function(doc){
+
+    if(!doc){
         return;
     }
 
-    question = question.toLowerCase().trim();
+    /* Fermer une ancienne fenêtre */
 
-    /* Dernier communiqué */
+    const ancienne = document.getElementById("iaCommuniqueModal");
 
-    if(question.includes("dernier") ||
-       question.includes("récent") ||
-       question.includes("nouveau")){
+    if(ancienne){
 
-        const dernier = RAGCommuniques.documents[0];
+        ancienne.remove();
 
-        if(dernier){
+    }
 
-            this.ouvrir(dernier.titre);
+    /* Création du fond */
 
-            return this.repondre(dernier.titre);
+    const overlay = document.createElement("div");
+
+    overlay.id = "iaCommuniqueModal";
+
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0,0,0,.65)";
+    overlay.style.display = "flex";
+    overlay.style.alignItems = "center";
+    overlay.style.justifyContent = "center";
+    overlay.style.padding = "20px";
+    overlay.style.zIndex = "999999";
+
+    overlay.innerHTML = `
+
+<div style="
+background:#062A73;
+width:100%;
+max-width:720px;
+border-radius:22px;
+padding:28px;
+color:#ffffff;
+box-shadow:0 15px 45px rgba(0,0,0,.45);
+">
+
+<h2 style="
+color:#FFD700;
+margin-bottom:18px;
+">
+
+🤖 InspecteurBot IA
+
+</h2>
+
+<h3 style="margin-bottom:15px;">
+
+${doc.titre}
+
+</h3>
+
+<p>
+
+📅 <strong>Date :</strong>
+
+${doc.date}
+
+</p>
+
+<p>
+
+👤 <strong>Auteur :</strong>
+
+${doc.auteur}
+
+</p>
+
+<p>
+
+📂 <strong>Catégorie :</strong>
+
+${doc.categorie}
+
+</p>
+
+<hr style="
+margin:20px 0;
+border:.5px solid rgba(255,255,255,.18);
+">
+
+<p style="
+line-height:1.9;
+color:#eaf2ff;
+">
+
+${doc.description}
+
+</p>
+
+<div style="
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-top:28px;
+">
+
+<button
+id="btnLireIA"
+style="
+flex:1;
+padding:14px;
+border:none;
+border-radius:40px;
+background:#FFD700;
+color:#04215f;
+font-weight:bold;
+cursor:pointer;
+">
+
+🎧 Écouter
+
+</button>
+
+<button
+id="btnVoixIA"
+style="
+flex:1;
+padding:14px;
+border:none;
+border-radius:40px;
+background:#0d6efd;
+color:white;
+font-weight:bold;
+cursor:pointer;
+">
+
+🔊 Lire
+
+</button>
+
+<button
+id="btnFermerIA"
+style="
+flex:1;
+padding:14px;
+border:none;
+border-radius:40px;
+background:#ffffff;
+color:#04215f;
+font-weight:bold;
+cursor:pointer;
+">
+
+Fermer
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+    document.body.appendChild(overlay);
+
+    /* Lecture audio */
+
+    document
+    .getElementById("btnLireIA")
+    .onclick = function(){
+
+        IACommuniques.ouvrir(doc);
+
+    };
+
+    /* Lecture vocale */
+
+    document
+    .getElementById("btnVoixIA")
+    .onclick = function(){
+
+        IACommuniques.lireTexte(doc.description);
+
+    };
+
+    /* Fermeture */
+
+    document
+    .getElementById("btnFermerIA")
+    .onclick = function(){
+
+        IACommuniques.stopVoix();
+
+        overlay.remove();
+
+    };
+
+    /* Fermer en cliquant hors de la fenêtre */
+
+    overlay.onclick = function(e){
+
+        if(e.target===overlay){
+
+            IACommuniques.stopVoix();
+
+            overlay.remove();
 
         }
 
-    }
-
-    /* Recherche par numéro */
-
-    const numero = question.match(/\d+/);
-
-    if(numero){
-
-        const recherche = "N°" + numero[0];
-
-        this.ouvrir(recherche);
-
-        return this.repondre(recherche);
-
-    }
-
-    /* Recherche générale */
-
-    this.ouvrir(question);
-
-    return this.repondre(question);
+    };
 
 };
 
+/*==========================================================
+ INSPECTEURBOT RDC
+ INITIALISATION DU MODULE IA COMMUNIQUÉS
+ Version : 1.0
+==========================================================*/
 
-/*==================================================
- BOUTON DE RECHERCHE
-==================================================*/
-
-document.addEventListener("DOMContentLoaded", ()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
     const input = document.getElementById("searchCommunique");
-    const bouton = document.getElementById("btnSearch");
+    const btnSearch = document.getElementById("btnSearch");
+    const btnVoice = document.getElementById("btnVoice");
 
-    if(!input || !bouton){
-        return;
+    /*==============================================
+      RECHERCHE PAR BOUTON
+    ==============================================*/
+
+    if(btnSearch){
+
+        btnSearch.addEventListener("click", () => {
+
+            executerRecherche();
+
+        });
+
     }
 
-    bouton.addEventListener("click", ()=>{
+    /*==============================================
+      RECHERCHE PAR TOUCHE ENTRÉE
+    ==============================================*/
 
-        const reponse = IACommuniques.analyser(input.value);
+    if(input){
 
-        if(reponse){
+        input.addEventListener("keypress", function(e){
 
-         const doc = RAGCommuniques.bestResult(input.value);
+            if(e.key === "Enter"){
 
-        if(doc){
+                e.preventDefault();
 
-        IACommuniques.afficherReponse(doc);
-
-        }
-
-       });
-
-    input.addEventListener("keypress", e=>{
-
-        if(e.key==="Enter"){
-
-            e.preventDefault();
-
-            const reponse = IACommuniques.analyser(input.value);
-
-            if(reponse){
-
-                alert(reponse);
+                executerRecherche();
 
             }
 
-        }
+        });
 
-    });
-
-});
-
-/*==================================================
- INSPECTEURBOT RDC
- FENÊTRE IA PROFESSIONNELLE
-==================================================*/
-const btn=document.getElementById("btnVoice");
-
-if(btn){
-
-btn.classList.add("listening");
-
-}
-
-
-IACommuniques.afficherReponse = function(document){
-
-    let ancienneFenetre = document.getElementById("iaCommuniqueModal");
-
-    if(ancienneFenetre){
-        ancienneFenetre.remove();
     }
 
-    const modal = document.createElement("div");
-
-    modal.id = "iaCommuniqueModal";
-
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.background = "rgba(0,0,0,.65)";
-    modal.style.zIndex = "999999";
-    modal.style.display = "flex";
-    modal.style.alignItems = "center";
-    modal.style.justifyContent = "center";
-    modal.style.padding = "20px";
-
-    modal.innerHTML = `
-        <div style="
-            background:#062A73;
-            width:100%;
-            max-width:650px;
-            border-radius:20px;
-            padding:25px;
-            color:white;
-            box-shadow:0 0 30px rgba(0,0,0,.45);
-            ">
-
-            <h2 style="color:#FFD700;margin-bottom:15px;">
-                🤖 InspecteurBot IA
-            </h2>
-
-            <h3>${document.titre}</h3>
-
-            <p style="margin-top:15px;">
-                📅 <b>Date :</b> ${document.date}
-            </p>
-
-            <p>
-                👤 <b>Auteur :</b> ${document.auteur}
-            </p>
-
-            <p>
-                📂 <b>Catégorie :</b> ${document.categorie}
-            </p>
-
-            <hr style="
-                margin:20px 0;
-                border:.5px solid rgba(255,255,255,.20);
-            ">
-
-            <p style="
-                line-height:1.8;
-                color:#e7f1ff;
-            ">
-                ${document.description}
-            </p>
-
-            <div style="
-                display:flex;
-                gap:10px;
-                margin-top:25px;
-                flex-wrap:wrap;
-            ">
-
-                <button
-                    id="btnPlayIA"
-                    style="
-                    flex:1;
-                    padding:14px;
-                    border:none;
-                    border-radius:40px;
-                    background:#FFD700;
-                    color:#04215f;
-                    font-weight:bold;
-                    cursor:pointer;
-                    ">
-
-                    🎧 Écouter
-
-                </button>
-
-                <button
-                    id="btnCloseIA"
-                    style="
-                    flex:1;
-                    padding:14px;
-                    border:none;
-                    border-radius:40px;
-                    background:#ffffff;
-                    cursor:pointer;
-                    ">
-
-                    Fermer
-
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    document
-    .getElementById("btnCloseIA")
-    .onclick = ()=>{
-
-        modal.remove();
-
-    };
-
-    document
-    .getElementById("btnPlayIA")
-    .onclick = ()=>{
-
-        chargerCommunique(document.audio);
-
-    };
-
-};
-
-document.addEventListener("DOMContentLoaded", ()=>{
-
-    const btnVoice = document.getElementById("btnVoice");
+    /*==============================================
+      MICROPHONE
+    ==============================================*/
 
     if(btnVoice){
 
-        btnVoice.addEventListener("click", ()=>{
+        btnVoice.addEventListener("click", () => {
 
             IACommuniques.demarrerMicro();
 
@@ -409,4 +632,61 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
     }
 
+    /*==============================================
+      FONCTION DE RECHERCHE
+    ==============================================*/
+
+    function executerRecherche(){
+
+        if(!input){
+
+            return;
+
+        }
+
+        const question = input.value.trim();
+
+        if(question === ""){
+
+            alert("Veuillez saisir votre recherche.");
+
+            input.focus();
+
+            return;
+
+        }
+
+        const resultat = IACommuniques.analyser(question);
+
+        if(resultat.succes){
+
+            IACommuniques.afficherReponse(resultat.document);
+
+        }
+
+        else{
+
+            alert(resultat.message);
+
+        }
+
+    }
+
+    console.log("======================================");
+    console.log(" InspecteurBot RDC");
+    console.log(" IA Communiqués initialisée");
+    console.log("======================================");
+
 });
+
+
+/*==========================================================
+ FONCTIONS PUBLIQUES
+==========================================================*/
+
+window.IACommuniques = IACommuniques;
+
+
+/*==========================================================
+ FIN DU MODULE
+==========================================================*/
