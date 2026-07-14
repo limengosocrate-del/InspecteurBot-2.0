@@ -1,153 +1,64 @@
 /*==================================================
  INSPECTEURBOT RDC
- MODULE IA COMMUNIQUÉS
-
- Fichier :
- assets/js/ia-communiques.js
-
- Rôle :
- - Connecter les communiqués à l'assistant IA
- - Ajouter la recherche spécifique Communiqués
+ IA SPÉCIALISÉE - COMMUNIQUÉS OFFICIELS
 ==================================================*/
 
+const IACommuniques = {
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+    repondre(question){
 
+        if(!question){
 
-const bouton =
-document.getElementById("searchBtn");
+            return "Veuillez saisir une question.";
 
+        }
 
-const champ =
-document.getElementById("searchInput");
+        const resultat = RAGCommuniques.bestResult(question);
 
+        if(!resultat){
 
-const resultat =
-document.getElementById("searchResults");
+            return "Aucun communiqué correspondant n'a été trouvé.";
 
+        }
 
+        return `
+📢 ${resultat.titre}
 
-if(!bouton || !champ || !resultat){
+📅 Date : ${resultat.date}
 
-console.log(
-"Module IA Communiqués non actif sur cette page"
-);
+👤 Auteur : ${resultat.auteur}
 
-return;
+📂 Catégorie : ${resultat.categorie}
 
-}
-
-
-
-
-
-bouton.addEventListener(
-"click",
-async()=>{
-
-
-const question =
-champ.value.trim();
-
-
-
-if(!question)
-return;
-
-
-
-resultat.innerHTML = `
-
-<div class="msg">
-
-🤖 Recherche dans les communiqués officiels...
-
-</div>
-
+📝 ${resultat.description}
 `;
 
+    },
 
+    ouvrir(question){
 
+        const resultat = RAGCommuniques.bestResult(question);
 
+        if(!resultat){
 
-try{
+            alert("Aucun communiqué trouvé.");
 
+            return;
 
-let reponse = "";
+        }
 
+        const lecteur = document.getElementById("mainPlayer");
 
+        if(lecteur){
 
-if(
-typeof reponseIACommuniques === "function"
-){
+            lecteur.src = resultat.audio;
+            lecteur.load();
+            lecteur.play();
 
+        }
 
-reponse =
-reponseIACommuniques(question);
+        return resultat;
 
+    }
 
-
-}else{
-
-
-reponse =
-
-"Base Communiqués IA non chargée.";
-
-
-}
-
-
-
-
-
-resultat.innerHTML = `
-
-<div class="ia-response">
-
-
-<h3>
-📢 Communiqués InspecteurBot
-</h3>
-
-
-<p>
-${reponse.replace(/\n/g,"<br>")}
-</p>
-
-
-</div>
-
-`;
-
-
-
-
-
-}
-
-catch(e){
-
-
-console.error(
-"Erreur IA Communiqués :",
-e
-);
-
-
-
-resultat.innerHTML =
-
-"❌ Erreur lors de la recherche.";
-
-
-}
-
-
-});
-
-
-
-});
+};
