@@ -8,37 +8,44 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>SMART GPS IGT | InspecteurBot RDC</title>
+<title>
+SMART GPS IGT | InspecteurBot RDC
+</title>
+
 
 <link rel="stylesheet"
 href="../fiche.css?v=50">
 
 <link rel="stylesheet"
-href="decompte-final.css?v=3">
+href="decompte-final.css?v=4">
+
+
+<!-- Leaflet -->
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 
 <style>
 
 #map{
 
 width:100%;
+
 height:420px;
 
 border-radius:15px;
 
-overflow:hidden;
-
 margin-top:15px;
 
-border:2px solid rgba(255,215,0,.25);
+border:2px solid rgba(255,215,0,.3);
 
 }
 
+
 .info-card{
 
-background:rgba(255,255,255,.05);
+background:rgba(255,255,255,.06);
 
 border-left:5px solid #FFD700;
 
@@ -46,15 +53,15 @@ border-radius:12px;
 
 padding:18px;
 
-margin-top:15px;
+color:white;
 
-color:#fff;
+margin-top:15px;
 
 line-height:1.8;
 
-backdrop-filter:blur(8px);
-
 }
+
+
 
 .stats-grid{
 
@@ -69,47 +76,33 @@ margin-top:20px;
 
 }
 
+
+
 .stat-card{
 
 background:rgba(255,255,255,.05);
 
-padding:18px;
-
 border-radius:12px;
+
+padding:20px;
 
 text-align:center;
 
-color:#fff;
+color:white;
 
 }
+
+
 
 .stat-card h2{
 
-font-size:30px;
-
 color:#FFD700;
 
-margin-bottom:5px;
+font-size:30px;
 
 }
 
-.search-box{
 
-width:100%;
-
-padding:12px;
-
-border-radius:10px;
-
-border:none;
-
-outline:none;
-
-margin-bottom:15px;
-
-font-size:15px;
-
-}
 
 .action-buttons{
 
@@ -123,47 +116,51 @@ margin-top:15px;
 
 }
 
-.action-buttons button,
 
-.action-buttons a{
+
+.action-buttons button{
 
 flex:1;
 
-min-width:180px;
-
-text-align:center;
+min-width:160px;
 
 }
 
-.badge{
 
-display:inline-block;
+.hist-item{
 
-padding:4px 10px;
+background:rgba(255,255,255,.05);
 
-background:#198754;
+padding:15px;
 
-border-radius:20px;
+border-radius:10px;
 
-font-size:13px;
+margin-top:10px;
 
-color:#fff;
+color:white;
 
 }
+
 
 </style>
 
+
 </head>
 
+
 <body>
+
 
 <div class="background"></div>
 
 <div class="particles"></div>
 
+
 <header class="header">
 
+
 <div class="header-left">
+
 
 <div class="logo">
 
@@ -171,75 +168,86 @@ color:#fff;
 
 </div>
 
+
 <div class="header-text">
 
-<h1>🌍 SMART GPS IGT</h1>
+<h1>
+🌍 SMART GPS IGT
+</h1>
 
-<h2>Centre Intelligent des Missions Terrain</h2>
+
+<h2>
+Centre Intelligent des Missions Terrain
+</h2>
+
 
 </div>
 
+
 </div>
+
 
 <div class="header-right">
 
-<a href="../index.html"
 
+<a href="../index.html"
 class="btn-retour">
 
 ← Retour
 
 </a>
 
+
 </div>
+
 
 </header>
 
+
+
 <main class="df-main">
 
-<!-- ========================= -->
 
-<!-- MA POSITION ACTUELLE -->
-
-<!-- ========================= -->
+<!-- POSITION ACTUELLE -->
 
 <section class="df-form-section">
 
+
 <h3>
-
 📍 Ma position actuelle
-
 </h3>
 
-<div class="actions">
 
 <button
-
 id="btnLocate"
-
 class="btn-primary">
 
-📡 Actualiser ma position
+📡 Obtenir ma position
 
 </button>
 
-</div>
 
 <div id="pos"></div>
 
+
+  </section>
+
+  
 <!-- ====================================================== -->
 <!-- MISSION EN COURS -->
 <!-- ====================================================== -->
 
 <section class="df-form-section">
 
-<h3>🚗 Mission en cours</h3>
+<h3>
+🚗 Mission en cours
+</h3>
+
 
 <div class="info-card">
 
-<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
 
-<div>
+<p>
 
 <strong>État :</strong>
 
@@ -250,9 +258,11 @@ Aucune mission
 
 </span>
 
-</div>
+</p>
 
-<div>
+
+
+<p>
 
 <strong>Durée :</strong>
 
@@ -262,13 +272,12 @@ Aucune mission
 
 </span>
 
-</div>
+</p>
 
-</div>
 
-<hr>
 
 <div class="stats-grid">
+
 
 <div class="stat-card">
 
@@ -278,21 +287,15 @@ Aucune mission
 
 </h2>
 
-<p>Distance parcourue</p>
+<p>
+
+Distance parcourue
+
+</p>
 
 </div>
 
-<div class="stat-card">
 
-<h2 id="vitesseMission">
-
-0 km/h
-
-</h2>
-
-<p>Vitesse</p>
-
-</div>
 
 <div class="stat-card">
 
@@ -302,53 +305,95 @@ Aucune mission
 
 </h2>
 
-<p>Points GPS</p>
+<p>
+
+Points GPS
+
+</p>
 
 </div>
 
+
+
+<div class="stat-card">
+
+<h2 id="vitesseMission">
+
+0 km/h
+
+</h2>
+
+<p>
+
+Vitesse
+
+</p>
+
 </div>
+
+
+</div>
+
+
+
 
 <div class="action-buttons">
 
+
 <button
+
 id="btnStartMission"
+
 class="btn-primary">
 
-▶️ Démarrer
+▶️ Démarrer mission
 
 </button>
 
+
+
 <button
+
 id="btnPauseMission"
+
 class="btn-primary">
 
 ⏸️ Pause
 
 </button>
 
+
+
 <button
+
 id="btnStopMission"
+
 class="btn-primary">
 
 ⏹️ Terminer
 
 </button>
 
-</div>
 
 </div>
 
-</section>
+
+</div>
+
 
 </section>
 
-<!-- ========================= -->
 
-<!-- CARTE -->
 
-<!-- ========================= -->
+
+
+<!-- ====================================================== -->
+<!-- CARTE GPS -->
+<!-- ====================================================== -->
+
 
 <section class="df-form-section">
+
 
 <h3>
 
@@ -356,312 +401,489 @@ class="btn-primary">
 
 </h3>
 
+
 <div id="map"></div>
 
-</section>
-
-<!-- ====================================================== -->
-<!-- TABLEAU DE BORD GPS -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>📊 Tableau de bord GPS</h3>
-
-<div class="stats-grid">
-
-<div class="stat-card">
-
-<h2 id="statMission">0</h2>
-
-<p>Missions</p>
-
-</div>
-
-<div class="stat-card">
-
-<h2 id="statDistance">0 km</h2>
-
-<p>Distance totale</p>
-
-</div>
-
-<div class="stat-card">
-
-<h2 id="statAujourd">0</h2>
-
-<p>Aujourd'hui</p>
-
-</div>
-
-<div class="stat-card">
-
-<h2 id="statPrecision">--</h2>
-
-<p>Précision GPS</p>
-
-</div>
-
-</div>
 
 </section>
 
-<!-- ====================================================== -->
-<!-- ENREGISTRER UNE MISSION -->
-<!-- ====================================================== -->
 
-<section class="df-form-section">
 
-<h3>💾 Enregistrer une mission</h3>
 
-<div class="grid-2">
-
-<div class="field">
-
-<label>Entreprise / Mission</label>
-
-<input
-type="text"
-id="nomM"
-placeholder="Ex : Contrôle BRALIMA SA">
-
-</div>
-
-<div class="field">
-
-<label>Inspecteur responsable</label>
-
-<input
-type="text"
-id="inspecteur"
-placeholder="Nom de l'inspecteur">
-
-</div>
-
-</div>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>Objet de la mission</label>
-
-<input
-type="text"
-id="objetMission"
-placeholder="Inspection, contrôle, enquête...">
-
-</div>
-
-<div class="field">
-
-<label>Notes</label>
-
-<input
-type="text"
-id="notesM"
-placeholder="Observations...">
-
-</div>
-
-</div>
-
-<div class="actions">
-
-<button
-class="btn-primary"
-id="btnSave">
-
-💾 Enregistrer la mission
-
-</button>
-
-<button
-class="btn-primary"
-id="btnClear">
-
-🗑️ Réinitialiser
-
-</button>
-
-</div>
-
-</section>
-
-<!-- ====================================================== -->
-<!-- RECHERCHE -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>🔍 Recherche intelligente</h3>
-
-<input
-
-type="search"
-
-id="searchMission"
-
-class="search-box"
-
-placeholder="Rechercher une mission, une entreprise ou une date...">
-
-</section>
-
-<!-- ====================================================== -->
-<!-- HISTORIQUE -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>📚 Historique des missions</h3>
-
-<div id="listMissions">
-
-<p style="text-align:center;color:#ccc;">
-
-Aucune mission enregistrée.
-
-</p>
-
-</div>
-
-</section>
-
-  <!-- ====================================================== -->
-<!-- ACTIONS RAPIDES -->
-<!-- ====================================================== -->
-
-<section class="df-form-section">
-
-<h3>⚡ Actions rapides</h3>
-
-<div class="action-buttons">
-
-<button
-class="btn-primary"
-onclick="locate()">
-
-📍 Actualiser la position
-
-</button>
-
-<button
-class="btn-primary"
-onclick="GPS.copyPosition()">
-
-📋 Copier les coordonnées
-
-</button>
-
-<button
-class="btn-primary"
-onclick="GPS.sharePosition()">
-
-📤 Partager la position
-
-</button>
-
-<a
-class="btn-primary"
-id="btnGoogleMaps"
-href="#"
-target="_blank">
-
-🗺️ Ouvrir Google Maps
-
-</a>
-
-</div>
-
-</section>
 
 <!-- ====================================================== -->
 <!-- INFORMATIONS GPS -->
 <!-- ====================================================== -->
 
+
 <section class="df-form-section">
 
-<h3>🛰️ Informations GPS</h3>
 
-<div id="gpsInfos" class="info-card">
+<h3>
 
-<p>📍 Aucune position disponible.</p>
+🛰️ Informations GPS
 
-<p>Appuyez sur <strong>« Actualiser ma position »</strong>.</p>
+</h3>
+
+
+
+<div id="gpsInfos"
+
+class="info-card">
+
+
+<p>
+
+Aucune position disponible.
+
+</p>
+
 
 </div>
+
+
+
+</section>
+
+
+<!-- ====================================================== -->
+<!-- TABLEAU DE BORD -->
+<!-- ====================================================== -->
+
+<section class="df-form-section">
+
+<h3>
+📊 Tableau de bord GPS
+</h3>
+
+
+<div class="stats-grid">
+
+
+<div class="stat-card">
+
+<h2 id="statMission">
+0
+</h2>
+
+<p>
+Missions enregistrées
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2 id="statDistance">
+0 km
+</h2>
+
+<p>
+Distance totale
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2 id="statAujourd">
+0
+</h2>
+
+<p>
+Missions aujourd'hui
+</p>
+
+</div>
+
+
+
+<div class="stat-card">
+
+<h2 id="statPrecision">
+--
+</h2>
+
+<p>
+Précision GPS
+</p>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- ENREGISTRER UNE MISSION -->
+<!-- ====================================================== -->
+
+
+<section class="df-form-section">
+
+
+<h3>
+
+💾 Enregistrer une mission terrain
+
+</h3>
+
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+Entreprise / Mission
+
+</label>
+
+
+<input
+
+id="nomM"
+
+type="text"
+
+placeholder="Ex : Contrôle BRALIMA">
+
+
+</div>
+
+
+
+
+<div class="field">
+
+<label>
+
+Inspecteur responsable
+
+</label>
+
+
+<input
+
+id="inspecteur"
+
+type="text"
+
+placeholder="Nom de l'inspecteur">
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+
+<label>
+
+Objet de la mission
+
+</label>
+
+
+<input
+
+id="objetMission"
+
+type="text"
+
+placeholder="Inspection, contrôle, enquête...">
+
+
+</div>
+
+
+
+
+<div class="field">
+
+
+<label>
+
+Notes
+
+</label>
+
+
+<input
+
+id="notesM"
+
+type="text"
+
+placeholder="Observations terrain">
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="action-buttons">
+
+
+<button
+
+id="btnSave"
+
+class="btn-primary">
+
+💾 Sauvegarder
+
+</button>
+
+
+
+<button
+
+id="btnClear"
+
+class="btn-primary">
+
+🗑️ Effacer
+
+</button>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- RECHERCHE -->
+<!-- ====================================================== -->
+
+
+<section class="df-form-section">
+
+
+<h3>
+
+🔍 Recherche intelligente
+
+</h3>
+
+
+<input
+
+id="searchMission"
+
+class="search-box"
+
+type="search"
+
+placeholder="Rechercher une mission...">
+
+
+
+</section>
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- HISTORIQUE -->
+<!-- ====================================================== -->
+
+
+<section class="df-form-section">
+
+
+<h3>
+
+📚 Historique des missions
+
+</h3>
+
+
+<div id="listMissions">
+
+
+<p style="color:#ccc;text-align:center;">
+
+Aucune mission enregistrée.
+
+</p>
+
+
+</div>
+
 
 </section>
 
 <!-- ====================================================== -->
-<!-- METEO -->
+<!-- ACTIONS RAPIDES -->
 <!-- ====================================================== -->
 
 <section class="df-form-section">
 
-<h3>🌤️ Conditions météorologiques</h3>
+<h3>
+⚡ Actions rapides
+</h3>
 
-<div id="weatherBox" class="info-card">
 
-<p>🌦️ Les informations météo apparaîtront ici.</p>
+<div class="action-buttons">
 
-<p>Cette fonctionnalité sera activée dans une prochaine version.</p>
+
+<button
+class="btn-primary"
+onclick="locate()">
+
+📍 Actualiser position
+
+</button>
+
+
+
+<button
+class="btn-primary"
+onclick="GPS.copyPosition()">
+
+📋 Copier coordonnées
+
+</button>
+
+
+
+<button
+class="btn-primary"
+onclick="GPS.sharePosition()">
+
+📤 Partager position
+
+</button>
+
+
+<a
+id="btnGoogleMaps"
+class="btn-primary"
+href="#"
+target="_blank">
+
+🗺️ Google Maps
+
+</a>
+
 
 </div>
 
+
 </section>
+
+
+
+
 
 <!-- ====================================================== -->
 <!-- SOS INSPECTEUR -->
 <!-- ====================================================== -->
 
+
 <section class="df-form-section">
 
-<h3>🆘 Assistance d'urgence</h3>
+
+<h3>
+
+🆘 Assistance Inspecteur
+
+</h3>
+
 
 <div class="info-card">
 
+
 <p>
 
-En cas de difficulté pendant une mission, vous pourrez envoyer votre position GPS à votre hiérarchie.
+En cas de problème pendant une mission,
+envoyez votre position GPS à votre hiérarchie.
 
 </p>
 
+
+
 <div class="action-buttons">
 
-<button
-class="btn-primary"
-id="btnSOS">
 
-🚨 Envoyer un SOS
+<button
+
+id="btnSOS"
+
+class="btn-primary">
+
+🚨 SOS GPS
 
 </button>
 
-<button
-class="btn-primary"
-id="btnRapport">
 
-📄 Générer un rapport GPS
+
+<button
+
+id="btnRapport"
+
+class="btn-primary">
+
+📄 Rapport GPS
 
 </button>
 
-</div>
 
 </div>
+
+
+</div>
+
 
 </section>
 
-<!-- ====================================================== -->
-<!-- FOOTER -->
-<!-- ====================================================== -->
+
+
+
 
 <footer
+
 style="
-margin-top:40px;
 text-align:center;
-color:#bbb;
-padding:20px;">
+padding:25px;
+color:#ccc;
+">
+
 
 SMART GPS IGT © 2026
 
@@ -671,424 +893,418 @@ InspecteurBot RDC
 
 <br>
 
-Version 3.0
+Version 4.0
+
 
 </footer>
 
-<!-- Leaflet -->
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- GPS -->
 
-<script src="../js/gps.js?v=3"></script>
+<!-- ====================================================== -->
+<!-- SCRIPTS -->
+<!-- ====================================================== -->
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script src="../js/gps.js?v=4">
+</script>
+
+
 
 <script>
 
-  let map;
-let currentMarker;
 
-// ==========================================
-// INITIALISATION DE LA CARTE
-// ==========================================
+let map;
 
-function initMap(lat, lng) {
+let marker;
 
-    if (!map) {
 
-        map = L.map("map").setView([lat, lng], 16);
 
-        L.tileLayer(
-            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            {
-                attribution: "© OpenStreetMap"
-            }
-        ).addTo(map);
 
-    } else {
 
-        map.setView([lat, lng], 16);
+// ======================================================
+// INITIALISER CARTE
+// ======================================================
 
-    }
 
-    if (currentMarker) {
+function initMap(lat,lng){
 
-        map.removeLayer(currentMarker);
 
-    }
+if(!map){
 
-    currentMarker = L.marker([lat, lng]).addTo(map);
 
-    currentMarker.bindPopup(
-        "📍 Ma position actuelle"
-    ).openPopup();
+map = L.map("map")
+
+.setView(
+
+[lat,lng],
+
+16
+
+);
+
+
+
+L.tileLayer(
+
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+{
+
+attribution:
+"© OpenStreetMap"
+
+}
+
+)
+
+.addTo(map);
+
+
+
+}
+
+else{
+
+
+map.setView(
+
+[lat,lng],
+
+16
+
+);
+
 
 }
 
 
-// ==========================================
+
+if(marker){
+
+map.removeLayer(marker);
+
+}
+
+
+
+marker = L.marker(
+
+[lat,lng]
+
+)
+
+.addTo(map);
+
+
+}
+
+
+
+
+
+// ======================================================
 // LOCALISATION
-// ==========================================
+// ======================================================
 
-async function locate() {
 
-    const box = document.getElementById("pos");
+async function locate(){
 
-    box.innerHTML =
-        "⏳ Recherche de votre position...";
 
-    try {
+try{
 
-        const p = await GPS.getPosition();
 
-        const adr =
-            await GPS.getAddress(
-                p.lat,
-                p.lng
-            );
+const p =
+await GPS.getPosition();
 
-        initMap(
-            p.lat,
-            p.lng
-        );
 
-        document
-            .getElementById("btnGoogleMaps")
-            .href =
-            `https://www.google.com/maps?q=${p.lat},${p.lng}`;
 
-        document
-            .getElementById("statPrecision")
-            .textContent =
-            Math.round(p.accuracy) + " m";
+const adr =
+await GPS.getAddress(
 
-        const heure =
-            new Date(
-                p.timestamp
-            ).toLocaleString("fr-FR");
+p.lat,
 
-        box.innerHTML = `
+p.lng
 
-<div class="info-card">
+);
 
-<h3 style="color:#FFD700;">
-📍 Ma position actuelle
-</h3>
 
-<p>🟢 GPS connecté</p>
 
-<p><strong>Latitude :</strong>
-${p.lat.toFixed(6)}</p>
+initMap(
 
-<p><strong>Longitude :</strong>
-${p.lng.toFixed(6)}</p>
+p.lat,
 
-<p><strong>Précision :</strong>
-${Math.round(p.accuracy)} m</p>
+p.lng
 
-<p><strong>Adresse :</strong><br>
+);
+
+
+
+document
+.getElementById("btnGoogleMaps")
+.href =
+
+`https://www.google.com/maps?q=${p.lat},${p.lng}`;
+
+
+
+document
+.getElementById("statPrecision")
+.textContent =
+
+Math.round(
+
+p.accuracy
+
+)
+
++" m";
+
+
+
+document
+.getElementById("gpsInfos")
+.innerHTML = `
+
+
+<p>
+Latitude :
+${p.lat}
+</p>
+
+
+<p>
+Longitude :
+${p.lng}
+</p>
+
+
+<p>
+Adresse :
 ${adr.complet}
 </p>
 
-<p><strong>Heure :</strong>
-${heure}
+
+<p>
+Ville :
+${adr.ville}
 </p>
 
-</div>
+
+<p>
+Pays :
+${adr.pays}
+</p>
+
 
 `;
 
-        document.getElementById(
-            "gpsInfos"
-        ).innerHTML =
 
-`
-
-<p><strong>Latitude :</strong>
-${p.lat}</p>
-
-<p><strong>Longitude :</strong>
-${p.lng}</p>
-
-<p><strong>Ville :</strong>
-${adr.ville}</p>
-
-<p><strong>Commune :</strong>
-${adr.commune}</p>
-
-<p><strong>Pays :</strong>
-${adr.pays}</p>
-
-`;
-
-    }
-
-    catch (e) {
-
-        box.innerHTML =
-
-`<div class="alert-smig">
-
-❌ ${e}
-
-</div>`;
-
-    }
 
 }
 
 
-// ==========================================
-// EVENEMENTS
-// ==========================================
-
-document
-.getElementById("btnLocate")
-.onclick = locate;
+catch(e){
 
 
-document
-.getElementById("btnClear")
-.onclick = () => {
+alert(e);
 
-document.getElementById("nomM").value="";
-
-document.getElementById("inspecteur").value="";
-
-document.getElementById("objetMission").value="";
-
-document.getElementById("notesM").value="";
-
-};
-
-// ======================================================
-// ENREGISTRER UNE MISSION
-// ======================================================
-
-document.getElementById("btnSave").onclick = async () => {
-
-    const nom =
-        document.getElementById("nomM").value.trim();
-
-    if (!nom) {
-
-        alert("Veuillez saisir le nom de la mission ou de l'entreprise.");
-
-        return;
-
-    }
-
-    if (!GPS.currentPosition) {
-
-        await locate();
-
-    }
-
-    const mission = GPS.saveMission(
-
-        nom,
-
-        document.getElementById("notesM").value
-
-    );
-
-    if (mission) {
-
-        alert("✅ Mission enregistrée avec succès.");
-
-        renderList();
-
-        updateStats();
-
-    }
-
-};
-
-
-// ======================================================
-// AFFICHER LES MISSIONS
-// ======================================================
-
-function renderList() {
-
-    const missions = GPS.getMissions();
-
-    const box =
-        document.getElementById("listMissions");
-
-    if (!missions.length) {
-
-        box.innerHTML =
-
-        "<p style='color:#ccc;text-align:center;'>Aucune mission enregistrée.</p>";
-
-        return;
-
-    }
-
-    box.innerHTML = missions.map(m => `
-
-<div class="hist-item">
-
-<strong>${m.nom}</strong>
-
-<br>
-
-📅 ${new Date(m.timestamp).toLocaleString("fr-FR")}
-
-<br>
-
-📍 ${m.lat.toFixed(6)},
-${m.lng.toFixed(6)}
-
-<br>
-
-<a href="https://www.google.com/maps?q=${m.lat},${m.lng}"
-target="_blank">
-
-🗺️ Voir sur Google Maps
-
-</a>
-
-${m.notes ? `<br><em>${m.notes}</em>` : ""}
-
-</div>
-
-`).join("");
 
 }
 
 
+}
+
+
+
+
+
 // ======================================================
-// STATISTIQUES
+// SUIVI MISSION
 // ======================================================
 
-function updateStats() {
 
-    const missions = GPS.getMissions();
+document
+.getElementById("btnStartMission")
+.onclick = ()=>{
 
-    document.getElementById("statMission").textContent =
-        missions.length;
 
-    const aujourd =
-        new Date().toLocaleDateString("fr-FR");
+GPS.startTracking();
 
-    const nb =
-        missions.filter(m =>
 
-            new Date(m.timestamp)
-            .toLocaleDateString("fr-FR") === aujourd
+document
+.getElementById("missionEtat")
+.textContent =
+"🟢 Mission en cours";
 
-        ).length;
 
-    document.getElementById("statAujourd").textContent =
-        nb;
+};
+
+
+
+document
+.getElementById("btnPauseMission")
+.onclick = ()=>{
+
+
+GPS.pauseTracking();
+
+
+};
+
+
+
+
+document
+.getElementById("btnStopMission")
+.onclick = ()=>{
+
+
+GPS.stopTracking();
+
+
+document
+.getElementById("missionEtat")
+.textContent =
+"🔴 Mission terminée";
+
+
+};
+
+
+
+
+
+
+// ======================================================
+// MISE A JOUR TEMPS REEL
+// ======================================================
+
+
+window.updateTrackingUI = function(data){
+
+
+
+document
+.getElementById("distanceMission")
+.textContent =
+
+GPS.formatDistance(
+
+data.distance
+
+);
+
+
+
+document
+.getElementById("pointsMission")
+.textContent =
+
+data.points;
+
+
+
+document
+.getElementById("missionTemps")
+.textContent =
+
+GPS.formatDuration(
+
+data.duree
+
+);
+
+
+
+};
+
+
+
+
+
+// ======================================================
+// ENREGISTRER MISSION
+// ======================================================
+
+
+document
+.getElementById("btnSave")
+.onclick = ()=>{
+
+
+const mission =
+
+GPS.saveMission(
+
+document
+.getElementById("nomM")
+.value,
+
+
+document
+.getElementById("notesM")
+.value,
+
+
+{
+
+
+inspecteur:
+
+document
+.getElementById("inspecteur")
+.value,
+
+
+objet:
+
+document
+.getElementById("objetMission")
+.value
+
 
 }
 
 
-// ======================================================
-// RECHERCHE
-// ======================================================
-
-document
-.getElementById("searchMission")
-.addEventListener("input", function () {
-
-    const txt =
-        this.value.toLowerCase();
-
-    const missions = GPS.getMissions();
-
-    const filtre = missions.filter(m =>
-
-        m.nom.toLowerCase().includes(txt) ||
-
-        (m.notes || "")
-        .toLowerCase()
-        .includes(txt)
-
-    );
-
-    const box =
-        document.getElementById("listMissions");
-
-    if (!filtre.length) {
-
-        box.innerHTML =
-        "<p style='color:#ccc;'>Aucun résultat.</p>";
-
-        return;
-
-    }
-
-    box.innerHTML = filtre.map(m => `
-
-<div class="hist-item">
-
-<strong>${m.nom}</strong>
-
-<br>
-
-📅 ${new Date(m.timestamp).toLocaleString("fr-FR")}
-
-<br>
-
-📍 ${m.lat.toFixed(6)},
-${m.lng.toFixed(6)}
-
-</div>
-
-`).join("");
-
-});
+);
 
 
-// ======================================================
-// SOS
-// ======================================================
 
-document
-.getElementById("btnSOS")
-.onclick = () => {
+if(mission){
 
-    if (!GPS.currentPosition) {
 
-        alert("Veuillez d'abord obtenir votre position GPS.");
+alert(
 
-        return;
+"✅ Mission enregistrée"
 
-    }
+);
 
-    GPS.sharePosition();
+
+}
+
+
 
 };
 
 
-// ======================================================
-// RAPPORT
-// ======================================================
 
-document
-.getElementById("btnRapport")
-.onclick = () => {
-
-    alert("📄 La génération automatique du rapport GPS sera disponible dans la prochaine version.");
-
-};
 
 
 // ======================================================
 // INITIALISATION
 // ======================================================
 
-renderList();
-
-updateStats();
 
 locate();
 
+
 </script>
+
 
 </body>
 
