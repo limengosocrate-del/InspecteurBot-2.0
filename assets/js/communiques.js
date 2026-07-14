@@ -540,25 +540,16 @@ partagerCommunique;
 
 function lireCommunique(id){
 
+    const c = listeCommuniques.find(
+        x => x.id === id
+    );
 
-let c =
-listeCommuniques.find(
-x=>x.id===id
-);
+    if(!c){
+        return;
+    }
 
-
-
-if(c){
-
-
-alert(c.texte);
-
+    ouvrirLecture(c);
 
 }
 
-
-}
-
-
-window.lireCommunique =
-lireCommunique;
+window.lireCommunique = lireCommunique;
