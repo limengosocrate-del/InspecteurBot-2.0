@@ -3236,6 +3236,424 @@ Valider signature
 
 </div>
 
+</section>
+
+<!-- ==========================
+HISTORIQUE DES MISSIONS
+========================== -->
 
 
-  </section>
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+Historique des missions
+
+</h2>
+
+
+
+
+<div class="action-zone">
+
+
+<input
+
+id="searchMission"
+
+type="search"
+
+placeholder="🔍 Rechercher une mission..."
+
+style="flex:1;">
+
+
+
+<button
+
+class="btn-gps"
+
+id="refreshHistory">
+
+
+<i class="fa-solid fa-arrows-rotate"></i>
+
+Actualiser
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div id="missionHistory">
+
+
+<div class="history-item">
+
+
+<h4>
+
+Aucune mission enregistrée
+
+</h4>
+
+
+<p>
+
+Les missions sauvegardées apparaîtront ici.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- ==========================
+RAPPORT DE MISSION
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-file-pdf"></i>
+
+Rapport intelligent GPS
+
+</h2>
+
+
+
+
+<div class="card-grid">
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-print"></i>
+
+<h3>
+
+Impression
+
+</h3>
+
+
+<p>
+
+Imprimer le rapport terrain
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-file-export"></i>
+
+<h3>
+
+Export
+
+</h3>
+
+
+<p>
+
+PDF / JSON / Excel
+
+</p>
+
+
+</div>
+
+
+
+
+<div class="card">
+
+<i class="fa-solid fa-qrcode"></i>
+
+<h3>
+
+QR Code
+
+</h3>
+
+
+<p>
+
+Vérification rapide
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="action-zone">
+
+
+<button
+
+class="btn-gps"
+
+id="generateReport">
+
+
+<i class="fa-solid fa-file-lines"></i>
+
+Créer rapport
+
+
+</button>
+
+
+
+
+<button
+
+class="btn-gps"
+
+id="printReport">
+
+
+<i class="fa-solid fa-print"></i>
+
+Imprimer
+
+
+</button>
+
+
+
+
+<button
+
+class="btn-gps"
+
+id="exportData">
+
+
+<i class="fa-solid fa-download"></i>
+
+Exporter données
+
+
+</button>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ==========================
+QR CODE MISSION
+========================== -->
+
+
+<section class="section fade-in">
+
+
+<h2>
+
+<i class="fa-solid fa-qrcode"></i>
+
+Authentification mission
+
+</h2>
+
+
+
+
+<div style="text-align:center;">
+
+
+<div id="qrcode"
+
+style="
+
+display:inline-block;
+
+padding:20px;
+
+background:white;
+
+border-radius:20px;
+
+">
+
+
+</div>
+
+
+</div>
+
+
+
+
+<p style="
+
+text-align:center;
+
+margin-top:15px;
+
+color:#ccc;
+
+">
+
+Code unique de vérification du rapport GPS.
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ==========================
+NOTIFICATIONS
+========================== -->
+
+
+<div
+
+id="notification"
+
+class="notification">
+
+
+Message système
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ==========================
+FOOTER
+========================== -->
+
+
+<footer class="footer">
+
+
+SMART GPS IGT © 2026
+
+<br>
+
+
+InspecteurBot RDC
+
+<br>
+
+
+Version 5.0
+
+
+<br><br>
+
+
+<strong>
+
+Créé par Inspecteur Limengo (Pmiller)
+
+</strong>
+
+
+
+</footer>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<!-- ==========================
+LIBRAIRIES
+========================== -->
+
+
+<script src="
+https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<script src="
+https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+</script>
+
+
+
+<script src="gps.js">
+
+</script>
+
+
+
+
+</body>
+
+ </html>
