@@ -644,15 +644,23 @@ img { max-width: 100%; display: block; }
 
 /* Dark theme toggle */
 body.dark-theme {
-  --gray-50: #1a2332;
-  --gray-100: #243044;
-  --gray-200: #334155;
-  --white: #0f172a;
-  --gray-700: #cbd5e1;
-  --gray-900: #f1f5f9;
-  background: linear-gradient(145deg, #0b1220, #132038 50%, #1a1830);
-  color: #e2e8f0;
+  --gray-50: #18191A;
+  --gray-100: #242526;
+  --gray-200: #3A3B3C;
+  --white: #242526;
+  --gray-300: #4E4F50;
+  --gray-500: #B0B3B8;
+  --gray-700: #E4E6EB;
+  --gray-900: #F5F6F7;
+
+  background: #18191A;
+  color: #E4E6EB;
 }
+
+body.dark-theme::before{
+    display:none;
+}
+
 body.dark-theme .card,
 body.dark-theme .topbar,
 body.dark-theme .input,
@@ -661,13 +669,72 @@ body.dark-theme .archive-item,
 body.dark-theme .modal-panel,
 body.dark-theme .result-details,
 body.dark-theme .toggle-field,
-body.dark-theme .kpi {
-  background: #152238;
-  color: #e2e8f0;
-  border-color: #243044;
+body.dark-theme .kpi,
+body.dark-theme .readonly-box,
+body.dark-theme .legal-card{
+    background:#242526;
+    color:#E4E6EB;
+    border-color:#3A3B3C;
 }
-body.dark-theme .card-head {
-  background: linear-gradient(90deg, #1a2d4d, #2a2410);
+
+body.dark-theme .card-head{
+    background:#2D2F31;
+    border-bottom:1px solid #3A3B3C;
 }
-body.dark-theme .input { background: #0f172a; color: #e2e8f0; }
-body.dark-theme .a4-sheet { color: #111; background: #fff; }
+
+body.dark-theme .input,
+body.dark-theme textarea,
+body.dark-theme select{
+    background:#3A3B3C;
+    color:#E4E6EB;
+    border-color:#4E4F50;
+}
+
+body.dark-theme .input::placeholder{
+    color:#B0B3B8;
+}
+
+body.dark-theme .btn-ghost{
+    background:#3A3B3C;
+    color:#E4E6EB;
+}
+
+body.dark-theme .btn-ghost:hover{
+    background:#4E4F50;
+}
+
+body.dark-theme .page-head h2,
+body.dark-theme .card-head h3,
+body.dark-theme label,
+body.dark-theme strong{
+    color:#F5F6F7;
+}
+
+body.dark-theme .muted,
+body.dark-theme .hint,
+body.dark-theme p,
+body.dark-theme span{
+    color:#B0B3B8;
+}
+
+body.dark-theme .topbar{
+    background:#242526;
+}
+
+body.dark-theme .sidebar{
+    background:#202124;
+}
+
+body.dark-theme .nav-item:hover{
+    background:#3A3B3C;
+}
+
+body.dark-theme .nav-item.active{
+    background:#0B3D91;
+    color:#FFF;
+}
+
+body.dark-theme .a4-sheet{
+    background:#fff;
+    color:#111;
+}
