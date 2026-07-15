@@ -501,7 +501,7 @@
   function collectInputs() {
     const ids = [
       'direction', 'adresseBureau', 'lieuDocument', 'dateDocument', 'devise',
-      'inspecteurNom', 'inspecteurGrade', 'entrepriseNom', 'entrepriseAdresse',
+      'inspecteurNom', 'qualiteAgent', 'inspecteurGrade', 'entrepriseNom', 'entrepriseAdresse',
       'nom', 'fonction', 'categorie', 'dateEngagement', 'dateFin', 'motif', 'motifDetail',
       'lieuPrestation', 'salaireBase', 'logement', 'transport', 'joursPrestes',
       'joursOuvrables', 'preavisMode', 'preavisManuel', 'congeAcquis',
@@ -653,6 +653,12 @@
 
     $('#pvInspecteur').textContent = (inp.inspecteurNom || '—').toUpperCase();
     $('#pvGrade').textContent = inp.inspecteurGrade || '';
+    const titreAgent = inp.qualiteAgent || "INSPECTEUR DU TRAVAIL";
+
+$('#pvQualiteAgent').textContent =
+  titreAgent === "CONTRÔLEUR DU TRAVAIL"
+    ? "LE CONTRÔLEUR DU TRAVAIL"
+    : "L'INSPECTEUR DU TRAVAIL";
 
     // Signature
     const sig = $('#pvSignature');
@@ -690,6 +696,8 @@
     $('#pv2Numero').textContent = pvNum;
     $('#pv2Inspecteur').textContent = (inp.inspecteurNom || '—').toUpperCase();
     $('#pv2Grade').textContent = inp.inspecteurGrade || '';
+    $('#pv2QualiteAgent').textContent =
+    inp.qualiteAgent || "INSPECTEUR DU TRAVAIL";
     if (state.signatureData) {
       $('#pv2Signature').src = state.signatureData;
       $('#pv2Signature').classList.remove('hidden');
@@ -1479,6 +1487,7 @@
     $('#retenueONEM').checked = false;
     $('#retenueINPP').checked = false;
     $('#inspecteurNom').value = 'SENDA PADINGANI Elisha';
+    $('#qualiteAgent').value = 'INSPECTEUR DU TRAVAIL';
     $('#inspecteurGrade').value = 'Officier de Police Judiciaire · Chef de Bureau';
     $('#entrepriseNom').value = 'Entreprise Exemple SARL';
     $('#entrepriseAdresse').value = 'Kinshasa / Limete';
