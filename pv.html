@@ -1,958 +1,435 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InspecteurBot - Module Procès-Verbaux (PV)</title>
-  <!-- Google Fonts - Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Stylesheet -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InspecteurBot IA RDC — Module Procès-Verbaux</title>
   <link rel="stylesheet" href="styles-pv.css">
-  <!-- Local QR Libraries -->
-  <script src="../qrcode.min.js"></script>
-  <script src="../jsqr.min.js"></script>
 </head>
 <body>
+  <div class="app-shell" id="appShell">
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-emblem" aria-hidden="true">RDC</div>
+        <div>
+          <p class="eyebrow">République Démocratique du Congo</p>
+          <h1>InspecteurBot IA RDC — Module Procès-Verbaux</h1>
+          <p class="subtitle">Inspecteurs & Contrôleurs du Travail · PV sécurisés · A4 · QR · Signatures</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn ghost" id="btnThemeToggle" type="button" aria-label="Basculer le mode sombre ou clair">🌙 Mode sombre</button>
+        <button class="btn ghost" id="btnGlobalListen" type="button">🎙️ Dictée</button>
+        <button class="btn ghost" id="btnReadPreview" type="button">🔊 Lire le PV</button>
+        <button class="btn primary" id="btnPrintTop" type="button">🖨️ Export PDF</button>
+      </div>
+    </header>
 
-  <div class="app-container">
-    
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="sidebar no-print">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">
-          <!-- Scalable SVG Logo with DRC style -->
-          <svg viewBox="0 0 100 100" width="30" height="30">
-            <rect width="100" height="100" rx="15" fill="#0055A5"/>
-            <path d="M10 80 L90 20" stroke="#FDD100" stroke-width="10"/>
-            <path d="M10 80 L90 20" stroke="#D2143A" stroke-width="5"/>
-            <polygon points="50,25 55,38 68,38 58,47 62,60 50,51 38,60 42,47 32,38 45,38" fill="#FDD100"/>
-          </svg>
-        </div>
-        <div class="sidebar-title">
-          <h1>INSPECTEURBOT</h1>
-          <span>Module PV • IGT RDC</span>
-        </div>
-      </div>
-      
-      <ul class="sidebar-menu">
-        <li class="menu-category">Navigation</li>
-        <li class="menu-item active" onclick="switchTab('accueil')">
-          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          Accueil / Dashboard
-        </li>
-        <li class="menu-item" onclick="switchTab('nouveau-pv')">
-          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          Nouveau PV
-        </li>
-        <li class="menu-item" onclick="switchTab('tous-pv')">
-          <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-          Tous les PV
-        </li>
-        <li class="menu-item" onclick="switchTab('brouillons')">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-          Brouillons (<span id="drafts-count-badge">0</span>)
-        </li>
-        
-        <li class="menu-category">Ressources</li>
-        <li class="menu-item" onclick="switchTab('modeles')">
-          <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
-          Bibliothèque de Modèles
-        </li>
-        <li class="menu-item" onclick="switchTab('assistant-ia')">
-          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-          Assistant IA Juridique
-        </li>
-        <li class="menu-item" onclick="switchTab('scanner')">
-          <svg viewBox="0 0 24 24"><path d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4zm6 9l-4 5h12l-3-4-3 3.5-2-4.5zM20 2h-7v2h7v7h2V4c0-1.1-.9-2-2-2zM4 20h7v2H4c-1.1 0-2-.9-2-2v-7h2v7zm16-7v7h-7v2h7c1.1 0 2-.9 2-2v-7h-2z"/></svg>
-          Scanner de PV
-        </li>
-        
-        <li class="menu-category">Paramètres</li>
-        <li class="menu-item" onclick="switchTab('parametres')">
-          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.16.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.16-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-          Paramètres
-        </li>
-      </ul>
-      
-      <div class="sidebar-footer">
-        <div class="user-profile">
-          <div class="user-avatar">I</div>
-          <div class="user-info">
-            <p>Inspecteur Général</p>
-            <span>IGT RDC</span>
-          </div>
-        </div>
-        <!-- Dark Mode Toggle -->
-        <button class="theme-toggle-btn" onclick="toggleDarkMode()">
-          <svg id="theme-icon-light" viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.01c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
-        </button>
-      </div>
-    </aside>
-    
-    <!-- MAIN WORKSPACE -->
+    <nav class="main-nav" aria-label="Navigation du module PV">
+      <button class="nav-item active" data-view="dashboard" type="button">Tableau de bord</button>
+      <button class="nav-item" data-view="create" type="button">Création PV</button>
+      <button class="nav-item" data-view="history" type="button">Historique & Archivage</button>
+      <button class="nav-item" data-view="legal" type="button">Base juridique</button>
+      <button class="nav-item" data-view="settings" type="button">Paramètres</button>
+      <button class="nav-item" data-view="help" type="button">Guide local IA</button>
+    </nav>
+
     <main class="main-content">
-      
-      <!-- TOPBAR HEADER -->
-      <header class="topbar no-print">
-        <div class="page-title">
-          <h2 id="view-title">Tableau de bord</h2>
-          <p id="view-subtitle">Aperçu général de l'activité d'inspection du travail</p>
+      <section class="view active" id="view-dashboard" aria-labelledby="dashboardTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Synthèse opérationnelle</p>
+            <h2 id="dashboardTitle">Tableau de bord des Procès-Verbaux</h2>
+          </div>
+          <button class="btn secondary" id="btnNewFromDashboard" type="button">+ Nouveau PV</button>
         </div>
-        <div class="topbar-actions">
-          <button class="btn btn-secondary" onclick="exportDatabase()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-            Exporter la base
-          </button>
-          <button class="btn btn-primary" onclick="switchTab('nouveau-pv')">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6-2h6V5h2v6h6v2z"/></svg>
-            Créer un PV
-          </button>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total PV</span><strong id="statTotal">0</strong><small>Toutes catégories</small></article>
+          <article class="stat-card"><span>Brouillons</span><strong id="statDrafts">0</strong><small>En préparation</small></article>
+          <article class="stat-card"><span>PV validés</span><strong id="statValidated">0</strong><small>Numéro officiel & QR</small></article>
+          <article class="stat-card"><span>Entreprises contrôlées</span><strong id="statCompanies">0</strong><small>Raisons sociales uniques</small></article>
+          <article class="stat-card"><span>Infractions constatées</span><strong id="statInfractions">0</strong><small>Sélections cumulées</small></article>
+          <article class="stat-card"><span>Total amendes</span><strong id="statAmount">0 $</strong><small>Montant transactionnel</small></article>
         </div>
-      </header>
-      
-      <!-- APP BODY CONTENT -->
-      <div class="content-body">
-        
-        <!-- SECTION 1: ACCUEIL / DASHBOARD -->
-        <section id="tab-accueil" class="view-section active">
-          <!-- Statistics Cards Grid -->
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon bg-primary-soft">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-total-pvs">0</h3>
-                <p>Total des PV</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon bg-warning-soft">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-brouillons">0</h3>
-                <p>Brouillons</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon bg-success-soft">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-signes">0</h3>
-                <p>PV Signés & Scellés</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon bg-slate-soft">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-entreprises">0</h3>
-                <p>Entreprises</p>
-              </div>
-            </div>
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-title"><h3>Activités récentes</h3><span id="lastSyncBadge">Local</span></div>
+            <div id="recentActivity" class="activity-list empty-state">Aucune activité enregistrée.</div>
+          </article>
+          <article class="panel">
+            <div class="panel-title"><h3>Statistiques mensuelles</h3><span>12 derniers mois</span></div>
+            <div id="monthlyStats" class="bar-chart"></div>
+          </article>
+        </div>
+      </section>
 
-            <div class="stat-card">
-              <div class="stat-icon bg-danger-soft">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-infractions">0</h3>
-                <p>Infractions</p>
-              </div>
-            </div>
-            
-            <div class="stat-card">
-              <div class="stat-icon bg-primary-soft">
-                <span style="font-weight: 800; font-size: 1.2rem;">$</span>
-              </div>
-              <div class="stat-details">
-                <h3 id="stat-amendes">0</h3>
-                <p>Total Amendes ($)</p>
-              </div>
-            </div>
+      <section class="view" id="view-create" aria-labelledby="createTitle">
+        <div class="section-heading sticky-heading">
+          <div>
+            <p class="eyebrow">Création, rédaction, signatures et aperçu A4</p>
+            <h2 id="createTitle">Assistant de rédaction des PV</h2>
           </div>
-          
-          <div class="dashboard-details">
-            <!-- Analytics visualization -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Activité Mensuelle des PV (2026)</h3>
-                <span class="text-muted text-xs">Statistiques locales</span>
-              </div>
-              <div class="chart-container" id="monthly-chart">
-                <!-- SVG/HTML Bars rendered dynamically by JS -->
-                <div class="chart-bar"><div class="bar-fill" style="height: 20%;"></div><span class="bar-label">Jan</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 45%;"></div><span class="bar-label">Fév</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 30%;"></div><span class="bar-label">Mar</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 60%;"></div><span class="bar-label">Avr</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 85%;"></div><span class="bar-label">Mai</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 100%;"></div><span class="bar-label">Juin</span></div>
-                <div class="chart-bar"><div class="bar-fill" style="height: 10%;"></div><span class="bar-label">Juil</span></div>
-              </div>
-            </div>
-            
-            <!-- Recent Activity Panel -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Activité Récente</h3>
-              </div>
-              <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="recent-activity-list">
-                <!-- Filled dynamically by JS -->
-                <p class="text-muted text-center" style="font-size: 0.85rem; padding: 2rem 0;">Aucune activité récente.</p>
-              </div>
-            </div>
+          <div class="toolbar">
+            <button class="btn ghost" id="btnResetForm" type="button">Nouveau</button>
+            <button class="btn secondary" id="btnSaveDraft" type="button">Sauver brouillon</button>
+            <button class="btn primary" id="btnValidate" type="button">Valider PV</button>
+            <button class="btn warning" id="btnDuplicateCurrent" type="button">Dupliquer</button>
+            <button class="btn dark" id="btnPrint" type="button">Export PDF / Imprimer</button>
           </div>
+        </div>
 
-          <!-- Recently Created Documents list -->
-          <div class="panel">
-            <div class="panel-header">
-              <h3>Derniers Procès-Verbaux Créés</h3>
-              <button class="btn btn-secondary" onclick="switchTab('tous-pv')">Voir Tout</button>
-            </div>
-            <div class="data-table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>N° PV</th>
-                    <th>Type</th>
-                    <th>Entreprise</th>
-                    <th>Date</th>
-                    <th>Inspecteur</th>
-                    <th>Statut</th>
-                    <th>Amende</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="recent-pvs-rows">
-                  <!-- Filled dynamically by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-        
-        <!-- SECTION 2: NOUVEAU PV (CREATOR & PREVIEW SPLIT) -->
-        <section id="tab-nouveau-pv" class="view-section">
-          <div class="creator-container">
-            
-            <!-- Left Side: Form Editor -->
-            <div class="form-panel">
-              
-              <!-- SECTION A: Choose Document Template -->
-              <div class="form-section">
-                <div class="form-section-title">Type de Procès-Verbal</div>
-                <div class="form-group">
-                  <label for="pv-template-select">Sélectionnez le modèle officiel de l'IGT</label>
-                  <select id="pv-template-select" onchange="loadTemplateFields()">
-                    <option value="infraction" selected>Procès-verbal de constat d'infraction</option>
-                    <option value="obstruction">Procès-verbal de constat d'obstruction</option>
-                    <option value="non-conciliation">Procès-verbal de non-conciliation</option>
-                    <option value="mise-en-demeure">Mise en demeure pour refus de contrôle</option>
+        <form id="pvForm" class="workspace" autocomplete="off">
+          <div class="form-column">
+            <article class="panel collapsible open" data-panel="identification">
+              <button class="panel-toggle" type="button"><span>1. Identification du PV</span><strong>−</strong></button>
+              <div class="panel-body grid-2">
+                <label>Type de document
+                  <select id="docType" name="docType"></select>
+                </label>
+                <label>Statut
+                  <select id="status" name="status">
+                    <option value="draft">Brouillon</option>
+                    <option value="validated">Validé</option>
+                    <option value="archived">Archivé</option>
                   </select>
-                </div>
-                
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label for="pv-num-mode">Mode de Numérotation</label>
-                    <select id="pv-num-mode" onchange="toggleNumMode()">
-                      <option value="auto" selected>Automatique (Unique)</option>
-                      <option value="manual">Manuel (Saisie libre)</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-num-input">Numéro du PV</label>
-                    <input type="text" id="pv-num-input" placeholder="Généré automatiquement" disabled>
-                  </div>
-                </div>
+                </label>
+                <label>UUID sécurisé
+                  <input id="uuid" name="uuid" type="text" readonly>
+                </label>
+                <label>Numéro officiel
+                  <input id="officialNumber" name="officialNumber" type="text" placeholder="Auto ou manuel">
+                </label>
+                <label>Code de vérification
+                  <input id="verificationCode" name="verificationCode" type="text" readonly>
+                </label>
+                <label>Date et lieu d'établissement
+                  <input id="placeDate" name="placeDate" type="text" placeholder="Fait à Kinshasa, le ...">
+                </label>
               </div>
-              
-              <!-- SECTION B: En-tête administratif -->
-              <div class="form-section">
-                <div class="form-section-title">En-tête Administratif</div>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label for="pv-republique">République</label>
-                    <input type="text" id="pv-republique" value="République Démocratique du Congo" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-ministere">Ministère</label>
-                    <input type="text" id="pv-ministere" value="Ministère de l'Emploi et Travail" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-admin">Administration</label>
-                    <select id="pv-admin" onchange="updateA4Preview()">
-                      <option value="Administration Centrale" selected>Administration Centrale</option>
-                      <option value="Administration Provinciale">Administration Provinciale</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-province">Province</label>
-                    <select id="pv-province" onchange="handleProvinceChange()">
-                      <!-- Filled dynamically in app.js -->
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-direction">Direction Provinciale</label>
-                    <input type="text" id="pv-direction" value="" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-inspection">Inspection Urbaine / Territoriale</label>
-                    <div class="input-with-action">
-                      <input type="text" id="pv-inspection" placeholder="ex: Inspection de Limete" oninput="updateA4Preview()">
-                      <button class="mic-btn" onclick="startDictation('pv-inspection')">🎙️</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- SECTION C: Mission & Inspecteurs -->
-              <div class="form-section">
-                <div class="form-section-title">Contrôleur / Inspecteur</div>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label for="pv-inspecteur">Nom de l'Inspecteur / Contrôleur</label>
-                    <select id="pv-inspecteur" onchange="handleInspecteurChange()">
-                      <!-- Filled dynamically -->
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-habilitation">N° d'habilitation / Carte</label>
-                    <input type="text" id="pv-habilitation" value="" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-opj">N° d'OPJ / Cour d'Appel</label>
-                    <input type="text" id="pv-opj" value="" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-ordre-mission">Ordre de Mission</label>
-                    <div class="input-with-action">
-                      <input type="text" id="pv-ordre-mission" placeholder="ex: Col. N°22/MET/IGT/2026" oninput="updateA4Preview()">
-                      <button class="mic-btn" onclick="startDictation('pv-ordre-mission')">🎙️</button>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-date">Date du Constat</label>
-                    <input type="date" id="pv-date" onchange="updateA4Preview()">
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-heure">Heure du Constat</label>
-                    <input type="time" id="pv-heure" onchange="updateA4Preview()">
-                  </div>
-                </div>
-              </div>
-              
-              <!-- SECTION D: Entreprise contrôlée -->
-              <div class="form-section">
-                <div class="form-section-title">Entreprise Contrôlée</div>
-                <div class="form-grid">
-                  <div class="form-group">
-                    <label for="pv-entreprise">Nom de l'Entreprise</label>
-                    <div class="input-with-action">
-                      <input type="text" id="pv-entreprise" placeholder="ex: HOME PLUS Sarl" oninput="updateA4Preview()">
-                      <button class="mic-btn" onclick="startDictation('pv-entreprise')">🎙️</button>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-rccm">RCCM</label>
-                    <input type="text" id="pv-rccm" placeholder="CD/KIN/RCCM/..." oninput="updateA4Preview()">
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-idnat">ID NAT</label>
-                    <input type="text" id="pv-idnat" placeholder="01-..." oninput="updateA4Preview()">
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-impot">Numéro Impôt</label>
-                    <input type="text" id="pv-impot" placeholder="A..." oninput="updateA4Preview()">
-                  </div>
-                  <div class="form-group form-group-full">
-                    <label for="pv-adresse">Adresse Complète</label>
-                    <div class="input-with-action">
-                      <input type="text" id="pv-adresse" placeholder="Avenue, Quartier, Commune..." oninput="updateA4Preview()">
-                      <button class="mic-btn" onclick="startDictation('pv-adresse')">🎙️</button>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-ville">Ville / Localité</label>
-                    <input type="text" id="pv-ville" value="Kinshasa" oninput="updateA4Preview()">
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-rep-nom">Représentant Présent</label>
-                    <div class="input-with-action">
-                      <input type="text" id="pv-rep-nom" placeholder="Nom complet" oninput="updateA4Preview()">
-                      <button class="mic-btn" onclick="startDictation('pv-rep-nom')">🎙️</button>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-rep-fonction">Qualité / Fonction</label>
-                    <input type="text" id="pv-rep-fonction" placeholder="ex: Directeur des Ressources Humaines" oninput="updateA4Preview()">
-                  </div>
-                  <div class="form-group">
-                    <label for="pv-rep-tel">Téléphone</label>
-                    <input type="tel" id="pv-rep-tel" placeholder="08..." oninput="updateA4Preview()">
-                  </div>
-                </div>
-              </div>
-              
-              <!-- SECTION E: Infractions & Amendes (Only visible if template = infraction) -->
-              <div class="form-section" id="form-section-infractions">
-                <div class="form-section-title">Infractions et Amendes</div>
-                
-                <div class="form-group" style="position: relative;">
-                  <label for="infraction-search-input">Rechercher une infraction (parmi les 65 officielles)</label>
-                  <div class="input-with-action">
-                    <input type="text" id="infraction-search-input" placeholder="Saisir mot-clé ou article..." oninput="filterInfractionsDropdown()">
-                    <button class="mic-btn" onclick="startDictation('infraction-search-input', true)">🎙️</button>
-                  </div>
-                  <!-- Search dropdown list -->
-                  <div id="infractions-search-results" style="display:none; position:absolute; top:100%; left:0; right:0; background:var(--card-bg); border:1px solid var(--border-color); max-height:200px; overflow-y:auto; z-index:90; box-shadow:var(--shadow-lg); border-radius:6px;"></div>
-                </div>
-                
-                <div style="background-color: var(--bg-color); border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid var(--border-color);" id="selected-infraction-details">
-                  <p class="text-muted text-xs">Sélectionnez une infraction ci-dessus pour afficher ses détails juridiques.</p>
-                </div>
-                
-                <button class="btn btn-secondary btn-sm w-full" type="button" onclick="addSelectedInfractionToPV()">
-                  + Ajouter cette infraction au PV
-                </button>
-              </div>
+            </article>
 
-              <!-- SECTION F: Specific narrative for Obstruction, Non-Conciliation, or Mise en Demeure -->
-              <div class="form-section" id="form-section-narrative" style="display:none;">
-                <div class="form-section-title">Corps / Récit de l'événement</div>
-                <div class="form-group">
-                  <label for="pv-narrative-text">Rédigez les détails administratifs et juridiques</label>
-                  <div class="input-with-action">
-                    <textarea id="pv-narrative-text" rows="6" oninput="updateA4Preview()" placeholder="Saisir les faits constatés..."></textarea>
-                    <button class="mic-btn" style="top:0.5rem;" onclick="startDictation('pv-narrative-text')">🎙️</button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- SECTION G: Observations, Signatures & Stamp -->
-              <div class="form-section">
-                <div class="form-section-title">Signatures, Cachets & Options</div>
-                
-                <div class="form-group">
-                  <label for="pv-observations-finales">Observations / Conclusions Finales</label>
-                  <div class="input-with-action">
-                    <textarea id="pv-observations-finales" rows="3" oninput="updateA4Preview()" placeholder="ex: L'entreprise reste tenue de régulariser toutes les situations irrégulières..."></textarea>
-                    <button class="mic-btn" style="top:0.5rem;" onclick="startDictation('pv-observations-finales')">🎙️</button>
-                  </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-                  <!-- Signatures Canvas Pad triggers -->
-                  <button class="btn btn-secondary btn-xs" onclick="openSignatureModal('inspecteur')">✍️ Signer Inspecteur</button>
-                  <button class="btn btn-secondary btn-xs" onclick="openSignatureModal('contrevenant')">✍️ Signer Entreprise</button>
-                  <button class="btn btn-secondary btn-xs" onclick="openSignatureModal('controleur')">✍️ Signer Contrôleur</button>
-                  <button class="btn btn-secondary btn-xs" onclick="openSignatureModal('temoin')">✍️ Signer Témoin</button>
-                </div>
-
-                <div class="form-group">
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <input type="checkbox" id="toggle-stamp-chk" style="width: auto;" onchange="toggleStampInPreview()">
-                    <label for="toggle-stamp-chk" style="margin: 0; cursor:pointer;">Apposer le Cachet Officiel d'Inspection</label>
-                  </div>
-                  <span class="text-muted text-xs">Déplacez ensuite le cachet rouge sur le document à l'aide de votre souris ou de votre doigt.</span>
-                </div>
-              </div>
-              
-              <!-- Form Actions -->
-              <div style="display: flex; gap: 0.75rem;">
-                <button class="btn btn-primary" style="flex-grow: 1;" onclick="savePV(false)">
-                  💾 Enregistrer comme Brouillon
-                </button>
-                <button class="btn btn-success" style="flex-grow: 1;" onclick="savePV(true)">
-                  🔒 Valider & Signer le PV
-                </button>
-              </div>
-              
-            </div>
-            
-            <!-- Right Side: Live A4 Visual Preview -->
-            <div class="preview-panel">
-              <div style="align-self: flex-start; margin-bottom: 1rem; display: flex; gap: 0.5rem;" class="no-print">
-                <button class="btn btn-secondary btn-sm" onclick="printPreview()">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-                  Imprimer / Exporter PDF
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="readAloudPV()">
-                  🔊 Lecture Vocale
-                </button>
-                <button class="btn btn-secondary btn-sm" onclick="stopSpeechSynthesis()">
-                  ⏹️ Stop
-                </button>
-              </div>
-              
-              <!-- THE A4 SHEET -->
-              <div class="a4-page" id="a4-document-preview">
-                
-                <!-- Secure QR Code -->
-                <div class="doc-qr-container">
-                  <div id="doc-qr-canvas" style="width: 75px; height: 75px;"></div>
-                </div>
-                
-                <!-- Dynamic Seal Stamp -->
-                <div class="cachet-officiel" id="draggable-cachet" style="display: none; top: 75%; left: 65%;">
-                  <div class="cachet-inner">
-                    <p style="font-size: 5pt; border-bottom: 1px solid rgba(220, 20, 58, 0.85); margin-bottom: 1px;">IGT RDC</p>
-                    <p class="cachet-text">CACHET OFFICIEL</p>
-                    <p style="font-size: 4pt; font-style: italic;">VALIDE</p>
-                  </div>
-                </div>
-
-                <!-- Admin Header -->
-                <div class="official-header">
-                  <div class="official-header-left">
-                    <p class="rep-text">République Démocratique du Congo</p>
-                    <p class="met-text" id="p-preview-ministere">Ministère de l'Emploi et Travail</p>
-                    <p style="font-size: 8.5pt;" id="p-preview-admin">Administration Centrale</p>
-                    <p style="font-size: 8.5pt;" id="p-preview-direction">Direction Provinciale de Kinshasa</p>
-                    <p style="font-size: 8.5pt; font-weight: normal; font-style: italic;" id="p-preview-inspection">Inspection Urbaine de Limete</p>
-                  </div>
-                  
-                  <div class="official-header-right">
-                    <!-- High-Fidelity SVG National Coat of Arms -->
-                    <svg class="coat-of-arms" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="45" fill="none" stroke="#0055A5" stroke-width="2"/>
-                      <path d="M50 15 Q60 50 50 85 Q40 50 50 15" fill="#FDD100"/>
-                      <path d="M15 50 Q50 60 85 50 Q50 40 15 50" fill="#D2143A"/>
-                      <circle cx="50" cy="50" r="10" fill="#FDD100"/>
-                      <text x="50" y="93" font-size="7" font-weight="800" font-family="sans-serif" text-anchor="middle" fill="#0055A5">JUSTICE - PAIX - TRAVAIL</text>
-                    </svg>
-                    <p class="motto">Justice - Paix - Travail</p>
-                  </div>
-                </div>
-                
-                <!-- Document Title -->
-                <div class="doc-title-container">
-                  <p class="doc-title" id="p-preview-title">PROCÈS-VERBAL DE CONSTAT D'INFRACTION</p>
-                  <p class="doc-number" id="p-preview-number">N°......./MET/IGT/DPK/MMW/JUIN/2026</p>
-                </div>
-                
-                <!-- Narrative Body -->
-                <div class="doc-body" id="p-preview-body-content">
-                  <!-- Generated dynamically in app.js -->
-                </div>
-                
-                <!-- Infractions Table (Only for infraction type) -->
-                <table class="preview-infractions-table" id="preview-table-infractions">
-                  <thead>
-                    <tr>
-                      <th style="width: 5%;">N°</th>
-                      <th style="width: 35%;">Infraction constatée</th>
-                      <th style="width: 15%;">Article violé</th>
-                      <th style="width: 15%;">Référence Juridique</th>
-                      <th style="width: 15%;">Gravité / Sanction</th>
-                      <th style="width: 15%;">Amende (USD)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="preview-infractions-tbody">
-                    <!-- Rows populated dynamically -->
-                  </tbody>
-                  <tfoot>
-                    <tr class="total-row">
-                      <td colspan="5" style="text-align: right; font-weight: bold; text-transform: uppercase;">Total Général :</td>
-                      <td id="preview-total-fines-cell" style="text-align: right; font-weight: bold; color: var(--accent-color); font-size: 11.5pt;">0.00 $</td>
-                    </tr>
-                  </tfoot>
-                </table>
-                
-                <!-- Clause Légale -->
-                <div class="doc-footer-clause" id="p-preview-footer-clause">
-                  Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions légales en vigueur en RDC. L'entreprise est tenue de se conformer aux prescriptions de la loi dans un bref délai. Nonobstant le paiement desdites amendes, elle reste tenue de régulariser toutes les situations irrégulières constatées.
-                </div>
-                
-                <!-- Signature Date and Place -->
-                <p class="doc-date-place" id="p-preview-date-place">Fait à Kinshasa, le 11 Juin 2026</p>
-                
-                <!-- Signatures -->
-                <div class="signatures-container" id="p-preview-signatures-grid">
-                  <div class="signature-box">
-                    <span class="signature-title">L'Inspecteur du Travail</span>
-                    <img id="img-sig-inspecteur" class="signature-img" style="display:none;" alt="Signature">
-                    <span id="name-sig-inspecteur" style="font-weight:bold; font-size:8.5pt;">MITWINSI WANET Hardy</span>
-                  </div>
-                  <div class="signature-box">
-                    <span class="signature-title">Le Représentant de l'Entreprise</span>
-                    <img id="img-sig-contrevenant" class="signature-img" style="display:none;" alt="Signature">
-                    <span id="name-sig-contrevenant" style="font-weight:bold; font-size:8.5pt;">Comptable</span>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-            
-          </div>
-        </section>
-        
-        <!-- SECTION 3: TOUS LES PV (DATABASE & FILTERS) -->
-        <section id="tab-tous-pv" class="view-section">
-          <!-- Advanced Search Panel -->
-          <div class="panel">
-            <div class="panel-header">
-              <h3>Filtres et Recherche Avancée</h3>
-            </div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="search-keyword">Recherche par mot-clé</label>
-                <input type="text" id="search-keyword" placeholder="ex: RCCM, entreprise, numéro, inspecteur..." oninput="filterPVList()">
-              </div>
-              <div class="form-group">
-                <label for="search-type">Type de PV</label>
-                <select id="search-type" onchange="filterPVList()">
-                  <option value="all">Tous les types</option>
-                  <option value="infraction">Constat d'infraction</option>
-                  <option value="obstruction">Constat d'obstruction</option>
-                  <option value="non-conciliation">Non-conciliation</option>
-                  <option value="mise-en-demeure">Mise en demeure</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="search-province">Province d'origine</label>
-                <select id="search-province" onchange="filterPVList()">
-                  <option value="all">Toutes les provinces</option>
-                  <!-- Filled programmatically -->
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="search-status">Statut de validation</label>
-                <select id="search-status" onchange="filterPVList()">
-                  <option value="all">Tous les statuts</option>
-                  <option value="draft">Brouillon</option>
-                  <option value="signed">Validé & Signé</option>
-                  <option value="archived">Archivé</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Database PV table -->
-          <div class="panel">
-            <div class="panel-header">
-              <h3>Base de données des Procès-Verbaux</h3>
-            </div>
-            <div class="data-table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>N° Unique ID</th>
-                    <th>N° PV officiel</th>
-                    <th>Type</th>
-                    <th>Entreprise</th>
-                    <th>Date Création</th>
-                    <th>Inspecteur</th>
-                    <th>Fines / Total</th>
-                    <th>Statut</th>
-                    <th style="width: 200px;">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="db-pvs-rows">
-                  <!-- Dynamic rows -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-        
-        <!-- SECTION 4: BROUILLONS -->
-        <section id="tab-brouillons" class="view-section">
-          <div class="panel">
-            <div class="panel-header">
-              <h3>Brouillons et Sauvegardes Automatiques</h3>
-              <span class="badge badge-draft" style="font-size:0.8rem;">Auto-sauvegarde active (10s)</span>
-            </div>
-            <div class="data-table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>N° ID unique</th>
-                    <th>Type de Document</th>
-                    <th>Entreprise</th>
-                    <th>Date d'édition</th>
-                    <th>Inspecteur en charge</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="draft-pvs-rows">
-                  <!-- Filled dynamically by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-        
-        <!-- SECTION 5: BIBLIOTHÈQUE DE MODÈLES -->
-        <section id="tab-modeles" class="view-section">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-            
-            <div class="panel text-center" style="display:flex; flex-direction:column; align-items:center; gap:1rem; padding:2rem;">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="var(--primary-color)"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-              <h3>P.V. de Constat d'Infraction</h3>
-              <p class="text-muted text-sm">Modèle de constat général des contraventions de la législation congolaise en USD.</p>
-              <button class="btn btn-primary w-full" onclick="loadBlankTemplate('infraction')">Remplir ce modèle</button>
-            </div>
-            
-            <div class="panel text-center" style="display:flex; flex-direction:column; align-items:center; gap:1rem; padding:2rem;">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="var(--warning-color)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-              <h3>P.V. de Constat d'Obstruction</h3>
-              <p class="text-muted text-sm">Modèle officiel de refus de contrôle ou d'entrave aux fonctions de l'inspecteur.</p>
-              <button class="btn btn-primary w-full" onclick="loadBlankTemplate('obstruction')">Remplir ce modèle</button>
-            </div>
-            
-            <div class="panel text-center" style="display:flex; flex-direction:column; align-items:center; gap:1rem; padding:2rem;">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="var(--success-color)"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <h3>P.V. de Non-Conciliation</h3>
-              <p class="text-muted text-sm">Modèle officiel constatant le désaccord persistant lors des litiges individuels.</p>
-              <button class="btn btn-primary w-full" onclick="loadBlankTemplate('non-conciliation')">Remplir ce modèle</button>
-            </div>
-            
-            <div class="panel text-center" style="display:flex; flex-direction:column; align-items:center; gap:1rem; padding:2rem;">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="var(--accent-color)"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>
-              <h3>Mise en Demeure Formelle</h3>
-              <p class="text-muted text-sm">Mise en demeure sous 24h/48h pour contraindre l'employeur à l'accès de l'inspection.</p>
-              <button class="btn btn-primary w-full" onclick="loadBlankTemplate('mise-en-demeure')">Remplir ce modèle</button>
-            </div>
-            
-          </div>
-        </section>
-        
-        <!-- SECTION 6: ASSISTANT IA JURIDIQUE -->
-        <section id="tab-assistant-ia" class="view-section">
-          <div class="ai-container">
-            
-            <!-- Left Side: Interactive Chat -->
-            <div class="chat-panel">
-              <div style="background-color: var(--primary-color); color:#FFF; padding:0.75rem 1rem; font-weight:bold; display:flex; align-items:center; justify-content:space-between;">
-                <span>Conseiller IA • Code du Travail</span>
-                <span class="badge" style="background:rgba(255,255,255,0.2); color:#FFF;">Hors-ligne</span>
-              </div>
-              <div class="chat-messages" id="ai-chat-messages">
-                <div class="chat-bubble bubble-ai">
-                  Bonjour ! Je suis l'Assistant IA d'InspecteurBot, spécialisé dans le droit du travail de la République Démocratique du Congo (RDC).<br><br>
-                  Je peux répondre à toutes vos questions juridiques ou vous aider à analyser des faits complexes d'obstruction ou d'infraction. Que puis-je faire pour vous aujourd'hui ?
-                </div>
-              </div>
-              <div class="chat-input-area">
-                <input type="text" id="ai-chat-input" placeholder="Posez une question (ex: Quels sont les taux d'heures sup?)" onkeypress="handleChatKeypress(event)">
-                <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">Envoyer</button>
-              </div>
-            </div>
-            
-            <!-- Right Side: Facts Analyzer & Drafting helper -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Analyseur Intelligent de Faits (Constat d'Infraction)</h3>
-              </div>
-              <div class="form-group">
-                <label for="ai-analyzer-facts">Saisissez la description textuelle des faits constatés sur le lieu de travail :</label>
-                <div class="input-with-action">
-                  <textarea id="ai-analyzer-facts" rows="8" placeholder="ex: L'employeur n'a pas affiché les horaires de travail. Nous avons également remarqué que 3 travailleurs n'ont pas de contrat écrit et que le salaire payé est de 50$ par mois, ce qui est inférieur au SMIG..."></textarea>
-                  <button class="mic-btn" style="top:0.5rem;" onclick="startDictation('ai-analyzer-facts')">🎙️</button>
-                </div>
-              </div>
-              <button class="btn btn-primary w-full" onclick="analyzeFactsWithAI()">
-                🧠 Analyser avec l'Intelligence Artificielle Locale
-              </button>
-              
-              <div style="margin-top: 1.5rem; display: none;" id="ai-analysis-results">
-                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0.5rem;">Infractions Potentielles Détectées :</h4>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="ai-analysis-infractions-list">
-                  <!-- Filled programmatically -->
-                </div>
-                <button class="btn btn-success btn-sm w-full" style="margin-top: 1rem;" onclick="injectAIPossibleInfractions()">
-                  🚀 Injecter automatiquement ces infractions au PV en cours
-                </button>
-              </div>
-            </div>
-            
-          </div>
-        </section>
-        
-        <!-- SECTION 7: SCANNER DE PV -->
-        <section id="tab-scanner" class="view-section">
-          <div style="max-width: 600px; margin: 0 auto;">
-            <div class="panel text-center">
-              <div class="panel-header">
-                <h3>Vérification d'Authenticité par QR Code (Local)</h3>
-              </div>
-              <p class="text-muted text-sm" style="margin-bottom: 1rem;">
-                Permet d'ouvrir le scanner d'appareil photo pour vérifier instantanément si un document (PV) imprimé ou numérique provient de la base de données officielle sécurisée d'InspecteurBot.
-              </p>
-              
-              <!-- Video Viewport -->
-              <div class="scanner-viewport">
-                <video id="scanner-video-element" class="scanner-video" autoplay playsinline></video>
-                <div class="scanner-overlay">
-                  <div class="scanner-box">
-                    <div class="scanner-line"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <div style="display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                <button class="btn btn-primary btn-sm" onclick="startCameraScanner()">Démarrer la Caméra</button>
-                <button class="btn btn-secondary btn-sm" onclick="stopCameraScanner()">Arrêter la Caméra</button>
-              </div>
-              
-              <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; text-align: left;">
-                <div class="form-group">
-                  <label for="manual-verify-id">Ou vérification par Identifiant Unique (ID unique du PV) :</label>
-                  <div style="display:flex; gap:0.5rem;">
-                    <input type="text" id="manual-verify-id" placeholder="ex: PV-5028c2e6">
-                    <button class="btn btn-secondary" onclick="verifyPVAuthenticityManual()">Vérifier</button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Verification Results Container -->
-              <div id="verification-result-box" style="display:none; padding:1.25rem; border-radius:8px; margin-top:1.5rem; text-align:left;">
-                <!-- Filled dynamically by JS -->
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        <!-- SECTION 8: PARAMÈTRES -->
-        <section id="tab-parametres" class="view-section">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            
-            <!-- Province and DP configurations -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Gestion des Provinces & Directions</h3>
-              </div>
-              <p class="text-muted text-xs" style="margin-bottom: 1rem;">
-                Le système intègre automatiquement les 26 Provinces constitutionnelles de la RDC. Vous pouvez configurer des détails supplémentaires pour les directions provinciales correspondantes.
-              </p>
-              <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Province</th>
-                      <th>Direction Provinciale</th>
-                      <th>Abréviation</th>
-                    </tr>
-                  </thead>
-                  <tbody id="params-provinces-tbody">
-                    <!-- Dynamic -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <!-- Inspectors Configurations -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Inspecteurs & Contrôleurs du Travail</h3>
-                <button class="btn btn-primary btn-xs" onclick="addNewInspectorPrompt()">+ Ajouter</button>
-              </div>
-              <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px;">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th>Nom de l'Inspecteur</th>
-                      <th>Habilitation</th>
-                      <th>Initials</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="params-inspectors-tbody">
-                    <!-- Dynamic -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <!-- Database Backup and Restore -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Sauvegarde & Restauration complète de la base</h3>
-              </div>
-              <p class="text-muted text-sm" style="margin-bottom: 1rem;">
-                Toutes vos données (PV, brouillons, signatures) sont stockées localement de manière sécurisée. Vous pouvez exporter un fichier de sauvegarde JSON pour le transférer ou restaurer vos données sur un autre poste.
-              </p>
-              <div style="display: flex; gap: 1rem;">
-                <button class="btn btn-primary" onclick="exportDatabase()">Exporter la base (JSON)</button>
-                <div style="position:relative;">
-                  <button class="btn btn-secondary" onclick="document.getElementById('import-db-file').click()">Restaurer une sauvegarde (JSON)</button>
-                  <input type="file" id="import-db-file" style="display:none;" accept=".json" onchange="importDatabase(event)">
-                </div>
-              </div>
-            </div>
-
-            <!-- Printing configurations -->
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Paramètres de Génération PDF / Impression</h3>
-              </div>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="param-print-margins">Marge d'impression (mm)</label>
-                  <input type="number" id="param-print-margins" value="15" min="5" max="30">
-                </div>
-                <div class="form-group">
-                  <label for="param-qr-level">Correction QR Code</label>
-                  <select id="param-qr-level">
-                    <option value="H" selected>Niveau H (Maximum)</option>
-                    <option value="M">Niveau M (Moyen)</option>
+            <article class="panel collapsible open" data-panel="administration">
+              <button class="panel-toggle" type="button"><span>2. Informations administratives</span><strong>−</strong></button>
+              <div class="panel-body grid-2">
+                <label>République
+                  <input id="republique" name="republique" type="text" value="REPUBLIQUE DEMOCRATIQUE DU CONGO">
+                </label>
+                <label>Ministère
+                  <input id="ministere" name="ministere" type="text" value="Ministère de l’Emploi, Travail et Prévoyance Sociale">
+                </label>
+                <label>Inspection
+                  <input id="inspection" name="inspection" type="text" value="Inspection Générale du Travail">
+                </label>
+                <label>Direction provinciale / service
+                  <select id="direction" name="direction"></select>
+                </label>
+                <label>Province administrative
+                  <select id="adminProvince" name="adminProvince"></select>
+                </label>
+                <label>Inspection urbaine ou territoriale
+                  <input id="localInspection" name="localInspection" type="text" placeholder="Inspection Urbaine / Territoriale de ...">
+                </label>
+                <label>Catégorie de l'auteur
+                  <select id="agentRole" name="agentRole">
+                    <option>Inspecteur du Travail</option>
+                    <option>Contrôleur du Travail</option>
                   </select>
-                </div>
-                <div class="form-group form-group-full">
-                  <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem;">
-                    <input type="checkbox" id="param-print-double-border" checked style="width:auto;">
-                    <label for="param-print-double-border" style="margin:0; cursor:pointer;">Double bordure décorative d'en-tête administratif</label>
+                </label>
+                <label>Inspecteur ou Contrôleur
+                  <select id="agentSelect" name="agentSelect"></select>
+                </label>
+                <label>Nom complet de l'auteur
+                  <input id="agentName" name="agentName" type="text" placeholder="Nom complet">
+                </label>
+                <label>Qualité / grade
+                  <input id="agentQuality" name="agentQuality" type="text" placeholder="Inspecteur du Travail et OPJ...">
+                </label>
+                <label>Numéro d'habilitation
+                  <input id="habilitation" name="habilitation" type="text" placeholder="N° habilitation">
+                </label>
+                <label>Numéro OPJ
+                  <input id="opjNumber" name="opjNumber" type="text" placeholder="N° OPJ">
+                </label>
+                <label class="span-2">Ordre de mission
+                  <input id="missionOrder" name="missionOrder" type="text" placeholder="N° ordre de mission collectif / individuel">
+                </label>
+              </div>
+            </article>
+
+            <article class="panel collapsible open" data-panel="enterprise">
+              <button class="panel-toggle" type="button"><span>3. Entreprise contrôlée</span><strong>−</strong></button>
+              <div class="panel-body grid-2">
+                <label>Raison sociale
+                  <input id="companyName" name="companyName" type="text" placeholder="Nom de l'entreprise">
+                </label>
+                <label>Forme juridique
+                  <input id="companyLegalForm" name="companyLegalForm" type="text" placeholder="SARL, SA, ASBL...">
+                </label>
+                <label>RCCM
+                  <input id="rccm" name="rccm" type="text">
+                </label>
+                <label>ID NAT
+                  <input id="idnat" name="idnat" type="text">
+                </label>
+                <label>Numéro Impôt
+                  <input id="taxNumber" name="taxNumber" type="text">
+                </label>
+                <label>CNSS
+                  <input id="cnss" name="cnss" type="text">
+                </label>
+                <label>INPP
+                  <input id="inpp" name="inpp" type="text">
+                </label>
+                <label>Téléphone
+                  <input id="companyPhone" name="companyPhone" type="tel">
+                </label>
+                <label>E-mail
+                  <input id="companyEmail" name="companyEmail" type="email">
+                </label>
+                <label>Province
+                  <select id="companyProvince" name="companyProvince"></select>
+                </label>
+                <label>Commune / Territoire
+                  <input id="commune" name="commune" type="text">
+                </label>
+                <label>Nombre de travailleurs
+                  <input id="workersCount" name="workersCount" type="number" min="0">
+                </label>
+                <label class="span-2">Adresse complète
+                  <textarea id="companyAddress" name="companyAddress" rows="2" placeholder="N°, avenue, quartier, commune, ville/province"></textarea>
+                </label>
+                <label>Responsable présent
+                  <input id="presentManager" name="presentManager" type="text">
+                </label>
+                <label>Fonction du responsable
+                  <input id="managerFunction" name="managerFunction" type="text">
+                </label>
+                <fieldset class="span-2 chips-fieldset">
+                  <legend>Secteur(s) d'activité — sélection multiple</legend>
+                  <div class="chips-toolbar">
+                    <input id="sectorSearch" type="search" placeholder="Rechercher un secteur...">
+                    <button class="btn tiny" id="btnClearSectors" type="button">Effacer</button>
                   </div>
+                  <div id="sectorsList" class="checkbox-grid"></div>
+                </fieldset>
+              </div>
+            </article>
+
+            <article class="panel collapsible open" data-panel="facts">
+              <button class="panel-toggle" type="button"><span>4. Faits, observations et assistant IA local</span><strong>−</strong></button>
+              <div class="panel-body">
+                <label>Faits constatés / contexte / déclarations
+                  <textarea id="facts" name="facts" rows="5" placeholder="Décrivez les faits. Vous pouvez utiliser la dictée audio..."></textarea>
+                </label>
+                <div class="ai-toolbar">
+                  <button class="btn secondary" id="btnAnalyzeFacts" type="button">🤖 Analyser les faits</button>
+                  <button class="btn secondary" id="btnSuggestArticles" type="button">📚 Proposer les articles</button>
+                  <button class="btn secondary" id="btnGenerateObservations" type="button">✍️ Générer observations</button>
+                  <button class="btn primary" id="btnAutoDraft" type="button">🧾 Rédiger le PV</button>
+                </div>
+                <div id="aiOutput" class="ai-output empty-state">L'IA locale fonctionne sans Internet : elle compare les faits aux infractions intégrées, propose les articles et rédige le modèle sélectionné.</div>
+                <label>Observations / rédaction complémentaire
+                  <textarea id="observations" name="observations" rows="4"></textarea>
+                </label>
+              </div>
+            </article>
+
+            <article class="panel collapsible open" data-panel="litige" id="litigePanel">
+              <button class="panel-toggle" type="button"><span>5. Données spécifiques au litige individuel</span><strong>−</strong></button>
+              <div class="panel-body grid-2">
+                <label>Demandeur
+                  <input id="demandeur" name="demandeur" type="text" placeholder="Nom du travailleur / conseil">
+                </label>
+                <label>Défenderesse
+                  <input id="defender" name="defender" type="text" placeholder="Entreprise / conseil">
+                </label>
+                <label>Carte / identification du demandeur
+                  <input id="demandeurId" name="demandeurId" type="text">
+                </label>
+                <label>Dommages et intérêts demandés
+                  <input id="claimAmount" name="claimAmount" type="text" placeholder="Ex. 250.000$">
+                </label>
+                <label class="span-2">Déclaration du demandeur
+                  <textarea id="claimantStatement" name="claimantStatement" rows="4"></textarea>
+                </label>
+                <label class="span-2">Constat de l'Inspecteur / Contrôleur du Travail
+                  <textarea id="laborOfficerFindings" name="laborOfficerFindings" rows="4"></textarea>
+                </label>
+                <label class="span-2">Conclusion
+                  <textarea id="conclusion" name="conclusion" rows="3"></textarea>
+                </label>
+                <label class="span-2">Proposition
+                  <textarea id="proposal" name="proposal" rows="3"></textarea>
+                </label>
+                <label class="span-2">Désaccord des parties
+                  <textarea id="disagreement" name="disagreement" rows="3"></textarea>
+                </label>
+              </div>
+            </article>
+
+            <article class="panel collapsible open" data-panel="infractions" id="infractionsPanel">
+              <button class="panel-toggle" type="button"><span>6. Base officielle des infractions et amendes</span><strong>−</strong></button>
+              <div class="panel-body">
+                <div class="infractions-toolbar">
+                  <input id="infractionSearch" type="search" placeholder="Recherche rapide : horaire, contrat, SMIG, obstruction, CNSS...">
+                  <select id="gravityFilter"><option value="">Toutes gravités</option><option>Faible</option><option>Moyenne</option><option>Élevée</option><option>Critique</option></select>
+                </div>
+                <div id="infractionsList" class="infractions-list"></div>
+                <h4>Infractions sélectionnées</h4>
+                <div class="table-scroll">
+                  <table class="data-table" id="selectedInfractionsTable">
+                    <thead><tr><th>N°</th><th>Infraction</th><th>Texte violé</th><th>Gravité</th><th>Qté</th><th>Amende USD</th><th>Total</th><th></th></tr></thead>
+                    <tbody></tbody>
+                    <tfoot><tr><td colspan="6">Total général</td><td id="totalAmountCell">0 $</td><td></td></tr></tfoot>
+                  </table>
                 </div>
               </div>
-            </div>
-            
+            </article>
+
+            <article class="panel collapsible open" data-panel="signatures">
+              <button class="panel-toggle" type="button"><span>7. Signatures manuscrites sécurisées</span><strong>−</strong></button>
+              <div class="panel-body">
+                <p class="hint">Toutes les signatures sont enregistrées avec nom complet, qualité/fonction, date et heure. Le stylo est bleu par défaut.</p>
+                <div id="signaturePads" class="signature-grid"></div>
+              </div>
+            </article>
           </div>
-        </section>
-        
-      </div>
+
+          <aside class="preview-column">
+            <article class="panel preview-panel">
+              <div class="panel-title"><h3>Aperçu A4 sécurisé</h3><span id="previewRoleBadge">Inspecteur / Contrôleur</span></div>
+              <div class="preview-actions">
+                <button class="btn tiny" id="btnRefreshPreview" type="button">Actualiser</button>
+                <button class="btn tiny" id="btnReadSelection" type="button">Lire aperçu</button>
+                <button class="btn tiny" id="btnToggleScale" type="button">Zoom</button>
+              </div>
+              <div id="printArea" class="a4-preview"></div>
+            </article>
+          </aside>
+        </form>
+      </section>
+
+      <section class="view" id="view-history" aria-labelledby="historyTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Recherche, modification, duplication, suppression, archivage</p>
+            <h2 id="historyTitle">Historique documentaire</h2>
+          </div>
+          <button class="btn secondary" id="btnExportBackupHistory" type="button">Sauvegarde JSON</button>
+        </div>
+        <article class="panel">
+          <div class="history-filters">
+            <input id="historySearch" type="search" placeholder="Rechercher par numéro, entreprise, auteur, code...">
+            <select id="historyStatus"><option value="">Tous statuts</option><option value="draft">Brouillons</option><option value="validated">Validés</option><option value="archived">Archivés</option></select>
+            <select id="historyRole"><option value="">Inspecteurs & Contrôleurs</option><option>Inspecteur du Travail</option><option>Contrôleur du Travail</option></select>
+            <select id="historyType"><option value="">Tous modèles</option></select>
+          </div>
+          <div id="historyList" class="history-list empty-state">Aucun document enregistré.</div>
+        </article>
+      </section>
+
+      <section class="view" id="view-legal" aria-labelledby="legalTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Références légales et réglementaires intégrées</p>
+            <h2 id="legalTitle">Base juridique du module PV</h2>
+          </div>
+          <button class="btn secondary" id="btnCopyLegalSummary" type="button">Copier synthèse</button>
+        </div>
+        <article class="panel">
+          <p class="hint">Cette base juridique locale reprend les références nécessaires à la rédaction des PV, mises en demeure, non-conciliations, infractions et amendes transactionnelles. Elle sert d’aide à la rédaction et doit être vérifiée avec les textes officiels applicables avant usage définitif.</p>
+          <div class="legal-toolbar">
+            <input id="legalSearch" type="search" placeholder="Rechercher : article 322, obstruction, non-conciliation, arrêté 2023, CSHE...">
+            <select id="legalCategory"><option value="">Toutes catégories</option></select>
+          </div>
+          <div class="legal-summary" id="legalSummary"></div>
+          <div id="legalList" class="legal-grid"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-settings" aria-labelledby="settingsTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Administration locale du module</p>
+            <h2 id="settingsTitle">Paramètres</h2>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <article class="panel">
+            <div class="panel-title"><h3>Inspecteurs & Contrôleurs</h3><span>Profils auteurs</span></div>
+            <div class="grid-2">
+              <label>Catégorie
+                <select id="settingsAgentRole"><option>Inspecteur du Travail</option><option>Contrôleur du Travail</option></select>
+              </label>
+              <label>Nom complet
+                <input id="settingsAgentName" type="text">
+              </label>
+              <label>Qualité / grade
+                <input id="settingsAgentQuality" type="text">
+              </label>
+              <label>N° habilitation
+                <input id="settingsAgentHabilitation" type="text">
+              </label>
+              <label>N° OPJ
+                <input id="settingsAgentOpj" type="text">
+              </label>
+              <label>Direction
+                <select id="settingsAgentDirection"></select>
+              </label>
+            </div>
+            <button class="btn secondary" id="btnAddAgent" type="button">Ajouter / mettre à jour</button>
+            <div id="agentsList" class="mini-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-title"><h3>Provinces & Directions Provinciales</h3><span>RDC</span></div>
+            <div id="directionsList" class="mini-list tall"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-title"><h3>Modèles de PV intégrés</h3><span>Base locale</span></div>
+            <div id="templatesList" class="mini-list tall"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-title"><h3>Sauvegardes & restauration</h3><span>LocalStorage</span></div>
+            <p class="hint">Toutes les données restent dans le navigateur. Exportez régulièrement un fichier JSON.</p>
+            <div class="backup-actions">
+              <button class="btn primary" id="btnExportBackup" type="button">Exporter sauvegarde</button>
+              <label class="file-label">Restaurer JSON<input id="restoreFile" type="file" accept="application/json"></label>
+              <button class="btn warning" id="btnClearData" type="button">Vider les données locales</button>
+            </div>
+            <pre id="backupStatus" class="code-box">Prêt.</pre>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-help" aria-labelledby="helpTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Mode d'emploi</p>
+            <h2 id="helpTitle">Guide local IA & conformité de saisie</h2>
+          </div>
+        </div>
+        <article class="panel legal-guide">
+          <h3>Fonctionnement</h3>
+          <ol>
+            <li>Choisissez le modèle officiel : constat d'infraction, obstruction, non-conciliation, mise en demeure ou installation du comité SHE.</li>
+            <li>Complétez l'administration, l'auteur du PV, l'entreprise et les faits.</li>
+            <li>Utilisez l'IA locale pour proposer les infractions, les articles et une rédaction conforme au modèle fourni.</li>
+            <li>Sélectionnez plusieurs infractions, ajustez les quantités et amendes si nécessaire, puis signez en bleu.</li>
+            <li>Validez le PV : un UUID, un numéro officiel, un code de vérification et un QR Code sont attachés.</li>
+            <li>Utilisez « Export PDF / Imprimer » puis choisissez « Enregistrer au format PDF » dans le navigateur.</li>
+          </ol>
+          <h3>Dictée audio, lecture et thème</h3>
+          <p>La dictée utilise l'API vocale du navigateur. Cliquez dans un champ, puis sur « Dictée ». La lecture utilise la synthèse vocale du navigateur et peut lire l'aperçu A4. Le bouton « Mode sombre / Mode clair » conserve automatiquement la préférence dans le navigateur.</p>
+          <h3>Base juridique intégrée</h3>
+          <p>L'onglet « Base juridique » regroupe les textes de référence : Code du Travail, Ordonnance-loi modificative, articles relatifs à l'Inspection du Travail, non-conciliation, obstruction, sanctions, santé-sécurité, SMIG, déclarations obligatoires et arrêté interministériel des taux. Chaque référence peut être copiée, insérée dans les observations ou reliée à la recherche d'infractions.</p>
+          <h3>Modèles intégrés depuis le fichier fourni</h3>
+          <p>Le module reprend la structure et les formulations principales des modèles transmis : PV de constat d'infraction, PV d'obstruction, PV de non-conciliation, mise en demeure et PV d'installation du comité de sécurité, d'hygiène et d'embellissement.</p>
+        </article>
+      </section>
     </main>
   </div>
 
-  <!-- MODAL FOR TOUCH SIGNATURE PAD -->
-  <div class="modal-overlay" id="modal-signature">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 id="modal-signature-title">Signature Tactile</h3>
-        <button class="theme-toggle-btn" style="color:white;" onclick="closeSignatureModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p class="text-muted text-xs" style="margin-bottom: 0.5rem;">
-          Signez à l'aide de votre doigt, stylet ou souris dans la zone ci-dessous.
-        </p>
-        <div class="signature-canvas-container">
-          <canvas class="signature-canvas" id="modal-sig-canvas"></canvas>
-        </div>
-        <div class="form-group">
-          <label for="modal-sig-name-input">Nom complet du signataire :</label>
-          <input type="text" id="modal-sig-name-input" placeholder="ex: KASONGO JOHN">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="clearSignatureCanvas()">Effacer</button>
-        <button class="btn btn-danger" onclick="closeSignatureModal()">Annuler</button>
-        <button class="btn btn-primary" onclick="saveSignatureAndClose()">Valider la signature</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOAST NOTIFICATION POPUP -->
-  <div id="toast-container" style="position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:0.5rem;"></div>
-
-  <!-- App Centralized Logic -->
-  <script src"../app-pv.js"></script>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
 </body>
 </html>
