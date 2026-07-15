@@ -3,6 +3,7 @@
 
   const STORAGE_KEY = 'inspecteurbot_pv_rdc_v1';
   const THEME_KEY = 'inspecteurbot_pv_theme';
+  const LOGO_KEY = 'inspecteurbot_logo_igt';
   const APP_VERSION = '1.0.0-local';
 
   const PROVINCES = [
@@ -34,6 +35,309 @@
     { id: 'pv-installation-cshe', label: 'PV d’installation du Comité de Sécurité, d’Hygiène et d’Embellissement', short: 'PV Installation CSHE', needsInfractions: false }
   ];
 
+  const RESERVE_PV_MODELS = [
+  {
+    "id": "MOD-001",
+    "docType": "pv-infraction",
+    "title": "Constat général de documents sociaux manquants",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Avons effectué une mission officielle de contrôle au sein de [ENTREPRISE]. Après vérification des pièces sollicitées, avons constaté l’absence ou l’irrégularité de documents sociaux obligatoires. Les infractions retenues sont portées au tableau ci-dessous, sans préjudice de l’obligation pour l’employeur de régulariser sa situation dans un bref délai. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-002",
+    "docType": "pv-infraction",
+    "title": "Constat d’absence de contrats de travail",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Au cours du contrôle, il a été relevé que plusieurs travailleurs prestent sans contrat écrit, signé et/ou visé conformément aux prescriptions légales. Cette situation expose l’entreprise aux amendes transactionnelles et à l’obligation de régularisation immédiate. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-003",
+    "docType": "pv-infraction",
+    "title": "Constat d’absence de déclarations ONEM/main-d’œuvre",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Après examen des documents produits, l’entreprise n’a pas justifié les déclarations relatives au mouvement du personnel, à la situation de la main-d’œuvre nationale et étrangère ainsi qu’au bilan social. Les faits sont constatés à sa charge. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-004",
+    "docType": "pv-infraction",
+    "title": "Constat relatif au SMIG et à la rémunération",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les vérifications opérées sur les éléments de paie font apparaître une rémunération non conforme aux prescriptions applicables relatives au SMIG et/ou aux modalités de paiement. Les infractions correspondantes sont retenues au tableau. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-005",
+    "docType": "pv-infraction",
+    "title": "Constat d’absence d’horaire, règlement et classification",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’entreprise n’a pas présenté l’horaire de travail visé, le règlement d’entreprise conforme et/ou la classification générale des emplois. Ces manquements constituent des violations des textes cités dans le tableau des contraventions. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-006",
+    "docType": "pv-infraction",
+    "title": "Constat santé, sécurité et convention médicale",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Il a été constaté l’absence ou l’insuffisance des dispositifs relatifs à la santé, l’hygiène et la sécurité, notamment comité compétent, convention médicale ou preuve de service médical. L’entreprise demeure tenue de se conformer aux prescriptions légales. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-007",
+    "docType": "pv-infraction",
+    "title": "Constat d’absence de preuves CNSS-INPP-ONEM",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’employeur n’a pas présenté les preuves de paiement ou de conformité auprès des organismes compétents. Les manquements sont actés au présent procès-verbal et les amendes sont calculées suivant la base intégrée. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-008",
+    "docType": "pv-infraction",
+    "title": "Constat de travail de nuit/heures supplémentaires",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les faits relevés démontrent un dépassement de la durée du travail, un recours au travail de nuit ou aux heures supplémentaires sans respect des majorations et repos prévus. Les violations sont reprises ci-dessous. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-009",
+    "docType": "pv-infraction",
+    "title": "Constat de manquements envers les représentants des travailleurs",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le contrôle révèle des entraves ou omissions concernant les représentants des travailleurs, leurs moyens, leurs heures légales ou documents mis à leur disposition. Les dispositions violées sont reprises dans le tableau. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-010",
+    "docType": "pv-infraction",
+    "title": "Constat de pluralité d’infractions administratives",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. En présence du responsable de l’entreprise, plusieurs irrégularités administratives et sociales ont été relevées. Les contraventions ci-dessous sont mises à charge de l’entreprise conformément au Code du Travail et aux textes d’application. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-011",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par refus d’accès aux locaux",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Nous nous sommes présenté pour exécuter la mission officielle de contrôle, mais l’accès aux locaux de [ENTREPRISE] nous a été refusé. Cette impossibilité d’accomplir la mission légale est actée comme obstruction conformément à l’article 322 du Code du Travail. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-012",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par refus de produire les documents",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Malgré la demande régulière de production des documents sociaux et administratifs, le responsable présent n’a pas fourni les pièces nécessaires au contrôle. Ce comportement empêche l’exercice normal des fonctions de l’Inspection du Travail. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-013",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par absence organisée du responsable",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Après convocation et fixation de la visite, le responsable habilité s’est abstenu de recevoir la mission et n’a désigné aucun préposé capable de présenter les documents. Le présent PV constate l’obstruction. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-014",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par fermeture ou évacuation des lieux",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Lors de la mission, il a été constaté une fermeture, évacuation ou interruption volontaire ayant empêché l’accès aux travailleurs et aux documents. Les faits sont repris comme obstacle à l’exercice des fonctions de contrôle. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-015",
+    "docType": "pv-obstruction",
+    "title": "Obstruction après mise en demeure restée sans suite",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. La mise en demeure précédemment adressée à l’entreprise étant restée sans suite, et la mission n’ayant toujours pas été reçue, le présent procès-verbal constate l’obstruction persistante. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-016",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par intimidation ou propos menaçants",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. La mission de contrôle a été empêchée par des propos, actes d’intimidation ou comportements incompatibles avec l’exercice paisible des fonctions d’inspection. Les faits sont actés sans préjudice des suites judiciaires. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-017",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par refus de communiquer avec les travailleurs",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le responsable présent a empêché ou limité l’entretien avec les travailleurs, rendant impossible la vérification contradictoire des conditions de travail. Ce refus constitue un obstacle à la mission. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-018",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par remise de documents manifestement incomplets",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les documents remis étaient manifestement incomplets ou volontairement insuffisants pour permettre le contrôle. Malgré demande de complément, l’entreprise n’a pas permis l’accomplissement normal de la mission. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-019",
+    "docType": "pv-obstruction",
+    "title": "Obstruction à une inspection spéciale",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Dans le cadre d’une inspection spéciale ordonnée par l’autorité compétente, l’entreprise n’a pas permis l’exécution des vérifications demandées. Les faits sont constatés au présent PV d’obstruction. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-020",
+    "docType": "pv-obstruction",
+    "title": "Obstruction par refus réitéré de recevoir la mission",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Après plusieurs tentatives de contact et passages, l’entreprise a réitéré son refus de recevoir l’Inspecteur ou le Contrôleur du Travail. En foi de quoi, le présent PV est dressé en ampliations légales. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-021",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour licenciement contesté",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Après audition du demandeur et de la défenderesse, il ressort que les parties demeurent opposées sur la régularité du licenciement. Malgré la proposition de conciliation, aucun accord n’a été trouvé. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-022",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour arriérés de salaire",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le litige porte sur le paiement des arriérés de salaire et avantages dus. Les parties ont été entendues contradictoirement, mais elles ne sont pas parvenues à concilier leurs positions. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-023",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour décompte final",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le demandeur sollicite le paiement du décompte final et des droits liés à la cessation du contrat. L’employeur conteste tout ou partie de la réclamation. La tentative de conciliation n’a pas abouti. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-024",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour rupture de contrat pendant l’essai",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les parties divergent sur la qualification et les effets de la rupture intervenue pendant ou après la période d’essai. Les pièces versées n’ont pas permis d’obtenir un accord amiable. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-025",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour mutation ou affectation contestée",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le demandeur conteste les conditions de mutation, d’affectation ou de changement de poste. Après échange contradictoire, les parties maintiennent leurs positions respectives. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-026",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour sanction disciplinaire",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le litige porte sur une sanction disciplinaire contestée par le travailleur. La conciliation a été tentée conformément aux dispositions applicables, sans accord final. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-027",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour accident du travail",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le différend concerne les conséquences d’un accident du travail ou d’une maladie professionnelle. Les parties n’ont pas concilié sur les responsabilités, droits ou réparations réclamées. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-028",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour discrimination alléguée",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le demandeur invoque des faits de discrimination ou traitement inéquitable. La défenderesse conteste les griefs. À défaut d’accord, le présent PV de non-conciliation est dressé. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-029",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour heures supplémentaires",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le litige concerne la rémunération des heures supplémentaires, du travail de nuit ou des jours fériés. Après examen des prétentions, les parties n’ont pu s’accorder. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-030",
+    "docType": "pv-non-conciliation",
+    "title": "Non-conciliation pour réintégration demandée",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le demandeur sollicite sa réintégration ou, à défaut, des dommages et intérêts. La défenderesse n’adhère pas à cette proposition. Le désaccord des parties est constaté. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-031",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour refus de contrôle",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Par la présente, il est demandé à [ENTREPRISE] de donner accès libre à la mission de contrôle et de mettre à disposition tous les documents sollicités dans le délai indiqué, faute de quoi les sanctions prévues seront appliquées. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-032",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour documents sociaux manquants",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’entreprise est mise en demeure de produire les documents sociaux obligatoires et de régulariser les insuffisances constatées dans le délai imparti. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-033",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour santé et sécurité",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Au regard des risques relevés en matière de santé, d’hygiène et de sécurité, l’employeur est mis en demeure de prendre les mesures correctives immédiates et de présenter les preuves de conformité. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-034",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour déclaration main-d’œuvre",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’entreprise est mise en demeure de déposer ou présenter les déclarations relatives au mouvement du personnel, à la main-d’œuvre et au bilan social auprès des services compétents. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-035",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour convention médicale",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Il est enjoint à l’employeur de produire une convention médicale viable ou tout document attestant l’organisation effective du service médical des travailleurs. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-036",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour régularisation des contrats",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’entreprise est mise en demeure de régulariser les contrats de travail des agents concernés et de les soumettre, le cas échéant, aux formalités requises. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-037",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour règlement d’entreprise",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’employeur est mis en demeure d’établir, faire viser ou mettre en conformité son règlement d’entreprise dans le délai prescrit. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-038",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour preuves CNSS-INPP-ONEM",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’entreprise est mise en demeure de produire les preuves d’affiliation, de déclaration et/ou de paiement relatives à la CNSS, l’INPP et l’ONEM. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-039",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure pour installation du comité SHE",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. L’employeur est mis en demeure de procéder à l’organisation ou à la régularisation du Comité de Sécurité, d’Hygiène et d’Embellissement des lieux de travail. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-040",
+    "docType": "mise-demeure",
+    "title": "Mise en demeure finale avant PV",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Malgré les rappels antérieurs, les irrégularités persistent. La présente vaut dernière mise en demeure avant établissement du procès-verbal ou transmission à l’autorité compétente. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-041",
+    "docType": "pv-installation-cshe",
+    "title": "Installation initiale du Comité SHE",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Conformément aux articles 167 à 169 du Code du Travail, il a été procédé à l’installation initiale du Comité de Sécurité, d’Hygiène et d’Embellissement des lieux de travail au sein de [ENTREPRISE]. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-042",
+    "docType": "pv-installation-cshe",
+    "title": "Renouvellement du Comité SHE",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les mandats ou fonctions devant être renouvelés, il a été procédé à la réinstallation du Comité de Sécurité, d’Hygiène et d’Embellissement, en présence des représentants de l’employeur et des travailleurs. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-043",
+    "docType": "pv-installation-cshe",
+    "title": "Installation après mise en demeure",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. À la suite de la mise en demeure adressée à l’employeur, l’entreprise a organisé la réunion paritaire permettant l’installation du Comité SHE conformément aux textes applicables. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-044",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité pour entreprise à haut risque",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Compte tenu de la nature des activités et des risques professionnels identifiés, l’installation du Comité SHE est actée afin d’assurer le suivi périodique des mesures de prévention. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-045",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité avec représentants des travailleurs",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les représentants des travailleurs et de l’employeur ont pris part à la réunion paritaire au cours de laquelle les membres du Comité SHE ont été désignés et installés. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-046",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité avec programme trimestriel",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Les parties conviennent de se réunir trimestriellement pour évaluer les mesures d’hygiène, sécurité et embellissement, et pour formuler les recommandations utiles. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-047",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité après accident signalé",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. À la suite d’un accident ou incident signalé, il a été rappelé la nécessité de rendre fonctionnel le Comité SHE et de procéder à son installation officielle. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-048",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité dans établissement de service",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Il a été procédé à l’installation du Comité SHE dans un établissement de service, afin de garantir le respect des normes minimales de prévention et de sécurité. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-049",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité dans établissement industriel",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Pour les besoins de prévention en milieu industriel, les parties ont procédé à la désignation des responsables et membres du Comité SHE. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  },
+  {
+    "id": "MOD-050",
+    "docType": "pv-installation-cshe",
+    "title": "Installation comité avec visa de l’Inspection",
+    "text": "L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé aux constatations ci-après. Le présent procès-verbal est délivré pour servir et valoir ce que de droit, sous le visa de l’Inspection du Travail compétente. En foi de quoi, le présent modèle de texte est proposé comme réserve rédactionnelle, à adapter aux faits, pièces et déclarations du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE]."
+  }
+];
+
   const SIGNATURE_ROLES = [
     { key: 'inspecteur', title: 'Inspecteur du Travail', roleValue: 'Inspecteur du Travail' },
     { key: 'controleur', title: 'Contrôleur du Travail', roleValue: 'Contrôleur du Travail' },
@@ -41,13 +345,8 @@
     { key: 'temoin', title: 'Témoin(s)', roleValue: 'Témoin' }
   ];
 
-  const DEFAULT_AGENTS = [
-    { id: 'agt-hmw', role: 'Inspecteur du Travail', name: 'MITWINSI WANET Hardy', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence matérielle restreinte en matière du travail', habilitation: '3196/PRO15/021/2025', opj: 'OPJ/HMW', direction: 'Administration Centrale' },
-    { id: 'agt-sbm', role: 'Inspecteur du Travail', name: 'Steve BIEMBONGO MBULA', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence restreinte en matière du travail', habilitation: '', opj: 'OPJ/SB', direction: 'Administration Centrale' },
-    { id: 'agt-jll', role: 'Inspecteur du Travail', name: 'Justin LOMWANGA LINDENGE', quality: 'Inspecteur Principal du Travail de 1ère Classe et Officier de Police Judiciaire à compétence restreinte en matière du Travail', habilitation: '0268/PPCAKG/2001', opj: '0073/PRO21/PGI/GOMBE', direction: 'Administration Centrale' },
-    { id: 'agt-koj', role: 'Inspecteur du Travail', name: 'KANDJA OTANGANDO Joseph', quality: 'Inspecteur du Travail et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' },
-    { id: 'agt-mbo', role: 'Contrôleur du Travail', name: 'Mamie Paul BASSA OTOMWA', quality: 'Contrôleur Principal du Travail de 1ère classe et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' }
-  ];
+  const DEFAULT_AGENTS = [];
+  const LEGACY_AGENT_IDS = ['agt-hmw', 'agt-sbm', 'agt-jll', 'agt-koj', 'agt-mbo'];
 
   const LEGAL_BASE = [
   {
@@ -650,7 +949,7 @@
   ];
 
   const FORM_FIELDS = [
-    'docType','status','uuid','officialNumber','verificationCode','placeDate','republique','ministere','inspection','direction','adminProvince','localInspection','agentRole','agentSelect','agentName','agentQuality','habilitation','opjNumber','missionOrder','companyName','companyLegalForm','rccm','idnat','taxNumber','cnss','inpp','companyPhone','companyEmail','companyProvince','commune','workersCount','companyAddress','presentManager','managerFunction','facts','observations','demandeur','defender','demandeurId','claimAmount','claimantStatement','laborOfficerFindings','conclusion','proposal','disagreement'
+    'docType','status','uuid','officialNumber','verificationCode','placeDate','republique','ministere','inspection','direction','adminProvince','localInspection','agentRole','agentSelect','agentName','agentQuality','habilitation','opjNumber','missionOrder','logoIgtData','companyName','companyLegalForm','rccm','idnat','taxNumber','cnss','inpp','companyPhone','companyEmail','companyProvince','commune','workersCount','companyAddress','presentManager','managerFunction','facts','observations','regularizationDeadline','riskLevel','paymentDeadline','nextAction','documentsRequested','correctiveMeasures','demandeur','defender','demandeurId','claimAmount','claimantStatement','laborOfficerFindings','conclusion','proposal','disagreement'
   ];
 
   const state = {
@@ -745,7 +1044,13 @@
   }
 
   function ensureDefaults() {
-    if (!state.store.agents || !state.store.agents.length) state.store.agents = DEFAULT_AGENTS.slice();
+    state.store.agents = Array.isArray(state.store.agents) ? state.store.agents : [];
+    state.store.agents = state.store.agents.filter((agent) => !isLegacySuggestedAgent(agent));
+  }
+
+  function isLegacySuggestedAgent(agent) {
+    if (!agent) return false;
+    return LEGACY_AGENT_IDS.includes(agent.id);
   }
 
   function attachEvents() {
@@ -807,6 +1112,9 @@
     byId('btnReadPreview').addEventListener('click', readPreview);
     byId('btnReadSelection').addEventListener('click', readPreview);
     byId('btnGlobalListen').addEventListener('click', toggleDictation);
+    byId('logoIgtFile').addEventListener('change', handleLogoIgtUpload);
+    byId('btnClearLogoIgt').addEventListener('click', clearLogoIgt);
+    byId('btnGenerateCorrectivePlan').addEventListener('click', generateCorrectivePlan);
 
     byId('historySearch').addEventListener('input', renderHistory);
     byId('historyStatus').addEventListener('change', renderHistory);
@@ -825,6 +1133,9 @@
     byId('btnExportBackup').addEventListener('click', exportBackup);
     byId('restoreFile').addEventListener('change', restoreBackup);
     byId('btnClearData').addEventListener('click', clearLocalData);
+    byId('reserveTemplateSearch').addEventListener('input', renderReserveModels);
+    byId('reserveTemplateType').addEventListener('change', renderReserveModels);
+    byId('reserveTemplatesList').addEventListener('click', handleReserveModelAction);
   }
 
   function handleFormInput(event) {
@@ -850,6 +1161,7 @@
     fillSelect('docType', DOCUMENT_TYPES.map((d) => [d.id, d.label]));
     fillSelect('historyType', [['', 'Tous modèles'], ...DOCUMENT_TYPES.map((d) => [d.id, d.label])]);
     fillSelect('legalCategory', [['', 'Toutes catégories'], ...Array.from(new Set(LEGAL_BASE.map((j) => j.category))).map((c) => [c, c])]);
+    fillSelect('reserveTemplateType', [['', 'Tous modèles de réserve'], ...DOCUMENT_TYPES.map((d) => [d.id, d.label])]);
     fillSelect('direction', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
     fillSelect('settingsAgentDirection', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
     fillSelect('adminProvince', PROVINCES.map((p) => [p, p]));
@@ -866,11 +1178,12 @@
   function populateAgentsSelect(shouldApply = true) {
     const role = val('agentRole') || 'Inspecteur du Travail';
     const previous = val('agentSelect');
-    const agents = state.store.agents.filter((a) => a.role === role);
-    const options = agents.length ? agents.map((a) => [a.id, a.name]) : [['', `Aucun ${role.toLowerCase()} enregistré`]];
+    const agents = state.store.agents.filter((a) => a.role === role && !isLegacySuggestedAgent(a));
+    const options = [['', 'Saisir manuellement — aucune suggestion de nom par défaut'], ...agents.map((a) => [a.id, a.name])];
     fillSelect('agentSelect', options);
     if (previous && agents.some((a) => a.id === previous)) setVal('agentSelect', previous);
-    if (shouldApply && agents.length) applySelectedAgent();
+    else setVal('agentSelect', '');
+    if (shouldApply && val('agentSelect')) applySelectedAgent();
   }
 
   function applySelectedAgent() {
@@ -1028,6 +1341,68 @@
     image.src = dataUrl;
   }
 
+  function handleLogoIgtUpload(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast('Veuillez choisir une image pour le logo IGT.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || '');
+      setVal('logoIgtData', dataUrl);
+      try { localStorage.setItem(LOGO_KEY, dataUrl); } catch (_) { /* stockage logo optionnel */ }
+      refreshLogoIgtPreview();
+      updatePreview();
+      toast('Logo IGT ajouté à l’en-tête du PV.');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearLogoIgt() {
+    setVal('logoIgtData', '');
+    byId('logoIgtFile').value = '';
+    localStorage.removeItem(LOGO_KEY);
+    refreshLogoIgtPreview();
+    updatePreview();
+    toast('Logo IGT supprimé.');
+  }
+
+  function refreshLogoIgtPreview() {
+    const box = byId('logoIgtPreview');
+    if (!box) return;
+    const data = val('logoIgtData');
+    if (data) {
+      box.classList.remove('empty-logo');
+      box.innerHTML = `<img src="${escapeHtml(data)}" alt="Logo IGT">`;
+    } else {
+      box.classList.add('empty-logo');
+      box.textContent = 'Aucun logo IGT';
+    }
+  }
+
+  function generateCorrectivePlan() {
+    const f = collectRecord().fields;
+    const selected = state.selectedInfractions || [];
+    const lines = [];
+    if (selected.length) {
+      selected.forEach((item, index) => {
+        lines.push(`${index + 1}. Régulariser : ${item.infraction}. Référence : ${item.texteViole}.`);
+      });
+    } else {
+      lines.push('1. Produire les documents sociaux demandés et permettre leur vérification par l’Inspection du Travail.');
+      lines.push('2. Mettre à jour les registres, déclarations et preuves de conformité applicables.');
+      lines.push('3. Présenter les preuves de régularisation dans le délai imparti.');
+    }
+    if (f.regularizationDeadline) lines.push(`Délai final de régularisation : ${formatDate(f.regularizationDeadline)}.`);
+    if (f.paymentDeadline) lines.push(`Délai de paiement ou transaction : ${f.paymentDeadline}.`);
+    if (f.nextAction) lines.push(`Suite réservée : ${f.nextAction}.`);
+    setVal('correctiveMeasures', lines.join('\n'));
+    updatePreview();
+    toast('Mesures correctives générées.');
+  }
+
   function newRecord(confirmReset) {
     if (confirmReset && !confirm('Créer un nouveau PV ? Les modifications non sauvegardées seront perdues.')) return;
     state.currentId = crypto.randomUUID ? crypto.randomUUID() : `pv-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -1047,6 +1422,8 @@
     setVal('companyProvince', 'Kinshasa');
     setVal('agentRole', 'Inspecteur du Travail');
     setVal('placeDate', `Fait à Kinshasa, le ${formatDate(today)}`);
+    setVal('logoIgtData', localStorage.getItem(LOGO_KEY) || '');
+    refreshLogoIgtPreview();
     populateAgentsSelect();
     setSelectedSectors([]);
     renderSignaturePads(false);
@@ -1090,6 +1467,7 @@
     setSelectedSectors(record.sectors || []);
     populateAgentsSelect(false);
     if (record.fields && record.fields.agentSelect) setVal('agentSelect', record.fields.agentSelect);
+    refreshLogoIgtPreview();
     renderSignaturePads(false);
     renderSelectedInfractionsTable();
     updateDocPanels();
@@ -1356,6 +1734,10 @@
     }
   }
 
+  function logoMarkup(f) {
+    return f.logoIgtData ? `<img class="igt-logo" src="${escapeHtml(f.logoIgtData)}" alt="Logo IGT">` : '<div class="arms">★</div>';
+  }
+
   function officialHeader(record, options = {}) {
     const f = record.fields;
     const right = options.right || (f.placeDate || `Kinshasa, le ${formatDate(new Date())}`);
@@ -1364,7 +1746,7 @@
         <div class="official-left">
           <div>${escapeHtml(f.republique || 'REPUBLIQUE DEMOCRATIQUE DU CONGO')}</div>
           <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi et Travail')}</div>
-          <div class="arms">★</div>
+          ${logoMarkup(f)}
           <div>${escapeHtml(f.direction || 'Administration Centrale')}</div>
           <div>${escapeHtml(f.inspection || 'Inspection Générale du Travail')}</div>
           <div>I.G.T</div>
@@ -1406,6 +1788,7 @@
           <p class="letter-amount">En lettre : ${escapeHtml(amountInLetters(total))} dollars américains.</p>
           <p>Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions du Ministère de l’Emploi et du Travail. L’entreprise est obligée de se soumettre aux prescriptions de la loi dans un bref délai. En outre, nonobstant le paiement desdites amendes, elle reste tenue à toutes les obligations légales définies en la matière.</p>
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>En foi de quoi, nous avons établi le présent procès-verbal d’infraction en quatre ampliations dont chacune sera transmise à qui de droit conformément aux dispositions légales susmentionnées.</p>
           <p>Fait au jour, mois et an que dessus. Nous jurons le présent Procès-Verbal sincère.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1429,6 +1812,7 @@
           <p>En effet, nous étions dans l’impossibilité d’accomplir la mission qui nous est dévolue par la loi et nous avons été l’objet d’une obstruction totale par le responsable de la société susmentionnée, ${escapeHtml(f.presentManager || '................................')} ${f.managerFunction ? `en qualité de ${escapeHtml(f.managerFunction)}` : ''}; nous référant aux dispositions de l’Ordonnance-loi n°16/010 du 15 juillet 2016 modifiant et complétant la loi n°015-2002 portant Code du Travail à son article 322 et aux instructions rappelant à tous les employeurs le respect strict du Code du Travail et de ses mesures d’application.</p>
           ${f.facts ? `<p><strong>Faits d’obstruction :</strong> ${nl2br(f.facts)}</p>` : ''}
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>En foi de quoi, nous avons établi ce procès-verbal de constat d’obstruction en trois ampliations dont chacune sera remise au Ministère ayant la charge de l’Emploi et Travail, au Procureur près le Parquet compétent pour disposition et au contrevenant.</p>
           <p>Nous jurons que ce procès-verbal est sincère.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1460,6 +1844,7 @@
           <p>${nl2br(f.proposal || 'Une solution amiable a été proposée aux parties conformément aux dispositions applicables du Code du Travail.')}</p>
           <h3>IV. DESACCORD DES PARTIES</h3>
           <p>${nl2br(f.disagreement || 'Après une tentative de conciliation, les deux parties ne sont pas parvenues à concilier leurs désaccords.')}</p>
+          ${followUpBlock(record)}
           <p>En foi de quoi, le présent procès-verbal est dressé et signé en quatre exemplaires par les parties et nous-mêmes dont chacune a reçu un original.</p>
           <p>Jurons que le présent Procès-Verbal est sincère.</p>
         </section>
@@ -1477,6 +1862,7 @@
             <div>${escapeHtml(f.republique || 'République Démocratique du Congo')}</div>
             <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi, Travail')}</div>
             <div>${escapeHtml(f.inspection || 'INSPECTION GENERALE DU TRAVAIL')}</div>
+            ${logoMarkup(f)}
             <br>
             <div style="text-align:left;text-transform:none;font-weight:700">
               OPJ : ${escapeHtml(f.agentName || '................................')}<br>
@@ -1505,6 +1891,7 @@
           <p>Par la présente, je vous mets en demeure de donner accès libre à notre mission et de fournir les documents demandés dans un délai de 24 heures à compter de la réception de ce courrier.</p>
           <p>Je vous rappelle qu’en l’absence de réponse ou en cas de maintien de votre refus de contrôle, je me verrai contraint de saisir la juridiction compétente ou d’appliquer les sanctions prévues dans l’arrêté n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023 du 03/10/2023 portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale.</p>
           ${f.observations ? `<p>${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>Veuillez considérer cette lettre comme une mise en demeure formelle.</p>
           <p>Cordialement.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1541,6 +1928,7 @@
           </ol>
           ${sectors ? `<p><strong>Secteur(s) d’activité :</strong> ${escapeHtml(sectors)}</p>` : ''}
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>Les parties acceptent de se réunir après chaque trois mois pour évaluation.</p>
           <p>En foi de quoi le présent procès-verbal d’installation est délivré pour servir et valoir ce que de droit.</p>
           <p style="text-align:center;font-weight:900;margin-top:2rem">Visa de l’Inspection du Travail</p>
@@ -1548,6 +1936,19 @@
         ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
         ${securityBlock(record)}
       </article>`;
+  }
+
+  function followUpBlock(record) {
+    const f = record.fields || {};
+    const items = [];
+    if (f.documentsRequested) items.push(`<p><strong>Pièces consultées ou demandées :</strong> ${nl2br(f.documentsRequested)}</p>`);
+    if (f.correctiveMeasures) items.push(`<p><strong>Mesures correctives demandées :</strong> ${nl2br(f.correctiveMeasures)}</p>`);
+    if (f.regularizationDeadline) items.push(`<p><strong>Date limite de régularisation :</strong> ${escapeHtml(formatDate(f.regularizationDeadline))}</p>`);
+    if (f.paymentDeadline) items.push(`<p><strong>Délai de paiement / transaction :</strong> ${escapeHtml(f.paymentDeadline)}</p>`);
+    if (f.riskLevel) items.push(`<p><strong>Niveau d’urgence / risque :</strong> ${escapeHtml(f.riskLevel)}</p>`);
+    if (f.nextAction) items.push(`<p><strong>Suite réservée :</strong> ${escapeHtml(f.nextAction)}</p>`);
+    if (!items.length) return '';
+    return `<section class="followup-preview"><h3>Suivi de régularisation</h3>${items.join('')}</section>`;
   }
 
   function signaturesPreview(record, keys) {
@@ -1559,7 +1960,7 @@
       return `<div class="sign-preview">
         <strong>${escapeHtml(role.title)}</strong><br>
         ${sig.dataUrl ? `<img src="${sig.dataUrl}" alt="Signature ${escapeHtml(role.title)}">` : '<div style="height:54px"></div>'}
-        <span class="blue-stamp">${escapeHtml(sig.name || 'Nom : ................................')}</span><br>
+        <span class="blue-sign">${escapeHtml(sig.name || 'Nom : ................................')}</span><br>
         <small>${escapeHtml(sig.quality || 'Fonction : ................................')}</small><br>
         <small>${escapeHtml(date)}</small>
       </div>`;
@@ -1585,7 +1986,6 @@
             </div>
           </div>
         </div>
-        <div class="stamp">CACHET<br>OFFICIEL<br>${escapeHtml(f.inspection || 'IGT')}</div>
       </section>
       <footer class="secure-foot"><span>InspecteurBot IA RDC · signature numérique interne au stylo bleu · ${escapeHtml(APP_VERSION)}</span><span>${escapeHtml(f.officialNumber || '')}</span></footer>`;
   }
@@ -1840,14 +2240,66 @@
     area.remove();
   }
 
+  function renderReserveModels() {
+    const q = normalize(val('reserveTemplateSearch'));
+    const type = val('reserveTemplateType');
+    const filtered = RESERVE_PV_MODELS.filter((model) => {
+      const hay = normalize([model.id, model.title, documentLabel(model.docType), model.text].join(' '));
+      return (!q || hay.includes(q)) && (!type || model.docType === type);
+    });
+    const list = byId('reserveTemplatesList');
+    if (!list) return;
+    list.innerHTML = filtered.length ? filtered.map((model) => `
+      <article class="reserve-card" data-reserve-id="${escapeHtml(model.id)}">
+        <div class="reserve-card-head"><span class="badge">${escapeHtml(model.id)}</span><span class="badge moyenne">${escapeHtml(documentLabel(model.docType))}</span></div>
+        <h4>${escapeHtml(model.title)}</h4>
+        <p>${escapeHtml(model.text)}</p>
+        <div class="reserve-actions">
+          <button class="btn tiny ghost" data-reserve-action="copy" data-id="${escapeHtml(model.id)}" type="button">Copier</button>
+          <button class="btn tiny secondary" data-reserve-action="use" data-id="${escapeHtml(model.id)}" type="button">Utiliser dans le PV</button>
+          <button class="btn tiny" data-reserve-action="select-type" data-id="${escapeHtml(model.id)}" type="button">Choisir ce type</button>
+        </div>
+      </article>`).join('') : '<div class="empty-state">Aucun modèle de réserve trouvé.</div>';
+  }
+
+  function handleReserveModelAction(event) {
+    const btn = event.target.closest('[data-reserve-action]');
+    if (!btn) return;
+    const model = RESERVE_PV_MODELS.find((item) => item.id === btn.dataset.id);
+    if (!model) return;
+    const action = btn.dataset.reserveAction;
+    if (action === 'copy') {
+      copyText(`${model.title}\n\n${model.text}`);
+      toast('Modèle de texte copié.');
+    }
+    if (action === 'use') {
+      setVal('docType', model.docType);
+      const current = val('observations');
+      setVal('observations', current ? `${current}\n\n${model.text}` : model.text);
+      updateDocPanels();
+      updatePreview();
+      switchView('create');
+      toast('Modèle ajouté dans les observations du PV.');
+    }
+    if (action === 'select-type') {
+      setVal('docType', model.docType);
+      updateDocPanels();
+      updatePreview();
+      switchView('create');
+      toast('Type de PV sélectionné selon le modèle de réserve.');
+    }
+  }
+
   function renderSettings() {
     renderAgentsList();
     byId('directionsList').innerHTML = DIRECTIONS.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.name)}</strong><small>Province : ${escapeHtml(d.province)} · Code : ${escapeHtml(d.code)}</small></div>`).join('');
-    byId('templatesList').innerHTML = DOCUMENT_TYPES.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.label)}</strong><small>Modèle local · ${d.needsInfractions ? 'tableau infractions et amendes' : 'rédaction libre assistée'} · QR/signatures inclus</small></div>`).join('') + `<div class="mini-item"><strong>Base infractions intégrée</strong><small>${INFRACTIONS.length} infractions/références avec recherche, gravité et calcul automatique.</small></div><div class="mini-item"><strong>Base juridique intégrée</strong><small>${LEGAL_BASE.length} références légales/réglementaires avec recherche, insertion dans observations et liens vers infractions.</small></div>`;
+    byId('templatesList').innerHTML = DOCUMENT_TYPES.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.label)}</strong><small>Modèle local · ${d.needsInfractions ? 'tableau infractions et amendes' : 'rédaction libre assistée'} · QR/signatures inclus</small></div>`).join('') + `<div class="mini-item"><strong>Base infractions intégrée</strong><small>${INFRACTIONS.length} infractions/références avec recherche, gravité et calcul automatique.</small></div><div class="mini-item"><strong>Base juridique intégrée</strong><small>${LEGAL_BASE.length} références légales/réglementaires avec recherche, insertion dans observations et liens vers infractions.</small></div><div class="mini-item"><strong>Réserve rédactionnelle</strong><small>${RESERVE_PV_MODELS.length} modèles de textes de PV sans noms suggérés, disponibles ci-dessous.</small></div>`;
+    renderReserveModels();
   }
 
   function renderAgentsList() {
-    byId('agentsList').innerHTML = state.store.agents.map((a) => `<div class="mini-item"><strong>${escapeHtml(a.name)}</strong><small>${escapeHtml(a.role)} · ${escapeHtml(a.quality || '')}<br>Habilitation : ${escapeHtml(a.habilitation || '-')} · OPJ : ${escapeHtml(a.opj || '-')}<br>${escapeHtml(a.direction || '')}</small><br><button class="btn tiny ghost" data-agent-edit="${a.id}" type="button">Éditer</button> <button class="btn tiny danger" data-agent-delete="${a.id}" type="button">Supprimer</button></div>`).join('');
+    const agents = state.store.agents.filter((a) => !isLegacySuggestedAgent(a));
+    byId('agentsList').innerHTML = agents.length ? agents.map((a) => `<div class="mini-item"><strong>${escapeHtml(a.name)}</strong><small>${escapeHtml(a.role)} · ${escapeHtml(a.quality || '')}<br>Habilitation : ${escapeHtml(a.habilitation || '-')} · OPJ : ${escapeHtml(a.opj || '-')}<br>${escapeHtml(a.direction || '')}</small><br><button class="btn tiny ghost" data-agent-edit="${a.id}" type="button">Éditer</button> <button class="btn tiny danger" data-agent-delete="${a.id}" type="button">Supprimer</button></div>`).join('') : '<div class="empty-state">Aucun nom suggéré par défaut. Les utilisateurs saisissent le nom manuellement ou ajoutent leurs propres agents ici.</div>';
   }
 
   function addOrUpdateAgent() {
