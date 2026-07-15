@@ -1888,4 +1888,2060 @@ Après le choix de la fonction, InspecteurBot remplira automatiquement :
 
   </div>
 
-  
+  <!-- ===========================================================
+     ELEMENTS FINANCIERS DU DECOMPTE FINAL
+=========================================================== -->
+
+<div class="card">
+
+<h2 class="card-title">
+
+💰 Éléments Financiers du Décompte Final
+
+</h2>
+
+
+<!-- SALAIRE DE BASE -->
+
+<h3 style="
+color:#FFD700;
+margin-bottom:15px;
+">
+
+I. Salaire et rémunérations
+
+</h3>
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+Salaire de base mensuel (FC)
+
+</label>
+
+<input
+type="number"
+id="salaireBase"
+placeholder="Ex : 215000">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Salaire journalier automatique (FC)
+
+</label>
+
+<input
+type="number"
+id="salaireJournalier"
+readonly>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Nombre de jours travaillés
+
+</label>
+
+<input
+type="number"
+id="joursTravailles"
+value="26">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Ration journalière (FC)
+
+</label>
+
+<input
+type="number"
+id="ration"
+value="0">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Transport mensuel (FC)
+
+</label>
+
+<input
+type="number"
+id="transport"
+value="0">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Prime / Indemnité spéciale (FC)
+
+</label>
+
+<input
+type="number"
+id="prime"
+value="0">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Heures supplémentaires (FC)
+
+</label>
+
+<input
+type="number"
+id="heuresSupplementaires"
+value="0">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Autres avantages (FC)
+
+</label>
+
+<input
+type="number"
+id="autresAvantages"
+value="0">
+
+</div>
+
+
+</div>
+
+
+
+<!-- INDEMNITES -->
+
+<h3 style="
+color:#FFD700;
+margin-top:30px;
+margin-bottom:15px;
+">
+
+II. Indemnités de fin de service
+
+</h3>
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+Indemnité de préavis (FC)
+
+</label>
+
+<input
+type="number"
+id="indemnitePreavis"
+readonly>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Congés annuels non pris (FC)
+
+</label>
+
+<input
+type="number"
+id="congesNonPris"
+readonly>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Indemnité de logement (FC)
+
+</label>
+
+<input
+type="number"
+id="indemniteLogement"
+readonly>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Gratification / Prime d'ancienneté (FC)
+
+</label>
+
+<input
+type="number"
+id="gratification"
+value="0">
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Allocations familiales (FC)
+
+</label>
+
+<input
+type="number"
+id="allocationsFamiliales"
+readonly>
+
+</div>
+
+
+<div class="field">
+
+<label>
+
+Nombre d'enfants pris en charge
+
+</label>
+
+<input
+type="number"
+id="enfantsCalcul"
+value="0">
+
+</div>
+
+
+</div>
+
+
+
+<!-- RETENUES -->
+
+<h3 style="
+color:#FFD700;
+margin-top:30px;
+margin-bottom:15px;
+">
+
+III. Retenues légales
+
+</h3>
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+☑ CNSS / INSS
+
+</label>
+
+<select id="appliquerCNSS">
+
+<option value="oui">
+
+Oui
+
+</option>
+
+<option value="non">
+
+Non
+
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="field">
+
+<label>
+
+☑ IPR
+
+</label>
+
+<select id="appliquerIPR">
+
+<option value="oui">
+
+Oui
+
+</option>
+
+<option value="non">
+
+Non
+
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="field">
+
+<label>
+
+☑ ONEM
+
+</label>
+
+<select id="appliquerONEM">
+
+<option value="oui">
+
+Oui
+
+</option>
+
+<option value="non">
+
+Non
+
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="field">
+
+<label>
+
+☑ INPP
+
+</label>
+
+<select id="appliquerINPP">
+
+<option value="oui">
+
+Oui
+
+</option>
+
+<option value="non">
+
+Non
+
+</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+
+<!-- RESUME -->
+
+<div style="
+margin-top:25px;
+padding:20px;
+border-radius:15px;
+background:rgba(255,215,0,.08);
+border:1px solid rgba(255,215,0,.25);
+">
+
+
+<h3 style="
+color:#FFD700;
+">
+
+📊 Aperçu financier automatique
+
+</h3>
+
+
+<div class="grid-2"
+style="margin-top:15px;">
+
+
+<div>
+
+<p>
+Salaire brut estimé :
+<strong id="apercuBrut">
+0 FC
+</strong>
+</p>
+
+</div>
+
+
+<div>
+
+<p>
+Retenues estimées :
+<strong id="apercuRetenues">
+0 FC
+</strong>
+</p>
+
+</div>
+
+
+<div>
+
+<p>
+Total indemnités :
+<strong id="apercuIndemnites">
+0 FC
+</strong>
+</p>
+
+</div>
+
+
+<div>
+
+<p style="font-size:18px;color:#FFD700;">
+
+Net à payer :
+<strong id="apercuNet">
+0 FC
+</strong>
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+     </div>
+
+  <!-- ===========================================================
+     OBSERVATIONS - VERIFICATION JURIDIQUE - ACTIONS
+=========================================================== -->
+
+<div class="card">
+
+<h2 class="card-title">
+
+⚖️ Analyse juridique et validation du Décompte
+
+</h2>
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+Observations de l'Inspecteur / Contrôleur
+
+</label>
+
+<textarea
+id="observationsInspecteur"
+rows="6"
+placeholder="Inscrire les observations constatées lors du contrôle... "
+style="
+padding:14px;
+border-radius:12px;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,215,0,.25);
+color:white;
+resize:vertical;
+font-size:15px;
+"></textarea>
+
+</div>
+
+
+
+<div class="field">
+
+<label>
+
+Conclusion du contrôle
+
+</label>
+
+<textarea
+id="conclusionControle"
+rows="6"
+placeholder="Conclusion et recommandations..."
+style="
+padding:14px;
+border-radius:12px;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,215,0,.25);
+color:white;
+resize:vertical;
+font-size:15px;
+"></textarea>
+
+</div>
+
+
+</div>
+
+
+
+<!-- VERIFICATION IA -->
+
+<div style="
+margin-top:25px;
+padding:20px;
+border-radius:15px;
+background:rgba(11,99,206,.15);
+border-left:5px solid #FFD700;
+">
+
+
+<h3 style="
+color:#FFD700;
+">
+
+🤖 Vérification intelligente InspecteurBot IA
+
+</h3>
+
+
+<p style="
+line-height:1.9;
+margin-top:12px;
+">
+
+
+L'assistant analysera automatiquement :
+
+<br>✅ Respect du SMIG légal (Décret n°25/22 du 30 mai 2025)
+
+<br>✅ Cohérence entre fonction et salaire
+
+<br>✅ Ancienneté et calcul du préavis
+
+<br>✅ Indemnités obligatoires
+
+<br>✅ Retenues appliquées
+
+<br>✅ Conformité avec le Code du Travail RDC
+
+<br>✅ Détection des erreurs éventuelles
+
+
+</p>
+
+
+<div id="resultatAnalyseIA"
+style="
+margin-top:15px;
+padding:15px;
+border-radius:10px;
+background:rgba(0,0,0,.25);
+">
+
+En attente du calcul...
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- REFERENCES JURIDIQUES -->
+
+<div style="
+margin-top:25px;
+padding:20px;
+border-radius:15px;
+background:rgba(255,215,0,.08);
+">
+
+
+<h3 style="
+color:#FFD700;
+">
+
+📚 Références juridiques associées
+
+</h3>
+
+
+<ul style="
+margin-top:15px;
+line-height:2;
+padding-left:25px;
+">
+
+
+<li>
+Code du Travail RDC
+</li>
+
+
+<li>
+Décret n°25/22 du 30 mai 2025 relatif au SMIG
+</li>
+
+
+<li>
+Dispositions relatives au licenciement et à la rupture du contrat
+</li>
+
+
+<li>
+Dispositions relatives au préavis
+</li>
+
+
+<li>
+Dispositions relatives aux congés et indemnités
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+<!-- BOUTONS PRINCIPAUX -->
+
+<div style="
+margin-top:30px;
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+justify-content:center;
+">
+
+
+<button
+id="btnCalculer"
+class="btn-primary"
+style="
+padding:15px 30px;
+border:none;
+border-radius:14px;
+background:#FFD700;
+color:#041B3D;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+">
+
+🧮 CALCULER LE DÉCOMPTE FINAL
+
+</button>
+
+
+
+<button
+id="btnVerifierIA"
+class="btn-secondary"
+style="
+padding:15px 30px;
+border:none;
+border-radius:14px;
+background:#0B63CE;
+color:white;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+">
+
+🤖 Vérification IA
+
+</button>
+
+
+
+<button
+id="btnReinitialiser"
+class="btn-secondary"
+style="
+padding:15px 30px;
+border:none;
+border-radius:14px;
+background:#444;
+color:white;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+">
+
+🔄 Nouveau Décompte
+
+</button>
+
+<!-- ===========================================================
+     RESULTAT DU DECOMPTE FINAL OFFICIEL
+=========================================================== -->
+
+<section id="resultatDecompte"
+class="card"
+style="display:none;">
+
+
+<h2 class="card-title">
+
+📄 Décompte Final Officiel
+
+</h2>
+
+
+<!-- ENTETE DOCUMENT -->
+
+<div style="
+background:#fff;
+color:#041B3D;
+padding:25px;
+border-radius:15px;
+">
+
+
+<div style="
+text-align:center;
+line-height:1.7;
+">
+
+
+<h2>
+RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
+</h2>
+
+<h3>
+MINISTÈRE DE L'EMPLOI ET DU TRAVAIL
+</h3>
+
+<h3>
+INSPECTION GÉNÉRALE DU TRAVAIL
+</h3>
+
+
+<p>
+Direction :
+<strong id="rDirection">
+---</strong>
+</p>
+
+
+<h2 style="
+margin-top:20px;
+">
+
+DÉCOMPTE FINAL DU TRAVAILLEUR
+
+</h2>
+
+
+</div>
+
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-top:25px;
+flex-wrap:wrap;
+gap:20px;
+">
+
+
+<div>
+
+<p>
+N° Décompte :
+<strong id="rNumero">
+---</strong>
+</p>
+
+
+<p>
+Date :
+<strong id="rDate">
+---</strong>
+</p>
+
+</div>
+
+
+<div id="rQRCode"
+style="
+width:120px;
+height:120px;
+border:1px solid #ddd;
+display:flex;
+align-items:center;
+justify-content:center;
+">
+
+QR
+
+</div>
+
+
+</div>
+
+
+
+<hr style="
+margin:25px 0;
+">
+
+
+
+<!-- IDENTIFICATION -->
+
+<h3>
+👤 Identification du travailleur
+</h3>
+
+
+<table style="
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+">
+
+
+<tr>
+
+<td>
+Nom complet
+</td>
+
+<td id="rNom">
+---
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Fonction
+</td>
+
+<td id="rFonction">
+---
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Employeur
+</td>
+
+<td id="rEmployeur">
+---
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Ancienneté
+</td>
+
+<td id="rAnciennete">
+---
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Motif de départ
+</td>
+
+<td id="rMotif">
+---
+</td>
+
+</tr>
+
+
+</table>
+
+
+
+
+<!-- TABLEAU CALCUL -->
+
+<h3 style="
+margin-top:30px;
+">
+
+💰 Détail du calcul
+
+</h3>
+
+
+<table
+id="tableResultat"
+style="
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+">
+
+
+<thead>
+
+<tr>
+
+<th>
+Éléments
+</th>
+
+<th>
+Détails
+</th>
+
+<th>
+Montant FC
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="lignesResultat">
+
+
+</tbody>
+
+
+
+<tfoot>
+
+
+<tr>
+
+<td colspan="2">
+
+<strong>
+TOTAL BRUT
+</strong>
+
+</td>
+
+
+<td id="totalBrut">
+
+0 FC
+
+</td>
+
+</tr>
+
+
+
+<tr>
+
+<td colspan="2">
+
+<strong>
+TOTAL RETENUES
+</strong>
+
+</td>
+
+
+<td id="totalRetenues">
+
+0 FC
+
+</td>
+
+</tr>
+
+
+
+<tr style="
+background:#041B3D;
+color:#FFD700;
+font-size:20px;
+">
+
+
+<td colspan="2">
+
+<strong>
+NET À PAYER
+
+</strong>
+
+</td>
+
+
+<td>
+
+<strong id="netAPayer">
+
+0 FC
+
+</strong>
+
+
+</td>
+
+
+</tr>
+
+
+</tfoot>
+
+
+</table>
+
+
+
+
+
+<!-- RECOMMANDATIONS IA -->
+
+
+<div style="
+margin-top:25px;
+padding:20px;
+background:#EDF2F7;
+color:#041B3D;
+border-radius:12px;
+">
+
+
+<h3>
+🤖 Recommandations InspecteurBot IA
+</h3>
+
+
+<ul id="recommandationsIA"
+style="
+margin-top:15px;
+line-height:2;
+">
+
+</ul>
+
+
+</div>
+
+
+
+
+<!-- SIGNATURES -->
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-top:50px;
+flex-wrap:wrap;
+text-align:center;
+">
+
+
+<div style="width:300px;">
+
+<p>
+Établi par :
+</p>
+
+
+<strong id="rAgent">
+
+Inspecteur / Contrôleur
+
+</strong>
+
+
+<br><br>
+
+
+Signature :
+
+<br><br><br>
+
+
+_____________________
+
+</div>
+
+
+
+
+<div style="width:300px;">
+
+<p>
+Visa de l'autorité compétente
+</p>
+
+
+<br><br><br>
+
+
+Cachet :
+
+<br><br>
+
+
+_____________________
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+<!-- ACTIONS DOCUMENT -->
+
+
+<div style="
+margin-top:25px;
+display:flex;
+justify-content:center;
+gap:15px;
+flex-wrap:wrap;
+">
+
+
+<button
+id="btnPDF"
+class="btn-primary">
+
+📥 Télécharger PDF
+
+</button>
+
+
+
+<button
+id="btnImprimer"
+class="btn-secondary">
+
+🖨️ Imprimer
+
+</button>
+
+
+
+<button
+id="btnSauvegarder"
+class="btn-secondary">
+
+💾 Sauvegarder
+
+</button>
+
+
+
+<button
+id="btnPartager"
+class="btn-secondary">
+
+📤 Partager
+
+</button>
+
+
+</div>
+
+
+
+ </section>
+</div>
+
+
+</div>   
+
+<!-- ===========================================================
+     HISTORIQUE - ARCHIVES DES DECOMPTES
+=========================================================== -->
+
+
+<section class="card">
+
+
+<h2 class="card-title">
+
+📚 Archives des Décomptes Finaux
+
+</h2>
+
+
+
+<div class="grid-2">
+
+
+<div class="field">
+
+<label>
+
+🔎 Rechercher un décompte
+
+</label>
+
+
+<input
+type="search"
+id="rechercheHistorique"
+placeholder="Nom, entreprise, numéro...">
+
+</div>
+
+
+
+<div class="field">
+
+<label>
+
+Filtrer par année
+
+</label>
+
+
+<select id="filtreAnnee">
+
+
+<option value="">
+
+Toutes les années
+
+</option>
+
+
+<option>
+
+2026
+
+</option>
+
+
+<option>
+
+2025
+
+</option>
+
+
+<option>
+
+2024
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div style="
+margin-top:20px;
+display:flex;
+justify-content:center;
+gap:15px;
+flex-wrap:wrap;
+">
+
+
+<button
+id="btnActualiserHistorique"
+class="btn-secondary">
+
+🔄 Actualiser
+
+</button>
+
+
+
+<button
+id="btnExporterHistorique"
+class="btn-secondary">
+
+📊 Exporter les archives
+
+</button>
+
+
+</div>
+
+
+
+
+
+<!-- TABLE HISTORIQUE -->
+
+
+<div style="
+margin-top:25px;
+overflow-x:auto;
+">
+
+
+<table
+style="
+width:100%;
+border-collapse:collapse;
+background:rgba(255,255,255,.05);
+"
+>
+
+
+<thead>
+
+<tr>
+
+
+<th>
+
+N°
+
+</th>
+
+
+<th>
+
+Travailleur
+
+</th>
+
+
+<th>
+
+Entreprise
+
+</th>
+
+
+<th>
+
+Date
+
+</th>
+
+
+<th>
+
+Net à payer
+
+</th>
+
+
+<th>
+
+Actions
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="listeHistorique">
+
+
+<tr>
+
+<td colspan="6"
+style="text-align:center;padding:20px;">
+
+Aucun décompte enregistré
+
+</td>
+
+</tr>
+
+
+</tbody>
+
+
+
+</table>
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+<!-- ===========================================================
+     MODAL CONSULTATION HISTORIQUE
+=========================================================== -->
+
+
+<div id="modalHistorique"
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+z-index:9999;
+align-items:center;
+justify-content:center;
+padding:20px;
+">
+
+
+
+<div style="
+background:#041B3D;
+border:1px solid #FFD700;
+border-radius:20px;
+width:min(900px,95%);
+max-height:90vh;
+overflow:auto;
+padding:25px;
+">
+
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
+
+
+<h2 style="
+color:#FFD700;
+">
+
+📄 Détail du Décompte
+
+</h2>
+
+
+
+<button
+id="fermerHistorique"
+style="
+background:#FFD700;
+border:none;
+padding:8px 15px;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+">
+
+✕
+
+</button>
+
+
+</div>
+
+
+
+<div id="detailHistorique"
+style="
+margin-top:20px;
+">
+
+</div>
+
+
+
+<div style="
+margin-top:25px;
+display:flex;
+gap:15px;
+justify-content:center;
+flex-wrap:wrap;
+">
+
+
+<button
+id="btnModifierHistorique"
+class="btn-primary">
+
+✏️ Modifier
+
+</button>
+
+
+
+<button
+id="btnPDFHistorique"
+class="btn-secondary">
+
+📥 PDF
+
+</button>
+
+
+
+<button
+id="btnSupprimerHistorique"
+class="btn-secondary">
+
+🗑 Supprimer
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- ===========================================================
+     MESSAGE SECURITE ARCHIVE
+=========================================================== -->
+
+
+<div class="card">
+
+
+<h2 class="card-title">
+
+🔐 Sécurité des Archives
+
+</h2>
+
+
+
+<p style="
+line-height:2;
+">
+
+
+Les décomptes enregistrés dans InspecteurBot RDC sont conservés avec :
+
+<br>
+
+✅ Numéro unique du document
+
+<br>
+
+✅ Date et heure d'établissement
+
+<br>
+
+✅ Identité de l'Inspecteur / Contrôleur
+
+<br>
+
+✅ Informations du travailleur
+
+<br>
+
+✅ Informations de l'entreprise
+
+<br>
+
+✅ Résultat financier complet
+
+<br>
+
+✅ Historique des modifications
+
+
+</p>
+
+
+
+</div>
+     
+<!-- ===========================================================
+     BARRE INTELLIGENTE INSPECTEURBOT
+=========================================================== -->
+
+
+<section class="card">
+
+
+<h2 class="card-title">
+
+🚀 Outils intelligents InspecteurBot RDC
+
+</h2>
+
+
+
+<div class="toolbar-premium">
+
+
+<button 
+class="tool-btn"
+id="btnScanner">
+
+📷 Scanner document
+
+</button>
+
+
+
+<button
+class="tool-btn"
+id="btnOCR">
+
+🔎 Reconnaissance OCR
+
+</button>
+
+
+
+<button
+class="tool-btn"
+id="btnAssistantIA">
+
+🤖 Assistant IA juridique
+
+</button>
+
+
+
+<button
+class="tool-btn"
+id="btnImporter">
+
+📂 Importer dossier
+
+</button>
+
+
+
+<button
+class="tool-btn"
+id="btnExporter">
+
+💾 Sauvegarde complète
+
+</button>
+
+
+<input
+type="file"
+id="inputScanner"
+accept="image/*"
+capture="environment"
+hidden>
+
+
+<input
+type="file"
+id="inputImporter"
+accept=".json"
+hidden>
+
+
+</div>
+
+
+
+<div id="etatAssistant"
+style="
+margin-top:20px;
+padding:15px;
+border-radius:12px;
+background:rgba(255,215,0,.08);
+border-left:4px solid #FFD700;
+">
+
+
+🤖 Assistant InspecteurBot prêt à analyser le dossier.
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- ===========================================================
+     MODAL ASSISTANT IA
+=========================================================== -->
+
+
+<div id="modalAssistantIA"
+class="modal">
+
+
+<div class="modal-content">
+
+
+<div class="modal-header">
+
+
+<h2>
+
+🤖 Assistant IA — Décompte Final
+
+</h2>
+
+
+<button
+class="close-modal"
+id="fermerAssistant">
+
+✕
+
+</button>
+
+
+</div>
+
+
+
+
+<div id="messagesIA"
+class="messages-ia">
+
+
+<div class="message-bot">
+
+Bonjour. Je suis InspecteurBot IA.
+Posez votre question juridique ou demandez une vérification du décompte.
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="ia-input">
+
+
+<input
+id="questionIA"
+placeholder="Ex : Le préavis est-il correct ?">
+
+
+<button
+id="envoyerIA">
+
+Envoyer
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<!-- ===========================================================
+     MODAL OCR
+=========================================================== -->
+
+
+<div id="modalOCR"
+class="modal">
+
+
+<div class="modal-content">
+
+
+<div class="modal-header">
+
+
+<h2>
+
+📷 Analyse OCR du document
+
+</h2>
+
+
+<button
+class="close-modal"
+id="fermerOCR">
+
+✕
+
+</button>
+
+
+</div>
+
+
+
+<div id="zoneOCR">
+
+
+<p>
+
+Placez la fiche de paie, contrat ou document du travailleur.
+
+</p>
+
+
+<div id="apercuOCR">
+
+</div>
+
+
+
+<div id="resultatOCR">
+
+Analyse en attente...
+
+</div>
+
+
+
+<button
+id="appliquerOCR"
+class="btn-primary">
+
+✅ Appliquer les données détectées
+
+</button>
+
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+<!-- ===========================================================
+     INFORMATIONS SYSTEME
+=========================================================== -->
+
+
+<section class="card">
+
+
+<h2 class="card-title">
+
+ℹ️ Informations du module
+
+</h2>
+
+
+
+<div class="info-systeme">
+
+
+<p>
+
+<strong>Module :</strong>
+Décompte Final Automatique
+
+</p>
+
+
+<p>
+
+<strong>Application :</strong>
+InspecteurBot IA RDC Premium
+
+</p>
+
+
+<p>
+
+<strong>Base juridique :</strong>
+Code du Travail RDC + Décret SMIG n°25/22 du 30 mai 2025
+
+</p>
+
+
+<p>
+
+<strong>Utilisateurs :</strong>
+Inspecteurs du Travail - Contrôleurs du Travail - OPJ Travail
+
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+<!-- ===========================================================
+     FOOTER OFFICIEL
+=========================================================== -->
+
+
+<footer class="footer-premium">
+
+
+<div class="footer-logo">
+
+<img
+src="../assets/images/logo-igt.png"
+alt="Logo IGT">
+
+</div>
+
+
+
+<p>
+
+InspecteurBot IA RDC Premium —
+Module Décompte Final
+
+</p>
+
+
+
+<p>
+
+Créé Par Inspecteur Limengo (Pmiller) © 2026
+
+</p>
+
+
+
+<p>
+
+Assistant Intelligent de l'Inspection Générale du Travail RDC
+
+</p>
+
+
+</footer>
+
+
+
+
+
+
+<!-- ===========================================================
+     IMPORTATION DES MODULES JAVASCRIPT
+=========================================================== -->
+
+
+<script src="../js/smig-data.js?v=2"></script>
+<script src="../js/smig-calc.js?v=2"></script>
+<script src="../app-decompte.js?v=2"></script>
+
+</body>
+
+</html>    
