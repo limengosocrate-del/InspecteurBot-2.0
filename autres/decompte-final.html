@@ -194,9 +194,136 @@
                   <input type="text" id="nom" class="input" placeholder="Ex: KONGO SPINCER" required />
                 </div>
                 <div class="field">
-                  <label for="fonction">Fonction <span class="req">*</span></label>
-                  <input type="text" id="fonction" class="input" placeholder="Ex: Chauffeur" required />
-                </div>
+  <label for="fonction">Fonction <span class="req">*</span></label>
+  <select id="fonction" class="input" required>
+    <option value="">-- Sélectionner une fonction --</option>
+
+    <optgroup label="Direction & Cadres supérieurs">
+  <option>Directeur Général</option>
+  <option>Directeur Général Adjoint</option>
+  <option>Directeur Qualité </option>
+  <option>Directeur Provincial</option>
+  <option>Directeur Administratif et Financier (DAF)</option>
+  <option>Directeur des Ressources Humaines (DRH)</option>
+  <option>Directeur Technique</option>
+  <option>Directeur Commercial</option>
+  <option>Directeur des Opérations</option>
+  <option>Directeur de Production</option>
+  <option>Directeur d'Exploitation</option>
+  <option>Directeur Juridique</option>
+  <option>Chef de Département</option>
+  <option>Chef de Division</option>
+  <option>Chef de Service</option>
+  <option>Chef de Bureau</option>
+  <option>Conseiller juridique</option>
+  <option>Responsable Administratif</option>
+  <option>Responsable Financier</option>
+  <option>Responsable Logistique</option>
+  <option>Responsable Informatique</option>
+  <option>Responsable des Ressources Humaines</option>
+  <option>Coordinateur</option>
+  <option>Superviseur</option>
+  <option>Manager</option>
+    </optgroup>
+
+    <optgroup label="Transport & Logistique">
+      <option>Chauffeur</option>
+      <option>Conducteur de camion</option>
+      <option>Conducteur d'engins</option>
+      <option>Mécanicien</option>
+      <option>Agent de transport</option>
+      <option>Logisticien</option>
+      <option>Magasinier</option>
+      <option>Manutentionnaire</option>
+    </optgroup>
+
+    <optgroup label="Administration & Bureau">
+      <option>Secrétaire</option>
+      <option>Assistant administratif</option>
+      <option>Réceptionniste</option>
+      <option>Comptable</option>
+      <option>Caissier</option>
+      <option>Gestionnaire</option>
+      <option>Ressources humaines</option>
+      <option>Juriste</option>
+      <option>Archiviste</option>
+      <option>Informaticien</option>
+      <option>Développeur informatique</option>
+    </optgroup>
+
+    <optgroup label="Industrie & Technique">
+      <option>Ingénieur</option>
+      <option>Technicien</option>
+      <option>Électricien</option>
+      <option>Soudeur</option>
+      <option>Maçon</option>
+      <option>Menuisier</option>
+      <option>Plombier</option>
+      <option>Peintre</option>
+      <option>Opérateur de machine</option>
+      <option>Agent de maintenance</option>
+    </optgroup>
+
+    <optgroup label="Commerce & Services">
+      <option>Vendeur</option>
+      <option>Commercial</option>
+      <option>Agent de marketing</option>
+      <option>Serveur</option>
+      <option>Cuisinier</option>
+      <option>Cuisinière</option>
+      <option>Hôtelier</option>
+      <option>Tailleur</option>
+      <option>Caissier de magasin</option>
+      <option>Agent d'accueil</option>
+      <option>Coiffeur</option>
+    </optgroup>
+
+    <optgroup label="Agriculture & Environnement">
+      <option>Agriculteur</option>
+      <option>Éleveur</option>
+      <option>Pêcheur</option>
+      <option>Jardinier</option>
+      <option>Forestier</option>
+      <option>Agent environnemental</option>
+    </optgroup>
+
+    <optgroup label="Santé & Social">
+      <option>Médecin</option>
+      <option>Infirmier</option>
+      <option>Sage-femme</option>
+      <option>Aide-soignant</option>
+      <option>Pharmacien</option>
+      <option>Assistant social</option>
+    </optgroup>
+
+    <optgroup label="Sécurité & Protection">
+      <option>Agent de sécurité</option>
+      <option>Gardien</option>
+      <option>Surveillant</option>
+      <option>Pompier</option>
+    </optgroup>
+
+    <optgroup label="Bâtiment & Travaux publics">
+      <option>Chef de chantier</option>
+      <option>Ouvrier de chantier</option>
+      <option>Architecte</option>
+      <option>Topographe</option>
+      <option>Conducteur de travaux</option>
+    </optgroup>
+
+    <optgroup label="Autres">
+      <option>Enseignant</option>
+      <option>Formateur</option>
+      <option>Journaliste</option>
+      <option>Artisan</option>
+      <option>Artiste</option>
+      <option>Agent d'entretien</option>
+      <option>Employé polyvalent</option>
+      <option>Autre</option>
+    </optgroup>
+
+  </select>
+</div>
                 <div class="field">
                   <label for="categorie">Catégorie professionnelle <span class="req">*</span></label>
                   <select id="categorie" class="input">
