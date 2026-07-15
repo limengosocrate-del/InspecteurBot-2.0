@@ -155,6 +155,13 @@
                   <input type="text" id="inspecteurNom" class="input" placeholder="Nom complet de l'inspecteur" />
                 </div>
                 <div class="field">
+               <label for="qualiteAgent">Qualité</label>
+              <select id="qualiteAgent" class="input">
+              <option value="INSPECTEUR DU TRAVAIL" selected>Inspecteur du Travail</option>
+              <option value="CONTRÔLEUR DU TRAVAIL">Contrôleur du Travail</option>
+               </select>
+                </div>
+                <div class="field">
                   <label for="inspecteurGrade">Grade / Qualité</label>
                   <input type="text" id="inspecteurGrade" class="input" placeholder="Officier de Police Judiciaire · Chef de Bureau" />
                 </div>
@@ -583,7 +590,7 @@
 
               <footer class="df-footer">
                 <div class="df-sign-block">
-                  <div class="df-sign-title">L'INSPECTEUR DU TRAVAIL</div>
+                 <div class="df-sign-title" id="pvQualiteAgent">L'INSPECTEUR DU TRAVAIL</div>
                   <div class="df-sign-name" id="pvInspecteur">—</div>
                   <div class="df-sign-grade" id="pvGrade">—</div>
                   <div class="df-sign-img">
@@ -632,7 +639,7 @@
               </div>
               <footer class="df-footer">
                 <div class="df-sign-block">
-                  <div class="df-sign-title">INSPECTEUR/CONTRÔLEUR DU TRAVAIL</div>
+                  <div class="df-sign-title" id="pv2QualiteAgent">INSPECTEUR DU TRAVAIL</div>
                   <div class="df-sign-name" id="pv2Inspecteur">—</div>
                   <div class="df-sign-grade" id="pv2Grade">—</div>
                   <div class="df-sign-img"><img id="pv2Signature" alt="" class="hidden" /></div>
