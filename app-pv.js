@@ -1,2778 +1,2228 @@
-/* APP.JS - CENTRALIZED JAVASCRIPT FOR MODULE PROCÈS-VERBAUX (PV) - INSPECTEURBOT */
+(() => {
+  'use strict';
 
-// 1. INFRACTIONS DATABASE (65 Official DRC Infractions)
-const INFRACTIONS_DB = [
+  const STORAGE_KEY = 'inspecteurbot_pv_rdc_v1';
+  const THEME_KEY = 'inspecteurbot_pv_theme';
+  const APP_VERSION = '1.0.0-local';
+
+  const PROVINCES = [
+    'Administration centrale', 'Bas-Uélé', 'Équateur', 'Haut-Katanga', 'Haut-Lomami', 'Haut-Uélé', 'Ituri', 'Kasaï', 'Kasaï-Central', 'Kasaï-Oriental', 'Kinshasa', 'Kongo Central', 'Kwango', 'Kwilu', 'Lomami', 'Lualaba', 'Maï-Ndombe', 'Maniema', 'Mongala', 'Nord-Kivu', 'Nord-Ubangi', 'Sankuru', 'Sud-Kivu', 'Sud-Ubangi', 'Tanganyika', 'Tshopo', 'Tshuapa'
+  ];
+
+  const DIRECTIONS = PROVINCES.map((province) => ({
+    province,
+    code: province === 'Administration centrale' ? 'ADMC' : province.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5),
+    name: province === 'Administration centrale' ? 'Administration Centrale' : `Direction Provinciale de ${province}`
+  }));
+
+  const SECTEURS = [
+    'Agro-pastoral', 'Agriculture', 'Élevage', 'Plantation', 'Pêche', 'Exploitation forestière', 'Recherche fondamentale', 'Forage de puits filtrants',
+    'Construction / génie civil', 'Construction métallique', 'Bâtiment et travaux publics', 'Énergie', 'Électricité', 'Eau', 'Gaz',
+    'Transports et communications', 'Télécommunications', 'Commerce général', 'Import-export', 'Secteur bancaire', 'Institution financière', 'Assurance',
+    'Services de santé', 'Éducation', 'Cabinet d’audit', 'Conseil juridique', 'Restaurant', 'Hôtellerie', 'Tourisme', 'Douane / agence en douane',
+    'Industrie manufacturière', 'Agro-industrie', 'Industrie alimentaire', 'Industrie brassicole', 'Industrie pharmaceutique', 'Industrie de bois / scierie',
+    'Industrie métallurgique', 'Industrie sidérurgique', 'Industrie minière', 'Prospection minière', 'Recherche minière', 'Laboratoire minier', 'Développement d’infrastructures minières',
+    'Comptoir d’achat et vente de minerais', 'Taille / fonderie / traitement de minerais', 'Diamant et pierres de couleur', 'Activité pétrolière', 'Exploration pétrolière', 'Raffinage pétrolier',
+    'Jeux d’argent / casino / loisirs', 'Sécurité et gardiennage', 'ONG / ASBL', 'Administration publique', 'Prestation de services', 'Sous-traitance', 'Placement de main-d’œuvre', 'Autre'
+  ];
+
+  const DOCUMENT_TYPES = [
+    { id: 'pv-infraction', label: 'Procès-verbal de constat d’infraction', short: 'PV Infraction', needsInfractions: true },
+    { id: 'pv-obstruction', label: 'Procès-verbal d’obstruction', short: 'PV Obstruction', needsInfractions: false },
+    { id: 'pv-non-conciliation', label: 'Procès-verbal de non-conciliation', short: 'PV Non-conciliation', needsInfractions: false },
+    { id: 'mise-demeure', label: 'Mise en demeure', short: 'Mise en demeure', needsInfractions: false },
+    { id: 'pv-installation-cshe', label: 'PV d’installation du Comité de Sécurité, d’Hygiène et d’Embellissement', short: 'PV Installation CSHE', needsInfractions: false }
+  ];
+
+  const SIGNATURE_ROLES = [
+    { key: 'inspecteur', title: 'Inspecteur du Travail', roleValue: 'Inspecteur du Travail' },
+    { key: 'controleur', title: 'Contrôleur du Travail', roleValue: 'Contrôleur du Travail' },
+    { key: 'representant', title: "Représentant de l’entreprise", roleValue: "Représentant de l’entreprise" },
+    { key: 'temoin', title: 'Témoin(s)', roleValue: 'Témoin' }
+  ];
+
+  const DEFAULT_AGENTS = [
+    { id: 'agt-hmw', role: 'Inspecteur du Travail', name: 'MITWINSI WANET Hardy', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence matérielle restreinte en matière du travail', habilitation: '3196/PRO15/021/2025', opj: 'OPJ/HMW', direction: 'Administration Centrale' },
+    { id: 'agt-sbm', role: 'Inspecteur du Travail', name: 'Steve BIEMBONGO MBULA', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence restreinte en matière du travail', habilitation: '', opj: 'OPJ/SB', direction: 'Administration Centrale' },
+    { id: 'agt-jll', role: 'Inspecteur du Travail', name: 'Justin LOMWANGA LINDENGE', quality: 'Inspecteur Principal du Travail de 1ère Classe et Officier de Police Judiciaire à compétence restreinte en matière du Travail', habilitation: '0268/PPCAKG/2001', opj: '0073/PRO21/PGI/GOMBE', direction: 'Administration Centrale' },
+    { id: 'agt-koj', role: 'Inspecteur du Travail', name: 'KANDJA OTANGANDO Joseph', quality: 'Inspecteur du Travail et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' },
+    { id: 'agt-mbo', role: 'Contrôleur du Travail', name: 'Mamie Paul BASSA OTOMWA', quality: 'Contrôleur Principal du Travail de 1ère classe et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' }
+  ];
+
+  const LEGAL_BASE = [
   {
-    "num": 1,
-    "title": "Non Affichage de l’Horaire du Travail",
-    "article": "Art 119 et 222",
-    "reference": "Code du Travail et Arrêté Min N° 40/CAB/MIN/ETPS/2013",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’horaire du travail doit être visé par l’Inspecteur du Travail et affiché en caractères lisibles dans chacun des lieux de travail.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-001",
+    "category": "Textes fondamentaux",
+    "title": "Constitution de la République Démocratique du Congo",
+    "reference": "Constitution de la RDC, telle que modifiée par la Loi n°11/002 du 20 janvier 2011, notamment les articles 91 et 93 cités dans l'arrêté interministériel transmis.",
+    "scope": "Cadre constitutionnel de l'organisation gouvernementale, des attributions ministérielles et de l'action administrative.",
+    "use": "À citer dans les visas ou considérants lorsque le modèle d'acte administratif le prévoit.",
+    "keywords": [
+      "constitution",
+      "rdc",
+      "articles 91",
+      "article 93",
+      "gouvernement"
+    ]
   },
   {
-    "num": 2,
-    "title": "Défaut de Classification générale des emplois",
-    "article": "Art 90",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de classer les emplois de son entreprise conformément à la classification générale nationale des emplois.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-002",
+    "category": "Code du Travail",
+    "title": "Loi n°015-2002 du 16 octobre 2002 portant Code du Travail",
+    "reference": "Loi n°015-2002 du 16 octobre 2002 portant Code du Travail, telle que modifiée et complétée à ce jour.",
+    "scope": "Texte principal encadrant les relations individuelles et collectives du travail, l'inspection du travail, les infractions et les sanctions.",
+    "use": "Référence générale pour tous les PV du module : constat d'infraction, obstruction, non-conciliation et mise en demeure.",
+    "keywords": [
+      "code du travail",
+      "loi 015-2002",
+      "travail",
+      "infractions",
+      "sanctions"
+    ]
   },
   {
-    "num": 3,
-    "title": "Contrat de Travail non constaté par écrit, signé et visé",
-    "article": "Art 44, 46, 47 et 212",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Requalification en CDI + Amende",
-    "amende": 5000,
-    "observations": "Le contrat de travail doit être constaté par écrit, signé par le travailleur et visé par l’ONEM. En l’absence d’écrit, il devient un CDI.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-003",
+    "category": "Code du Travail",
+    "title": "Ordonnance-loi n°16/010 du 15 juillet 2016",
+    "reference": "Ordonnance-loi n°16/010 du 15 juillet 2016 modifiant et complétant la Loi n°015-2002 du 16 octobre 2002 portant Code du Travail.",
+    "scope": "Texte modificatif utilisé dans les modèles transmis, notamment pour les références aux pouvoirs de l'Inspection du Travail et à l'obstruction.",
+    "use": "À mentionner dans les PV d'obstruction et dans les actes se référant au Code du Travail modifié.",
+    "keywords": [
+      "ordonnance-loi 16/010",
+      "modifiant",
+      "complétant",
+      "code du travail",
+      "obstruction"
+    ]
   },
   {
-    "num": 4,
-    "title": "Défaut du Règlement Intérieur (Règlement d’Entreprise)",
-    "article": "Art 157",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Toute entreprise employant au moins 10 travailleurs est tenue d’élaborer un règlement intérieur en concertation avec les délégués.",
-    "category": "Gestion Administrative",
-    "status": "active"
+    "id": "JUR-004",
+    "category": "Inspection du Travail",
+    "title": "Compétence et action de l'Inspection du Travail",
+    "reference": "Articles 187, 196 et 197 du Code du Travail, cités dans les modèles officiels transmis.",
+    "scope": "Fondement de l'action des Inspecteurs et Contrôleurs du Travail lors des missions de contrôle, constats et actes de procédure.",
+    "use": "Formule type : « Agissant en vertu des dispositions légales en la matière, notamment en ses articles 187, 196 et 197... ».",
+    "keywords": [
+      "article 187",
+      "article 196",
+      "article 197",
+      "inspection",
+      "contrôle",
+      "mission"
+    ]
   },
   {
-    "num": 5,
-    "title": "Défaut d’application du SMIG",
-    "article": "Art 87 et 94-96",
-    "reference": "Code du Travail & Décret Présidentiel n° 18/017 du 22/05/2018",
-    "gravity": "Très Grave",
-    "sanction": "Fermeture d’entreprise + Amende",
-    "amende": 5000,
-    "observations": "Le salaire versé ne peut être inférieur au Salaire Minimum Interprofessionnel Garanti (SMIG) fixé par Décret. Sanction de fermeture possible.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-005",
+    "category": "Inspection du Travail",
+    "title": "Ordre de mission et mission officielle de contrôle",
+    "reference": "Ordre de mission collectif ou individuel délivré par l'autorité compétente, combiné aux articles 187, 196 et 197 du Code du Travail.",
+    "scope": "Justification administrative de la visite d'inspection, du contrôle spécial ou de la mission au sein d'une entreprise.",
+    "use": "À renseigner obligatoirement dans le champ « Ordre de mission » et dans l'introduction du PV.",
+    "keywords": [
+      "ordre de mission",
+      "mission officielle",
+      "contrôle",
+      "visite"
+    ]
   },
   {
-    "num": 6,
-    "title": "Dépassement des 45 heures hebdomadaires sans paiement d’Heures Supplémentaires",
-    "article": "Art 119 et 120",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Rappel de salaire",
-    "amende": 3000,
-    "observations": "La durée légale est de 45 heures par semaine. Les heures prestées au-delà doivent être rémunérées avec majoration légale.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-006",
+    "category": "Procédure",
+    "title": "Procès-verbal de non-conciliation",
+    "reference": "Article 302 du Code du Travail, cité dans le modèle de PV de non-conciliation transmis.",
+    "scope": "Fondement de l'établissement du PV lorsque la tentative de conciliation d'un litige individuel du travail n'aboutit pas.",
+    "use": "À utiliser dans les litiges individuels : audition des parties, constat, conclusion, proposition et désaccord.",
+    "keywords": [
+      "article 302",
+      "non-conciliation",
+      "litige individuel",
+      "conciliation",
+      "désaccord"
+    ]
   },
   {
-    "num": 7,
-    "title": "Privation du jour de repos hebdomadaire",
-    "article": "Art 121",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le repos hebdomadaire est obligatoire. Il est de 24 heures consécutives au minimum, de préférence le dimanche.",
-    "category": "Conditions de Travail",
-    "status": "active"
-  },
-  {
-    "num": 8,
-    "title": "Faire travailler les enfants et personnes handicapées au-delà de leur capacité",
-    "article": "Art 137",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Il est formellement interdit de faire travailler les enfants et les personnes handicapées au-delà de leurs aptitudes physiques.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
-  },
-  {
-    "num": 9,
-    "title": "Non-respect de l’âge d’admission au travail (Emploi d’enfants de < 15 ans)",
-    "article": "Art 133",
-    "reference": "Code du Travail & Convention n° 138 de l’OIT",
-    "gravity": "Très Grave",
-    "sanction": "Amende administrative + Poursuites pénales",
-    "amende": 5000,
-    "observations": "L’âge minimum légal d’admission au travail en RDC est fixé à 15 ans. L’emploi d’enfants de moins de 15 ans est strictement interdit.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
-  },
-  {
-    "num": 10,
-    "title": "Emploi d’enfants de 15 à 17 ans sans autorisation",
-    "article": "Art 133",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Un enfant âgé de 15 à 17 ans ne peut être engagé que sur autorisation expresse de l’inspecteur du travail et de son parent/tuteur.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
-  },
-  {
-    "num": 11,
-    "title": "Mauvaises conditions d’hygiène, santé et sécurité au travail",
-    "article": "Art 171",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Mise en demeure + Amende",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de garantir des installations salubres, de l’eau potable et des équipements de protection individuelle (EPI).",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
-  },
-  {
-    "num": 12,
-    "title": "Non-assurance d’un service médical aux employés",
-    "article": "Art 177",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Tout employeur doit assurer un service de santé au travail pour ses salariés, par convention médicale ou service interne.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
-  },
-  {
-    "num": 13,
+    "id": "JUR-007",
+    "category": "Infractions et sanctions",
     "title": "Violation de la convention collective",
-    "article": "Art 320",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur doit respecter les engagements prévus dans la convention collective applicable à son entreprise ou secteur d’activité.",
-    "category": "Relations Collectives",
-    "status": "active"
+    "reference": "Article 320 du Code du Travail.",
+    "scope": "Base de sanction pour les violations relatives aux conventions collectives.",
+    "use": "Sélectionner l'infraction correspondante lorsque les faits révèlent une violation d'une convention collective applicable.",
+    "keywords": [
+      "article 320",
+      "convention collective",
+      "violation"
+    ]
   },
   {
-    "num": 14,
-    "title": "Défaut de versement des cotisations INPP pour la formation",
-    "article": "Art 8",
-    "reference": "Code du Travail & Statuts de l’INPP",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Les employeurs doivent assurer la formation ou le perfectionnement de leurs travailleurs via les contributions dues à l’INPP.",
-    "category": "Gestion Administrative",
-    "status": "active"
+    "id": "JUR-008",
+    "category": "Infractions et sanctions",
+    "title": "Sanctions générales prévues par le Code du Travail",
+    "reference": "Article 321 du Code du Travail.",
+    "scope": "Référence utilisée pour de nombreuses infractions du Code du Travail dans la base intégrée.",
+    "use": "À associer aux infractions dont la colonne sanction mentionne l'article 321.",
+    "keywords": [
+      "article 321",
+      "amende",
+      "sanction",
+      "infractions"
+    ]
   },
   {
-    "num": 15,
-    "title": "Recevoir des apprentis sans en avoir la qualité légale",
-    "article": "Art 18",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Nul ne peut recevoir des apprentis mineurs s’il n’est âgé d’au moins 18 ans, de bonne vie et mœurs et qualifié pour former.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-009",
+    "category": "Infractions et sanctions",
+    "title": "Obstruction à l'exercice des fonctions de l'Inspection du Travail",
+    "reference": "Article 322 du Code du Travail.",
+    "scope": "Faire ou tenter de faire obstacle à l'exercice des fonctions reconnues aux inspecteurs, contrôleurs du travail et à la commission de médiation.",
+    "use": "Base juridique principale du PV d'obstruction et des mises en demeure pour refus de contrôle.",
+    "keywords": [
+      "article 322",
+      "obstruction",
+      "obstacle",
+      "refus de contrôle",
+      "inspecteur",
+      "contrôleur"
+    ]
   },
   {
-    "num": 16,
-    "title": "Absence de contrat d’apprentissage écrit ou non conforme",
-    "article": "Art 19",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le contrat d’apprentissage doit être rédigé par écrit et comporter les mentions obligatoires. Sa durée ne peut excéder 4 ans.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-010",
+    "category": "Infractions et sanctions",
+    "title": "Violence, menace, contrainte et manœuvres frauduleuses",
+    "reference": "Article 323 du Code du Travail.",
+    "scope": "Réprime notamment les violences, menaces, contraintes, promesses mensongères, manœuvres frauduleuses et certaines altérations de documents.",
+    "use": "À utiliser lorsque les faits dépassent la simple irrégularité administrative et comportent une contrainte ou fraude.",
+    "keywords": [
+      "article 323",
+      "violence",
+      "menace",
+      "contrainte",
+      "fraude",
+      "document"
+    ]
   },
   {
-    "num": 17,
-    "title": "Absence de visa de l’ONEM sur le contrat d’apprentissage",
-    "article": "Art 21",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Requalification en contrat de travail + Amende",
-    "amende": 3000,
-    "observations": "Le contrat d’apprentissage doit être soumis au visa de l’ONEM. En l’absence de visa, il est requalifié en contrat de travail de droit commun.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-011",
+    "category": "Infractions et sanctions",
+    "title": "Atteinte aux représentants des travailleurs et cautionnement",
+    "reference": "Article 324 du Code du Travail.",
+    "scope": "Atteinte à la libre désignation ou à l'exercice régulier des fonctions des représentants des travailleurs ; retenue ou usage abusif des cautionnements.",
+    "use": "À sélectionner en présence de faits liés aux représentants des travailleurs ou au cautionnement.",
+    "keywords": [
+      "article 324",
+      "représentants",
+      "travailleurs",
+      "cautionnement"
+    ]
   },
   {
-    "num": 18,
-    "title": "Non-rémunération (allocation d’apprentissage) de l’apprenti",
-    "article": "Art 25",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’apprenti a droit à une allocation d’apprentissage mensuelle fixée d’un commun accord et au moins égale au SMIG après la première année.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-012",
+    "category": "Infractions et sanctions",
+    "title": "Secrets de fabrication ou d'affaires et concurrence déloyale",
+    "reference": "Article 325 du Code du Travail.",
+    "scope": "Divulgation frauduleuse de secrets de fabrication ou d'affaires et actes de concurrence déloyale.",
+    "use": "À associer aux faits de divulgation ou coopération frauduleuse avec un concurrent ou un tiers.",
+    "keywords": [
+      "article 325",
+      "secret",
+      "fabrication",
+      "affaires",
+      "concurrence déloyale"
+    ]
   },
   {
-    "num": 19,
-    "title": "Inexécution par l’apprenti de ses obligations envers le maître",
-    "article": "Art 26",
-    "reference": "Code du Travail RDC",
-    "gravity": "Faible",
-    "sanction": "Avertissement / Amende",
-    "amende": 1000,
-    "observations": "L’apprenti doit obéissance et respect au maître et l’aider dans son travail dans la mesure de ses forces et connaissances.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-013",
+    "category": "Amendes transactionnelles",
+    "title": "Arrêté interministériel de fixation des taux — Emploi, Travail et Prévoyance Sociale",
+    "reference": "Arrêté interministériel n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023 du 03/10/2023.",
+    "scope": "Fixe les taux des droits, taxes et redevances à percevoir à l'initiative du Ministère de l'Emploi, Travail et Prévoyance Sociale ; inclut les amendes transactionnelles.",
+    "use": "À citer dans les PV d'infraction, les mises en demeure et le calcul des amendes transactionnelles.",
+    "keywords": [
+      "arrêté interministériel",
+      "006/09/2023",
+      "127/09/2023",
+      "03/10/2023",
+      "amendes",
+      "taux"
+    ]
   },
   {
-    "num": 20,
-    "title": "Rupture anticipée du contrat d’apprentissage sans notification à l’IT et à l’ONEM",
-    "article": "Art 33 al2",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "La résiliation amiable ou pour faute grave du contrat d’apprentissage doit faire l’objet d’une notification écrite à l’Inspecteur et à l’ONEM.",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-014",
+    "category": "Amendes transactionnelles",
+    "title": "Autres violations en matière de l'Emploi et du Travail",
+    "reference": "Arrêté interministériel du 03/10/2023, rubrique Inspection Générale du Travail, amendes transactionnelles en matière de l'Emploi et du Travail.",
+    "scope": "Prévoit des montants transactionnels, notamment pour les autres violations des dispositions légales et réglementaires en matière de l'Emploi et du Travail.",
+    "use": "Base de calcul complémentaire lorsque l'infraction n'a pas un montant spécifique dans le tableau interne.",
+    "keywords": [
+      "autres violations",
+      "600 à 5600",
+      "amende transactionnelle",
+      "emploi",
+      "travail"
+    ]
   },
   {
-    "num": 21,
-    "title": "Conclusion abusive ou non écrite d’un Contrat à Durée Déterminée (CDD)",
-    "article": "Art 40",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Requalification en CDI + Amende",
-    "amende": 3000,
-    "observations": "Le CDD doit être conclu par écrit. À défaut d’écrit ou s’il excède la durée maximale de 2 ans, il est réputé à durée indéterminée (CDI).",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
+    "id": "JUR-015",
+    "category": "Documents sociaux obligatoires",
+    "title": "Horaire de travail visé et affiché",
+    "reference": "Articles 119 et 222 du Code du Travail ; Arrêté Min. n°40/CAB/MIN/ETPS/MBL/MMG/pkg/2013 du 09/04/2013, articles 3 et 4.",
+    "scope": "Obligation de faire viser et/ou afficher l'horaire du travail conformément aux prescriptions applicables.",
+    "use": "À utiliser pour l'infraction « non affichage de l'horaire du travail visé » ou absence d'horaire.",
+    "keywords": [
+      "horaire",
+      "affichage",
+      "article 119",
+      "article 222",
+      "arrêté 040"
+    ]
   },
   {
-    "num": 22,
-    "title": "Divulgation de secrets professionnels ou concurrence déloyale par le travailleur",
-    "article": "Art 325",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Poursuite pénale + Amende administrative",
-    "amende": 3000,
-    "observations": "La divulgation frauduleuse de secrets industriels ou commerciaux constitue une infraction pénale grave.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-016",
+    "category": "Documents sociaux obligatoires",
+    "title": "Contrat de travail écrit et visa ONEM",
+    "reference": "Articles 44, 46, 47 et 212 du Code du Travail.",
+    "scope": "Règles relatives à la constatation écrite, signature et visa du contrat de travail selon les cas applicables.",
+    "use": "À sélectionner en cas d'absence de contrat écrit, contrat non signé ou non visé.",
+    "keywords": [
+      "contrat",
+      "écrit",
+      "onem",
+      "article 44",
+      "article 46",
+      "article 47",
+      "article 212"
+    ]
   },
   {
-    "num": 23,
-    "title": "Non-respect par le travailleur des mesures de sécurité de l’entreprise",
-    "article": "Art 51",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Mesures disciplinaires + Amende",
-    "amende": 1000,
-    "observations": "Le travailleur est tenu d’observer scrupuleusement les consignes d’hygiène, de sécurité et de protection prescrites dans l’établissement.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
+    "id": "JUR-017",
+    "category": "Documents sociaux obligatoires",
+    "title": "Règlement d'entreprise ou règlement intérieur",
+    "reference": "Articles 157 et 158 du Code du Travail.",
+    "scope": "Obligation d'établir et de respecter le règlement d'entreprise/règlement intérieur dans les conditions prévues.",
+    "use": "À citer pour règlement inexistant, non conforme ou non visé.",
+    "keywords": [
+      "règlement",
+      "entreprise",
+      "intérieur",
+      "article 157",
+      "article 158"
+    ]
   },
   {
-    "num": 24,
-    "title": "Rupture abusive de contrat du travail pour faute lourde",
-    "article": "Art 59",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Dommages-intérêts + Amende",
-    "amende": 3000,
-    "observations": "La résiliation immédiate pour faute lourde doit respecter la procédure légale et être notifiée par écrit dans les deux jours ouvrables.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-018",
+    "category": "Documents sociaux obligatoires",
+    "title": "Livre de paie et déclaration d'établissement",
+    "reference": "Articles 213 à 216 du Code du Travail.",
+    "scope": "Tenue du livre de paie et obligations de déclaration/établissement selon les prescriptions du Code du Travail.",
+    "use": "À utiliser pour défaut de livre de paie, déclaration d'établissement non existante ou registre non tenu.",
+    "keywords": [
+      "livre de paie",
+      "déclaration établissement",
+      "article 213",
+      "article 216",
+      "registre"
+    ]
   },
   {
-    "num": 25,
-    "title": "Défaut de prise en charge des frais de transport des travailleurs",
-    "article": "Art 56",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Indemnités de transport",
-    "amende": 3000,
-    "observations": "L’employeur est légalement tenu de supporter les frais de déplacement des travailleurs entre leur domicile et leur lieu de travail.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-019",
+    "category": "Déclarations obligatoires",
+    "title": "Déclaration du mouvement du personnel",
+    "reference": "Article 217 du Code du Travail.",
+    "scope": "Obligation de déclarer le mouvement du personnel à l'ONEM et aux services habilités du Ministère.",
+    "use": "À citer pour absence de déclaration du mouvement des travailleurs.",
+    "keywords": [
+      "article 217",
+      "mouvement du personnel",
+      "onem",
+      "déclaration"
+    ]
   },
   {
-    "num": 26,
-    "title": "Rupture unilatérale de contrat en cours de validité (sans juste motif)",
-    "article": "Art 60",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Dommages-intérêts + Amende",
-    "amende": 3000,
-    "observations": "Toute rupture de contrat sans motif valable ou en dehors des cas prévus par la loi donne lieu à une indemnisation pour licenciement abusif.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-020",
+    "category": "Déclarations obligatoires",
+    "title": "Déclaration de la main-d'œuvre et bilan social",
+    "reference": "Article 218 du Code du Travail.",
+    "scope": "Obligation de déclarer la situation de la main-d'œuvre nationale et étrangère ainsi que le bilan social.",
+    "use": "À citer pour absence de déclaration annuelle de main-d'œuvre ou de bilan social.",
+    "keywords": [
+      "article 218",
+      "main-d'œuvre",
+      "bilan social",
+      "déclaration annuelle"
+    ]
   },
   {
-    "num": 27,
-    "title": "Violation des prescriptions sur la durée du préavis de licenciement",
-    "article": "Art 64, 65, 66",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Indemnité compensatrice + Amende",
-    "amende": 3000,
-    "observations": "La partie qui prend l’initiative de rompre le contrat de travail doit respecter les délais de préavis prescrits sous peine d’indemnité.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-021",
+    "category": "Santé, hygiène et sécurité",
+    "title": "Comité de Sécurité, d'Hygiène et d'Embellissement des lieux de travail",
+    "reference": "Articles 167, 168 et 169 du Code du Travail ; Arrêté ministériel n°12/CAB.MIN/ETPS/043/2008 du 08 août 2008.",
+    "scope": "Organisation, installation et fonctionnement du comité chargé de la sécurité, de l'hygiène et de l'embellissement des lieux de travail.",
+    "use": "Base du PV d'installation du comité SHE/CSHE et des infractions relatives à son absence.",
+    "keywords": [
+      "cshe",
+      "she",
+      "comité",
+      "hygiène",
+      "sécurité",
+      "embellissement",
+      "article 167",
+      "article 169"
+    ]
   },
   {
-    "num": 28,
-    "title": "Licenciement massif sans respect de la procédure légale",
-    "article": "Art 78",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Amende administrative + Annulation des licenciements",
-    "amende": 5000,
-    "observations": "Tout licenciement pour motif économique de plusieurs travailleurs est soumis à l’avis préalable de l’inspecteur du travail.",
-    "category": "Relations Collectives",
-    "status": "active"
+    "id": "JUR-022",
+    "category": "Santé, hygiène et sécurité",
+    "title": "Mauvaises conditions d'hygiène et sécurité — mise en demeure",
+    "reference": "Article 171 du Code du Travail.",
+    "scope": "Base de mise en demeure par l'Inspecteur du Travail lorsque les conditions d'hygiène et sécurité sont mauvaises ou dangereuses.",
+    "use": "À utiliser dans les mises en demeure et observations relatives aux risques professionnels.",
+    "keywords": [
+      "article 171",
+      "hygiène",
+      "sécurité",
+      "mise en demeure",
+      "risques"
+    ]
   },
   {
-    "num": 29,
-    "title": "Non-remise de l’attestation de services rendus",
-    "article": "Art 79",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de délivrer au travailleur une attestation de services rendus dans les deux jours ouvrables suivant la fin du contrat.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-023",
+    "category": "Santé, hygiène et sécurité",
+    "title": "Accidents du travail et maladies professionnelles",
+    "reference": "Article 176 du Code du Travail.",
+    "scope": "Obligation de signaler les accidents du travail ou maladies professionnelles à la CNSS et à l'Inspecteur du Travail du ressort.",
+    "use": "À citer en cas de défaut de déclaration ou de signalement.",
+    "keywords": [
+      "article 176",
+      "accident du travail",
+      "maladie professionnelle",
+      "cnss"
+    ]
   },
   {
-    "num": 30,
-    "title": "Défaut d’affichage ou de mise à jour de la liste des sous-entrepreneurs",
-    "article": "Art 84",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’entrepreneur principal est tenu d’afficher de manière permanente dans ses bureaux la liste de tous ses sous-traitants.",
-    "category": "Gestion Administrative",
-    "status": "active"
+    "id": "JUR-024",
+    "category": "Santé, hygiène et sécurité",
+    "title": "Service médical et convention médicale viable",
+    "reference": "Articles 177 et 178 du Code du Travail.",
+    "scope": "Obligation relative au service médical des travailleurs et à la convention médicale viable.",
+    "use": "À sélectionner pour absence de service médical ou de convention médicale.",
+    "keywords": [
+      "article 177",
+      "article 178",
+      "service médical",
+      "convention médicale",
+      "santé"
+    ]
   },
   {
-    "num": 31,
-    "title": "Paiement de la rémunération en monnaie étrangère ou non légale",
-    "article": "Art 89 et 90",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le salaire de base et les indemnités doivent être stipulés et payés en monnaie légale (Franc Congolais) sauf dérogations autorisées.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-025",
+    "category": "Rémunération et SMIG",
+    "title": "SMIG et rémunération minimale",
+    "reference": "Articles 87, 91 et 94 à 96 du Code du Travail ; Décret n°25/22 du mai 2025 cité dans le modèle transmis.",
+    "scope": "Cadre du salaire minimum interprofessionnel garanti et des obligations relatives à la rémunération minimale.",
+    "use": "À citer pour non-application du SMIG ou rémunération non conforme.",
+    "keywords": [
+      "smig",
+      "salaire minimum",
+      "article 87",
+      "article 91",
+      "article 94",
+      "décret 25/22"
+    ]
   },
   {
-    "num": 32,
-    "title": "Retard de paiement ou paiement de rémunération hors des délais légaux",
-    "article": "Art 98, 99, 100 et 101",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Intérêts de retard",
-    "amende": 3000,
-    "observations": "La rémunération doit être payée à intervalles réguliers ne dépassant pas un mois pour les employés mensuels, ou 15 jours pour les journaliers.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-026",
+    "category": "Rémunération et SMIG",
+    "title": "Paiement de la rémunération et décompte écrit",
+    "reference": "Articles 98, 99, 100, 101, 103 et 104 du Code du Travail.",
+    "scope": "Règles relatives au paiement de la rémunération, au lieu/date de paiement, au décompte écrit et au décompte final.",
+    "use": "À utiliser pour paiement irrégulier, absence de décompte, privation de décompte final ou rémunération restante.",
+    "keywords": [
+      "rémunération",
+      "décompte",
+      "article 100",
+      "article 103",
+      "article 104",
+      "salaire"
+    ]
   },
   {
-    "num": 33,
-    "title": "Paiement de salaire sans remise d’un décompte écrit (Fiche de Paie)",
-    "article": "Art 103",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "La remise d’un bulletin de paie écrit et détaillé est obligatoire lors de chaque versement de salaire ou règlement final.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-027",
+    "category": "Temps de travail et congés",
+    "title": "Durée du travail, heures supplémentaires et repos",
+    "reference": "Articles 119, 120, 121, 123, 124, 125 et 126 du Code du Travail.",
+    "scope": "Encadrement de la durée hebdomadaire, des heures supplémentaires, du repos, des jours fériés et du travail de nuit.",
+    "use": "À associer aux infractions relatives aux horaires, au repos, aux jours fériés ou au travail de nuit.",
+    "keywords": [
+      "durée du travail",
+      "heures supplémentaires",
+      "repos",
+      "jours fériés",
+      "travail de nuit"
+    ]
   },
   {
-    "num": 34,
-    "title": "Retenues de salaire illégales ou amendes infligées par l’employeur",
-    "article": "Art 111 et 112",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Restitution des sommes + Amende",
-    "amende": 3000,
-    "observations": "L’employeur ne peut s’octroyer le droit d’infliger des amendes pécuniaires ou des retenues indues sur la rémunération des agents.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-028",
+    "category": "Temps de travail et congés",
+    "title": "Congés annuels et planning de congés",
+    "reference": "Articles 140 à 146 du Code du Travail.",
+    "scope": "Obligations relatives au congé annuel et au planning des congés.",
+    "use": "À citer pour défaut de planning de congé annuel ou violation des règles de congé.",
+    "keywords": [
+      "congés",
+      "planning",
+      "article 140",
+      "article 146"
+    ]
   },
   {
-    "num": 35,
-    "title": "Violation des règles régissant les économats d’entreprise",
-    "article": "Art 116",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Fermeture de l’économat + Amende",
-    "amende": 3000,
-    "observations": "Il est interdit d’obliger les travailleurs à acheter leurs denrées ou articles dans l’économat de l’entreprise.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-029",
+    "category": "Fin du contrat et litiges",
+    "title": "Préavis, résiliation et licenciement",
+    "reference": "Articles 60, 63, 64, 65, 66, 78, 79 et 93 du Code du Travail.",
+    "scope": "Règles relatives à la rupture du contrat, au motif, au préavis, au licenciement massif, à l'attestation de services et à certaines réparations.",
+    "use": "À utiliser dans les PV de non-conciliation ou constats liés à la résiliation irrégulière du contrat.",
+    "keywords": [
+      "préavis",
+      "licenciement",
+      "résiliation",
+      "article 63",
+      "article 93",
+      "attestation"
+    ]
   },
   {
-    "num": 36,
-    "title": "Discrimination de genre, d’origine ou de handicap au travail",
-    "article": "Art 136",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Poursuites judiciaires + Amende",
-    "amende": 5000,
-    "observations": "Toute discrimination directe ou indirecte fondée sur le sexe, le handicap, l’origine, l’ethnie ou la religion est interdite.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-030",
+    "category": "Main-d'œuvre nationale et étrangers",
+    "title": "Protection de la main-d'œuvre nationale",
+    "reference": "Ordonnance n°74/098 du 06 juin 1974 portant protection de la main-d'œuvre nationale contre la concurrence étrangère, révisée par l'Ordonnance n°77-383 du 29 décembre 1977 ; références rappelées dans l'arrêté transmis.",
+    "scope": "Base de la protection de la main-d'œuvre nationale et du contrôle relatif aux travailleurs étrangers.",
+    "use": "À citer pour défaut de carte de travail pour étranger ou non-respect de la protection de la main-d'œuvre nationale.",
+    "keywords": [
+      "main-d'œuvre nationale",
+      "travailleur étranger",
+      "carte de travail",
+      "ordonnance 74/098"
+    ]
   },
   {
-    "num": 37,
-    "title": "Défaut de fourniture de logement ou d’indemnité de logement compensatoire",
-    "article": "Art 138 et 139",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur doit loger le travailleur muté ou lui verser une indemnité de logement décente représentative de sa situation familiale.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
+    "id": "JUR-031",
+    "category": "Main-d'œuvre nationale et étrangers",
+    "title": "Non-respect de la Congolité",
+    "reference": "AM n°33/CAB/MIN/ET/EAN/JDO/8/2025 cité dans le modèle de PV transmis.",
+    "scope": "Référence utilisée dans l'exemple de PV pour le non-respect de la Congolité.",
+    "use": "À sélectionner lorsque les faits constatés portent sur l'emploi ou la protection de la main-d'œuvre congolaise selon les textes applicables.",
+    "keywords": [
+      "congolité",
+      "AM 33",
+      "main-d'œuvre congolaise",
+      "nationalité"
+    ]
   },
   {
-    "num": 38,
-    "title": "Défaut de planning de congés annuels ou non-octroi des congés",
-    "article": "Art 140-146",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le travailleur a droit à un congé annuel payé d’au moins un jour et demi ouvrable par mois entier de service. Un planning doit être établi.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-032",
+    "category": "Sécurité sociale et organismes",
+    "title": "Régime général de la sécurité sociale",
+    "reference": "Loi n°16/009 du 15 juillet 2016 fixant les règles relatives au Régime Général de la Sécurité Sociale.",
+    "scope": "Cadre général de sécurité sociale, utile pour les vérifications CNSS et obligations sociales.",
+    "use": "À mentionner dans les observations relatives à la CNSS et à la preuve de paiement ou d'affiliation.",
+    "keywords": [
+      "sécurité sociale",
+      "cnss",
+      "loi 16/009",
+      "affiliation"
+    ]
   },
   {
-    "num": 39,
-    "title": "Défaut de prise en charge des frais de voyage/rapatriement du travailleur et sa famille",
-    "article": "Art 147-156",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Poursuite pénale / Saisie du Tribunal + Amende",
-    "amende": 3000,
-    "observations": "L’employeur prend en charge les frais de voyage du travailleur et de sa famille de leur résidence habituelle au lieu d’emploi et vice-versa.",
-    "category": "Conditions de Travail",
-    "status": "active"
+    "id": "JUR-033",
+    "category": "Sécurité sociale et organismes",
+    "title": "INPP, ONEM, CNSS — preuves de paiement et obligations sociales",
+    "reference": "Références citées dans le modèle transmis : Arrêté min. n°028 du 27/09/2025 ; arrêté inter. n°002/CAB/MET/2025 et n°158/2025 ; Code du Travail selon les obligations concernées.",
+    "scope": "Contrôle des preuves de paiement ou de conformité auprès de l'ONEM, de la CNSS et de l'INPP.",
+    "use": "À utiliser lorsque les preuves de paiement ONEM, CNSS ou INPP ne sont pas produites.",
+    "keywords": [
+      "onem",
+      "cnss",
+      "inpp",
+      "preuve de paiement",
+      "arrêté 028"
+    ]
   },
   {
-    "num": 40,
-    "title": "Absence de Comité de Sécurité, d’Hygiène et d’Embellissement (CSHE)",
-    "article": "Art 167",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Un Comité d’Hygiène, Santé et Embellissement des lieux de travail doit être obligatoirement constitué dans les établissements de 50 salariés ou plus.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
+    "id": "JUR-034",
+    "category": "Sous-traitance et marchés",
+    "title": "Sous-traitance dans le secteur privé",
+    "reference": "Loi n°17/001 du 08 février 2017 fixant les règles applicables à la sous-traitance dans le secteur privé, citée dans l'arrêté transmis.",
+    "scope": "Cadre juridique des obligations relatives à la sous-traitance dans le secteur privé.",
+    "use": "À citer lorsque le contrôle porte sur la sous-traitance, la liste des sous-entreprises ou la protection de la main-d'œuvre nationale.",
+    "keywords": [
+      "sous-traitance",
+      "loi 17/001",
+      "secteur privé",
+      "sous-entreprises"
+    ]
   },
   {
-    "num": 41,
-    "title": "Défaut de déclaration d’un accident de travail ou maladie professionnelle",
-    "article": "Art 176",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de signaler à l’Inspecteur du travail et à la CNSS tout accident de travail dans un délai légal maximum de 48 heures.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
-  },
-  {
-    "num": 42,
-    "title": "Défaut d’une convention médicale ou d’un service médical d’entreprise",
-    "article": "Art 177 et 178",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Tout établissement doit organiser un service médical et pharmaceutique au bénéfice exclusif de ses travailleurs et de leurs familles.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
-  },
-  {
-    "num": 43,
-    "title": "Défaut de tenue ou de mise à jour du Livre de Paie",
-    "article": "Art 213-216",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur doit obligatoirement tenir au siège de l’établissement un livre de paie visé par l’Inspecteur du Travail.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 44,
-    "title": "Défaut de Déclaration d’ouverture d’établissement ou mouvement du personnel",
-    "article": "Art 217",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Toute personne physique ou morale qui se propose d’exploiter une entreprise de quelque nature que ce soit doit en faire la déclaration à l’ONEM.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 45,
-    "title": "Défaut de Déclaration annuelle de la situation de la main d’œuvre et Bilan Social",
-    "article": "Art 218",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu d’envoyer chaque année au Ministère du Travail et à l’ONEM un rapport d’activités, un bilan social et l’état de la main d’œuvre.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 46,
-    "title": "Ouverture clandestine ou sans caution d’un secrétariat social",
-    "article": "Art 221",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Aucun organisme ne peut exercer des fonctions de secrétariat social sans agrément ministériel préalable et versement d’une caution.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 47,
-    "title": "Priver un représentant au Conseil National du Travail du droit de participation",
-    "article": "Art 229",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Les employeurs doivent accorder aux travailleurs membres du Conseil National du Travail le temps nécessaire pour participer aux sessions.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 48,
-    "title": "Discrimination ou licenciement abusif pour motif syndical",
-    "article": "Art 234",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Poursuite pénale + Réintégration syndicale",
-    "amende": 5000,
-    "observations": "Il est formellement interdit à tout employeur de licencier un travailleur ou de discriminer en raison de son affiliation ou activité syndicale.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 49,
-    "title": "Licenciement d’un délégué syndical sans accord de l’Inspecteur du Travail",
-    "article": "Art 258",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Réintégration forcée + Amende",
-    "amende": 5000,
-    "observations": "Le licenciement d’un représentant des travailleurs (délégué) exige obligatoirement l’autorisation préalable écrite de l’Inspecteur du Travail.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 50,
-    "title": "Défaut d’octroi du crédit d’heures mensuel aux délégués du personnel",
-    "article": "Art 260",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur doit accorder aux représentants des travailleurs le crédit de temps rémunéré (minimum 15 heures par mois) pour l’exercice de leur mandat.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 51,
-    "title": "Obstruction à l’accès des locaux ou non-communication des informations aux délégués",
-    "article": "Art 261",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Les représentants des travailleurs ont droit à des locaux décents, un panneau d’affichage et l’accès aux rapports économiques trimestriels.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 52,
-    "title": "Non-respect de l’obligation de convoquer les réunions trimestrielles des délégués",
-    "article": "Art 262",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de convoquer au moins une fois par trimestre les représentants des travailleurs en réunion conjointe.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 53,
-    "title": "Entrave à l’exercice régulier des fonctions des délégués syndicaux",
-    "article": "Art 263",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Toute mesure visant à empêcher ou entraver l’exercice légitime du mandat de délégué du personnel est constitutive d’un délit d’entrave.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 54,
-    "title": "Non-respect des accords collectifs ou décisions de médiation de conflit collectif",
-    "article": "Art 304",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Les accords issus des procédures de conciliation collective ou les décisions arbitrales ont force obligatoire et s’imposent aux parties.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 55,
-    "title": "Recours à la violence, menaces ou manœuvres frauduleuses lors d’embauche ou de grève",
-    "article": "Art 323",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Poursuite pénale + Amende administrative",
-    "amende": 5000,
-    "observations": "Est coupable d’infraction quiconque use de violence, menaces ou ruse pour s’opposer à l’embauche ou contraindre à une grève/reprise du travail.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 56,
-    "title": "Suspension illégale du contrat de travail en dehors des motifs prévus",
-    "article": "Art 57 et 58",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Rappel des salaires",
-    "amende": 3000,
-    "observations": "Le contrat ne peut être suspendu que pour des causes limitativement énumérées par la loi (maladie, grève licite, détention, etc.).",
-    "category": "Contrats & Apprentissage",
-    "status": "active"
-  },
-  {
-    "num": 57,
-    "title": "Abus du travail de nuit ou défaut de majoration salariale de nuit",
-    "article": "Art 124",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Rappel de majoration",
-    "amende": 3000,
-    "observations": "Le travail de nuit (entre 22h et 5h) est soumis à une majoration légale obligatoire de salaire et à des conditions restrictives.",
-    "category": "Conditions de Travail",
-    "status": "active"
-  },
-  {
-    "num": 58,
-    "title": "Défaut de restauration des travailleurs (absence de réfectoire ou prime)",
-    "article": "Art 139",
-    "reference": "Code du Travail RDC",
-    "gravity": "Moyenne",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "L’employeur est tenu de fournir un réfectoire salubre ou une ration alimentaire compensatoire aux salariés sur certains chantiers éloignés.",
-    "category": "Conditions de Travail",
-    "status": "active"
-  },
-  {
-    "num": 59,
-    "title": "Défaut de dépôt et validation du Règlement d’Entreprise à l’Inspection",
-    "article": "Art 158",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le règlement intérieur élaboré doit être déposé pour visa et enregistrement à l’Inspection du Travail avant son entrée en vigueur.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 60,
-    "title": "Défaut de convocation ou carence d’organisation du comité d’hygiène et sécurité",
-    "article": "Art 169",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative",
-    "amende": 3000,
-    "observations": "Le Comité de Sécurité et d’Hygiène doit se réunir de manière régulière et consigner ses procès-verbaux dans un registre officiel.",
-    "category": "Hygiène, Santé & Sécurité",
-    "status": "active"
-  },
-  {
-    "num": 61,
-    "title": "Défaut de réponse aux invitations ou convocations de l’Inspecteur du Travail",
-    "article": "Art 321",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Amende administrative + Constat de carence",
-    "amende": 3000,
-    "observations": "Le fait de ne pas déférer à trois convocations successives de l’Inspecteur du Travail pour conciliation est constitutif d’une infraction grave.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 62,
-    "title": "Obstruction totale ou entrave au contrôle de l’Inspecteur / Contrôleur du Travail",
-    "article": "Art 322",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Amende de 30,000 USD + Servitude pénale de 30 jours",
-    "amende": 30000,
-    "observations": "Le fait de s’opposer à la visite d’un inspecteur, de lui refuser l’accès aux locaux ou la communication des registres légaux est puni d’amende de 30.000$ et de servitude pénale.",
-    "category": "Gestion Administrative",
-    "status": "active"
-  },
-  {
-    "num": 63,
-    "title": "Incitation au refus d’obligations légales, lacération ou faux en écritures de contrats",
-    "article": "Art 323",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Poursuite pénale + Amende administrative",
-    "amende": 5000,
-    "observations": "Est puni d’amende et de prison quiconque détruit, lacère, ou altère frauduleusement les contrats écrits de son personnel.",
-    "category": "Protection des Travailleurs",
-    "status": "active"
-  },
-  {
-    "num": 64,
-    "title": "Atteinte à l’exercice du mandat syndical ou détournement des cautionnements",
-    "article": "Art 324",
-    "reference": "Code du Travail RDC",
-    "gravity": "Très Grave",
-    "sanction": "Poursuite pénale + Amende administrative",
-    "amende": 5000,
-    "observations": "Toute entrave volontaire à la désignation libre des délégués syndicaux ou le détournement de cautionnements d’agents est puni de servitude pénale.",
-    "category": "Relations Collectives",
-    "status": "active"
-  },
-  {
-    "num": 65,
-    "title": "Défaut de paiement du décompte final dans les 2 jours de la fin de contrat",
-    "article": "Art 100-104",
-    "reference": "Code du Travail RDC",
-    "gravity": "Grave",
-    "sanction": "Amende administrative + Rappel de solde de tout compte",
-    "amende": 3000,
-    "observations": "Tout paiement de solde de tout compte (décompte final) doit être versé au travailleur au plus tard deux jours ouvrables après la cessation des services.",
-    "category": "Rémunération & Emplois",
-    "status": "active"
+    "id": "JUR-035",
+    "category": "Sous-traitance et marchés",
+    "title": "Appel d'offre et procédures applicables",
+    "reference": "Article 8 du Décret n°12/003 du 19 janvier 2012 cité dans le modèle transmis.",
+    "scope": "Référence reprise dans l'exemple de PV pour non-respect de l'appel d'offre.",
+    "use": "À sélectionner si les faits constatés concernent un manquement aux règles d'appel d'offre selon le texte applicable.",
+    "keywords": [
+      "appel d'offre",
+      "décret 12/003",
+      "article 8",
+      "marché"
+    ]
   }
 ];
 
-// 2. PROVINCES DATABASE (All 26 Provinces and Directions Provinciales)
-const PROVINCES_DB = [
-  { name: "Kinshasa", dirProv: "Direction Provinciale de Kinshasa", code: "KIN" },
-  { name: "Kongo Central", dirProv: "Direction Provinciale du Kongo Central", code: "KGC" },
-  { name: "Kwango", dirProv: "Direction Provinciale du Kwango", code: "KWA" },
-  { name: "Kwilu", dirProv: "Direction Provinciale du Kwilu", code: "KWL" },
-  { name: "Mai-Ndombe", dirProv: "Direction Provinciale du Mai-Ndombe", code: "MND" },
-  { name: "Kasaï", dirProv: "Direction Provinciale du Kasaï", code: "KAS" },
-  { name: "Kasaï Central", dirProv: "Direction Provinciale du Kasaï Central", code: "KAC" },
-  { name: "Kasaï Oriental", dirProv: "Direction Provinciale du Kasaï Oriental", code: "KAO" },
-  { name: "Lomami", dirProv: "Direction Provinciale de la Lomami", code: "LOM" },
-  { name: "Sankuru", dirProv: "Direction Provinciale du Sankuru", code: "SAN" },
-  { name: "Maniema", dirProv: "Direction Provinciale du Maniema", code: "MAN" },
-  { name: "Sud-Kivu", dirProv: "Direction Provinciale du Sud-Kivu", code: "SKV" },
-  { name: "Nord-Kivu", dirProv: "Direction Provinciale du Nord-Kivu", code: "NKV" },
-  { name: "Ituri", dirProv: "Direction Provinciale de l'Ituri", code: "ITU" },
-  { name: "Haut-Uélé", dirProv: "Direction Provinciale du Haut-Uélé", code: "HUL" },
-  { name: "Bas-Uélé", dirProv: "Direction Provinciale du Bas-Uélé", code: "BUL" },
-  { name: "Tshopo", dirProv: "Direction Provinciale du Tshopo", code: "TSH" },
-  { name: "Mongala", dirProv: "Direction Provinciale de la Mongala", code: "MON" },
-  { name: "Nord-Ubangi", dirProv: "Direction Provinciale du Nord-Ubangi", code: "NUB" },
-  { name: "Sud-Ubangi", dirProv: "Direction Provinciale du Sud-Ubangi", code: "SUB" },
-  { name: "Équateur", dirProv: "Direction Provinciale de l'Équateur", code: "EQU" },
-  { name: "Tanganyika", dirProv: "Direction Provinciale du Tanganyika", code: "TAN" },
-  { name: "Haut-Lomami", dirProv: "Direction Provinciale du Haut-Lomami", code: "HLM" },
-  { name: "Lualaba", dirProv: "Direction Provinciale du Lualaba", code: "LUA" },
-  { name: "Haut-Katanga", dirProv: "Direction Provinciale du Haut-Katanga", code: "HKT" },
-  { name: "Tshuapa", dirProv: "Direction Provinciale de la Tshuapa", code: "TSU" }
-];
+  const INFRACTIONS = [
+    inf(1, 'Non affichage de l’horaire du travail visé', 'Art. 119 et 222 du Code du Travail ; Arrêté Min. n°40/CAB/MIN/ETPS/MBL/MMG/pkg/2013 du 09/04/2013, art. 3 et 4', 'Art. 321 CT', 3000, 'Moyenne', ['horaire', 'affichage', 'travail']),
+    inf(2, 'Défaut de classification générale des emplois', 'Art. 90 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['classification', 'emploi', 'catégorie']),
+    inf(3, 'Contrat de travail non constaté par écrit, signé et/ou visé par l’ONEM', 'Art. 44, 46, 47 et 212 du Code du Travail', 'Art. 44 et 321 CT', 5000, 'Élevée', ['contrat', 'écrit', 'onem', 'visa'], 'par contrat'),
+    inf(4, 'Défaut du règlement intérieur / règlement d’entreprise', 'Art. 157 et 158 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['règlement', 'interieur', 'intérieur', 'entreprise']),
+    inf(5, 'Défaut d’application du SMIG', 'Art. 87 et 94 à 96 du Code du Travail', 'Art. 318 et 321 CT', 5000, 'Élevée', ['smig', 'salaire minimum', 'minimum']),
+    inf(6, 'Faire travailler les employés au-delà de 45 heures par semaine sans rémunération des heures supplémentaires', 'Art. 119 et 120 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['45 heures', 'heures supplémentaires', 'durée', 'temps']),
+    inf(7, 'Privation du jour de repos dans la semaine', 'Art. 121 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['repos', 'hebdomadaire', 'semaine']),
+    inf(8, 'Travail de nuit des enfants ou personnes handicapées et non-respect de la durée de repos', 'Art. 125 et 126 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['nuit', 'enfant', 'handicap', 'repos']),
+    inf(9, 'Violation des droits des femmes, enfants et personnes handicapées ; discrimination liée à la maternité ou test de grossesse abusif', 'Art. 128 et 129 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['femme', 'maternité', 'grossesse', 'discrimination', 'enfant', 'handicap']),
+    inf(10, 'Emploi des enfants de 15 à 17 ans sans autorisation de l’Inspecteur du Travail et de l’autorité parentale', 'Art. 133 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['enfant', 'mineur', '15', '17', 'autorisation']),
+    inf(11, 'Mauvaises conditions d’hygiène et de sécurité', 'Art. 171 du Code du Travail', 'Art. 171 CT — Mise en demeure par l’IT', 3000, 'Élevée', ['hygiène', 'sécurité', 'risque', 'danger', 'salubrité']),
+    inf(12, 'Non assurance d’un service médical aux employés', 'Art. 177 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['service médical', 'médecin', 'soins', 'santé']),
+    inf(13, 'Violation de la convention collective', 'Art. 320 du Code du Travail', 'Art. 320 CT', 7500, 'Élevée', ['convention collective', 'collective']),
+    inf(14, 'Défaut d’assurer la formation, le perfectionnement ou l’adaptation professionnelle par les moyens de l’INPP', 'Art. 8', 'Art. 321 CT', 3000, 'Moyenne', ['formation', 'inpp', 'perfectionnement']),
+    inf(15, 'Recevoir les apprentis sans en avoir la qualité requise', 'Art. 18 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['apprenti', 'apprentissage', 'qualité']),
+    inf(16, 'Absence de contrat d’apprentissage écrit ou non conforme aux prescriptions', 'Art. 19 et 20 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['apprentissage', 'contrat', 'apprenti']),
+    inf(17, 'Contrat d’apprentissage absent et/ou non visé par l’ONEM', 'Art. 21 du Code du Travail', 'Art. 21 et 312 CT', 3000, 'Moyenne', ['apprentissage', 'onem', 'visa']),
+    inf(18, 'Non rémunération de l’apprenti', 'Art. 25 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['apprenti', 'rémunération', 'salaire']),
+    inf(19, 'Apprenti n’exécutant pas ses obligations', 'Art. 26 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['apprenti', 'obligation']),
+    inf(20, 'Cessation du contrat d’apprentissage sans information de l’Inspecteur du Travail et de l’ONEM', 'Art. 33 al. 2 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['cessation', 'apprentissage', 'onem']),
+    inf(21, 'Conclusion d’un CDD avec un travailleur ayant déjà presté plus de 22 jours sur une période de 2 mois', 'Art. 40 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['cdd', '22 jours', 'cdi', 'contrat']),
+    inf(22, 'Divulgation frauduleuse de secrets de fabrication ou d’affaires ; concurrence déloyale', 'Art. 325 du Code du Travail', 'Art. 325 CT', 30000, 'Critique', ['secret', 'fabrication', 'affaires', 'concurrence']),
+    inf(23, 'Non-respect par le travailleur des bonnes pratiques, de la protection personnelle et du traitement équitable des subalternes', 'Art. 51 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['bonnes pratiques', 'protection', 'subalterne']),
+    inf(24, 'Absence d’exemplaire à jour du Code du Travail à la disposition des représentants des travailleurs', 'Art. 55 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['code du travail', 'représentants', 'exemplaire']),
+    inf(25, 'Défaut de prise en charge des frais de transport résidence-lieu de travail', 'Art. 56 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['transport', 'frais', 'résidence']),
+    inf(26, 'Rupture d’un contrat de travail en cours de validité en violation des prescriptions légales', 'Art. 60 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['rupture', 'licenciement', 'résiliation', 'contrat']),
+    inf(27, 'Violation des prescriptions sur la durée du préavis', 'Art. 64, 65 et 66 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['préavis', 'durée', 'licenciement']),
+    inf(28, 'Licenciements massifs en violation des prescriptions légales', 'Art. 78 du Code du Travail', 'Art. 321 CT', 5000, 'Élevée', ['licenciement massif', 'massif', 'compression']),
+    inf(29, 'Non remise de l’attestation de services rendus deux jours après la fin du contrat', 'Art. 79 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['attestation', 'services rendus', 'fin du contrat']),
+    inf(30, 'Entrepreneur n’affichant pas ou ne mettant pas à jour la liste de ses sous-entreprises', 'Art. 84 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['sous-entreprise', 'affichage', 'liste']),
+    inf(31, 'Rémunération non payée en monnaie ayant cours légal ou non conforme à la classification', 'Art. 89 et 90 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['rémunération', 'monnaie', 'classification', 'salaire']),
+    inf(32, 'Paiement de rémunération en dehors des heures, dates et lieux prescrits', 'Art. 98, 99, 100 et 101 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['paiement', 'rémunération', 'date', 'lieu']),
+    inf(33, 'Paiement de rémunération sans décompte écrit', 'Art. 103 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['décompte', 'salaire', 'fiche de paie']),
+    inf(34, 'Amandes ou réductions imposées par l’employeur sur les rémunérations des travailleurs', 'Art. 111 et 112 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['amende', 'réduction', 'retenue', 'salaire']),
+    inf(35, 'Violation des conditions relatives aux économats', 'Art. 116 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['économat', 'denrées', 'vente']),
+    inf(36, 'Discrimination des femmes et personnes handicapées ; travail au-delà de la capacité et aptitude', 'Art. 136 et 137 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['discrimination', 'femme', 'handicap', 'capacité']),
+    inf(37, 'Défaut de logement décent ou d’indemnité de logement pour engagement hors lieu d’emploi', 'Art. 138 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['logement', 'indemnité', 'engagement']),
+    inf(38, 'Défaut de planning de congés annuels ou violation des prescriptions de congé', 'Art. 140 à 146 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['congé', 'planning', 'annuel']),
+    inf(39, 'Défaut de prise en charge du transport A/R de l’employé et sa famille au début et à la fin du contrat', 'Art. 147 à 156 du Code du Travail', 'Art. 321 CT ; l’IT peut saisir le Tribunal du Travail, art. 152', 3000, 'Moyenne', ['transport', 'famille', 'début', 'fin contrat']),
+    inf(40, 'Absence d’un comité d’hygiène et de sécurité', 'Art. 167 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['comité', 'hygiène', 'sécurité']),
+    inf(41, 'Défaut de signalement des accidents du travail ou maladies professionnelles à la CNSS et à l’Inspecteur du Travail', 'Art. 176 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['accident', 'maladie professionnelle', 'cnss', 'signalement']),
+    inf(42, 'Défaut d’une convention médicale viable', 'Art. 177 et 178 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['convention médicale', 'médicale', 'santé']),
+    inf(43, 'Défaut de tenir un livre de paie mis à jour', 'Art. 213 à 216 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['livre de paie', 'paie', 'registre']),
+    inf(44, 'Défaut de déclaration du mouvement du personnel à l’ONEM et aux services habilités', 'Art. 217 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['mouvement', 'personnel', 'onem', 'déclaration']),
+    inf(45, 'Défaut de déclaration de la main-d’œuvre nationale et étrangère ainsi que du bilan social', 'Art. 218 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['main d’œuvre', 'main-d’œuvre', 'bilan social', 'déclaration']),
+    inf(46, 'Ouverture d’un secrétariat social sans caution et/ou sans autorisation du Ministre compétent', 'Art. 221 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['secrétariat social', 'caution', 'autorisation']),
+    inf(47, 'Privation du temps nécessaire à l’employé membre du Conseil National du Travail pour participer aux réunions', 'Art. 229 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['conseil national du travail', 'réunion']),
+    inf(48, 'Subordonner l’emploi ou licencier un travailleur en raison de son affiliation syndicale', 'Art. 234 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['syndicat', 'affiliation', 'licencier']),
+    inf(49, 'Licenciement d’un délégué syndical sans approbation de l’Inspecteur du Travail', 'Art. 258 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['délégué syndical', 'licenciement', 'approbation']),
+    inf(50, 'Non octroi d’un minimum de 15 heures par mois aux représentants des travailleurs', 'Art. 265 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['15 heures', 'représentants', 'travailleurs']),
+    inf(51, 'Refus du congé pour stage aux membres du comité de représentants', 'Art. 268 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['congé', 'stage', 'comité']),
+    inf(52, 'Privation d’un congé d’éducation ouvrière', 'Art. 269 du Code du Travail', 'Art. 321 CT', 3000, 'Faible', ['éducation ouvrière', 'congé']),
+    inf(53, 'Non-respect des jours fériés légaux', 'Art. 123 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['jour férié', 'fériés']),
+    inf(54, 'Contrat exécuté sans certificat médical attestant l’aptitude du travailleur', 'Art. 38 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['certificat médical', 'aptitude', 'travail']),
+    inf(55, 'Usage de violence, menace, contrainte, promesses mensongères ou manœuvres frauduleuses liées à l’engagement ou à la cessation collective du travail', 'Art. 323 du Code du Travail', 'Art. 323 CT', 25000, 'Critique', ['violence', 'menace', 'contrainte', 'fraude', 'grève']),
+    inf(56, 'Violation des prescriptions légales sur la suspension du contrat de travail', 'Art. 57 et 58 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['suspension', 'contrat']),
+    inf(57, 'Dépassement des heures de travail de nuit sans paiement de la majoration', 'Art. 124 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['nuit', 'majoration', 'heures']),
+    inf(58, 'Violation des prescriptions sur le logement et la restauration des travailleurs', 'Art. 139 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['logement', 'restauration', 'travailleurs']),
+    inf(59, 'Défaut du règlement d’entreprise', 'Art. 158 du Code du Travail', 'Art. 321 CT', 3000, 'Moyenne', ['règlement entreprise', 'règlement d’entreprise']),
+    inf(60, 'Défaut d’organisation du comité d’hygiène et de sécurité', 'Art. 169 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['organisation', 'comité', 'hygiène', 'sécurité']),
+    inf(61, 'Défaut de répondre jusqu’à la troisième invitation de l’Inspecteur du Travail dans un litige ou conflit de travail', 'Art. 321 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['invitation', 'troisième', 'litige', 'refus']),
+    inf(62, 'Faire ou tenter de faire obstacle à l’exercice des fonctions reconnues aux inspecteurs, contrôleurs du travail et à la commission de médiation', 'Art. 322 du Code du Travail', 'Art. 322 CT', 30000, 'Critique', ['obstruction', 'obstacle', 'refus contrôle', 'contrôle', 'inspecteur', 'contrôleur']),
+    inf(63, 'Incitation au refus d’obligations ; destruction, altération ou usage frauduleux de contrat/décompte ; violation de la protection de la main-d’œuvre nationale', 'Art. 323 du Code du Travail', 'Art. 323 CT', 25000, 'Critique', ['contrat détruit', 'décompte', 'main-d’œuvre nationale', 'frauduleux']),
+    inf(64, 'Atteinte à la libre désignation des représentants des travailleurs ou retenue/utilisation abusive de cautionnement', 'Art. 324 du Code du Travail', 'Art. 324 CT', 25000, 'Critique', ['représentants', 'cautionnement', 'désignation']),
+    inf(65, 'Privation du décompte final ou de la rémunération restante deux jours après la fin du contrat', 'Art. 100 à 104 du Code du Travail', 'Art. 321 CT', 3000, 'Élevée', ['décompte final', 'rémunération restante', 'fin contrat']),
+    inf(66, 'Déclaration d’établissement non existante', 'Art. 216 du Code du Travail', 'Arrêté interministériel n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023', 3000, 'Moyenne', ['déclaration établissement', 'établissement']),
+    inf(67, 'Registre de journalier non existant', 'Art. 0 alinéa 2 du Code du Travail (référence modèle transmis)', 'Arrêté interministériel du 03/10/2023', 3000, 'Moyenne', ['registre journalier', 'journalier']),
+    inf(68, 'Absence de preuve de paiement ONEM, CNSS et INPP', 'Art. 1 arrêté min. n°028 du 27/09/2025 et art. 1 arrêté inter. n°002/CAB/MET/2025, n°158/2025', 'Arrêtés applicables', 3000, 'Moyenne', ['onem', 'cnss', 'inpp', 'paiement', 'preuve']),
+    inf(69, 'Attestation de fonctionnement du service d’hygiène et de sécurité non existante', 'Art. 163 et 164 du Code du Travail', 'Arrêté interministériel du 03/10/2023', 3000, 'Moyenne', ['attestation', 'fonctionnement', 'she', 'sécurité']),
+    inf(70, 'Non-respect de l’appel d’offre', 'Art. 8 du Décret n°12/003 du 19 janvier 2012', 'Arrêté interministériel du 03/10/2023', 3000, 'Moyenne', ['appel d’offre', 'appel offre', 'soumission']),
+    inf(71, 'Non-respect de la Congolité', 'Art. 1 AM n°33/CAB/MIN/ET/EAN/JDO/8/2025', 'Arrêté applicable', 3000, 'Élevée', ['congolité', 'main d’œuvre nationale', 'nationalité'])
+  ];
 
-// Sample Initial Inspectors List
-const DEFAULT_INSPECTORS = [
-  { name: "MITWINSI WANET Hardy", habilitation: "3196/PRO15/021/2025", opj: "0073/PGI/GOMBE", initials: "HMW" },
-  { name: "Steve BIEMBONGO MBULA", habilitation: "2044/PRO11/045/2024", opj: "0194/PGI/GOMBE", initials: "SBM" },
-  { name: "Justin LOMWANGA LINDENGE", habilitation: "0268/PPCAKG/2001", opj: "0073/PRO21/GOMBE", initials: "JLL" },
-  { name: "KANDJA OTANGANDO Joseph", habilitation: "4028/PRO15/012/2026", opj: "0412/PGI/MATETE", initials: "JKO" }
-];
+  const FORM_FIELDS = [
+    'docType','status','uuid','officialNumber','verificationCode','placeDate','republique','ministere','inspection','direction','adminProvince','localInspection','agentRole','agentSelect','agentName','agentQuality','habilitation','opjNumber','missionOrder','companyName','companyLegalForm','rccm','idnat','taxNumber','cnss','inpp','companyPhone','companyEmail','companyProvince','commune','workersCount','companyAddress','presentManager','managerFunction','facts','observations','demandeur','defender','demandeurId','claimAmount','claimantStatement','laborOfficerFindings','conclusion','proposal','disagreement'
+  ];
 
-// 3. APPLICATION STATE
-let pvs = [];
-let currentPV = createEmptyPV();
-let signatureTarget = ''; // "inspecteur", "contrevenant", "controleur", "temoin"
-let currentSpeechField = '';
-let isListening = false;
-let recognition = null;
-let videoStream = null;
-let selectedInfractionIndex = -1;
-
-// Initialize App
-window.onload = function() {
-  loadDatabase();
-  initFormProvinces();
-  initFormInspecteurs();
-  loadTemplateFields();
-  initSignaturePad();
-  initDraggableStamp();
-  updateA4Preview();
-  renderDashboard();
-  renderParams();
-  
-  // Setup auto-save backup (Every 10 seconds)
-  setInterval(autoSaveBackup, 10000);
-  
-  // Custom scroll event tracking for stamp bounds check
-  const documentPreview = document.getElementById("a4-document-preview");
-  if (documentPreview) {
-    documentPreview.addEventListener("scroll", updateA4Preview);
-  }
-};
-
-// Create a blank/empty PV structure
-function createEmptyPV() {
-  const uniqId = 'PV-' + Math.random().toString(36).substr(2, 9);
-  return {
-    id: uniqId,
-    type: 'infraction', // infraction, obstruction, non-conciliation, mise-en-demeure
-    numMode: 'auto',
-    num: '',
-    province: 'Kinshasa',
-    directionProv: 'Direction Provinciale de Kinshasa',
-    administration: 'Administration Centrale',
-    inspection: 'Inspection Urbaine de Limete',
-    inspecteurName: 'MITWINSI WANET Hardy',
-    habilitation: '3196/PRO15/021/2025',
-    opj: '0073/PGI/GOMBE',
-    ordreMission: '',
-    date: new Date().toISOString().split('T')[0],
-    heure: new Date().toTimeString().split(' ')[0].substring(0, 5),
-    entreprise: '',
-    rccm: '',
-    idnat: '',
-    impot: '',
-    adresse: '',
-    ville: 'Kinshasa',
-    repNom: '',
-    repFonction: '',
-    repTel: '',
-    narrativeText: '',
-    infractions: [], // List of active infractions on this PV
-    observationsFinales: "Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions légales en vigueur en RDC. L'entreprise est tenue de se conformer aux prescriptions de la loi dans un bref délai. Nonobstant le paiement desdites amendes, elle reste tenue de régulariser toutes les situations irrégulières constatées.",
-    signatures: {
-      inspecteur: { name: 'MITWINSI WANET Hardy', img: '' },
-      contrevenant: { name: 'Comptable', img: '' },
-      controleur: { name: '', img: '' },
-      temoin: { name: '', img: '' }
-    },
-    stamp: {
-      enabled: false,
-      top: '75%',
-      left: '65%'
-    },
-    status: 'draft', // draft, signed, archived
-    history: [
-      { action: "Brouillon initial créé", author: "Inspecteur", date: new Date().toLocaleString() }
-    ],
-    totalFines: 0
+  const state = {
+    store: { version: APP_VERSION, records: [], agents: DEFAULT_AGENTS.slice(), customTemplates: [] },
+    currentId: null,
+    selectedInfractions: [],
+    signatures: {},
+    canvases: new Map(),
+    recognition: null,
+    listening: false,
+    focusedField: null,
+    previewZoomed: false,
+    previewTimer: null
   };
-}
 
-// 4. TAB NAVIGATION
-function switchTab(tabId) {
-  // Hide all sections
-  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-  // Show target
-  const targetSec = document.getElementById('tab-' + tabId);
-  if (targetSec) targetSec.classList.add('active');
-  
-  // Set active sidebar menu
-  document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-  // Find match
-  const menuItems = Array.from(document.querySelectorAll('.menu-item'));
-  const clickedItem = menuItems.find(item => item.getAttribute('onclick').includes(tabId));
-  if (clickedItem) clickedItem.classList.add('active');
-  
-  // Stop camera if leaving scanner
-  if (tabId !== 'scanner') {
-    stopCameraScanner();
+  function inf(num, infraction, texteViole, referenceSanction, amountUSD, gravity, keywords, unit = 'par violation') {
+    return {
+      id: `INF-${String(num).padStart(3, '0')}`,
+      num,
+      infraction,
+      texteViole,
+      referenceSanction,
+      gravity,
+      amountUSD,
+      minUSD: amountUSD >= 25000 ? amountUSD : 600,
+      maxUSD: amountUSD >= 25000 ? amountUSD : 5600,
+      unit,
+      keywords: keywords || []
+    };
   }
-  
-  // Stop TTS synthesis if leaving
-  stopSpeechSynthesis();
-  
-  // Update view titles
-  const viewTitles = {
-    'accueil': { title: 'Tableau de bord', subtitle: 'Aperçu général de l\'activité d'inspection du travail' },
-    'nouveau-pv': { title: 'Élaboration de Procès-Verbal', subtitle: 'Plateforme administrative professionnelle de rédaction' },
-    'tous-pv': { title: 'Tous les Procès-Verbaux', subtitle: 'Historique, recherche avancée et contrôle de conformité' },
-    'brouillons': { title: 'Mes Brouillons', subtitle: 'Gérer vos documents temporaires sauvegardés' },
-    'modeles': { title: 'Bibliothèque de Modèles IGT', subtitle: 'Modèles officiels d\'inspection du travail préconfigurés' },
-    'assistant-ia': { title: 'Assistant IA Juridique', subtitle: 'Intelligence Artificielle d\'aide à la décision et de conformité du travail en RDC' },
-    'scanner': { title: 'Scanner de PV Sécurisés', subtitle: 'Vérifier l\'authenticité et la validité d\'un document d'inspection' },
-    'parametres': { title: 'Paramètres du Module', subtitle: 'Configuration des inspecteurs, des provinces et des sauvegardes' }
-  };
-  
-  if (viewTitles[tabId]) {
-    document.getElementById('view-title').textContent = viewTitles[tabId].title;
-    document.getElementById('view-subtitle').textContent = viewTitles[tabId].subtitle;
-  }
-  
-  // Render specific views on switch
-  if (tabId === 'accueil') {
+
+  document.addEventListener('DOMContentLoaded', init);
+
+  function init() {
+    applySavedTheme();
+    loadStore();
+    ensureDefaults();
+    populateStaticControls();
+    renderSectors();
+    renderSignaturePads();
+    newRecord(false);
+    attachEvents();
+    renderInfractionsList();
+    renderSelectedInfractionsTable();
     renderDashboard();
-  } else if (tabId === 'tous-pv') {
-    renderPVDatabase();
-  } else if (tabId === 'brouillons') {
-    renderDraftsList();
-  } else if (tabId === 'parametres') {
-    renderParams();
+    renderHistory();
+    renderLegalBase();
+    renderSettings();
+    updateDocPanels();
+    updatePreview();
+    toast('Module PV chargé : modèles officiels et IA locale prêts.');
   }
-  
-  // Trigger preview update
-  updateA4Preview();
-}
 
-// 5. LOCAL STORAGE & DATA SEEDING
-function loadDatabase() {
-  const stored = localStorage.getItem('inspecteurbot_pvs');
-  if (stored) {
-    pvs = JSON.parse(stored);
-  } else {
-    // Seed with 2 high quality professional sample PVs for gorgeous initial dashboard view!
-    seedDemoData();
+  function applySavedTheme() {
+    const saved = localStorage.getItem(THEME_KEY) || 'light';
+    applyTheme(saved === 'dark' ? 'dark' : 'light');
   }
-  
-  // Setup inspectors list if empty
-  if (!localStorage.getItem('inspecteurbot_inspecteurs')) {
-    localStorage.setItem('inspecteurbot_inspecteurs', JSON.stringify(DEFAULT_INSPECTORS));
+
+  function toggleTheme() {
+    const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
   }
-  
-  updateDraftCountBadge();
-}
 
-function saveDatabaseToLocalStorage() {
-  localStorage.setItem('inspecteurbot_pvs', JSON.stringify(pvs));
-  updateDraftCountBadge();
-}
-
-function updateDraftCountBadge() {
-  const drafts = pvs.filter(pv => pv.status === 'draft');
-  const badge = document.getElementById('drafts-count-badge');
-  if (badge) badge.textContent = drafts.length;
-}
-
-function seedDemoData() {
-  const demoPV1 = createEmptyPV();
-  demoPV1.id = "PV-5028c2e6";
-  demoPV1.type = "infraction";
-  demoPV1.num = "0024/MET/IGT/DPK/HMW/JUIN/2026";
-  demoPV1.entreprise = "HOME PLUS Sarl";
-  demoPV1.rccm = "CD/KIN/RCCM/22-B-04128";
-  demoPV1.idnat = "01-490-N38410Y";
-  demoPV1.impot = "A1583094W";
-  demoPV1.adresse = "N°19, Avenue 9ème rue, Quartier Industriel, Limete";
-  demoPV1.repNom = "KASONGO JOHN";
-  demoPV1.repFonction = "Comptable";
-  demoPV1.repTel = "0810097620";
-  demoPV1.status = "signed";
-  demoPV1.date = "2026-06-11";
-  demoPV1.infractions = [
-    { ...INFRACTIONS_DB[0], quantity: 1, total: 3000, observations: "Non-affichage constaté lors du contrôle." },
-    { ...INFRACTIONS_DB[2], quantity: 5, total: 25000, observations: "Cinq contrats constatés non écrits." },
-    { ...INFRACTIONS_DB[3], quantity: 1, total: 3000, observations: "Règlement intérieur non déposé." }
-  ];
-  demoPV1.totalFines = 31000;
-  demoPV1.history = [
-    { action: "Créé par l'inspecteur", author: "MITWINSI WANET Hardy", date: "11/06/2026, 10:15:30" },
-    { action: "Signatures apposées", author: "Comptable / Inspecteur", date: "11/06/2026, 11:32:00" },
-    { action: "PV Validé, scellé et sécurisé", author: "Inspection Générale", date: "11/06/2026, 11:45:00" }
-  ];
-  demoPV1.stamp.enabled = true;
-  
-  const demoPV2 = createEmptyPV();
-  demoPV2.id = "PV-8839b2a1";
-  demoPV2.type = "obstruction";
-  demoPV2.num = "0025/MET/IGT/DPK/SBM/NOV/2025";
-  demoPV2.entreprise = "FERME AGRO-SOL FASOL SARLU";
-  demoPV2.rccm = "CD/GOMBE/RCCM/24-A-10294";
-  demoPV2.idnat = "02-120-M10934C";
-  demoPV2.adresse = "N°13 B, Avenue 10ème Rue, Quartier Industriel, Limete";
-  demoPV2.repNom = "Sieur Charles ILUNGA";
-  demoPV2.repFonction = "Conseiller Juridique";
-  demoPV2.repTel = "0897590216";
-  demoPV2.status = "signed";
-  demoPV2.date = "2025-11-25";
-  demoPV2.narrativeText = "En effet, nous étions dans l'impossibilité d'accomplir la mission officielle de contrôle de l'Inspection Générale du Travail qui nous est dévolue par la loi. Nous avons fait l'objet d'une obstruction totale et d'un refus de laisser l'Inspecteur accéder aux archives administratives de l'établissement par le responsable de la société susmentionnée, Sieur Charles ILUNGA, agissant en qualité de Conseiller Juridique. Ce fait contrevient expressément aux dispositions de l'Article 322 du Code du Travail Congolais.";
-  demoPV2.totalFines = 30000; // Constat d'obstruction has fixed fine
-  demoPV2.history = [
-    { action: "Créé par Steve BIEMBONGO MBULA", author: "Steve BIEMBONGO MBULA", date: "25/11/2025, 14:02:10" },
-    { action: "Signé et scellé", author: "Steve BIEMBONGO MBULA", date: "25/11/2025, 15:10:00" }
-  ];
-  demoPV2.stamp.enabled = true;
-  
-  pvs = [demoPV1, demoPV2];
-  saveDatabaseToLocalStorage();
-}
-
-// 6. INITIALIZE FORM FIELDS
-function initFormProvinces() {
-  const select = document.getElementById('pv-province');
-  if (!select) return;
-  select.innerHTML = "";
-  
-  PROVINCES_DB.forEach((prov, idx) => {
-    const opt = document.createElement('option');
-    opt.value = prov.name;
-    opt.textContent = prov.name;
-    if (idx === 0) opt.selected = true; // Kinshasa by default
-    select.appendChild(opt);
-  });
-  
-  handleProvinceChange();
-}
-
-function handleProvinceChange() {
-  const provName = document.getElementById('pv-province').value;
-  const provObj = PROVINCES_DB.find(p => p.name === provName);
-  if (provObj) {
-    document.getElementById('pv-direction').value = provObj.dirProv;
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_KEY, theme);
+    const btn = byId('btnThemeToggle');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️ Mode clair' : '🌙 Mode sombre';
   }
-  
-  // Re-generate PV number in auto mode
-  generatePVNumberAutomatically();
-  updateA4Preview();
-}
 
-function initFormInspecteurs() {
-  const select = document.getElementById('pv-inspecteur');
-  if (!select) return;
-  select.innerHTML = "";
-  
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  inspectors.forEach((ins, idx) => {
-    const opt = document.createElement('option');
-    opt.value = ins.name;
-    opt.textContent = ins.name;
-    if (idx === 0) opt.selected = true;
-    select.appendChild(opt);
-  });
-  
-  handleInspecteurChange();
-}
-
-function handleInspecteurChange() {
-  const insName = document.getElementById('pv-inspecteur').value;
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  const insObj = inspectors.find(i => i.name === insName);
-  if (insObj) {
-    document.getElementById('pv-habilitation').value = insObj.habilitation;
-    document.getElementById('pv-opj').value = insObj.opj;
-    
-    // Set current PV signatures name
-    currentPV.inspecteurName = insObj.name;
-    currentPV.habilitation = insObj.habilitation;
-    currentPV.opj = insObj.opj;
-  }
-  
-  generatePVNumberAutomatically();
-  updateA4Preview();
-}
-
-function toggleNumMode() {
-  const mode = document.getElementById('pv-num-mode').value;
-  const input = document.getElementById('pv-num-input');
-  
-  if (mode === 'auto') {
-    input.disabled = true;
-    generatePVNumberAutomatically();
-  } else {
-    input.disabled = false;
-    input.value = "";
-    input.placeholder = "ex: 0024/MET/IGT/DPK/HMW/JUIN/2026";
-  }
-  updateA4Preview();
-}
-
-function generatePVNumberAutomatically() {
-  const mode = document.getElementById('pv-num-mode').value;
-  if (mode !== 'auto') return;
-  
-  const provName = document.getElementById('pv-province').value;
-  const provObj = PROVINCES_DB.find(p => p.name === provName) || PROVINCES_DB[0];
-  
-  const insName = document.getElementById('pv-inspecteur').value;
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  const insObj = inspectors.find(i => i.name === insName) || inspectors[0];
-  
-  // Calculate month and year
-  const dateVal = document.getElementById('pv-date').value || new Date().toISOString().split('T')[0];
-  const dateObj = new Date(dateVal);
-  const months = ["JANV", "FEVR", "MARS", "AVRIL", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCTO", "NOVE", "DECE"];
-  const monthName = months[dateObj.getMonth()];
-  const yearName = dateObj.getFullYear();
-  
-  // Calculate a mock sequential
-  const seq = String(pvs.length + 1).padStart(4, '0');
-  
-  const officialNum = `${seq}/MET/IGT/${provObj.code}/${insObj.initials}/${monthName}/${yearName}`;
-  document.getElementById('pv-num-input').value = officialNum;
-}
-
-// 7. TEMPLATE SELECTION DYNAMICS
-function loadTemplateFields() {
-  const type = document.getElementById('pv-template-select').value;
-  currentPV.type = type;
-  
-  const sectionInfractions = document.getElementById('form-section-infractions');
-  const sectionNarrative = document.getElementById('form-section-narrative');
-  const tableInfractions = document.getElementById('preview-table-infractions');
-  
-  if (type === 'infraction') {
-    sectionInfractions.style.display = 'block';
-    sectionNarrative.style.display = 'none';
-    tableInfractions.style.display = 'table';
-    document.getElementById('pv-observations-finales').value = "Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions légales en vigueur en RDC. L'entreprise est tenue de se conformer aux prescriptions de la loi dans un bref délai. Nonobstant le paiement desdites amendes, elle reste tenue de régulariser toutes les situations irrégulières constatées.";
-  } else {
-    sectionInfractions.style.display = 'none';
-    sectionNarrative.style.display = 'block';
-    tableInfractions.style.display = 'none';
-    
-    // Set standard narrative skeletons based on selection
-    if (type === 'obstruction') {
-      document.getElementById('pv-narrative-text').value = "En effet, nous étions dans l'impossibilité d'accomplir la mission officielle de contrôle de l'Inspection Générale du Travail qui nous est dévolue par la loi. Nous avons fait l'objet d'une obstruction totale et d'un refus de laisser l'Inspecteur accéder aux archives administratives de l'établissement par le responsable de la société susmentionnée, Sieur [Nom du Représentant], agissant en qualité de [Fonction]. Ce fait contrevient expressément aux dispositions de l'Article 322 du Code du Travail Congolais.";
-      document.getElementById('pv-observations-finales').value = "Conformément à la loi, ce procès-verbal de constat d'obstruction est dressé en trois ampliations dont chacune d'elle sera remise au Ministère ayant la Charge de l'Emploi et Travail, au Procureur Près le Parquet de Grande Instance et au contrevenant.";
-    } else if (type === 'non-conciliation') {
-      document.getElementById('pv-narrative-text').value = "Que Monsieur [Nom du Travailleur] (demandeur) d'une part, se plaint d'avoir été licencié de manière abusive par la société [Nom de l'Entreprise] (défenderesse) d'autre part, représentée par [Nom du Représentant]. Après examen des pièces fournies par les parties, l'Inspecteur constate que la procédure de résiliation n'a pas été respectée, créant des préjudices financiers pour le travailleur. La défenderesse refuse de procéder au paiement des indemnités légales proposées de l'ordre de [Montant]$ USD.";
-      document.getElementById('pv-observations-finales').value = "DESACCORD DES PARTIES : Après une tentative de conciliation menée par nos soins sous l'égide de l'Article 302 du Code du Travail, les deux parties ne sont pas parvenues à un accord. Le présent procès-verbal est dressé pour valoir ce que de droit.";
-    } else if (type === 'mise-en-demeure') {
-      document.getElementById('pv-narrative-text').value = "Monsieur le Responsable,\nJe vous écris suite à nos tentatives répétées d'inspecter vos locaux conformément à notre ordre de mission officiel. En dépit de nos démarches, vous refusez systématiquement l'accès à vos bureaux ou la communication de vos registres obligatoires (livre de paie, horaire de travail, contrats). Ce refus persistant constitue une entrave grave au libre exercice des pouvoirs dévolus aux inspecteurs du travail par le Code du Travail (Articles 187, 196 et 197).";
-      document.getElementById('pv-observations-finales').value = "Par la présente, je vous mets en demeure de donner accès libre à notre mission et de nous fournir les documents demandés dans un délai de 24 heures à compter de la réception de cette lettre. À défaut, nous saisirons la juridiction pénale compétente.";
+  function loadStore() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        state.store = {
+          version: parsed.version || APP_VERSION,
+          records: Array.isArray(parsed.records) ? parsed.records : [],
+          agents: Array.isArray(parsed.agents) && parsed.agents.length ? parsed.agents : DEFAULT_AGENTS.slice(),
+          customTemplates: Array.isArray(parsed.customTemplates) ? parsed.customTemplates : []
+        };
+      }
+    } catch (err) {
+      console.error(err);
+      toast('Impossible de lire les données locales. Une base neuve est ouverte.');
     }
   }
-  
-  // Re-run number generation
-  generatePVNumberAutomatically();
-  updateA4Preview();
-}
 
-// 8. INFRACTIONS AUTOMATIC MANAGEMENT
-function filterInfractionsDropdown() {
-  const query = document.getElementById('infraction-search-input').value.toLowerCase();
-  const resultsDiv = document.getElementById('infractions-search-results');
-  resultsDiv.innerHTML = "";
-  
-  if (!query) {
-    resultsDiv.style.display = "none";
-    return;
+  function saveStore() {
+    state.store.version = APP_VERSION;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.store));
   }
-  
-  const filtered = INFRACTIONS_DB.filter(inf => 
-    inf.title.toLowerCase().includes(query) || 
-    inf.article.toLowerCase().includes(query) ||
-    inf.num.toString().includes(query) ||
-    inf.category.toLowerCase().includes(query)
-  );
-  
-  if (filtered.length === 0) {
-    resultsDiv.innerHTML = "<div style='padding:0.5rem; text-align:center; font-size:0.8rem; color:var(--text-muted);'>Aucune infraction correspondante.</div>";
-    resultsDiv.style.display = "block";
-    return;
-  }
-  
-  filtered.slice(0, 5).forEach(inf => {
-    const item = document.createElement('div');
-    item.style.padding = "0.5rem 0.75rem";
-    item.style.borderBottom = "1px solid var(--border-color)";
-    item.style.cursor = "pointer";
-    item.style.fontSize = "0.8rem";
-    item.innerHTML = `<strong>N°${inf.num}. ${inf.title}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${inf.article} | ${inf.amende}$ USD</span>`;
-    
-    item.onclick = function() {
-      selectInfraction(inf.num);
-      resultsDiv.style.display = "none";
-    };
-    resultsDiv.appendChild(item);
-  });
-  
-  resultsDiv.style.display = "block";
-}
 
-function selectInfraction(num) {
-  const inf = INFRACTIONS_DB.find(i => i.num === num);
-  if (!inf) return;
-  
-  selectedInfractionIndex = num;
-  document.getElementById('infraction-search-input').value = inf.title;
-  
-  const container = document.getElementById('selected-infraction-details');
-  container.innerHTML = `
-    <div style="font-size:0.8rem;">
-      <p style="font-weight:700; color:var(--primary-color);">Infraction N°${inf.num} : ${inf.title}</p>
-      <p style="margin-top:0.25rem;"><strong>Base légale :</strong> ${inf.article} (${inf.reference})</p>
-      <p><strong>Gravité / Sanction :</strong> <span class="badge ${inf.gravity === 'Très Grave' ? 'bg-danger-soft' : 'bg-warning-soft'}">${inf.gravity}</span> | ${inf.sanction}</p>
-      <p><strong>Amende transactionnelle :</strong> <span style="font-weight:bold; color:var(--accent-color);">${inf.amende}$ USD</span></p>
-      <div style="margin-top:0.5rem;" class="form-grid">
-        <div class="form-group" style="margin:0;">
-          <label style="font-size:0.7rem;">Quantité d'infractions (ex: nb de contrats)</label>
-          <input type="number" id="sel-inf-qty" value="1" min="1" style="padding:0.25rem 0.5rem; font-size:0.75rem;">
-        </div>
-        <div class="form-group" style="margin:0;">
-          <label style="font-size:0.7rem;">Amende unitaire ajustable ($)</label>
-          <input type="number" id="sel-inf-price" value="${inf.amende}" style="padding:0.25rem 0.5rem; font-size:0.75rem;">
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:0.5rem;">
-        <label style="font-size:0.7rem;">Observations spécifiques du contrôleur</label>
-        <textarea id="sel-inf-obs" rows="2" style="font-size:0.75rem; padding:0.25rem;">${inf.observations}</textarea>
-      </div>
-    </div>
-  `;
-}
+  function ensureDefaults() {
+    if (!state.store.agents || !state.store.agents.length) state.store.agents = DEFAULT_AGENTS.slice();
+  }
 
-function addSelectedInfractionToPV() {
-  if (selectedInfractionIndex === -1) {
-    showToast("⚠️ Veuillez d'abord rechercher et sélectionner une infraction !", "warning");
-    return;
-  }
-  
-  const inf = INFRACTIONS_DB.find(i => i.num === selectedInfractionIndex);
-  const qty = parseInt(document.getElementById('sel-inf-qty').value) || 1;
-  const price = parseFloat(document.getElementById('sel-inf-price').value) || inf.amende;
-  const obs = document.getElementById('sel-inf-obs').value || inf.observations;
-  
-  // Add to current PV list
-  currentPV.infractions.push({
-    num: inf.num,
-    title: inf.title,
-    article: inf.article,
-    reference: inf.reference,
-    gravity: inf.gravity,
-    sanction: inf.sanction,
-    amende: price,
-    quantity: qty,
-    total: qty * price,
-    observations: obs
-  });
-  
-  showToast("✅ Infraction ajoutée au PV avec succès !", "success");
-  
-  // Clear selection
-  selectedInfractionIndex = -1;
-  document.getElementById('infraction-search-input').value = "";
-  document.getElementById('selected-infraction-details').innerHTML = '<p class="text-muted text-xs">Sélectionnez une infraction ci-dessus pour afficher ses détails juridiques.</p>';
-  
-  updateA4Preview();
-}
+  function attachEvents() {
+    document.querySelectorAll('.nav-item').forEach((btn) => btn.addEventListener('click', () => switchView(btn.dataset.view)));
+    byId('btnThemeToggle').addEventListener('click', toggleTheme);
+    document.querySelectorAll('.panel-toggle').forEach((btn) => btn.addEventListener('click', () => {
+      const panel = btn.closest('.collapsible');
+      panel.classList.toggle('open');
+    }));
 
-function removeInfractionFromPV(index) {
-  currentPV.infractions.splice(index, 1);
-  updateA4Preview();
-  showToast("❌ Infraction supprimée du PV", "info");
-}
+    document.getElementById('pvForm').addEventListener('input', handleFormInput);
+    document.getElementById('pvForm').addEventListener('change', handleFormInput);
+    document.addEventListener('focusin', (event) => {
+      if (event.target.matches('input, textarea')) state.focusedField = event.target;
+    });
 
-// 9. DYNAMIC DRAGGABLE SEAL STAMP
-function initDraggableStamp() {
-  const stamp = document.getElementById('draggable-cachet');
-  const a4Page = document.getElementById('a4-document-preview');
-  if (!stamp || !a4Page) return;
-  
-  let isDragging = false;
-  let startX, startY, initialLeft, initialTop;
-  
-  stamp.addEventListener('mousedown', startDrag);
-  stamp.addEventListener('touchstart', startDrag, { passive: true });
-  
-  function startDrag(e) {
-    isDragging = true;
-    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-    
-    startX = clientX;
-    startY = clientY;
-    
-    const rect = stamp.getBoundingClientRect();
-    const parentRect = a4Page.getBoundingClientRect();
-    
-    initialLeft = rect.left - parentRect.left;
-    initialTop = rect.top - parentRect.top;
-    
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('touchmove', drag, { passive: false });
-    document.addEventListener('mouseup', stopDrag);
-    document.addEventListener('touchend', stopDrag);
-  }
-  
-  function drag(e) {
-    if (!isDragging) return;
-    if (e.cancelable) e.preventDefault();
-    
-    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-    
-    const dx = clientX - startX;
-    const dy = clientY - startY;
-    
-    const parentRect = a4Page.getBoundingClientRect();
-    
-    let newLeft = initialLeft + dx;
-    let newTop = initialTop + dy;
-    
-    // Bounds constraints
-    const maxLeft = parentRect.width - stamp.offsetWidth;
-    const maxTop = parentRect.height - stamp.offsetHeight;
-    
-    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-    newTop = Math.max(0, Math.min(newTop, maxTop));
-    
-    const pctLeft = (newLeft / parentRect.width) * 100;
-    const pctTop = (newTop / parentRect.height) * 100;
-    
-    stamp.style.left = pctLeft + '%';
-    stamp.style.top = pctTop + '%';
-    
-    currentPV.stamp.left = pctLeft + '%';
-    currentPV.stamp.top = pctTop + '%';
-  }
-  
-  function stopDrag() {
-    isDragging = false;
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('touchmove', drag);
-  }
-}
+    byId('agentRole').addEventListener('change', () => {
+      populateAgentsSelect();
+      syncAuthorSignature();
+      updatePreview();
+    });
+    byId('agentSelect').addEventListener('change', applySelectedAgent);
+    byId('docType').addEventListener('change', () => {
+      updateDocPanels();
+      updatePreview();
+    });
+    byId('direction').addEventListener('change', () => {
+      const d = DIRECTIONS.find((item) => item.name === byId('direction').value);
+      if (d) byId('adminProvince').value = d.province;
+      updatePreview();
+    });
+    byId('sectorSearch').addEventListener('input', renderSectors);
+    byId('btnClearSectors').addEventListener('click', () => {
+      document.querySelectorAll('#sectorsList input[type="checkbox"]').forEach((cb) => { cb.checked = false; });
+      updatePreview();
+    });
+    byId('infractionSearch').addEventListener('input', renderInfractionsList);
+    byId('gravityFilter').addEventListener('change', renderInfractionsList);
+    byId('selectedInfractionsTable').addEventListener('input', handleSelectedInfractionEdit);
+    byId('selectedInfractionsTable').addEventListener('click', handleSelectedInfractionClick);
 
-function toggleStampInPreview() {
-  const enabled = document.getElementById('toggle-stamp-chk').checked;
-  const stamp = document.getElementById('draggable-cachet');
-  if (stamp) {
-    stamp.style.display = enabled ? 'flex' : 'none';
-  }
-  currentPV.stamp.enabled = enabled;
-}
+    byId('btnAnalyzeFacts').addEventListener('click', analyzeFacts);
+    byId('btnSuggestArticles').addEventListener('click', suggestArticles);
+    byId('btnGenerateObservations').addEventListener('click', generateObservations);
+    byId('btnAutoDraft').addEventListener('click', autoDraft);
+    byId('btnRefreshPreview').addEventListener('click', updatePreview);
+    byId('btnToggleScale').addEventListener('click', () => {
+      state.previewZoomed = !state.previewZoomed;
+      byId('printArea').classList.toggle('zoomed', state.previewZoomed);
+    });
 
-// 10. TACTILE SIGNATURE PAD MODAL
-function initSignaturePad() {
-  const canvas = document.getElementById('modal-sig-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let drawing = false;
-  
-  // Set canvas resolution to match parent bounding box
-  function resizeCanvas() {
-    canvas.width = canvas.parentElement.offsetWidth;
-    canvas.height = canvas.parentElement.offsetHeight;
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = "round";
-  }
-  
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
-  // Touch Handlers
-  canvas.addEventListener('mousedown', startDraw);
-  canvas.addEventListener('touchstart', startDraw, { passive: true });
-  canvas.addEventListener('mousemove', draw);
-  canvas.addEventListener('touchmove', draw, { passive: false });
-  canvas.addEventListener('mouseup', endDraw);
-  canvas.addEventListener('touchend', endDraw);
-  
-  function startDraw(e) {
-    drawing = true;
-    ctx.beginPath();
-    const pos = getPos(e);
-    ctx.moveTo(pos.x, pos.y);
-  }
-  
-  function draw(e) {
-    if (!drawing) return;
-    if (e.cancelable) e.preventDefault();
-    const pos = getPos(e);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-  }
-  
-  function endDraw() {
-    drawing = false;
-    ctx.closePath();
-  }
-  
-  function getPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-    return {
-      x: clientX - rect.left,
-      y: clientY - rect.top
-    };
-  }
-}
+    byId('btnResetForm').addEventListener('click', () => newRecord(true));
+    byId('btnNewFromDashboard').addEventListener('click', () => { switchView('create'); newRecord(true); });
+    byId('btnSaveDraft').addEventListener('click', () => saveCurrent('draft'));
+    byId('btnValidate').addEventListener('click', validateCurrent);
+    byId('btnDuplicateCurrent').addEventListener('click', duplicateCurrent);
+    byId('btnPrint').addEventListener('click', printDocument);
+    byId('btnPrintTop').addEventListener('click', printDocument);
+    byId('btnReadPreview').addEventListener('click', readPreview);
+    byId('btnReadSelection').addEventListener('click', readPreview);
+    byId('btnGlobalListen').addEventListener('click', toggleDictation);
 
-function openSignatureModal(target) {
-  signatureTarget = target;
-  document.getElementById('modal-signature').classList.add('active');
-  
-  // Set default name based on target
-  const nameInput = document.getElementById('modal-sig-name-input');
-  if (target === 'inspecteur') {
-    nameInput.value = document.getElementById('pv-inspecteur').value;
-    document.getElementById('modal-signature-title').textContent = "Signature de l'Inspecteur / Contrôleur";
-  } else if (target === 'contrevenant') {
-    nameInput.value = document.getElementById('pv-rep-nom').value || "Représentant de l'entreprise";
-    document.getElementById('modal-signature-title').textContent = "Signature de l'Entreprise";
-  } else {
-    nameInput.value = "";
-    document.getElementById('modal-signature-title').textContent = "Signature du témoin ou responsable";
+    byId('historySearch').addEventListener('input', renderHistory);
+    byId('historyStatus').addEventListener('change', renderHistory);
+    byId('historyRole').addEventListener('change', renderHistory);
+    byId('historyType').addEventListener('change', renderHistory);
+    byId('historyList').addEventListener('click', handleHistoryAction);
+    byId('btnExportBackupHistory').addEventListener('click', exportBackup);
+
+    byId('legalSearch').addEventListener('input', renderLegalBase);
+    byId('legalCategory').addEventListener('change', renderLegalBase);
+    byId('legalList').addEventListener('click', handleLegalAction);
+    byId('btnCopyLegalSummary').addEventListener('click', copyLegalSummary);
+
+    byId('btnAddAgent').addEventListener('click', addOrUpdateAgent);
+    byId('agentsList').addEventListener('click', handleAgentAction);
+    byId('btnExportBackup').addEventListener('click', exportBackup);
+    byId('restoreFile').addEventListener('change', restoreBackup);
+    byId('btnClearData').addEventListener('click', clearLocalData);
   }
-  
-  clearSignatureCanvas();
-}
 
-function closeSignatureModal() {
-  document.getElementById('modal-signature').classList.remove('active');
-}
+  function handleFormInput(event) {
+    if (event.target && event.target.id === 'agentName') syncAuthorSignature(false);
+    if (event.target && event.target.id === 'agentQuality') syncAuthorSignature(false);
+    debouncePreview();
+  }
 
-function clearSignatureCanvas() {
-  const canvas = document.getElementById('modal-sig-canvas');
-  if (canvas) {
+  function debouncePreview() {
+    clearTimeout(state.previewTimer);
+    state.previewTimer = setTimeout(updatePreview, 220);
+  }
+
+  function byId(id) { return document.getElementById(id); }
+  function val(id) { const el = byId(id); return el ? el.value.trim() : ''; }
+  function setVal(id, value) { const el = byId(id); if (el) el.value = value == null ? '' : value; }
+  function escapeHtml(value) { return String(value ?? '').replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])); }
+  function nl2br(value) { return escapeHtml(value).replace(/\n/g, '<br>'); }
+  function normalize(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+  function populateStaticControls() {
+    fillSelect('docType', DOCUMENT_TYPES.map((d) => [d.id, d.label]));
+    fillSelect('historyType', [['', 'Tous modèles'], ...DOCUMENT_TYPES.map((d) => [d.id, d.label])]);
+    fillSelect('legalCategory', [['', 'Toutes catégories'], ...Array.from(new Set(LEGAL_BASE.map((j) => j.category))).map((c) => [c, c])]);
+    fillSelect('direction', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
+    fillSelect('settingsAgentDirection', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
+    fillSelect('adminProvince', PROVINCES.map((p) => [p, p]));
+    fillSelect('companyProvince', PROVINCES.filter((p) => p !== 'Administration centrale').map((p) => [p, p]));
+    populateAgentsSelect();
+  }
+
+  function fillSelect(id, options) {
+    const select = byId(id);
+    if (!select) return;
+    select.innerHTML = options.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join('');
+  }
+
+  function populateAgentsSelect(shouldApply = true) {
+    const role = val('agentRole') || 'Inspecteur du Travail';
+    const previous = val('agentSelect');
+    const agents = state.store.agents.filter((a) => a.role === role);
+    const options = agents.length ? agents.map((a) => [a.id, a.name]) : [['', `Aucun ${role.toLowerCase()} enregistré`]];
+    fillSelect('agentSelect', options);
+    if (previous && agents.some((a) => a.id === previous)) setVal('agentSelect', previous);
+    if (shouldApply && agents.length) applySelectedAgent();
+  }
+
+  function applySelectedAgent() {
+    const id = val('agentSelect');
+    const agent = state.store.agents.find((a) => a.id === id);
+    if (!agent) return;
+    setVal('agentName', agent.name);
+    setVal('agentQuality', agent.quality);
+    setVal('habilitation', agent.habilitation);
+    setVal('opjNumber', agent.opj);
+    if (agent.direction) setVal('direction', agent.direction);
+    syncAuthorSignature(true);
+    updatePreview();
+  }
+
+  function syncAuthorSignature(force = false) {
+    const role = val('agentRole');
+    const key = role === 'Contrôleur du Travail' ? 'controleur' : 'inspecteur';
+    const sig = state.signatures[key] || defaultSignature(key);
+    if (force || !sig.name) sig.name = val('agentName');
+    if (force || !sig.quality) sig.quality = val('agentQuality') || role;
+    if (!sig.datetime) sig.datetime = nowLocalInput();
+    state.signatures[key] = sig;
+    renderSignaturePads(false);
+  }
+
+  function renderSectors() {
+    const q = normalize(val('sectorSearch'));
+    const selected = getSelectedSectors();
+    const list = byId('sectorsList');
+    const filtered = SECTEURS.filter((s) => !q || normalize(s).includes(q));
+    list.innerHTML = filtered.map((sector) => {
+      const id = `sector-${slug(sector)}`;
+      return `<label class="chip-check" for="${id}"><input id="${id}" type="checkbox" value="${escapeHtml(sector)}" ${selected.includes(sector) ? 'checked' : ''}> <span>${escapeHtml(sector)}</span></label>`;
+    }).join('') || '<div class="empty-state">Aucun secteur trouvé.</div>';
+    list.querySelectorAll('input[type="checkbox"]').forEach((cb) => cb.addEventListener('change', updatePreview));
+  }
+
+  function getSelectedSectors() {
+    return Array.from(document.querySelectorAll('#sectorsList input[type="checkbox"]:checked')).map((cb) => cb.value);
+  }
+
+  function setSelectedSectors(sectors) {
+    renderSectors();
+    document.querySelectorAll('#sectorsList input[type="checkbox"]').forEach((cb) => { cb.checked = (sectors || []).includes(cb.value); });
+  }
+
+  function renderSignaturePads(keepCanvas = true) {
+    const container = byId('signaturePads');
+    const activeKey = val('agentRole') === 'Contrôleur du Travail' ? 'controleur' : 'inspecteur';
+    const oldData = collectCanvasData();
+    SIGNATURE_ROLES.forEach((r) => { if (!state.signatures[r.key]) state.signatures[r.key] = defaultSignature(r.key); });
+    container.innerHTML = SIGNATURE_ROLES.map((role) => {
+      const sig = state.signatures[role.key] || defaultSignature(role.key);
+      return `
+        <section class="signature-card ${role.key === activeKey ? 'author' : ''}" data-signature-card="${role.key}">
+          <h4>${escapeHtml(role.title)} ${role.key === activeKey ? '<span class="badge moyenne">Auteur du PV</span>' : ''}</h4>
+          <div class="signature-meta">
+            <label>Nom complet<input data-sign-key="${role.key}" data-sign-field="name" type="text" value="${escapeHtml(sig.name || '')}"></label>
+            <label>Qualité / fonction<input data-sign-key="${role.key}" data-sign-field="quality" type="text" value="${escapeHtml(sig.quality || role.title)}"></label>
+            <label class="span-2">Date et heure<input data-sign-key="${role.key}" data-sign-field="datetime" type="datetime-local" value="${escapeHtml(sig.datetime || nowLocalInput())}"></label>
+          </div>
+          <canvas data-sign-canvas="${role.key}" width="720" height="220" aria-label="Signature ${escapeHtml(role.title)}"></canvas>
+          <div class="signature-actions"><small>Stylo bleu numérique interne</small><button class="btn tiny ghost" data-clear-signature="${role.key}" type="button">Effacer</button></div>
+        </section>`;
+    }).join('');
+
+    container.querySelectorAll('[data-sign-key]').forEach((input) => {
+      input.addEventListener('input', (event) => {
+        const key = event.target.dataset.signKey;
+        const field = event.target.dataset.signField;
+        state.signatures[key][field] = event.target.value;
+        updatePreview();
+      });
+    });
+    container.querySelectorAll('[data-clear-signature]').forEach((btn) => btn.addEventListener('click', () => clearSignature(btn.dataset.clearSignature)));
+    container.querySelectorAll('canvas[data-sign-canvas]').forEach((canvas) => setupCanvas(canvas));
+
+    if (keepCanvas) {
+      Object.entries(oldData).forEach(([key, data]) => loadSignatureImage(key, data));
+    } else {
+      SIGNATURE_ROLES.forEach((r) => {
+        if (state.signatures[r.key] && state.signatures[r.key].dataUrl) loadSignatureImage(r.key, state.signatures[r.key].dataUrl);
+      });
+    }
+  }
+
+  function defaultSignature(key) {
+    const role = SIGNATURE_ROLES.find((r) => r.key === key);
+    return { name: '', quality: role ? role.title : '', datetime: nowLocalInput(), dataUrl: '' };
+  }
+
+  function setupCanvas(canvas) {
+    const key = canvas.dataset.signCanvas;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-}
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#0759c9';
+    ctx.lineWidth = 3.2;
+    let drawing = false;
+    let last = null;
 
-function saveSignatureAndClose() {
-  const canvas = document.getElementById('modal-sig-canvas');
-  if (!canvas) return;
-  
-  // Check if anything drawn
-  const blank = document.createElement('canvas');
-  blank.width = canvas.width;
-  blank.height = canvas.height;
-  if (canvas.toDataURL() === blank.toDataURL()) {
-    showToast("⚠️ Veuillez dessiner une signature avant de valider !", "warning");
-    return;
+    const point = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const pointer = event.touches ? event.touches[0] : event;
+      return { x: (pointer.clientX - rect.left) * (canvas.width / rect.width), y: (pointer.clientY - rect.top) * (canvas.height / rect.height) };
+    };
+    const start = (event) => { event.preventDefault(); drawing = true; last = point(event); };
+    const move = (event) => {
+      if (!drawing) return;
+      event.preventDefault();
+      const p = point(event);
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      last = p;
+    };
+    const end = () => {
+      if (!drawing) return;
+      drawing = false;
+      if (!state.signatures[key]) state.signatures[key] = defaultSignature(key);
+      state.signatures[key].dataUrl = canvas.toDataURL('image/png');
+      updatePreview();
+    };
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', end);
+    state.canvases.set(key, canvas);
   }
-  
-  const name = document.getElementById('modal-sig-name-input').value || "Signature";
-  const dataURL = canvas.toDataURL();
-  
-  // Inject in state
-  currentPV.signatures[signatureTarget] = { name: name, img: dataURL };
-  
-  // Show toast
-  showToast(`✍️ Signature enregistrée pour : ${name}`, "success");
-  closeSignatureModal();
-  updateA4Preview();
-}
 
-// 11. CENTRALIZED LIVE PREVIEW BINDER (A4 UPDATES)
-function updateA4Preview() {
-  // Pull from form
-  const template = document.getElementById('pv-template-select').value;
-  const num = document.getElementById('pv-num-input').value;
-  const repName = document.getElementById('pv-republique').value;
-  const metName = document.getElementById('pv-ministere').value;
-  const adminName = document.getElementById('pv-admin').value;
-  const provinceName = document.getElementById('pv-province').value;
-  const dirName = document.getElementById('pv-direction').value;
-  const inspectionName = document.getElementById('pv-inspection').value || "Inspection Urbaine du Travail";
-  
-  const insName = document.getElementById('pv-inspecteur').value;
-  const habNum = document.getElementById('pv-habilitation').value;
-  const opjNum = document.getElementById('pv-opj').value;
-  const missionNum = document.getElementById('pv-ordre-mission').value || "[N° ORDRE DE MISSION]";
-  
-  const dateVal = document.getElementById('pv-date').value;
-  const heureVal = document.getElementById('pv-heure').value;
-  
-  const entName = document.getElementById('pv-entreprise').value || "[NOM DE L'ENTREPRISE]";
-  const rccm = document.getElementById('pv-rccm').value || "..................";
-  const idnat = document.getElementById('pv-idnat').value || "..................";
-  const impot = document.getElementById('pv-impot').value || "..................";
-  const adresse = document.getElementById('pv-adresse').value || "..................";
-  const ville = document.getElementById('pv-ville').value || "Kinshasa";
-  
-  const presentRep = document.getElementById('pv-rep-nom').value || "..................";
-  const qualityRep = document.getElementById('pv-rep-fonction').value || "Représentant";
-  const telRep = document.getElementById('pv-rep-tel').value || "..................";
-  
-  const finalObs = document.getElementById('pv-observations-finales').value;
-  
-  // 1. Text format date
-  const dateObj = new Date(dateVal);
-  const frenchDays = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
-  const frenchMonths = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-  
-  const dayName = frenchDays[dateObj.getDay()] || "lundi";
-  const dayNum = dateObj.getDate() || "01";
-  const monthName = frenchMonths[dateObj.getMonth()] || "janvier";
-  const yearNum = dateObj.getFullYear() || "2026";
-  
-  // Formatted date string: "L'an deux mille vingt-six, le onzième jour du mois de juin"
-  function numberToFrenchWord(num) {
-    if (num === 2026) return "deux mille vingt-six";
-    if (num === 2025) return "deux mille vingt-cinq";
-    if (num === 2024) return "deux mille vingt-quatre";
-    const words = ["zéro", "premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième", "septième", "huitième", "neuvième", "dixième", "onzième", "douzième", "treizième", "quatorzième", "quinzième", "seizième", "dix-septième", "dix-huitième", "dix-neuvième", "vingtième", "vingt-et-unième", "vingt-deuxième", "vingt-troisième", "vingt-quatrième", "vingt-cinquième", "vingt-sixième", "vingt-septième", "vingt-huitième", "vingt-neuvième", "trentième", "trente-et-unième"];
-    return words[num] || num;
+  function clearSignature(key) {
+    const canvas = state.canvases.get(key);
+    if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    if (!state.signatures[key]) state.signatures[key] = defaultSignature(key);
+    state.signatures[key].dataUrl = '';
+    updatePreview();
   }
-  
-  const formattedFrenchDate = `L'an ${numberToFrenchWord(yearNum)}, le ${numberToFrenchWord(dayNum)} jour du mois de ${monthName}`;
-  
-  // Update Preview Elements
-  document.getElementById('p-preview-ministere').textContent = metName;
-  document.getElementById('p-preview-admin').textContent = adminName;
-  document.getElementById('p-preview-direction').textContent = dirName;
-  document.getElementById('p-preview-inspection').textContent = inspectionName;
-  
-  // Set Preview title
-  const titleMap = {
-    'infraction': 'PROCÈS-VERBAL DE CONSTAT D'INFRACTION',
-    'obstruction': 'PROCÈS-VERBAL DE CONSTAT D'OBSTRUCTION',
-    'non-conciliation': 'PROCÈS-VERBAL DE NON CONCILIATION DE LITIGE INDIVIDUEL DU TRAVAIL',
-    'mise-en-demeure': 'MISE EN DEMEURE FORMELLE POUR ENTRAVE'
-  };
-  document.getElementById('p-preview-title').textContent = titleMap[template] || "PROCÈS-VERBAL";
-  
-  // PV number
-  document.getElementById('p-preview-number').textContent = "N° " + num;
-  
-  // Build Dynamic Narrative Body Paragraph
-  let bodyHTML = "";
-  if (template === 'infraction') {
-    bodyHTML = `
-      ${formattedFrenchDate}, à <span class="dynamic-text">${heureVal}</span> ;<br>
-      Nous <span class="dynamic-text">${insName}</span>, Inspecteur du travail en compétence territoriale générale et officier de police judiciaire à compétence matérielle restreinte en matière du travail, dûment assermenté sous le numéro d'habilitation <span class="dynamic-text">${habNum}</span> ;<br>
-      Agissant en vertu des dispositions légales en la matière, notamment en ses articles 187, 196 et 197 de la loi n°015-2002 du 16 octobre 2002 portant code du travail, telle que modifiée et complété à ce jour ainsi que ses mesures d’applications ; En exécution de l'ordre de mission collectif n°<span class="dynamic-text">${missionNum}</span> ; Avons effectué une mission officielle de contrôle au sein de l'entreprise <span class="dynamic-text">${entName}</span> sise au <span class="dynamic-text">${adresse}</span> dans la ville Province de <span class="dynamic-text">${ville}</span> (RCCM : <span class="dynamic-text">${rccm}</span>, ID NAT : <span class="dynamic-text">${idnat}</span>, Impôt : <span class="dynamic-text">${impot}</span>) ;<br>
-      Avons constaté les infractions suivantes à la charge de l'entreprise précitée, en violation des dispositions du Code du Travail et de l'arrêté interministériel n° CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et N° CAB/MIN/FINANCES/127/03/2023 du 03/10/2023 portant fixation des taux des droits, taxes et redevances à percevoir à l'initiative du ministère de l'emploi et travail, en présence de Monsieur/Madame <span class="dynamic-text">${presentRep}</span> en qualité de <span class="dynamic-text">${qualityRep}</span>, téléphone : <span class="dynamic-text">${telRep}</span>.
-    `;
-  } else {
-    // For obstruction, non-conciliation, or mise-en-demeure
-    const textNarrative = document.getElementById('pv-narrative-text').value;
-    bodyHTML = textNarrative.replace(/\\n/g, '<br>').replace(/\\n\\n/g, '<br><br>');
-  }
-  
-  document.getElementById('p-preview-body-content').innerHTML = bodyHTML;
-  
-  // Render Infractions Table in Preview
-  const tbody = document.getElementById('preview-infractions-tbody');
-  tbody.innerHTML = "";
-  
-  let totalSum = 0;
-  
-  if (template === 'infraction') {
-    currentPV.infractions.forEach((inf, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td class="center">${String(index+1).padStart(2, '0')}</td>
-        <td>
-          <strong>${inf.title}</strong><br>
-          <span style="font-size:7.5pt; color:#475569; display:block; margin-top:2px;">
-            Obs: ${inf.observations}
-          </span>
-          <button class="btn btn-danger btn-xs no-print" onclick="removeInfractionFromPV(${index})" style="padding:1px 3px; font-size:7pt; margin-top:4px;">Supprimer</button>
-        </td>
-        <td class="center">${inf.article}</td>
-        <td>${inf.reference}</td>
-        <td class="center"><span class="badge ${inf.gravity === 'Très Grave' ? 'badge-danger' : 'badge-draft'}">${inf.gravity}</span></td>
-        <td class="right">${inf.total.toLocaleString()} $</td>
-      `;
-      tbody.appendChild(row);
-      totalSum += inf.total;
+
+  function collectCanvasData() {
+    const data = {};
+    state.canvases.forEach((canvas, key) => {
+      try { data[key] = canvas.toDataURL('image/png'); } catch (_) { data[key] = ''; }
     });
-  } else if (template === 'obstruction') {
-    totalSum = 30000; // Fixed obstruction fine according to Article 322 (30.000$ USD)
+    return data;
   }
-  
-  // Set total sum cell
-  document.getElementById('preview-total-fines-cell').textContent = totalSum.toLocaleString() + " $";
-  currentPV.totalFines = totalSum;
-  
-  // Update footer clause and date
-  document.getElementById('p-preview-footer-clause').textContent = finalObs;
-  document.getElementById('p-preview-date-place').textContent = `Fait à ${ville}, le ${dayNum} ${monthName} ${yearNum}`;
-  
-  // Signatures Binding
-  const sigInspecteur = currentPV.signatures.inspecteur;
-  const sigContrevenant = currentPV.signatures.contrevenant;
-  
-  const imgIns = document.getElementById('img-sig-inspecteur');
-  const nameIns = document.getElementById('name-sig-inspecteur');
-  if (sigInspecteur.img) {
-    imgIns.src = sigInspecteur.img;
-    imgIns.style.display = 'block';
-  } else {
-    imgIns.style.display = 'none';
-  }
-  nameIns.textContent = sigInspecteur.name || insName;
-  
-  const imgCont = document.getElementById('img-sig-contrevenant');
-  const nameCont = document.getElementById('name-sig-contrevenant');
-  if (sigContrevenant.img) {
-    imgCont.src = sigContrevenant.img;
-    imgCont.style.display = 'block';
-  } else {
-    imgCont.style.display = 'none';
-  }
-  nameCont.textContent = sigContrevenant.name || presentRep;
-  
-  // Generate QR Code dynamically
-  const qrData = JSON.stringify({
-    id: currentPV.id,
-    num: num,
-    type: template,
-    emp: entName,
-    ins: insName,
-    date: dateVal,
-    total: totalSum
-  });
-  
-  generateSecureQRCode(qrData);
-}
 
-// 12. SECURE OFFLINE QR CODE GENERATOR
-function generateSecureQRCode(text) {
-  const container = document.getElementById('doc-qr-canvas');
-  if (!container) return;
-  container.innerHTML = ""; // Clear existing
-  
-  try {
-    // Uses the local qrcode.min.js QRCode constructor
-    new QRCode(container, {
-      text: text,
-      width: 75,
-      height: 75,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
+  function loadSignatureImage(key, dataUrl) {
+    if (!dataUrl) return;
+    const canvas = state.canvases.get(key);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const image = new Image();
+    image.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(image, 0, 0, canvas.width, canvas.height); };
+    image.src = dataUrl;
+  }
+
+  function newRecord(confirmReset) {
+    if (confirmReset && !confirm('Créer un nouveau PV ? Les modifications non sauvegardées seront perdues.')) return;
+    state.currentId = crypto.randomUUID ? crypto.randomUUID() : `pv-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    state.selectedInfractions = [];
+    state.signatures = {};
+    FORM_FIELDS.forEach((id) => setVal(id, ''));
+    const today = new Date();
+    setVal('docType', 'pv-infraction');
+    setVal('status', 'draft');
+    setVal('uuid', state.currentId);
+    setVal('verificationCode', shortHash(state.currentId));
+    setVal('republique', 'REPUBLIQUE DEMOCRATIQUE DU CONGO');
+    setVal('ministere', 'Ministère de l’Emploi, Travail et Prévoyance Sociale');
+    setVal('inspection', 'Inspection Générale du Travail');
+    setVal('direction', 'Administration Centrale');
+    setVal('adminProvince', 'Administration centrale');
+    setVal('companyProvince', 'Kinshasa');
+    setVal('agentRole', 'Inspecteur du Travail');
+    setVal('placeDate', `Fait à Kinshasa, le ${formatDate(today)}`);
+    populateAgentsSelect();
+    setSelectedSectors([]);
+    renderSignaturePads(false);
+    syncAuthorSignature(true);
+    renderSelectedInfractionsTable();
+    updateDocPanels();
+    updatePreview();
+  }
+
+  function collectRecord() {
+    const fields = {};
+    FORM_FIELDS.forEach((id) => { fields[id] = val(id); });
+    fields.uuid = fields.uuid || state.currentId || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+    const canvasData = collectCanvasData();
+    SIGNATURE_ROLES.forEach((role) => {
+      if (!state.signatures[role.key]) state.signatures[role.key] = defaultSignature(role.key);
+      state.signatures[role.key].dataUrl = canvasData[role.key] || state.signatures[role.key].dataUrl || '';
     });
-  } catch (err) {
-    console.error("QR Code Error:", err);
-    // Render a nice visual fallback in case library isn't fully ready
-    container.innerHTML = `<div style="font-size:6pt; text-align:center; color:red; padding:5px;">QR ERROR</div>`;
+    const existing = state.store.records.find((r) => r.id === fields.uuid) || {};
+    return {
+      id: fields.uuid,
+      version: APP_VERSION,
+      createdAt: existing.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      validatedAt: existing.validatedAt || '',
+      fields,
+      sectors: getSelectedSectors(),
+      selectedInfractions: deepClone(state.selectedInfractions),
+      signatures: deepClone(state.signatures),
+      logs: Array.isArray(existing.logs) ? existing.logs.slice() : []
+    };
   }
-}
 
-// 13. SAVING DRAFTS & ARCHIVING WITH AUDIT TRAIL
-function savePV(isFinal) {
-  // Validate basic elements
-  const entName = document.getElementById('pv-entreprise').value;
-  if (!entName) {
-    showToast("⚠️ Le nom de l'entreprise est obligatoire !", "warning");
-    return;
+  function fillForm(record) {
+    if (!record) return;
+    state.currentId = record.id;
+    FORM_FIELDS.forEach((id) => setVal(id, record.fields && record.fields[id] != null ? record.fields[id] : ''));
+    setVal('uuid', record.id);
+    state.selectedInfractions = deepClone(record.selectedInfractions || []);
+    state.signatures = deepClone(record.signatures || {});
+    setSelectedSectors(record.sectors || []);
+    populateAgentsSelect(false);
+    if (record.fields && record.fields.agentSelect) setVal('agentSelect', record.fields.agentSelect);
+    renderSignaturePads(false);
+    renderSelectedInfractionsTable();
+    updateDocPanels();
+    updatePreview();
   }
-  
-  // Populate from inputs
-  currentPV.num = document.getElementById('pv-num-input').value;
-  currentPV.entreprise = entName;
-  currentPV.rccm = document.getElementById('pv-rccm').value;
-  currentPV.idnat = document.getElementById('pv-idnat').value;
-  currentPV.impot = document.getElementById('pv-impot').value;
-  currentPV.adresse = document.getElementById('pv-adresse').value;
-  currentPV.ville = document.getElementById('pv-ville').value;
-  currentPV.repNom = document.getElementById('pv-rep-nom').value;
-  currentPV.repFonction = document.getElementById('pv-rep-fonction').value;
-  currentPV.repTel = document.getElementById('pv-rep-tel').value;
-  currentPV.observationsFinales = document.getElementById('pv-observations-finales').value;
-  
-  if (currentPV.type !== 'infraction') {
-    currentPV.narrativeText = document.getElementById('pv-narrative-text').value;
+
+  async function saveCurrent(status = 'draft') {
+    const record = collectRecord();
+    record.fields.status = status || record.fields.status || 'draft';
+    setVal('status', record.fields.status);
+    if (!record.fields.officialNumber) {
+      record.fields.officialNumber = generateOfficialNumber(record);
+      setVal('officialNumber', record.fields.officialNumber);
+    }
+    record.fields.verificationCode = await computeVerificationCode(record);
+    setVal('verificationCode', record.fields.verificationCode);
+    record.logs.push(logEntry(status === 'draft' ? 'Brouillon sauvegardé' : `PV enregistré (${status})`, record));
+    upsertRecord(record);
+    renderDashboard();
+    renderHistory();
+    updatePreview();
+    toast(status === 'draft' ? 'Brouillon sauvegardé.' : 'PV sauvegardé.');
   }
-  
-  // Check duplicate PV number
-  const duplicate = pvs.find(pv => pv.id !== currentPV.id && pv.num === currentPV.num && pv.num !== '');
-  if (duplicate) {
-    showToast(`❌ Erreur: Le numéro de PV ${currentPV.num} existe déjà !`, "danger");
-    return;
-  }
-  
-  if (isFinal) {
-    // Check if signatures exist
-    if (!currentPV.signatures.inspecteur.img) {
-      showToast("⚠️ La signature de l'inspecteur est requise pour valider !", "warning");
+
+  async function validateCurrent() {
+    const record = collectRecord();
+    if (!record.fields.companyName && record.fields.docType !== 'pv-non-conciliation') {
+      toast('Veuillez renseigner la raison sociale de l’entreprise.');
+      switchView('create');
       return;
     }
-    
-    currentPV.status = 'signed';
-    currentPV.history.push({
-      action: "PV officiellement validé et signé électroniquement",
-      author: currentPV.inspecteurName,
-      date: new Date().toLocaleString()
-    });
-    
-    showToast("🔒 Procès-Verbal validé, signé et scellé définitivement !", "success");
-  } else {
-    currentPV.status = 'draft';
-    currentPV.history.push({
-      action: "Brouillon sauvegardé manuellement",
-      author: currentPV.inspecteurName,
-      date: new Date().toLocaleString()
-    });
-    
-    showToast("💾 Brouillon enregistré avec succès !", "success");
-  }
-  
-  // Upsert in database
-  const existingIdx = pvs.findIndex(pv => pv.id === currentPV.id);
-  if (existingIdx !== -1) {
-    pvs[existingIdx] = JSON.parse(JSON.stringify(currentPV));
-  } else {
-    pvs.push(JSON.parse(JSON.stringify(currentPV)));
-  }
-  
-  saveDatabaseToLocalStorage();
-  
-  // Go to list of PVs
-  setTimeout(() => {
-    switchTab(isFinal ? 'tous-pv' : 'brouillons');
-    // Clear form for next
-    currentPV = createEmptyPV();
-    resetFormInputs();
-  }, 1000);
-}
-
-function resetFormInputs() {
-  document.getElementById('pv-entreprise').value = "";
-  document.getElementById('pv-rccm').value = "";
-  document.getElementById('pv-idnat').value = "";
-  document.getElementById('pv-impot').value = "";
-  document.getElementById('pv-adresse').value = "";
-  document.getElementById('pv-rep-nom').value = "";
-  document.getElementById('pv-rep-fonction').value = "";
-  document.getElementById('pv-rep-tel').value = "";
-  document.getElementById('pv-narrative-text').value = "";
-  
-  // Reset signatures preview
-  document.getElementById('img-sig-inspecteur').style.display = 'none';
-  document.getElementById('img-sig-contrevenant').style.display = 'none';
-  
-  // Uncheck stamp
-  document.getElementById('toggle-stamp-chk').checked = false;
-  toggleStampInPreview();
-  
-  // Re-generate initial
-  generatePVNumberAutomatically();
-  updateA4Preview();
-}
-
-function autoSaveBackup() {
-  const entName = document.getElementById('pv-entreprise').value;
-  if (!entName || currentPV.status === 'signed') return; // Only autosave drafts with some data
-  
-  // Store temp fields in currentPV
-  currentPV.entreprise = entName;
-  currentPV.num = document.getElementById('pv-num-input').value;
-  currentPV.rccm = document.getElementById('pv-rccm').value;
-  currentPV.idnat = document.getElementById('pv-idnat').value;
-  currentPV.impot = document.getElementById('pv-impot').value;
-  currentPV.adresse = document.getElementById('pv-adresse').value;
-  currentPV.ville = document.getElementById('pv-ville').value;
-  currentPV.repNom = document.getElementById('pv-rep-nom').value;
-  currentPV.repFonction = document.getElementById('pv-rep-fonction').value;
-  currentPV.repTel = document.getElementById('pv-rep-tel').value;
-  
-  if (currentPV.type !== 'infraction') {
-    currentPV.narrativeText = document.getElementById('pv-narrative-text').value;
-  }
-  
-  // Save
-  const tempIdx = pvs.findIndex(pv => pv.id === currentPV.id);
-  if (tempIdx !== -1) {
-    pvs[tempIdx] = JSON.parse(JSON.stringify(currentPV));
-  } else {
-    pvs.push(JSON.parse(JSON.stringify(currentPV)));
-  }
-  
-  saveDatabaseToLocalStorage();
-  showToast("🔄 Autosauvegarde en arrière-plan effectuée", "info");
-}
-
-// 14. ADVANCED DATABASE VIEWS & SEARCH FILTERS
-function renderPVDatabase() {
-  const tbody = document.getElementById('db-pvs-rows');
-  tbody.innerHTML = "";
-  
-  const verifiedPVs = pvs.filter(pv => pv.status !== 'draft');
-  
-  if (verifiedPVs.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:2rem;' class='text-muted'>Aucun PV officiel disponible. Veuillez en élaborer un.</td></tr>";
-    return;
-  }
-  
-  verifiedPVs.forEach(pv => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${pv.id}</strong></td>
-      <td>${pv.num}</td>
-      <td><span class="badge" style="background-color:rgba(0,85,165,0.15);">${pv.type.toUpperCase()}</span></td>
-      <td>${pv.entreprise}</td>
-      <td>${pv.date}</td>
-      <td>${pv.inspecteurName}</td>
-      <td style="font-weight:bold; color:var(--accent-color);">${pv.totalFines.toLocaleString()} $</td>
-      <td><span class="badge ${pv.status === 'signed' ? 'badge-signed' : 'badge-archived'}">${pv.status === 'signed' ? 'Validé' : 'Archivé'}</span></td>
-      <td>
-        <div style="display:flex; gap:0.25rem;">
-          <button class="btn btn-secondary btn-xs" onclick="viewPVA4('${pv.id}')">👁️ Aperçu</button>
-          <button class="btn btn-secondary btn-xs" onclick="showHistoryAuditModal('${pv.id}')">📜 Audit</button>
-          <button class="btn btn-danger btn-xs" onclick="confirmDeletePV('${pv.id}')">🗑️ Suppr.</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function renderDraftsList() {
-  const tbody = document.getElementById('draft-pvs-rows');
-  tbody.innerHTML = "";
-  
-  const drafts = pvs.filter(pv => pv.status === 'draft');
-  
-  if (drafts.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:2rem;' class='text-muted'>Aucun brouillon en cours.</td></tr>";
-    return;
-  }
-  
-  drafts.forEach(pv => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${pv.id}</strong></td>
-      <td>${pv.type.toUpperCase()}</td>
-      <td>${pv.entreprise || "<em>Sans nom</em>"}</td>
-      <td>${pv.date} ${pv.heure}</td>
-      <td>${pv.inspecteurName}</td>
-      <td>
-        <div style="display:flex; gap:0.25rem;">
-          <button class="btn btn-primary btn-xs" onclick="loadDraftToEditor('${pv.id}')">✏️ Reprendre</button>
-          <button class="btn btn-danger btn-xs" onclick="confirmDeletePV('${pv.id}')">🗑️ Suppr.</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function loadDraftToEditor(id) {
-  const d = pvs.find(pv => pv.id === id);
-  if (!d) return;
-  
-  currentPV = JSON.parse(JSON.stringify(d));
-  
-  // Fill inputs
-  document.getElementById('pv-template-select').value = currentPV.type;
-  document.getElementById('pv-num-input').value = currentPV.num;
-  document.getElementById('pv-province').value = currentPV.province;
-  document.getElementById('pv-direction').value = currentPV.directionProv;
-  document.getElementById('pv-admin').value = currentPV.administration;
-  document.getElementById('pv-inspection').value = currentPV.inspection;
-  document.getElementById('pv-inspecteur').value = currentPV.inspecteurName;
-  document.getElementById('pv-habilitation').value = currentPV.habilitation;
-  document.getElementById('pv-opj').value = currentPV.opj;
-  document.getElementById('pv-ordre-mission').value = currentPV.ordreMission;
-  document.getElementById('pv-date').value = currentPV.date;
-  document.getElementById('pv-heure').value = currentPV.heure;
-  document.getElementById('pv-entreprise').value = currentPV.entreprise;
-  document.getElementById('pv-rccm').value = currentPV.rccm;
-  document.getElementById('pv-idnat').value = currentPV.idnat;
-  document.getElementById('pv-impot').value = currentPV.impot;
-  document.getElementById('pv-adresse').value = currentPV.adresse;
-  document.getElementById('pv-ville').value = currentPV.ville;
-  document.getElementById('pv-rep-nom').value = currentPV.repNom;
-  document.getElementById('pv-rep-fonction').value = currentPV.repFonction;
-  document.getElementById('pv-rep-tel').value = currentPV.repTel;
-  document.getElementById('pv-observations-finales').value = currentPV.observationsFinales;
-  
-  if (currentPV.type !== 'infraction') {
-    document.getElementById('pv-narrative-text').value = currentPV.narrativeText;
-  }
-  
-  // Handle stamp
-  document.getElementById('toggle-stamp-chk').checked = currentPV.stamp.enabled;
-  const stamp = document.getElementById('draggable-cachet');
-  if (stamp) {
-    stamp.style.display = currentPV.stamp.enabled ? 'flex' : 'none';
-    stamp.style.top = currentPV.stamp.top;
-    stamp.style.left = currentPV.stamp.left;
-  }
-  
-  loadTemplateFields();
-  switchTab('nouveau-pv');
-  showToast("✏️ Brouillon restauré dans l'éditeur.", "success");
-}
-
-function viewPVA4(id) {
-  // Load state and view
-  loadDraftToEditor(id);
-  // Just focus preview pane
-  const container = document.querySelector('.preview-panel');
-  if (container) {
-    container.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-function confirmDeletePV(id) {
-  const d = pvs.find(pv => pv.id === id);
-  if (!d) return;
-  
-  if (confirm(`🛑 Êtes-vous sûr de vouloir supprimer définitivement le document ${d.num || d.id} ? Cette action est irréversible.`)) {
-    pvs = pvs.filter(pv => pv.id !== id);
-    saveDatabaseToLocalStorage();
-    showToast("🗑️ Document supprimé de la base locale", "danger");
-    
-    // Refresh current tabs
-    renderPVDatabase();
-    renderDraftsList();
+    if (!record.fields.agentName) {
+      toast('Veuillez renseigner l’Inspecteur ou Contrôleur auteur du PV.');
+      return;
+    }
+    record.fields.status = 'validated';
+    record.fields.officialNumber = record.fields.officialNumber || generateOfficialNumber(record);
+    record.fields.verificationCode = await computeVerificationCode(record);
+    record.validatedAt = new Date().toISOString();
+    record.logs.push(logEntry('PV validé avec QR Code et code de vérification', record));
+    upsertRecord(record);
+    fillForm(record);
     renderDashboard();
+    renderHistory();
+    toast('PV validé : numéro officiel, UUID, code de vérification et QR Code générés.');
   }
-}
 
-// 15. AUDIT TRAIL / JOURNAL D'ACTIONS HISTORIQUE
-function showHistoryAuditModal(id) {
-  const pv = pvs.find(p => p.id === id);
-  if (!pv) return;
-  
-  let historyHTML = `<div style="display:flex; flex-direction:column; gap:0.5rem;">`;
-  pv.history.forEach(h => {
-    historyHTML += `
-      <div style="padding:0.5rem; border-left:3px solid var(--primary-color); background-color:var(--bg-color); font-size:0.8rem;">
-        <p><strong>${h.action}</strong></p>
-        <p class="text-muted text-xs">Par: ${h.author} | Le: ${h.date}</p>
-      </div>
-    `;
-  });
-  historyHTML += `</div>`;
-  
-  // Create a temporary beautiful info popup
-  const overlay = document.createElement('div');
-  overlay.className = "modal-overlay active";
-  overlay.innerHTML = `
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Journal d'Audit - ${pv.id}</h3>
-        <button class="theme-toggle-btn" style="color:white;" onclick="this.closest('.modal-overlay').remove()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-weight:700; font-size:0.9rem; margin-bottom:1rem;">Numéro officiel : ${pv.num || 'Non spécifié'}</p>
-        ${historyHTML}
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Fermer</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-}
-
-// 16. OFFLINE QR CODE CAMERA SCANNER
-function startCameraScanner() {
-  const video = document.getElementById('scanner-video-element');
-  const resultBox = document.getElementById('verification-result-box');
-  
-  resultBox.style.display = "none";
-  
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-      .then(stream => {
-        videoStream = stream;
-        video.srcObject = stream;
-        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-        video.play();
-        showToast("📷 Caméra démarrée. Scannez un QR Code de PV", "success");
-        requestAnimationFrame(tickScanner);
-      })
-      .catch(err => {
-        console.error("Camera access error:", err);
-        showToast("❌ Impossible d'accéder à la caméra. Vérifiez les permissions.", "danger");
-      });
-  } else {
-    showToast("❌ Caméra non prise en charge par votre navigateur.", "danger");
+  function upsertRecord(record) {
+    const idx = state.store.records.findIndex((r) => r.id === record.id);
+    if (idx >= 0) state.store.records[idx] = record;
+    else state.store.records.unshift(record);
+    saveStore();
   }
-}
 
-function stopCameraScanner() {
-  const video = document.getElementById('scanner-video-element');
-  if (videoStream) {
-    videoStream.getTracks().forEach(track => track.stop());
-    videoStream = null;
+  function duplicateCurrent() {
+    const source = collectRecord();
+    const copy = deepClone(source);
+    copy.id = crypto.randomUUID ? crypto.randomUUID() : `pv-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    copy.fields.uuid = copy.id;
+    copy.fields.status = 'draft';
+    copy.fields.officialNumber = '';
+    copy.fields.verificationCode = shortHash(copy.id);
+    copy.createdAt = new Date().toISOString();
+    copy.updatedAt = new Date().toISOString();
+    copy.validatedAt = '';
+    copy.logs = [logEntry('PV dupliqué en brouillon', copy)];
+    fillForm(copy);
+    toast('PV dupliqué en nouveau brouillon.');
   }
-  if (video) {
-    video.srcObject = null;
-  }
-}
 
-function tickScanner() {
-  const video = document.getElementById('scanner-video-element');
-  if (video && video.readyState === video.HAVE_ENOUGH_DATA && videoStream) {
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
-    // Uses jsQR.js decoder locally!
-    try {
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: "dontInvert",
-      });
-      
-      if (code) {
-        // Success scan!
-        stopCameraScanner();
-        verifyPVData(code.data);
-        return;
-      }
-    } catch (err) {
-      // Decode fail on this frame, continue
+  function printDocument() {
+    updatePreview();
+    setTimeout(() => window.print(), 180);
+  }
+
+  function updateDocPanels() {
+    const type = val('docType');
+    byId('litigePanel').classList.toggle('hide', type !== 'pv-non-conciliation');
+    byId('infractionsPanel').classList.toggle('hide', type === 'pv-non-conciliation' || type === 'pv-installation-cshe');
+    const doc = DOCUMENT_TYPES.find((d) => d.id === type);
+    byId('previewRoleBadge').textContent = `${val('agentRole') || 'Inspecteur / Contrôleur'} · ${doc ? doc.short : ''}`;
+  }
+
+  function renderInfractionsList() {
+    const q = normalize(val('infractionSearch'));
+    const gravity = val('gravityFilter');
+    const selectedIds = new Set(state.selectedInfractions.map((i) => i.id));
+    const filtered = INFRACTIONS.filter((item) => {
+      const hay = normalize([item.num, item.infraction, item.texteViole, item.referenceSanction, item.keywords.join(' ')].join(' '));
+      return (!q || hay.includes(q)) && (!gravity || item.gravity === gravity);
+    }).slice(0, 120);
+    const html = filtered.map((item) => `
+      <label class="infraction-card">
+        <input type="checkbox" data-infraction-id="${item.id}" ${selectedIds.has(item.id) ? 'checked' : ''}>
+        <span>
+          <strong>${String(item.num).padStart(2, '0')}. ${escapeHtml(item.infraction)}</strong>
+          <p><b>Texte violé :</b> ${escapeHtml(item.texteViole)}</p>
+          <p><b>Réf. sanction :</b> ${escapeHtml(item.referenceSanction)} · <b>Amende :</b> ${formatUSD(item.amountUSD)} ${escapeHtml(item.unit)}</p>
+          <span class="badges"><em class="badge ${gravityClass(item.gravity)}">${escapeHtml(item.gravity)}</em><em class="badge">${escapeHtml(item.id)}</em></span>
+        </span>
+      </label>`).join('');
+    byId('infractionsList').innerHTML = html || '<div class="empty-state">Aucune infraction trouvée.</div>';
+    byId('infractionsList').querySelectorAll('input[data-infraction-id]').forEach((cb) => cb.addEventListener('change', (event) => {
+      const id = event.target.dataset.infractionId;
+      if (event.target.checked) addInfraction(id); else removeInfraction(id);
+    }));
+  }
+
+  function addInfraction(id) {
+    if (state.selectedInfractions.some((i) => i.id === id)) return;
+    const base = INFRACTIONS.find((i) => i.id === id);
+    if (!base) return;
+    state.selectedInfractions.push({ ...deepClone(base), quantity: 1, amountUSD: base.amountUSD });
+    renderSelectedInfractionsTable();
+    renderInfractionsList();
+    updatePreview();
+  }
+
+  function removeInfraction(id) {
+    state.selectedInfractions = state.selectedInfractions.filter((i) => i.id !== id);
+    renderSelectedInfractionsTable();
+    renderInfractionsList();
+    updatePreview();
+  }
+
+  function renderSelectedInfractionsTable() {
+    const tbody = byId('selectedInfractionsTable').querySelector('tbody');
+    tbody.innerHTML = state.selectedInfractions.map((item, index) => `
+      <tr data-selected-id="${item.id}">
+        <td>${String(index + 1).padStart(2, '0')}</td>
+        <td><strong>${escapeHtml(item.infraction)}</strong><br><small>${escapeHtml(item.referenceSanction || '')}</small></td>
+        <td>${escapeHtml(item.texteViole)}</td>
+        <td><span class="badge ${gravityClass(item.gravity)}">${escapeHtml(item.gravity)}</span></td>
+        <td><input data-edit-field="quantity" type="number" min="1" value="${Number(item.quantity || 1)}"></td>
+        <td><input data-edit-field="amountUSD" type="number" min="0" step="1" value="${Number(item.amountUSD || 0)}"></td>
+        <td><strong>${formatUSD((Number(item.quantity || 1) * Number(item.amountUSD || 0)))}</strong></td>
+        <td><button class="btn tiny danger" data-remove-selected="${item.id}" type="button">×</button></td>
+      </tr>`).join('');
+    byId('totalAmountCell').textContent = formatUSD(totalAmount());
+  }
+
+  function handleSelectedInfractionEdit(event) {
+    const row = event.target.closest('tr[data-selected-id]');
+    if (!row) return;
+    const item = state.selectedInfractions.find((i) => i.id === row.dataset.selectedId);
+    if (!item) return;
+    const field = event.target.dataset.editField;
+    if (field) item[field] = Number(event.target.value || 0);
+    renderSelectedInfractionsTable();
+    updatePreview();
+  }
+
+  function handleSelectedInfractionClick(event) {
+    const btn = event.target.closest('[data-remove-selected]');
+    if (btn) removeInfraction(btn.dataset.removeSelected);
+  }
+
+  function totalAmount() {
+    return state.selectedInfractions.reduce((sum, item) => sum + (Number(item.quantity || 1) * Number(item.amountUSD || 0)), 0);
+  }
+
+  function analyzeFacts() {
+    const facts = normalize(val('facts'));
+    if (!facts) { toast('Décrivez d’abord les faits à analyser.'); return; }
+    const scored = INFRACTIONS.map((item) => {
+      const hay = [item.infraction, item.texteViole, item.referenceSanction, item.keywords.join(' ')].map(normalize).join(' ');
+      let score = 0;
+      item.keywords.forEach((k) => { if (facts.includes(normalize(k))) score += 3; });
+      normalize(item.infraction).split(/\s+/).filter((w) => w.length > 4).forEach((w) => { if (facts.includes(w)) score += 1; });
+      if (facts.includes('refus') && normalize(item.infraction).includes('obstacle')) score += 8;
+      if (facts.includes('contrat') && hay.includes('contrat')) score += 4;
+      return { item, score };
+    }).filter((r) => r.score > 0).sort((a, b) => b.score - a.score).slice(0, 8);
+
+    if (!scored.length) {
+      byId('aiOutput').textContent = 'Aucune infraction fortement liée aux faits. Complétez les détails ou recherchez manuellement dans la base.';
+      return;
     }
+    const lines = scored.map((r, idx) => `${idx + 1}. ${r.item.infraction}\n   Texte violé : ${r.item.texteViole}\n   Gravité : ${r.item.gravity} · Amende suggérée : ${formatUSD(r.item.amountUSD)} · Score IA : ${r.score}`).join('\n\n');
+    byId('aiOutput').textContent = `Infractions proposées par l’IA locale :\n\n${lines}\n\nCliquez sur « Ajouter les propositions » pour les sélectionner.`;
+    const btn = document.createElement('button');
+    btn.className = 'btn secondary';
+    btn.type = 'button';
+    btn.textContent = 'Ajouter les propositions';
+    btn.addEventListener('click', () => {
+      scored.slice(0, 5).forEach((r) => addInfraction(r.item.id));
+      toast('Propositions IA ajoutées aux infractions sélectionnées.');
+    });
+    byId('aiOutput').appendChild(document.createElement('br'));
+    byId('aiOutput').appendChild(btn);
   }
-  if (videoStream) {
-    requestAnimationFrame(tickScanner);
-  }
-}
 
-function verifyPVData(scannedText) {
-  const resultBox = document.getElementById('verification-result-box');
-  resultBox.innerHTML = "";
-  
-  try {
-    const data = JSON.parse(scannedText);
-    if (!data.id) throw new Error("Format invalide");
-    
-    // Search in our local DB
-    const match = pvs.find(p => p.id === data.id);
-    
-    if (match) {
-      resultBox.style.backgroundColor = "rgba(16, 185, 129, 0.15)";
-      resultBox.style.border = "2px solid var(--success-color)";
-      resultBox.innerHTML = `
-        <h4 style="color:var(--success-color); font-weight:700; display:flex; align-items:center; gap:0.5rem;">
-          ✓ DOCUMENT AUTHENTIQUE CONFIRMÉ
-        </h4>
-        <div style="font-size:0.85rem; margin-top:0.75rem; display:flex; flex-direction:column; gap:0.25rem;">
-          <p><strong>N° ID Unique :</strong> ${match.id}</p>
-          <p><strong>N° Officiel du PV :</strong> ${match.num}</p>
-          <p><strong>Entreprise Contrôlée :</strong> ${match.entreprise}</p>
-          <p><strong>Inspecteur Responsable :</strong> ${match.inspecteurName}</p>
-          <p><strong>Date de Création :</strong> ${match.date}</p>
-          <p><strong>Amende Transactionnelle :</strong> <span style="font-weight:bold; color:var(--accent-color);">${match.totalFines.toLocaleString()}$ USD</span></p>
-          <p><strong>Statut d'Authenticité :</strong> <span class="badge badge-signed">Scellé & Sécurisé</span></p>
-        </div>
-        <button class="btn btn-primary btn-sm w-full" style="margin-top:1rem;" onclick="viewPVA4('${match.id}')">Afficher ce PV</button>
-      `;
+  function suggestArticles() {
+    const selected = state.selectedInfractions.length ? state.selectedInfractions : INFRACTIONS.slice(0, 8);
+    const text = selected.map((i) => `• ${i.infraction}\n  Articles violés : ${i.texteViole}\n  Référence sanction : ${i.referenceSanction}\n  Gravité : ${i.gravity}`).join('\n\n');
+    byId('aiOutput').textContent = `Articles et références suggérés :\n\n${text}`;
+  }
+
+  function generateObservations() {
+    const record = collectRecord();
+    const f = record.fields;
+    let obs = '';
+    const role = f.agentRole || 'Inspecteur du Travail';
+    if (f.docType === 'pv-obstruction') {
+      obs = `Il ressort des faits que le responsable présent n’a pas permis à ${role.toLowerCase()} d’accomplir la mission officielle de contrôle, malgré la présentation ou la référence à l’ordre de mission ${f.missionOrder || 'susmentionné'}. Ce comportement est susceptible de constituer une obstruction au sens de l’article 322 du Code du Travail.`;
+    } else if (f.docType === 'pv-non-conciliation') {
+      obs = `Après audition des parties et examen des pièces communiquées, la tentative de conciliation n’a pas abouti. Les positions demeurent divergentes. Le présent procès-verbal de non-conciliation est établi conformément aux dispositions applicables afin de permettre aux parties de se pourvoir devant la juridiction compétente.`;
+    } else if (f.docType === 'mise-demeure') {
+      obs = `L’entreprise est mise en demeure de se conformer aux prescriptions de la législation du travail dans le délai imparti. À défaut, les mesures et sanctions prévues par les textes en vigueur pourront être appliquées.`;
     } else {
-      resultBox.style.backgroundColor = "rgba(220, 20, 58, 0.15)";
-      resultBox.style.border = "2px solid var(--accent-color)";
-      resultBox.innerHTML = `
-        <h4 style="color:var(--accent-color); font-weight:700;">
-          ⚠ PV NON RÉFÉRENCÉ / FRAUDE POSSIBLE
-        </h4>
-        <p style="font-size:0.8rem; margin-top:0.5rem;">
-          Ce QR Code contient des données structurées, mais l'identifiant unique n'existe pas dans la base de données sécurisée de l'Inspection Générale du Travail. Prenez garde aux falsifications administratives !
-        </p>
-      `;
+      const count = state.selectedInfractions.length;
+      obs = `Les constatations effectuées au sein de l’entreprise ${f.companyName || 'contrôlée'} font apparaître ${count || 'plusieurs'} irrégularité(s) au regard du Code du Travail et de ses mesures d’application. Nonobstant le paiement des amendes transactionnelles, l’entreprise reste tenue de se conformer aux prescriptions légales dans un bref délai.`;
     }
-  } catch (err) {
-    resultBox.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
-    resultBox.style.border = "2px solid var(--warning-color)";
-    resultBox.innerHTML = `
-      <h4 style="color:var(--warning-color); font-weight:700;">
-        ⚠ SCAN IMPOSSIBLE / FORMAT INCONNU
-      </h4>
-      <p style="font-size:0.8rem; margin-top:0.5rem;">
-        Le QR Code détecté ne correspond pas au format sécurisé du module Procès-Verbaux d'InspecteurBot. Données scannées : <br>
-        <code style="word-break:break-all; background:#FFF; padding:2px; display:block; margin-top:5px;">${scannedText}</code>
-      </p>
-    `;
+    setVal('observations', obs);
+    byId('aiOutput').textContent = `Observations générées :\n\n${obs}`;
+    updatePreview();
   }
-  resultBox.style.display = "block";
-}
 
-function verifyPVAuthenticityManual() {
-  const id = document.getElementById('manual-verify-id').value.trim();
-  if (!id) {
-    showToast("⚠️ Saisissez un identifiant unique !", "warning");
-    return;
+  function autoDraft() {
+    const record = collectRecord();
+    const text = generatePlainDraft(record);
+    setVal('observations', text);
+    byId('aiOutput').textContent = `Rédaction IA locale du modèle « ${documentLabel(record.fields.docType)} » :\n\n${text}`;
+    updatePreview();
   }
-  
-  // Format simulated scan json
-  const match = pvs.find(p => p.id === id);
-  if (match) {
-    const rawData = JSON.stringify({
-      id: match.id,
-      num: match.num,
-      type: match.type,
-      emp: match.entreprise,
-      ins: match.inspecteurName,
-      date: match.date,
-      total: match.totalFines
-    });
-    verifyPVData(rawData);
-  } else {
-    verifyPVData(JSON.stringify({ id: id }));
-  }
-}
 
-// 17. VOICE RECOGNITION (DICTATION)
-function startDictation(fieldId, isSearch = false) {
-  if (isListening) {
-    stopDictation();
-    return;
-  }
-  
-  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!window.SpeechRecognition) {
-    showToast("❌ La dictée vocale n'est pas prise en charge par ce navigateur.", "danger");
-    return;
-  }
-  
-  currentSpeechField = fieldId;
-  recognition = new window.SpeechRecognition();
-  recognition.lang = 'fr-FR';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  
-  // Find mic button
-  const triggerBtn = document.querySelector(`[onclick="startDictation('${fieldId}'${isSearch ? ', true' : ''})"]`);
-  if (triggerBtn) triggerBtn.classList.add('listening');
-  
-  isListening = true;
-  recognition.start();
-  showToast("🎙️ Dictée vocale active : parlez...", "info");
-  
-  recognition.onresult = function(event) {
-    const transcript = event.results[0][0].transcript;
-    const input = document.getElementById(fieldId);
-    if (input) {
-      if (input.tagName === 'TEXTAREA') {
-        input.value += (input.value ? " " : "") + transcript;
-      } else {
-        input.value = transcript;
-      }
-      
-      // Trigger update
-      updateA4Preview();
-      
-      // If it's the infraction search, filter results immediately
-      if (isSearch) {
-        filterInfractionsDropdown();
-      }
+  function generatePlainDraft(record) {
+    const f = record.fields;
+    const role = f.agentRole || 'Inspecteur du Travail';
+    const company = f.companyName || 'l’entreprise contrôlée';
+    const facts = f.facts || 'les faits constatés lors de la mission officielle de contrôle';
+    if (f.docType === 'pv-obstruction') {
+      return `En effet, nous étions dans l’impossibilité d’accomplir la mission qui nous est dévolue par la loi, ayant été l’objet d’une obstruction par le responsable de ${company}. Les faits relevés sont les suivants : ${facts}. Ces agissements sont rappelés au regard de l’article 322 du Code du Travail.`;
     }
-    showToast(`📝 Enregistré : "${transcript.substring(0,25)}..."`, "success");
-  };
-  
-  recognition.onerror = function(event) {
-    console.error("Speech Recognition Error:", event.error);
-    stopDictation();
-  };
-  
-  recognition.onend = function() {
-    stopDictation();
-  };
-}
+    if (f.docType === 'pv-non-conciliation') {
+      return `Il découle des déclarations des parties et de l’examen des pièces versées au dossier que le litige oppose ${f.demandeur || 'le demandeur'} à ${f.defender || company}. Malgré la tentative de conciliation, les parties ne sont pas parvenues à concilier leurs désaccords. En foi de quoi, le présent procès-verbal de non-conciliation est dressé.`;
+    }
+    if (f.docType === 'mise-demeure') {
+      return `Par la présente, je vous mets en demeure de donner accès libre à la mission de contrôle et/ou de fournir les documents demandés dans le délai imparti à compter de la réception du présent courrier. À défaut, les sanctions prévues par les textes en vigueur seront appliquées.`;
+    }
+    if (f.docType === 'pv-installation-cshe') {
+      return `Conformément aux dispositions des articles 167 à 169 du Code du Travail et de l’arrêté ministériel n°12/CAB.MIN/ETPS/043/2008 du 08 août 2008, il a été procédé à l’installation du Comité de Sécurité, d’Hygiène et d’Embellissement des lieux de travail au sein de ${company}.`;
+    }
+    const infra = state.selectedInfractions.map((i) => i.infraction).join('; ') || 'infractions sélectionnées dans la base officielle';
+    return `Avons effectué une mission officielle de contrôle au sein de ${company}. Au cours de ladite mission, les faits suivants ont été relevés : ${facts}. Après analyse des pièces et déclarations, les infractions suivantes sont retenues : ${infra}. Ces amendes sont mises à la charge de l’entreprise sans préjudice de son obligation de se conformer aux prescriptions légales.`;
+  }
 
-function stopDictation() {
-  if (recognition) {
-    recognition.stop();
-    recognition = null;
+  function updatePreview() {
+    const record = collectRecord();
+    byId('printArea').innerHTML = buildDocumentHTML(record);
+    byId('printArea').classList.toggle('zoomed', state.previewZoomed);
+    const doc = DOCUMENT_TYPES.find((d) => d.id === record.fields.docType);
+    byId('previewRoleBadge').textContent = `${record.fields.agentRole || 'Inspecteur / Contrôleur'} · ${doc ? doc.short : ''}`;
   }
-  isListening = false;
-  
-  // Remove pulsing class from all mic buttons
-  document.querySelectorAll('.mic-btn').forEach(btn => btn.classList.remove('listening'));
-}
 
-// 18. VOICE READER (TEXT-TO-SPEECH)
-function readAloudPV() {
-  stopSpeechSynthesis();
-  
-  const template = document.getElementById('pv-template-select').value;
-  const num = document.getElementById('pv-num-input').value;
-  const company = document.getElementById('pv-entreprise').value || "Inconnue";
-  const numFines = currentPV.totalFines;
-  
-  let speechText = `Lecture du Procès-Verbal officiel numéro ${num}. `;
-  if (template === 'infraction') {
-    speechText += `Ce procès-verbal de constat d'infraction vise l'entreprise ${company}. `;
-    speechText += `Il comporte ${currentPV.infractions.length} infractions pour un montant total de transactions financières s'élevant à ${numFines} dollars américains. `;
-    currentPV.infractions.forEach((inf, idx) => {
-      speechText += `Infraction numéro ${idx+1} : ${inf.title}, violation de l'article ${inf.article}. `;
-    });
-  } else {
-    speechText += `Type de document : Procès-Verbal de ${template}. Concernant l'établissement ${company}. `;
-    speechText += `Récit des faits constatés par l'inspecteur : ${document.getElementById('pv-narrative-text').value}. `;
+  function buildDocumentHTML(record) {
+    switch (record.fields.docType) {
+      case 'pv-obstruction': return buildObstruction(record);
+      case 'pv-non-conciliation': return buildNonConciliation(record);
+      case 'mise-demeure': return buildMiseEnDemeure(record);
+      case 'pv-installation-cshe': return buildInstallationCSHE(record);
+      case 'pv-infraction':
+      default: return buildInfraction(record);
+    }
   }
-  
-  speechText += `Observations finales : ${document.getElementById('pv-observations-finales').value}.`;
-  
-  const utterance = new SpeechSynthesisUtterance(speechText);
-  utterance.lang = 'fr-FR';
-  utterance.rate = 1.0;
-  window.speechSynthesis.speak(utterance);
-  
-  showToast("🔊 Lecture à haute voix du document en cours...", "info");
-}
 
-function stopSpeechSynthesis() {
-  if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
-  }
-}
-
-// 19. LOCAL LEGAL AI & CHATBOT
-function handleChatKeypress(e) {
-  if (e.key === 'Enter') {
-    sendChatMessage();
-  }
-}
-
-function sendChatMessage() {
-  const input = document.getElementById('ai-chat-input');
-  const query = input.value.trim();
-  if (!query) return;
-  
-  appendChatBubble(query, 'user');
-  input.value = "";
-  
-  // Simulate AI Response locally using advanced rule-based matcher
-  setTimeout(() => {
-    const aiResponse = computeLocalAIResponse(query);
-    appendChatBubble(aiResponse, 'ai');
-  }, 750);
-}
-
-function appendChatBubble(text, sender) {
-  const chatMessages = document.getElementById('ai-chat-messages');
-  const bubble = document.createElement('div');
-  bubble.className = `chat-bubble bubble-${sender}`;
-  bubble.innerHTML = text;
-  chatMessages.appendChild(bubble);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function computeLocalAIResponse(query) {
-  const q = query.toLowerCase();
-  
-  if (q.includes('smig') || q.includes('salaire minimum')) {
-    return `<strong>Droit du Travail RDC (SMIG) :</strong><br>
-            Le Salaire Minimum Interprofessionnel Garanti est régi par le <strong>Décret n° 18/017 du 22 mai 2018</strong>.<br><br>
-            Le non-respect du SMIG (Art. 87 et 94-96 du Code du Travail) is considered as a Très Grave infraction (N°5) with fine <strong>5.000$ USD</strong>.<br><br>
-            Sur proposition de l'Inspecteur du Travail, le Ministre de l'Emploi peut également prononcer la fermeture administrative de l'entreprise contrevenante.`;
-  }
-  
-  if (q.includes('congé') || q.includes('conges') || q.includes('vacances')) {
-    return `<strong>Droit du Travail RDC (Congés Annuels) :</strong><br>
-            Le congé annuel est obligatoire pour tout salarié (Articles 140 à 146 du Code du Travail).<br><br>
-            L'employeur doit accorder un congé payé de <strong>1,5 jour ouvrable par mois entier de service effectif</strong> (soit 18 jours ouvrables par an), ce droit augmentant avec l'ancienneté.<br><br>
-            L'absence de planification ou de versement de l'indemnité de congé annuel constitue l'infraction <strong>N°38</strong> et est sanctionnée par une amende de <strong>3.000$ USD</strong>.`;
-  }
-  
-  if (q.includes('obstruction') || q.includes('refus de controle') || q.includes('entrave')) {
-    return `<strong>Rôle de l'Inspecteur (Obstruction) :</strong><br>
-            Conformément à l'<strong>Article 322</strong> du Code du Travail, faire ou tenter de faire obstacle à l'exercice des fonctions d'un Inspecteur ou Contrôleur du Travail est une infraction <strong>Très Grave (N°62)</strong>.<br><br>
-            Elle donne lieu à l'établissement immédiat d'un <strong>Procès-verbal de constat d'obstruction</strong> et expose le contrevenant à une amende forfaitaire sévère de <strong>30.000$ USD</strong> et une peine de servitude pénale de 30 jours.`;
-  }
-  
-  if (q.includes('contrat') || q.includes('ecrit') || q.includes('cdd')) {
-    return `<strong>Contrats de Travail en RDC :</strong><br>
-            - <strong>Écrit obligatoire :</strong> Tout contrat de travail doit être écrit, signé et visé par l'ONEM (Art. 44). À défaut, il est réputé à durée indéterminée (CDI) dès le premier jour de prestation !<br>
-            - <strong>Durée :</strong> Un contrat à durée déterminée (CDD) ne peut excéder 2 ans (Art. 40). Au-delà, ou si plus de 2 CDD sont signés successivement, il est requalifié en CDI.<br><br>
-            L'absence d'écrit ou de visa constitue l'infraction <strong>N°3</strong> et expose à une amende de <strong>5.000$ USD par travailleur concerné</strong> !`;
-  }
-  
-  if (q.includes('faute lourde') || q.includes('licenciement')) {
-    return `<strong>Licenciement pour Faute Lourde :</strong><br>
-            La faute lourde (Article 59) autorise la rupture immédiate du contrat sans préavis ni indemnités.<br><br>
-            <strong>Procédure stricte sous peine de nullité :</strong><br>
-            1. L'employeur doit notifier la rupture par écrit motivé au travailleur dans un délai de <strong>2 jours ouvrables</strong> maximum après la connaissance des faits.<br>
-            2. Une copie doit être transmise à l'Inspecteur du Travail du ressort.<br><br>
-            Le non-respect de cette procédure constitue une rupture abusive (Infraction <strong>N°24</strong>, amende de <strong>3.000$ USD</strong>).`;
-  }
-  
-  if (q.includes('horaire') || q.includes('45 heures')) {
-    return `<strong>Durée du Travail (RDC) :</strong><br>
-            La durée légale du travail est fixée à <strong>45 heures par semaine</strong> au maximum (Article 119).<br><br>
-            Le non-affichage de l'horaire de travail visé par l'Inspecteur du travail constitue l'infraction <strong>N°1 (Amende de 3.000$ USD)</strong>.<br>
-            Le dépassement de la durée légale sans paiement d'heures supplémentaires majorées est l'infraction <strong>N°6 (Amende de 3.000$ USD)</strong>.`;
-  }
-  
-  // Generic / Default AI Guide
-  return `<strong>Analyse de la législation RDC :</strong><br>
-          Je comprends votre demande concernant votre mission d'inspection. D'après le Code du Travail (Loi n°015-2002) :<br><br>
-          Pour toute violation constatée, référez-vous au tableau des <strong>65 infractions de l'IGT</strong>. Les transactions financières d'amende sont désormais ajustées sous l'égide de l'Arrêté Interministériel du 03/10/2023 à des montants standards de <strong>3.000$ USD</strong> pour les contraventions communes, et <strong>5.000$ à 30.000$ USD</strong> pour les fraudes ou obstructions majeures.<br><br>
-          N'hésitez pas à me poser une question précise sur un article de loi ou d'utiliser <strong>l'analyseur de faits</strong> à droite pour identifier des infractions automatiques !`;
-}
-
-function analyzeFactsWithAI() {
-  const text = document.getElementById('ai-analyzer-facts').value.toLowerCase();
-  const resultsDiv = document.getElementById('ai-analysis-results');
-  const infractionsList = document.getElementById('ai-analysis-infractions-list');
-  
-  if (!text) {
-    showToast("⚠️ Saisissez une description de faits à analyser !", "warning");
-    return;
-  }
-  
-  infractionsList.innerHTML = "";
-  let matches = [];
-  
-  // Rule-based keyword mapping to INFRACTIONS_DB indices
-  if (text.includes('horaire') || text.includes('heure') || text.includes('temps')) {
-    matches.push(INFRACTIONS_DB[0]); // N°1 Horaire
-  }
-  if (text.includes('contrat') || text.includes('ecrit') || text.includes('onem') || text.includes('visé')) {
-    matches.push(INFRACTIONS_DB[2]); // N°3 Contrat non écrit
-  }
-  if (text.includes('règlement') || text.includes('interne') || text.includes('entreprise')) {
-    matches.push(INFRACTIONS_DB[3]); // N°4 Règlement
-  }
-  if (text.includes('smig') || text.includes('salaire minimum') || text.includes('payé moins')) {
-    matches.push(INFRACTIONS_DB[4]); // N°5 SMIG
-  }
-  if (text.includes('enfant') || text.includes('mineur') || text.includes('15 ans') || text.includes('14 ans')) {
-    matches.push(INFRACTIONS_DB[8]); // N°9 Age admission
-    matches.push(INFRACTIONS_DB[9]); // N°10 Autorisation
-  }
-  if (text.includes('hygiène') || text.includes('sécurité') || text.includes('salubrité') || text.includes('epi')) {
-    matches.push(INFRACTIONS_DB[10]); // N°11 Hygiène
-    matches.push(INFRACTIONS_DB[39]); // N°40 CSHE
-  }
-  if (text.includes('médical') || text.includes('docteur') || text.includes('médecin') || text.includes('pharmaceutique')) {
-    matches.push(INFRACTIONS_DB[11]); // N°12 Service médical
-    matches.push(INFRACTIONS_DB[41]); // N°42 Convention médicale
-  }
-  if (text.includes('transport') || text.includes('bus') || text.includes('frais de route')) {
-    matches.push(INFRACTIONS_DB[24]); // N°25 Transport
-  }
-  if (text.includes('obstruction') || text.includes('refus de laisser') || text.includes('insulte') || text.includes('entrave')) {
-    matches.push(INFRACTIONS_DB[61]); // N°62 Obstruction
-  }
-  
-  // De-duplicate matches
-  matches = Array.from(new Set(matches));
-  
-  if (matches.length === 0) {
-    infractionsList.innerHTML = "<p class='text-muted text-xs'>Aucune infraction majeure évidente détectée par les mots-clés. Saisissez plus de détails.</p>";
-  } else {
-    matches.forEach(inf => {
-      const item = document.createElement('div');
-      item.style.padding = "0.5rem";
-      item.style.backgroundColor = "var(--bg-color)";
-      item.style.border = "1px solid var(--border-color)";
-      item.style.borderRadius = "6px";
-      item.style.fontSize = "0.8rem";
-      item.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <strong>N°${inf.num}. ${inf.title}</strong>
-          <span class="badge bg-danger-soft">${inf.gravity}</span>
+  function officialHeader(record, options = {}) {
+    const f = record.fields;
+    const right = options.right || (f.placeDate || `Kinshasa, le ${formatDate(new Date())}`);
+    return `
+      <header class="official-head">
+        <div class="official-left">
+          <div>${escapeHtml(f.republique || 'REPUBLIQUE DEMOCRATIQUE DU CONGO')}</div>
+          <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi et Travail')}</div>
+          <div class="arms">★</div>
+          <div>${escapeHtml(f.direction || 'Administration Centrale')}</div>
+          <div>${escapeHtml(f.inspection || 'Inspection Générale du Travail')}</div>
+          <div>I.G.T</div>
         </div>
-        <p class="text-xs text-muted" style="margin-top:0.25rem;">Article: ${inf.article} | Amende suggérée : ${inf.amende}$ USD</p>
-      `;
-      infractionsList.appendChild(item);
-    });
+        <div></div>
+        <div class="official-right">${escapeHtml(right)}</div>
+      </header>`;
   }
-  
-  resultsDiv.style.display = "block";
-  showToast("🧠 Analyse des faits effectuée localement !", "success");
-}
 
-function injectAIPossibleInfractions() {
-  // Take current matches and push to currentPV
-  const resultsDiv = document.getElementById('ai-analysis-results');
-  const items = resultsDiv.querySelectorAll('strong');
-  
-  if (items.length === 0) return;
-  
-  items.forEach(el => {
-    const numText = el.textContent.split('.')[0].replace('N°', '').trim();
-    const num = parseInt(numText);
-    const inf = INFRACTIONS_DB.find(i => i.num === num);
-    if (inf) {
-      // Check duplicate
-      if (!currentPV.infractions.some(p => p.num === inf.num)) {
-        currentPV.infractions.push({
-          num: inf.num,
-          title: inf.title,
-          article: inf.article,
-          reference: inf.reference,
-          gravity: inf.gravity,
-          sanction: inf.sanction,
-          amende: inf.amende,
-          quantity: 1,
-          total: inf.amende,
-          observations: inf.observations
-        });
-      }
-    }
-  });
-  
-  showToast("🚀 Infractions recommandées injectées dans le PV en cours !", "success");
-  updateA4Preview();
-  switchTab('nouveau-pv');
-}
-
-// 20. PARAMÈTRES VIEWS (CRUD INSPECTORS & PROVINCES)
-function renderParams() {
-  // Provinces List params
-  const tbodyProv = document.getElementById('params-provinces-tbody');
-  tbodyProv.innerHTML = "";
-  PROVINCES_DB.forEach(prov => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${prov.name}</strong></td>
-      <td>${prov.dirProv}</td>
-      <td><span class="badge badge-draft">${prov.code}</span></td>
-    `;
-    tbodyProv.appendChild(row);
-  });
-  
-  // Inspectors list params
-  const tbodyIns = document.getElementById('params-inspectors-tbody');
-  tbodyIns.innerHTML = "";
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  inspectors.forEach((ins, idx) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${ins.name}</strong></td>
-      <td>${ins.habilitation}</td>
-      <td><span class="badge badge-signed">${ins.initials}</span></td>
-      <td>
-        <button class="btn btn-danger btn-xs" onclick="deleteInspector(${idx})">Suppr.</button>
-      </td>
-    `;
-    tbodyIns.appendChild(row);
-  });
-}
-
-function addNewInspectorPrompt() {
-  const name = prompt("Saisissez le nom complet de l'Inspecteur / Contrôleur :");
-  if (!name) return;
-  const hab = prompt("Saisissez son numéro de carte d'habilitation :");
-  if (!hab) return;
-  const opj = prompt("Saisissez son numéro d'OPJ / Tribunal :");
-  if (!opj) return;
-  const initials = prompt("Saisissez ses initiales (3 lettres majuscules) :", name.split(' ').map(n=>n[0]).join('').toUpperCase().substring(0,3));
-  if (!initials) return;
-  
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  inspectors.push({ name: name, habilitation: hab, opj: opj, initials: initials.toUpperCase() });
-  localStorage.setItem('inspecteurbot_inspecteurs', JSON.stringify(inspectors));
-  
-  initFormInspecteurs();
-  renderParams();
-  showToast("✅ Nouvel inspecteur configuré !", "success");
-}
-
-function deleteInspector(idx) {
-  const inspectors = JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS;
-  if (inspectors.length <= 1) {
-    showToast("⚠️ Il doit rester au moins un inspecteur configuré !", "warning");
-    return;
+  function buildInfraction(record) {
+    const f = record.fields;
+    const total = selectedTotal(record);
+    const legalDate = legalDatePhrase(new Date());
+    const table = record.selectedInfractions.length ? record.selectedInfractions.map((item, idx) => `
+      <tr>
+        <td style="text-align:center">${String(idx + 1).padStart(2, '0')}.</td>
+        <td>${escapeHtml(item.infraction)}</td>
+        <td>${escapeHtml(item.texteViole)}</td>
+        <td>${formatAmendeLine(item)}</td>
+      </tr>`).join('') : `<tr><td colspan="4" style="text-align:center">Aucune infraction sélectionnée</td></tr>`;
+    return `
+      <article class="a4-page">
+        ${officialHeader(record)}
+        <h2 class="doc-title">PROCES-VERBAL DE CONSTAT D’INFRACTION</h2>
+        <div class="pv-number">N° ${escapeHtml(f.officialNumber || generateOfficialNumber(record))}</div>
+        <section class="pv-body">
+          <p>L’an ${legalDate.yearLetters}, le ${legalDate.dayLetters} jour du mois de ${legalDate.monthName} ;</p>
+          <p>Nous ${escapeHtml(f.agentName || '................................')}, ${escapeHtml(f.agentQuality || `${f.agentRole || 'Inspecteur du Travail'} en compétence territoriale générale et officier de police judiciaire à compétence matérielle restreinte en matière du travail`)}, dûment assermenté sous le numéro d’habilitation ${escapeHtml(f.habilitation || '........................')} ;</p>
+          <p>Agissant en vertu des dispositions légales en la matière, notamment en ses articles 187, 196 et 197 de la loi n°015-2002 du 16 octobre 2002 portant Code du Travail, telle que modifiée et complétée à ce jour ainsi que ses mesures d’applications ; en exécution de l’ordre de mission ${escapeHtml(f.missionOrder || '........................')} ;</p>
+          <p>Avons effectué une mission officielle de contrôle au sein de l’entreprise <strong>${escapeHtml(companyFullName(f))}</strong> sise ${escapeHtml(f.companyAddress || '........................................................')} ${f.commune ? `, Commune/Territoire de ${escapeHtml(f.commune)}` : ''} ${f.companyProvince ? `dans la ville/province de ${escapeHtml(f.companyProvince)}` : ''} ;</p>
+          <p>Avons constaté les infractions suivantes à la charge de l’entreprise précitée, en violation des dispositions du Code du Travail et de l’arrêté interministériel n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023 du 03/10/2023 portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale, en présence de ${escapeHtml(f.presentManager || '................................')} en qualité de ${escapeHtml(f.managerFunction || '................................')}.</p>
+          ${f.facts ? `<p><strong>Faits constatés :</strong> ${nl2br(f.facts)}</p>` : ''}
+          <h3 style="text-align:center;text-transform:uppercase;margin:.9rem 0 .35rem">LES CONTRAVENTIONS CI-DESSOUS</h3>
+          <table class="pv-table">
+            <thead><tr><th style="width:9%">N°</th><th>INFRACTIONS</th><th style="width:28%">TEXTE VIOLE</th><th style="width:21%">AMENDE TRANSACTIONNELLE</th></tr></thead>
+            <tbody>${table}</tbody>
+          </table>
+          <p class="amount-line">Total général : ${formatUSD(total)}</p>
+          <p class="letter-amount">En lettre : ${escapeHtml(amountInLetters(total))} dollars américains.</p>
+          <p>Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions du Ministère de l’Emploi et du Travail. L’entreprise est obligée de se soumettre aux prescriptions de la loi dans un bref délai. En outre, nonobstant le paiement desdites amendes, elle reste tenue à toutes les obligations légales définies en la matière.</p>
+          ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          <p>En foi de quoi, nous avons établi le présent procès-verbal d’infraction en quatre ampliations dont chacune sera transmise à qui de droit conformément aux dispositions légales susmentionnées.</p>
+          <p>Fait au jour, mois et an que dessus. Nous jurons le présent Procès-Verbal sincère.</p>
+          <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
+        </section>
+        ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
+        ${securityBlock(record)}
+      </article>`;
   }
-  
-  if (confirm(`🛑 Supprimer l'inspecteur ${inspectors[idx].name} ?`)) {
-    inspectors.splice(idx, 1);
-    localStorage.setItem('inspecteurbot_inspecteurs', JSON.stringify(inspectors));
-    
-    initFormInspecteurs();
-    renderParams();
-    showToast("❌ Inspecteur supprimé", "info");
+
+  function buildObstruction(record) {
+    const f = record.fields;
+    const legalDate = legalDatePhrase(new Date());
+    return `
+      <article class="a4-page">
+        ${officialHeader(record)}
+        <h2 class="doc-title">PROCES-VERBAL CONSTAT D’INFRACTION<br>POUR OBSTRUCTION</h2>
+        <div class="pv-number">N° ${escapeHtml(f.officialNumber || generateOfficialNumber(record))}</div>
+        <section class="pv-body">
+          <p>L’an ${legalDate.yearLetters}, le ${legalDate.dayLetters} jour du mois de ${legalDate.monthName} ;</p>
+          <p>Par devant nous, ${escapeHtml(f.agentName || '................................')}, ${escapeHtml(f.agentQuality || `${f.agentRole || 'Inspecteur du Travail'} et Officier de Police Judiciaire à compétence restreinte en matière du travail près l’Inspection Générale du Travail`)}, dûment assermenté, avons été en visite d’Inspection Spéciale du Travail sous l’ordre de mission ${escapeHtml(f.missionOrder || '........................')} au sein de ${escapeHtml(companyFullName(f))} sise ${escapeHtml(f.companyAddress || '................................')}.</p>
+          <p>En effet, nous étions dans l’impossibilité d’accomplir la mission qui nous est dévolue par la loi et nous avons été l’objet d’une obstruction totale par le responsable de la société susmentionnée, ${escapeHtml(f.presentManager || '................................')} ${f.managerFunction ? `en qualité de ${escapeHtml(f.managerFunction)}` : ''}; nous référant aux dispositions de l’Ordonnance-loi n°16/010 du 15 juillet 2016 modifiant et complétant la loi n°015-2002 portant Code du Travail à son article 322 et aux instructions rappelant à tous les employeurs le respect strict du Code du Travail et de ses mesures d’application.</p>
+          ${f.facts ? `<p><strong>Faits d’obstruction :</strong> ${nl2br(f.facts)}</p>` : ''}
+          ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          <p>En foi de quoi, nous avons établi ce procès-verbal de constat d’obstruction en trois ampliations dont chacune sera remise au Ministère ayant la charge de l’Emploi et Travail, au Procureur près le Parquet compétent pour disposition et au contrevenant.</p>
+          <p>Nous jurons que ce procès-verbal est sincère.</p>
+          <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
+        </section>
+        ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
+        ${securityBlock(record)}
+      </article>`;
   }
-}
 
-// 21. BACKUP & SYSTEM INTEGRATION (IMPORT / EXPORT JSON)
-function exportDatabase() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-    pvs: pvs,
-    inspectors: JSON.parse(localStorage.getItem('inspecteurbot_inspecteurs')) || DEFAULT_INSPECTORS
-  }));
-  const downloadAnchor = document.createElement('a');
-  downloadAnchor.setAttribute("href", dataStr);
-  downloadAnchor.setAttribute("download", `inspecteurbot_database_backup_${new Date().toISOString().split('T')[0]}.json`);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
-  showToast("💾 Base de données exportée en fichier JSON", "success");
-}
-
-function importDatabase(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.pvs) {
-        pvs = data.pvs;
-        saveDatabaseToLocalStorage();
-      }
-      if (data.inspectors) {
-        localStorage.setItem('inspecteurbot_inspecteurs', JSON.stringify(data.inspectors));
-      }
-      
-      // Reload
-      loadDatabase();
-      initFormInspecteurs();
-      renderDashboard();
-      renderParams();
-      showToast("✅ Restauration de la sauvegarde effectuée avec succès !", "success");
-    } catch (err) {
-      showToast("❌ Erreur de décodage du fichier JSON", "danger");
-    }
-  };
-  reader.readAsText(file);
-}
-
-// 22. FRONT-END AUXILIARY HELPER ELEMENTS
-function renderDashboard() {
-  // Counts
-  const total = pvs.length;
-  const drafts = pvs.filter(pv => pv.status === 'draft').length;
-  const signed = pvs.filter(pv => pv.status === 'signed').length;
-  
-  // Calculate total fines and unique companies
-  let uniqueCompanies = new Set();
-  let totalInfractionsCount = 0;
-  let totalAmendsSum = 0;
-  
-  pvs.forEach(pv => {
-    if (pv.entreprise) uniqueCompanies.add(pv.entreprise);
-    if (pv.status !== 'draft') {
-      totalAmendsSum += pv.totalFines;
-      if (pv.type === 'infraction') {
-        totalInfractionsCount += pv.infractions.length;
-      } else if (pv.type === 'obstruction') {
-        totalInfractionsCount += 1;
-      }
-    }
-  });
-  
-  document.getElementById('stat-total-pvs').textContent = total;
-  document.getElementById('stat-brouillons').textContent = drafts;
-  document.getElementById('stat-signes').textContent = signed;
-  document.getElementById('stat-entreprises').textContent = uniqueCompanies.size;
-  document.getElementById('stat-infractions').textContent = totalInfractionsCount;
-  document.getElementById('stat-amendes').textContent = totalAmendsSum.toLocaleString();
-  
-  // Populate recent PV rows on dashboard
-  const tbody = document.getElementById('recent-pvs-rows');
-  tbody.innerHTML = "";
-  
-  const sorted = [...pvs].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 4);
-  if (sorted.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Aucun PV disponible.</td></tr>";
-  } else {
-    sorted.forEach(pv => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${pv.id}</strong></td>
-        <td><span class="badge badge-archived">${pv.type.toUpperCase()}</span></td>
-        <td>${pv.entreprise || '<em>Sans nom</em>'}</td>
-        <td>${pv.date}</td>
-        <td>${pv.inspecteurName}</td>
-        <td><span class="badge ${pv.status === 'signed' ? 'badge-signed' : 'badge-draft'}">${pv.status.toUpperCase()}</span></td>
-        <td style="font-weight:bold; color:var(--accent-color);">${pv.totalFines.toLocaleString()} $</td>
-        <td><button class="btn btn-secondary btn-xs" onclick="viewPVA4('${pv.id}')">👁️ Ouvrir</button></td>
-      `;
-      tbody.appendChild(row);
-    });
+  function buildNonConciliation(record) {
+    const f = record.fields;
+    const legalDate = legalDatePhrase(new Date());
+    return `
+      <article class="a4-page">
+        ${officialHeader(record)}
+        <h2 class="doc-title">PROCES-VERBAL DE NON CONCILIATION DE LITIGE INDIVIDUEL DU TRAVAIL</h2>
+        <div class="pv-number">N° ${escapeHtml(f.officialNumber || generateOfficialNumber(record))}</div>
+        <section class="pv-body">
+          <p>L’an ${legalDate.yearLetters}, le ${legalDate.dayLetters} jour du mois de ${legalDate.monthName}, Nous, ${escapeHtml(f.agentName || '................................')}, ${escapeHtml(f.agentQuality || `${f.agentRole || 'Inspecteur du Travail'} et Officier de Police Judiciaire à compétence restreinte en matière du Travail`)}, dûment assermenté et identifié sous les numéros ${escapeHtml([f.habilitation, f.opjNumber].filter(Boolean).join(' et ') || '........................')}, affecté à ${escapeHtml(f.inspection || 'l’Inspection Générale du Travail')}, nous trouvant à ${escapeHtml(f.adminProvince || 'Kinshasa')}.</p>
+          <p>${escapeHtml(f.demandeur || 'Monsieur/Madame ................................')} ${f.demandeurId ? `identifié(e) sous ${escapeHtml(f.demandeurId)}` : ''}, demandeur d’une part ;</p>
+          <p>La société ${escapeHtml(f.defender || companyFullName(f) || '................................')}, défenderesse d’autre part ;</p>
+          <p><strong>Entendons le demandeur qui déclare :</strong> ${nl2br(f.claimantStatement || f.facts || '................................................................................................................................')}</p>
+          <h3>I. CONSTAT DE ${escapeHtml((f.agentRole || 'L’INSPECTEUR DU TRAVAIL').toUpperCase())}</h3>
+          <p>Il découle des déclarations des parties et de l’épluchage des pièces versées au dossier, toutes considérations faites, ce qui suit :</p>
+          <p>${nl2br(f.laborOfficerFindings || 'Que les parties ont été entendues contradictoirement et que les pièces communiquées ont été examinées ;')}</p>
+          <h3>II. CONCLUSION</h3>
+          <p>${nl2br(f.conclusion || 'Eu égard à ce qui précède, les prétentions et moyens des parties sont actés au présent procès-verbal.')}</p>
+          <h3>III. PROPOSITION</h3>
+          <p>${nl2br(f.proposal || 'Une solution amiable a été proposée aux parties conformément aux dispositions applicables du Code du Travail.')}</p>
+          <h3>IV. DESACCORD DES PARTIES</h3>
+          <p>${nl2br(f.disagreement || 'Après une tentative de conciliation, les deux parties ne sont pas parvenues à concilier leurs désaccords.')}</p>
+          <p>En foi de quoi, le présent procès-verbal est dressé et signé en quatre exemplaires par les parties et nous-mêmes dont chacune a reçu un original.</p>
+          <p>Jurons que le présent Procès-Verbal est sincère.</p>
+        </section>
+        ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
+        ${securityBlock(record)}
+      </article>`;
   }
-  
-  // Populate recent activities feed
-  const activityList = document.getElementById('recent-activity-list');
-  activityList.innerHTML = "";
-  
-  const allHistory = [];
-  pvs.forEach(pv => {
-    pv.history.forEach(h => {
-      allHistory.push({ ...h, pvId: pv.id, pvNum: pv.num });
-    });
-  });
-  
-  // Sort history by date desc
-  allHistory.sort((a,b) => new Date(b.date) - new Date(a.date));
-  const recentHist = allHistory.slice(0, 4);
-  
-  if (recentHist.length === 0) {
-    activityList.innerHTML = "<p class='text-muted text-xs text-center' style='padding:1rem;'>Aucune activité.</p>";
-  } else {
-    recentHist.forEach(h => {
-      const card = document.createElement('div');
-      card.style.display = "flex";
-      card.style.alignItems = "flex-start";
-      card.style.gap = "0.5rem";
-      card.style.padding = "0.5rem 0.75rem";
-      card.style.backgroundColor = "var(--bg-color)";
-      card.style.borderRadius = "6px";
-      card.style.fontSize = "0.8rem";
-      card.innerHTML = `
-        <div style="width:8px; height:8px; border-radius:50%; background-color:var(--primary-color); margin-top:0.3rem;"></div>
+
+  function buildMiseEnDemeure(record) {
+    const f = record.fields;
+    return `
+      <article class="a4-page">
+        <header class="official-head">
+          <div class="official-left">
+            <div>${escapeHtml(f.republique || 'République Démocratique du Congo')}</div>
+            <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi, Travail')}</div>
+            <div>${escapeHtml(f.inspection || 'INSPECTION GENERALE DU TRAVAIL')}</div>
+            <br>
+            <div style="text-align:left;text-transform:none;font-weight:700">
+              OPJ : ${escapeHtml(f.agentName || '................................')}<br>
+              ${escapeHtml(f.agentRole || 'Inspecteur du Travail')}<br>
+              ${escapeHtml(f.direction || 'Administration Centrale')}<br>
+              ${escapeHtml(f.localInspection || '')}
+            </div>
+          </div>
+          <div></div>
+          <div class="official-right">${escapeHtml(f.placeDate || `Kinshasa, le ${formatDate(new Date())}`)}</div>
+        </header>
+        <section class="pv-body" style="margin-top:1rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start">
+            <div>
+              <p><strong>Transmis copie pour Information</strong></p>
+              <p>- À l’Inspection Générale du Travail<br>- Au Président du Tribunal du Travail compétent<br>- Au Procureur Général près la Cour d’Appel compétente</p>
+            </div>
+            <div>
+              <p><strong>Concerne : MISE EN DEMEURE</strong><br>pour ${escapeHtml(f.facts ? 'faits relevés lors de la mission de contrôle' : 'refus de contrôle suite à la mission de contrôle de l’Inspection du Travail')}<br>${escapeHtml(f.missionOrder || '')}</p>
+              <p>Au Responsable de <strong>${escapeHtml(companyFullName(f) || '................................')}</strong></p>
+            </div>
+          </div>
+          <p> Monsieur,</p>
+          <p>Je vous écris suite à la mission de contrôle référencée ci-dessus et aux échanges intervenus avec vos services concernant l’accès à l’entreprise et/ou la production des documents sollicités.</p>
+          <p>${f.facts ? nl2br(f.facts) : 'Or, jusqu’à ce jour, nous avons tenté de vous recontacter pour nous recevoir, mais nous avons remarqué que vous ne manifestez plus cette volonté. Ce refus de nous recevoir constitue une violation au regard des dispositions des articles 186, 187 et 197 du Code du Travail congolais.'}</p>
+          <p>Par la présente, je vous mets en demeure de donner accès libre à notre mission et de fournir les documents demandés dans un délai de 24 heures à compter de la réception de ce courrier.</p>
+          <p>Je vous rappelle qu’en l’absence de réponse ou en cas de maintien de votre refus de contrôle, je me verrai contraint de saisir la juridiction compétente ou d’appliquer les sanctions prévues dans l’arrêté n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023 du 03/10/2023 portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale.</p>
+          ${f.observations ? `<p>${nl2br(f.observations)}</p>` : ''}
+          <p>Veuillez considérer cette lettre comme une mise en demeure formelle.</p>
+          <p>Cordialement.</p>
+          <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
+        </section>
+        ${signaturesPreview(record, [activeAuthorKey(record)])}
+        ${securityBlock(record)}
+      </article>`;
+  }
+
+  function buildInstallationCSHE(record) {
+    const f = record.fields;
+    const legalDate = legalDatePhrase(new Date());
+    const sectors = (record.sectors || []).join(', ');
+    return `
+      <article class="a4-page">
+        ${officialHeader(record, { right: f.placeDate || `Kinshasa, le ${formatDate(new Date())}` })}
+        <h2 class="doc-title">PROCES-VERBAL D’INSTALLATION DU COMITE DE SECURITE, D’HYGIENE ET D’EMBELLISSEMENT DES LIEUX DE TRAVAIL</h2>
+        <section class="pv-body">
+          <p>L’an ${legalDate.yearLetters}, le ${legalDate.dayLetters} jour du mois de ${legalDate.monthName}, il s’est tenu au sein de ${escapeHtml(companyFullName(f) || '................................')}, une réunion paritaire entre l’Employeur et les Travailleurs.</p>
+          <p>Conformément aux dispositions des articles 167-169 du Code du Travail et de l’arrêté ministériel n°12/CAB.MIN/ETPS/043/2008 du 08 août 2008 fixant les conditions d’organisation et de fonctionnement du Comité de Sécurité, d’Hygiène et d’Embellissement des lieux de travail.</p>
+          <p>Nous soussigné, ${escapeHtml(f.agentName || '................................')}, ${escapeHtml(f.agentQuality || `${f.agentRole || 'Contrôleur du Travail'} et Officier de Police Judiciaire`)}, avons procédé ce jour à la cérémonie d’installation dudit Comité. Il s’agit de :</p>
+          <ol>
+            <li>....................................................... : <strong>Président</strong></li>
+            <li>....................................................... : <strong>Vice-Président, chargé de l’Hygiène et Sécurité au travail</strong></li>
+            <li>....................................................... : <strong>Secrétaire</strong></li>
+          </ol>
+          <p><strong>Membres :</strong></p>
+          <ol>
+            <li>.................................................................</li>
+            <li>.................................................................</li>
+            <li>.................................................................</li>
+            <li>.................................................................</li>
+            <li>.................................................................</li>
+          </ol>
+          ${sectors ? `<p><strong>Secteur(s) d’activité :</strong> ${escapeHtml(sectors)}</p>` : ''}
+          ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          <p>Les parties acceptent de se réunir après chaque trois mois pour évaluation.</p>
+          <p>En foi de quoi le présent procès-verbal d’installation est délivré pour servir et valoir ce que de droit.</p>
+          <p style="text-align:center;font-weight:900;margin-top:2rem">Visa de l’Inspection du Travail</p>
+        </section>
+        ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
+        ${securityBlock(record)}
+      </article>`;
+  }
+
+  function signaturesPreview(record, keys) {
+    const unique = Array.from(new Set(keys.filter(Boolean)));
+    const blocks = unique.map((key) => {
+      const role = SIGNATURE_ROLES.find((r) => r.key === key) || { title: key };
+      const sig = record.signatures && record.signatures[key] ? record.signatures[key] : defaultSignature(key);
+      const date = sig.datetime ? formatDateTime(sig.datetime) : '';
+      return `<div class="sign-preview">
+        <strong>${escapeHtml(role.title)}</strong><br>
+        ${sig.dataUrl ? `<img src="${sig.dataUrl}" alt="Signature ${escapeHtml(role.title)}">` : '<div style="height:54px"></div>'}
+        <span class="blue-stamp">${escapeHtml(sig.name || 'Nom : ................................')}</span><br>
+        <small>${escapeHtml(sig.quality || 'Fonction : ................................')}</small><br>
+        <small>${escapeHtml(date)}</small>
+      </div>`;
+    }).join('');
+    return `<section class="signatures-preview">${blocks}</section>`;
+  }
+
+  function securityBlock(record) {
+    const f = record.fields;
+    const payload = `PV|N=${(f.officialNumber || '').slice(0, 42)}|ID=${record.id.slice(0, 12)}|C=${(f.verificationCode || shortHash(record.id)).slice(0, 16)}|R=${(f.agentRole || '').slice(0, 2)}`;
+    const logs = (record.logs || []).slice(-2).map((l) => `${formatDateTime(l.at)} — ${l.action}`).join('<br>');
+    return `
+      <section class="security-row">
         <div>
-          <p><strong>${h.action}</strong> pour ${h.pvNum || h.pvId}</p>
-          <span style="font-size:0.65rem; color:var(--text-muted);">${h.date} | Par: ${h.author}</span>
+          <div class="qr-box">
+            ${makeQrSvg(payload, 92)}
+            <div>
+              <strong>QR Code sécurisé</strong><br>
+              UUID : ${escapeHtml(record.id)}<br>
+              Code : ${escapeHtml(f.verificationCode || shortHash(record.id))}<br>
+              Auteur : ${escapeHtml(f.agentRole || '')}<br>
+              ${logs ? `<span>Journal :<br>${logs}</span>` : ''}
+            </div>
+          </div>
         </div>
-      `;
-      activityList.appendChild(card);
+        <div class="stamp">CACHET<br>OFFICIEL<br>${escapeHtml(f.inspection || 'IGT')}</div>
+      </section>
+      <footer class="secure-foot"><span>InspecteurBot IA RDC · signature numérique interne au stylo bleu · ${escapeHtml(APP_VERSION)}</span><span>${escapeHtml(f.officialNumber || '')}</span></footer>`;
+  }
+
+  function activeAuthorKey(record) {
+    return (record.fields.agentRole || val('agentRole')) === 'Contrôleur du Travail' ? 'controleur' : 'inspecteur';
+  }
+
+  function formatAmendeLine(item) {
+    const q = Number(item.quantity || 1);
+    const amount = Number(item.amountUSD || 0);
+    if (q > 1) return `${formatUSD(amount)} ${escapeHtml(item.unit || 'par violation')}<br>${q} × ${formatUSD(amount)} = <strong>${formatUSD(q * amount)}</strong>`;
+    return `<strong>${formatUSD(amount)}</strong>`;
+  }
+
+  function selectedTotal(record) {
+    return (record.selectedInfractions || []).reduce((sum, item) => sum + Number(item.quantity || 1) * Number(item.amountUSD || 0), 0);
+  }
+
+  function companyFullName(f) {
+    return [f.companyName, f.companyLegalForm].filter(Boolean).join(' ');
+  }
+
+  function generateOfficialNumber(record) {
+    const f = record.fields || record;
+    const seq = String(nextSequence()).padStart(2, '0');
+    const roleCode = (f.agentRole || 'Inspecteur du Travail').startsWith('Contrôleur') ? 'CT' : 'IT';
+    const dir = DIRECTIONS.find((d) => d.name === f.direction);
+    const dirCode = dir ? dir.code : 'ADMC';
+    const initials = initialsOf(f.agentName || 'PV');
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = monthName(date).toUpperCase();
+    return `${seq}/MET/IGT/${dirCode}/${roleCode}/OPJ/${initials}/${month}/${year}`;
+  }
+
+  function nextSequence() {
+    const year = new Date().getFullYear();
+    return state.store.records.filter((r) => String(r.createdAt || '').startsWith(String(year))).length + 1;
+  }
+
+  function initialsOf(name) {
+    return String(name || '').split(/\s+/).filter(Boolean).map((p) => p[0]).join('').toUpperCase().slice(0, 5) || 'PV';
+  }
+
+  async function computeVerificationCode(record) {
+    const data = JSON.stringify({ id: record.id, number: record.fields.officialNumber, type: record.fields.docType, role: record.fields.agentRole, company: record.fields.companyName, infractions: record.selectedInfractions.map((i) => [i.id, i.quantity, i.amountUSD]), createdAt: record.createdAt });
+    if (crypto.subtle) {
+      const bytes = new TextEncoder().encode(data);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      const hex = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+      return `${hex.slice(0, 4)}-${hex.slice(4, 8)}-${hex.slice(8, 12)}`;
+    }
+    return shortHash(data);
+  }
+
+  function shortHash(text) {
+    let h = 2166136261;
+    for (let i = 0; i < String(text).length; i++) {
+      h ^= String(text).charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    const hex = (h >>> 0).toString(16).toUpperCase().padStart(8, '0');
+    return `${hex.slice(0, 4)}-${hex.slice(4, 8)}`;
+  }
+
+  function logEntry(action, record) {
+    return { at: new Date().toISOString(), action, author: record.fields.agentName || '', role: record.fields.agentRole || '', number: record.fields.officialNumber || '' };
+  }
+
+  function renderDashboard() {
+    const records = state.store.records;
+    byId('statTotal').textContent = records.length;
+    byId('statDrafts').textContent = records.filter((r) => r.fields && r.fields.status === 'draft').length;
+    byId('statValidated').textContent = records.filter((r) => r.fields && r.fields.status === 'validated').length;
+    byId('statCompanies').textContent = new Set(records.map((r) => normalize(r.fields && r.fields.companyName)).filter(Boolean)).size;
+    byId('statInfractions').textContent = records.reduce((sum, r) => sum + ((r.selectedInfractions || []).length), 0);
+    byId('statAmount').textContent = formatUSD(records.reduce((sum, r) => sum + selectedTotal(r), 0));
+
+    const logs = records.flatMap((r) => (r.logs || []).map((l) => ({ ...l, id: r.id, company: r.fields.companyName, type: r.fields.docType }))).sort((a, b) => new Date(b.at) - new Date(a.at)).slice(0, 8);
+    byId('recentActivity').classList.toggle('empty-state', logs.length === 0);
+    byId('recentActivity').innerHTML = logs.length ? logs.map((l) => `
+      <div class="activity-item"><span class="activity-dot"></span><div><strong>${escapeHtml(l.action)}</strong><small>${escapeHtml(l.number || documentLabel(l.type))} · ${escapeHtml(l.company || 'Sans entreprise')} · ${escapeHtml(l.role || '')}</small></div><small>${escapeHtml(formatDateTime(l.at))}</small></div>`).join('') : 'Aucune activité enregistrée.';
+    renderMonthlyStats(records);
+  }
+
+  function renderMonthlyStats(records) {
+    const now = new Date();
+    const buckets = [];
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      buckets.push({ key, label: d.toLocaleDateString('fr-FR', { month: 'short' }), count: 0 });
+    }
+    records.forEach((r) => {
+      const d = new Date(r.createdAt || r.updatedAt || Date.now());
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const b = buckets.find((x) => x.key === key);
+      if (b) b.count += 1;
     });
+    const max = Math.max(1, ...buckets.map((b) => b.count));
+    byId('monthlyStats').innerHTML = buckets.map((b) => `<div class="bar" title="${b.count} PV"><div class="bar-fill" style="height:${Math.max(4, (b.count / max) * 100)}%"></div><small>${escapeHtml(b.label)}</small><small>${b.count}</small></div>`).join('');
   }
-}
 
-function loadBlankTemplate(type) {
-  currentPV = createEmptyPV();
-  currentPV.type = type;
-  resetFormInputs();
-  document.getElementById('pv-template-select').value = type;
-  loadTemplateFields();
-  switchTab('nouveau-pv');
-  showToast(`📋 Modèle ${type.toUpperCase()} chargé avec succès !`, "success");
-}
-
-function filterPVList() {
-  const query = document.getElementById('search-keyword').value.toLowerCase();
-  const type = document.getElementById('search-type').value;
-  const province = document.getElementById('search-province').value;
-  const status = document.getElementById('search-status').value;
-  
-  const tbody = document.getElementById('db-pvs-rows');
-  tbody.innerHTML = "";
-  
-  const filtered = pvs.filter(pv => {
-    // Exclude drafts from official database view
-    if (pv.status === 'draft') return false;
-    
-    const matchesKeyword = 
-      pv.id.toLowerCase().includes(query) ||
-      pv.num.toLowerCase().includes(query) ||
-      pv.entreprise.toLowerCase().includes(query) ||
-      pv.inspecteurName.toLowerCase().includes(query) ||
-      pv.adresse.toLowerCase().includes(query);
-      
-    const matchesType = (type === 'all') || (pv.type === type);
-    const matchesProvince = (province === 'all') || (pv.province === province);
-    const matchesStatus = (status === 'all') || (pv.status === status);
-    
-    return matchesKeyword && matchesType && matchesProvince && matchesStatus;
-  });
-  
-  if (filtered.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:2rem;' class='text-muted'>Aucun document ne correspond à vos filtres de recherche.</td></tr>";
-    return;
-  }
-  
-  filtered.forEach(pv => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><strong>${pv.id}</strong></td>
-      <td>${pv.num}</td>
-      <td><span class="badge" style="background-color:rgba(0,85,165,0.15);">${pv.type.toUpperCase()}</span></td>
-      <td>${pv.entreprise}</td>
-      <td>${pv.date}</td>
-      <td>${pv.inspecteurName}</td>
-      <td style="font-weight:bold; color:var(--accent-color);">${pv.totalFines.toLocaleString()} $</td>
-      <td><span class="badge ${pv.status === 'signed' ? 'badge-signed' : 'badge-archived'}">${pv.status === 'signed' ? 'Validé' : 'Archivé'}</span></td>
-      <td>
-        <div style="display:flex; gap:0.25rem;">
-          <button class="btn btn-secondary btn-xs" onclick="viewPVA4('${pv.id}')">👁️ Aperçu</button>
-          <button class="btn btn-secondary btn-xs" onclick="showHistoryAuditModal('${pv.id}')">📜 Audit</button>
-          <button class="btn btn-danger btn-xs" onclick="confirmDeletePV('${pv.id}')">🗑️ Suppr.</button>
+  function renderHistory() {
+    const q = normalize(val('historySearch'));
+    const status = val('historyStatus');
+    const role = val('historyRole');
+    const type = val('historyType');
+    let records = state.store.records.slice().sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    records = records.filter((r) => {
+      const f = r.fields || {};
+      const hay = normalize([f.officialNumber, f.verificationCode, f.companyName, f.agentName, f.agentRole, f.direction, documentLabel(f.docType)].join(' '));
+      return (!q || hay.includes(q)) && (!status || f.status === status) && (!role || f.agentRole === role) && (!type || f.docType === type);
+    });
+    const container = byId('historyList');
+    container.classList.toggle('empty-state', records.length === 0);
+    container.innerHTML = records.length ? records.map((r) => {
+      const f = r.fields || {};
+      return `<article class="history-card">
+        <div>
+          <h4>${escapeHtml(f.officialNumber || 'Sans numéro officiel')}</h4>
+          <div class="history-meta"><span class="badge">${escapeHtml(documentLabel(f.docType))}</span><span class="badge ${statusBadgeClass(f.status)}">${escapeHtml(statusLabel(f.status))}</span><span>${escapeHtml(f.agentRole || '')}</span><span>${escapeHtml(f.companyName || f.defender || 'Sans entreprise')}</span></div>
+          <small>UUID : ${escapeHtml(r.id)} · Code : ${escapeHtml(f.verificationCode || '')} · MAJ : ${escapeHtml(formatDateTime(r.updatedAt))}</small>
         </div>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  localStorage.setItem('inspecteurbot_dark_mode', isDark ? 'enabled' : 'disabled');
-}
-
-// Restore theme settings
-if (localStorage.getItem('inspecteurbot_dark_mode') === 'enabled') {
-  document.body.classList.add('dark');
-}
-
-// Toast notification generator
-function showToast(message, type = "info") {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
-  
-  const toast = document.createElement('div');
-  toast.style.padding = "0.75rem 1rem";
-  toast.style.borderRadius = "8px";
-  toast.style.color = "#FFFFFF";
-  toast.style.fontSize = "0.85rem";
-  toast.style.fontWeight = "600";
-  toast.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.3)";
-  toast.style.display = "flex";
-  toast.style.alignItems = "center";
-  toast.style.gap = "0.5rem";
-  toast.style.opacity = "0";
-  toast.style.transform = "translateY(20px)";
-  toast.style.transition = "opacity 0.3s, transform 0.3s";
-  
-  const bgColors = {
-    success: "#10B981", // green
-    warning: "#F59E0B", // amber
-    danger: "#EF4444",  // red
-    info: "#0055A5"     // blue
-  };
-  toast.style.backgroundColor = bgColors[type] || bgColors.info;
-  
-  toast.textContent = message;
-  container.appendChild(toast);
-  
-  // Animate Entrance
-  setTimeout(() => {
-    toast.style.opacity = "1";
-    toast.style.transform = "translateY(0)";
-  }, 50);
-  
-  // Remove
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateY(20px)";
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
-  }, 4000);
-}
-
-// 23. PERFECT A4 WEB PRINT TRIGGER
-function printPreview() {
-  // To print, we dynamically add a special print class to our preview element, trigger print, and clean up!
-  const preview = document.getElementById('a4-document-preview');
-  if (preview) {
-    preview.classList.add('preview-panel-active-print');
-    window.print();
-    preview.classList.remove('preview-panel-active-print');
+        <div class="history-actions">
+          <button class="btn tiny secondary" data-history-action="open" data-id="${r.id}" type="button">Modifier</button>
+          <button class="btn tiny warning" data-history-action="duplicate" data-id="${r.id}" type="button">Dupliquer</button>
+          <button class="btn tiny ghost" data-history-action="print" data-id="${r.id}" type="button">Imprimer</button>
+          <button class="btn tiny dark" data-history-action="archive" data-id="${r.id}" type="button">${f.status === 'archived' ? 'Restaurer' : 'Archiver'}</button>
+          <button class="btn tiny danger" data-history-action="delete" data-id="${r.id}" type="button">Supprimer</button>
+        </div>
+      </article>`;
+    }).join('') : 'Aucun document enregistré.';
   }
-}
+
+  function handleHistoryAction(event) {
+    const btn = event.target.closest('[data-history-action]');
+    if (!btn) return;
+    const record = state.store.records.find((r) => r.id === btn.dataset.id);
+    if (!record) return;
+    const action = btn.dataset.historyAction;
+    if (action === 'open') { fillForm(deepClone(record)); switchView('create'); }
+    if (action === 'duplicate') { fillForm(deepClone(record)); duplicateCurrent(); switchView('create'); }
+    if (action === 'print') { fillForm(deepClone(record)); switchView('create'); setTimeout(printDocument, 250); }
+    if (action === 'archive') {
+      record.fields.status = record.fields.status === 'archived' ? 'draft' : 'archived';
+      record.updatedAt = new Date().toISOString();
+      record.logs = record.logs || [];
+      record.logs.push(logEntry(record.fields.status === 'archived' ? 'PV archivé' : 'PV restauré en brouillon', record));
+      saveStore(); renderHistory(); renderDashboard(); toast('Statut mis à jour.');
+    }
+    if (action === 'delete') {
+      if (!confirm('Supprimer définitivement ce PV ?')) return;
+      state.store.records = state.store.records.filter((r) => r.id !== record.id);
+      saveStore(); renderHistory(); renderDashboard(); toast('PV supprimé.');
+    }
+  }
+
+  function renderLegalBase() {
+    const q = normalize(val('legalSearch'));
+    const category = val('legalCategory');
+    const filtered = LEGAL_BASE.filter((item) => {
+      const hay = normalize([item.id, item.category, item.title, item.reference, item.scope, item.use, (item.keywords || []).join(' ')].join(' '));
+      return (!q || hay.includes(q)) && (!category || item.category === category);
+    });
+    const categories = Array.from(new Set(LEGAL_BASE.map((item) => item.category)));
+    const summary = byId('legalSummary');
+    if (summary) {
+      summary.innerHTML = `
+        <article><strong>${LEGAL_BASE.length}</strong><span>références juridiques</span></article>
+        <article><strong>${categories.length}</strong><span>catégories</span></article>
+        <article><strong>${filtered.length}</strong><span>résultat(s) affiché(s)</span></article>
+        <article><strong>${INFRACTIONS.length}</strong><span>infractions liées</span></article>`;
+    }
+    const list = byId('legalList');
+    if (!list) return;
+    list.innerHTML = filtered.length ? filtered.map((item) => `
+      <article class="legal-card" data-legal-id="${escapeHtml(item.id)}">
+        <div class="legal-card-head">
+          <span class="badge">${escapeHtml(item.id)}</span>
+          <span class="badge moyenne">${escapeHtml(item.category)}</span>
+        </div>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p><strong>Référence :</strong> ${escapeHtml(item.reference)}</p>
+        <p><strong>Portée :</strong> ${escapeHtml(item.scope)}</p>
+        <p><strong>Utilisation dans le PV :</strong> ${escapeHtml(item.use)}</p>
+        <div class="badges">${(item.keywords || []).slice(0, 8).map((k) => `<em class="badge faible">${escapeHtml(k)}</em>`).join('')}</div>
+        <div class="legal-actions">
+          <button class="btn tiny ghost" data-legal-action="copy" data-id="${escapeHtml(item.id)}" type="button">Copier</button>
+          <button class="btn tiny secondary" data-legal-action="insert" data-id="${escapeHtml(item.id)}" type="button">Insérer dans observations</button>
+          <button class="btn tiny" data-legal-action="infractions" data-id="${escapeHtml(item.id)}" type="button">Voir infractions liées</button>
+        </div>
+      </article>`).join('') : '<div class="empty-state">Aucune référence juridique trouvée.</div>';
+  }
+
+  function legalText(item) {
+    if (!item) return '';
+    return `${item.title}\nRéférence : ${item.reference}\nPortée : ${item.scope}\nUtilisation : ${item.use}`;
+  }
+
+  function handleLegalAction(event) {
+    const btn = event.target.closest('[data-legal-action]');
+    if (!btn) return;
+    const item = LEGAL_BASE.find((j) => j.id === btn.dataset.id);
+    if (!item) return;
+    const action = btn.dataset.legalAction;
+    if (action === 'copy') {
+      copyText(legalText(item));
+      toast('Référence juridique copiée.');
+    }
+    if (action === 'insert') {
+      const current = val('observations');
+      const insertion = `Base juridique — ${item.title} : ${item.reference}. ${item.use}`;
+      setVal('observations', current ? `${current}\n\n${insertion}` : insertion);
+      updatePreview();
+      switchView('create');
+      toast('Base juridique insérée dans les observations du PV.');
+    }
+    if (action === 'infractions') {
+      const terms = (item.keywords || []).slice(0, 4).join(' ');
+      setVal('infractionSearch', terms || item.title);
+      renderInfractionsList();
+      switchView('create');
+      toast('Recherche d’infractions liées à cette base juridique.');
+    }
+  }
+
+  function copyLegalSummary() {
+    const text = LEGAL_BASE.map((item) => `${item.id}. ${legalText(item)}`).join('\n\n');
+    copyText(text);
+    toast('Synthèse complète de la base juridique copiée.');
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(() => fallbackCopyText(text));
+    } else {
+      fallbackCopyText(text);
+    }
+  }
+
+  function fallbackCopyText(text) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.left = '-9999px';
+    document.body.appendChild(area);
+    area.select();
+    try { document.execCommand('copy'); } catch (_) { /* ignore */ }
+    area.remove();
+  }
+
+  function renderSettings() {
+    renderAgentsList();
+    byId('directionsList').innerHTML = DIRECTIONS.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.name)}</strong><small>Province : ${escapeHtml(d.province)} · Code : ${escapeHtml(d.code)}</small></div>`).join('');
+    byId('templatesList').innerHTML = DOCUMENT_TYPES.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.label)}</strong><small>Modèle local · ${d.needsInfractions ? 'tableau infractions et amendes' : 'rédaction libre assistée'} · QR/signatures inclus</small></div>`).join('') + `<div class="mini-item"><strong>Base infractions intégrée</strong><small>${INFRACTIONS.length} infractions/références avec recherche, gravité et calcul automatique.</small></div><div class="mini-item"><strong>Base juridique intégrée</strong><small>${LEGAL_BASE.length} références légales/réglementaires avec recherche, insertion dans observations et liens vers infractions.</small></div>`;
+  }
+
+  function renderAgentsList() {
+    byId('agentsList').innerHTML = state.store.agents.map((a) => `<div class="mini-item"><strong>${escapeHtml(a.name)}</strong><small>${escapeHtml(a.role)} · ${escapeHtml(a.quality || '')}<br>Habilitation : ${escapeHtml(a.habilitation || '-')} · OPJ : ${escapeHtml(a.opj || '-')}<br>${escapeHtml(a.direction || '')}</small><br><button class="btn tiny ghost" data-agent-edit="${a.id}" type="button">Éditer</button> <button class="btn tiny danger" data-agent-delete="${a.id}" type="button">Supprimer</button></div>`).join('');
+  }
+
+  function addOrUpdateAgent() {
+    const name = val('settingsAgentName');
+    if (!name) { toast('Nom complet obligatoire.'); return; }
+    const role = val('settingsAgentRole');
+    const existing = state.store.agents.find((a) => normalize(a.name) === normalize(name) && a.role === role);
+    const agent = existing || { id: `agt-${Date.now()}`, role, name };
+    agent.role = role;
+    agent.name = name;
+    agent.quality = val('settingsAgentQuality');
+    agent.habilitation = val('settingsAgentHabilitation');
+    agent.opj = val('settingsAgentOpj');
+    agent.direction = val('settingsAgentDirection');
+    if (!existing) state.store.agents.push(agent);
+    saveStore(); populateAgentsSelect(); renderAgentsList(); toast(existing ? 'Agent mis à jour.' : 'Agent ajouté.');
+  }
+
+  function handleAgentAction(event) {
+    const edit = event.target.closest('[data-agent-edit]');
+    const del = event.target.closest('[data-agent-delete]');
+    if (edit) {
+      const a = state.store.agents.find((x) => x.id === edit.dataset.agentEdit);
+      if (!a) return;
+      setVal('settingsAgentRole', a.role); setVal('settingsAgentName', a.name); setVal('settingsAgentQuality', a.quality); setVal('settingsAgentHabilitation', a.habilitation); setVal('settingsAgentOpj', a.opj); setVal('settingsAgentDirection', a.direction);
+    }
+    if (del) {
+      if (!confirm('Supprimer cet agent ?')) return;
+      state.store.agents = state.store.agents.filter((a) => a.id !== del.dataset.agentDelete);
+      saveStore(); populateAgentsSelect(); renderAgentsList(); toast('Agent supprimé.');
+    }
+  }
+
+  function exportBackup() {
+    const data = JSON.stringify({ exportedAt: new Date().toISOString(), app: 'InspecteurBot IA RDC PV', ...state.store }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sauvegarde-pv-igt-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    byId('backupStatus').textContent = `Sauvegarde exportée le ${formatDateTime(new Date().toISOString())}.`;
+  }
+
+  function restoreBackup(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (!Array.isArray(parsed.records)) throw new Error('Fichier invalide : records manquant.');
+        state.store.records = parsed.records;
+        state.store.agents = Array.isArray(parsed.agents) && parsed.agents.length ? parsed.agents : DEFAULT_AGENTS.slice();
+        state.store.customTemplates = Array.isArray(parsed.customTemplates) ? parsed.customTemplates : [];
+        saveStore(); populateStaticControls(); renderDashboard(); renderHistory(); renderSettings(); byId('backupStatus').textContent = `Restauration réussie : ${state.store.records.length} PV.`; toast('Restauration terminée.');
+      } catch (err) {
+        byId('backupStatus').textContent = `Erreur restauration : ${err.message}`;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearLocalData() {
+    if (!confirm('Vider toutes les données locales (PV, agents ajoutés) ?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state.store = { version: APP_VERSION, records: [], agents: DEFAULT_AGENTS.slice(), customTemplates: [] };
+    saveStore(); populateStaticControls(); renderDashboard(); renderHistory(); renderSettings(); newRecord(false); toast('Données locales réinitialisées.');
+  }
+
+  function switchView(view) {
+    document.querySelectorAll('.nav-item').forEach((btn) => btn.classList.toggle('active', btn.dataset.view === view));
+    document.querySelectorAll('.view').forEach((section) => section.classList.toggle('active', section.id === `view-${view}`));
+    if (view === 'dashboard') renderDashboard();
+    if (view === 'history') renderHistory();
+    if (view === 'legal') renderLegalBase();
+    if (view === 'settings') renderSettings();
+  }
+
+  function toggleDictation() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { toast('Dictée vocale non supportée par ce navigateur. Essayez Chrome/Edge.'); return; }
+    if (state.listening && state.recognition) { state.recognition.stop(); return; }
+    const target = state.focusedField && /^(INPUT|TEXTAREA)$/.test(state.focusedField.tagName) && !state.focusedField.readOnly ? state.focusedField : byId('facts');
+    target.focus();
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.interimResults = true;
+    recognition.continuous = true;
+    state.recognition = recognition;
+    state.listening = true;
+    byId('btnGlobalListen').textContent = '⏹️ Stop dictée';
+    let finalText = '';
+    recognition.onresult = (event) => {
+      let interim = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) finalText += transcript + ' '; else interim += transcript;
+      }
+      const base = target.dataset.dictationBase || target.value;
+      if (!target.dataset.dictationBase) target.dataset.dictationBase = base;
+      target.value = `${base}${base && !base.endsWith(' ') ? ' ' : ''}${finalText}${interim}`.trimStart();
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    recognition.onerror = (event) => toast(`Erreur dictée : ${event.error}`);
+    recognition.onend = () => {
+      state.listening = false;
+      byId('btnGlobalListen').textContent = '🎙️ Dictée';
+      delete target.dataset.dictationBase;
+      updatePreview();
+    };
+    recognition.start();
+    toast('Dictée démarrée. Parlez en français dans le champ actif.');
+  }
+
+  function readPreview() {
+    if (!('speechSynthesis' in window)) { toast('Lecture vocale non supportée par ce navigateur.'); return; }
+    window.speechSynthesis.cancel();
+    const text = byId('printArea').innerText.replace(/\s+/g, ' ').trim();
+    if (!text) { toast('Aucun texte à lire.'); return; }
+    const utterance = new SpeechSynthesisUtterance(text.slice(0, 7000));
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.92;
+    window.speechSynthesis.speak(utterance);
+    toast('Lecture vocale de l’aperçu en cours.');
+  }
+
+  function toast(message) {
+    const el = byId('toast');
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => el.classList.remove('show'), 3600);
+  }
+
+  function formatUSD(value) {
+    const n = Number(value || 0);
+    return `${n.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} $`;
+  }
+
+  function formatDate(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  function formatDateTime(value) {
+    if (!value) return '';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return String(value).replace('T', ' ');
+    return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function nowLocalInput() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 16);
+  }
+
+  function monthName(date) {
+    return (date instanceof Date ? date : new Date(date)).toLocaleDateString('fr-FR', { month: 'long' });
+  }
+
+  function legalDatePhrase(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    return { yearLetters: numberToFrench(d.getFullYear()), dayLetters: ordinalDay(d.getDate()), monthName: monthName(d) };
+  }
+
+  function ordinalDay(day) {
+    if (day === 1) return 'premier';
+    const ord = { 2: 'deuxième', 3: 'troisième', 4: 'quatrième', 5: 'cinquième', 6: 'sixième', 7: 'septième', 8: 'huitième', 9: 'neuvième', 10: 'dixième', 11: 'onzième', 12: 'douzième', 13: 'treizième', 14: 'quatorzième', 15: 'quinzième', 16: 'seizième', 17: 'dix-septième', 18: 'dix-huitième', 19: 'dix-neuvième', 20: 'vingtième', 21: 'vingt-et-unième', 22: 'vingt-deuxième', 23: 'vingt-troisième', 24: 'vingt-quatrième', 25: 'vingt-cinquième', 26: 'vingt-sixième', 27: 'vingt-septième', 28: 'vingt-huitième', 29: 'vingt-neuvième', 30: 'trentième', 31: 'trente-et-unième' };
+    return ord[day] || String(day);
+  }
+
+  function amountInLetters(value) {
+    const n = Number(value || 0);
+    if (!n) return 'zéro';
+    return numberToFrench(n);
+  }
+
+  function numberToFrench(n) {
+    n = Math.floor(Number(n));
+    if (n === 0) return 'zéro';
+    const units = ['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize'];
+    const tens = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'septante', 'quatre-vingt', 'nonante'];
+    const underHundred = (x) => {
+      if (x < 17) return units[x];
+      if (x < 20) return `dix-${units[x - 10]}`;
+      const t = Math.floor(x / 10), u = x % 10;
+      if (u === 0) return tens[t] + (t === 8 ? 's' : '');
+      if (u === 1 && ![8].includes(t)) return `${tens[t]}-et-un`;
+      return `${tens[t]}-${units[u]}`;
+    };
+    const underThousand = (x) => {
+      if (x < 100) return underHundred(x);
+      const h = Math.floor(x / 100), r = x % 100;
+      const hText = h === 1 ? 'cent' : `${units[h]} cent${r ? '' : 's'}`;
+      return r ? `${hText} ${underHundred(r)}` : hText;
+    };
+    if (n < 1000) return underThousand(n);
+    if (n < 1000000) {
+      const th = Math.floor(n / 1000), r = n % 1000;
+      const thText = th === 1 ? 'mille' : `${underThousand(th)} mille`;
+      return r ? `${thText} ${underThousand(r)}` : thText;
+    }
+    const m = Math.floor(n / 1000000), r = n % 1000000;
+    const mText = m === 1 ? 'un million' : `${numberToFrench(m)} millions`;
+    return r ? `${mText} ${numberToFrench(r)}` : mText;
+  }
+
+  function gravityClass(gravity) {
+    return normalize(gravity).replace('é', 'e').replace('è', 'e') || 'faible';
+  }
+
+  function statusLabel(status) {
+    return ({ draft: 'Brouillon', validated: 'Validé', archived: 'Archivé' }[status] || status || 'Brouillon');
+  }
+
+  function statusBadgeClass(status) {
+    if (status === 'validated') return 'moyenne';
+    if (status === 'archived') return 'faible';
+    return 'elevee';
+  }
+
+  function documentLabel(id) {
+    const doc = DOCUMENT_TYPES.find((d) => d.id === id);
+    return doc ? doc.label : id || 'Document';
+  }
+
+  function slug(text) {
+    return normalize(text).replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+
+  /* QR Code local, sans dépendance externe : QR version 4-L, Byte mode, masque 2. */
+  function makeQrSvg(text, size = 96) {
+    try {
+      const matrix = qrMatrix(String(text).slice(0, 78));
+      const n = matrix.length;
+      const cell = size / n;
+      let rects = '';
+      for (let y = 0; y < n; y++) {
+        for (let x = 0; x < n; x++) {
+          if (matrix[y][x]) rects += `<rect x="${(x * cell).toFixed(2)}" y="${(y * cell).toFixed(2)}" width="${cell.toFixed(2)}" height="${cell.toFixed(2)}"/>`;
+        }
+      }
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="QR Code"><rect width="100%" height="100%" fill="#fff"/><g fill="#111">${rects}</g></svg>`;
+    } catch (err) {
+      console.error(err);
+      return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="100%" height="100%" fill="#fff" stroke="#111"/><text x="50%" y="50%" text-anchor="middle" font-size="9">QR</text></svg>`;
+    }
+  }
+
+  function qrMatrix(text) {
+    const version = 4;
+    const size = 21 + 4 * (version - 1);
+    const dataCodewords = 80;
+    const ecCodewords = 20;
+    const bytes = Array.from(new TextEncoder().encode(text));
+    if (bytes.length > 78) bytes.length = 78;
+    const bits = [];
+    appendBits(bits, 0b0100, 4);
+    appendBits(bits, bytes.length, 8);
+    bytes.forEach((b) => appendBits(bits, b, 8));
+    appendBits(bits, 0, Math.min(4, dataCodewords * 8 - bits.length));
+    while (bits.length % 8) bits.push(0);
+    const data = [];
+    for (let i = 0; i < bits.length; i += 8) data.push(bitsToByte(bits.slice(i, i + 8)));
+    let pad = true;
+    while (data.length < dataCodewords) { data.push(pad ? 0xec : 0x11); pad = !pad; }
+    const ec = reedSolomon(data, ecCodewords);
+    const all = data.concat(ec);
+    const dataBits = [];
+    all.forEach((b) => appendBits(dataBits, b, 8));
+
+    const m = Array.from({ length: size }, () => Array(size).fill(null));
+    const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+    const set = (x, y, dark, res = true) => { if (x >= 0 && y >= 0 && x < size && y < size) { m[y][x] = !!dark; if (res) reserved[y][x] = true; } };
+    const reserve = (x, y) => { if (x >= 0 && y >= 0 && x < size && y < size) reserved[y][x] = true; };
+    drawFinder(set, 0, 0); drawFinder(set, size - 7, 0); drawFinder(set, 0, size - 7);
+    for (let i = 0; i < size; i++) {
+      if (!reserved[6][i]) set(i, 6, i % 2 === 0);
+      if (!reserved[i][6]) set(6, i, i % 2 === 0);
+    }
+    drawAlignment(set, 26, 26);
+    set(8, 4 * version + 9, true);
+    for (let i = 0; i < 9; i++) { reserve(8, i); reserve(i, 8); reserve(size - 1 - i, 8); reserve(8, size - 1 - i); }
+
+    let bitIndex = 0;
+    let upward = true;
+    for (let x = size - 1; x > 0; x -= 2) {
+      if (x === 6) x--;
+      for (let yi = 0; yi < size; yi++) {
+        const y = upward ? size - 1 - yi : yi;
+        for (let dx = 0; dx < 2; dx++) {
+          const xx = x - dx;
+          if (reserved[y][xx]) continue;
+          let dark = bitIndex < dataBits.length ? dataBits[bitIndex++] === 1 : false;
+          if (xx % 3 === 0) dark = !dark; // mask 2
+          set(xx, y, dark, false);
+        }
+      }
+      upward = !upward;
+    }
+    drawFormat(set, size, 1, 2);
+    return m.map((row) => row.map(Boolean));
+  }
+
+  function appendBits(arr, value, length) {
+    for (let i = length - 1; i >= 0; i--) arr.push((value >>> i) & 1);
+  }
+  function bitsToByte(bits) { return bits.reduce((v, b) => (v << 1) | b, 0); }
+
+  function drawFinder(set, x, y) {
+    for (let dy = -1; dy <= 7; dy++) for (let dx = -1; dx <= 7; dx++) {
+      const xx = x + dx, yy = y + dy;
+      const dark = dx >= 0 && dx <= 6 && dy >= 0 && dy <= 6 && (dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4));
+      set(xx, yy, dark);
+    }
+  }
+  function drawAlignment(set, cx, cy) {
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+      const adx = Math.abs(dx), ady = Math.abs(dy);
+      set(cx + dx, cy + dy, Math.max(adx, ady) !== 1);
+    }
+  }
+  function drawFormat(set, size, eclBits, mask) {
+    const bits = bchFormat((eclBits << 3) | mask);
+    for (let i = 0; i < 15; i++) {
+      const dark = ((bits >> i) & 1) === 1;
+      if (i < 6) set(8, i, dark);
+      else if (i < 8) set(8, i + 1, dark);
+      else set(8, size - 15 + i, dark);
+
+      if (i < 8) set(size - i - 1, 8, dark);
+      else if (i < 9) set(15 - i, 8, dark);
+      else set(14 - i, 8, dark);
+    }
+    set(8, size - 8, true);
+  }
+  function bchFormat(data) {
+    const g = 0x537;
+    let d = data << 10;
+    while (bitLength(d) - bitLength(g) >= 0) d ^= g << (bitLength(d) - bitLength(g));
+    return ((data << 10) | d) ^ 0x5412;
+  }
+  function bitLength(n) { let len = 0; while (n) { len++; n >>>= 1; } return len; }
+
+  function reedSolomon(data, ecLen) {
+    const gf = gfTables();
+    let gen = [1];
+    for (let i = 0; i < ecLen; i++) gen = polyMul(gen, [1, gf.exp[i]], gf);
+    const res = data.concat(Array(ecLen).fill(0));
+    for (let i = 0; i < data.length; i++) {
+      const factor = res[i];
+      if (factor !== 0) {
+        for (let j = 0; j < gen.length; j++) res[i + j] ^= gfMul(gen[j], factor, gf);
+      }
+    }
+    return res.slice(data.length);
+  }
+  function gfTables() {
+    if (gfTables.cache) return gfTables.cache;
+    const exp = Array(512).fill(0), log = Array(256).fill(0);
+    let x = 1;
+    for (let i = 0; i < 255; i++) {
+      exp[i] = x; log[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d;
+    }
+    for (let i = 255; i < 512; i++) exp[i] = exp[i - 255];
+    gfTables.cache = { exp, log };
+    return gfTables.cache;
+  }
+  function gfMul(a, b, gf) { if (a === 0 || b === 0) return 0; return gf.exp[gf.log[a] + gf.log[b]]; }
+  function polyMul(a, b, gf) {
+    const out = Array(a.length + b.length - 1).fill(0);
+    for (let i = 0; i < a.length; i++) for (let j = 0; j < b.length; j++) out[i + j] ^= gfMul(a[i], b[j], gf);
+    return out;
+  }
+})();
