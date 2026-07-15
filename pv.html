@@ -10,7 +10,7 @@
   <div class="app-shell" id="appShell">
     <header class="topbar">
       <div class="brand-block">
-        <div class="brand-emblem" aria-hidden="true">RDC</div>
+        <div class="brand-emblem" id="topLogoIgtPreview" aria-hidden="true">IGT</div>
         <div>
           <p class="eyebrow">République Démocratique du Congo</p>
           <h1>InspecteurBot IA RDC — Module Procès-Verbaux</h1>
@@ -18,6 +18,11 @@
         </div>
       </div>
       <div class="top-actions">
+        <label class="top-logo-control" title="Ajouter le logo officiel IGT">
+          <span>Logo IGT</span>
+          <input id="logoIgtFileTop" type="file" accept="image/*">
+        </label>
+        <button class="btn ghost" id="btnResetLogoTop" type="button">Logo défaut</button>
         <button class="btn ghost" id="btnThemeToggle" type="button" aria-label="Basculer le mode sombre ou clair">🌙 Mode sombre</button>
         <button class="btn ghost" id="btnGlobalListen" type="button">🎙️ Dictée</button>
         <button class="btn ghost" id="btnReadPreview" type="button">🔊 Lire le PV</button>
@@ -153,6 +158,19 @@
                 <label class="span-2">Ordre de mission
                   <input id="missionOrder" name="missionOrder" type="text" placeholder="N° ordre de mission collectif / individuel">
                 </label>
+                <div class="span-2 logo-upload-box">
+                  <label>Logo IGT / armoiries à afficher sur le PV
+                    <input id="logoIgtFile" name="logoIgtFile" type="file" accept="image/*">
+                  </label>
+                  <input id="logoIgtData" name="logoIgtData" type="hidden">
+                  <div class="logo-preview-row">
+                    <div id="logoIgtPreview" class="logo-preview empty-logo">Aucun logo IGT</div>
+                    <div>
+                      <p class="hint">Un logo IGT par défaut est déjà intégré. Vous pouvez le remplacer par le logo officiel ou les armoiries ; il apparaîtra immédiatement dans l’en-tête officiel A4. Le cachet officiel a été supprimé de l’aperçu.</p>
+                      <button class="btn tiny ghost" id="btnClearLogoIgt" type="button">Remettre le logo par défaut</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </article>
 
@@ -286,8 +304,48 @@
               </div>
             </article>
 
+            <article class="panel collapsible open" data-panel="suivi">
+              <button class="panel-toggle" type="button"><span>7. Suivi, régularisation et idées complémentaires</span><strong>−</strong></button>
+              <div class="panel-body grid-2">
+                <label>Date limite de régularisation
+                  <input id="regularizationDeadline" name="regularizationDeadline" type="date">
+                </label>
+                <label>Niveau d’urgence / risque
+                  <select id="riskLevel" name="riskLevel">
+                    <option value="">Non précisé</option>
+                    <option>Faible</option>
+                    <option>Moyen</option>
+                    <option>Élevé</option>
+                    <option>Urgent</option>
+                  </select>
+                </label>
+                <label>Délai de paiement / transaction
+                  <input id="paymentDeadline" name="paymentDeadline" type="text" placeholder="Ex. 8 jours, 15 jours, immédiat...">
+                </label>
+                <label>Suite réservée
+                  <select id="nextAction" name="nextAction">
+                    <option value="">À déterminer</option>
+                    <option>Mise en conformité volontaire</option>
+                    <option>Nouvelle visite de contrôle</option>
+                    <option>Transmission à la hiérarchie</option>
+                    <option>Transmission au parquet compétent</option>
+                    <option>Classement après régularisation complète</option>
+                  </select>
+                </label>
+                <label class="span-2">Pièces consultées ou demandées
+                  <textarea id="documentsRequested" name="documentsRequested" rows="3" placeholder="Contrats, livre de paie, horaire visé, règlement d’entreprise, ONEM, CNSS, INPP, convention médicale..."></textarea>
+                </label>
+                <label class="span-2">Mesures correctives demandées
+                  <textarea id="correctiveMeasures" name="correctiveMeasures" rows="4" placeholder="Mesures à prendre par l’entreprise pour se conformer à la loi..."></textarea>
+                </label>
+                <div class="span-2 ai-toolbar">
+                  <button class="btn secondary" id="btnGenerateCorrectivePlan" type="button">🧩 Générer mesures correctives</button>
+                </div>
+              </div>
+            </article>
+
             <article class="panel collapsible open" data-panel="signatures">
-              <button class="panel-toggle" type="button"><span>7. Signatures manuscrites sécurisées</span><strong>−</strong></button>
+              <button class="panel-toggle" type="button"><span>8. Signatures manuscrites sécurisées</span><strong>−</strong></button>
               <div class="panel-body">
                 <p class="hint">Toutes les signatures sont enregistrées avec nom complet, qualité/fonction, date et heure. Le stylo est bleu par défaut.</p>
                 <div id="signaturePads" class="signature-grid"></div>
@@ -386,7 +444,17 @@
           </article>
           <article class="panel">
             <div class="panel-title"><h3>Modèles de PV intégrés</h3><span>Base locale</span></div>
-            <div id="templatesList" class="mini-list tall"></div>
+            <div id="templatesList" class="mini-list tall interactive-list"></div>
+            <div id="templateDetail" class="template-detail empty-state">Touchez une rubrique pour afficher les détails et les actions disponibles.</div>
+          </article>
+          <article class="panel settings-wide" id="reserveModelsPanel">
+            <div class="panel-title"><h3>Réserve de 100 modèles de textes de PV</h3><span>20 par type</span></div>
+            <p class="hint">Ces textes gardent l'esprit des modèles officiels : formule d'ouverture, constat, base légale, conclusion et serment de sincérité. Ils ne contiennent aucun nom suggéré. Cliquez sur « Utiliser dans le PV » pour envoyer le texte directement dans le formulaire et l’aperçu A4.</p>
+            <div class="reserve-toolbar">
+              <input id="reserveTemplateSearch" type="search" placeholder="Rechercher un modèle de réserve...">
+              <select id="reserveTemplateType"><option value="">Tous modèles</option></select>
+            </div>
+            <div id="reserveTemplatesList" class="reserve-list"></div>
           </article>
           <article class="panel">
             <div class="panel-title"><h3>Sauvegardes & restauration</h3><span>LocalStorage</span></div>
@@ -422,6 +490,8 @@
           <p>La dictée utilise l'API vocale du navigateur. Cliquez dans un champ, puis sur « Dictée ». La lecture utilise la synthèse vocale du navigateur et peut lire l'aperçu A4. Le bouton « Mode sombre / Mode clair » conserve automatiquement la préférence dans le navigateur.</p>
           <h3>Base juridique intégrée</h3>
           <p>L'onglet « Base juridique » regroupe les textes de référence : Code du Travail, Ordonnance-loi modificative, articles relatifs à l'Inspection du Travail, non-conciliation, obstruction, sanctions, santé-sécurité, SMIG, déclarations obligatoires et arrêté interministériel des taux. Chaque référence peut être copiée, insérée dans les observations ou reliée à la recherche d'infractions.</p>
+          <h3>Logo IGT, suivi et régularisation</h3>
+          <p>Le cachet officiel a été supprimé de l’aperçu. Le formulaire permet maintenant d’ajouter un logo IGT ou les armoiries dans l’en-tête du PV. Une section de suivi permet aussi de préciser la date limite de régularisation, les pièces demandées, les mesures correctives, le délai de paiement et la suite réservée.</p>
           <h3>Modèles intégrés depuis le fichier fourni</h3>
           <p>Le module reprend la structure et les formulations principales des modèles transmis : PV de constat d'infraction, PV d'obstruction, PV de non-conciliation, mise en demeure et PV d'installation du comité de sécurité, d'hygiène et d'embellissement.</p>
         </article>
@@ -430,6 +500,16 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="app-pv.js" defer></script>
+  <div id="confirmModal" class="confirm-modal" aria-hidden="true">
+    <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Confirmation</h3>
+      <p id="confirmMessage">Confirmer l’action ?</p>
+      <div class="confirm-actions">
+        <button class="btn ghost" id="confirmCancel" type="button">Annuler</button>
+        <button class="btn danger" id="confirmOk" type="button">Confirmer</button>
+      </div>
+    </div>
+  </div>
+  <script src="app.js" defer></script>
 </body>
 </html>
