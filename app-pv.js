@@ -3,7 +3,10 @@
 
   const STORAGE_KEY = 'inspecteurbot_pv_rdc_v1';
   const THEME_KEY = 'inspecteurbot_pv_theme';
+  const LOGO_KEY = 'inspecteurbot_logo_igt';
   const APP_VERSION = '1.0.0-local';
+  const DEFAULT_IGT_LOGO = 'assets/logo-igt.svg';
+
 
   const PROVINCES = [
     'Administration centrale', 'Bas-Uélé', 'Équateur', 'Haut-Katanga', 'Haut-Lomami', 'Haut-Uélé', 'Ituri', 'Kasaï', 'Kasaï-Central', 'Kasaï-Oriental', 'Kinshasa', 'Kongo Central', 'Kwango', 'Kwilu', 'Lomami', 'Lualaba', 'Maï-Ndombe', 'Maniema', 'Mongala', 'Nord-Kivu', 'Nord-Ubangi', 'Sankuru', 'Sud-Kivu', 'Sud-Ubangi', 'Tanganyika', 'Tshopo', 'Tshuapa'
@@ -34,6 +37,133 @@
     { id: 'pv-installation-cshe', label: 'PV d’installation du Comité de Sécurité, d’Hygiène et d’Embellissement', short: 'PV Installation CSHE', needsInfractions: false }
   ];
 
+  const RESERVE_PV_MODELS = buildReservePvModels();
+
+  function buildReservePvModels() {
+    const groups = {
+      'pv-infraction': [
+        ['Constat général de documents sociaux manquants', 'Après vérification des pièces sollicitées, il a été relevé l’absence ou l’irrégularité de documents sociaux obligatoires. Les infractions retenues sont portées au tableau des contraventions, sans préjudice de l’obligation de régularisation.'],
+        ['Constat d’absence de contrats écrits', 'Les travailleurs identifiés prestent sans contrats écrits, signés ou visés selon les prescriptions applicables. Cette situation est actée comme manquement aux obligations sociales de l’employeur.'],
+        ['Constat de défaut de déclaration d’établissement', 'L’entreprise n’a pas présenté la déclaration d’établissement ou les éléments prouvant son dépôt auprès des services compétents. Le manquement est retenu à charge de l’employeur.'],
+        ['Constat sur horaire, règlement et classification', 'L’horaire du travail visé, le règlement d’entreprise et/ou la classification générale des emplois n’ont pas été produits ou ne sont pas conformes aux dispositions applicables.'],
+        ['Constat relatif au SMIG', 'L’examen des éléments de paie révèle des rémunérations ou avantages non conformes au salaire minimum et aux prescriptions relatives à la rémunération.'],
+        ['Constat sur heures supplémentaires', 'Il ressort des déclarations et documents examinés que des heures supplémentaires ou prestations exceptionnelles n’ont pas été rémunérées conformément aux règles applicables.'],
+        ['Constat santé et sécurité au travail', 'Les conditions d’hygiène, de santé et de sécurité constatées ne répondent pas aux exigences légales. Les mesures correctives sont exigées dans le délai fixé.'],
+        ['Constat d’absence du comité SHE/CSHE', 'L’entreprise ne justifie pas l’existence, l’installation ou le fonctionnement effectif du Comité de Sécurité, d’Hygiène et d’Embellissement.'],
+        ['Constat relatif à la convention médicale', 'Aucune convention médicale viable ou preuve d’organisation du service médical des travailleurs n’a été présentée lors du contrôle.'],
+        ['Constat CNSS-INPP-ONEM', 'Les preuves d’affiliation, déclaration ou paiement relatives à la CNSS, à l’INPP et à l’ONEM n’ont pas été produites ou sont incomplètes.'],
+        ['Constat de défaut de bilan social', 'L’entreprise n’a pas présenté le bilan social ni la déclaration annuelle de la situation de la main-d’œuvre nationale et étrangère.'],
+        ['Constat relatif aux congés annuels', 'Le planning de congés annuels et les preuves de jouissance effective des congés n’ont pas été produits ou présentent des irrégularités.'],
+        ['Constat sur livre de paie', 'Le livre de paie actualisé, les décomptes ou éléments justificatifs de rémunération ne sont pas disponibles ou sont tenus de façon irrégulière.'],
+        ['Constat relatif aux travailleurs étrangers', 'Les pièces relatives à la régularité de l’emploi des travailleurs étrangers et à la protection de la main-d’œuvre nationale n’ont pas été justifiées.'],
+        ['Constat de non-respect des représentants des travailleurs', 'Des manquements sont relevés concernant les droits, moyens, heures ou protection des représentants des travailleurs.'],
+        ['Constat de documents incomplets', 'Les documents produits ne permettent pas d’établir la conformité de l’entreprise. Les insuffisances sont consignées dans le tableau des infractions.'],
+        ['Constat après contrôle spécial', 'Dans le cadre d’un contrôle spécial, plusieurs irrégularités sociales ont été relevées et sont détaillées au présent procès-verbal.'],
+        ['Constat sur conditions de travail', 'Les conditions de travail observées ou déclarées ne respectent pas entièrement les prescriptions relatives à la durée du travail, au repos, à la sécurité ou à la rémunération.'],
+        ['Constat d’infractions multiples', 'Les manquements relevés concernent plusieurs obligations légales et réglementaires. Les amendes transactionnelles sont calculées selon les textes en vigueur.'],
+        ['Constat avec injonction de régularisation', 'Les infractions ci-dessous sont mises à charge de l’entreprise, qui demeure tenue de régulariser sa situation dans le délai fixé par l’Inspection du Travail.']
+      ],
+      'pv-obstruction': [
+        ['Obstruction par refus d’accès', 'La mission de contrôle n’a pas pu accéder librement aux locaux de l’entreprise malgré la présentation de l’ordre de mission. Ce refus est acté comme obstacle à l’exercice des fonctions.'],
+        ['Obstruction par refus de documents', 'Le responsable présent a refusé ou omis de produire les documents sociaux exigés, rendant impossible l’accomplissement normal de la mission.'],
+        ['Obstruction par absence organisée', 'Aucun responsable habilité n’a été mis à la disposition de la mission, alors que l’entreprise avait été informée du contrôle.'],
+        ['Obstruction après rendez-vous non respecté', 'Après fixation d’une date de contrôle, l’entreprise n’a pas reçu la mission et n’a fourni aucune justification valable.'],
+        ['Obstruction par fermeture des locaux', 'Les locaux ont été rendus inaccessibles au moment du contrôle, empêchant toute vérification des travailleurs, documents et conditions de travail.'],
+        ['Obstruction par limitation des entretiens', 'L’employeur a empêché ou limité les échanges avec les travailleurs, rendant impossible la vérification contradictoire des faits.'],
+        ['Obstruction par intimidation', 'Des comportements, propos ou attitudes intimidants ont perturbé la mission et empêché l’exercice paisible des attributions légales.'],
+        ['Obstruction par documents volontairement incomplets', 'Les pièces remises étaient manifestement incomplètes et les compléments demandés n’ont pas été fournis.'],
+        ['Obstruction à inspection spéciale', 'L’entreprise n’a pas permis l’exécution d’une inspection spéciale ordonnée par l’autorité compétente.'],
+        ['Obstruction persistante après mise en demeure', 'La mise en demeure étant restée sans effet, le refus de recevoir la mission ou de produire les documents persiste.'],
+        ['Obstruction par report abusif', 'L’entreprise a sollicité des reports successifs sans permettre l’exécution effective du contrôle dans un délai raisonnable.'],
+        ['Obstruction par refus d’identification', 'Le responsable présent a refusé de s’identifier ou d’identifier les personnes habilitées à répondre à la mission.'],
+        ['Obstruction par opposition physique', 'La mission a été empêchée matériellement d’accéder aux lieux, documents ou travailleurs nécessaires au contrôle.'],
+        ['Obstruction par non-réponse aux convocations', 'Malgré les invitations et rappels, l’entreprise n’a pas répondu aux demandes de l’Inspection du Travail.'],
+        ['Obstruction lors de contrôle de nuit ou urgent', 'Dans le cadre d’un contrôle urgent ou spécifique, l’entreprise a empêché la mission de vérifier les faits signalés.'],
+        ['Obstruction par consignes internes', 'Des consignes internes ont manifestement empêché les agents ou travailleurs de collaborer avec la mission.'],
+        ['Obstruction par refus de signature', 'Le refus de signer ou de réceptionner les actes de contrôle est constaté, sans empêcher la validité du présent procès-verbal.'],
+        ['Obstruction par dissimulation de travailleurs', 'Des éléments concordants indiquent que certains travailleurs ou documents ont été soustraits à la vérification.'],
+        ['Obstruction par refus de consultation du site', 'L’accès aux zones de travail ou installations nécessaires au contrôle a été refusé ou limité.'],
+        ['Obstruction constatée contradictoirement', 'Les faits d’obstruction sont constatés en présence des personnes identifiées et consignés pour transmission aux autorités compétentes.']
+      ],
+      'pv-non-conciliation': [
+        ['Non-conciliation pour licenciement contesté', 'Les parties demeurent opposées sur la régularité du licenciement et ses conséquences pécuniaires. La tentative de conciliation n’a pas abouti.'],
+        ['Non-conciliation pour arriérés de salaire', 'Le litige porte sur le paiement des arriérés de salaire, primes ou avantages. Les positions des parties restent inconciliables.'],
+        ['Non-conciliation pour décompte final', 'Le demandeur sollicite le paiement du décompte final tandis que la défenderesse conteste tout ou partie des prétentions.'],
+        ['Non-conciliation pour rupture pendant essai', 'Les parties divergent sur la nature, la durée et les effets de la période d’essai ou de sa rupture.'],
+        ['Non-conciliation pour suspension du contrat', 'Le différend concerne la suspension du contrat, ses motifs, sa durée et ses conséquences sur les droits du travailleur.'],
+        ['Non-conciliation pour mutation contestée', 'Le travailleur conteste une mutation, affectation ou modification des conditions de travail. Aucun accord n’a été trouvé.'],
+        ['Non-conciliation pour sanction disciplinaire', 'La sanction disciplinaire est contestée quant à son motif, sa procédure ou ses effets. La conciliation échoue.'],
+        ['Non-conciliation pour accident du travail', 'Les parties ne s’accordent pas sur les conséquences d’un accident du travail ou d’une maladie professionnelle.'],
+        ['Non-conciliation pour discrimination alléguée', 'Le demandeur invoque un traitement discriminatoire. La défenderesse conteste les faits et les réparations sollicitées.'],
+        ['Non-conciliation pour heures supplémentaires', 'Le litige porte sur le paiement des heures supplémentaires, du travail de nuit ou des jours fériés.'],
+        ['Non-conciliation pour réintégration', 'Le demandeur sollicite la réintégration ou des dommages et intérêts. La défenderesse maintient son refus.'],
+        ['Non-conciliation pour contrat non écrit', 'Le différend porte sur l’existence, la qualification ou les effets d’un contrat non constaté par écrit.'],
+        ['Non-conciliation pour non-paiement d’avantages', 'Les parties divergent sur le paiement d’avantages conventionnels, primes, indemnités ou frais professionnels.'],
+        ['Non-conciliation pour harcèlement allégué', 'Les déclarations relatives aux faits allégués n’ont pas permis de parvenir à un accord amiable.'],
+        ['Non-conciliation pour reclassement', 'Le demandeur sollicite un reclassement ou une classification différente, contestée par la défenderesse.'],
+        ['Non-conciliation pour fin de CDD', 'Le litige porte sur la fin d’un contrat à durée déterminée et les droits qui en découleraient.'],
+        ['Non-conciliation pour congés non payés', 'Le demandeur réclame des droits liés aux congés annuels ou compensations. La défenderesse conteste la réclamation.'],
+        ['Non-conciliation pour attestation de services', 'Le différend concerne la délivrance de l’attestation de services rendus et/ou les mentions y figurant.'],
+        ['Non-conciliation pour modification de salaire', 'Le demandeur conteste une réduction ou modification de rémunération. Les parties n’ont pas concilié.'],
+        ['Non-conciliation générale', 'Après audition contradictoire et examen des pièces, les parties maintiennent leurs positions. Le désaccord est acté.']
+      ],
+      'mise-demeure': [
+        ['Mise en demeure pour refus de contrôle', 'L’entreprise est sommée de donner accès libre à la mission et de fournir les documents demandés dans le délai indiqué.'],
+        ['Mise en demeure pour documents sociaux', 'L’employeur est mis en demeure de produire et régulariser les documents sociaux obligatoires.'],
+        ['Mise en demeure santé et sécurité', 'Au regard des risques constatés, l’entreprise doit prendre les mesures immédiates de prévention et de protection.'],
+        ['Mise en demeure convention médicale', 'L’entreprise doit présenter une convention médicale viable ou toute preuve d’organisation du service médical.'],
+        ['Mise en demeure contrats de travail', 'L’employeur doit régulariser les contrats de travail et les formalités applicables dans le délai prescrit.'],
+        ['Mise en demeure règlement d’entreprise', 'Il est enjoint à l’entreprise d’établir, faire viser ou mettre en conformité son règlement d’entreprise.'],
+        ['Mise en demeure déclarations obligatoires', 'L’entreprise doit déposer ou produire les déclarations du mouvement du personnel, de la main-d’œuvre et du bilan social.'],
+        ['Mise en demeure CNSS-INPP-ONEM', 'L’employeur doit présenter les preuves d’affiliation, déclaration et paiement auprès des organismes compétents.'],
+        ['Mise en demeure comité SHE', 'L’entreprise doit organiser ou régulariser le Comité de Sécurité, d’Hygiène et d’Embellissement.'],
+        ['Mise en demeure avant PV', 'À défaut de régularisation dans le délai fixé, un procès-verbal pourra être établi et transmis aux autorités compétentes.'],
+        ['Mise en demeure pour livre de paie', 'L’employeur doit produire le livre de paie actualisé et les décomptes exigés.'],
+        ['Mise en demeure pour horaire de travail', 'L’entreprise doit faire viser, afficher et respecter l’horaire du travail conformément aux textes applicables.'],
+        ['Mise en demeure pour SMIG', 'L’employeur doit régulariser les rémunérations afin de respecter le minimum légal et produire les preuves de paiement.'],
+        ['Mise en demeure pour congés annuels', 'L’entreprise doit présenter le planning de congés et régulariser les droits des travailleurs concernés.'],
+        ['Mise en demeure pour travailleurs étrangers', 'Les documents relatifs aux travailleurs étrangers et à la main-d’œuvre nationale doivent être produits.'],
+        ['Mise en demeure pour accident du travail', 'L’employeur doit produire les preuves de déclaration et de prise en charge relatives à l’accident ou à la maladie professionnelle.'],
+        ['Mise en demeure pour inspection spéciale', 'L’entreprise est appelée à collaborer immédiatement à l’inspection spéciale ordonnée.'],
+        ['Mise en demeure pour pièces incomplètes', 'Les pièces déjà produites étant insuffisantes, l’entreprise doit compléter le dossier dans le délai fixé.'],
+        ['Mise en demeure avec délai de 24 heures', 'L’employeur est mis en demeure de se présenter ou de recevoir la mission dans les vingt-quatre heures.'],
+        ['Mise en demeure finale', 'La présente constitue une dernière interpellation avant application des mesures prévues par les textes en vigueur.']
+      ],
+      'pv-installation-cshe': [
+        ['Installation initiale du comité SHE', 'Il a été procédé à l’installation initiale du Comité de Sécurité, d’Hygiène et d’Embellissement des lieux de travail.'],
+        ['Renouvellement du comité SHE', 'Les parties ont procédé au renouvellement du comité afin d’assurer la continuité du suivi en matière de prévention.'],
+        ['Installation après mise en demeure', 'À la suite de la mise en demeure, l’entreprise a organisé la réunion paritaire d’installation du comité.'],
+        ['Installation dans entreprise à haut risque', 'Compte tenu de la nature des activités, le comité est installé pour renforcer la prévention des risques professionnels.'],
+        ['Installation avec représentants des travailleurs', 'Les représentants de l’employeur et des travailleurs ont pris part à la désignation et à l’installation du comité.'],
+        ['Installation avec programme trimestriel', 'Les parties conviennent d’un suivi trimestriel des actions d’hygiène, sécurité et embellissement.'],
+        ['Installation après accident signalé', 'À la suite d’un incident ou accident, l’installation du comité est actée pour améliorer le dispositif de prévention.'],
+        ['Installation dans établissement de service', 'Le comité est installé dans un établissement de service pour garantir les normes minimales de santé et sécurité.'],
+        ['Installation dans établissement industriel', 'Le comité est installé en milieu industriel afin d’assurer le suivi permanent des risques liés aux activités.'],
+        ['Installation avec visa de l’Inspection', 'Le procès-verbal est établi sous le visa de l’Inspection du Travail pour servir et valoir ce que de droit.'],
+        ['Installation avec plan d’action', 'Les membres installés s’engagent à élaborer un plan d’action relatif à l’hygiène, la sécurité et l’embellissement.'],
+        ['Installation avec sensibilisation', 'La cérémonie est accompagnée d’un rappel des obligations de prévention et de sensibilisation des travailleurs.'],
+        ['Installation dans chantier', 'Le comité est installé sur un site de chantier afin de prévenir les risques liés aux travaux.'],
+        ['Installation dans commerce', 'Le comité est installé dans un établissement commercial afin d’améliorer l’organisation des mesures de sécurité.'],
+        ['Installation dans hôtel ou restaurant', 'Le comité est installé afin de suivre les mesures d’hygiène, de sécurité alimentaire et de protection des travailleurs.'],
+        ['Installation avec registre de suivi', 'Les parties conviennent de tenir un registre de suivi des recommandations et réunions du comité.'],
+        ['Installation avec comité élargi', 'Le comité est installé avec des membres supplémentaires compte tenu de l’effectif ou de la nature des activités.'],
+        ['Installation après restructuration', 'À la suite de changements organisationnels, le comité est installé ou réorganisé.'],
+        ['Installation pour mise en conformité', 'L’installation du comité intervient dans le cadre d’un processus global de mise en conformité sociale.'],
+        ['Installation avec calendrier de réunions', 'Les membres conviennent d’un calendrier de réunions périodiques et d’évaluation des actions correctives.']
+      ]
+    };
+    const prefix = 'L’an [ANNEE], le [JOUR] jour du mois de [MOIS], Nous [QUALITE DE L’AGENT], dûment habilité et agissant en vertu des dispositions légales en matière du travail, avons procédé à l’acte ci-après.';
+    const suffix = 'En foi de quoi, le présent texte est proposé comme modèle de réserve, à adapter strictement aux faits, pièces, déclarations et références du dossier. Nous jurons le présent acte sincère. Fait à [LIEU], le [DATE].';
+    const result = [];
+    Object.entries(groups).forEach(([docType, items]) => {
+      items.forEach(([title, body]) => {
+        result.push({ id: `MOD-${String(result.length + 1).padStart(3, '0')}`, docType, title, text: `${prefix} ${body} ${suffix}` });
+      });
+    });
+    return result;
+  }
+
+
   const SIGNATURE_ROLES = [
     { key: 'inspecteur', title: 'Inspecteur du Travail', roleValue: 'Inspecteur du Travail' },
     { key: 'controleur', title: 'Contrôleur du Travail', roleValue: 'Contrôleur du Travail' },
@@ -41,13 +171,8 @@
     { key: 'temoin', title: 'Témoin(s)', roleValue: 'Témoin' }
   ];
 
-  const DEFAULT_AGENTS = [
-    { id: 'agt-hmw', role: 'Inspecteur du Travail', name: 'MITWINSI WANET Hardy', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence matérielle restreinte en matière du travail', habilitation: '3196/PRO15/021/2025', opj: 'OPJ/HMW', direction: 'Administration Centrale' },
-    { id: 'agt-sbm', role: 'Inspecteur du Travail', name: 'Steve BIEMBONGO MBULA', quality: 'Inspecteur du Travail et Officier de Police Judiciaire à compétence restreinte en matière du travail', habilitation: '', opj: 'OPJ/SB', direction: 'Administration Centrale' },
-    { id: 'agt-jll', role: 'Inspecteur du Travail', name: 'Justin LOMWANGA LINDENGE', quality: 'Inspecteur Principal du Travail de 1ère Classe et Officier de Police Judiciaire à compétence restreinte en matière du Travail', habilitation: '0268/PPCAKG/2001', opj: '0073/PRO21/PGI/GOMBE', direction: 'Administration Centrale' },
-    { id: 'agt-koj', role: 'Inspecteur du Travail', name: 'KANDJA OTANGANDO Joseph', quality: 'Inspecteur du Travail et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' },
-    { id: 'agt-mbo', role: 'Contrôleur du Travail', name: 'Mamie Paul BASSA OTOMWA', quality: 'Contrôleur Principal du Travail de 1ère classe et Officier de Police Judiciaire', habilitation: '', opj: 'OPJ', direction: 'Administration Centrale' }
-  ];
+  const DEFAULT_AGENTS = [];
+  const LEGACY_AGENT_IDS = ['agt-hmw', 'agt-sbm', 'agt-jll', 'agt-koj', 'agt-mbo'];
 
   const LEGAL_BASE = [
   {
@@ -650,7 +775,7 @@
   ];
 
   const FORM_FIELDS = [
-    'docType','status','uuid','officialNumber','verificationCode','placeDate','republique','ministere','inspection','direction','adminProvince','localInspection','agentRole','agentSelect','agentName','agentQuality','habilitation','opjNumber','missionOrder','companyName','companyLegalForm','rccm','idnat','taxNumber','cnss','inpp','companyPhone','companyEmail','companyProvince','commune','workersCount','companyAddress','presentManager','managerFunction','facts','observations','demandeur','defender','demandeurId','claimAmount','claimantStatement','laborOfficerFindings','conclusion','proposal','disagreement'
+    'docType','status','uuid','officialNumber','verificationCode','placeDate','republique','ministere','inspection','direction','adminProvince','localInspection','agentRole','agentSelect','agentName','agentQuality','habilitation','opjNumber','missionOrder','logoIgtData','companyName','companyLegalForm','rccm','idnat','taxNumber','cnss','inpp','companyPhone','companyEmail','companyProvince','commune','workersCount','companyAddress','presentManager','managerFunction','facts','observations','regularizationDeadline','riskLevel','paymentDeadline','nextAction','documentsRequested','correctiveMeasures','demandeur','defender','demandeurId','claimAmount','claimantStatement','laborOfficerFindings','conclusion','proposal','disagreement'
   ];
 
   const state = {
@@ -745,7 +870,13 @@
   }
 
   function ensureDefaults() {
-    if (!state.store.agents || !state.store.agents.length) state.store.agents = DEFAULT_AGENTS.slice();
+    state.store.agents = Array.isArray(state.store.agents) ? state.store.agents : [];
+    state.store.agents = state.store.agents.filter((agent) => !isLegacySuggestedAgent(agent));
+  }
+
+  function isLegacySuggestedAgent(agent) {
+    if (!agent) return false;
+    return LEGACY_AGENT_IDS.includes(agent.id);
   }
 
   function attachEvents() {
@@ -807,6 +938,11 @@
     byId('btnReadPreview').addEventListener('click', readPreview);
     byId('btnReadSelection').addEventListener('click', readPreview);
     byId('btnGlobalListen').addEventListener('click', toggleDictation);
+    byId('logoIgtFile').addEventListener('change', handleLogoIgtUpload);
+    byId('logoIgtFileTop').addEventListener('change', handleLogoIgtUpload);
+    byId('btnClearLogoIgt').addEventListener('click', clearLogoIgt);
+    byId('btnResetLogoTop').addEventListener('click', clearLogoIgt);
+    byId('btnGenerateCorrectivePlan').addEventListener('click', generateCorrectivePlan);
 
     byId('historySearch').addEventListener('input', renderHistory);
     byId('historyStatus').addEventListener('change', renderHistory);
@@ -825,6 +961,12 @@
     byId('btnExportBackup').addEventListener('click', exportBackup);
     byId('restoreFile').addEventListener('change', restoreBackup);
     byId('btnClearData').addEventListener('click', clearLocalData);
+    byId('reserveTemplateSearch').addEventListener('input', renderReserveModels);
+    byId('reserveTemplateType').addEventListener('change', renderReserveModels);
+    byId('reserveTemplatesList').addEventListener('click', handleReserveModelAction);
+    byId('templatesList').addEventListener('click', handleTemplateCatalogAction);
+    byId('directionSearch').addEventListener('input', renderDirectionsSettings);
+    byId('btnShowAllDirections').addEventListener('click', () => { setVal('directionSearch', ''); renderDirectionsSettings(); });
   }
 
   function handleFormInput(event) {
@@ -850,6 +992,7 @@
     fillSelect('docType', DOCUMENT_TYPES.map((d) => [d.id, d.label]));
     fillSelect('historyType', [['', 'Tous modèles'], ...DOCUMENT_TYPES.map((d) => [d.id, d.label])]);
     fillSelect('legalCategory', [['', 'Toutes catégories'], ...Array.from(new Set(LEGAL_BASE.map((j) => j.category))).map((c) => [c, c])]);
+    fillSelect('reserveTemplateType', [['', 'Tous modèles de réserve'], ...DOCUMENT_TYPES.map((d) => [d.id, d.label])]);
     fillSelect('direction', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
     fillSelect('settingsAgentDirection', DIRECTIONS.map((d) => [d.name, `${d.name} (${d.code})`]));
     fillSelect('adminProvince', PROVINCES.map((p) => [p, p]));
@@ -866,11 +1009,12 @@
   function populateAgentsSelect(shouldApply = true) {
     const role = val('agentRole') || 'Inspecteur du Travail';
     const previous = val('agentSelect');
-    const agents = state.store.agents.filter((a) => a.role === role);
-    const options = agents.length ? agents.map((a) => [a.id, a.name]) : [['', `Aucun ${role.toLowerCase()} enregistré`]];
+    const agents = state.store.agents.filter((a) => a.role === role && !isLegacySuggestedAgent(a));
+    const options = [['', 'Saisir manuellement — aucune suggestion de nom par défaut'], ...agents.map((a) => [a.id, a.name])];
     fillSelect('agentSelect', options);
     if (previous && agents.some((a) => a.id === previous)) setVal('agentSelect', previous);
-    if (shouldApply && agents.length) applySelectedAgent();
+    else setVal('agentSelect', '');
+    if (shouldApply && val('agentSelect')) applySelectedAgent();
   }
 
   function applySelectedAgent() {
@@ -1028,8 +1172,68 @@
     image.src = dataUrl;
   }
 
-  function newRecord(confirmReset) {
-    if (confirmReset && !confirm('Créer un nouveau PV ? Les modifications non sauvegardées seront perdues.')) return;
+  function handleLogoIgtUpload(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast('Veuillez choisir une image pour le logo IGT.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || '');
+      setVal('logoIgtData', dataUrl);
+      try { localStorage.setItem(LOGO_KEY, dataUrl); } catch (_) { /* stockage logo optionnel */ }
+      refreshLogoIgtPreview();
+      updatePreview();
+      toast('Logo IGT ajouté à l’en-tête du PV.');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearLogoIgt() {
+    setVal('logoIgtData', DEFAULT_IGT_LOGO);
+    byId('logoIgtFile').value = '';
+    const topInput = byId('logoIgtFileTop');
+    if (topInput) topInput.value = '';
+    localStorage.removeItem(LOGO_KEY);
+    refreshLogoIgtPreview();
+    updatePreview();
+    toast('Logo IGT réinitialisé au logo par défaut.');
+  }
+
+  function refreshLogoIgtPreview() {
+    const data = val('logoIgtData') || DEFAULT_IGT_LOGO;
+    const boxes = [byId('logoIgtPreview'), byId('topLogoIgtPreview')].filter(Boolean);
+    boxes.forEach((box) => {
+      box.classList.remove('empty-logo');
+      box.innerHTML = `<img src="${escapeHtml(data)}" alt="Logo IGT">`;
+    });
+  }
+
+  function generateCorrectivePlan() {
+    const f = collectRecord().fields;
+    const selected = state.selectedInfractions || [];
+    const lines = [];
+    if (selected.length) {
+      selected.forEach((item, index) => {
+        lines.push(`${index + 1}. Régulariser : ${item.infraction}. Référence : ${item.texteViole}.`);
+      });
+    } else {
+      lines.push('1. Produire les documents sociaux demandés et permettre leur vérification par l’Inspection du Travail.');
+      lines.push('2. Mettre à jour les registres, déclarations et preuves de conformité applicables.');
+      lines.push('3. Présenter les preuves de régularisation dans le délai imparti.');
+    }
+    if (f.regularizationDeadline) lines.push(`Délai final de régularisation : ${formatDate(f.regularizationDeadline)}.`);
+    if (f.paymentDeadline) lines.push(`Délai de paiement ou transaction : ${f.paymentDeadline}.`);
+    if (f.nextAction) lines.push(`Suite réservée : ${f.nextAction}.`);
+    setVal('correctiveMeasures', lines.join('\n'));
+    updatePreview();
+    toast('Mesures correctives générées.');
+  }
+
+  async function newRecord(confirmReset) {
+    if (confirmReset && !(await customConfirm('Créer un nouveau PV ? Les modifications non sauvegardées seront perdues.'))) return;
     state.currentId = crypto.randomUUID ? crypto.randomUUID() : `pv-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     state.selectedInfractions = [];
     state.signatures = {};
@@ -1047,6 +1251,8 @@
     setVal('companyProvince', 'Kinshasa');
     setVal('agentRole', 'Inspecteur du Travail');
     setVal('placeDate', `Fait à Kinshasa, le ${formatDate(today)}`);
+    setVal('logoIgtData', localStorage.getItem(LOGO_KEY) || DEFAULT_IGT_LOGO);
+    refreshLogoIgtPreview();
     populateAgentsSelect();
     setSelectedSectors([]);
     renderSignaturePads(false);
@@ -1090,6 +1296,7 @@
     setSelectedSectors(record.sectors || []);
     populateAgentsSelect(false);
     if (record.fields && record.fields.agentSelect) setVal('agentSelect', record.fields.agentSelect);
+    refreshLogoIgtPreview();
     renderSignaturePads(false);
     renderSelectedInfractionsTable();
     updateDocPanels();
@@ -1356,6 +1563,11 @@
     }
   }
 
+  function logoMarkup(f) {
+    const logo = f.logoIgtData || DEFAULT_IGT_LOGO;
+    return `<img class="igt-logo" src="${escapeHtml(logo)}" alt="Logo IGT">`;
+  }
+
   function officialHeader(record, options = {}) {
     const f = record.fields;
     const right = options.right || (f.placeDate || `Kinshasa, le ${formatDate(new Date())}`);
@@ -1364,7 +1576,7 @@
         <div class="official-left">
           <div>${escapeHtml(f.republique || 'REPUBLIQUE DEMOCRATIQUE DU CONGO')}</div>
           <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi et Travail')}</div>
-          <div class="arms">★</div>
+          ${logoMarkup(f)}
           <div>${escapeHtml(f.direction || 'Administration Centrale')}</div>
           <div>${escapeHtml(f.inspection || 'Inspection Générale du Travail')}</div>
           <div>I.G.T</div>
@@ -1406,6 +1618,7 @@
           <p class="letter-amount">En lettre : ${escapeHtml(amountInLetters(total))} dollars américains.</p>
           <p>Ces amendes sont mises à sa charge suite aux infractions constatées au regard des dispositions du Ministère de l’Emploi et du Travail. L’entreprise est obligée de se soumettre aux prescriptions de la loi dans un bref délai. En outre, nonobstant le paiement desdites amendes, elle reste tenue à toutes les obligations légales définies en la matière.</p>
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>En foi de quoi, nous avons établi le présent procès-verbal d’infraction en quatre ampliations dont chacune sera transmise à qui de droit conformément aux dispositions légales susmentionnées.</p>
           <p>Fait au jour, mois et an que dessus. Nous jurons le présent Procès-Verbal sincère.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1429,6 +1642,7 @@
           <p>En effet, nous étions dans l’impossibilité d’accomplir la mission qui nous est dévolue par la loi et nous avons été l’objet d’une obstruction totale par le responsable de la société susmentionnée, ${escapeHtml(f.presentManager || '................................')} ${f.managerFunction ? `en qualité de ${escapeHtml(f.managerFunction)}` : ''}; nous référant aux dispositions de l’Ordonnance-loi n°16/010 du 15 juillet 2016 modifiant et complétant la loi n°015-2002 portant Code du Travail à son article 322 et aux instructions rappelant à tous les employeurs le respect strict du Code du Travail et de ses mesures d’application.</p>
           ${f.facts ? `<p><strong>Faits d’obstruction :</strong> ${nl2br(f.facts)}</p>` : ''}
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>En foi de quoi, nous avons établi ce procès-verbal de constat d’obstruction en trois ampliations dont chacune sera remise au Ministère ayant la charge de l’Emploi et Travail, au Procureur près le Parquet compétent pour disposition et au contrevenant.</p>
           <p>Nous jurons que ce procès-verbal est sincère.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1460,6 +1674,7 @@
           <p>${nl2br(f.proposal || 'Une solution amiable a été proposée aux parties conformément aux dispositions applicables du Code du Travail.')}</p>
           <h3>IV. DESACCORD DES PARTIES</h3>
           <p>${nl2br(f.disagreement || 'Après une tentative de conciliation, les deux parties ne sont pas parvenues à concilier leurs désaccords.')}</p>
+          ${followUpBlock(record)}
           <p>En foi de quoi, le présent procès-verbal est dressé et signé en quatre exemplaires par les parties et nous-mêmes dont chacune a reçu un original.</p>
           <p>Jurons que le présent Procès-Verbal est sincère.</p>
         </section>
@@ -1477,6 +1692,7 @@
             <div>${escapeHtml(f.republique || 'République Démocratique du Congo')}</div>
             <div>${escapeHtml(f.ministere || 'Ministère de l’Emploi, Travail')}</div>
             <div>${escapeHtml(f.inspection || 'INSPECTION GENERALE DU TRAVAIL')}</div>
+            ${logoMarkup(f)}
             <br>
             <div style="text-align:left;text-transform:none;font-weight:700">
               OPJ : ${escapeHtml(f.agentName || '................................')}<br>
@@ -1505,6 +1721,7 @@
           <p>Par la présente, je vous mets en demeure de donner accès libre à notre mission et de fournir les documents demandés dans un délai de 24 heures à compter de la réception de ce courrier.</p>
           <p>Je vous rappelle qu’en l’absence de réponse ou en cas de maintien de votre refus de contrôle, je me verrai contraint de saisir la juridiction compétente ou d’appliquer les sanctions prévues dans l’arrêté n°CAB/MIN/ETPS/CNM/HMK/JBI/006/09/2023 et n°CAB/MIN/FINANCES/127/09/2023 du 03/10/2023 portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale.</p>
           ${f.observations ? `<p>${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>Veuillez considérer cette lettre comme une mise en demeure formelle.</p>
           <p>Cordialement.</p>
           <p><strong>${escapeHtml(f.placeDate || `Fait à Kinshasa, le ${formatDate(new Date())}`)}</strong></p>
@@ -1541,6 +1758,7 @@
           </ol>
           ${sectors ? `<p><strong>Secteur(s) d’activité :</strong> ${escapeHtml(sectors)}</p>` : ''}
           ${f.observations ? `<p><strong>Observations :</strong> ${nl2br(f.observations)}</p>` : ''}
+          ${followUpBlock(record)}
           <p>Les parties acceptent de se réunir après chaque trois mois pour évaluation.</p>
           <p>En foi de quoi le présent procès-verbal d’installation est délivré pour servir et valoir ce que de droit.</p>
           <p style="text-align:center;font-weight:900;margin-top:2rem">Visa de l’Inspection du Travail</p>
@@ -1548,6 +1766,19 @@
         ${signaturesPreview(record, ['representant', activeAuthorKey(record), 'temoin'])}
         ${securityBlock(record)}
       </article>`;
+  }
+
+  function followUpBlock(record) {
+    const f = record.fields || {};
+    const items = [];
+    if (f.documentsRequested) items.push(`<p><strong>Pièces consultées ou demandées :</strong> ${nl2br(f.documentsRequested)}</p>`);
+    if (f.correctiveMeasures) items.push(`<p><strong>Mesures correctives demandées :</strong> ${nl2br(f.correctiveMeasures)}</p>`);
+    if (f.regularizationDeadline) items.push(`<p><strong>Date limite de régularisation :</strong> ${escapeHtml(formatDate(f.regularizationDeadline))}</p>`);
+    if (f.paymentDeadline) items.push(`<p><strong>Délai de paiement / transaction :</strong> ${escapeHtml(f.paymentDeadline)}</p>`);
+    if (f.riskLevel) items.push(`<p><strong>Niveau d’urgence / risque :</strong> ${escapeHtml(f.riskLevel)}</p>`);
+    if (f.nextAction) items.push(`<p><strong>Suite réservée :</strong> ${escapeHtml(f.nextAction)}</p>`);
+    if (!items.length) return '';
+    return `<section class="followup-preview"><h3>Suivi de régularisation</h3>${items.join('')}</section>`;
   }
 
   function signaturesPreview(record, keys) {
@@ -1559,7 +1790,7 @@
       return `<div class="sign-preview">
         <strong>${escapeHtml(role.title)}</strong><br>
         ${sig.dataUrl ? `<img src="${sig.dataUrl}" alt="Signature ${escapeHtml(role.title)}">` : '<div style="height:54px"></div>'}
-        <span class="blue-stamp">${escapeHtml(sig.name || 'Nom : ................................')}</span><br>
+        <span class="blue-sign">${escapeHtml(sig.name || 'Nom : ................................')}</span><br>
         <small>${escapeHtml(sig.quality || 'Fonction : ................................')}</small><br>
         <small>${escapeHtml(date)}</small>
       </div>`;
@@ -1585,7 +1816,6 @@
             </div>
           </div>
         </div>
-        <div class="stamp">CACHET<br>OFFICIEL<br>${escapeHtml(f.inspection || 'IGT')}</div>
       </section>
       <footer class="secure-foot"><span>InspecteurBot IA RDC · signature numérique interne au stylo bleu · ${escapeHtml(APP_VERSION)}</span><span>${escapeHtml(f.officialNumber || '')}</span></footer>`;
   }
@@ -1722,7 +1952,7 @@
     }).join('') : 'Aucun document enregistré.';
   }
 
-  function handleHistoryAction(event) {
+  async function handleHistoryAction(event) {
     const btn = event.target.closest('[data-history-action]');
     if (!btn) return;
     const record = state.store.records.find((r) => r.id === btn.dataset.id);
@@ -1739,7 +1969,7 @@
       saveStore(); renderHistory(); renderDashboard(); toast('Statut mis à jour.');
     }
     if (action === 'delete') {
-      if (!confirm('Supprimer définitivement ce PV ?')) return;
+      if (!(await customConfirm('Supprimer définitivement ce PV ?'))) return;
       state.store.records = state.store.records.filter((r) => r.id !== record.id);
       saveStore(); renderHistory(); renderDashboard(); toast('PV supprimé.');
     }
@@ -1840,14 +2070,160 @@
     area.remove();
   }
 
+  function renderReserveModels() {
+    const q = normalize(val('reserveTemplateSearch'));
+    const type = val('reserveTemplateType');
+    const filtered = RESERVE_PV_MODELS.filter((model) => {
+      const hay = normalize([model.id, model.title, documentLabel(model.docType), model.text].join(' '));
+      return (!q || hay.includes(q)) && (!type || model.docType === type);
+    });
+    const list = byId('reserveTemplatesList');
+    if (!list) return;
+    list.innerHTML = filtered.length ? filtered.map((model) => `
+      <article class="reserve-card" data-reserve-id="${escapeHtml(model.id)}">
+        <div class="reserve-card-head"><span class="badge">${escapeHtml(model.id)}</span><span class="badge moyenne">${escapeHtml(documentLabel(model.docType))}</span></div>
+        <h4>${escapeHtml(model.title)}</h4>
+        <p>${escapeHtml(model.text)}</p>
+        <div class="reserve-actions">
+          <button class="btn tiny ghost" data-reserve-action="copy" data-id="${escapeHtml(model.id)}" type="button">Copier</button>
+          <button class="btn tiny secondary" data-reserve-action="use" data-id="${escapeHtml(model.id)}" type="button">Utiliser dans le PV</button>
+          <button class="btn tiny" data-reserve-action="select-type" data-id="${escapeHtml(model.id)}" type="button">Choisir ce type</button>
+        </div>
+      </article>`).join('') : '<div class="empty-state">Aucun modèle de réserve trouvé.</div>';
+  }
+
+  function handleReserveModelAction(event) {
+    const btn = event.target.closest('[data-reserve-action]');
+    if (!btn) return;
+    const model = RESERVE_PV_MODELS.find((item) => item.id === btn.dataset.id);
+    if (!model) return;
+    const action = btn.dataset.reserveAction;
+    if (action === 'copy') {
+      copyText(`${model.title}\n\n${model.text}`);
+      toast('Modèle de texte copié.');
+    }
+    if (action === 'use') {
+      setVal('docType', model.docType);
+      const current = val('observations');
+      setVal('observations', current ? `${current}\n\n${model.text}` : model.text);
+      updateDocPanels();
+      updatePreview();
+      switchView('create');
+      toast('Modèle ajouté dans les observations du PV.');
+    }
+    if (action === 'select-type') {
+      setVal('docType', model.docType);
+      updateDocPanels();
+      updatePreview();
+      switchView('create');
+      toast('Type de PV sélectionné selon le modèle de réserve.');
+    }
+  }
+
+  function renderDirectionsSettings() {
+    const q = normalize(val('directionSearch'));
+    const filtered = DIRECTIONS.filter((d) => !q || normalize([d.name, d.province, d.code].join(' ')).includes(q));
+    const list = byId('directionsList');
+    if (!list) return;
+    list.innerHTML = filtered.length ? filtered.map((d) => `<button class="mini-item clickable-mini" data-direction-name="${escapeHtml(d.name)}" type="button"><strong>${escapeHtml(d.name)}</strong><small>Province : ${escapeHtml(d.province)} · Code : ${escapeHtml(d.code)}<br>Toucher pour afficher et utiliser.</small></button>`).join('') : '<div class="empty-state">Aucune direction trouvée.</div>';
+    list.querySelectorAll('[data-direction-name]').forEach((btn) => btn.addEventListener('click', () => showDirectionDetail(btn.dataset.directionName)));
+  }
+
+  function showDirectionDetail(directionName) {
+    const d = DIRECTIONS.find((item) => item.name === directionName);
+    if (!d) return;
+    const box = byId('directionDetail');
+    if (box) {
+      box.classList.remove('empty-state');
+      box.innerHTML = `<h4>${escapeHtml(d.name)}</h4><p><strong>Province :</strong> ${escapeHtml(d.province)}<br><strong>Code :</strong> ${escapeHtml(d.code)}<br>Cette direction peut être appliquée directement au formulaire de création du PV.</p><div class="template-detail-actions"><button class="btn tiny secondary" id="btnApplyDirectionDetail" type="button">Utiliser dans le formulaire</button><button class="btn tiny ghost" id="btnCopyDirectionDetail" type="button">Copier</button></div>`;
+      byId('btnApplyDirectionDetail').addEventListener('click', () => applyDirectionToForm(d));
+      byId('btnCopyDirectionDetail').addEventListener('click', () => { copyText(`${d.name} — Province : ${d.province} — Code : ${d.code}`); toast('Direction copiée.'); });
+    }
+    applyDirectionToForm(d, false);
+  }
+
+  function applyDirectionToForm(d, goToForm = true) {
+    setVal('direction', d.name);
+    setVal('adminProvince', d.province);
+    updatePreview();
+    if (goToForm) switchView('create');
+    toast('Direction provinciale appliquée au formulaire.');
+  }
+
+  function handleTemplateCatalogAction(event) {
+    const btn = event.target.closest('[data-template-kind]');
+    if (!btn) return;
+    const kind = btn.dataset.templateKind;
+    const id = btn.dataset.templateId;
+    const doc = DOCUMENT_TYPES.find((d) => d.id === id);
+    const card = doc ? { id: doc.id, title: doc.label, text: doc.needsInfractions ? 'Modèle avec tableau des infractions et calcul automatique des amendes.' : 'Modèle avec rédaction assistée, signatures et QR Code.', kind } :
+      kind === 'infractions' ? { id, title: 'Base infractions intégrée', text: `${INFRACTIONS.length} infractions disponibles.`, kind } :
+      kind === 'legal' ? { id, title: 'Base juridique intégrée', text: `${LEGAL_BASE.length} références disponibles.`, kind } :
+      { id, title: 'Réserve rédactionnelle', text: `${RESERVE_PV_MODELS.length} modèles disponibles.`, kind };
+    renderTemplateDetail(card);
+  }
+
+  function renderTemplateDetail(card) {
+    const box = byId('templateDetail');
+    if (!box || !card) return;
+    box.classList.remove('empty-state');
+    let actions = '';
+    if (card.kind === 'document') {
+      const examples = RESERVE_PV_MODELS.filter((m) => m.docType === card.id).length;
+      actions = `<button class="btn tiny secondary" data-detail-action="use-doc" data-id="${escapeHtml(card.id)}" type="button">Créer ce PV</button><button class="btn tiny ghost" data-detail-action="show-reserve" data-id="${escapeHtml(card.id)}" type="button">Voir les ${examples} exemplaires</button>`;
+    } else if (card.kind === 'infractions') {
+      actions = `<button class="btn tiny secondary" data-detail-action="open-infractions" type="button">Ouvrir la base infractions</button>`;
+    } else if (card.kind === 'legal') {
+      actions = `<button class="btn tiny secondary" data-detail-action="open-legal" type="button">Ouvrir la base juridique</button>`;
+    } else {
+      actions = `<button class="btn tiny secondary" data-detail-action="show-reserve" type="button">Afficher les ${RESERVE_PV_MODELS.length} modèles</button>`;
+    }
+    box.innerHTML = `<h4>${escapeHtml(card.title)}</h4><p>${escapeHtml(card.text)}</p><div class="template-detail-actions">${actions}</div>`;
+    box.querySelectorAll('[data-detail-action]').forEach((actionBtn) => actionBtn.addEventListener('click', () => {
+      const action = actionBtn.dataset.detailAction;
+      const id = actionBtn.dataset.id || card.id;
+      if (action === 'use-doc') {
+        setVal('docType', id);
+        updateDocPanels();
+        updatePreview();
+        switchView('create');
+        toast('Modèle de PV appliqué au formulaire.');
+      }
+      if (action === 'show-reserve') {
+        if (id && DOCUMENT_TYPES.some((d) => d.id === id)) setVal('reserveTemplateType', id);
+        else setVal('reserveTemplateType', '');
+        renderReserveModels();
+        byId('reserveModelsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (action === 'open-infractions') {
+        setVal('docType', 'pv-infraction');
+        updateDocPanels();
+        updatePreview();
+        switchView('create');
+        byId('infractionSearch').focus();
+        toast('Base infractions ouverte dans le formulaire.');
+      }
+      if (action === 'open-legal') switchView('legal');
+    }));
+  }
+
   function renderSettings() {
     renderAgentsList();
-    byId('directionsList').innerHTML = DIRECTIONS.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.name)}</strong><small>Province : ${escapeHtml(d.province)} · Code : ${escapeHtml(d.code)}</small></div>`).join('');
-    byId('templatesList').innerHTML = DOCUMENT_TYPES.map((d) => `<div class="mini-item"><strong>${escapeHtml(d.label)}</strong><small>Modèle local · ${d.needsInfractions ? 'tableau infractions et amendes' : 'rédaction libre assistée'} · QR/signatures inclus</small></div>`).join('') + `<div class="mini-item"><strong>Base infractions intégrée</strong><small>${INFRACTIONS.length} infractions/références avec recherche, gravité et calcul automatique.</small></div><div class="mini-item"><strong>Base juridique intégrée</strong><small>${LEGAL_BASE.length} références légales/réglementaires avec recherche, insertion dans observations et liens vers infractions.</small></div>`;
+    renderDirectionsSettings();
+    const cards = [
+      ...DOCUMENT_TYPES.map((d) => ({ id: d.id, title: d.label, text: `Modèle local · ${d.needsInfractions ? 'tableau infractions et amendes' : 'rédaction libre assistée'} · QR/signatures inclus`, kind: 'document' })),
+      { id: 'infractions', title: 'Base infractions intégrée', text: `${INFRACTIONS.length} infractions/références avec recherche, gravité et calcul automatique.`, kind: 'infractions' },
+      { id: 'legal', title: 'Base juridique intégrée', text: `${LEGAL_BASE.length} références légales/réglementaires avec recherche, insertion dans observations et liens vers infractions.`, kind: 'legal' },
+      { id: 'reserve', title: 'Réserve rédactionnelle', text: `${RESERVE_PV_MODELS.length} modèles de textes de PV sans noms suggérés : 20 exemplaires pour chacun des 5 types de PV.`, kind: 'reserve' }
+    ];
+    byId('templatesList').innerHTML = cards.map((card) => `<button class="mini-item clickable-mini" data-template-kind="${card.kind}" data-template-id="${escapeHtml(card.id)}" type="button"><strong>${escapeHtml(card.title)}</strong><small>${escapeHtml(card.text)}<br>Toucher pour afficher / utiliser.</small></button>`).join('');
+    renderTemplateDetail(cards[cards.length - 1]);
+    renderReserveModels();
   }
 
   function renderAgentsList() {
-    byId('agentsList').innerHTML = state.store.agents.map((a) => `<div class="mini-item"><strong>${escapeHtml(a.name)}</strong><small>${escapeHtml(a.role)} · ${escapeHtml(a.quality || '')}<br>Habilitation : ${escapeHtml(a.habilitation || '-')} · OPJ : ${escapeHtml(a.opj || '-')}<br>${escapeHtml(a.direction || '')}</small><br><button class="btn tiny ghost" data-agent-edit="${a.id}" type="button">Éditer</button> <button class="btn tiny danger" data-agent-delete="${a.id}" type="button">Supprimer</button></div>`).join('');
+    const agents = state.store.agents.filter((a) => !isLegacySuggestedAgent(a));
+    byId('agentsList').innerHTML = agents.length ? agents.map((a) => `<div class="mini-item"><strong>${escapeHtml(a.name)}</strong><small>${escapeHtml(a.role)} · ${escapeHtml(a.quality || '')}<br>Habilitation : ${escapeHtml(a.habilitation || '-')} · OPJ : ${escapeHtml(a.opj || '-')}<br>${escapeHtml(a.direction || '')}</small><br><button class="btn tiny ghost" data-agent-edit="${a.id}" type="button">Éditer</button> <button class="btn tiny danger" data-agent-delete="${a.id}" type="button">Supprimer</button></div>`).join('') : '<div class="empty-state">Aucun nom suggéré par défaut. Les utilisateurs saisissent le nom manuellement ou ajoutent leurs propres agents ici.</div>';
   }
 
   function addOrUpdateAgent() {
@@ -1866,7 +2242,7 @@
     saveStore(); populateAgentsSelect(); renderAgentsList(); toast(existing ? 'Agent mis à jour.' : 'Agent ajouté.');
   }
 
-  function handleAgentAction(event) {
+  async function handleAgentAction(event) {
     const edit = event.target.closest('[data-agent-edit]');
     const del = event.target.closest('[data-agent-delete]');
     if (edit) {
@@ -1875,7 +2251,7 @@
       setVal('settingsAgentRole', a.role); setVal('settingsAgentName', a.name); setVal('settingsAgentQuality', a.quality); setVal('settingsAgentHabilitation', a.habilitation); setVal('settingsAgentOpj', a.opj); setVal('settingsAgentDirection', a.direction);
     }
     if (del) {
-      if (!confirm('Supprimer cet agent ?')) return;
+      if (!(await customConfirm('Supprimer cet agent ?'))) return;
       state.store.agents = state.store.agents.filter((a) => a.id !== del.dataset.agentDelete);
       saveStore(); populateAgentsSelect(); renderAgentsList(); toast('Agent supprimé.');
     }
@@ -1911,8 +2287,8 @@
     reader.readAsText(file);
   }
 
-  function clearLocalData() {
-    if (!confirm('Vider toutes les données locales (PV, agents ajoutés) ?')) return;
+  async function clearLocalData() {
+    if (!(await customConfirm('Vider toutes les données locales (PV, agents ajoutés) ?'))) return;
     localStorage.removeItem(STORAGE_KEY);
     state.store = { version: APP_VERSION, records: [], agents: DEFAULT_AGENTS.slice(), customTemplates: [] };
     saveStore(); populateStaticControls(); renderDashboard(); renderHistory(); renderSettings(); newRecord(false); toast('Données locales réinitialisées.');
@@ -1973,6 +2349,37 @@
     utterance.rate = 0.92;
     window.speechSynthesis.speak(utterance);
     toast('Lecture vocale de l’aperçu en cours.');
+  }
+
+  function customConfirm(message) {
+    return new Promise((resolve) => {
+      const modal = byId('confirmModal');
+      const msg = byId('confirmMessage');
+      const ok = byId('confirmOk');
+      const cancel = byId('confirmCancel');
+      if (!modal || !msg || !ok || !cancel) { resolve(true); return; }
+      msg.textContent = message;
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      const cleanup = (value) => {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        ok.removeEventListener('click', onOk);
+        cancel.removeEventListener('click', onCancel);
+        modal.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(value);
+      };
+      const onOk = () => cleanup(true);
+      const onCancel = () => cleanup(false);
+      const onBackdrop = (event) => { if (event.target === modal) cleanup(false); };
+      const onKey = (event) => { if (event.key === 'Escape') cleanup(false); };
+      ok.addEventListener('click', onOk);
+      cancel.addEventListener('click', onCancel);
+      modal.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      cancel.focus();
+    });
   }
 
   function toast(message) {

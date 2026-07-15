@@ -10,7 +10,7 @@
   <div class="app-shell" id="appShell">
     <header class="topbar">
       <div class="brand-block">
-        <div class="brand-emblem" id="topLogoIgtPreview" aria-hidden="true">IGT</div>
+        <div class="brand-emblem logo-slot" id="topLogoIgtPreview" aria-hidden="true"><img src="assets/logo-igt.svg" alt="Logo officiel IGT"></div>
         <div>
           <p class="eyebrow">République Démocratique du Congo</p>
           <h1>InspecteurBot IA RDC — Module Procès-Verbaux</h1>
@@ -164,7 +164,7 @@
                   </label>
                   <input id="logoIgtData" name="logoIgtData" type="hidden">
                   <div class="logo-preview-row">
-                    <div id="logoIgtPreview" class="logo-preview empty-logo">Aucun logo IGT</div>
+                    <div id="logoIgtPreview" class="logo-preview"><img src="assets/logo-igt.svg" alt="Logo officiel IGT"></div>
                     <div>
                       <p class="hint">Un logo IGT par défaut est déjà intégré. Vous pouvez le remplacer par le logo officiel ou les armoiries ; il apparaîtra immédiatement dans l’en-tête officiel A4. Le cachet officiel a été supprimé de l’aperçu.</p>
                       <button class="btn tiny ghost" id="btnClearLogoIgt" type="button">Remettre le logo par défaut</button>
@@ -440,7 +440,12 @@
           </article>
           <article class="panel">
             <div class="panel-title"><h3>Provinces & Directions Provinciales</h3><span>RDC</span></div>
-            <div id="directionsList" class="mini-list tall"></div>
+            <div class="reserve-toolbar">
+              <input id="directionSearch" type="search" placeholder="Rechercher une province ou direction...">
+              <button class="btn tiny ghost" id="btnShowAllDirections" type="button">Tout afficher</button>
+            </div>
+            <div id="directionsList" class="mini-list tall interactive-list"></div>
+            <div id="directionDetail" class="template-detail empty-state">Touchez une direction pour l’appliquer au formulaire ou voir ses détails.</div>
           </article>
           <article class="panel">
             <div class="panel-title"><h3>Modèles de PV intégrés</h3><span>Base locale</span></div>
@@ -510,6 +515,6 @@
       </div>
     </div>
   </div>
-  <script src="app-pv.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
