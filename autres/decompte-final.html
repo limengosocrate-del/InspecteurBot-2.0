@@ -1,3947 +1,829 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<meta name="theme-color"
-content="#041B3D">
-
-<meta name="description"
-content="Décompte Final Automatique - InspecteurBot IA RDC Premium">
-
-<title>
-Décompte Final Automatique | InspecteurBot IA RDC Premium
-</title>
-
-<link rel="icon"
-href="../assets/images/logo-igt.png">
-
-<style>
-
-:root{
-
---bleu:#041B3D;
---bleu2:#0B63CE;
---or:#FFD700;
---blanc:#FFFFFF;
---gris:#EDF2F7;
---ombre:0 15px 40px rgba(0,0,0,.25);
---radius:18px;
-
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-
-font-family:Poppins,Arial,sans-serif;
-
-background:
-linear-gradient(135deg,#021325,#06244D,#041B3D);
-
-color:#FFF;
-
-min-height:100vh;
-
-overflow-x:hidden;
-
-}
-
-/* Fond */
-
-.background{
-
-position:fixed;
-
-inset:0;
-
-background:
-radial-gradient(circle at top,#0B63CE33,transparent 55%),
-radial-gradient(circle at bottom,#FFD70011,transparent 50%);
-
-z-index:-2;
-
-}
-
-.particles{
-
-position:fixed;
-
-inset:0;
-
-background-image:
-
-radial-gradient(#FFD70055 1px,transparent 1px);
-
-background-size:35px 35px;
-
-opacity:.18;
-
-z-index:-1;
-
-}
-
-/* HEADER */
-
-.header{
-
-width:100%;
-
-background:rgba(4,27,61,.95);
-
-backdrop-filter:blur(12px);
-
-border-bottom:2px solid rgba(255,215,0,.25);
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:18px 28px;
-
-box-shadow:var(--ombre);
-
-position:sticky;
-
-top:0;
-
-z-index:999;
-
-}
-
-.header-left{
-
-display:flex;
-
-align-items:center;
-
-gap:18px;
-
-}
-
-.logo{
-
-width:82px;
-
-height:82px;
-
-border-radius:50%;
-
-background:#FFF;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-overflow:hidden;
-
-box-shadow:0 0 25px rgba(255,215,0,.45);
-
-}
-
-.logo img{
-
-width:76px;
-
-height:76px;
-
-object-fit:contain;
-
-}
-
-.header-text h1{
-
-font-size:28px;
-
-color:#FFD700;
-
-font-weight:700;
-
-letter-spacing:.5px;
-
-}
-
-.header-text h2{
-
-font-size:17px;
-
-margin-top:5px;
-
-color:#FFF;
-
-font-weight:600;
-
-}
-
-.header-text p{
-
-margin-top:6px;
-
-font-size:13px;
-
-opacity:.85;
-
-}
-
-/* Bouton retour */
-
-.btn-retour{
-
-background:#FFD700;
-
-color:#041B3D;
-
-padding:12px 22px;
-
-border-radius:12px;
-
-text-decoration:none;
-
-font-weight:bold;
-
-transition:.30s;
-
-}
-
-.btn-retour:hover{
-
-transform:translateY(-3px);
-
-box-shadow:0 0 20px rgba(255,215,0,.4);
-
-}
-
-/* CONTENU */
-
-main{
-
-width:min(1500px,95%);
-
-margin:25px auto;
-
-}
-
-/* Carte */
-
-.card{
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,215,0,.15);
-
-border-radius:20px;
-
-padding:25px;
-
-margin-bottom:25px;
-
-backdrop-filter:blur(10px);
-
-box-shadow:var(--ombre);
-
-}
-
-.card-title{
-
-font-size:22px;
-
-color:#FFD700;
-
-margin-bottom:18px;
-
-border-left:5px solid #FFD700;
-
-padding-left:12px;
-
-}
-
-/* grille */
-
-.grid-2{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-
-gap:18px;
-
-}
-
-.field{
-
-display:flex;
-
-flex-direction:column;
-
-}
-
-.field label{
-
-margin-bottom:8px;
-
-font-size:14px;
-
-font-weight:bold;
-
-color:#FFD700;
-
-}
-
-.field input,
-
-.field select{
-
-padding:13px;
-
-border-radius:12px;
-
-border:1px solid rgba(255,215,0,.25);
-
-background:rgba(255,255,255,.08);
-
-color:#FFF;
-
-font-size:15px;
-
-outline:none;
-
-transition:.30s;
-
-}
-
-.field input:focus,
-
-.field select:focus{
-
-border-color:#FFD700;
-
-box-shadow:0 0 15px rgba(255,215,0,.25);
-
-}
-
-/* Entête officielle */
-
-.entete-officielle{
-
-text-align:center;
-
-line-height:1.8;
-
-margin-bottom:25px;
-
-}
-
-.entete-officielle h2{
-
-color:#FFD700;
-
-font-size:24px;
-
-}
-
-.entete-officielle h3{
-
-font-size:20px;
-
-}
-
-.entete-officielle p{
-
-font-size:14px;
-
-opacity:.90;
-
-}
-
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B3D91" />
+  <meta name="description" content="InspecteurBot — Application professionnelle de calcul automatique des décomptes finaux (IGT / RDC)" />
+  <title>InspecteurBot · Décompte Final | IGT-RDC</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-
-<div class="background"></div>
-
-<div class="particles"></div>
-
-<header class="header">
-
-<div class="header-left">
-
-<div class="logo">
-
-<img
-src="../assets/images/logo-igt.png"
-alt="IGT">
-
-</div>
-
-<div class="header-text">
-
-<h1>
-DÉCOMPTE FINAL AUTOMATIQUE
-</h1>
-
-<h2>
-Inspection Générale du Travail
-</h2>
-
-<p>
-
-République Démocratique du Congo
-
-<br>
-
-Ministère de l'Emploi et du Travail
-
-</p>
-
-</div>
-
-</div>
-
-<a
-href="../index.html"
-class="btn-retour">
-
-← Retour
-
-</a>
-
-</header>
-
-<main>
-
-<div class="card">
-
-<div class="entete-officielle">
-
-<h2>
-
-RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
-
-</h2>
-
-<h3>
-
-MINISTÈRE DE L'EMPLOI ET DU TRAVAIL
-
-</h3>
-
-<p>
-
-INSPECTION GÉNÉRALE DU TRAVAIL
-
-</p>
-
-<p>
-
-DÉCOMPTE FINAL DU TRAVAILLEUR
-
-</p>
-
-</div>
-
-<!-- ===========================================================
-     INFORMATIONS GÉNÉRALES DU DÉCOMPTE
-============================================================ -->
-
-<div class="card">
-
-<h2 class="card-title">
-📑 Informations Générales
-</h2>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>
-
-Numéro du Décompte
-
-</label>
-
-<input
-type="text"
-id="numeroDecompte"
-readonly
-placeholder="Généré automatiquement">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Date d'établissement
-
-</label>
-
-<input
-type="datetime-local"
-id="dateDecompte">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Direction de l'Inspection du Travail
-
-</label>
-
-<select id="direction">
-
-<option value="">
-Sélectionner...
-</option>
-
-<option>
-Administration Centrale
-</option>
-
-<option>
-Direction Provinciale de Kinshasa
-</option>
-
-<option>
-Direction Provinciale du Kongo Central
-</option>
-
-<option>
-Direction Provinciale du Kwango
-</option>
-
-<option>
-Direction Provinciale du Kwilu
-</option>
-
-<option>
-Direction Provinciale du Mai-Ndombe
-</option>
-
-<option>
-Direction Provinciale du Kasaï
-</option>
-
-<option>
-Direction Provinciale du Kasaï Central
-</option>
-
-<option>
-Direction Provinciale du Kasaï Oriental
-</option>
-
-<option>
-Direction Provinciale de la Lomami
-</option>
-
-<option>
-Direction Provinciale du Sankuru
-</option>
-
-<option>
-Direction Provinciale du Haut-Katanga
-</option>
-
-<option>
-Direction Provinciale du Lualaba
-</option>
-
-<option>
-Direction Provinciale du Haut-Lomami
-</option>
-
-<option>
-Direction Provinciale du Tanganyika
-</option>
-
-<option>
-Direction Provinciale du Haut-Uele
-</option>
-
-<option>
-Direction Provinciale du Bas-Uele
-</option>
-
-<option>
-Direction Provinciale de l'Ituri
-</option>
-
-<option>
-Direction Provinciale de la Tshopo
-</option>
-
-<option>
-Direction Provinciale de la Mongala
-</option>
-
-<option>
-Direction Provinciale du Nord-Ubangi
-</option>
-
-<option>
-Direction Provinciale du Sud-Ubangi
-</option>
-
-<option>
-Direction Provinciale de l'Équateur
-</option>
-
-<option>
-Direction Provinciale de la Tshuapa
-</option>
-
-<option>
-Direction Provinciale du Nord-Kivu
-</option>
-
-<option>
-Direction Provinciale du Sud-Kivu
-</option>
-
-<option>
-Direction Provinciale du Maniema
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Lieu d'établissement
-
-</label>
-
-<input
-type="text"
-id="lieuDecompte"
-placeholder="Ex : Kinshasa">
-
-</div>
-
-</div>
-
-</div>
-
-<!-- ===========================================================
-      ETABLI PAR
-============================================================ -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-👤 Établi par
-
-</h2>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>
-
-Qualité
-
-</label>
-
-<select id="qualite">
-
-<option>
-
-Inspecteur du Travail
-
-</option>
-
-<option>
-
-Contrôleur du Travail
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nom
-
-</label>
-
-<input
-type="text"
-id="inspecteurNom"
-placeholder="Nom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Post-nom
-
-</label>
-
-<input
-type="text"
-id="inspecteurPostnom"
-placeholder="Post-nom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Prénom
-
-</label>
-
-<input
-type="text"
-id="inspecteurPrenom"
-placeholder="Prénom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Matricule
-
-</label>
-
-<input
-type="text"
-id="inspecteurMatricule"
-placeholder="IGT-0000">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Téléphone professionnel
-
-</label>
-
-<input
-type="tel"
-id="inspecteurTelephone"
-placeholder="+243...">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Adresse e-mail
-
-</label>
-
-<input
-type="email"
-id="inspecteurEmail"
-placeholder="inspecteur@igt.cd">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Signature numérique
-
-</label>
-
-<input
-type="file"
-id="signatureInspecteur"
-accept="image/*">
-
-</div>
-
-</div>
-
-<div
-style="margin-top:20px;
-padding:18px;
-border-radius:12px;
-background:rgba(255,215,0,.08);
-border-left:5px solid #FFD700;
-font-size:15px;
-line-height:1.8;">
-
-<strong style="color:#FFD700;">
-
-Certification
-
-</strong>
-
-<br><br>
-
-Je certifie que le présent décompte final a été établi conformément aux dispositions du Code du Travail de la République Démocratique du Congo, aux textes réglementaires en vigueur ainsi qu'au Décret n°25/22 du 30 mai 2025 relatif au SMIG.
-
-</div>
-
-</div>
-
-<!-- ===========================================================
-     RENSEIGNEMENTS SUR LE TRAVAILLEUR
-=========================================================== -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-👤 Renseignements sur le Travailleur
-
-</h2>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>
-
-Photo du travailleur
-
-</label>
-
-<input
-type="file"
-id="photoTravailleur"
-accept="image/*"
-capture="environment">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Numéro CNSS
-
-</label>
-
-<input
-type="text"
-id="cnssTravailleur"
-placeholder="Ex : CNSS-000000">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nom
-
-</label>
-
-<input
-type="text"
-id="nom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Post-nom
-
-</label>
-
-<input
-type="text"
-id="postnom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Prénom
-
-</label>
-
-<input
-type="text"
-id="prenom">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Sexe
-
-</label>
-
-<select id="sexe">
-
-<option value="">
-
-Sélectionner
-
-</option>
-
-<option>
-
-Masculin
-
-</option>
-
-<option>
-
-Féminin
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Date de naissance
-
-</label>
-
-<input
-type="date"
-id="dateNaissance">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Lieu de naissance
-
-</label>
-
-<input
-type="text"
-id="lieuNaissance">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nationalité
-
-</label>
-
-<input
-type="text"
-id="nationalite"
-value="Congolaise">
-
-</div>
-
-<div class="field">
-
-<label>
-
-État civil
-
-</label>
-
-<select id="etatCivil">
-
-<option>
-
-Célibataire
-
-</option>
-
-<option>
-
-Marié(e)
-
-</option>
-
-<option>
-
-Divorcé(e)
-
-</option>
-
-<option>
-
-Veuf / Veuve
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nombre d'enfants à charge
-
-</label>
-
-<input
-type="number"
-id="nbEnfants"
-value="0"
-min="0">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Téléphone
-
-</label>
-
-<input
-type="tel"
-id="telephoneTravailleur"
-placeholder="+243...">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Adresse complète
-
-</label>
-
-<input
-type="text"
-id="adresseTravailleur"
-placeholder="Commune - Quartier - Avenue">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Province de résidence
-
-</label>
-
-<select id="provinceResidence">
-
-<option value="">Sélectionner</option>
-
-<option>Kinshasa</option>
-<option>Kongo Central</option>
-<option>Kwango</option>
-<option>Kwilu</option>
-<option>Mai-Ndombe</option>
-<option>Kasaï</option>
-<option>Kasaï Central</option>
-<option>Kasaï Oriental</option>
-<option>Lomami</option>
-<option>Sankuru</option>
-<option>Haut-Katanga</option>
-<option>Lualaba</option>
-<option>Haut-Lomami</option>
-<option>Tanganyika</option>
-<option>Haut-Uele</option>
-<option>Bas-Uele</option>
-<option>Ituri</option>
-<option>Tshopo</option>
-<option>Mongala</option>
-<option>Nord-Ubangi</option>
-<option>Sud-Ubangi</option>
-<option>Équateur</option>
-<option>Tshuapa</option>
-<option>Nord-Kivu</option>
-<option>Sud-Kivu</option>
-<option>Maniema</option>
-
-</select>
-
-</div>
-
-</div>
-
-<div style="margin-top:20px;
-padding:18px;
-background:rgba(11,99,206,.12);
-border-left:5px solid #FFD700;
-border-radius:12px;">
-
-<b style="color:#FFD700;">
-
-📌 Identification automatique
-
-</b>
-
-<p style="margin-top:10px; line-height:1.8;">
-
-L'Assistant IA pourra identifier automatiquement le travailleur grâce à la photo, au document OCR ou aux informations saisies afin de limiter les erreurs lors de l'établissement du Décompte Final.
-
-</p>
-
-</div>
-
+  <!-- Splash -->
+  <div id="splash" class="splash">
+    <div class="splash-glow"></div>
+    <img src="assets/logo.svg" alt="IGT" class="splash-logo" />
+    <h1 class="splash-title">InspecteurBot</h1>
+    <p class="splash-sub">Inspection Générale du Travail · RDC</p>
+    <div class="splash-bar"><span></span></div>
   </div>
 
-<!-- ===========================================================
-     ENTREPRISE / EMPLOYEUR
-=========================================================== -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-🏢 Employeur / Entreprise
-
-</h2>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>
-
-Dénomination sociale
-
-</label>
-
-<input
-type="text"
-id="employeur"
-placeholder="Ex : RAWBANK SA">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Sigle commercial
-
-</label>
-
-<input
-type="text"
-id="sigle"
-placeholder="Ex : RAWBANK">
-
-</div>
-
-<div class="field">
-
-<label>
-
-RCCM
-
-</label>
-
-<input
-type="text"
-id="rccm"
-placeholder="CD/KIN/RCCM/...">
-
-</div>
-
-<div class="field">
-
-<label>
-
-ID.NAT
-
-</label>
-
-<input
-type="text"
-id="idnat"
-placeholder="01-...">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Numéro Impôt
-
-</label>
-
-<input
-type="text"
-id="numeroImpot"
-placeholder="A1234567X">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Numéro CNSS Employeur
-
-</label>
-
-<input
-type="text"
-id="cnssEmployeur"
-placeholder="CNSS-Entreprise">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Numéro ONEM
-
-</label>
-
-<input
-type="text"
-id="onemEmployeur"
-placeholder="ONEM-Entreprise">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Numéro INPP
-
-</label>
-
-<input
-type="text"
-id="inppEmployeur"
-placeholder="INPP-Entreprise">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Secteur d'activité
-
-</label>
-
-<select id="secteurActivite">
-
-<option value="">
-
-Sélectionner
-
-</option>
-
-<option>Administration publique</option>
-<option>Banque et Finance</option>
-<option>Assurance</option>
-<option>Télécommunication</option>
-<option>Transport</option>
-<option>Aviation</option>
-<option>Industrie</option>
-<option>Mine</option>
-<option>Pétrole</option>
-<option>Construction</option>
-<option>BTP</option>
-<option>Commerce</option>
-<option>Distribution</option>
-<option>Agriculture</option>
-<option>Élevage</option>
-<option>Pêche</option>
-<option>Éducation</option>
-<option>Université</option>
-<option>Santé</option>
-<option>Hôpital</option>
-<option>ONG</option>
-<option>Association</option>
-<option>Hôtellerie</option>
-<option>Restauration</option>
-<option>Sécurité privée</option>
-<option>Services</option>
-<option>Informatique</option>
-<option>Média</option>
-<option>Autre</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nom du responsable
-
-</label>
-
-<input
-type="text"
-id="responsableEntreprise"
-placeholder="Directeur Général">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Téléphone
-
-</label>
-
-<input
-type="tel"
-id="telephoneEntreprise"
-placeholder="+243...">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Adresse e-mail
-
-</label>
-
-<input
-type="email"
-id="emailEntreprise"
-placeholder="contact@entreprise.cd">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Province
-
-</label>
-
-<select id="provinceEntreprise">
-
-<option value="">Sélectionner</option>
-
-<option>Kinshasa</option>
-<option>Kongo Central</option>
-<option>Kwango</option>
-<option>Kwilu</option>
-<option>Mai-Ndombe</option>
-<option>Kasaï</option>
-<option>Kasaï Central</option>
-<option>Kasaï Oriental</option>
-<option>Lomami</option>
-<option>Sankuru</option>
-<option>Haut-Katanga</option>
-<option>Lualaba</option>
-<option>Haut-Lomami</option>
-<option>Tanganyika</option>
-<option>Haut-Uele</option>
-<option>Bas-Uele</option>
-<option>Ituri</option>
-<option>Tshopo</option>
-<option>Mongala</option>
-<option>Nord-Ubangi</option>
-<option>Sud-Ubangi</option>
-<option>Équateur</option>
-<option>Tshuapa</option>
-<option>Nord-Kivu</option>
-<option>Sud-Kivu</option>
-<option>Maniema</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Ville / Commune
-
-</label>
-
-<input
-type="text"
-id="villeEntreprise"
-placeholder="Kinshasa - Gombe">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Adresse complète
-
-</label>
-
-<input
-type="text"
-id="adresseEntreprise"
-placeholder="Avenue - Numéro - Commune">
-
-</div>
-
-</div>
-
-<div style="
-margin-top:20px;
-padding:18px;
-border-radius:12px;
-background:rgba(255,215,0,.08);
-border-left:5px solid #FFD700;
-">
-
-<h3 style="
-color:#FFD700;
-margin-bottom:10px;
-">
-
-📌 Informations Administratives
-
-</h3>
-
-<p style="line-height:1.8;">
-
-Les informations de l'entreprise seront automatiquement reprises dans :
-
-<br>✔ Le Décompte Final
-
-<br>✔ Le Rapport d'Inspection
-
-<br>✔ Le Procès-Verbal
-
-<br>✔ L'Export PDF
-
-<br>✔ L'Historique des dossiers
-
-<br>✔ Les Statistiques InspecteurBot
-
-</p>
-
-</div>
-
+  <!-- App Shell -->
+  <div id="app" class="app hidden">
+    <!-- Top Navigation -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="btnSidebar" class="icon-btn" aria-label="Menu" title="Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <img src="assets/logo.svg" alt="IGT" class="brand-logo" />
+        <div class="brand-text">
+          <strong>InspecteurBot</strong>
+          <span>Décompte Final Automatique</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span class="badge-num" id="displayNumero">DF-2026-000001</span>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" id="btnTheme" title="Thème"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn" id="btnFavorites" title="Favoris"><i class="fa-solid fa-star"></i></button>
+        <button class="icon-btn" id="btnHistory" title="Historique"><i class="fa-solid fa-clock-rotate-left"></i></button>
+        <button class="btn-primary btn-sm" id="btnNew"><i class="fa-solid fa-plus"></i> Nouveau</button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <nav class="side-nav">
+          <button class="nav-item active" data-view="calculator"><i class="fa-solid fa-calculator"></i><span>Calculateur</span></button>
+          <button class="nav-item" data-view="preview"><i class="fa-solid fa-file-lines"></i><span>Aperçu DF</span></button>
+          <button class="nav-item" data-view="pv"><i class="fa-solid fa-gavel"></i><span>Procès-Verbal</span></button>
+          <button class="nav-item" data-view="charts"><i class="fa-solid fa-chart-pie"></i><span>Graphiques</span></button>
+          <button class="nav-item" data-view="ai"><i class="fa-solid fa-robot"></i><span>Assistant IA</span></button>
+          <button class="nav-item" data-view="legal"><i class="fa-solid fa-scale-balanced"></i><span>Réf. Juridiques</span></button>
+          <button class="nav-item" data-view="checklist"><i class="fa-solid fa-list-check"></i><span>Checklist</span></button>
+          <button class="nav-item" data-view="archive"><i class="fa-solid fa-box-archive"></i><span>Archives</span></button>
+          <button class="nav-item" data-view="settings"><i class="fa-solid fa-gear"></i><span>Paramètres</span></button>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="smig-chip" id="smigChip">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+              <small>SMIG 2025</small>
+              <strong id="smigDisplay">14 500 FC/j</strong>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- ========== VIEW: CALCULATOR ========== -->
+        <section class="view active" id="view-calculator">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-calculator gold"></i> Nouveau Décompte Final</h2>
+              <p>Remplissez les renseignements — le calcul s'effectue automatiquement.</p>
+            </div>
+            <div class="head-actions">
+              <button class="btn-ghost" id="btnFillExample"><i class="fa-solid fa-wand-magic-sparkles"></i> Exemple</button>
+              <button class="btn-primary" id="btnCalculate"><i class="fa-solid fa-bolt"></i> Calculer</button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <!-- Card: En-tête officiel -->
+            <article class="card glow-card col-span-2">
+              <div class="card-head">
+                <h3><i class="fa-solid fa-building-columns"></i> En-tête officiel IGT</h3>
+                <span class="chip gold-chip">République Démocratique du Congo</span>
+              </div>
+              <div class="card-body form-grid-3">
+                <div class="field">
+                  <label for="direction"><i class="fa-solid fa-location-dot"></i> Direction / Entité</label>
+                  <select id="direction" class="input select-premium">
+                    <option value="Administration Centrale">Administration Centrale</option>
+                    <option value="Direction Provinciale de Kinshasa" selected>Direction Provinciale de Kinshasa</option>
+                    <option value="Direction Provinciale du Kongo Central">Direction Provinciale du Kongo Central</option>
+                    <option value="Direction Provinciale du Kwango">Direction Provinciale du Kwango</option>
+                    <option value="Direction Provinciale du Kwilu">Direction Provinciale du Kwilu</option>
+                    <option value="Direction Provinciale du Mai-Ndombe">Direction Provinciale du Mai-Ndombe</option>
+                    <option value="Direction Provinciale du Kasaï">Direction Provinciale du Kasaï</option>
+                    <option value="Direction Provinciale du Kasaï Central">Direction Provinciale du Kasaï Central</option>
+                    <option value="Direction Provinciale du Kasaï Oriental">Direction Provinciale du Kasaï Oriental</option>
+                    <option value="Direction Provinciale de la Lomami">Direction Provinciale de la Lomami</option>
+                    <option value="Direction Provinciale du Sankuru">Direction Provinciale du Sankuru</option>
+                    <option value="Direction Provinciale du Haut-Katanga">Direction Provinciale du Haut-Katanga</option>
+                    <option value="Direction Provinciale du Lualaba">Direction Provinciale du Lualaba</option>
+                    <option value="Direction Provinciale du Haut-Lomami">Direction Provinciale du Haut-Lomami</option>
+                    <option value="Direction Provinciale du Tanganyika">Direction Provinciale du Tanganyika</option>
+                    <option value="Direction Provinciale du Haut-Uele">Direction Provinciale du Haut-Uele</option>
+                    <option value="Direction Provinciale du Bas-Uele">Direction Provinciale du Bas-Uele</option>
+                    <option value="Direction Provinciale de l'Ituri">Direction Provinciale de l'Ituri</option>
+                    <option value="Direction Provinciale de la Tshopo">Direction Provinciale de la Tshopo</option>
+                    <option value="Direction Provinciale du Nord-Ubangi">Direction Provinciale du Nord-Ubangi</option>
+                    <option value="Direction Provinciale du Sud-Ubangi">Direction Provinciale du Sud-Ubangi</option>
+                    <option value="Direction Provinciale de la Mongala">Direction Provinciale de la Mongala</option>
+                    <option value="Direction Provinciale de l'Équateur">Direction Provinciale de l'Équateur</option>
+                    <option value="Direction Provinciale de la Tshuapa">Direction Provinciale de la Tshuapa</option>
+                    <option value="Direction Provinciale du Nord-Kivu">Direction Provinciale du Nord-Kivu</option>
+                    <option value="Direction Provinciale du Sud-Kivu">Direction Provinciale du Sud-Kivu</option>
+                    <option value="Direction Provinciale du Maniema">Direction Provinciale du Maniema</option>
+                    <option value="Direction Provinciale du Sud-Kwango">Direction Provinciale du Sud-Kwango</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="adresseBureau">Adresse du bureau</label>
+                  <input type="text" id="adresseBureau" class="input" placeholder="Ex: 15ème Rue N°1 Limete" value="15ème Rue N°1 LIMETE" />
+                </div>
+                <div class="field">
+                  <label for="lieuDocument">Lieu d'établissement</label>
+                  <input type="text" id="lieuDocument" class="input" placeholder="Kinshasa" value="Kinshasa" />
+                </div>
+                <div class="field">
+                  <label for="dateDocument">Date du document</label>
+                  <input type="date" id="dateDocument" class="input" />
+                </div>
+                <div class="field">
+                  <label for="devise">Devise</label>
+                  <select id="devise" class="input">
+                    <option value="USD">Dollar américain ($US)</option>
+                    <option value="CDF" selected>Franc congolais (FC)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="inspecteurNom">Inspecteur / Contrôleur</label>
+                  <input type="text" id="inspecteurNom" class="input" placeholder="Nom complet de l'inspecteur" />
+                </div>
+                <div class="field">
+                  <label for="inspecteurGrade">Grade / Qualité</label>
+                  <input type="text" id="inspecteurGrade" class="input" placeholder="Officier de Police Judiciaire · Chef de Bureau" />
+                </div>
+                <div class="field">
+                  <label for="entrepriseNom">Entreprise / Employeur</label>
+                  <input type="text" id="entrepriseNom" class="input" placeholder="Raison sociale" />
+                </div>
+                <div class="field">
+                  <label for="entrepriseAdresse">Adresse entreprise</label>
+                  <input type="text" id="entrepriseAdresse" class="input" placeholder="Adresse complète" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Card: Renseignements travailleur -->
+            <article class="card">
+              <div class="card-head">
+                <h3><i class="fa-solid fa-user-tie"></i> Renseignements</h3>
+                <div class="photo-slot">
+                  <img id="photoTravailleurPreview" alt="" class="hidden" />
+                  <label class="photo-upload" for="photoTravailleur" title="Photo du travailleur">
+                    <i class="fa-solid fa-camera"></i>
+                  </label>
+                  <input type="file" id="photoTravailleur" accept="image/*" hidden />
+                </div>
+              </div>
+              <div class="card-body form-grid">
+                <div class="field">
+                  <label for="nom">Nom & Post-nom <span class="req">*</span></label>
+                  <input type="text" id="nom" class="input" placeholder="Ex: KONGO SPINCER" required />
+                </div>
+                <div class="field">
+                  <label for="fonction">Fonction <span class="req">*</span></label>
+                  <input type="text" id="fonction" class="input" placeholder="Ex: Chauffeur" required />
+                </div>
+                <div class="field">
+                  <label for="categorie">Catégorie professionnelle <span class="req">*</span></label>
+                  <select id="categorie" class="input">
+                    <option value="manoeuvre">I — Manœuvres (MO / ML)</option>
+                    <option value="manoeuvre_specialise">II — Manœuvres spécialisés (MS)</option>
+                    <option value="semi_qualifie">III — Agents semi-qualifiés (SQ)</option>
+                    <option value="qualifie">IV — Agents qualifiés (Q)</option>
+                    <option value="hautement_qualifie">V — Agents hautement qualifiés (HQ)</option>
+                    <option value="maitrise">VI — Maîtrises (M1–M4)</option>
+                    <option value="cadre">VII — Cadres de collaboration (CC)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="dateEngagement">Date d'engagement <span class="req">*</span></label>
+                  <input type="date" id="dateEngagement" class="input" required />
+                </div>
+                <div class="field">
+                  <label for="dateFin">Date de fin de contrat <span class="req">*</span></label>
+                  <input type="date" id="dateFin" class="input" required />
+                </div>
+                <div class="field">
+                  <label>Ancienneté (auto)</label>
+                  <div class="readonly-box" id="ancienneteDisplay">—</div>
+                </div>
+                <div class="field">
+                  <label for="motif">Motif de départ <span class="req">*</span></label>
+                  <select id="motif" class="input">
+                    <option value="licenciement">Licenciement</option>
+                    <option value="demission">Démission volontaire</option>
+                    <option value="fin_contrat">Fin de contrat à durée déterminée</option>
+                    <option value="retraite">Mise à la retraite</option>
+                    <option value="deces">Décès</option>
+                    <option value="force_majeure">Force majeure</option>
+                    <option value="incapacite">Licenciement pour incapacité professionnelle</option>
+                    <option value="faute_lourde">Licenciement pour faute lourde</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="motifDetail">Précision du motif</label>
+                  <input type="text" id="motifDetail" class="input" placeholder="Ex: Pour Incapacité Professionnelle" />
+                </div>
+                <div class="field col-span-2">
+                  <label for="lieuPrestation">Lieu d'engagement / prestation</label>
+                  <input type="text" id="lieuPrestation" class="input" placeholder="Ex: Mbandaka, Kinshasa…" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Card: Éléments de calcul -->
+            <article class="card">
+              <div class="card-head">
+                <h3><i class="fa-solid fa-coins"></i> Éléments de calcul</h3>
+                <div class="photo-slot">
+                  <img id="photoEntreprisePreview" alt="" class="hidden" />
+                  <label class="photo-upload" for="photoEntreprise" title="Photo de l'entreprise">
+                    <i class="fa-solid fa-building"></i>
+                  </label>
+                  <input type="file" id="photoEntreprise" accept="image/*" hidden />
+                </div>
+              </div>
+              <div class="card-body form-grid">
+                <div class="field">
+                  <label for="salaireBase">Salaire de base (mensuel) <span class="req">*</span></label>
+                  <div class="input-affix">
+                    <input type="number" id="salaireBase" class="input" min="0" step="0.01" placeholder="200000" required />
+                    <span class="affix" id="affixDevise">FC</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="logement">Logement (mensuel)</label>
+                  <div class="input-affix">
+                    <input type="number" id="logement" class="input" min="0" step="0.01" placeholder="Auto 30%" />
+                    <span class="affix" id="affixLogement">FC</span>
+                  </div>
+                  <small class="hint"><label class="check-inline"><input type="checkbox" id="logementAuto" checked /> 30 % du salaire (art. Code du Travail)</label></small>
+                </div>
+                <div class="field">
+                  <label for="transport">Transport (mensuel)</label>
+                  <div class="input-affix">
+                    <input type="number" id="transport" class="input" min="0" step="0.01" placeholder="0" />
+                    <span class="affix" id="affixTransport">FC</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="joursPrestes">Jours prestés (mois de sortie)</label>
+                  <input type="number" id="joursPrestes" class="input" min="0" max="31" step="1" value="0" />
+                </div>
+                <div class="field">
+                  <label for="joursOuvrables">Base jours ouvrables / mois</label>
+                  <select id="joursOuvrables" class="input">
+                    <option value="26" selected>26 jours (standard)</option>
+                    <option value="22">22 jours</option>
+                    <option value="30">30 jours</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="preavisMode">Mode de préavis</label>
+                  <select id="preavisMode" class="input">
+                    <option value="auto" selected>Automatique (selon catégorie & motif)</option>
+                    <option value="manuel">Saisie manuelle (jours)</option>
+                    <option value="sans">Sans préavis (indemnité = 0)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="preavisManuel">Préavis manuel (jours)</label>
+                  <input type="number" id="preavisManuel" class="input" min="0" step="1" value="0" disabled />
+                </div>
+                <div class="field">
+                  <label for="congeAcquis">Congés déjà pris (jours)</label>
+                  <input type="number" id="congeAcquis" class="input" min="0" step="0.5" value="0" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Card: Retenues -->
+            <article class="card">
+              <div class="card-head">
+                <h3><i class="fa-solid fa-percent"></i> Retenues</h3>
+                <span class="chip">Optionnelles selon statut</span>
+              </div>
+              <div class="card-body form-grid">
+                <div class="field toggle-field">
+                  <label class="switch">
+                    <input type="checkbox" id="retenueCNSS" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <div>
+                    <strong>CNSS</strong>
+                    <small>Cotisation sociale (travailleur)</small>
+                  </div>
+                  <div class="input-affix mini">
+                    <input type="number" id="tauxCNSS" class="input" min="0" max="100" step="0.01" value="5" />
+                    <span class="affix">%</span>
+                  </div>
+                </div>
+                <div class="field toggle-field">
+                  <label class="switch">
+                    <input type="checkbox" id="retenueIPR" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <div>
+                    <strong>I.P.R.</strong>
+                    <small>Impôt Professionnel sur Rémunérations</small>
+                  </div>
+                  <div class="input-affix mini">
+                    <input type="number" id="tauxIPR" class="input" min="0" max="100" step="0.01" value="10" />
+                    <span class="affix">%</span>
+                  </div>
+                </div>
+                <div class="field toggle-field">
+                  <label class="switch">
+                    <input type="checkbox" id="retenueONEM" />
+                    <span class="slider"></span>
+                  </label>
+                  <div>
+                    <strong>ONEM</strong>
+                    <small>Office National de l'Emploi</small>
+                  </div>
+                  <div class="input-affix mini">
+                    <input type="number" id="tauxONEM" class="input" min="0" max="100" step="0.01" value="0.2" />
+                    <span class="affix">%</span>
+                  </div>
+                </div>
+                <div class="field toggle-field">
+                  <label class="switch">
+                    <input type="checkbox" id="retenueINPP" />
+                    <span class="slider"></span>
+                  </label>
+                  <div>
+                    <strong>INPP</strong>
+                    <small>Institut National de Préparation Professionnelle</small>
+                  </div>
+                  <div class="input-affix mini">
+                    <input type="number" id="tauxINPP" class="input" min="0" max="100" step="0.01" value="1" />
+                    <span class="affix">%</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="autresRetenues">Autres retenues (montant)</label>
+                  <div class="input-affix">
+                    <input type="number" id="autresRetenues" class="input" min="0" step="0.01" value="0" />
+                    <span class="affix" id="affixAutres">FC</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="autresRetenuesLibelle">Libellé autres retenues</label>
+                  <input type="text" id="autresRetenuesLibelle" class="input" placeholder="Ex: Avance sur salaire" />
+                </div>
+              </div>
+            </article>
+
+            <!-- Card: Observations & Signature -->
+            <article class="card">
+              <div class="card-head">
+                <h3><i class="fa-solid fa-pen-fancy"></i> Observations & Signature</h3>
+              </div>
+              <div class="card-body">
+                <div class="field">
+                  <label for="observations">Observations de l'inspecteur / contrôleur</label>
+                  <textarea id="observations" class="input textarea" rows="3" placeholder="Notes, remarques, constats sur place…"></textarea>
+                </div>
+                <div class="field">
+                  <label><i class="fa-solid fa-signature"></i> Signature numérique tactile</label>
+                  <div class="signature-box">
+                    <canvas id="signaturePad" width="600" height="160"></canvas>
+                    <div class="sig-actions">
+                      <button type="button" class="btn-ghost btn-sm" id="btnClearSig"><i class="fa-solid fa-eraser"></i> Effacer</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="field geo-field">
+                  <label><i class="fa-solid fa-map-location-dot"></i> Géolocalisation de l'inspection</label>
+                  <div class="geo-row">
+                    <input type="text" id="geoDisplay" class="input" readonly placeholder="Non capturée" />
+                    <button type="button" class="btn-secondary" id="btnGeo"><i class="fa-solid fa-crosshairs"></i> Capturer</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- Live Result Panel -->
+          <article class="card result-card glow-card" id="resultPanel">
+            <div class="card-head">
+              <h3><i class="fa-solid fa-receipt"></i> Résultat du calcul</h3>
+              <div class="head-actions">
+                <button class="btn-ghost btn-sm" id="btnToPreview"><i class="fa-solid fa-eye"></i> Aperçu</button>
+                <button class="btn-secondary btn-sm" id="btnSaveArchive"><i class="fa-solid fa-floppy-disk"></i> Archiver</button>
+                <button class="btn-primary btn-sm" id="btnExportPdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="result-grid">
+                <div class="kpi">
+                  <span>Total jours</span>
+                  <strong id="kpiJours">0</strong>
+                </div>
+                <div class="kpi">
+                  <span>Total Brut</span>
+                  <strong id="kpiBrut">0</strong>
+                </div>
+                <div class="kpi">
+                  <span>Total Retenues</span>
+                  <strong id="kpiRetenues">0</strong>
+                </div>
+                <div class="kpi net">
+                  <span>Net à payer</span>
+                  <strong id="kpiNet">0</strong>
+                </div>
+              </div>
+              <div class="result-details" id="resultDetails">
+                <p class="muted center">Saisissez les données et cliquez sur <strong>Calculer</strong> pour afficher le détail.</p>
+              </div>
+              <div class="ai-inline" id="aiInline"></div>
+            </div>
+          </article>
+        </section>
+
+        <!-- ========== VIEW: PREVIEW ========== -->
+        <section class="view" id="view-preview">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-file-lines gold"></i> Aperçu du Décompte Final</h2>
+              <p>Document officiel au format A4 — prêt à imprimer ou exporter.</p>
+            </div>
+            <div class="head-actions">
+              <button class="btn-ghost" id="btnPrint"><i class="fa-solid fa-print"></i> Imprimer</button>
+              <button class="btn-secondary" id="btnShareWA"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+              <button class="btn-secondary" id="btnEmail"><i class="fa-solid fa-envelope"></i> Email</button>
+              <button class="btn-primary" id="btnDownloadPdf"><i class="fa-solid fa-download"></i> Télécharger PDF</button>
+            </div>
+          </div>
+
+          <div class="a4-wrapper">
+            <div class="a4-sheet" id="decompteSheet">
+              <!-- Official header matching the scanned model -->
+              <header class="df-header">
+                <div class="df-header-left">
+                  <div class="df-state">République Démocratique du Congo</div>
+                  <div class="df-ministry">MINISTÈRE DE L'EMPLOI, TRAVAIL ET PRÉVOYANCE SOCIALE</div>
+                  <img src="assets/logo.svg" alt="IGT" class="df-logo" />
+                  <div class="df-igt">INSPECTION GÉNÉRALE DU TRAVAIL</div>
+                  <div class="df-direction" id="pvDirection">Direction Provinciale de Kinshasa</div>
+                  <div class="df-address" id="pvAdresse">15ème Rue N°1 LIMETE</div>
+                </div>
+                <div class="df-header-right">
+                  <div class="df-lieu" id="pvLieuDate">Kinshasa, le …</div>
+                  <div class="df-numero" id="pvNumero">N° DF-2026-000001</div>
+                </div>
+              </header>
+
+              <h1 class="df-title">DÉCOMPTE FINAL ÉTABLI EN FAVEUR DE :</h1>
+
+              <div class="df-photos" id="dfPhotos">
+                <div class="df-photo-box hidden" id="dfPhotoTrav">
+                  <img id="dfImgTrav" alt="Travailleur" />
+                  <span>Travailleur</span>
+                </div>
+                <div class="df-photo-box hidden" id="dfPhotoEnt">
+                  <img id="dfImgEnt" alt="Entreprise" />
+                  <span>Entreprise</span>
+                </div>
+              </div>
+
+              <section class="df-section">
+                <h2 class="df-section-title">Renseignements</h2>
+                <table class="df-table">
+                  <tr><td class="lab">❖ Nom & Post-nom</td><td class="val" id="pvNom">—</td></tr>
+                  <tr><td class="lab">❖ Fonction</td><td class="val" id="pvFonction">—</td></tr>
+                  <tr><td class="lab">❖ Catégorie</td><td class="val" id="pvCategorie">—</td></tr>
+                  <tr><td class="lab">❖ Date d'engagement</td><td class="val" id="pvDateEng">—</td></tr>
+                  <tr><td class="lab">❖ Date de fin Contrat</td><td class="val" id="pvDateFin">—</td></tr>
+                  <tr><td class="lab">❖ Ancienneté</td><td class="val" id="pvAnciennete">—</td></tr>
+                  <tr><td class="lab">❖ Motif</td><td class="val" id="pvMotif">—</td></tr>
+                  <tr><td class="lab">❖ Entreprise</td><td class="val" id="pvEntreprise">—</td></tr>
+                  <tr><td class="lab">❖ Salaire de Base</td><td class="val" id="pvSalaireBase">—</td></tr>
+                  <tr><td class="lab">❖ Logement</td><td class="val" id="pvLogement">—</td></tr>
+                  <tr><td class="lab">❖ Transport</td><td class="val" id="pvTransport">—</td></tr>
+                </table>
+              </section>
+
+              <section class="df-section">
+                <h2 class="df-section-title">Éléments de Calcul</h2>
+                <table class="df-table">
+                  <tr>
+                    <td class="lab">❖ Préavis + Ancienneté</td>
+                    <td class="formula" id="pvPreavisFormule">—</td>
+                    <td class="amount" id="pvPreavisJours">—</td>
+                  </tr>
+                  <tr>
+                    <td class="lab">❖ Congé sur préavis</td>
+                    <td class="formula" id="pvCongePreavisFormule">—</td>
+                    <td class="amount" id="pvCongePreavisJours">—</td>
+                  </tr>
+                  <tr>
+                    <td class="lab">❖ Congé Compensatoire</td>
+                    <td class="formula" id="pvCongeCompFormule">—</td>
+                    <td class="amount" id="pvCongeCompJours">—</td>
+                  </tr>
+                  <tr>
+                    <td class="lab">❖ Jours prestés</td>
+                    <td class="formula">:</td>
+                    <td class="amount" id="pvJoursPrestes">—</td>
+                  </tr>
+                </table>
+                <div class="df-total-jours">Total du Nombre des Jours : <strong id="pvTotalJours">0 Jrs</strong></div>
+              </section>
+
+              <section class="df-section">
+                <h2 class="df-section-title">Calcul</h2>
+                <table class="df-table">
+                  <tr>
+                    <td class="lab">❖ Salaire</td>
+                    <td class="formula" id="pvCalcSalaireFormule">—</td>
+                    <td class="amount" id="pvCalcSalaire">—</td>
+                  </tr>
+                  <tr>
+                    <td class="lab">❖ Logement</td>
+                    <td class="formula" id="pvCalcLogFormule">—</td>
+                    <td class="amount" id="pvCalcLog">—</td>
+                  </tr>
+                  <tr>
+                    <td class="lab">❖ Transport</td>
+                    <td class="formula" id="pvCalcTransFormule">—</td>
+                    <td class="amount" id="pvCalcTrans">—</td>
+                  </tr>
+                </table>
+                <div class="df-brut">Total Brut : <strong id="pvTotalBrut">—</strong></div>
+              </section>
+
+              <section class="df-section">
+                <h2 class="df-section-title">À Déduire</h2>
+                <table class="df-table" id="pvRetenuesTable">
+                  <!-- filled by JS -->
+                </table>
+                <div class="df-deduction">Total Déduction : <strong id="pvTotalDeduction">—</strong></div>
+              </section>
+
+              <div class="df-net">
+                Net à payer : <strong id="pvNet">—</strong>
+              </div>
+
+              <div class="df-observations hidden" id="pvObsBlock">
+                <h2 class="df-section-title">Observations</h2>
+                <p id="pvObservations"></p>
+              </div>
+
+              <div class="df-geo hidden" id="pvGeoBlock">
+                <small>📍 Inspection localisée : <span id="pvGeo"></span></small>
+              </div>
+
+              <footer class="df-footer">
+                <div class="df-sign-block">
+                  <div class="df-sign-title">L'INSPECTEUR DU TRAVAIL</div>
+                  <div class="df-sign-name" id="pvInspecteur">—</div>
+                  <div class="df-sign-grade" id="pvGrade">—</div>
+                  <div class="df-sign-img">
+                    <img id="pvSignature" alt="" class="hidden" />
+                  </div>
+                </div>
+              </footer>
+
+              <div class="df-legal-ref">
+                <small id="pvLegalRefs">Réf. : Code du Travail Loi n°015/2002 modifiée · Décret n°25/22 du 30 mai 2025 (SMIG)</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== VIEW: PV ========== -->
+        <section class="view" id="view-pv">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-gavel gold"></i> Procès-Verbal</h2>
+              <p>Génération automatique du PV d'inspection / de constat.</p>
+            </div>
+            <div class="head-actions">
+              <button class="btn-ghost" id="btnPrintPV"><i class="fa-solid fa-print"></i> Imprimer</button>
+              <button class="btn-primary" id="btnDownloadPV"><i class="fa-solid fa-file-pdf"></i> PDF du PV</button>
+            </div>
+          </div>
+          <div class="a4-wrapper">
+            <div class="a4-sheet" id="pvSheet">
+              <header class="df-header">
+                <div class="df-header-left">
+                  <div class="df-state">République Démocratique du Congo</div>
+                  <div class="df-ministry">MINISTÈRE DE L'EMPLOI, TRAVAIL ET PRÉVOYANCE SOCIALE</div>
+                  <img src="assets/logo.svg" alt="IGT" class="df-logo" />
+                  <div class="df-igt">INSPECTION GÉNÉRALE DU TRAVAIL</div>
+                  <div class="df-direction" id="pv2Direction">Direction Provinciale de Kinshasa</div>
+                </div>
+                <div class="df-header-right">
+                  <div class="df-lieu" id="pv2LieuDate">Kinshasa, le …</div>
+                  <div class="df-numero" id="pv2Numero">PV-2026-000001</div>
+                </div>
+              </header>
+              <h1 class="df-title">PROCÈS-VERBAL D'INSPECTION / CONSTAT</h1>
+              <div id="pvContent" class="pv-content">
+                <p class="muted">Calculez d'abord un décompte final pour générer le procès-verbal.</p>
+              </div>
+              <footer class="df-footer">
+                <div class="df-sign-block">
+                  <div class="df-sign-title">L'INSPECTEUR DU TRAVAIL</div>
+                  <div class="df-sign-name" id="pv2Inspecteur">—</div>
+                  <div class="df-sign-grade" id="pv2Grade">—</div>
+                  <div class="df-sign-img"><img id="pv2Signature" alt="" class="hidden" /></div>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== VIEW: CHARTS ========== -->
+        <section class="view" id="view-charts">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-chart-pie gold"></i> Graphiques analytiques</h2>
+              <p>Visualisation des retenues et de la composition du salaire.</p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <article class="card">
+              <div class="card-head"><h3><i class="fa-solid fa-chart-pie"></i> Répartition des retenues</h3></div>
+              <div class="card-body chart-box">
+                <canvas id="chartRetenues"></canvas>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3><i class="fa-solid fa-chart-column"></i> Composition du salaire</h3></div>
+              <div class="card-body chart-box">
+                <canvas id="chartSalaire"></canvas>
+              </div>
+            </article>
+            <article class="card col-span-2">
+              <div class="card-head"><h3><i class="fa-solid fa-chart-line"></i> Répartition jours indemnisés</h3></div>
+              <div class="card-body chart-box chart-wide">
+                <canvas id="chartJours"></canvas>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== VIEW: AI ========== -->
+        <section class="view" id="view-ai">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-robot gold"></i> Assistant IA</h2>
+              <p>Vérifications automatiques : SMIG, préavis, ancienneté, erreurs juridiques.</p>
+            </div>
+            <div class="head-actions">
+              <button class="btn-primary" id="btnRunAI"><i class="fa-solid fa-brain"></i> Analyser</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <article class="card col-span-2">
+              <div class="card-head"><h3><i class="fa-solid fa-shield-heart"></i> Rapport d'analyse</h3></div>
+              <div class="card-body" id="aiReport">
+                <p class="muted">Lancez une analyse après avoir saisi les données du travailleur.</p>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3><i class="fa-solid fa-lightbulb"></i> Recommandations</h3></div>
+              <div class="card-body" id="aiReco"></div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3><i class="fa-solid fa-triangle-exclamation"></i> Alertes</h3></div>
+              <div class="card-body" id="aiAlerts"></div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== VIEW: LEGAL ========== -->
+        <section class="view" id="view-legal">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-scale-balanced gold"></i> Références juridiques</h2>
+              <p>Articles du Code du Travail et textes applicables au décompte final.</p>
+            </div>
+          </div>
+          <div class="grid-2" id="legalGrid">
+            <!-- filled by JS -->
+          </div>
+        </section>
+
+        <!-- ========== VIEW: CHECKLIST ========== -->
+        <section class="view" id="view-checklist">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-list-check gold"></i> Checklist avant validation</h2>
+              <p>Contrôle qualité avant signature et archivage du décompte.</p>
+            </div>
+            <div class="head-actions">
+              <span class="chip" id="checklistScore">0 / 0</span>
+            </div>
+          </div>
+          <article class="card">
+            <div class="card-body" id="checklistBody"></div>
+          </article>
+        </section>
+
+        <!-- ========== VIEW: ARCHIVE ========== -->
+        <section class="view" id="view-archive">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-box-archive gold"></i> Archives & Historique</h2>
+              <p>Tous les décomptes sauvegardés localement sur cet appareil.</p>
+            </div>
+            <div class="head-actions">
+              <input type="search" id="archiveSearch" class="input" placeholder="Rechercher…" style="max-width:220px" />
+              <button class="btn-ghost" id="btnExportAll"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
+              <button class="btn-ghost danger" id="btnClearArchive"><i class="fa-solid fa-trash"></i> Vider</button>
+            </div>
+          </div>
+          <div class="archive-list" id="archiveList"></div>
+        </section>
+
+        <!-- ========== VIEW: SETTINGS ========== -->
+        <section class="view" id="view-settings">
+          <div class="page-head">
+            <div>
+              <h2><i class="fa-solid fa-gear gold"></i> Paramètres</h2>
+              <p>Configuration SMIG, taux et préférences de l'application.</p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <article class="card">
+              <div class="card-head"><h3>SMIG (Décret 25/22 du 30 mai 2025)</h3></div>
+              <div class="card-body form-grid">
+                <div class="field">
+                  <label for="smigJour">SMIG journalier (FC) — 1er palier 2025</label>
+                  <input type="number" id="smigJour" class="input" value="14500" />
+                </div>
+                <div class="field">
+                  <label for="smigJour2026">SMIG journalier (FC) — à partir janv. 2026</label>
+                  <input type="number" id="smigJour2026" class="input" value="21500" />
+                </div>
+                <div class="field">
+                  <label for="tauxChange">Taux de change USD → CDF</label>
+                  <input type="number" id="tauxChange" class="input" value="2850" step="1" />
+                </div>
+                <div class="field">
+                  <label for="joursCongesAn">Jours de congé légal / an</label>
+                  <input type="number" id="joursCongesAn" class="input" value="18" />
+                </div>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-head"><h3>Préférences</h3></div>
+              <div class="card-body form-grid">
+                <div class="field">
+                  <label for="defaultInspecteur">Inspecteur par défaut</label>
+                  <input type="text" id="defaultInspecteur" class="input" />
+                </div>
+                <div class="field">
+                  <label for="defaultGrade">Grade par défaut</label>
+                  <input type="text" id="defaultGrade" class="input" value="Officier de Police Judiciaire · Chef de Bureau" />
+                </div>
+                <div class="field">
+                  <label class="check-inline"><input type="checkbox" id="autoCalc" checked /> Calcul automatique en temps réel</label>
+                </div>
+                <div class="field">
+                  <button class="btn-primary" id="btnSaveSettings"><i class="fa-solid fa-check"></i> Enregistrer</button>
+                </div>
+              </div>
+            </article>
+            <article class="card col-span-2">
+              <div class="card-head"><h3>À propos d'InspecteurBot</h3></div>
+              <div class="card-body about">
+                <p><strong>InspecteurBot</strong> est une application professionnelle d'aide au calcul des décomptes finaux destinée aux Inspecteurs et Contrôleurs du Travail de la République Démocratique du Congo.</p>
+                <p>Références : Code du Travail (Loi n°015/2002 modifiée par la Loi n°016/010) · Décret n°25/22 du 30 mai 2025 fixant le SMIG · Décret n°25/21 du 30 mai 2025.</p>
+                <p class="muted">Version 1.0 · © 2026 · Données stockées localement (navigateur) · Aucune donnée n'est envoyée sur un serveur.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status"></div>
+
+    <!-- Modal Favoris / Historique -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-panel">
+        <div class="modal-head">
+          <h3 id="modalTitle">—</h3>
+          <button class="icon-btn" data-close><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
   </div>
 
-<!-- ===========================================================
-     EMPLOI - CARRIÈRE - CONTRAT
-=========================================================== -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-💼 Emploi • Carrière • Contrat de Travail
-
-</h2>
-
-<div class="grid-2">
-
-<div class="field">
-
-<label>
-
-Fonction exercée
-
-</label>
-
-<input
-type="text"
-id="fonction"
-list="listeFonctions"
-placeholder="Ex : Chauffeur">
-
-<datalist id="listeFonctions">
-
-<!-- Alimenté automatiquement par SMIG_DATA -->
-
-</datalist>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Catégorie Professionnelle
-
-</label>
-
-<input
-type="text"
-id="categorie"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Classe Professionnelle
-
-</label>
-
-<input
-type="text"
-id="classe"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Échelon
-
-</label>
-
-<input
-type="text"
-id="echelon"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Tension Salariale
-
-</label>
-
-<input
-type="text"
-id="tension"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-SMIG Mensuel Applicable
-
-</label>
-
-<input
-type="text"
-id="smigMensuel"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-SMIG Journalier
-
-</label>
-
-<input
-type="text"
-id="smigJournalier"
-readonly>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Type de Contrat
-
-</label>
-
-<select id="typeContrat">
-
-<option value="CDI">
-
-Contrat à Durée Indéterminée (CDI)
-
-</option>
-
-<option value="CDD">
-
-Contrat à Durée Déterminée (CDD)
-
-</option>
-
-<option value="ESSAI">
-
-Contrat d'Essai
-
-</option>
-
-<option value="APPRENTISSAGE">
-
-Contrat d'Apprentissage
-
-</option>
-
-<option value="STAGE">
-
-Stage Professionnel
-
-</option>
-
-<option value="INTERIM">
-
-Travail Intérimaire
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Date d'engagement
-
-</label>
-
-<input
-type="date"
-id="dateEngagement">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Date de fin de service
-
-</label>
-
-<input
-type="date"
-id="dateFin">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Ancienneté
-
-</label>
-
-<input
-type="text"
-id="anciennete"
-readonly
-placeholder="Calcul automatique">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Motif de départ
-
-</label>
-
-<select id="motifDepart">
-
-<option value="licenciement">
-
-Licenciement
-
-</option>
-
-<option value="demission">
-
-Démission
-
-</option>
-
-<option value="finCDD">
-
-Fin du CDD
-
-</option>
-
-<option value="retraite">
-
-Retraite
-
-</option>
-
-<option value="faute">
-
-Faute Lourde
-
-</option>
-
-<option value="deces">
-
-Décès
-
-</option>
-
-<option value="forceMajeure">
-
-Force Majeure
-
-</option>
-
-<option value="rupture">
-
-Rupture d'un commun accord
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Lieu de Travail
-
-</label>
-
-<input
-type="text"
-id="lieuTravail"
-placeholder="Ville ou Chantier">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Horaire de Travail
-
-</label>
-
-<select id="horaire">
-
-<option>
-
-Temps plein
-
-</option>
-
-<option>
-
-Temps partiel
-
-</option>
-
-<option>
-
-Travail de nuit
-
-</option>
-
-<option>
-
-Rotation
-
-</option>
-
-<option>
-
-Horaires spéciaux
-
-</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label>
-
-Nombre de jours prestés
-
-</label>
-
-<input
-type="number"
-id="joursPrestes"
-value="26">
-
-</div>
-
-<div class="field">
-
-<label>
-
-Observation sur le contrat
-
-</label>
-
-<textarea
-id="observationContrat"
-rows="4"
-style="padding:12px;
-border-radius:12px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,215,0,.25);
-color:#FFF;
-resize:vertical;"></textarea>
-
-</div>
-
-</div>
-
-<div style="
-margin-top:20px;
-padding:18px;
-background:rgba(11,99,206,.12);
-border-left:5px solid #FFD700;
-border-radius:12px;">
-
-<h3 style="color:#FFD700;">
-
-🤖 Analyse automatique InspecteurBot IA
-
-</h3>
-
-<p style="margin-top:12px;line-height:1.9;">
-
-Après le choix de la fonction, InspecteurBot remplira automatiquement :
-
-<br>✅ Catégorie professionnelle
-
-<br>✅ Classe
-
-<br>✅ Échelon
-
-<br>✅ Tension salariale
-
-<br>✅ SMIG journalier
-
-<br>✅ SMIG mensuel
-
-<br>✅ Ancienneté
-
-<br>✅ Préavis applicable
-
-<br>✅ Articles du Code du Travail concernés
-
-<br>✅ Vérification de conformité avec le Décret n°25/22 du 30 mai 2025.
-
-</p>
-
-</div>
-
-  </div>
-
-  <!-- ===========================================================
-     ELEMENTS FINANCIERS DU DECOMPTE FINAL
-=========================================================== -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-💰 Éléments Financiers du Décompte Final
-
-</h2>
-
-
-<!-- SALAIRE DE BASE -->
-
-<h3 style="
-color:#FFD700;
-margin-bottom:15px;
-">
-
-I. Salaire et rémunérations
-
-</h3>
-
-
-<div class="grid-2">
-
-
-<div class="field">
-
-<label>
-
-Salaire de base mensuel (FC)
-
-</label>
-
-<input
-type="number"
-id="salaireBase"
-placeholder="Ex : 215000">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Salaire journalier automatique (FC)
-
-</label>
-
-<input
-type="number"
-id="salaireJournalier"
-readonly>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Nombre de jours travaillés
-
-</label>
-
-<input
-type="number"
-id="joursTravailles"
-value="26">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Ration journalière (FC)
-
-</label>
-
-<input
-type="number"
-id="ration"
-value="0">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Transport mensuel (FC)
-
-</label>
-
-<input
-type="number"
-id="transport"
-value="0">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Prime / Indemnité spéciale (FC)
-
-</label>
-
-<input
-type="number"
-id="prime"
-value="0">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Heures supplémentaires (FC)
-
-</label>
-
-<input
-type="number"
-id="heuresSupplementaires"
-value="0">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Autres avantages (FC)
-
-</label>
-
-<input
-type="number"
-id="autresAvantages"
-value="0">
-
-</div>
-
-
-</div>
-
-
-
-<!-- INDEMNITES -->
-
-<h3 style="
-color:#FFD700;
-margin-top:30px;
-margin-bottom:15px;
-">
-
-II. Indemnités de fin de service
-
-</h3>
-
-
-<div class="grid-2">
-
-
-<div class="field">
-
-<label>
-
-Indemnité de préavis (FC)
-
-</label>
-
-<input
-type="number"
-id="indemnitePreavis"
-readonly>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Congés annuels non pris (FC)
-
-</label>
-
-<input
-type="number"
-id="congesNonPris"
-readonly>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Indemnité de logement (FC)
-
-</label>
-
-<input
-type="number"
-id="indemniteLogement"
-readonly>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Gratification / Prime d'ancienneté (FC)
-
-</label>
-
-<input
-type="number"
-id="gratification"
-value="0">
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Allocations familiales (FC)
-
-</label>
-
-<input
-type="number"
-id="allocationsFamiliales"
-readonly>
-
-</div>
-
-
-<div class="field">
-
-<label>
-
-Nombre d'enfants pris en charge
-
-</label>
-
-<input
-type="number"
-id="enfantsCalcul"
-value="0">
-
-</div>
-
-
-</div>
-
-
-
-<!-- RETENUES -->
-
-<h3 style="
-color:#FFD700;
-margin-top:30px;
-margin-bottom:15px;
-">
-
-III. Retenues légales
-
-</h3>
-
-
-<div class="grid-2">
-
-
-<div class="field">
-
-<label>
-
-☑ CNSS / INSS
-
-</label>
-
-<select id="appliquerCNSS">
-
-<option value="oui">
-
-Oui
-
-</option>
-
-<option value="non">
-
-Non
-
-</option>
-
-</select>
-
-</div>
-
-
-
-<div class="field">
-
-<label>
-
-☑ IPR
-
-</label>
-
-<select id="appliquerIPR">
-
-<option value="oui">
-
-Oui
-
-</option>
-
-<option value="non">
-
-Non
-
-</option>
-
-</select>
-
-</div>
-
-
-
-<div class="field">
-
-<label>
-
-☑ ONEM
-
-</label>
-
-<select id="appliquerONEM">
-
-<option value="oui">
-
-Oui
-
-</option>
-
-<option value="non">
-
-Non
-
-</option>
-
-</select>
-
-</div>
-
-
-
-<div class="field">
-
-<label>
-
-☑ INPP
-
-</label>
-
-<select id="appliquerINPP">
-
-<option value="oui">
-
-Oui
-
-</option>
-
-<option value="non">
-
-Non
-
-</option>
-
-</select>
-
-</div>
-
-
-</div>
-
-
-
-<!-- RESUME -->
-
-<div style="
-margin-top:25px;
-padding:20px;
-border-radius:15px;
-background:rgba(255,215,0,.08);
-border:1px solid rgba(255,215,0,.25);
-">
-
-
-<h3 style="
-color:#FFD700;
-">
-
-📊 Aperçu financier automatique
-
-</h3>
-
-
-<div class="grid-2"
-style="margin-top:15px;">
-
-
-<div>
-
-<p>
-Salaire brut estimé :
-<strong id="apercuBrut">
-0 FC
-</strong>
-</p>
-
-</div>
-
-
-<div>
-
-<p>
-Retenues estimées :
-<strong id="apercuRetenues">
-0 FC
-</strong>
-</p>
-
-</div>
-
-
-<div>
-
-<p>
-Total indemnités :
-<strong id="apercuIndemnites">
-0 FC
-</strong>
-</p>
-
-</div>
-
-
-<div>
-
-<p style="font-size:18px;color:#FFD700;">
-
-Net à payer :
-<strong id="apercuNet">
-0 FC
-</strong>
-
-</p>
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-     </div>
-
-  <!-- ===========================================================
-     OBSERVATIONS - VERIFICATION JURIDIQUE - ACTIONS
-=========================================================== -->
-
-<div class="card">
-
-<h2 class="card-title">
-
-⚖️ Analyse juridique et validation du Décompte
-
-</h2>
-
-
-<div class="grid-2">
-
-
-<div class="field">
-
-<label>
-
-Observations de l'Inspecteur / Contrôleur
-
-</label>
-
-<textarea
-id="observationsInspecteur"
-rows="6"
-placeholder="Inscrire les observations constatées lors du contrôle... "
-style="
-padding:14px;
-border-radius:12px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,215,0,.25);
-color:white;
-resize:vertical;
-font-size:15px;
-"></textarea>
-
-</div>
-
-
-
-<div class="field">
-
-<label>
-
-Conclusion du contrôle
-
-</label>
-
-<textarea
-id="conclusionControle"
-rows="6"
-placeholder="Conclusion et recommandations..."
-style="
-padding:14px;
-border-radius:12px;
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,215,0,.25);
-color:white;
-resize:vertical;
-font-size:15px;
-"></textarea>
-
-</div>
-
-
-</div>
-
-
-
-<!-- VERIFICATION IA -->
-
-<div style="
-margin-top:25px;
-padding:20px;
-border-radius:15px;
-background:rgba(11,99,206,.15);
-border-left:5px solid #FFD700;
-">
-
-
-<h3 style="
-color:#FFD700;
-">
-
-🤖 Vérification intelligente InspecteurBot IA
-
-</h3>
-
-
-<p style="
-line-height:1.9;
-margin-top:12px;
-">
-
-
-L'assistant analysera automatiquement :
-
-<br>✅ Respect du SMIG légal (Décret n°25/22 du 30 mai 2025)
-
-<br>✅ Cohérence entre fonction et salaire
-
-<br>✅ Ancienneté et calcul du préavis
-
-<br>✅ Indemnités obligatoires
-
-<br>✅ Retenues appliquées
-
-<br>✅ Conformité avec le Code du Travail RDC
-
-<br>✅ Détection des erreurs éventuelles
-
-
-</p>
-
-
-<div id="resultatAnalyseIA"
-style="
-margin-top:15px;
-padding:15px;
-border-radius:10px;
-background:rgba(0,0,0,.25);
-">
-
-En attente du calcul...
-
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- REFERENCES JURIDIQUES -->
-
-<div style="
-margin-top:25px;
-padding:20px;
-border-radius:15px;
-background:rgba(255,215,0,.08);
-">
-
-
-<h3 style="
-color:#FFD700;
-">
-
-📚 Références juridiques associées
-
-</h3>
-
-
-<ul style="
-margin-top:15px;
-line-height:2;
-padding-left:25px;
-">
-
-
-<li>
-Code du Travail RDC
-</li>
-
-
-<li>
-Décret n°25/22 du 30 mai 2025 relatif au SMIG
-</li>
-
-
-<li>
-Dispositions relatives au licenciement et à la rupture du contrat
-</li>
-
-
-<li>
-Dispositions relatives au préavis
-</li>
-
-
-<li>
-Dispositions relatives aux congés et indemnités
-</li>
-
-
-</ul>
-
-
-</div>
-
-
-
-<!-- BOUTONS PRINCIPAUX -->
-
-<div style="
-margin-top:30px;
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-justify-content:center;
-">
-
-
-<button
-id="btnCalculer"
-class="btn-primary"
-style="
-padding:15px 30px;
-border:none;
-border-radius:14px;
-background:#FFD700;
-color:#041B3D;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
-">
-
-🧮 CALCULER LE DÉCOMPTE FINAL
-
-</button>
-
-
-
-<button
-id="btnVerifierIA"
-class="btn-secondary"
-style="
-padding:15px 30px;
-border:none;
-border-radius:14px;
-background:#0B63CE;
-color:white;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
-">
-
-🤖 Vérification IA
-
-</button>
-
-
-
-<button
-id="btnReinitialiser"
-class="btn-secondary"
-style="
-padding:15px 30px;
-border:none;
-border-radius:14px;
-background:#444;
-color:white;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
-">
-
-🔄 Nouveau Décompte
-
-</button>
-
-<!-- ===========================================================
-     RESULTAT DU DECOMPTE FINAL OFFICIEL
-=========================================================== -->
-
-<section id="resultatDecompte"
-class="card"
-style="display:none;">
-
-
-<h2 class="card-title">
-
-📄 Décompte Final Officiel
-
-</h2>
-
-
-<!-- ENTETE DOCUMENT -->
-
-<div style="
-background:#fff;
-color:#041B3D;
-padding:25px;
-border-radius:15px;
-">
-
-
-<div style="
-text-align:center;
-line-height:1.7;
-">
-
-
-<h2>
-RÉPUBLIQUE DÉMOCRATIQUE DU CONGO
-</h2>
-
-<h3>
-MINISTÈRE DE L'EMPLOI ET DU TRAVAIL
-</h3>
-
-<h3>
-INSPECTION GÉNÉRALE DU TRAVAIL
-</h3>
-
-
-<p>
-Direction :
-<strong id="rDirection">
----</strong>
-</p>
-
-
-<h2 style="
-margin-top:20px;
-">
-
-DÉCOMPTE FINAL DU TRAVAILLEUR
-
-</h2>
-
-
-</div>
-
-
-
-<div style="
-display:flex;
-justify-content:space-between;
-margin-top:25px;
-flex-wrap:wrap;
-gap:20px;
-">
-
-
-<div>
-
-<p>
-N° Décompte :
-<strong id="rNumero">
----</strong>
-</p>
-
-
-<p>
-Date :
-<strong id="rDate">
----</strong>
-</p>
-
-</div>
-
-
-<div id="rQRCode"
-style="
-width:120px;
-height:120px;
-border:1px solid #ddd;
-display:flex;
-align-items:center;
-justify-content:center;
-">
-
-QR
-
-</div>
-
-
-</div>
-
-
-
-<hr style="
-margin:25px 0;
-">
-
-
-
-<!-- IDENTIFICATION -->
-
-<h3>
-👤 Identification du travailleur
-</h3>
-
-
-<table style="
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
-">
-
-
-<tr>
-
-<td>
-Nom complet
-</td>
-
-<td id="rNom">
----
-</td>
-
-</tr>
-
-
-<tr>
-
-<td>
-Fonction
-</td>
-
-<td id="rFonction">
----
-</td>
-
-</tr>
-
-
-<tr>
-
-<td>
-Employeur
-</td>
-
-<td id="rEmployeur">
----
-</td>
-
-</tr>
-
-
-<tr>
-
-<td>
-Ancienneté
-</td>
-
-<td id="rAnciennete">
----
-</td>
-
-</tr>
-
-
-<tr>
-
-<td>
-Motif de départ
-</td>
-
-<td id="rMotif">
----
-</td>
-
-</tr>
-
-
-</table>
-
-
-
-
-<!-- TABLEAU CALCUL -->
-
-<h3 style="
-margin-top:30px;
-">
-
-💰 Détail du calcul
-
-</h3>
-
-
-<table
-id="tableResultat"
-style="
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
-">
-
-
-<thead>
-
-<tr>
-
-<th>
-Éléments
-</th>
-
-<th>
-Détails
-</th>
-
-<th>
-Montant FC
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="lignesResultat">
-
-
-</tbody>
-
-
-
-<tfoot>
-
-
-<tr>
-
-<td colspan="2">
-
-<strong>
-TOTAL BRUT
-</strong>
-
-</td>
-
-
-<td id="totalBrut">
-
-0 FC
-
-</td>
-
-</tr>
-
-
-
-<tr>
-
-<td colspan="2">
-
-<strong>
-TOTAL RETENUES
-</strong>
-
-</td>
-
-
-<td id="totalRetenues">
-
-0 FC
-
-</td>
-
-</tr>
-
-
-
-<tr style="
-background:#041B3D;
-color:#FFD700;
-font-size:20px;
-">
-
-
-<td colspan="2">
-
-<strong>
-NET À PAYER
-
-</strong>
-
-</td>
-
-
-<td>
-
-<strong id="netAPayer">
-
-0 FC
-
-</strong>
-
-
-</td>
-
-
-</tr>
-
-
-</tfoot>
-
-
-</table>
-
-
-
-
-
-<!-- RECOMMANDATIONS IA -->
-
-
-<div style="
-margin-top:25px;
-padding:20px;
-background:#EDF2F7;
-color:#041B3D;
-border-radius:12px;
-">
-
-
-<h3>
-🤖 Recommandations InspecteurBot IA
-</h3>
-
-
-<ul id="recommandationsIA"
-style="
-margin-top:15px;
-line-height:2;
-">
-
-</ul>
-
-
-</div>
-
-
-
-
-<!-- SIGNATURES -->
-
-
-<div style="
-display:flex;
-justify-content:space-between;
-margin-top:50px;
-flex-wrap:wrap;
-text-align:center;
-">
-
-
-<div style="width:300px;">
-
-<p>
-Établi par :
-</p>
-
-
-<strong id="rAgent">
-
-Inspecteur / Contrôleur
-
-</strong>
-
-
-<br><br>
-
-
-Signature :
-
-<br><br><br>
-
-
-_____________________
-
-</div>
-
-
-
-
-<div style="width:300px;">
-
-<p>
-Visa de l'autorité compétente
-</p>
-
-
-<br><br><br>
-
-
-Cachet :
-
-<br><br>
-
-
-_____________________
-
-</div>
-
-
-</div>
-
-
-
-
-</div>
-
-
-<!-- ACTIONS DOCUMENT -->
-
-
-<div style="
-margin-top:25px;
-display:flex;
-justify-content:center;
-gap:15px;
-flex-wrap:wrap;
-">
-
-
-<button
-id="btnPDF"
-class="btn-primary">
-
-📥 Télécharger PDF
-
-</button>
-
-
-
-<button
-id="btnImprimer"
-class="btn-secondary">
-
-🖨️ Imprimer
-
-</button>
-
-
-
-<button
-id="btnSauvegarder"
-class="btn-secondary">
-
-💾 Sauvegarder
-
-</button>
-
-
-
-<button
-id="btnPartager"
-class="btn-secondary">
-
-📤 Partager
-
-</button>
-
-
-</div>
-
-
-
- </section>
-</div>
-
-
-</div>   
-
-<!-- ===========================================================
-     HISTORIQUE - ARCHIVES DES DECOMPTES
-=========================================================== -->
-
-
-<section class="card">
-
-
-<h2 class="card-title">
-
-📚 Archives des Décomptes Finaux
-
-</h2>
-
-
-
-<div class="grid-2">
-
-
-<div class="field">
-
-<label>
-
-🔎 Rechercher un décompte
-
-</label>
-
-
-<input
-type="search"
-id="rechercheHistorique"
-placeholder="Nom, entreprise, numéro...">
-
-</div>
-
-
-
-<div class="field">
-
-<label>
-
-Filtrer par année
-
-</label>
-
-
-<select id="filtreAnnee">
-
-
-<option value="">
-
-Toutes les années
-
-</option>
-
-
-<option>
-
-2026
-
-</option>
-
-
-<option>
-
-2025
-
-</option>
-
-
-<option>
-
-2024
-
-</option>
-
-
-</select>
-
-
-</div>
-
-
-</div>
-
-
-
-
-<div style="
-margin-top:20px;
-display:flex;
-justify-content:center;
-gap:15px;
-flex-wrap:wrap;
-">
-
-
-<button
-id="btnActualiserHistorique"
-class="btn-secondary">
-
-🔄 Actualiser
-
-</button>
-
-
-
-<button
-id="btnExporterHistorique"
-class="btn-secondary">
-
-📊 Exporter les archives
-
-</button>
-
-
-</div>
-
-
-
-
-
-<!-- TABLE HISTORIQUE -->
-
-
-<div style="
-margin-top:25px;
-overflow-x:auto;
-">
-
-
-<table
-style="
-width:100%;
-border-collapse:collapse;
-background:rgba(255,255,255,.05);
-"
->
-
-
-<thead>
-
-<tr>
-
-
-<th>
-
-N°
-
-</th>
-
-
-<th>
-
-Travailleur
-
-</th>
-
-
-<th>
-
-Entreprise
-
-</th>
-
-
-<th>
-
-Date
-
-</th>
-
-
-<th>
-
-Net à payer
-
-</th>
-
-
-<th>
-
-Actions
-
-</th>
-
-
-</tr>
-
-
-</thead>
-
-
-
-<tbody id="listeHistorique">
-
-
-<tr>
-
-<td colspan="6"
-style="text-align:center;padding:20px;">
-
-Aucun décompte enregistré
-
-</td>
-
-</tr>
-
-
-</tbody>
-
-
-
-</table>
-
-
-</div>
-
-
-
-
-</section>
-
-
-
-
-
-<!-- ===========================================================
-     MODAL CONSULTATION HISTORIQUE
-=========================================================== -->
-
-
-<div id="modalHistorique"
-style="
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.75);
-z-index:9999;
-align-items:center;
-justify-content:center;
-padding:20px;
-">
-
-
-
-<div style="
-background:#041B3D;
-border:1px solid #FFD700;
-border-radius:20px;
-width:min(900px,95%);
-max-height:90vh;
-overflow:auto;
-padding:25px;
-">
-
-
-
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-">
-
-
-<h2 style="
-color:#FFD700;
-">
-
-📄 Détail du Décompte
-
-</h2>
-
-
-
-<button
-id="fermerHistorique"
-style="
-background:#FFD700;
-border:none;
-padding:8px 15px;
-border-radius:10px;
-font-weight:bold;
-cursor:pointer;
-">
-
-✕
-
-</button>
-
-
-</div>
-
-
-
-<div id="detailHistorique"
-style="
-margin-top:20px;
-">
-
-</div>
-
-
-
-<div style="
-margin-top:25px;
-display:flex;
-gap:15px;
-justify-content:center;
-flex-wrap:wrap;
-">
-
-
-<button
-id="btnModifierHistorique"
-class="btn-primary">
-
-✏️ Modifier
-
-</button>
-
-
-
-<button
-id="btnPDFHistorique"
-class="btn-secondary">
-
-📥 PDF
-
-</button>
-
-
-
-<button
-id="btnSupprimerHistorique"
-class="btn-secondary">
-
-🗑 Supprimer
-
-</button>
-
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- ===========================================================
-     MESSAGE SECURITE ARCHIVE
-=========================================================== -->
-
-
-<div class="card">
-
-
-<h2 class="card-title">
-
-🔐 Sécurité des Archives
-
-</h2>
-
-
-
-<p style="
-line-height:2;
-">
-
-
-Les décomptes enregistrés dans InspecteurBot RDC sont conservés avec :
-
-<br>
-
-✅ Numéro unique du document
-
-<br>
-
-✅ Date et heure d'établissement
-
-<br>
-
-✅ Identité de l'Inspecteur / Contrôleur
-
-<br>
-
-✅ Informations du travailleur
-
-<br>
-
-✅ Informations de l'entreprise
-
-<br>
-
-✅ Résultat financier complet
-
-<br>
-
-✅ Historique des modifications
-
-
-</p>
-
-
-
-</div>
-     
-<!-- ===========================================================
-     BARRE INTELLIGENTE INSPECTEURBOT
-=========================================================== -->
-
-
-<section class="card">
-
-
-<h2 class="card-title">
-
-🚀 Outils intelligents InspecteurBot RDC
-
-</h2>
-
-
-
-<div class="toolbar-premium">
-
-
-<button 
-class="tool-btn"
-id="btnScanner">
-
-📷 Scanner document
-
-</button>
-
-
-
-<button
-class="tool-btn"
-id="btnOCR">
-
-🔎 Reconnaissance OCR
-
-</button>
-
-
-
-<button
-class="tool-btn"
-id="btnAssistantIA">
-
-🤖 Assistant IA juridique
-
-</button>
-
-
-
-<button
-class="tool-btn"
-id="btnImporter">
-
-📂 Importer dossier
-
-</button>
-
-
-
-<button
-class="tool-btn"
-id="btnExporter">
-
-💾 Sauvegarde complète
-
-</button>
-
-
-<input
-type="file"
-id="inputScanner"
-accept="image/*"
-capture="environment"
-hidden>
-
-
-<input
-type="file"
-id="inputImporter"
-accept=".json"
-hidden>
-
-
-</div>
-
-
-
-<div id="etatAssistant"
-style="
-margin-top:20px;
-padding:15px;
-border-radius:12px;
-background:rgba(255,215,0,.08);
-border-left:4px solid #FFD700;
-">
-
-
-🤖 Assistant InspecteurBot prêt à analyser le dossier.
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-
-<!-- ===========================================================
-     MODAL ASSISTANT IA
-=========================================================== -->
-
-
-<div id="modalAssistantIA"
-class="modal">
-
-
-<div class="modal-content">
-
-
-<div class="modal-header">
-
-
-<h2>
-
-🤖 Assistant IA — Décompte Final
-
-</h2>
-
-
-<button
-class="close-modal"
-id="fermerAssistant">
-
-✕
-
-</button>
-
-
-</div>
-
-
-
-
-<div id="messagesIA"
-class="messages-ia">
-
-
-<div class="message-bot">
-
-Bonjour. Je suis InspecteurBot IA.
-Posez votre question juridique ou demandez une vérification du décompte.
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="ia-input">
-
-
-<input
-id="questionIA"
-placeholder="Ex : Le préavis est-il correct ?">
-
-
-<button
-id="envoyerIA">
-
-Envoyer
-
-</button>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<!-- ===========================================================
-     MODAL OCR
-=========================================================== -->
-
-
-<div id="modalOCR"
-class="modal">
-
-
-<div class="modal-content">
-
-
-<div class="modal-header">
-
-
-<h2>
-
-📷 Analyse OCR du document
-
-</h2>
-
-
-<button
-class="close-modal"
-id="fermerOCR">
-
-✕
-
-</button>
-
-
-</div>
-
-
-
-<div id="zoneOCR">
-
-
-<p>
-
-Placez la fiche de paie, contrat ou document du travailleur.
-
-</p>
-
-
-<div id="apercuOCR">
-
-</div>
-
-
-
-<div id="resultatOCR">
-
-Analyse en attente...
-
-</div>
-
-
-
-<button
-id="appliquerOCR"
-class="btn-primary">
-
-✅ Appliquer les données détectées
-
-</button>
-
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-<!-- ===========================================================
-     INFORMATIONS SYSTEME
-=========================================================== -->
-
-
-<section class="card">
-
-
-<h2 class="card-title">
-
-ℹ️ Informations du module
-
-</h2>
-
-
-
-<div class="info-systeme">
-
-
-<p>
-
-<strong>Module :</strong>
-Décompte Final Automatique
-
-</p>
-
-
-<p>
-
-<strong>Application :</strong>
-InspecteurBot IA RDC Premium
-
-</p>
-
-
-<p>
-
-<strong>Base juridique :</strong>
-Code du Travail RDC + Décret SMIG n°25/22 du 30 mai 2025
-
-</p>
-
-
-<p>
-
-<strong>Utilisateurs :</strong>
-Inspecteurs du Travail - Contrôleurs du Travail - OPJ Travail
-
-</p>
-
-
-</div>
-
-
-</section>
-
-
-
-
-
-
-<!-- ===========================================================
-     FOOTER OFFICIEL
-=========================================================== -->
-
-
-<footer class="footer-premium">
-
-
-<div class="footer-logo">
-
-<img
-src="../assets/images/logo-igt.png"
-alt="Logo IGT">
-
-</div>
-
-
-
-<p>
-
-InspecteurBot IA RDC Premium —
-Module Décompte Final
-
-</p>
-
-
-
-<p>
-
-Créé Par Inspecteur Limengo (Pmiller) © 2026
-
-</p>
-
-
-
-<p>
-
-Assistant Intelligent de l'Inspection Générale du Travail RDC
-
-</p>
-
-
-</footer>
-
-
-
-
-
-
-<!-- ===========================================================
-     IMPORTATION DES MODULES JAVASCRIPT
-=========================================================== -->
-
-
-<script src="../js/smig-data.js?v=2"></script>
-<script src="../js/smig-calc.js?v=2"></script>
-<script src="../app-decompte.js?v=2"></script>
-
+  <script src="js/App.js"></script>
 </body>
-
-</html>    
+</html>
