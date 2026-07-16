@@ -413,6 +413,137 @@ function editCurrentReport() {
 }
 
 // ==========================================
+// FORMATION REPORT
+// ==========================================
+function createFormationReport(e) {
+  e.preventDefault();
+  const data = {
+    date: document.getElementById('fDate').value,
+    order: document.getElementById('fOrder').value,
+    group: document.getElementById('fGroup').value,
+    role: document.getElementById('fFormateur').value,
+    participants: document.getElementById('fParticipants').value,
+    theme: document.getElementById('fTheme').value,
+  };
+  const reportId = generateReportId();
+  const reportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const html = `<div class="a4-paper">
+    <div class="report-header">
+      <h1>RAPPORT DE FORMATION</h1>
+      <div class="meta-line">IT/CT IA | Code : <strong>${reportId}</strong></div>
+      <img src="${generateQRUrl('Formation ' + reportId)}" alt="QR" style="width:80px;height:80px;" />
+      <div style="font-size:0.85rem;margin-top:0.5rem;">République Démocratique du Congo — Ministère de l'Emploi et du Travail — Inspection Générale du Travail</div>
+    </div>
+    <div class="report-body">
+      <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
+        <tr><td>Date</td><td>${data.date || '—'}</td></tr>
+        <tr><td>Ordre</td><td>${data.order || '—'}</td></tr>
+        <tr><td>Groupe</td><td>${data.group || '—'}</td></tr>
+        <tr><td>Formateur</td><td>${data.role || '—'}</td></tr>
+        <tr><td>Participants</td><td>${data.participants || '—'}</td></tr>
+        <tr><td>Thème</td><td>${data.theme || '—'}</td></tr>
+      </table>
+      <h2>I. Programme</h2><ul><li>Présentation du Code du travail.</li><li>Méthodologie d'inspection.</li><li>Procédures de procès-verbaux.</li></ul>
+      <h2>II. Évaluation</h2><p>Les participants ont montré un bon niveau. Une réinspection est recommandée.</p>
+    </div>
+    <div class="report-footer"><p>Ainsi fait le ${reportDate}</p><p>Code : ${reportId}</p></div>
+  </div>`;
+  document.getElementById('a4PaperFormation').innerHTML = html;
+  document.getElementById('previewFormation').classList.remove('hidden');
+  showToast('Rapport de formation généré.', 'success');
+}
+function printFormationReport() { window.print(); }
+function exportFormationPDF() {
+  const el = document.getElementById('a4PaperFormation');
+  if (!el) return;
+  html2pdf().set({ margin: [8,8,8,8], filename: 'rapport_formation.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save();
+}
+function exportFormationWord() {
+  const html = document.getElementById('a4PaperFormation').innerHTML;
+  const blob = new Blob([`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Rapport Formation</title></head><body style="font-family:'Times New Roman', serif;">${html}</body></html>`], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'rapport_formation.doc'; a.click(); URL.revokeObjectURL(url);
+}
+
+// ==========================================
+// REUNION REPORT
+// ==========================================
+function createReunionReport(e) {
+  e.preventDefault();
+  const data = {
+    date: document.getElementById('rDate').value,
+    order: document.getElementById('rOrder').value,
+    group: document.getElementById('rGroup').value,
+    role: document.getElementById('rRole').value,
+    participants: document.getElementById('rParticipants').value,
+  };
+  const reportId = generateReportId();
+  const reportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const html = `<div class="a4-paper">
+    <div class="report-header"><h1>RAPPORT DE RÉUNION</h1>
+      <div class="meta-line">IT/CT IA | Code : <strong>${reportId}</strong></div>
+      <img src="${generateQRUrl('Reunion ' + reportId)}" alt="QR" style="width:80px;height:80px;" />
+      <div style="font-size:0.85rem;margin-top:0.5rem;">RDC — Ministère de l'Emploi et du Travail — Inspection Générale du Travail</div>
+    </div>
+    <div class="report-body">
+      <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
+        <tr><td>Date</td><td>${data.date || '—'}</td></tr>
+        <tr><td>Ordre</td><td>${data.order || '—'}</td></tr>
+        <tr><td>Groupe</td><td>${data.group || '—'}</td></tr>
+        <tr><td>Fonction</td><td>${data.role || '—'}</td></tr>
+        <tr><td>Participants</td><td>${data.participants || '—'}</td></tr>
+      </table>
+      <h2>I. Ordre du jour</h2><ul><li>Présentation.</li><li>Échange d'informations.</li><li>Coordination.</li></ul>
+      <h2>II. Points abordés</h2><p>Aucun écart majeur relevé.</p>
+      <h2>III. Décisions</h2><ul><li>Maintien de la coordination.</li><li>Calendrier de suivi.</li></ul>
+    </div>
+    <div class="report-footer"><p>Ainsi fait le ${reportDate}</p><p>Code : ${reportId}</p></div>
+  </div>`;
+  document.getElementById('a4PaperReunion').innerHTML = html;
+  document.getElementById('previewReunion').classList.remove('hidden');
+  showToast('Rapport de réunion généré.', 'success');
+}
+function printReunionReport() { window.print(); }
+function exportReunionPDF() {
+  const el = document.getElementById('a4PaperReunion');
+  if (!el) return;
+  html2pdf().set({ margin: [8,8,8,8], filename: 'rapport_reunion.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save();
+}
+
+// ==========================================
+// CONVERSATION REPORT
+// ==========================================
+function createConversationReport(e) {
+  e.preventDefault();
+  const data = { date: document.getElementById('cDate').value, text: document.getElementById('cTranscription').value };
+  const reportId = generateReportId();
+  const reportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const fullText = data.text || '';
+  const html = `<div class="a4-paper">
+    <div class="report-header"><h1>TRANSCRIPTION DE CONVERSATION</h1>
+      <div class="meta-line">IT/CT IA | Code : <strong>${reportId}</strong></div>
+      <img src="${generateQRUrl('Conversation ' + reportId)}" alt="QR" style="width:80px;height:80px;" />
+      <div style="font-size:0.85rem;margin-top:0.5rem;">RDC — Ministère de l'Emploi et du Travail — Inspection Générale du Travail</div>
+    </div>
+    <div class="report-body">
+      <p><strong>Date :</strong> ${data.date || '—'}</p>
+      <p><strong>Mode :</strong> Conversation</p>
+      <hr/>
+      <p>${fullText || 'Aucun texte.'}</p>
+    </div>
+    <div class="report-footer"><p>Ainsi fait le ${reportDate}</p><p>Code : ${reportId}</p></div>
+  </div>`;
+  document.getElementById('a4PaperConversation').innerHTML = html;
+  document.getElementById('previewConversation').classList.remove('hidden');
+  showToast('Rapport de conversation généré.', 'success');
+}
+function printConversationReport() { window.print(); }
+function exportConversationReportPDF() {
+  const el = document.getElementById('a4PaperConversation');
+  if (!el) return;
+  html2pdf().set({ margin: [8,8,8,8], filename: 'rapport_conversation.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(el).save();
+}
+
+// ==========================================
 // AI MODELS LIBRARY (100+)
 // ==========================================
 function buildModelLibrary() {
@@ -533,25 +664,13 @@ function startListening() {
   STATE.transcriptLog = [];
   document.getElementById('iaTranscript').innerHTML = '';
 
-  // Sensibilité audio : désactivation du bruit et gain maximum
+  // Sensibilité audio : microphone sans bruit (désactivation écho/bruit)
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } })
       .then(stream => {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContext.createMediaStreamSource(stream);
-        const gainNode = audioContext.createGain();
-        gainNode.gain.value = 2.0; // Sensibilité augmentée au-delà de 10 mètres, sans bruit excessif
-        const filter = audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 3000; // Filtre passe-bas pour réduire le bruit
-        source.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        gainNode.connect(audioContext.destination);
-        STATE.audioGain = gainNode;
         STATE.audioStream = stream;
       })
-      .catch(err => console.warn('Audio gain setup failed:', err));
+      .catch(err => console.warn('Audio setup failed:', err));
   }
 
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -583,9 +702,6 @@ function startListening() {
         const entry = { time: new Date().toLocaleTimeString('fr-FR'), text: transcript.trim(), lang: lang, mode: STATE.iaMode };
         STATE.transcriptLog.push(entry);
         renderTranscriptEntry(entry);
-        if (STATE.transcriptLog.length >= 5) {
-          generateIAOutput();
-        }
       } else {
         renderTranscriptEntry({ time: new Date().toLocaleTimeString('fr-FR'), text: transcript.trim() + ' ... (en cours)', lang: 'détection en cours', mode: STATE.iaMode });
       }
@@ -639,11 +755,46 @@ function stopListening() {
   document.getElementById('btnStart').classList.remove('hidden');
   document.getElementById('btnStop').classList.add('hidden');
   document.getElementById('iaStatusIndicator').classList.remove('listening');
-  document.getElementById('iaStatusText').textContent = 'Écoute terminée. Génération du document en cours...';
-  showToast('Écoute arrêtée. Génération du rapport en cours.', 'info');
-  setTimeout(() => {
-    generateIAOutput();
-  }, 1200);
+  document.getElementById('iaStatusText').textContent = 'Écoute terminée. Vous pouvez effacer, télécharger ou copier le texte.';
+  showToast('Écoute arrêtée.', 'info');
+  // Ajout des boutons d'action après l'arrêt
+  const transcriptArea = document.getElementById('iaTranscript');
+  if (transcriptArea && !document.getElementById('transcriptActions')) {
+    const actionsDiv = document.createElement('div');
+    actionsDiv.id = 'transcriptActions';
+    actionsDiv.style.cssText = 'margin-top:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;';
+    actionsDiv.innerHTML = `
+      <button onclick="clearTranscript()" class="btn-outline" aria-label="Effacer la transcription"><i class="fa-solid fa-trash"></i> Effacer</button>
+      <button onclick="downloadTranscript()" class="btn-outline" aria-label="Télécharger la transcription"><i class="fa-solid fa-download"></i> Télécharger</button>
+      <button onclick="copyTranscript()" class="btn-outline" aria-label="Copier la transcription"><i class="fa-solid fa-copy"></i> Copier le texte</button>
+    `;
+    transcriptArea.appendChild(actionsDiv);
+  }
+}
+
+function clearTranscript() {
+  document.getElementById('iaTranscript').innerHTML = '<p class="transcript-placeholder">Transcription effacée.</p>';
+  STATE.transcriptLog = [];
+  const actions = document.getElementById('transcriptActions');
+  if (actions) actions.remove();
+  showToast('Transcription effacée.', 'info');
+}
+
+function downloadTranscript() {
+  const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
+  const blob = new Blob([fullText || 'Aucun texte transcrit.'], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'transcription_inspecteurbot_' + new Date().toISOString().split('T')[0] + '.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Transcription téléchargée.', 'success');
+}
+
+function copyTranscript() {
+  const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
+  navigator.clipboard.writeText(fullText || '').then(() => showToast('Transcription copiée dans le presse-papier.', 'success'));
 }
 
 function detectLanguageReal(text) {

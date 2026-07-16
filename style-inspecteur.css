@@ -181,6 +181,7 @@ h2 i { color: var(--accent); margin-right: 0.35rem; text-shadow: 1px 1px 2px rgb
 .a4-paper .report-footer { margin-top: 3rem; border-top: 2px solid var(--primary); padding-top: 1rem; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: flex-end; }
 .a4-paper .signature-block { text-align: right; }
 .meta-line { font-family: var(--font-body); font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.3rem; }
+.meta-line img { max-height: 60px; max-width: 140px; display: block; margin: 0.5rem auto; border: 1px solid #ccc; border-radius: 6px; }
 .report-actions { margin-top: 1rem; display: flex; gap: 0.7rem; flex-wrap: wrap; }
 
 /* IA Aide */

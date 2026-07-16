@@ -16,7 +16,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <link rel="stylesheet" href="style-inspecteur.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -47,7 +47,10 @@
     </a>
     <div class="nav-links">
       <a href="#" onclick="showSection('documentation')" class="nav-link"><i class="fa-solid fa-gavel"></i> Base juridique</a>
-      <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Élaboration d'un rapport de mission</a>
+      <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Élaboration du rapport de mission</a>
+      <a href="#" onclick="showSection('formation-rapport')" class="nav-link"><i class="fa-solid fa-chalkboard-user"></i> Élaboration d'un rapport de formation</a>
+      <a href="#" onclick="showSection('reunion-rapport')" class="nav-link"><i class="fa-solid fa-handshake"></i> Élaboration d'un rapport de réunion</a>
+      <a href="#" onclick="showSection('conversation-rapport')" class="nav-link"><i class="fa-solid fa-comments"></i> Élaboration d'un rapport de conversation</a>
       <a href="#" onclick="showSection('ia-aide')" class="nav-link"><i class="fa-solid fa-pen-fancy"></i> IA Aide rédaction</a>
       <a href="#" onclick="showSection('itct-ia')" class="nav-link highlight"><i class="fa-solid fa-brain"></i> IT/CT IA</a>
       <a href="#" onclick="showSection('archives')" class="nav-link"><i class="fa-solid fa-archive"></i> Archives</a>
@@ -57,7 +60,10 @@
   </nav>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#" onclick="showSection('documentation'); toggleMobileMenu()">Base juridique</a>
-    <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Élaboration d'un rapport de mission</a>
+    <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Élaboration du rapport de mission</a>
+    <a href="#" onclick="showSection('formation-rapport'); toggleMobileMenu()">Élaboration d'un rapport de formation</a>
+    <a href="#" onclick="showSection('reunion-rapport'); toggleMobileMenu()">Élaboration d'un rapport de réunion</a>
+    <a href="#" onclick="showSection('conversation-rapport'); toggleMobileMenu()">Élaboration d'un rapport de conversation</a>
     <a href="#" onclick="showSection('ia-aide'); toggleMobileMenu()">IA Aide rédaction</a>
     <a href="#" onclick="showSection('itct-ia'); toggleMobileMenu()">IT/CT IA</a>
     <a href="#" onclick="showSection('archives'); toggleMobileMenu()">Archives</a>
@@ -147,7 +153,7 @@
 
     <!-- ====== DÉMARRER UNE MISSION ====== -->
     <section id="mission" class="section">
-      <h2><i class="fa-solid fa-clipboard-check"></i> Élaboration d'un rapport de mission</h2>
+      <h2><i class="fa-solid fa-clipboard-check"></i> Élaboration du rapport de mission</h2>
       <p class="section-desc">Créez une mission officielle. Le rapport est généré automatiquement au format administratif officiel et archivé.</p>
 
       <form id="missionForm" onsubmit="createMission(event)" aria-label="Formulaire de création de mission">
@@ -308,6 +314,67 @@
         <h3><i class="fa-solid fa-triangle-exclamation"></i> 50 idées de difficultés rencontrées — Référence au rapport officiel</h3>
         <p class="section-desc">Inspirées du format administratif du Code du travail de la RDC et du modèle officiel de rapport d'inspection. Sélectionnez et adaptez selon la mission.</p>
         <div class="difficultes-grid" id="difficultesGrid"></div>
+      </div>
+    </section>
+
+    <!-- ====== ÉLABORATION D'UN RAPPORT DE FORMATION ====== -->
+    <section id="formation-rapport" class="section">
+      <h2><i class="fa-solid fa-chalkboard-user"></i> Élaboration d'un rapport de formation</h2>
+      <p class="section-desc">Générez un rapport de formation conforme au format administratif officiel.</p>
+      <form id="formFormation" onsubmit="createFormationReport(event)" aria-label="Formulaire de rapport de formation">
+        <div class="form-grid">
+          <div class="form-group"><label for="fDate">Date *</label><input type="date" id="fDate" required /></div>
+          <div class="form-group"><label for="fOrder">Ordre de service</label><input type="text" id="fOrder" placeholder="Ex. OS-001" /></div>
+          <div class="form-group"><label for="fGroup">Groupe</label><input type="text" id="fGroup" placeholder="Ex. G01" /></div>
+          <div class="form-group"><label for="fFormateur">Formateur *</label><select id="fFormateur" required><option value="">Sélectionner</option><option>Inspecteur du Travail</option><option>Contrôleur du Travail</option><option>Chef de mission</option></select></div>
+          <div class="form-group full"><label for="fParticipants">Participants</label><textarea id="fParticipants" rows="2" placeholder="Nom — Fonction"></textarea></div>
+          <div class="form-group full"><label for="fTheme">Thème de formation *</label><textarea id="fTheme" rows="2" placeholder="Ex. Législation du travail et méthodologie d'inspection" required></textarea></div>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn-primary"><i class="fa-solid fa-file-contract"></i> Générer le rapport</button></div>
+      </form>
+      <div id="previewFormation" class="hidden" style="margin-top:2rem;">
+        <h3><i class="fa-solid fa-file-lines"></i> Aperçu du rapport de formation — A4</h3>
+        <div class="a4-preview-wrapper"><div class="a4-paper" id="a4PaperFormation"></div></div>
+        <div class="report-actions"><button onclick="printFormationReport()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button><button onclick="exportFormationPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> PDF</button><button onclick="exportFormationWord()" class="btn-outline"><i class="fa-solid fa-file-word"></i> Word</button></div>
+      </div>
+    </section>
+
+    <!-- ====== ÉLABORATION D'UN RAPPORT DE RÉUNION ====== -->
+    <section id="reunion-rapport" class="section">
+      <h2><i class="fa-solid fa-handshake"></i> Élaboration d'un rapport de réunion</h2>
+      <p class="section-desc">Générez un rapport de réunion conforme au format administratif officiel.</p>
+      <form id="formReunion" onsubmit="createReunionReport(event)" aria-label="Formulaire de rapport de réunion">
+        <div class="form-grid">
+          <div class="form-group"><label for="rDate">Date *</label><input type="date" id="rDate" required /></div>
+          <div class="form-group"><label for="rOrder">Ordre de service</label><input type="text" id="rOrder" placeholder="Ex. OS-245" /></div>
+          <div class="form-group"><label for="rGroup">Groupe</label><input type="text" id="rGroup" placeholder="Ex. G03" /></div>
+          <div class="form-group"><label for="rRole">Fonction *</label><select id="rRole" required><option value="">Sélectionner</option><option>Inspecteur du Travail</option><option>Contrôleur du Travail</option><option>Chef de mission</option></select></div>
+          <div class="form-group full"><label for="rParticipants">Participants</label><textarea id="rParticipants" rows="2" placeholder="Nom — Fonction"></textarea></div>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn-primary"><i class="fa-solid fa-file-contract"></i> Générer le rapport</button></div>
+      </form>
+      <div id="previewReunion" class="hidden" style="margin-top:2rem;">
+        <h3><i class="fa-solid fa-file-lines"></i> Aperçu du rapport de réunion — A4</h3>
+        <div class="a4-preview-wrapper"><div class="a4-paper" id="a4PaperReunion"></div></div>
+        <div class="report-actions"><button onclick="printReunionReport()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button><button onclick="exportReunionPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> PDF</button></div>
+      </div>
+    </section>
+
+    <!-- ====== ÉLABORATION D'UN RAPPORT DE CONVERSATION ====== -->
+    <section id="conversation-rapport" class="section">
+      <h2><i class="fa-solid fa-comments"></i> Élaboration d'un rapport de conversation</h2>
+      <p class="section-desc">Générez un rapport de conversation (transcription) conforme au format administratif officiel.</p>
+      <form id="formConversation" onsubmit="createConversationReport(event)" aria-label="Formulaire de rapport de conversation">
+        <div class="form-grid">
+          <div class="form-group"><label for="cDate">Date *</label><input type="date" id="cDate" required /></div>
+          <div class="form-group full"><label for="cTranscription">Transcription (texte)</label><textarea id="cTranscription" rows="6" placeholder="Collez ici le texte de la transcription..." required></textarea></div>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn-primary"><i class="fa-solid fa-file-contract"></i> Générer le rapport</button></div>
+      </form>
+      <div id="previewConversation" class="hidden" style="margin-top:2rem;">
+        <h3><i class="fa-solid fa-file-lines"></i> Aperçu du rapport de conversation — A4</h3>
+        <div class="a4-preview-wrapper"><div class="a4-paper" id="a4PaperConversation"></div></div>
+        <div class="report-actions"><button onclick="printConversationReport()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button><button onclick="exportConversationReportPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> PDF</button></div>
       </div>
     </section>
 
@@ -480,16 +547,13 @@
   <footer class="site-footer">
     <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
     <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
-    <p>Développé par Inspecteur Limengo (Pmiller).</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
   </footer>
 
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="app-inspecteur.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c099c4cebf4bcb',t:'MTc4NDIwMDY0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script src="app.js"></script>
+</body>
 </html>
-
-
-
