@@ -130,6 +130,61 @@ const ARTICLES = {
   }
 };
 
+const DIFFICULTES_IDEES = [
+  "Manque de moyens de transport pour atteindre certains sites d'inspection.",
+  "Obstruction au contrôle par le refus d'accès aux locaux de travail.",
+  "Non-présentation des registres obligatoires du personnel au cours de la visite.",
+  "Absence d'affichage des avis légaux prévus par le Code du travail.",
+  "Non-conformité des installations de sécurité et d'hygiène au travail.",
+  "Refus de l'employeur de répondre aux questions relatives aux conditions de travail.",
+  "Défaut de tenue des documents relatifs à la main d'œuvre étrangère.",
+  "Non-respect des durées légales du travail et des périodes de repos.",
+  "Absence de contrat de travail signé pour plusieurs employés.",
+  "Non-application de la convention collective en vigueur dans le secteur.",
+  "Non-paiement des salaires dans les délais prescrits par la loi.",
+  "Défaut de versement des cotisations sociales et de prévoyance.",
+  "Emploi irrégulier de travailleurs étrangers sans autorisation administrative.",
+  "Non-communication des statistiques relatives aux travailleurs sur demande.",
+  "Absence des mesures immédiatement exécutoires en cas de danger imminent.",
+  "Non-mise en demeure de l'employeur malgré la constatation d'irrégularités.",
+  "Refus de présentation des bulletins de paie et registres de paie.",
+  "Défaut d'identification du représentant légal de l'entreprise lors de la visite.",
+  "Obstruction volontaire au contrôle par dissimulation de documents.",
+  "Non-respect des dispositions relatives à l'emploi des femmes et des enfants.",
+  "Absence de formation du personnel aux règles de sécurité et d'hygiène.",
+  "Défaillance des équipements de protection individuelle mis à disposition.",
+  "Non-établissement du procès-verbal d'obstruction par l'employeur.",
+  "Défaut de coordination entre le chef de mission et les inspecteurs provinciaux.",
+  "Manque de moyens financiers pour couvrir les frais de mission sur le terrain.",
+  "Accès difficile aux sites isolés en raison des conditions climatiques ou géographiques.",
+  "Non-réception de la lettre recommandée adressée au responsable de l'entreprise.",
+  "Défaut de réponse au recours administratif introduit dans les délais légaux.",
+  "Non-transmission du procès-verbal d'infraction à l'autorité hiérarchique compétente.",
+  "Absence de suivi des recommandations formulées lors d'une mission précédente.",
+  "Défaut d'archivage des documents relatifs aux missions effectuées.",
+  "Non-respect du secret professionnel par la divulgation d'informations sensibles.",
+  "Défaut d'information de l'employeur sur la présence de l'inspection sur site.",
+  "Obstruction à l'analyse des échantillons de matières premières prélevés.",
+  "Non-présentation des autorisations administratives relatives à l'établissement.",
+  "Défaut de notification de l'objet du contrôle au début de la mission.",
+  "Absence d'entretien préalable avec le personnel de l'entreprise visée.",
+  "Non-respect des procédures de conciliation devant l'Inspecteur du ressort.",
+  "Difficulté d'accès aux documents en raison de leur conservation dans un autre site.",
+  "Défaut de collaboration des experts techniques agréés par le Ministère.",
+  "Non-réception des statistiques annuelles relatives à la main d'œuvre.",
+  "Manque de clarté dans la répartition des responsabilités entre inspecteurs.",
+  "Défaut d'adaptation des recommandations au contexte spécifique de l'entreprise.",
+  "Non-mise à jour des registres après la régularisation des irrégularités constatées.",
+  "Obstruction au contrôle par le changement fréquent du responsable légal.",
+  "Défaut de transmission de la copie du procès-verbal à l'employeur dans les délais.",
+  "Absence de mesures de suivi après la délivrance d'une mise en demeure.",
+  "Non-respect des délais de réponse du Ministre au recours administratif.",
+  "Défaut d'archivage numérique des rapports de mission et de leurs annexes.",
+  "Difficulté de coordination avec les autorités locales pour l'accès aux sites.",
+  "Non-respect des dispositions relatives à la confidentialité des sources de plainte.",
+  "Défaut de préparation du calendrier de suivi après la visite d'inspection."
+];
+
 function showToast(message, type) {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
@@ -192,6 +247,7 @@ function createMission(e) {
     order: document.getElementById('mOrder').value,
     group: document.getElementById('mGroup').value,
     role: document.getElementById('mRole').value,
+    direction: document.getElementById('mDirection').value,
     participants: document.getElementById('mParticipants').value,
     objective: document.getElementById('mObjective').value,
     matter: document.getElementById('mMatter').value,
@@ -199,6 +255,8 @@ function createMission(e) {
     addresses: document.getElementById('mAddresses').value,
     phone: document.getElementById('mPhone').value,
     observations: document.getElementById('mObservations').value,
+    difficiles: document.getElementById('mDifficultes').value,
+    logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
   };
   STATE.currentMission = data;
   renderReportPreview(data);
@@ -219,6 +277,7 @@ function previewMission(e) {
     order: document.getElementById('mOrder').value,
     group: document.getElementById('mGroup').value,
     role: document.getElementById('mRole').value,
+    direction: document.getElementById('mDirection').value,
     participants: document.getElementById('mParticipants').value,
     objective: document.getElementById('mObjective').value,
     matter: document.getElementById('mMatter').value,
@@ -226,6 +285,8 @@ function previewMission(e) {
     addresses: document.getElementById('mAddresses').value,
     phone: document.getElementById('mPhone').value,
     observations: document.getElementById('mObservations').value,
+    difficiles: document.getElementById('mDifficultes').value,
+    logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
   };
   STATE.currentMission = data;
   renderReportPreview(data);
@@ -242,7 +303,21 @@ function resetMissionForm() {
 }
 
 function renderReportPreview(data) {
+  const directionLabel = data.direction || '—';
+  const logoHtml = data.logoFile ? `<img src="${data.logoFile}" alt="Logo administration" style="max-height:60px;max-width:140px;margin:0.5rem auto;display:block;" />` : '';
+  // Génération du code unique et QR pour le rapport
+  const todayStr = data.date ? new Date(data.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+  const randId = Math.floor(Math.random() * 9000) + 1000;
+  const reportCode = 'ITCT-' + todayStr + '-' + randId;
+  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent('Rapport Mission ' + reportCode);
   const meta = `
+    <div style="text-align:center;font-size:0.9rem;color:#333;margin-bottom:0.5rem;">
+      <strong>République Démocratique du Congo</strong><br/>
+      <strong>Ministère de l'Emploi et du Travail</strong><br/>
+      <strong>Inspection Générale du Travail</strong><br/>
+      <strong>${directionLabel}</strong>
+    </div>
+    ${logoHtml}
     <strong>Inspecteur et Contrôleur du Travail</strong><br/>
     Ordre de service : ${data.order || '—'} | Groupe : ${data.group || '—'} | Fonction : ${data.role || '—'}<br/>
     Participants : ${data.participants ? data.participants.replace(/\n/g, ', ') : '—'}
@@ -279,7 +354,7 @@ function renderReportPreview(data) {
     </table>
 
     <h2>IV. Difficultés rencontrées</h2>
-    <p>— ${data.observations || 'Aucune difficulté particulière signalée.'}</p>
+    <p>— ${data.difficiles || data.observations || 'Aucune difficulté particulière signalée.'}</p>
   `;
   document.getElementById('previewBody').innerHTML = body;
   document.getElementById('previewDate').textContent = data.date ? new Date(data.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -287,6 +362,16 @@ function renderReportPreview(data) {
   document.getElementById('previewSignName').textContent = data.role ? (data.role === 'Inspecteur du Travail' ? 'Inspecteur' : data.role) : '';
   document.getElementById('previewSignRole').textContent = data.role || '';
   document.getElementById('previewSignPhone').textContent = data.phone || '';
+  // Affichage automatique du code unique et du QR en bas de page
+  const previewCodeQR = document.getElementById('previewCodeQR');
+  if (previewCodeQR) {
+    previewCodeQR.innerHTML = `
+      <div style="display:inline-flex;align-items:center;gap:0.8rem;margin-top:0.3rem;">
+        <span style="font-weight:700;color:var(--primary);font-size:0.9rem;">Code unique : <strong>${reportCode}</strong></span>
+        <img src="${qrUrl}" alt="QR Code du rapport" style="width:60px;height:60px;border:2px solid var(--primary);border-radius:6px;" />
+      </div>
+    `;
+  }
 }
 
 function printReport() {
@@ -374,6 +459,28 @@ function buildModelLibrary() {
   });
 }
 
+function renderDifficultes() {
+  const grid = document.getElementById('difficultesGrid');
+  if (!grid) return;
+  grid.innerHTML = DIFFICULTES_IDEES.map((text, i) => `
+    <article class="difficulte-card" onclick="copyTextFromDifficulte(this)" title="Cliquer pour copier cette difficulté" aria-label="Difficulté ${i + 1}">
+      <div class="difficulte-number">${i + 1}</div>
+      <div class="difficulte-text">${text}</div>
+      <button onclick="copyTextFromDifficulte(event, this)" class="btn-outline" aria-label="Copier la difficulté ${i + 1}"><i class="fa-solid fa-copy"></i> Copier</button>
+    </article>
+  `).join('');
+}
+
+function copyTextFromDifficulte(event, btn) {
+  if (event && event.stopPropagation) event.stopPropagation();
+  const card = btn ? btn.closest('.difficulte-card') : (event ? event.target.closest('.difficulte-card') : null);
+  if (!card) return;
+  const text = card.querySelector('.difficulte-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Difficulté copiée dans le presse-papier.', 'success');
+  });
+}
+
 function filterModels(cat) {
   const grid = document.getElementById('modelsGrid');
   const list = cat === 'all' ? STATE.modelLibrary : STATE.modelLibrary.filter(m => m.category === cat);
@@ -422,7 +529,7 @@ function startListening() {
   document.getElementById('btnStart').classList.add('hidden');
   document.getElementById('btnStop').classList.remove('hidden');
   document.getElementById('iaStatusIndicator').classList.add('listening');
-  document.getElementById('iaStatusText').textContent = 'Écoute active — Sensibilité maximale — Transcription en temps réel...';
+  document.getElementById('iaStatusText').textContent = 'Transcription en temps réel comme dans ChatGPT...';
   STATE.transcriptLog = [];
   document.getElementById('iaTranscript').innerHTML = '';
 
@@ -488,6 +595,9 @@ function startListening() {
   recognition.onerror = (event) => {
     console.error('Speech recognition error', event);
     showToast('Erreur d\'écoute : ' + event.error + '. Vérifiez votre connexion et le microphone.', 'info');
+    document.getElementById('btnStart').classList.remove('hidden');
+    document.getElementById('btnStop').classList.add('hidden');
+    STATE.isListening = false;
   };
 
   recognition.onend = () => {
@@ -556,6 +666,19 @@ function renderTranscriptEntry(entry) {
   container.appendChild(span);
   container.scrollTop = container.scrollHeight;
 }
+
+const pvList = [
+  "Procès-verbal d'obstruction", "Procès-verbal de non-présentation des registres",
+  "Procès-verbal de non-respect des durées de travail", "Procès-verbal d'emploi irrégulier de travailleurs étrangers",
+  "Procès-verbal d'absence de contrat de travail", "Procès-verbal de défaut d'affichage des avis obligatoires",
+  "Procès-verbal de non-conformité des installations", "Procès-verbal de défaut de versement des cotisations sociales"
+];
+const actions = [
+  "Une mise en demeure immédiate", "Une lettre d'observations formelle",
+  "Une réinspection dans un délai de 15 jours", "Une réinspection dans un délai de 30 jours",
+  "Une convocation de l'employeur au bureau de l'Inspection", "La transmission du dossier au procureur compétent",
+  "L'engagement d'une procédure administrative complémentaire"
+];
 
 function generateReportId() {
   const today = new Date().toISOString().split('T')[0];
@@ -788,6 +911,7 @@ function generateIAOutput() {
             <p>${reportRole}</p>
             <p>Téléphone : ${STATE.currentMission ? STATE.currentMission.phone || '—' : '—'}</p>
             <p style="margin-top:0.3rem;font-size:0.8rem;color:var(--ink-muted);">Code rapport : <strong>${reportId}</strong></p>
+            <img src="${generateQRUrl('Rapport Mission ' + reportId)}" alt="QR Code" style="width:60px;height:60px;margin-top:0.3rem;border:2px solid var(--primary);border-radius:6px;" />
           </div>
         </div>
       </div>
@@ -930,6 +1054,10 @@ function openArchive(id) {
   document.getElementById('mAddresses').value = item.addresses || '';
   document.getElementById('mPhone').value = item.phone || '';
   document.getElementById('mObservations').value = item.observations || '';
+  document.getElementById('mDifficultes').value = item.difficiles || item.observations || '';
+  document.getElementById('mDirection').value = item.direction || '';
+  // Logo file is not recoverable from archive; leave empty for edit
+  document.getElementById('mLogo').value = '';
   renderReportPreview(item);
   document.getElementById('reportPreviewArea').classList.remove('hidden');
   document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
@@ -1076,6 +1204,7 @@ function initApp() {
   initMissionForm();
   buildModelLibrary();
   filterModels('all');
+  renderDifficultes();
   loadArchive();
   updateArchiveTable();
   updateDashboard();

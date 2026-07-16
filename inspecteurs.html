@@ -16,7 +16,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <link rel="stylesheet" href="style-inspecteur.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -47,7 +47,7 @@
     </a>
     <div class="nav-links">
       <a href="#" onclick="showSection('documentation')" class="nav-link"><i class="fa-solid fa-gavel"></i> Base juridique</a>
-      <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Démarrer une mission</a>
+      <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Élaboration d'un rapport de mission</a>
       <a href="#" onclick="showSection('ia-aide')" class="nav-link"><i class="fa-solid fa-pen-fancy"></i> IA Aide rédaction</a>
       <a href="#" onclick="showSection('itct-ia')" class="nav-link highlight"><i class="fa-solid fa-brain"></i> IT/CT IA</a>
       <a href="#" onclick="showSection('archives')" class="nav-link"><i class="fa-solid fa-archive"></i> Archives</a>
@@ -57,7 +57,7 @@
   </nav>
   <div class="mobile-menu" id="mobileMenu">
     <a href="#" onclick="showSection('documentation'); toggleMobileMenu()">Base juridique</a>
-    <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Démarrer une mission</a>
+    <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Élaboration d'un rapport de mission</a>
     <a href="#" onclick="showSection('ia-aide'); toggleMobileMenu()">IA Aide rédaction</a>
     <a href="#" onclick="showSection('itct-ia'); toggleMobileMenu()">IT/CT IA</a>
     <a href="#" onclick="showSection('archives'); toggleMobileMenu()">Archives</a>
@@ -74,7 +74,7 @@
           <h1>Module <span class="accent">Inspecteur et Contrôleur du Travail</span></h1>
           <p class="hero-sub">Outil professionnel, intelligent et conforme aux pratiques de l'Inspection Générale du Travail de la République Démocratique du Congo.</p>
           <div class="hero-cta">
-            <a href="#" onclick="showSection('mission')" class="btn-primary"><i class="fa-solid fa-rocket"></i> Démarrer une mission</a>
+            <a href="#" onclick="showSection('mission')" class="btn-primary"><i class="fa-solid fa-rocket"></i> Élaboration d'un rapport de mission</a>
             <a href="#" onclick="showSection('itct-ia')" class="btn-secondary"><i class="fa-solid fa-brain"></i> Lancer IT/CT IA</a>
           </div>
         </div>
@@ -95,7 +95,7 @@
         </article>
         <article class="card" onclick="showSection('mission')">
           <i class="fa-solid fa-clipboard-check card-icon"></i>
-          <h3>Démarrer une mission</h3>
+          <h3>Élaboration d'un rapport de mission</h3>
           <p>Créez une mission officielle, générez le rapport A4 et archivez automatiquement.</p>
         </article>
         <article class="card" onclick="showSection('ia-aide')">
@@ -147,7 +147,7 @@
 
     <!-- ====== DÉMARRER UNE MISSION ====== -->
     <section id="mission" class="section">
-      <h2><i class="fa-solid fa-clipboard-check"></i> Démarrer une mission</h2>
+      <h2><i class="fa-solid fa-clipboard-check"></i> Élaboration d'un rapport de mission</h2>
       <p class="section-desc">Créez une mission officielle. Le rapport est généré automatiquement au format administratif officiel et archivé.</p>
 
       <form id="missionForm" onsubmit="createMission(event)" aria-label="Formulaire de création de mission">
@@ -198,6 +198,45 @@
             <input type="tel" id="mPhone" placeholder="Ex. +243 99 876 6270" />
           </div>
           <div class="form-group full">
+            <label for="mDirection">Direction / Administration <span class="required">*</span></label>
+            <select id="mDirection" required>
+              <option value="">Sélectionner</option>
+              <option>Administration centrale</option>
+              <option>Direction provinciale de Kinshasa</option>
+              <option>Direction provinciale de Kasaï</option>
+              <option>Direction provinciale de Kasaï-Oriental</option>
+              <option>Direction provinciale de Kasaï-Central</option>
+              <option>Direction provinciale du Nord-Kivu</option>
+              <option>Direction provinciale du Sud-Kivu</option>
+              <option>Direction provinciale du Maniema</option>
+              <option>Direction provinciale du Tanganyika</option>
+              <option>Direction provinciale du Haut-Katanga</option>
+              <option>Direction provinciale du Lualaba</option>
+              <option>Direction provinciale du Haut-Lomami</option>
+              <option>Direction provinciale du Tshopo</option>
+              <option>Direction provinciale de la Mongala</option>
+              <option>Direction provinciale de l'Équateur</option>
+              <option>Direction provinciale du Mai-Ndombe</option>
+              <option>Direction provinciale du Kwango</option>
+              <option>Direction provinciale du Kwilu</option>
+              <option>Direction provinciale de la Tshuapa</option>
+              <option>Direction provinciale du Nord-Ubangi</option>
+              <option>Direction provinciale du Sud-Ubangi</option>
+              <option>Direction provinciale du Bas-Uélé</option>
+              <option>Direction provinciale du Haut-Uélé</option>
+              <option>Direction provinciale de l'Ituri</option>
+              <option>Direction provinciale du Sankuru</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="mLogo">Logo de l'administration (pièce jointe)</label>
+            <input type="file" id="mLogo" accept="image/*" aria-label="Joindre un logo" />
+          </div>
+          <div class="form-group full">
+            <label for="mDifficultes">Difficultés rencontrées</label>
+            <textarea id="mDifficultes" rows="2" placeholder="Ex. Manque de moyens de transport, obstruction au contrôle, refus d'accès, non-présentation des registres, non-conformité des installations..."></textarea>
+          </div>
+          <div class="form-group full">
             <label for="mObservations">Observations préliminaires</label>
             <textarea id="mObservations" rows="2"></textarea>
           </div>
@@ -221,12 +260,15 @@
             </div>
             <div class="report-body" id="previewBody"></div>
             <div class="report-footer">
-              <p>Ainsi fait à <span id="previewCity">KINSHASA</span> le <span id="previewDate"></span></p>
-              <div class="signature-block">
-                <p><strong id="previewSignName"></strong></p>
-                <p id="previewSignRole"></p>
-                <p id="previewSignPhone"></p>
+              <div style="text-align:left;">
+                <p>Ainsi fait à <span id="previewCity">KINSHASA</span> le <span id="previewDate"></span></p>
+                <div class="signature-block">
+                  <p><strong id="previewSignName"></strong></p>
+                  <p id="previewSignRole"></p>
+                  <p id="previewSignPhone"></p>
+                </div>
               </div>
+              <div id="previewCodeQR" style="text-align:center;margin-top:0.5rem;font-size:0.75rem;color:#333;"></div>
             </div>
           </div>
         </div>
@@ -260,6 +302,12 @@
 
       <div class="models-grid" id="modelsGrid">
         <!-- Models injected by JS -->
+      </div>
+
+      <div class="difficultes-idees" id="difficultesIdees" aria-label="50 idées de difficultés rencontrées basées sur le rapport officiel">
+        <h3><i class="fa-solid fa-triangle-exclamation"></i> 50 idées de difficultés rencontrées — Référence au rapport officiel</h3>
+        <p class="section-desc">Inspirées du format administratif du Code du travail de la RDC et du modèle officiel de rapport d'inspection. Sélectionnez et adaptez selon la mission.</p>
+        <div class="difficultes-grid" id="difficultesGrid"></div>
       </div>
     </section>
 
@@ -432,16 +480,13 @@
   <footer class="site-footer">
     <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
     <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
-    <p>Développé par Inspecteur Limengo (Pmiller)(.</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
   </footer>
 
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="app-inspecteur.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c04a4d293c09d6',t:'MTc4NDE5NzM5Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script src="app.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c099c4cebf4bcb',t:'MTc4NDIwMDY0OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
-
