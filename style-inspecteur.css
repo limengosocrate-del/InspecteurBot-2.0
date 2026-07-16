@@ -190,7 +190,7 @@ h2 i { color: var(--accent); margin-right: 0.35rem; text-shadow: 1px 1px 2px rgb
 .models-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
 .model-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; box-shadow: var(--shadow); }
 .model-card h4 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 0.4rem; }
-.model-card .model-text { font-family: var(--font-editorial); font-size: 1rem; line-height: 1.55; color: var(--ink-secondary); margin-bottom: 0.8rem; }
+.model-card .model-text { font-family: var(--font-editorial); font-size: 1.15rem; line-height: 1.65; color: #0a2540; margin-bottom: 0.8rem; font-weight: 600; }
 .model-card .model-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 
 /* IT/CT IA Panel */

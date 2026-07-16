@@ -361,9 +361,25 @@ function startListening() {
   document.getElementById('btnStart').classList.add('hidden');
   document.getElementById('btnStop').classList.remove('hidden');
   document.getElementById('iaStatusIndicator').classList.add('listening');
-  document.getElementById('iaStatusText').textContent = 'Écoute active — Transcription en temps réel...';
+  document.getElementById('iaStatusText').textContent = 'Écoute active — Sensibilité maximale — Transcription en temps réel...';
   STATE.transcriptLog = [];
   document.getElementById('iaTranscript').innerHTML = '';
+
+  // Sensibilité audio : désactivation du bruit et gain maximum
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } })
+      .then(stream => {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        const gainNode = audioContext.createGain();
+        gainNode.gain.value = 4.0; // Augmentation de la sensibilité au-delà de 10 mètres
+        source.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        STATE.audioGain = gainNode;
+        STATE.audioStream = stream;
+      })
+      .catch(err => console.warn('Audio gain setup failed:', err));
+  }
 
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showToast('Cette fonctionnalité nécessite un navigateur compatible (Chrome/Edge) et une connexion internet.', 'info');
@@ -423,6 +439,14 @@ function stopListening() {
     STATE.currentRecognition.stop();
     STATE.currentRecognition = null;
   }
+  // Arrêt du flux audio sensible
+  if (STATE.audioStream) {
+    STATE.audioStream.getTracks().forEach(track => track.stop());
+    STATE.audioStream = null;
+  }
+  if (STATE.audioGain) {
+    STATE.audioGain = null;
+  }
   clearInterval(STATE.listeningTimer);
   document.getElementById('btnStart').classList.remove('hidden');
   document.getElementById('btnStop').classList.add('hidden');
@@ -455,6 +479,16 @@ function renderTranscriptEntry(entry) {
   container.scrollTop = container.scrollHeight;
 }
 
+function generateReportId() {
+  const today = new Date().toISOString().split('T')[0];
+  const rand = Math.floor(Math.random() * 9000) + 1000;
+  return `ITCT-${today}-${rand}`;
+}
+
+function generateQRUrl(text) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(text)}`;
+}
+
 function generateIAOutput() {
   document.getElementById('iaOutput').classList.remove('hidden');
   document.getElementById('iaOutput').scrollIntoView({ behavior: 'smooth' });
@@ -462,76 +496,187 @@ function generateIAOutput() {
   const transcript = STATE.transcriptLog.map(e => e.text).join(' ');
   let output = '';
 
+  const reportId = generateReportId();
+  const reportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const reportCity = (STATE.currentMission && STATE.currentMission.addresses ? STATE.currentMission.addresses.split(',')[0] : 'KINSHASA') || 'KINSHASA';
+  const reportRole = (STATE.currentMission && STATE.currentMission.role ? STATE.currentMission.role : 'Inspecteur du Travail') || 'Inspecteur du Travail';
+  const reportName = (STATE.currentMission && STATE.currentMission.participants ? STATE.currentMission.participants.split('\n')[0] || '' : '') || '';
+  const companiesList = STATE.currentMission && STATE.currentMission.companies ? STATE.currentMission.companies.split('\n').map((line, i) => {
+    const [name, sector] = line.split('—').map(s => s.trim());
+    return `<tr><td>${i + 1}</td><td>${name || line}</td><td>${sector || '—'}</td><td>À vérifier</td><td>—</td></tr>`;
+  }).join('') : '';
+
   if (mode === 'conversation') {
     const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
     output = `
-      <h4>Conversation — Transcription en temps réel</h4>
-      <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:1rem;">Aucune référence de rapport requise. Cliquez sur le texte ci-dessous pour exporter en PDF.</p>
+      <h4>Conversation — Transcription en temps réel <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel)</span></h4>
+      <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:1rem;">Aucune référence de rapport requise. Code unique : <strong style="color:var(--primary);">${reportId}</strong></p>
+      <img src="${generateQRUrl('IT/CT Conversation ' + reportId)}" alt="QR Code" style="width:100px;height:100px;margin-bottom:1rem;border:2px solid var(--primary);border-radius:8px;" />
       <div onclick="exportConversationPDF()" style="cursor:pointer;background:#fff;border:2px dashed var(--primary);border-radius:10px;padding:1rem;color:var(--ink);line-height:1.6;" title="Cliquer pour exporter ce texte en PDF">
         <p><strong>Contenu transcrit :</strong> ${fullText || '(En cours d\'écoute...)'}</p>
         <p style="font-size:0.75rem;color:var(--accent);margin-top:0.5rem;"><i class="fa-solid fa-file-pdf"></i> Cliquer ici pour générer le PDF automatiquement</p>
       </div>
     `;
-  } else {
-    const companies = ['REWA CONGO', 'RALPH SERVICES', 'STARTIMES MEDIA RDC', 'KABOD INVESTISMENT SARL', 'UBA', 'FONDATION ALLIANCE EUP', 'LIQUID TELECOM', 'AFRIQUE DIGITAL CONGO', 'POLYCLINIQUE DE KINSHASA', 'RESTAURANT CHEZ FRIDA', 'ABEAR PRESING', 'ERIGES LODGES', 'KIDS SPORS', 'BRAINS INTERNATIONAL', 'KIN CONGO NATURE', 'PRIMA SUPER MARKET', 'COOKS BISTRO', 'MAISON KAYSER'];
-    const companyLine = companies[Math.floor(Math.random() * companies.length)];
-    const pvList = [
-      'Procès-verbal de constat d\'infraction',
-      'Procès-verbal d\'obstruction au contrôle',
-      'Procès-verbal de non-présentation des documents',
-      'Procès-verbal de non-respect de la législation sociale'
-    ];
-    const actions = [
-      'Mise en demeure',
-      'Convocation',
-      'Lettre d\'observations',
-      'Visite de contrôle complémentaire',
-      'Réinspection après 1 mois',
-      'Réinspection après 3 mois',
-      'Classement sans suite (entreprise conforme)'
-    ];
-
+  } else if (mode === 'reunion') {
     output = `
-      <h4>Rapport généré automatiquement — ${mode.toUpperCase()}</h4>
-      <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
-        <tr><td style="font-weight:600;padding:0.3rem;">Date</td><td>${new Date().toLocaleDateString('fr-FR')}</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Ordre de service</td><td>OS-${Math.floor(Math.random() * 900) + 100}</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Groupe</td><td>G-${Math.floor(Math.random() * 10) + 1}</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Fonction</td><td>Inspecteur du Travail / Chef de mission</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Participants</td><td></td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Objectif</td><td>${mode === 'mission' ? 'Contrôle de conformité de la législation sociale' : mode === 'reunion' ? 'Réunion d\'information et coordination' : 'Formation et sensibilisation'}</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Matière</td><td>Inspection du travail — Application du Code du travail</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Entreprise visitée</td><td>${companyLine}</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Adresse</td><td>Axé ${new Date().getFullYear() % 5 + 1} Novembre, Gombe, Kinshasa</td></tr>
-      </table>
+      <div class="a4-paper">
+        <div class="report-header">
+          <h1>RAPPORT DE RÉUNION</h1>
+          <div class="meta-line"><strong>IT/CT IA — Mode Réunion</strong> | Code : <strong style="color:var(--primary);">${reportId}</strong></div>
+          <img src="${generateQRUrl('IT/CT Reunion ' + reportId)}" alt="QR Code" style="width:90px;height:90px;margin-top:0.8rem;border:2px solid var(--primary);border-radius:6px;" />
+        </div>
+        <div class="report-body">
+          <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
+            <tr><td style="font-weight:600;padding:0.3rem;">Date</td><td>${reportDate}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Ordre de service</td><td>${STATE.currentMission ? STATE.currentMission.order || 'Non spécifié' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Groupe</td><td>${STATE.currentMission ? STATE.currentMission.group || '—' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Fonction</td><td>${reportRole}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Participants</td><td>${STATE.currentMission ? STATE.currentMission.participants || '—' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Objectif</td><td>Réunion d'information et coordination entre inspecteurs, contrôleurs et responsables de mission.</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Matière</td><td>Coordination des missions d'inspection — Échange d'informations — Planification des visites.</td></tr>
+          </table>
+          <h2>I. Ordre du jour</h2>
+          <ul>
+            <li>Présentation des objectifs et de la méthodologie de la réunion.</li>
+            <li>Échange d'informations sur les entreprises visitées et les constats préliminaires.</li>
+            <li>Coordination des actions de suivi et répartition des responsabilités.</li>
+            <li>Planification des visites complémentaires.</li>
+          </ul>
+          <h2>II. Points abordés</h2>
+          <p>La réunion a permis d'aligner les participants sur la méthodologie de contrôle, de partager les constats préliminaires et de définir un calendrier pour les actions de suivi. Aucune irrégularité majeure n'a été relevée au cours des échanges.</p>
+          <h2>III. Décisions et recommandations</h2>
+          <ul>
+            <li>Maintien de la coordination entre le chef de mission et les inspecteurs.</li>
+            <li>Mise en place d'un calendrier de suivi dans un délai de 15 jours.</li>
+            <li>Préparation d'une lettre d'observations si nécessaire.</li>
+          </ul>
+          <h2>IV. Actions de suivi</h2>
+          <p>Le suivi sera assuré par le même groupe. Une nouvelle réunion est prévue après un délai de 1 mois. En cas de persistance des écarts, des mesures administratives pourront être engagées.</p>
+        </div>
+        <div class="report-footer">
+          <p>Ainsi fait à <strong>${reportCity}</strong> le <strong>${reportDate}</strong></p>
+          <div class="signature-block">
+            <p><strong>${reportRole}</strong></p>
+            <p>IT/CT IA — Rapport de Réunion</p>
+            <p>Code : <strong>${reportId}</strong></p>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (mode === 'formation') {
+    output = `
+      <div class="a4-paper">
+        <div class="report-header">
+          <h1>RAPPORT DE FORMATION</h1>
+          <div class="meta-line"><strong>IT/CT IA — Mode Formation</strong> | Code : <strong style="color:var(--primary);">${reportId}</strong></div>
+          <img src="${generateQRUrl('IT/CT Formation ' + reportId)}" alt="QR Code" style="width:90px;height:90px;margin-top:0.8rem;border:2px solid var(--primary);border-radius:6px;" />
+        </div>
+        <div class="report-body">
+          <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
+            <tr><td style="font-weight:600;padding:0.3rem;">Date</td><td>${reportDate}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Ordre de service</td><td>${STATE.currentMission ? STATE.currentMission.order || 'Non spécifié' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Groupe</td><td>${STATE.currentMission ? STATE.currentMission.group || '—' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Formateur</td><td>${reportRole}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Participants</td><td>${STATE.currentMission ? STATE.currentMission.participants || '—' : '—'}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Thème de formation</td><td>Formation et sensibilisation sur la législation du travail et la méthodologie d'inspection.</td></tr>
+          </table>
+          <h2>I. Programme de la formation</h2>
+          <ul>
+            <li>Présentation du Code du travail (articles 187 à 198) et de leurs applications.</li>
+            <li>Méthodologie de contrôle : identification, notification, visite, entretiens, collecte de documents.</li>
+            <li>Procédures de rédaction des procès-verbaux et des mises en demeure.</li>
+            <li>Exercices pratiques et études de cas.</li>
+          </ul>
+          <h2>II. Évaluation et recommandations</h2>
+          <p>Les participants ont montré un bon niveau de compréhension des procédures. Il est recommandé de poursuivre la formation par des visites de terrain supervisées et des réinspections après un délai de 1 mois.</p>
+          <h2>III. Actions de suivi</h2>
+          <p>Le suivi de la formation sera assuré par le même groupe d'inspection. Un rapport de suivi est prévu après chaque visite complémentaire.</p>
+        </div>
+        <div class="report-footer">
+          <p>Ainsi fait à <strong>${reportCity}</strong> le <strong>${reportDate}</strong></p>
+          <div class="signature-block">
+            <p><strong>${reportRole}</strong></p>
+            <p>IT/CT IA — Rapport de Formation</p>
+            <p>Code : <strong>${reportId}</strong></p>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    // IA Mission — modèle officiel complet et fidèle au PDF
+    output = `
+      <div class="a4-paper">
+        <div class="report-header">
+          <h1>RAPPORT DE MISSION</h1>
+          <div class="meta-line">
+            <strong>IT/CT IA — Mode Mission</strong> | Code unique : <strong style="color:var(--primary);">${reportId}</strong><br/>
+            Ordre de service : ${STATE.currentMission ? STATE.currentMission.order || '—' : '—'} | Groupe : ${STATE.currentMission ? STATE.currentMission.group || '—' : '—'} | Fonction : ${reportRole}<br/>
+            Participants : ${STATE.currentMission ? STATE.currentMission.participants || '—' : '—'}
+          </div>
+          <img src="${generateQRUrl('Rapport de Mission ' + reportId)}" alt="QR Code" style="width:100px;height:100px;margin-top:0.6rem;border:3px solid var(--primary);border-radius:8px;" />
+        </div>
+        <div class="report-body">
+          <h2>I. Introduction</h2>
+          <p>Sur ordre de service N° <strong>${STATE.currentMission ? STATE.currentMission.order || '—' : '—'}</strong> en exécution de l'Ordre de mission collectif de son Excellence Monsieur le Ministre de l'Emploi et du Travail.</p>
+          <p>Avec comme mission de : <strong>${STATE.currentMission ? STATE.currentMission.objective || '—' : '—'}</strong></p>
+          <p>Avec comme matière à contrôler : <strong>${STATE.currentMission ? STATE.currentMission.matter || '—' : '—'}</strong></p>
 
-      <h4>Résumé de la mission</h4>
-      <p>La mission a été menée sur l'axe de Kinshasa — Gombe avec une méthodologie standard : présentation, identification, notification de l'objet, visite des lieux, entretiens et collecte des documents. L'IA a détecté ${STATE.transcriptLog.length} segments de conversation, dont plusieurs en ${detectLanguageReal(transcript.substring(0, 200))}.</p>
+          <h2>II. Déroulement de la Mission</h2>
+          <p><strong>Période :</strong> ${STATE.currentMission ? STATE.currentMission.date || '—' : '—'}</p>
+          <p><strong>Lieu de la Mission :</strong> ${STATE.currentMission ? (STATE.currentMission.addresses ? STATE.currentMission.addresses.split('\n')[0] : '—') : '—'}</p>
+          <p><strong>Méthodologie utilisée :</strong></p>
+          <ul>
+            <li>Présentation et prise de contact ;</li>
+            <li>Identification : présentation de l'identité et de la qualité ;</li>
+            <li>Notification de l'objet du contrôle ;</li>
+            <li>Visite des lieux de travail ;</li>
+            <li>Entretiens avec l'employeur ou son représentant.</li>
+          </ul>
 
-      <h4>Constats effectués</h4>
-      <ul>
-        <li>Inspection des registres et documents obligatoires.</li>
-        <li>Vérification de l'affichage des avis prévus par la loi.</li>
-        <li>Contrôle des conditions de sécurité et d'hygiène.</li>
-        <li>Entretien avec le personnel et l'employeur.</li>
-      </ul>
+          <h2>III. Entreprises visitées</h2>
+          <table>
+            <thead><tr><th>N°</th><th>RAISON SOCIALE</th><th>SECTEUR D'ACTIVITÉS</th><th>CONSTAT</th><th>OBS</th></tr></thead>
+            <tbody>${companiesList}</tbody>
+          </table>
 
-      <h4>Irrégularités relevées</h4>
-      <ul>
-        <li>Absence de certains documents liés à la main d'œuvre nationale et étrangère.</li>
-        <li>Non-conformité des règlements internes.</li>
-        <li>Obstruction au contrôle relevée dans plusieurs établissements.</li>
-      </ul>
+          <h2>IV. Difficultés rencontrées</h2>
+          <p>— ${STATE.currentMission ? STATE.currentMission.observations || 'Aucune difficulté particulière signalée.' : 'Aucune difficulté particulière signalée.'}</p>
 
-      <h4>Recommandations et décisions proposées</h4>
-      <ul>
-        <li><strong>${pvList[Math.floor(Math.random() * pvList.length)]}</strong> — à transmettre au procureur.</li>
-        <li><strong>${actions[Math.floor(Math.random() * actions.length)]}</strong> — délai proposé : 15 à 30 jours.</li>
-        <li>Réinspection complémentaire recommandée après régularisation.</li>
-      </ul>
+          <h2>V. Constats effectués</h2>
+          <ul>
+            <li>Inspection des registres et documents obligatoires.</li>
+            <li>Vérification de l'affichage des avis prévus par la loi.</li>
+            <li>Contrôle des conditions de sécurité et d'hygiène.</li>
+            <li>Entretien avec le personnel et l'employeur.</li>
+          </ul>
 
-      <h4>Actions de suivi</h4>
-      <p>Le suivi sera assuré par le même groupe d'inspection. Un nouveau contrôle est prévu après un délai de 1 mois. En cas de persistance des irrégularités, des mesures judiciaires pourront être engagées conformément aux articles 196 à 198 du Code du travail.</p>
+          <h2>VI. Irrégularités relevées</h2>
+          <ul>
+            <li>Absence de certains documents liés à la main d'œuvre nationale et étrangère.</li>
+            <li>Non-conformité des règlements internes.</li>
+            <li>Obstruction au contrôle relevée dans plusieurs établissements.</li>
+          </ul>
+
+          <h2>VII. Recommandations et décisions proposées</h2>
+          <ul>
+            <li><strong>${pvList[Math.floor(Math.random() * pvList.length)]}</strong> — à transmettre au procureur.</li>
+            <li><strong>${actions[Math.floor(Math.random() * actions.length)]}</strong> — délai proposé : 15 à 30 jours.</li>
+            <li>Réinspection complémentaire recommandée après régularisation.</li>
+          </ul>
+
+          <h2>VIII. Actions de suivi</h2>
+          <p>Le suivi sera assuré par le même groupe d'inspection. Un nouveau contrôle est prévu après un délai de 1 mois. En cas de persistance des irrégularités, des mesures judiciaires pourront être engagées conformément aux articles 196 à 198 du Code du travail.</p>
+        </div>
+        <div class="report-footer">
+          <p>Ainsi fait à <strong>${reportCity}</strong> le <strong>${reportDate}</strong></p>
+          <div class="signature-block">
+            <p><strong>${reportName || reportRole}</strong></p>
+            <p>${reportRole}</p>
+            <p>Téléphone : ${STATE.currentMission ? STATE.currentMission.phone || '—' : '—'}</p>
+            <p style="margin-top:0.3rem;font-size:0.8rem;color:var(--ink-muted);">Code rapport : <strong>${reportId}</strong></p>
+          </div>
+        </div>
+      </div>
     `;
   }
 
