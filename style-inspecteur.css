@@ -295,6 +295,10 @@ h2 i { color: var(--accent); margin-right: 0.35rem; text-shadow: 1px 1px 2px rgb
 .difficulte-card button { opacity: 0; transition: opacity 0.15s; }
 .difficulte-card:hover button { opacity: 1; }
 
+.ia-notes { margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.2rem; box-shadow: var(--shadow); }
+.ia-notes h4 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 0.7rem; color: var(--primary); }
+.ia-notes textarea { font-family: inherit; }
+
 /* Responsive */
 @media (max-width: 960px) {
   .hero { grid-template-columns: 1fr; padding: 2rem; }

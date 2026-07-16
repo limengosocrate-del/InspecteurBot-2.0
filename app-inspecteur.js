@@ -614,7 +614,7 @@ function buildModelLibrary() {
         .replace('{delai}', i % 2 === 0 ? '15 jours' : '30 jours')
         .replace('{docs}', 'registre du personnel, contrats de travail, bulletins de paie')
         .replace('{points}', 'mise à jour des registres, affichage des avis, régularisation des contrats, formation du personnel')
-        .replace('{nom}', );
+        .replace('{nom}', 'Inspecteur du Travail');
       STATE.modelLibrary.push({ category: cat, title: `Modèle ${i + 1} — ${cat}`, text: text });
     }
   });
@@ -681,8 +681,9 @@ function setIAMode(mode) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('mode' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
   document.getElementById('iaTranscript').innerHTML = '<p class="transcript-placeholder">Mode : <strong>' + mode + '</strong>. Prêt à démarrer l\'écoute.</p>';
-  document.getElementById('iaOutput').classList.add('hidden');
+  document.getElementById('iaOutput').classList.remove('hidden');
   STATE.transcriptLog = [];
+  generateIAOutput();
 }
 
 function startListening() {
@@ -1195,6 +1196,99 @@ function exportIAOutputPDF() {
 }
 
 // ==========================================
+// MANUAL EDITING (modifier ou rédiger manuellement)
+// ==========================================
+function clearQuickNotes() {
+  document.getElementById('quickNotes').value = '';
+  localStorage.removeItem('inspecteurbot_quicknotes');
+  showToast('Notes rapides effacées.', 'info');
+}
+
+function copyQuickNotes() {
+  const text = document.getElementById('quickNotes').value || '';
+  navigator.clipboard.writeText(text).then(() => showToast('Notes rapides copiées.', 'success'));
+}
+
+function saveQuickNotes() {
+  const text = document.getElementById('quickNotes').value || '';
+  localStorage.setItem('inspecteurbot_quicknotes', text);
+  showToast('Notes rapides sauvegardées.', 'success');
+}
+
+function loadQuickNotes() {
+  try {
+    const saved = localStorage.getItem('inspecteurbot_quicknotes');
+    if (saved !== null) {
+      document.getElementById('quickNotes').value = saved;
+    }
+  } catch (e) {}
+}
+
+function toggleManualEdit() {
+  const outputBody = document.getElementById('iaOutputBody');
+  const paper = outputBody ? outputBody.querySelector('.a4-paper') : null;
+  const btn = document.getElementById('btnManualEdit');
+  if (!paper) {
+    showToast('Aucun rapport généré à modifier. Générez d\'abord un rapport.', 'info');
+    return;
+  }
+  const isEditing = paper.getAttribute('contenteditable') === 'true';
+  if (!isEditing) {
+    // Activer le mode édition
+    paper.setAttribute('contenteditable', 'true');
+    paper.style.border = '3px dashed var(--accent)';
+    paper.style.background = '#fffdf5';
+    paper.focus();
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Sauvegarder';
+    btn.onclick = saveManualEdit;
+    // Ajouter annuler
+    const actionsDiv = document.querySelector('.ia-output-actions');
+    if (actionsDiv && !document.getElementById('btnCancelEdit')) {
+      const cancelBtn = document.createElement('button');
+      cancelBtn.id = 'btnCancelEdit';
+      cancelBtn.className = 'btn-outline';
+      cancelBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Annuler';
+      cancelBtn.onclick = cancelManualEdit;
+      actionsDiv.insertBefore(cancelBtn, btn);
+    }
+    showToast('Mode édition manuelle activé. Vous pouvez modifier le texte directement dans le rapport.', 'success');
+  } else {
+    saveManualEdit();
+  }
+}
+
+function saveManualEdit() {
+  const paper = document.querySelector('#iaOutputBody .a4-paper');
+  const btn = document.getElementById('btnManualEdit');
+  if (paper) {
+    paper.setAttribute('contenteditable', 'false');
+    paper.style.border = '';
+    paper.style.background = '';
+  }
+  btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Modifier manuellement';
+  btn.onclick = toggleManualEdit;
+  const cancelBtn = document.getElementById('btnCancelEdit');
+  if (cancelBtn) cancelBtn.remove();
+  showToast('Modifications sauvegardées. Vous pouvez imprimer ou exporter le rapport.', 'success');
+}
+
+function cancelManualEdit() {
+  const btn = document.getElementById('btnManualEdit');
+  const cancelBtn = document.getElementById('btnCancelEdit');
+  const paper = document.querySelector('#iaOutputBody .a4-paper');
+  if (paper) {
+    paper.setAttribute('contenteditable', 'false');
+    paper.style.border = '';
+    paper.style.background = '';
+  }
+  if (cancelBtn) cancelBtn.remove();
+  btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Modifier manuellement';
+  btn.onclick = toggleManualEdit;
+  generateIAOutput();
+  showToast('Édition annulée — rapport régénéré.', 'info');
+}
+
+// ==========================================
 // ARCHIVES
 // ==========================================
 function loadArchive() {
@@ -1416,6 +1510,7 @@ function initApp() {
   filterModels('all');
   renderDifficultes();
   loadArchive();
+  loadQuickNotes();
   updateArchiveTable();
   updateDashboard();
 
