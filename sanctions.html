@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Inspecteur RDC Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="sanctions.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -27,32 +27,31 @@
             <!-- VIEW: DASHBOARD -->
             <div id="dashboard" class="view active">
                 <div style="margin-bottom: 20px;">
-                    <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">Accueil</h2>
-                    <p style="color: var(--text-muted); font-size: 14px;">Inspection Générale du Travail RDC</p>
+                    <h2 style="font-size: 26px; font-weight: 700; color: var(--text-primary);">Accueil</h2>
+                    <p style="color: var(--text-muted); font-size: 15px;">Inspection Générale du Travail RDC</p>
                 </div>
 
-                <div class="card" style="background: linear-gradient(135deg, var(--brand-primary), #0056b3); color: white; padding: 20px; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <span style="font-size: 14px; opacity: 0.9;">Infractions Codifiées</span>
-                        <i class="fa-solid fa-scale-balanced" style="font-size: 20px;"></i>
+                <h3 style="font-size: 18px; margin: 25px 0 15px; color: var(--text-primary);">Consultation & Tables Légales</h3>
+                <div class="menu-grid" style="margin-bottom: 25px;">
+                    <div class="menu-card" onclick="app.navTo('table-code', 'Tableau des 65 Infractions')">
+                        <i class="fa-solid fa-scale-unbalanced"></i>
+                        <span>Code du Travail (FC)</span>
                     </div>
-                    <div style="font-size: 32px; font-weight: 700; margin-bottom: 5px;">65</div>
-                    <div style="font-size: 14px; opacity: 0.9;">Articles et Amendes à jour</div>
+                    <div class="menu-card" onclick="app.navTo('table-aim', 'Tableau AIM 006')">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Amendes AIM (USD)</span>
+                    </div>
                 </div>
 
-                <h3 style="font-size: 16px; margin: 20px 0 10px; color: var(--text-primary);">Modules Principaux</h3>
-                <div class="menu-grid" style="margin-bottom: 20px;">
-                    <div class="menu-card" onclick="app.navToTab('consultation', 'Consultation des 65 Infractions')">
-                        <i class="fa-solid fa-table-list"></i>
-                        <span>Tableau Infractions</span>
-                    </div>
+                <h3 style="font-size: 18px; margin: 25px 0 15px; color: var(--text-primary);">Assistants & Outils</h3>
+                <div class="menu-grid" style="margin-bottom: 25px;">
                     <div class="menu-card" onclick="app.navToTab('qna', 'Questions / Réponses IA')">
-                        <i class="fa-solid fa-comments"></i>
-                        <span>Q&R avec IA Locale</span>
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Q&R IA Experte</span>
                     </div>
-                    <div class="menu-card" onclick="app.navToTab('outils', 'Boîte à Outils & Traduction')">
+                    <div class="menu-card" onclick="app.navToTab('outils', 'Boîte à Outils')">
                         <i class="fa-solid fa-toolbox"></i>
-                        <span>Outils & Traduction</span>
+                        <span>Boîte à Outils</span>
                     </div>
                     <div class="menu-card" onclick="app.navToTab('archives', 'Mes Dossiers')">
                         <i class="fa-solid fa-folder-open"></i>
@@ -61,48 +60,89 @@
                 </div>
             </div>
 
-            <!-- VIEW: CONSULTATION (Table of 65 Infractions) -->
-            <div id="consultation" class="view no-padding" style="height: calc(100vh - 121px); display: flex; flex-direction: column;">
-                <div class="search-container" style="padding-top: 15px;">
-                    <div class="search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="table-search" placeholder="Rechercher (Art, Mot-clé, Amende)..." onkeyup="app.filterTable()">
-                    </div>
+            <!-- VIEW: TABLE 1 - CODE DU TRAVAIL -->
+            <div id="table-code" class="view no-padding" style="display: none; flex-direction: column;">
+                <div class="info-box" style="margin: 15px; border-left-color: var(--brand-primary);">
+                    <h4><i class="fa-solid fa-circle-info"></i> Utilité du Tableau</h4>
+                    <p>Ce tableau répertorie les 65 infractions originelles prévues par le Code du Travail. Il affiche les montants de base en <strong>Francs Congolais (FC)</strong>.<br><br>
+                    <strong>Quand l'utiliser :</strong> Lors de la rédaction initiale de votre Procès-Verbal pour asseoir la base légale de l'infraction.</p>
                 </div>
-                <div style="flex-grow: 1; overflow: auto; background: var(--bg-surface);">
-                    <table class="data-table" id="infractions-table">
+
+                <div class="table-container" style="margin: 0 15px;">
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 <th>N°</th>
                                 <th>Infraction</th>
                                 <th>Article</th>
-                                <th>Sanction / Amende</th>
-                                <th>Gravité</th>
+                                <th>Amende / Peine (FC)</th>
                             </tr>
                         </thead>
-                        <tbody id="infractions-table-body">
-                            <!-- JS Populated -->
+                        <tbody id="tbody-code">
+                            <!-- Populated by JS -->
                         </tbody>
                     </table>
+                </div>
+
+                <div class="info-box" style="margin: 15px; background: rgba(255, 149, 0, 0.1); border-left-color: var(--status-warning);">
+                    <h4 style="color: var(--status-warning);"><i class="fa-solid fa-lightbulb"></i> Recommandation de l'Inspecteur</h4>
+                    <p style="color: var(--text-primary);">Bien que ce tableau vous donne l'article de loi, <strong>n'utilisez pas ces montants en FC pour le recouvrement final</strong>. Ces montants sont devenus symboliques. Utilisez toujours le tableau AIM 006 (USD) pour la taxation.</p>
+                </div>
+
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
+                </div>
+            </div>
+
+            <!-- VIEW: TABLE 2 - AIM 006 -->
+            <div id="table-aim" class="view no-padding" style="display: none; flex-direction: column;">
+                <div class="info-box" style="margin: 15px; border-left-color: var(--status-success);">
+                    <h4><i class="fa-solid fa-circle-info"></i> Utilité du Tableau (AIM 006/127)</h4>
+                    <p>Ce tableau présente les taux réactualisés des amendes exprimés en <strong>Dollars Américains (USD)</strong> selon la catégorie de l'entreprise.<br><br>
+                    <strong>Quand l'utiliser :</strong> Lors de la taxation finale et du recouvrement pour adapter la sanction financière à la taille économique de l'entreprise.</p>
+                </div>
+
+                <div class="table-container" style="margin: 0 15px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nature de la Sanction</th>
+                                <th>Catégorie A<br><small>(Mines, Télécoms)</small></th>
+                                <th>Catégorie B<br><small>(Construction, Énergie)</small></th>
+                                <th>Catégorie C<br><small>(Commerce, Banques)</small></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-aim">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-box" style="margin: 15px; background: rgba(52, 199, 89, 0.1); border-left-color: var(--status-success);">
+                    <h4 style="color: var(--status-success);"><i class="fa-solid fa-check-double"></i> Recommandation de l'Inspecteur</h4>
+                    <p style="color: var(--text-primary);">C'est ce tableau qui a force de loi pour le paiement au Trésor Public. N'oubliez pas d'appliquer les multiplicateurs (ex: x3 pour le travail des enfants ou x2 pour le SMIG) sur ces bases.</p>
+                </div>
+
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
                 </div>
             </div>
 
             <!-- VIEW: Q&A WITH IA -->
-            <div id="qna" class="view no-padding" style="height: calc(100vh - 121px); display: flex; flex-direction: column;">
+            <div id="qna" class="view no-padding" style="height: calc(100vh - 131px); display: flex; flex-direction: column;">
                 <div class="chat-messages" id="chat-messages">
                     <div class="msg msg-ai">
-                        <i class="fa-solid fa-brain" style="color: var(--brand-primary); margin-bottom: 10px; font-size: 20px;"></i><br>
+                        <i class="fa-solid fa-brain" style="color: var(--brand-primary); margin-bottom: 10px; font-size: 24px;"></i><br>
                         <strong>Espace Questions & Réponses (IA d'apprentissage)</strong><br><br>
-                        Posez-moi vos questions pour maîtriser le Code du Travail, les amendes AIM 006, le nouveau SMIG 2025 et les méthodes de contrôle en RDC.<br><br>
+                        Posez-moi vos questions pour maîtriser le Code du Travail, les amendes AIM 006, le nouveau SMIG 2025 et les méthodes de contrôle.<br><br>
                         <i>Ex: "Explique-moi l'infraction de l'Art 157", "Quel est le SMIG d'un manœuvre ?"</i>
                     </div>
                 </div>
                 
                 <div class="chat-suggestions" id="chat-chips">
-                    <div class="chip" onclick="app.sendChip('Quel est le SMIG d\'un manœuvre ?')">Amende SMIG</div>
                     <div class="chip" onclick="app.sendChip('Explique-moi l\'article 133')">Article 133 (Enfants)</div>
+                    <div class="chip" onclick="app.sendChip('Quelles sont les amendes pour le SMIG ?')">Amende SMIG</div>
                     <div class="chip" onclick="app.sendChip('Comment calculer le préavis ?')">Calcul Préavis</div>
-                    <div class="chip" onclick="app.sendChip('Quel est le montant pour défaut de R.I. ?')">Amende R.I.</div>
                 </div>
 
                 <div class="chat-input">
@@ -113,22 +153,25 @@
 
             <!-- VIEW: ARCHIVES (CRUD) -->
             <div id="archives" class="view no-padding">
-                <div style="padding: 15px;">
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Archivage Intelligent : Enregistrez, modifiez ou supprimez vos dossiers.</p>
+                <div style="padding: 20px;">
+                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 10px;">Archivage Intelligent : Enregistrez et modifiez vos dossiers.</p>
                 </div>
                 <div class="list-group" id="archives-list" style="border-radius: 0; box-shadow: none; margin: 0;">
                     <!-- JS Populated via LocalStorage -->
                 </div>
-                <button class="fab" onclick="app.openArchiveForm()"><i class="fa-solid fa-plus"></i></button>
+                
+                <div style="padding: 20px;">
+                    <button class="btn" onclick="app.openArchiveForm()"><i class="fa-solid fa-plus"></i> Créer un nouveau dossier</button>
+                </div>
             </div>
 
-            <!-- VIEW: ARCHIVE FORM (CREATE/EDIT) -->
+            <!-- VIEW: ARCHIVE FORM -->
             <div id="archive-form" class="view">
                 <div class="card">
                     <input type="hidden" id="archive-id">
                     <div class="form-group">
                         <label class="form-label">Nom de l'Entreprise</label>
-                        <input type="text" class="form-control" id="archive-nom" placeholder="">
+                        <input type="text" class="form-control" id="archive-nom" placeholder="Ex: [Saisir le nom de l'entreprise]">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Statut du Dossier</label>
@@ -139,25 +182,49 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Infractions Constatées (Ex: Art 119)</label>
-                        <input type="text" class="form-control" id="archive-infractions" placeholder="">
+                        <label class="form-label">Infractions Constatées</label>
+                        <input type="text" class="form-control" id="archive-infractions" placeholder="Ex: [Saisir les articles violés]">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Notes d'Inspection</label>
-                        <textarea class="form-control" id="archive-notes" placeholder=""></textarea>
+                        <textarea class="form-control" id="archive-notes" placeholder="Ex: [Saisir les détails de la visite]"></textarea>
                     </div>
                     <button class="btn" onclick="app.saveArchive()"><i class="fa-solid fa-save"></i> Enregistrer</button>
-                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none; margin-top: 10px;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
+                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none; margin-top: 15px;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
+                </div>
+                
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
                 </div>
             </div>
 
             <!-- VIEW: BOITE A OUTILS & TRADUCTION -->
             <div id="outils" class="view no-padding">
-                <div class="tool-section-title">Outil de Traduction Nationale</div>
-                <div class="card" style="margin: 15px; border-radius: 12px; box-shadow: var(--shadow-sm);">
+                <div class="tool-section-title" style="padding: 20px 20px 0; font-weight: bold; color: var(--brand-primary);">Outils & Assistances</div>
+                
+                <div class="list-group" style="margin: 15px; border-radius: 12px;">
+                    <div class="list-item" onclick="app.navTo('traduction', 'Traducteur National')">
+                        <div class="list-item-content"><h4>Traducteur Terrain</h4><p>Kikongo, Tshiluba, Swahili, Lingala</p></div>
+                        <i class="fa-solid fa-language" style="color: var(--brand-primary); font-size: 24px;"></i>
+                    </div>
+                    <div class="list-item" onclick="app.navTo('generateur-convo', 'Convocation')">
+                        <div class="list-item-content"><h4>Générateur de Convocation</h4><p>Invitation officielle à l'employeur</p></div>
+                        <i class="fa-solid fa-envelope-open-text" style="color: var(--brand-primary); font-size: 24px;"></i>
+                    </div>
+                    <div class="list-item" onclick="app.navTo('delais-legaux', 'Délais Légaux')">
+                        <div class="list-item-content"><h4>Répertoire des Délais</h4><p>Prescriptions et échéances de la loi</p></div>
+                        <i class="fa-solid fa-calendar-day" style="color: var(--brand-primary); font-size: 24px;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: TRADUCTION -->
+            <div id="traduction" class="view">
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-language"></i> Traduction IA</h3>
                     <div class="form-group">
                         <label class="form-label">Texte à traduire (Français)</label>
-                        <textarea class="form-control" id="trad-text" placeholder="Ex: Affichez l'horaire de travail."></textarea>
+                        <textarea class="form-control" id="trad-text" placeholder="Ex: [Saisissez la phrase légale à traduire]"></textarea>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Traduire en :</label>
@@ -169,170 +236,66 @@
                             <option value="Anglais">Anglais</option>
                         </select>
                     </div>
-                    <button class="btn" onclick="app.translateText()"><i class="fa-solid fa-language"></i> Traduire (IA)</button>
-                    <div id="trad-result" style="display:none; margin-top: 15px; padding: 10px; background: var(--bg-base); border-radius: 8px; font-weight: 500;"></div>
+                    <button class="btn" onclick="app.translateText()"><i class="fa-solid fa-globe"></i> Lancer la Traduction</button>
+                    <div id="trad-result" style="display:none; margin-top: 20px; padding: 15px; background: var(--brand-light); border-radius: 10px; font-weight: 500; font-size: 16px; color: var(--brand-primary); border: 1px solid var(--brand-primary);"></div>
                 </div>
-
-                <div class="tool-section-title">Calculatrices Légales (AIM & Code)</div>
-                <div class="list-group" style="margin: 0; border-radius: 0;">
-                    <div class="tool-item" onclick="app.navTo('calc-amende', 'Calculateur AIM 006')">
-                        <div class="tool-icon"><i class="fa-solid fa-calculator"></i></div>
-                        <div class="tool-text"><h4>Calculateur Sanctions (AIM 006)</h4><p>Calcul des amendes par Catégorie</p></div>
-                    </div>
-                    <div class="tool-item" onclick="app.navTo('calc-smig', 'Calculateur SMIG (Décret 25/22)')">
-                        <div class="tool-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-                        <div class="tool-text"><h4>Calculateur SMIG 2025</h4><p>Salaire et Logement selon la Classe</p></div>
-                    </div>
-                    <div class="tool-item" onclick="app.navTo('calc-decompte', 'Calculateur Décompte Final')">
-                        <div class="tool-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                        <div class="tool-text"><h4>Décompte Final Automatique</h4><p>Arriérés, Congés, Préavis</p></div>
-                    </div>
-                </div>
-
-                <div class="tool-section-title">Guides d'Enquête & Audit Terrain</div>
-                <div class="list-group" style="margin: 0; border-radius: 0;">
-                    <div class="tool-item" onclick="app.sendChipToQnA('Guide d\'audit pour le secteur minier')">
-                        <div class="tool-icon"><i class="fa-solid fa-gem"></i></div>
-                        <div class="tool-text"><h4>Audit Secteur Minier</h4><p>Checklist des risques Catégorie A</p></div>
-                    </div>
-                    <div class="tool-item" onclick="app.sendChipToQnA('Guide d\'audit pour le secteur construction')">
-                        <div class="tool-icon"><i class="fa-solid fa-helmet-safety"></i></div>
-                        <div class="tool-text"><h4>Audit Construction (BTP)</h4><p>EPI, Accidents de travail</p></div>
-                    </div>
+                
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
                 </div>
             </div>
 
-            <!-- VIEW: CALCULATEUR AMENDE (AIM 006) -->
-            <div id="calc-amende" class="view">
+            <!-- VIEW: GENERATEUR CONVOCATION -->
+            <div id="generateur-convo" class="view">
                 <div class="card">
-                    <h3 style="margin-bottom: 20px; font-size: 16px; color: var(--brand-primary);"><i class="fa-solid fa-scale-balanced"></i> Calculateur AIM N°006 & 127</h3>
+                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-envelope-open-text"></i> Convocation au Bureau</h3>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Générez un texte type pour convoquer un employeur ou un représentant suite à un contrôle.</p>
+                    
                     <div class="form-group">
-                        <label class="form-label">Catégorie de l'Entreprise</label>
-                        <select class="form-control" id="calc-cat">
-                            <option value="A">Cat. A (Mines, Télécoms...) - Max</option>
-                            <option value="B">Cat. B (Construction...) - Moyen</option>
-                            <option value="C">Cat. C (Commerce...) - Standard</option>
+                        <label class="form-label">Objet de la convocation</label>
+                        <select class="form-control" id="convo-objet">
+                            <option value="Audition suite à une inspection">Audition suite à une inspection</option>
+                            <option value="Dépôt de documents manquants">Dépôt de documents manquants</option>
+                            <option value="Conciliation suite à un litige">Conciliation suite à un litige</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Type d'Infraction</label>
-                        <select class="form-control" id="calc-inf">
-                            <option value="157">Défaut de R.I. (Art 157)</option>
-                            <option value="171">Sécurité / Hygiène (Art 171)</option>
-                            <option value="133">Travail enfants (Art 133)</option>
-                            <option value="87">Défaut du SMIG (Art 87)</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="app.calculateAmende()"><i class="fa-solid fa-calculator"></i> Estimer l'Amende</button>
+                    <button class="btn" onclick="app.generateConvo()"><i class="fa-solid fa-wand-magic-sparkles"></i> Générer le texte</button>
+                    
+                    <div id="convo-result" style="display:none; margin-top: 20px; padding: 20px; background: var(--bg-surface-hover); border-radius: 10px; font-size: 14px; border: 1px solid var(--border-color); line-height: 1.6;"></div>
                 </div>
-                <div class="card" style="text-align: center; margin-top: 20px;">
-                    <h4 style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">Sanction Estimative</h4>
-                    <div id="calc-result" style="font-size: 36px; font-weight: 700; color: var(--status-danger); margin-bottom: 5px;">0 USD</div>
-                    <div id="calc-details" style="font-size: 13px; color: var(--text-muted);">---</div>
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
                 </div>
             </div>
 
-            <!-- VIEW: CALCULATEUR SMIG -->
-            <div id="calc-smig" class="view">
+            <!-- VIEW: DELAIS LEGAUX -->
+            <div id="delais-legaux" class="view">
                 <div class="card">
-                    <h3 style="margin-bottom: 20px; font-size: 16px; color: var(--brand-primary);"><i class="fa-solid fa-money-bill-wave"></i> Calcul du SMIG (Décret 25/22)</h3>
-                    <div class="form-group">
-                        <label class="form-label">Classe Professionnelle</label>
-                        <select class="form-control" id="smig-classe" onchange="app.calculateSMIG()">
-                            <option value="100">Classe 1 (Manœuvre ordinaire)</option>
-                            <option value="116">Classe 2 (Manœuvre spécialisé)</option>
-                            <option value="133">Classe 3 (Semi-Qualifié SQ1)</option>
-                            <option value="154">Classe 4 (Semi-Qualifié SQ2)</option>
-                            <option value="178">Classe 5 (Semi-Qualifié SQ3)</option>
-                            <option value="206">Classe 6 (Qualifié Q1)</option>
-                            <option value="237">Classe 7 (Qualifié Q2)</option>
-                            <option value="274">Classe 8 (Hautement Qualifié)</option>
-                            <option value="317">Classe 9 (Maîtrise M1)</option>
-                            <option value="365">Classe 10 (Maîtrise M2)</option>
-                            <option value="422">Classe 11 (Maîtrise M3)</option>
-                            <option value="488">Classe 12 (Maîtrise M4)</option>
-                            <option value="564">Classe 13 (Cadre CC1)</option>
-                            <option value="651">Classe 14 (Cadre CC2)</option>
-                            <option value="752">Classe 15 (Cadre CC3)</option>
-                            <option value="868">Classe 16 (Cadre CC4)</option>
-                            <option value="1000">Classe 17 (Gérant)</option>
-                        </select>
+                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-calendar-day"></i> Répertoire des Délais (Prescription)</h3>
+                    
+                    <div style="border-left: 4px solid var(--status-danger); padding-left: 15px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 5px;">3 Ans (Prescription Salaire)</h4>
+                        <p style="font-size: 14px; color: var(--text-muted);">Art 311 : L'action en paiement du salaire et accessoires se prescrit par 3 ans.</p>
+                    </div>
+                    
+                    <div style="border-left: 4px solid var(--status-warning); padding-left: 15px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 5px;">48 Heures (Décompte Final)</h4>
+                        <p style="font-size: 14px; color: var(--text-muted);">Art 100 : L'employeur a au maximum 2 jours ouvrables après la fin du contrat pour payer le solde.</p>
+                    </div>
+                    
+                    <div style="border-left: 4px solid var(--brand-primary); padding-left: 15px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 5px;">8 Jours (Affiliation CNSS)</h4>
+                        <p style="font-size: 14px; color: var(--text-muted);">L'employeur doit s'affilier à la sécurité sociale dans les 8 jours suivant le premier embauche.</p>
+                    </div>
+                    
+                    <div style="border-left: 4px solid var(--status-success); padding-left: 15px;">
+                        <h4 style="margin-bottom: 5px;">Mise en demeure</h4>
+                        <p style="font-size: 14px; color: var(--text-muted);">Le délai laissé à l'appréciation de l'Inspecteur est généralement de 8 à 15 jours francs pour régularisation.</p>
                     </div>
                 </div>
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="color: var(--text-muted);">Tension :</span>
-                        <span id="res-tension" style="font-weight: 600;">100</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="color: var(--text-muted);">SMIG / Jour :</span>
-                        <span id="res-smig-jour" style="font-weight: 600; color: var(--status-success);">14 500 FC</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="color: var(--text-muted);">SMIG / Mois (26j) :</span>
-                        <span id="res-smig-mois" style="font-weight: 600; color: var(--brand-primary);">377 000 FC</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span style="color: var(--text-muted);">Indemnité Logement (30%) :</span>
-                        <span id="res-smig-logement" style="font-weight: 600;">113 100 FC</span>
-                    </div>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 15px; text-align: center;">*Le transport est fixé par édit provincial.</p>
+                <div class="bottom-back-btn">
+                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
                 </div>
-            </div>
-
-            <!-- VIEW: CALCULATEUR DECOMPTE FINAL -->
-            <div id="calc-decompte" class="view">
-                <div class="card">
-                    <h3 style="margin-bottom: 20px; font-size: 16px; color: var(--brand-primary);"><i class="fa-solid fa-file-invoice-dollar"></i> Calcul du Décompte Final</h3>
-                    <div class="form-group">
-                        <label class="form-label">Rémunération Mensuelle (Base + Primes) en FC</label>
-                        <input type="number" class="form-control" id="dec-salaire" placeholder="Ex: 500000">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Ancienneté Complète (en Années)</label>
-                        <input type="number" class="form-control" id="dec-anciennete" placeholder="Ex: 5">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mois prestés mais non payés (ex: 1.5)</label>
-                        <input type="number" class="form-control" id="dec-arrieres" placeholder="Ex: 0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Jours de congés payés dus et non pris</label>
-                        <input type="number" class="form-control" id="dec-conges" placeholder="Ex: 12">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">L'employeur a-t-il donné un préavis travaillé ?</label>
-                        <select class="form-control" id="dec-preavis-fait">
-                            <option value="non">Non, préavis non presté (Indemnité due)</option>
-                            <option value="oui">Oui, préavis presté (Indemnité non due)</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="app.calculateDecompte()"><i class="fa-solid fa-calculator"></i> Calculer le Décompte</button>
-                </div>
-                <div class="card" id="dec-result-card" style="display:none;">
-                    <h4 style="font-size: 14px; margin-bottom: 10px; text-align:center;">Résumé du Calcul</h4>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="color: var(--text-muted); font-size: 13px;">Arriérés de Salaire :</span>
-                        <span id="res-dec-arrieres" style="font-weight: 600; font-size: 13px;">0 FC</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="color: var(--text-muted); font-size: 13px;">Indemnité de Congés :</span>
-                        <span id="res-dec-conges" style="font-weight: 600; font-size: 13px;">0 FC</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="color: var(--text-muted); font-size: 13px;">Indemnité de Préavis :</span>
-                        <span id="res-dec-preavis" style="font-weight: 600; font-size: 13px;">0 FC</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 18px;">
-                        <span style="color: var(--text-primary); font-weight: bold;">Net à Payer :</span>
-                        <span id="res-dec-total" style="font-weight: bold; color: var(--status-success);">0 FC</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: INFRACTION DETAIL -->
-            <div id="infraction-detail" class="view">
-                <div id="infraction-detail-content"></div>
             </div>
 
         </div>
@@ -341,9 +304,6 @@
         <div class="bottom-nav">
             <div class="nav-tab active" data-tab="dashboard" onclick="app.navToTab('dashboard', 'Tableau de Bord')">
                 <i class="fa-solid fa-house"></i><span>Accueil</span>
-            </div>
-            <div class="nav-tab" data-tab="consultation" onclick="app.navToTab('consultation', 'Consultation des 65 Infractions')">
-                <i class="fa-solid fa-table-list"></i><span>Tableau</span>
             </div>
             <div class="nav-tab" data-tab="qna" onclick="app.navToTab('qna', 'Questions / Réponses IA')">
                 <i class="fa-solid fa-comments"></i><span>IA Q&R</span>
@@ -358,8 +318,6 @@
 
     </div>
 
-    <script src="App-sanctions.js"></script>
+    <script src="App.js"></script>
 </body>
 </html>
-
-

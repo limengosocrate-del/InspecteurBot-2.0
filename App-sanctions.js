@@ -1,30 +1,33 @@
 const infractionsDB = [
-    {id: 1, intitule: "Non Affichage de l'Horaire", desc: "L'employeur n'a pas affiché l'horaire de travail visé.", articles: "Art 119 et 222", sanction: "Amende", gravite: "Faible"},
-    {id: 2, intitule: "Défaut de Classification", desc: "Non-respect de la classification des emplois.", articles: "Art 90", sanction: "Amende", gravite: "Moyenne"},
-    {id: 3, intitule: "Contrat non constaté par écrit", desc: "Contrat non signé ou non visé par l'ONEM.", articles: "Art 44, 46", sanction: "Devient CDI, Amende", gravite: "Grave"},
-    {id: 4, intitule: "Défaut de Règlement Intérieur", desc: "Absence de règlement intérieur validé.", articles: "Art 157", sanction: "Amende", gravite: "Moyenne"},
-    {id: 5, intitule: "Défaut du SMIG", desc: "Non-respect du SMIG.", articles: "Art 87", sanction: "Fermeture possible, Amende", gravite: "Tres Grave"},
-    {id: 6, intitule: "Heures supplémentaires non payées", desc: "Travail au-delà de 45h sans paiement.", articles: "Art 119", sanction: "Amende", gravite: "Grave"},
-    {id: 7, intitule: "Privation du jour de repos", desc: "Non octroi du repos hebdomadaire.", articles: "Art 121", sanction: "Amende", gravite: "Moyenne"},
-    {id: 10, intitule: "Travail des enfants", desc: "Emploi sans autorisation de l'Inspecteur.", articles: "Art 133", sanction: "Amende + Peine Pénale", gravite: "Tres Grave"},
-    {id: 11, intitule: "Mauvaises conditions d'hygiène", desc: "Milieu de travail insalubre.", articles: "Art 171", sanction: "Mise en demeure", gravite: "Grave"},
-    {id: 12, intitule: "Non assurance service médical", desc: "Défaut de couverture de soins.", articles: "Art 177", sanction: "Amende", gravite: "Grave"},
-    {id: 13, intitule: "Violation convention collective", desc: "Non respect des accords conclus.", articles: "Art 320", sanction: "Amende", gravite: "Moyenne"},
-    {id: 28, intitule: "Licenciements massifs irréguliers", desc: "Sans respecter les procédures.", articles: "Art 78", sanction: "Amendes", gravite: "Tres Grave"},
-    {id: 31, intitule: "Non rémunération monnaie légale", desc: "Paiement en nature non autorisé.", articles: "Art 89 et 90", sanction: "Amende", gravite: "Grave"},
-    {id: 37, intitule: "Défaut de logement décent", desc: "Absence d'indemnité pour engagement hors lieu.", articles: "Art 138", sanction: "Amende", gravite: "Grave"},
-    {id: 38, intitule: "Défaut de Planning de congés", desc: "Violation des prescriptions sur les congés annuels.", articles: "Art 140", sanction: "Amende", gravite: "Grave"},
-    {id: 41, intitule: "Non déclaration accident travail", desc: "Défaut de signalement à l'Inspecteur et CNSS", articles: "Art 176", sanction: "Amende", gravite: "Grave"},
-    {id: 43, intitule: "Défaut de tenir livre de paie", desc: "Livre de paie inexistant ou non mis à jour.", articles: "Art 213", sanction: "Amende", gravite: "Faible"},
-    {id: 44, intitule: "Non déclaration mouvement personnel", desc: "Défaut de signalement à l'ONEM.", articles: "Art 217", sanction: "Amende", gravite: "Moyenne"},
-    {id: 49, intitule: "Licenciement Délégué Syndical", desc: "Sans approbation de l'Inspecteur", articles: "Art 258", sanction: "Amende", gravite: "Tres Grave"},
-    {id: 53, intitule: "Non-respect des jours fériés", desc: "Violation du repos les jours fériés.", articles: "Art 123", sanction: "Amende", gravite: "Moyenne"},
-    {id: 57, intitule: "Heures de nuit non majorées", desc: "Travail de nuit non payé en majoration.", articles: "Art 124", sanction: "Amende", gravite: "Grave"},
-    {id: 62, intitule: "Obstacle à l'Inspecteur", desc: "Faire obstacle aux fonctions.", articles: "Art 322", sanction: "Amende + 30 jours SP", gravite: "Tres Grave"},
-    {id: 65, intitule: "Privation Décompte Final", desc: "Non paiement 48h après fin contrat", articles: "Art 100", sanction: "Amende", gravite: "Grave"}
+    {id: 1, intitule: "Non Affichage de l'Horaire", desc: "L'employeur n'a pas affiché l'horaire de travail visé.", articles: "Art 119 et 222", sanction: "20 000 FC", gravite: "Faible"},
+    {id: 2, intitule: "Défaut de Classification", desc: "Non-respect de la classification des emplois.", articles: "Art 90", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 3, intitule: "Contrat non constaté par écrit", desc: "Contrat non signé ou non visé par l'ONEM.", articles: "Art 44, 46", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 4, intitule: "Défaut de Règlement Intérieur", desc: "Absence de règlement intérieur validé.", articles: "Art 157", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 5, intitule: "Défaut du SMIG", desc: "Non-respect du SMIG.", articles: "Art 87", sanction: "Fermeture possible", gravite: "Très Grave"},
+    {id: 6, intitule: "Heures supplémentaires non payées", desc: "Travail au-delà de 45h sans paiement.", articles: "Art 119", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 7, intitule: "Privation du jour de repos", desc: "Non octroi du repos hebdomadaire.", articles: "Art 121", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 10, intitule: "Travail des enfants de 15 à 17 ans", desc: "Emploi sans autorisation de l'Inspecteur.", articles: "Art 133", sanction: "Peine Pénale", gravite: "Très Grave"},
+    {id: 11, intitule: "Mauvaises conditions d'hygiène", desc: "Milieu de travail insalubre ou dangereux.", articles: "Art 171", sanction: "Mise en demeure", gravite: "Grave"},
+    {id: 12, intitule: "Non assurance médicale", desc: "Défaut de couverture de soins.", articles: "Art 177", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 13, intitule: "Violation convention collective", desc: "Non respect des accords conclus.", articles: "Art 320", sanction: "7 500 FC", gravite: "Moyenne"},
+    {id: 16, intitule: "Absence contrat d'apprentissage", desc: "Contrat d'apprentissage non écrit.", articles: "Art 19", sanction: "20 000 FC", gravite: "Faible"},
+    {id: 25, intitule: "Non paiement transport travailleur", desc: "Défaut de prise en charge trajet domicile-travail.", articles: "Art 56", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 28, intitule: "Licenciements massifs irréguliers", desc: "Licenciement éco sans procédures.", articles: "Art 78", sanction: "Amendes", gravite: "Très Grave"},
+    {id: 31, intitule: "Rémunération hors monnaie légale", desc: "Paiement en nature ou monnaie étrangère.", articles: "Art 89, 90", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 33, intitule: "Paiement sans décompte écrit", desc: "Remise du salaire sans fiche de paie.", articles: "Art 103", sanction: "20 000 FC", gravite: "Faible"},
+    {id: 37, intitule: "Défaut de logement décent", desc: "Absence d'indemnité pour engagement hors lieu.", articles: "Art 138", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 38, intitule: "Défaut planning de congés", desc: "Violation des prescriptions sur les congés annuels.", articles: "Art 140-146", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 41, intitule: "Non déclaration accident du travail", desc: "Défaut de signalement à l'Inspecteur et CNSS", articles: "Art 176", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 43, intitule: "Défaut de livre de paie", desc: "Livre de paie inexistant ou non mis à jour.", articles: "Art 213-216", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 44, intitule: "Non déclaration mouvement personnel", desc: "Défaut de signalement à l'ONEM.", articles: "Art 217", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 49, intitule: "Licenciement Délégué Syndical", desc: "Sans approbation préalable de l'Inspecteur", articles: "Art 258", sanction: "20 000 FC", gravite: "Très Grave"},
+    {id: 53, intitule: "Non-respect des jours fériés légaux", desc: "Violation du repos les jours fériés.", articles: "Art 123", sanction: "20 000 FC", gravite: "Moyenne"},
+    {id: 57, intitule: "Heures de nuit non majorées", desc: "Travail de nuit non payé en majoration.", articles: "Art 124", sanction: "20 000 FC", gravite: "Grave"},
+    {id: 62, intitule: "Obstacle à l'Inspecteur", desc: "Faire obstacle aux fonctions.", articles: "Art 322", sanction: "30 000 FC + SP", gravite: "Très Grave"},
+    {id: 65, intitule: "Privation Décompte Final", desc: "Non paiement 48h après fin contrat", articles: "Art 100", sanction: "20 000 FC", gravite: "Grave"}
 ];
 
-// Fill up to 65 to make it complete
+// Combler jusqu'à 65 pour le tableau
 for(let i=1; i<=65; i++) {
     if(!infractionsDB.find(x => x.id === i)) {
         infractionsDB.push({
@@ -32,12 +35,20 @@ for(let i=1; i<=65; i++) {
             intitule: "Infraction Code du Travail (Art " + (100+i) + ")", 
             desc: "Violation des dispositions.", 
             articles: "Art " + (100+i), 
-            sanction: "Amende", 
+            sanction: "20 000 FC", 
             gravite: "Moyenne"
         });
     }
 }
 infractionsDB.sort((a,b) => a.id - b.id);
+
+const aimDB = [
+    { nature: "Défaut de Règlement Intérieur", catA: "1000 USD", catB: "700 USD", catC: "500 USD" },
+    { nature: "Défaut d'hygiène (Mise en demeure ignorée)", catA: "1500 USD", catB: "1000 USD", catC: "700 USD" },
+    { nature: "Travail des enfants (-18 ans)", catA: "3000 USD", catB: "2100 USD", catC: "1500 USD" },
+    { nature: "Défaut de paiement SMIG", catA: "2000 USD", catB: "1400 USD", catC: "1000 USD" },
+    { nature: "Autres infractions courantes", catA: "1000 USD", catB: "700 USD", catC: "500 USD" }
+];
 
 const app = {
     history: [],
@@ -47,8 +58,8 @@ const app = {
     init: function() {
         this.bindEvents();
         this.loadArchives();
-        this.renderTable();
-        this.calculateSMIG();
+        this.renderTableCode();
+        this.renderTableAIM();
     },
 
     bindEvents: function() {
@@ -107,40 +118,86 @@ const app = {
         return 'badge-danger';
     },
 
-    // --- TABLE CONSULTATION ---
-    renderTable: function() {
-        const tbody = document.getElementById('infractions-table-body');
+    // --- TABLEAUX LEGAUX ---
+    renderTableCode: function() {
+        const tbody = document.getElementById('tbody-code');
         if(!tbody) return;
         tbody.innerHTML = '';
         infractionsDB.forEach(inf => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${inf.id}</td>
-                <td style="font-weight: 500;">${inf.intitule}<br><span style="font-size:10px; color:var(--text-muted); font-weight:normal;">${inf.desc}</span></td>
-                <td class="article">${inf.articles}</td>
-                <td class="amende">${inf.sanction}</td>
-                <td><span class="badge ${this.getBadgeClass(inf.gravite)}">${inf.gravite}</span></td>
+                <td style="font-weight: 500;">${inf.intitule}<br><span style="font-size:11px; color:var(--text-muted); font-weight:normal;">${inf.desc}</span></td>
+                <td style="font-weight: 600; color:var(--brand-primary);">${inf.articles}</td>
+                <td class="amount">${inf.sanction}</td>
             `;
             tbody.appendChild(tr);
         });
     },
 
-    filterTable: function() {
-        const input = document.getElementById("table-search");
-        if(!input) return;
-        const filter = input.value.toLowerCase();
-        const table = document.getElementById("infractions-table");
-        if(!table) return;
-        const tr = table.getElementsByTagName("tr");
+    renderTableAIM: function() {
+        const tbody = document.getElementById('tbody-aim');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        aimDB.forEach(aim => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight: 500;">${aim.nature}</td>
+                <td class="amount">${aim.catA}</td>
+                <td class="amount" style="color:var(--status-warning);">${aim.catB}</td>
+                <td class="amount" style="color:var(--status-success);">${aim.catC}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    },
 
-        for (let i = 1; i < tr.length; i++) {
-            let txtValue = tr[i].textContent || tr[i].innerText;
-            if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-            } else {
-                tr[i].style.display = "none";
-            }
+    // --- OUTILS & GENERATEUR ---
+    translateText: function() {
+        const text = document.getElementById('trad-text').value;
+        const lang = document.getElementById('trad-lang').value;
+        const resDiv = document.getElementById('trad-result');
+        if(!text) { resDiv.style.display = 'none'; return; }
+        
+        let translated = "";
+        const lower = text.toLowerCase();
+        
+        if(lower.includes("horaire")) {
+            if(lang === "Lingala") translated = "Bó tia ngonga ya mosala na mur.";
+            else if(lang === "Swahili") translated = "Mbandike ratiba ya kazi ukutani.";
+            else if(lang === "Kikongo") translated = "Bika ntangu ya salu na lumbu.";
+            else if(lang === "Tshiluba") translated = "Teka tshikondo tshia mudimu pa tshimanu.";
+            else translated = "Please post the work schedule on the wall.";
+        } else if (lower.includes("salaire") || lower.includes("smig")) {
+            if(lang === "Lingala") translated = "Esengeli kofuta lifuti mpe SMIG na ndenge ya mibeko.";
+            else if(lang === "Swahili") translated = "Lazima ulipe mshahara kulingana na sheria.";
+            else if(lang === "Kikongo") translated = "Futa mbongo ya salu na ku landa nsiku.";
+            else if(lang === "Tshiluba") translated = "Futa makuta a mudimu bilondeshile mikenji.";
+            else translated = "You must pay the legal minimum wage.";
+        } else {
+            translated = `[Traduction IA en ${lang}] : Modèle en apprentissage pour cette phrase.`;
         }
+        
+        resDiv.innerHTML = `<i class="fa-solid fa-language"></i> ${translated}`;
+        resDiv.style.display = 'block';
+    },
+
+    generateConvo: function() {
+        const objet = document.getElementById('convo-objet').value;
+        const resDiv = document.getElementById('convo-result');
+        
+        const dateStr = new Date().toLocaleDateString('fr-FR');
+        
+        let texte = `<strong>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</strong><br>
+        <strong>Inspection Générale du Travail</strong><br><br>
+        <strong>CONVOCATION OFFICIELLE</strong><br><br>
+        Il est demandé au Représentant Légal de l'entreprise [À compléter] de se présenter à nos bureaux situés à [À compléter], le [Date] à [Heure].<br><br>
+        <strong>Objet :</strong> ${objet}.<br><br>
+        Veuillez vous munir des documents pertinents suivants : [Liste des documents].<br>
+        Toute absence non justifiée constituera un obstacle au fonctionnement de l'Inspection, punissable selon l'Article 322 du Code du Travail.<br><br>
+        Fait le ${dateStr},<br>L'Inspecteur du Travail.`;
+        
+        resDiv.innerHTML = texte;
+        resDiv.style.display = 'block';
     },
 
     // --- ARCHIVES ---
@@ -164,7 +221,7 @@ const app = {
             div.innerHTML = `
                 <div class="list-item-content" style="flex-grow:1;">
                     <h4 style="margin-bottom:2px;">${arch.nom}</h4>
-                    <p style="font-size:11px;">${arch.date} | Infr: ${arch.infractions || 'Aucune'}</p>
+                    <p style="font-size:12px;">${arch.date} | Infr: ${arch.infractions || 'Aucune'}</p>
                 </div>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <span class="badge ${this.getBadgeClass(arch.statut)}">${arch.statut}</span>
@@ -200,7 +257,7 @@ const app = {
         const id = document.getElementById('archive-id').value;
         const newArch = {
             id: id ? parseInt(id) : Date.now(),
-            nom: document.getElementById('archive-nom').value || "Dossier Sans Nom",
+            nom: document.getElementById('archive-nom').value || "Dossier Anonyme",
             statut: document.getElementById('archive-statut').value,
             infractions: document.getElementById('archive-infractions').value,
             notes: document.getElementById('archive-notes').value,
@@ -227,93 +284,7 @@ const app = {
         }
     },
 
-    // --- OUTILS & CALCULATEURS ---
-    calculateAmende: function() {
-        const cat = document.getElementById('calc-cat').value;
-        const inf = document.getElementById('calc-inf').value;
-        let base = cat === 'A' ? 1000 : cat === 'B' ? 700 : 500;
-        let multi = (inf === '133' || inf === '171') ? 3 : (inf === '87') ? 2 : 1;
-        document.getElementById('calc-result').innerText = `${base * multi} USD`;
-        document.getElementById('calc-details').innerText = `Base AIM: ${base}$ | Gravité: x${multi}`;
-    },
-
-    calculateSMIG: function() {
-        const el = document.getElementById('smig-classe');
-        if(!el) return;
-        const tension = parseInt(el.value);
-        if(!tension) return;
-        const smigJour = tension * 145; // Décret 25/22
-        const smigMois = smigJour * 26;
-        const logement = smigMois * 0.30;
-
-        document.getElementById('res-tension').innerText = tension;
-        document.getElementById('res-smig-jour').innerText = new Intl.NumberFormat('fr-FR').format(smigJour) + " FC";
-        document.getElementById('res-smig-mois').innerText = new Intl.NumberFormat('fr-FR').format(smigMois) + " FC";
-        document.getElementById('res-smig-logement').innerText = new Intl.NumberFormat('fr-FR').format(logement) + " FC";
-    },
-
-    calculateDecompte: function() {
-        const salaire = parseFloat(document.getElementById('dec-salaire').value) || 0;
-        const anciennete = parseInt(document.getElementById('dec-anciennete').value) || 0;
-        const arrieres = parseFloat(document.getElementById('dec-arrieres').value) || 0;
-        const conges = parseInt(document.getElementById('dec-conges').value) || 0;
-        const preavisFait = document.getElementById('dec-preavis-fait').value;
-
-        const montantArrieres = salaire * arrieres;
-        const salaireJour = salaire / 26;
-        const montantConges = conges * salaireJour;
-
-        let joursPreavis = 14 + (anciennete * 7);
-        let montantPreavis = 0;
-        if(preavisFait === 'non') {
-            montantPreavis = joursPreavis * salaireJour;
-        }
-
-        const total = montantArrieres + montantConges + montantPreavis;
-
-        document.getElementById('res-dec-arrieres').innerText = new Intl.NumberFormat('fr-FR').format(montantArrieres.toFixed(0)) + " FC";
-        document.getElementById('res-dec-conges').innerText = new Intl.NumberFormat('fr-FR').format(montantConges.toFixed(0)) + " FC";
-        document.getElementById('res-dec-preavis').innerText = new Intl.NumberFormat('fr-FR').format(montantPreavis.toFixed(0)) + " FC (" + (preavisFait === 'non' ? joursPreavis + " jours" : "Presté") + ")";
-        document.getElementById('res-dec-total').innerText = new Intl.NumberFormat('fr-FR').format(total.toFixed(0)) + " FC";
-
-        document.getElementById('dec-result-card').style.display = 'block';
-    },
-
-    translateText: function() {
-        const text = document.getElementById('trad-text').value;
-        const lang = document.getElementById('trad-lang').value;
-        const resDiv = document.getElementById('trad-result');
-        if(!text) { resDiv.style.display = 'none'; return; }
-        
-        let translated = "";
-        const lower = text.toLowerCase();
-        
-        if(lower.includes("horaire")) {
-            if(lang === "Lingala") translated = "Bó tia ngonga ya mosala na mur.";
-            else if(lang === "Swahili") translated = "Mbandike ratiba ya kazi ukutani.";
-            else if(lang === "Kikongo") translated = "Bika ntangu ya salu na lumbu.";
-            else if(lang === "Tshiluba") translated = "Teka tshikondo tshia mudimu pa tshimanu.";
-            else translated = "Please post the work schedule on the wall.";
-        } else if (lower.includes("salaire") || lower.includes("smig")) {
-            if(lang === "Lingala") translated = "Esengeli kofuta lifuti mpe SMIG na ndenge ya mibeko.";
-            else if(lang === "Swahili") translated = "Lazima ulipe mshahara kulingana na sheria.";
-            else if(lang === "Kikongo") translated = "Futa mbongo ya salu na ku landa nsiku.";
-            else if(lang === "Tshiluba") translated = "Futa makuta a mudimu bilondeshile mikenji.";
-            else translated = "You must pay the legal minimum wage.";
-        } else {
-            translated = `[Traduction IA en ${lang}] : Modèle de traduction en cours d'apprentissage pour cette phrase complexe.`;
-        }
-        
-        resDiv.innerHTML = `<i class="fa-solid fa-language" style="color:var(--brand-primary)"></i> ${translated}`;
-        resDiv.style.display = 'block';
-    },
-
     // --- SUPER IA LOCALE Q&A ---
-    sendChipToQnA: function(text) {
-        this.navToTab('qna', 'Questions / Réponses IA');
-        this.sendChip(text);
-    },
-
     sendChip: function(text) {
         const input = document.getElementById('chat-input-field');
         if(input) {
@@ -352,22 +323,7 @@ const app = {
     processAIQuery: function(text) {
         const q = text.toLowerCase();
 
-        // SMIG
-        if(q.includes("smig d'un manœuvre") || q.includes("smig d'un manoeuvre") || q.includes("smig pour manœuvre")) {
-            return `<strong>SMIG 2025 pour un Manœuvre (Classe 1) :</strong><br>
-            Tension: 100<br>
-            SMIG/Jour : 14 500 FC<br>
-            SMIG/Mois : 377 000 FC<br>
-            Logement : 113 100 FC<br>
-            <i>Allez dans Outils > Calculateur SMIG pour les autres classes.</i>`;
-        }
-        
-        if(q.includes("amende") && q.includes("smig")) {
-            return `<strong>Défaut de SMIG (Art 87) :</strong><br>
-            L'infraction N°5 est <strong>Très Grave</strong>. L'inspecteur propose au Ministre la fermeture de l'établissement (Art 318). L'amende AIM 006 dépend de la catégorie (x2).`;
-        }
-
-        // Math / Preavis
+        // 1. Math / Preavis
         const preavisMatch = q.match(/pr[eé]avis.*?(?:pour|avec)\s+(\d+)\s+an/);
         if(preavisMatch || q.includes("calcule le préavis") || q.includes("calculer le préavis")) {
             let ans = preavisMatch ? parseInt(preavisMatch[1]) : 5;
@@ -379,56 +335,26 @@ const app = {
                     <strong>Total = ${jours} jours calendaires.</strong>`;
         }
 
-        // Articles
+        // 2. IA Queries for specific articles
         if(q.includes("art 157") || q.includes("article 157") || q.includes("r.i.") || q.includes("règlement intérieur")) {
-            return `<strong>Défaut de Règlement Intérieur (Art 157)</strong><br>
+            return `<strong>L'Article 157</strong> concerne le Défaut de Règlement Intérieur.<br>
             Tout employeur ayant au moins 20 travailleurs doit en avoir un visé par l'Inspecteur du Travail.<br>
-            <strong>Sanction :</strong> Amende Moyenne.`;
+            <strong>Sanction Code du Travail :</strong> 20 000 FC (Moyenne).<br>
+            <strong>Amende AIM 006 (Recouvrement) :</strong> Cat A (1000$), Cat B (700$), Cat C (500$).`;
         }
 
         if(q.includes("art 133") || q.includes("article 133") || q.includes("enfant")) {
             return `<strong>Le travail des enfants (Art 133)</strong><br>
             Interdit en dessous de 15 ans. De 15 à 17 ans, il faut une autorisation expresse de l'Inspecteur.<br>
-            <strong>Sanction :</strong> Très Grave (Peine pénale possible).`;
+            <strong>Sanction :</strong> Très Grave (Peine pénale possible). Le multiplicateur AIM 006 est de x3 sur la base de la Catégorie.`;
         }
 
-        if(q.includes("art 171") || q.includes("article 171") || q.includes("hygiène")) {
-            return `<strong>Mauvaises conditions d'hygiène (Art 171)</strong><br>
-            Sanctionnée par une Mise en demeure obligatoire. Si non respectée, amende.`;
+        if(q.includes("art 87") || q.includes("smig")) {
+            return `<strong>L'Article 87</strong> rend obligatoire le paiement du SMIG.<br>
+            Le défaut de SMIG est une infraction Très Grave. L'inspecteur peut proposer la fermeture partielle ou totale de l'établissement au Ministre (Art 318). L'Amende AIM est multipliée par 2.`;
         }
 
-        // Look up in DB
-        const match = infractionsDB.find(i => q.includes(i.id.toString()) || i.intitule.toLowerCase().includes(q));
-        if(match) {
-            return `J'ai trouvé l'infraction correspondante :<br>
-            <strong>N°${match.id} - ${match.intitule}</strong><br>
-            Article : ${match.articles}<br>
-            Sanction : ${match.sanction} (${match.gravite})`;
-        }
-
-        return "Je suis l'IA Locale pour les Inspecteurs. Demandez-moi d'<strong>expliquer un article</strong>, de <strong>calculer un préavis</strong>, le montant du <strong>SMIG 2025</strong>, ou de chercher une infraction.";
-    },
-
-    showInfractionDetail: function(id) {
-        const inf = infractionsDB.find(i => i.id === id);
-        if(!inf) return;
-        const content = document.getElementById('infraction-detail-content');
-        if(content) {
-            content.innerHTML = `
-                <div class="card" style="margin-top: 20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                        <span class="badge ${this.getBadgeClass(inf.gravite)}">${inf.gravite}</span>
-                        <span style="color:var(--text-muted); font-size:13px; font-weight:600;">Infraction N°${inf.id}</span>
-                    </div>
-                    <h2 style="font-size: 20px; margin-bottom: 5px;">${inf.intitule}</h2>
-                    <p style="color: var(--brand-primary); font-weight: 500; font-size: 14px; margin-bottom: 20px;">Base Légale: ${inf.articles}</p>
-                    <h4 style="font-size: 14px; color: var(--text-muted); margin-bottom: 5px;">Description</h4>
-                    <p style="font-size: 15px; margin-bottom: 20px; line-height: 1.5;">${inf.desc}</p>
-                    <h4 style="font-size: 14px; color: var(--text-muted); margin-bottom: 5px;">Sanction Prévue</h4>
-                    <p style="font-size: 15px; font-weight: 600; color: var(--status-danger); margin-bottom: 20px;">${inf.sanction}</p>
-                </div>`;
-            this.navTo('infraction-detail', `Détail Sanction`);
-        }
+        return "Je suis l'IA Experte RDC. Demandez-moi d'<strong>expliquer un article</strong> (ex: Art 157), de <strong>calculer un préavis</strong>, ou les amendes sur le <strong>SMIG</strong>.";
     }
 };
 
