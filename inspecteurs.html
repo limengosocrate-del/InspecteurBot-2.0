@@ -1,207 +1,430 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestion des Inspecteurs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InspecteurBot — Module Inspecteur et Contrôleur du Travail</title>
 
-<link rel="stylesheet" href="style.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;500;600;800&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="main-content">
+  <!-- Top institutional ribbon -->
+  <header class="ribbon">
+    <div class="ribbon-inner">
+      <span>République Démocratique du Congo</span>
+      <span>Ministère de l'Emploi et du Travail — Inspection Générale du Travail</span>
+    </div>
+  </header>
 
-<section class="dashboard-section">
+  <!-- Main navigation -->
+  <nav class="main-nav" aria-label="Navigation principale">
+    <a href="#" class="logo" onclick="showSection('accueil')" aria-label="Accueil InspecteurBot">
+      <i class="fa-solid fa-building-columns"></i>
+      <div>
+        <span class="logo-title">InspecteurBot</span>
+        <span class="logo-sub">Module IT / CT</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#" onclick="showSection('documentation')" class="nav-link"><i class="fa-solid fa-gavel"></i> Base juridique</a>
+      <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Démarrer une mission</a>
+      <a href="#" onclick="showSection('ia-aide')" class="nav-link"><i class="fa-solid fa-pen-fancy"></i> IA Aide rédaction</a>
+      <a href="#" onclick="showSection('itct-ia')" class="nav-link highlight"><i class="fa-solid fa-brain"></i> IT/CT IA</a>
+      <a href="#" onclick="showSection('archives')" class="nav-link"><i class="fa-solid fa-archive"></i> Archives</a>
+      <a href="#" onclick="showSection('dashboard')" class="nav-link"><i class="fa-solid fa-chart-pie"></i> Tableau de bord</a>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu mobile"><i class="fa-solid fa-bars-staggered"></i></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" onclick="showSection('documentation'); toggleMobileMenu()">Base juridique</a>
+    <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Démarrer une mission</a>
+    <a href="#" onclick="showSection('ia-aide'); toggleMobileMenu()">IA Aide rédaction</a>
+    <a href="#" onclick="showSection('itct-ia'); toggleMobileMenu()">IT/CT IA</a>
+    <a href="#" onclick="showSection('archives'); toggleMobileMenu()">Archives</a>
+    <a href="#" onclick="showSection('dashboard'); toggleMobileMenu()">Tableau de bord</a>
+  </div>
 
-<h2>
-<i class="fa-solid fa-user-shield"></i>
-GESTION DES INSPECTEURS
-</h2>
+  <main id="app-main">
 
-<div class="chart-box">
+    <!-- ====== ACCUEIL ====== -->
+    <section id="accueil" class="section active">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>Module <span class="accent">Inspecteur et Contrôleur du Travail</span></h1>
+          <p class="hero-sub">Outil professionnel, intelligent et conforme aux pratiques de l'Inspection Générale du Travail de la République Démocratique du Congo.</p>
+          <div class="hero-cta">
+            <a href="#" onclick="showSection('mission')" class="btn-primary"><i class="fa-solid fa-rocket"></i> Démarrer une mission</a>
+            <a href="#" onclick="showSection('itct-ia')" class="btn-secondary"><i class="fa-solid fa-brain"></i> Lancer IT/CT IA</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="badge-hero">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Articles 187 — 198</span>
+            <span>Code du Travail RDC 2002</span>
+          </div>
+        </div>
+      </div>
 
-<h3>Inspecteurs du Travail</h3>
+      <div class="quick-cards">
+        <article class="card" onclick="showSection('documentation')">
+          <i class="fa-solid fa-gavel card-icon"></i>
+          <h3>Base juridique</h3>
+          <p>Articles 187 à 198 du Code du travail — documentation moderne et interactive.</p>
+        </article>
+        <article class="card" onclick="showSection('mission')">
+          <i class="fa-solid fa-clipboard-check card-icon"></i>
+          <h3>Démarrer une mission</h3>
+          <p>Créez une mission officielle, générez le rapport A4 et archivez automatiquement.</p>
+        </article>
+        <article class="card" onclick="showSection('ia-aide')">
+          <i class="fa-solid fa-pen-fancy card-icon"></i>
+          <h3>IA Aide rédaction</h3>
+          <p>Plus de 100 modèles de rédaction adaptés au format administratif officiel.</p>
+        </article>
+        <article class="card highlight-card" onclick="showSection('itct-ia')">
+          <i class="fa-solid fa-brain card-icon"></i>
+          <h3>IT/CT IA</h3>
+          <p>Intelligence artificielle locale pour l'écoute, la retranscription et la génération automatique de rapports.</p>
+        </article>
+      </div>
+    </section>
 
-<p>
-Les Inspecteurs du Travail sont autorisés à pénétrer librement dans les établissements,
-procéder à tous contrôles et enquêtes, consulter les documents légaux,
-dresser des procès-verbaux d'infraction, conseiller les employeurs et travailleurs,
-et ordonner des mesures de sécurité conformément au Code du Travail de la RDC.
-</p>
+    <!-- ====== BASE JURIDIQUE ====== -->
+    <section id="documentation" class="section">
+      <h2><i class="fa-solid fa-gavel"></i> Base juridique — Articles 187 à 198</h2>
+      <p class="section-desc">Référence permanente fondée sur le Code du travail de la RDC (2002). Consultation interactive, recherche intelligente, impression et export PDF.</p>
 
-</div>
+      <div class="doc-controls">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="docSearch" placeholder="Recherche par mot-clé (inspection, serment, document, infraction...)" oninput="filterArticles(this.value)" aria-label="Recherche dans la base juridique" />
+        </div>
+        <button onclick="printDoc()" class="btn-outline" aria-label="Imprimer la documentation"><i class="fa-solid fa-print"></i> Imprimer A4</button>
+        <button onclick="exportDocPDF()" class="btn-outline" aria-label="Exporter en PDF"><i class="fa-solid fa-file-pdf"></i> Exporter PDF</button>
+      </div>
 
-<div class="chart-box">
+      <div class="article-nav" id="articleNav">
+        <button onclick="navigateToArticle(187)" class="article-tab" data-art="187">Art. 187</button>
+        <button onclick="navigateToArticle(188)" class="article-tab" data-art="188">Art. 188</button>
+        <button onclick="navigateToArticle(189)" class="article-tab" data-art="189">Art. 189</button>
+        <button onclick="navigateToArticle(190)" class="article-tab" data-art="190">Art. 190</button>
+        <button onclick="navigateToArticle(191)" class="article-tab" data-art="191">Art. 191</button>
+        <button onclick="navigateToArticle(192)" class="article-tab" data-art="192">Art. 192</button>
+        <button onclick="navigateToArticle(193)" class="article-tab" data-art="193">Art. 193</button>
+        <button onclick="navigateToArticle(194)" class="article-tab" data-art="194">Art. 194</button>
+        <button onclick="navigateToArticle(195)" class="article-tab" data-art="195">Art. 195</button>
+        <button onclick="navigateToArticle(196)" class="article-tab" data-art="196">Art. 196</button>
+        <button onclick="navigateToArticle(197)" class="article-tab" data-art="197">Art. 197</button>
+        <button onclick="navigateToArticle(198)" class="article-tab" data-art="198">Art. 198</button>
+      </div>
 
-<h3>ÉQUIPE POUR LA MISSION</h3>
+      <div class="doc-content" id="docContent">
+        <!-- Articles will be injected by JS -->
+      </div>
+    </section>
 
-<form id="formInspecteur">
+    <!-- ====== DÉMARRER UNE MISSION ====== -->
+    <section id="mission" class="section">
+      <h2><i class="fa-solid fa-clipboard-check"></i> Démarrer une mission</h2>
+      <p class="section-desc">Créez une mission officielle. Le rapport est généré automatiquement au format administratif officiel et archivé.</p>
 
-<input type="date"
-id="debut"
-required>
+      <form id="missionForm" onsubmit="createMission(event)" aria-label="Formulaire de création de mission">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="mDate">Date <span class="required">*</span></label>
+            <input type="date" id="mDate" required />
+          </div>
+          <div class="form-group">
+            <label for="mOrder">Numéro de l'ordre de service</label>
+            <input type="text" id="mOrder" placeholder="Ex. 22/MET/IGT/AI-EPNT/071" />
+          </div>
+          <div class="form-group">
+            <label for="mGroup">Numéro du groupe</label>
+            <input type="text" id="mGroup" placeholder="Ex. G01 / G02" />
+          </div>
+          <div class="form-group">
+            <label for="mRole">Fonction <span class="required">*</span></label>
+            <select id="mRole" required>
+              <option value="">Sélectionner</option>
+              <option>Chef de mission</option>
+              <option>Inspecteur du Travail</option>
+              <option>Contrôleur du Travail</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label for="mParticipants">Nom(s) des participants</label>
+            <textarea id="mParticipants" rows="2" placeholder="Nom — Fonction (un par ligne)"></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mObjective">Objectif de la mission <span class="required">*</span></label>
+            <textarea id="mObjective" rows="2" placeholder="Ex. Identifier les entreprises utilisant la main d'œuvre nationale et étrangère..." required></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mMatter">Matière à contrôler <span class="required">*</span></label>
+            <textarea id="mMatter" rows="2" placeholder="Ex. Protection de la main d'œuvre nationale..." required></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mCompanies">Entreprise(s) à visiter</label>
+            <textarea id="mCompanies" rows="2" placeholder="Nom de l'entreprise — Secteur d'activité"></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mAddresses">Adresse(s)</label>
+            <textarea id="mAddresses" rows="2" placeholder="Adresse complète de chaque site"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="mPhone">Téléphone du responsable</label>
+            <input type="tel" id="mPhone" placeholder="Ex. +243 99 876 6270" />
+          </div>
+          <div class="form-group full">
+            <label for="mObservations">Observations préliminaires</label>
+            <textarea id="mObservations" rows="2"></textarea>
+          </div>
+        </div>
 
-<input type="text"
-id="inspecteurs"
-placeholder="Noms des Inspecteurs"
-required>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary"><i class="fa-solid fa-file-contract"></i> Générer le rapport</button>
+          <button type="button" onclick="resetMissionForm()" class="btn-outline"><i class="fa-solid fa-rotate-right"></i> Réinitialiser</button>
+        </div>
+      </form>
 
-<input type="text"
-id="chef"
-placeholder="Chef de Mission"
-required>
+      <!-- Live A4 Preview -->
+      <div id="reportPreviewArea" class="hidden">
+        <h3><i class="fa-solid fa-file-lines"></i> Rapport de mission — Aperçu A4</h3>
+        <div class="a4-preview-wrapper" id="a4PreviewWrapper">
+          <div class="a4-paper" id="a4Paper">
+            <div class="report-header">
+              <h1>RAPPORT DE MISSION</h1>
+              <div class="meta-line" id="previewMeta"></div>
+            </div>
+            <div class="report-body" id="previewBody"></div>
+            <div class="report-footer">
+              <p>Ainsi fait à <span id="previewCity">KINSHASA</span> le <span id="previewDate"></span></p>
+              <div class="signature-block">
+                <p><strong id="previewSignName"></strong></p>
+                <p id="previewSignRole"></p>
+                <p id="previewSignPhone"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="report-actions">
+          <button onclick="printReport()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button>
+          <button onclick="exportReportPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> Exporter PDF</button>
+          <button onclick="exportReportWord()" class="btn-outline"><i class="fa-solid fa-file-word"></i> Exporter Word</button>
+          <button onclick="saveReportToArchive()" class="btn-outline"><i class="fa-solid fa-floppy-disk"></i> Enregistrer dans l'archive</button>
+          <button onclick="editCurrentReport()" class="btn-outline"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
+        </div>
+      </div>
+    </section>
 
-<input type="text"
-id="entreprise"
-placeholder="Entreprise à visiter"
-required>
+    <!-- ====== IA AIDE RÉDACTION ====== -->
+    <section id="ia-aide" class="section">
+      <h2><i class="fa-solid fa-pen-fancy"></i> IA Aide à la rédaction</h2>
+      <p class="section-desc">Plus de 100 modèles de rédaction structurés au format administratif officiel. Sélectionnez un contexte et copiez ou adaptez le texte.</p>
 
-<input type="text"
-id="mission"
-placeholder="Type de mission"
-required>
+      <div class="model-selector">
+        <label for="modelCategory">Catégorie de modèle :</label>
+        <select id="modelCategory" onchange="filterModels(this.value)" aria-label="Filtrer par catégorie">
+          <option value="all">Toutes les catégories</option>
+          <option value="introduction">Introduction / Présentation</option>
+          <option value="constat">Constats et observations</option>
+          <option value="infraction">Infractions et procès-verbaux</option>
+          <option value="recommandation">Recommandations et décisions</option>
+          <option value="conclusion">Conclusion / Clôture</option>
+        </select>
+      </div>
 
-<input type="date"
-id="fin"
-required>
+      <div class="models-grid" id="modelsGrid">
+        <!-- Models injected by JS -->
+      </div>
+    </section>
 
-<button type="submit">
-Enregistrer
-</button>
+    <!-- ====== IT/CT IA ====== -->
+    <section id="itct-ia" class="section">
+      <h2><i class="fa-solid fa-brain"></i> IT/CT IA — Intelligence Artificielle du Travail</h2>
+      <p class="section-desc">Écoute, retranscription en temps réel, détection automatique de la langue (français, anglais, lingala, swahili) et génération automatique de rapports structurés.</p>
 
-</form>
+      <div class="ia-mode-selector">
+        <button onclick="setIAMode('mission')" class="mode-btn active" id="modeMission">IA Mission</button>
+        <button onclick="setIAMode('reunion')" class="mode-btn" id="modeReunion">IA Réunion</button>
+        <button onclick="setIAMode('formation')" class="mode-btn" id="modeFormation">IA Formation</button>
+        <button onclick="setIAMode('conversation')" class="mode-btn" id="modeConversation">IA Conversation</button>
+      </div>
 
-</div>
+      <div class="ia-panel">
+        <div class="ia-left">
+          <div class="ia-status-card">
+            <div class="ia-status-indicator" id="iaStatusIndicator"></div>
+            <h4>Statut de l'écoute</h4>
+            <p id="iaStatusText">Prêt — Appuyez sur Démarrer</p>
+          </div>
+          <button onclick="startListening()" class="btn-primary big-btn" id="btnStart" aria-label="Démarrer l'écoute IA"><i class="fa-solid fa-microphone-lines"></i> Démarrer</button>
+          <button onclick="stopListening()" class="btn-danger big-btn hidden" id="btnStop" aria-label="Arrêter l'écoute IA"><i class="fa-solid fa-microphone-slash"></i> Arrêter</button>
 
-<div class="inspection-list">
+          <div class="ia-settings">
+            <label for="iaDuration">Durée max (heures)</label>
+            <input type="number" id="iaDuration" value="4" min="1" max="8" step="0.5" aria-label="Durée maximale en heures" />
+            <label for="iaLanguage">Détection automatique</label>
+            <select id="iaLanguage" disabled aria-label="Langue détectée automatiquement">
+              <option>Auto (FR / EN / LN / SW)</option>
+            </select>
+          </div>
+        </div>
 
-<h3>Liste des Missions</h3>
+        <div class="ia-right">
+          <div class="ia-transcript" id="iaTranscript" aria-live="polite" aria-label="Transcription en temps réel">
+            <p class="transcript-placeholder">La transcription apparaîtra ici dès le démarrage...</p>
+          </div>
+        </div>
+      </div>
 
-<table>
+      <div class="ia-output hidden" id="iaOutput">
+        <h3><i class="fa-solid fa-file-contract"></i> Document généré automatiquement</h3>
+        <div class="ia-output-tabs">
+          <button onclick="showIAOutput('rapport')" class="tab-btn active" id="tabRapport">Rapport</button>
+          <button onclick="showIAOutput('resume')" class="tab-btn" id="tabResume">Résumé</button>
+          <button onclick="showIAOutput('constats')" class="tab-btn" id="tabConstats">Constats</button>
+          <button onclick="showIAOutput('irregularites')" class="tab-btn" id="tabIrregularites">Irrégularités</button>
+          <button onclick="showIAOutput('recommandations')" class="tab-btn" id="tabRecommandations">Recommandations</button>
+          <button onclick="showIAOutput('decisions')" class="tab-btn" id="tabDecisions">Décisions</button>
+          <button onclick="showIAOutput('suivi')" class="tab-btn" id="tabSuivi">Suivi</button>
+        </div>
+        <div class="ia-output-body" id="iaOutputBody"></div>
+        <div class="ia-output-actions">
+          <button onclick="copyIAOutput()" class="btn-outline"><i class="fa-solid fa-copy"></i> Copier</button>
+          <button onclick="printIAOutput()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button>
+          <button onclick="exportIAOutputPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+        </div>
+      </div>
 
-<thead>
+      <div class="ia-innovation">
+        <h3><i class="fa-solid fa-lightbulb"></i> Innovations surprenantes d'IT/CT IA</h3>
+        <div class="innovation-grid">
+          <article class="innovation-card">
+            <i class="fa-solid fa-wave-square"></i>
+            <h4>Détection émotionnelle</h4>
+            <p>L'IA analyse le ton de la voix pour détecter le stress, la confiance ou la réticence et adapte ses recommandations.</p>
+          </article>
+          <article class="innovation-card">
+            <i class="fa-solid fa-language"></i>
+            <h4>Traduction automatique</h4>
+            <p>Transcription et traduction en temps réel entre français, anglais, lingala et swahili sans configuration préalable.</p>
+          </article>
+          <article class="innovation-card">
+            <i class="fa-solid fa-file-shield"></i>
+            <h4>Analyse de documents</h4>
+            <p>Simulez l'analyse d'un document scanné : l'IA extrait les données, détecte les irrégularités et propose un PV.</p>
+          </article>
+          <article class="innovation-card">
+            <i class="fa-solid fa-brain"></i>
+            <h4>Mémoire contextuelle</h4>
+            <p>L'IA conserve le contexte d'une mission, apprend des interactions et affine ses recommandations au fil du temps.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-<tr>
-<th>Début</th>
-<th>Inspecteurs</th>
-<th>Chef</th>
-<th>Entreprise</th>
-<th>Mission</th>
-<th>Clôture</th>
-<th>Action</th>
-</tr>
+    <!-- ====== ARCHIVES INTELLIGENTES ====== -->
+    <section id="archives" class="section">
+      <h2><i class="fa-solid fa-archive"></i> Archives intelligentes</h2>
+      <p class="section-desc">Toutes les missions sont archivées automatiquement. Recherche avancée, ouverture, modification, impression et partage.</p>
 
-</thead>
+      <div class="archive-search">
+        <input type="text" id="archiveSearch" placeholder="Recherche (date, ordre de service, groupe, chef, inspecteur, entreprise, province, secteur...)" oninput="searchArchives(this.value)" aria-label="Recherche dans les archives" />
+      </div>
 
-<tbody id="tableInspecteurs">
-</tbody>
+      <div class="archive-table-wrapper">
+        <table class="archive-table" id="archiveTable" aria-label="Tableau des missions archivées">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Ordre de service</th>
+              <th>Groupe</th>
+              <th>Chef / Inspecteur</th>
+              <th>Entreprise</th>
+              <th>Province</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="archiveTbody"></tbody>
+        </table>
+      </div>
+    </section>
 
-</table>
+    <!-- ====== TABLEAU DE BORD ====== -->
+    <section id="dashboard" class="section">
+      <h2><i class="fa-solid fa-chart-pie"></i> Tableau de bord</h2>
+      <p class="section-desc">Statistiques automatiques des missions d'inspection et de contrôle du travail.</p>
 
-</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="statMissions">0</span>
+          <span class="stat-label">Missions</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statEntreprises">0</span>
+          <span class="stat-label">Entreprises visitées</span>
+        </div>
+        <div class="stat-card good">
+          <span class="stat-value" id="statConformes">0</span>
+          <span class="stat-label">Conformes</span>
+        </div>
+        <div class="stat-card bad">
+          <span class="stat-value" id="statNonConformes">0</span>
+          <span class="stat-label">Non conformes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statPV">0</span>
+          <span class="stat-label">Procès-verbaux</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="statMED">0</span>
+          <span class="stat-label">Mises en demeure</span>
+        </div>
+      </div>
 
-</section>
+      <div class="dashboard-visuals">
+        <div class="visual-half">
+          <h3>Secteurs les plus contrôlés</h3>
+          <canvas id="sectorChart"></canvas>
+        </div>
+        <div class="visual-half">
+          <h3>Carte géographique des missions</h3>
+          <div id="mapDashboard"></div>
+        </div>
+        <div class="visual-full">
+          <h3>Évolution mensuelle des missions</h3>
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+    </section>
 
-</div>
+  </main>
 
-<script>
+  <footer class="site-footer">
+    <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
+    <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
+  </footer>
 
-let inspecteurs =
-JSON.parse(localStorage.getItem("inspecteurs")) || [];
-
-function afficher(){
-
-let html="";
-
-inspecteurs.forEach((i,index)=>{
-
-html += `
-<tr>
-
-<td>${i.debut}</td>
-<td>${i.inspecteurs}</td>
-<td>${i.chef}</td>
-<td>${i.entreprise}</td>
-<td>${i.mission}</td>
-<td>${i.fin}</td>
-
-<td>
-<button onclick="supprimer(${index})">
-Supprimer
-</button>
-</td>
-
-</tr>
-`;
-});
-
-document.getElementById(
-"tableInspecteurs"
-).innerHTML = html;
-
-}
-
-document.getElementById(
-"formInspecteur"
-).addEventListener(
-"submit",
-function(e){
-
-e.preventDefault();
-
-inspecteurs.push({
-
-debut:
-document.getElementById("debut").value,
-
-inspecteurs:
-document.getElementById("inspecteurs").value,
-
-chef:
-document.getElementById("chef").value,
-
-entreprise:
-document.getElementById("entreprise").value,
-
-mission:
-document.getElementById("mission").value,
-
-fin:
-document.getElementById("fin").value
-
-});
-
-localStorage.setItem(
-"inspecteurs",
-JSON.stringify(inspecteurs)
-);
-
-this.reset();
-
-afficher();
-
-});
-
-function supprimer(index){
-
-inspecteurs.splice(index,1);
-
-localStorage.setItem(
-"inspecteurs",
-JSON.stringify(inspecteurs)
-);
-
-afficher();
-
-}
-
-afficher();
-
-</script>
-
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
