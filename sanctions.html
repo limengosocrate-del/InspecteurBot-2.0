@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Inspecteur RDC Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- TOP NAV -->
+        <div class="top-bar">
+            <button class="back-btn hidden" id="back-btn" onclick="app.goBack()">
+                <i class="fa-solid fa-chevron-left"></i> <span id="back-text">Retour</span>
+            </button>
+            <div class="app-title" id="app-title">Tableau de Bord</div>
+            <button class="header-action" id="theme-btn"><i class="fa-regular fa-moon"></i></button>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            
+            <!-- VIEW: DASHBOARD -->
+            <div id="dashboard" class="view active">
+                <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 24px; font-weight: 700; color: var(--text-primary);">Accueil</h2>
+                    <p style="color: var(--text-muted); font-size: 14px;">Inspection Générale du Travail RDC</p>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, var(--brand-primary), #0056b3); color: white; padding: 20px; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="font-size: 14px; opacity: 0.9;">Infractions Codifiées</span>
+                        <i class="fa-solid fa-scale-balanced" style="font-size: 20px;"></i>
+                    </div>
+                    <div style="font-size: 32px; font-weight: 700; margin-bottom: 5px;">65</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Articles et Amendes à jour (AIM 006)</div>
+                </div>
+
+                <h3 style="font-size: 16px; margin: 20px 0 10px; color: var(--text-primary);">Modules Rapides</h3>
+                <div class="menu-grid" style="margin-bottom: 20px;">
+                    <div class="menu-card" onclick="app.navToTab('archives', 'Mes Dossiers')">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Archives & Dossiers</span>
+                    </div>
+                    <div class="menu-card" onclick="app.navToTab('outils', 'Boîte à Outils')">
+                        <i class="fa-solid fa-toolbox"></i>
+                        <span>50+ Outils & Guides</span>
+                    </div>
+                    <div class="menu-card" onclick="app.navToTab('ia', 'Super IA Locale')">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>Super IA Expert</span>
+                    </div>
+                    <div class="menu-card" onclick="app.navTo('infractions', 'Liste des Infractions')">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Code du Travail</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ARCHIVES (CRUD) -->
+            <div id="archives" class="view no-padding">
+                <div style="padding: 15px;">
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Gérez vos dossiers d'inspection intelligemment.</p>
+                </div>
+                <div class="list-group" id="archives-list" style="border-radius: 0; box-shadow: none; margin: 0;">
+                    <!-- JS Populated via LocalStorage -->
+                </div>
+                <button class="fab" onclick="app.openArchiveForm()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+
+            <!-- VIEW: ARCHIVE FORM (CREATE/EDIT) -->
+            <div id="archive-form" class="view">
+                <div class="card">
+                    <input type="hidden" id="archive-id">
+                    <div class="form-group">
+                        <label class="form-label">Nom de l'Entreprise</label>
+                        <input type="text" class="form-control" id="archive-nom" placeholder="Ex: Mining SA">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Statut du Dossier</label>
+                        <select class="form-control" id="archive-statut">
+                            <option value="Ouvert">Ouvert (Contrôle en cours)</option>
+                            <option value="Urgent">Urgent (Mise en demeure)</option>
+                            <option value="Clos">Clos (Régularisé)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Infractions Constatées (Ex: Art 119, Art 87)</label>
+                        <input type="text" class="form-control" id="archive-infractions" placeholder="Séparez par des virgules">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes d'Inspection</label>
+                        <textarea class="form-control" id="archive-notes" placeholder="Détails du contrôle..."></textarea>
+                    </div>
+                    <button class="btn" onclick="app.saveArchive()"><i class="fa-solid fa-save"></i> Enregistrer le Dossier</button>
+                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
+                </div>
+            </div>
+
+            <!-- VIEW: BOITE A OUTILS (50+ Features Hub) -->
+            <div id="outils" class="view no-padding">
+                
+                <div class="tool-section-title">Calculatrices Légales (AIM & Code)</div>
+                <div class="list-group" style="margin: 0; border-radius: 0;">
+                    <div class="tool-item" onclick="app.navTo('calc-amende', 'Calculateur AIM 006')">
+                        <div class="tool-icon"><i class="fa-solid fa-calculator"></i></div>
+                        <div class="tool-text"><h4>Calculateur Sanctions (AIM 006)</h4><p>Calcul des amendes par Catégorie</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Calcule le préavis pour 5 ans d\'ancienneté')">
+                        <div class="tool-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="tool-text"><h4>Calculateur de Préavis</h4><p>14 jours + 7 jrs / année (Art 64)</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Calcule les congés annuels pour 2 ans de service')">
+                        <div class="tool-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="tool-text"><h4>Calculateur Congés Payés</h4><p>Droits de vacances (Art 140)</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Comment calculer la majoration des heures supplémentaires ?')">
+                        <div class="tool-icon"><i class="fa-solid fa-stopwatch"></i></div>
+                        <div class="tool-text"><h4>Heures Supplémentaires</h4><p>Majoration légale des heures sup</p></div>
+                    </div>
+                </div>
+
+                <div class="tool-section-title">Guides d'Enquête & Audit Terrain</div>
+                <div class="list-group" style="margin: 0; border-radius: 0;">
+                    <div class="tool-item" onclick="app.sendChip('Guide d\'audit pour le secteur minier')">
+                        <div class="tool-icon"><i class="fa-solid fa-gem"></i></div>
+                        <div class="tool-text"><h4>Audit Secteur Minier</h4><p>Checklist des risques Catégorie A</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Guide d\'audit pour le secteur construction')">
+                        <div class="tool-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                        <div class="tool-text"><h4>Audit Construction (BTP)</h4><p>EPI, Accidents de travail</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Que vérifier pour le travail des femmes et enfants ?')">
+                        <div class="tool-icon"><i class="fa-solid fa-person-breastfeeding"></i></div>
+                        <div class="tool-text"><h4>Protection Femmes & Enfants</h4><p>Maternité, Interdictions (Art 128/133)</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Comment vérifier la conformité du CHS ?')">
+                        <div class="tool-icon"><i class="fa-solid fa-notes-medical"></i></div>
+                        <div class="tool-text"><h4>Conformité CHS</h4><p>Comité Hygiène et Sécurité</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Procédure de contrôle de la main d\'oeuvre étrangère')">
+                        <div class="tool-icon"><i class="fa-solid fa-passport"></i></div>
+                        <div class="tool-text"><h4>Main d'Œuvre Étrangère</h4><p>Taux autorisés, Cartes de travail</p></div>
+                    </div>
+                </div>
+
+                <div class="tool-section-title">Assistant Rédaction & Médiation</div>
+                <div class="list-group" style="margin: 0; border-radius: 0;">
+                    <div class="tool-item" onclick="app.sendChip('Rédige une observation pour défaut de SMIG')">
+                        <div class="tool-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                        <div class="tool-text"><h4>Auto-Rédaction Constat</h4><p>Génération de texte juridique</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Comment concilier un litige de décompte final ?')">
+                        <div class="tool-icon"><i class="fa-solid fa-handshake"></i></div>
+                        <div class="tool-text"><h4>Guide de Médiation</h4><p>Conciliation Employeur/Employé</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Traduis: Vous devez payer le SMIG en Lingala')">
+                        <div class="tool-icon"><i class="fa-solid fa-language"></i></div>
+                        <div class="tool-text"><h4>Traducteur Terrain</h4><p>Traductions en Lingala/Swahili</p></div>
+                    </div>
+                </div>
+
+                <div class="tool-section-title">Quiz & Formation Inspecteur</div>
+                <div class="list-group" style="margin: 0; border-radius: 0;">
+                    <div class="tool-item" onclick="app.launchQuiz()">
+                        <div class="tool-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div class="tool-text"><h4>Quiz de Connaissances</h4><p>Testez votre niveau sur les 65 Infractions</p></div>
+                    </div>
+                    <div class="tool-item" onclick="app.sendChip('Donne moi un cas pratique difficile sur les syndicats')">
+                        <div class="tool-icon"><i class="fa-solid fa-clipboard-question"></i></div>
+                        <div class="tool-text"><h4>Études de Cas (Jurisprudence)</h4><p>Scénarios complexes à résoudre</p></div>
+                    </div>
+                </div>
+
+                <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px;">
+                    <p>+ Plus de 35 autres capacités intégrées directement dans l'IA Experte.</p>
+                </div>
+            </div>
+
+            <!-- VIEW: ASSISTANT IA -->
+            <div id="ia" class="view no-padding" style="height: calc(100vh - 121px); display: flex; flex-direction: column;">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="msg msg-ai">
+                        <i class="fa-solid fa-brain" style="color: var(--brand-primary); margin-bottom: 10px; font-size: 20px;"></i><br>
+                        Je suis la <strong>Super IA Locale</strong> de l'Inspection du Travail.<br><br>
+                        Je peux :<br>
+                        🧮 <strong>Calculer</strong> (Préavis, SMIG, Amendes AIM)<br>
+                        📝 <strong>Rédiger</strong> (Constats, notes de mise en demeure)<br>
+                        🌍 <strong>Traduire</strong> (Lingala, Swahili)<br>
+                        🕵️‍♂️ <strong>Guider</strong> (Médiation, audit complexe)<br>
+                    </div>
+                </div>
+                
+                <div class="chat-suggestions" id="chat-chips">
+                    <div class="chip" onclick="app.sendChip('Calcule le préavis pour 3 ans d\'ancienneté')">Calcul Préavis</div>
+                    <div class="chip" onclick="app.sendChip('Traduis en Lingala : Affichez l\'horaire de travail')">Traduction Lingala</div>
+                    <div class="chip" onclick="app.sendChip('Rédige un constat pour défaut de registre de paie')">Rédiger Constat</div>
+                    <div class="chip" onclick="app.sendChip('Quelles sont les obligations envers la CNSS ?')">Obligations CNSS</div>
+                    <div class="chip" onclick="app.sendChip('Donne moi le lexique des acronymes (ONEM, INPP...)')">Lexique Acronymes</div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" id="chat-input-field" placeholder="Posez votre requête experte...">
+                    <button class="chat-send" id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <!-- VIEW: INFRACTIONS -->
+            <div id="infractions" class="view no-padding">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="infractions-search" placeholder="Rechercher infraction ou article...">
+                    </div>
+                </div>
+                <div class="list-group" id="infractions-list" style="border-radius:0; box-shadow:none; margin:0;">
+                    <!-- JS Populated -->
+                </div>
+            </div>
+            
+            <div id="infraction-detail" class="view">
+                <div id="infraction-detail-content"></div>
+            </div>
+
+            <!-- VIEW: CALCULATEUR AMENDE (AIM 006) -->
+            <div id="calc-amende" class="view">
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size: 16px; color: var(--brand-primary);"><i class="fa-solid fa-scale-balanced"></i> Calculateur AIM N°006 & 127</h3>
+                    <div class="form-group">
+                        <label class="form-label">Catégorie de l'Entreprise</label>
+                        <select class="form-control" id="calc-cat">
+                            <option value="A">Cat. A (Mines, Télécoms...) - Max</option>
+                            <option value="B">Cat. B (Construction...) - Moyen</option>
+                            <option value="C">Cat. C (Commerce...) - Standard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type d'Infraction</label>
+                        <select class="form-control" id="calc-inf">
+                            <option value="157">Défaut de R.I. (Art 157)</option>
+                            <option value="171">Sécurité / Hygiène (Art 171)</option>
+                            <option value="133">Travail enfants (Art 133)</option>
+                            <option value="87">Défaut du SMIG (Art 87)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="app.calculateAmende()"><i class="fa-solid fa-calculator"></i> Estimer l'Amende</button>
+                </div>
+                <div class="card" style="text-align: center; margin-top: 20px;">
+                    <h4 style="color: var(--text-secondary); font-size: 14px; margin-bottom: 10px;">Sanction Estimative</h4>
+                    <div id="calc-result" style="font-size: 36px; font-weight: 700; color: var(--status-danger); margin-bottom: 5px;">0 USD</div>
+                    <div id="calc-details" style="font-size: 13px; color: var(--text-muted);">---</div>
+                </div>
+            </div>
+
+            <!-- VIEW: QUIZ -->
+            <div id="quiz" class="view">
+                <div class="card" style="text-align: center;">
+                    <i class="fa-solid fa-graduation-cap" style="font-size: 40px; color: var(--brand-primary); margin-bottom: 15px;"></i>
+                    <h3 style="margin-bottom: 10px;">Test de Connaissance</h3>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;" id="quiz-question">Chargement de la question...</p>
+                    <div id="quiz-options" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                    <div id="quiz-feedback" style="margin-top: 15px; font-weight: bold; font-size: 14px; display: none;"></div>
+                    <button class="btn" style="margin-top: 20px; display: none;" id="quiz-next" onclick="app.nextQuiz()">Question Suivante</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div class="bottom-nav">
+            <div class="nav-tab active" data-tab="dashboard" onclick="app.navToTab('dashboard', 'Tableau de Bord')">
+                <i class="fa-solid fa-house"></i><span>Accueil</span>
+            </div>
+            <div class="nav-tab" data-tab="archives" onclick="app.navToTab('archives', 'Mes Dossiers')">
+                <i class="fa-solid fa-folder-open"></i><span>Archives</span>
+            </div>
+            <div class="nav-tab" data-tab="outils" onclick="app.navToTab('outils', 'Boîte à Outils')">
+                <i class="fa-solid fa-toolbox"></i><span>Outils</span>
+            </div>
+            <div class="nav-tab" data-tab="ia" onclick="app.navToTab('ia', 'Super IA')">
+                <i class="fa-solid fa-brain"></i><span>IA Expert</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="App.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c348931a28aa64',t:'MTc4NDIyODc4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
