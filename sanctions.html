@@ -6,7 +6,7 @@
     <title>Inspecteur RDC Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="sanctions.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -147,7 +147,7 @@
                         <textarea class="form-control" id="archive-notes" placeholder=""></textarea>
                     </div>
                     <button class="btn" onclick="app.saveArchive()"><i class="fa-solid fa-save"></i> Enregistrer</button>
-                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
+                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none; margin-top: 10px;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
                 </div>
             </div>
 
@@ -157,7 +157,7 @@
                 <div class="card" style="margin: 15px; border-radius: 12px; box-shadow: var(--shadow-sm);">
                     <div class="form-group">
                         <label class="form-label">Texte à traduire (Français)</label>
-                        <textarea class="form-control" id="trad-text" placeholder=""></textarea>
+                        <textarea class="form-control" id="trad-text" placeholder="Ex: Affichez l'horaire de travail."></textarea>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Traduire en :</label>
@@ -286,19 +286,19 @@
                     <h3 style="margin-bottom: 20px; font-size: 16px; color: var(--brand-primary);"><i class="fa-solid fa-file-invoice-dollar"></i> Calcul du Décompte Final</h3>
                     <div class="form-group">
                         <label class="form-label">Rémunération Mensuelle (Base + Primes) en FC</label>
-                        <input type="number" class="form-control" id="dec-salaire" placeholder="">
+                        <input type="number" class="form-control" id="dec-salaire" placeholder="Ex: 500000">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Ancienneté Complète (en Années)</label>
-                        <input type="number" class="form-control" id="dec-anciennete" placeholder="">
+                        <input type="number" class="form-control" id="dec-anciennete" placeholder="Ex: 5">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Mois prestés mais non payés (ex: 1.5)</label>
-                        <input type="number" class="form-control" id="dec-arrieres" placeholder="">
+                        <input type="number" class="form-control" id="dec-arrieres" placeholder="Ex: 0">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Jours de congés payés dus et non pris</label>
-                        <input type="number" class="form-control" id="dec-conges" placeholder="">
+                        <input type="number" class="form-control" id="dec-conges" placeholder="Ex: 12">
                     </div>
                     <div class="form-group">
                         <label class="form-label">L'employeur a-t-il donné un préavis travaillé ?</label>
@@ -330,6 +330,11 @@
                 </div>
             </div>
 
+            <!-- VIEW: INFRACTION DETAIL -->
+            <div id="infraction-detail" class="view">
+                <div id="infraction-detail-content"></div>
+            </div>
+
         </div>
 
         <!-- BOTTOM NAV -->
@@ -353,10 +358,6 @@
 
     </div>
 
-    <script src="app-sanctions.js"></script>
+    <script src="App.js"></script>
 </body>
 </html>
-
-
-
-

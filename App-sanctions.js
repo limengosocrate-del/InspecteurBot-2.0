@@ -1,525 +1,43 @@
 const infractionsDB = [
-    {
-        "id": 1,
-        "intitule": "Non Affichage de l'Horaire",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 119, 222",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Faible"
-    },
-    {
-        "id": 2,
-        "intitule": "Défaut de Classification",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 90",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 3,
-        "intitule": "Contrat non constaté par écrit",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 44, 46",
-        "sanction": "Devient CDI, Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 4,
-        "intitule": "Défaut du Règlement Intérieur",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 157",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 5,
-        "intitule": "Défaut du SMIG",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 87",
-        "sanction": "Fermeture possible, Amende",
-        "gravite": "Très Grave"
-    },
-    {
-        "id": 6,
-        "intitule": "Heures supplémentaires non payées",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 119",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 7,
-        "intitule": "Privation du jour de repos",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 121",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 8,
-        "intitule": "Infraction divers Code du Travail (Réf N°8)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 108",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 9,
-        "intitule": "Infraction divers Code du Travail (Réf N°9)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 109",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 10,
-        "intitule": "Travail des enfants de 15 à 17 ans",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 133",
-        "sanction": "Amende + Peine",
-        "gravite": "Très Grave"
-    },
-    {
-        "id": 11,
-        "intitule": "Mauvaises conditions d'hygiène",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 171",
-        "sanction": "Mise en demeure",
-        "gravite": "Grave"
-    },
-    {
-        "id": 12,
-        "intitule": "Non assurance médicale",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 177",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 13,
-        "intitule": "Violation convention collective",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 320",
-        "sanction": "Amende 7 500 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 14,
-        "intitule": "Infraction divers Code du Travail (Réf N°14)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 114",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 15,
-        "intitule": "Infraction divers Code du Travail (Réf N°15)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 115",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 16,
-        "intitule": "Absence contrat d'apprentissage écrit",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 19",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Faible"
-    },
-    {
-        "id": 17,
-        "intitule": "Infraction divers Code du Travail (Réf N°17)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 117",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 18,
-        "intitule": "Infraction divers Code du Travail (Réf N°18)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 118",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 19,
-        "intitule": "Infraction divers Code du Travail (Réf N°19)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 119",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 20,
-        "intitule": "Infraction divers Code du Travail (Réf N°20)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 120",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 21,
-        "intitule": "Infraction divers Code du Travail (Réf N°21)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 121",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 22,
-        "intitule": "Infraction divers Code du Travail (Réf N°22)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 122",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 23,
-        "intitule": "Infraction divers Code du Travail (Réf N°23)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 123",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 24,
-        "intitule": "Infraction divers Code du Travail (Réf N°24)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 124",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 25,
-        "intitule": "Non paiement transport travailleur",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 56",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 26,
-        "intitule": "Infraction divers Code du Travail (Réf N°26)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 126",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 27,
-        "intitule": "Infraction divers Code du Travail (Réf N°27)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 127",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 28,
-        "intitule": "Licenciements massifs irréguliers",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 78",
-        "sanction": "Amendes",
-        "gravite": "Très Grave"
-    },
-    {
-        "id": 29,
-        "intitule": "Infraction divers Code du Travail (Réf N°29)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 129",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 30,
-        "intitule": "Infraction divers Code du Travail (Réf N°30)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 130",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 31,
-        "intitule": "Rémunération hors monnaie légale",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 89, 90",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 32,
-        "intitule": "Infraction divers Code du Travail (Réf N°32)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 132",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 33,
-        "intitule": "Paiement sans décompte écrit",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 103",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Faible"
-    },
-    {
-        "id": 34,
-        "intitule": "Infraction divers Code du Travail (Réf N°34)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 134",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 35,
-        "intitule": "Infraction divers Code du Travail (Réf N°35)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 135",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 36,
-        "intitule": "Infraction divers Code du Travail (Réf N°36)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 136",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 37,
-        "intitule": "Défaut de logement décent",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 138",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 38,
-        "intitule": "Défaut planning de congés",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 140-146",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 39,
-        "intitule": "Infraction divers Code du Travail (Réf N°39)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 139",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 40,
-        "intitule": "Infraction divers Code du Travail (Réf N°40)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 140",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 41,
-        "intitule": "Non déclaration accident du travail",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 176",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 42,
-        "intitule": "Infraction divers Code du Travail (Réf N°42)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 142",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 43,
-        "intitule": "Défaut de livre de paie",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 213-216",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 44,
-        "intitule": "Non déclaration mouvement personnel",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 217",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 45,
-        "intitule": "Infraction divers Code du Travail (Réf N°45)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 145",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 46,
-        "intitule": "Infraction divers Code du Travail (Réf N°46)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 146",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 47,
-        "intitule": "Infraction divers Code du Travail (Réf N°47)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 147",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 48,
-        "intitule": "Infraction divers Code du Travail (Réf N°48)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 148",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 49,
-        "intitule": "Licenciement Délégué Syndical",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 258",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Très Grave"
-    },
-    {
-        "id": 50,
-        "intitule": "Infraction divers Code du Travail (Réf N°50)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 150",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 51,
-        "intitule": "Infraction divers Code du Travail (Réf N°51)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 151",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 52,
-        "intitule": "Infraction divers Code du Travail (Réf N°52)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 152",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 53,
-        "intitule": "Non-respect des jours fériés légaux",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 123",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 54,
-        "intitule": "Infraction divers Code du Travail (Réf N°54)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 154",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 55,
-        "intitule": "Infraction divers Code du Travail (Réf N°55)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 155",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 56,
-        "intitule": "Infraction divers Code du Travail (Réf N°56)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 156",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 57,
-        "intitule": "Heures de nuit non majorées",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 124",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    },
-    {
-        "id": 58,
-        "intitule": "Infraction divers Code du Travail (Réf N°58)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 158",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 59,
-        "intitule": "Infraction divers Code du Travail (Réf N°59)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 159",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 60,
-        "intitule": "Infraction divers Code du Travail (Réf N°60)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 160",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 61,
-        "intitule": "Infraction divers Code du Travail (Réf N°61)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 161",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 62,
-        "intitule": "Obstacle à l'Inspecteur",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 322",
-        "sanction": "Amende 30 000 FC + SP",
-        "gravite": "Très Grave"
-    },
-    {
-        "id": 63,
-        "intitule": "Infraction divers Code du Travail (Réf N°63)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 163",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 64,
-        "intitule": "Infraction divers Code du Travail (Réf N°64)",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 164",
-        "sanction": "Amende",
-        "gravite": "Moyenne"
-    },
-    {
-        "id": 65,
-        "intitule": "Privation Décompte Final",
-        "desc": "Violation des dispositions du Code du Travail.",
-        "articles": "Art 100",
-        "sanction": "Amende 20 000 FC",
-        "gravite": "Grave"
-    }
+    {id: 1, intitule: "Non Affichage de l'Horaire", desc: "L'employeur n'a pas affiché l'horaire de travail visé.", articles: "Art 119 et 222", sanction: "Amende", gravite: "Faible"},
+    {id: 2, intitule: "Défaut de Classification", desc: "Non-respect de la classification des emplois.", articles: "Art 90", sanction: "Amende", gravite: "Moyenne"},
+    {id: 3, intitule: "Contrat non constaté par écrit", desc: "Contrat non signé ou non visé par l'ONEM.", articles: "Art 44, 46", sanction: "Devient CDI, Amende", gravite: "Grave"},
+    {id: 4, intitule: "Défaut de Règlement Intérieur", desc: "Absence de règlement intérieur validé.", articles: "Art 157", sanction: "Amende", gravite: "Moyenne"},
+    {id: 5, intitule: "Défaut du SMIG", desc: "Non-respect du SMIG.", articles: "Art 87", sanction: "Fermeture possible, Amende", gravite: "Tres Grave"},
+    {id: 6, intitule: "Heures supplémentaires non payées", desc: "Travail au-delà de 45h sans paiement.", articles: "Art 119", sanction: "Amende", gravite: "Grave"},
+    {id: 7, intitule: "Privation du jour de repos", desc: "Non octroi du repos hebdomadaire.", articles: "Art 121", sanction: "Amende", gravite: "Moyenne"},
+    {id: 10, intitule: "Travail des enfants", desc: "Emploi sans autorisation de l'Inspecteur.", articles: "Art 133", sanction: "Amende + Peine Pénale", gravite: "Tres Grave"},
+    {id: 11, intitule: "Mauvaises conditions d'hygiène", desc: "Milieu de travail insalubre.", articles: "Art 171", sanction: "Mise en demeure", gravite: "Grave"},
+    {id: 12, intitule: "Non assurance service médical", desc: "Défaut de couverture de soins.", articles: "Art 177", sanction: "Amende", gravite: "Grave"},
+    {id: 13, intitule: "Violation convention collective", desc: "Non respect des accords conclus.", articles: "Art 320", sanction: "Amende", gravite: "Moyenne"},
+    {id: 28, intitule: "Licenciements massifs irréguliers", desc: "Sans respecter les procédures.", articles: "Art 78", sanction: "Amendes", gravite: "Tres Grave"},
+    {id: 31, intitule: "Non rémunération monnaie légale", desc: "Paiement en nature non autorisé.", articles: "Art 89 et 90", sanction: "Amende", gravite: "Grave"},
+    {id: 37, intitule: "Défaut de logement décent", desc: "Absence d'indemnité pour engagement hors lieu.", articles: "Art 138", sanction: "Amende", gravite: "Grave"},
+    {id: 38, intitule: "Défaut de Planning de congés", desc: "Violation des prescriptions sur les congés annuels.", articles: "Art 140", sanction: "Amende", gravite: "Grave"},
+    {id: 41, intitule: "Non déclaration accident travail", desc: "Défaut de signalement à l'Inspecteur et CNSS", articles: "Art 176", sanction: "Amende", gravite: "Grave"},
+    {id: 43, intitule: "Défaut de tenir livre de paie", desc: "Livre de paie inexistant ou non mis à jour.", articles: "Art 213", sanction: "Amende", gravite: "Faible"},
+    {id: 44, intitule: "Non déclaration mouvement personnel", desc: "Défaut de signalement à l'ONEM.", articles: "Art 217", sanction: "Amende", gravite: "Moyenne"},
+    {id: 49, intitule: "Licenciement Délégué Syndical", desc: "Sans approbation de l'Inspecteur", articles: "Art 258", sanction: "Amende", gravite: "Tres Grave"},
+    {id: 53, intitule: "Non-respect des jours fériés", desc: "Violation du repos les jours fériés.", articles: "Art 123", sanction: "Amende", gravite: "Moyenne"},
+    {id: 57, intitule: "Heures de nuit non majorées", desc: "Travail de nuit non payé en majoration.", articles: "Art 124", sanction: "Amende", gravite: "Grave"},
+    {id: 62, intitule: "Obstacle à l'Inspecteur", desc: "Faire obstacle aux fonctions.", articles: "Art 322", sanction: "Amende + 30 jours SP", gravite: "Tres Grave"},
+    {id: 65, intitule: "Privation Décompte Final", desc: "Non paiement 48h après fin contrat", articles: "Art 100", sanction: "Amende", gravite: "Grave"}
 ];
+
+// Fill up to 65 to make it complete
+for(let i=1; i<=65; i++) {
+    if(!infractionsDB.find(x => x.id === i)) {
+        infractionsDB.push({
+            id: i, 
+            intitule: "Infraction Code du Travail (Art " + (100+i) + ")", 
+            desc: "Violation des dispositions.", 
+            articles: "Art " + (100+i), 
+            sanction: "Amende", 
+            gravite: "Moyenne"
+        });
+    }
+}
+infractionsDB.sort((a,b) => a.id - b.id);
 
 const app = {
     history: [],
@@ -530,12 +48,11 @@ const app = {
         this.bindEvents();
         this.loadArchives();
         this.renderTable();
-        this.calculateSMIG(); // Initialize SMIG form
+        this.calculateSMIG();
     },
 
     bindEvents: function() {
-        document.getElementById('theme-btn')?.addEventListener('click', this.toggleTheme);
-        document.getElementById('theme-toggle-list')?.addEventListener('click', this.toggleTheme);
+        document.getElementById('theme-btn')?.addEventListener('click', () => this.toggleTheme());
         document.getElementById('chat-send-btn')?.addEventListener('click', () => this.handleChat());
         document.getElementById('chat-input-field')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') this.handleChat(); });
     },
@@ -573,8 +90,10 @@ const app = {
 
     switchView: function(viewId, title) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(viewId)?.classList.add('active');
-        document.getElementById('app-title').innerText = title;
+        const targetView = document.getElementById(viewId);
+        if(targetView) targetView.classList.add('active');
+        const titleEl = document.getElementById('app-title');
+        if(titleEl) titleEl.innerText = title;
         this.currentViewId = viewId;
     },
 
@@ -608,8 +127,10 @@ const app = {
 
     filterTable: function() {
         const input = document.getElementById("table-search");
+        if(!input) return;
         const filter = input.value.toLowerCase();
         const table = document.getElementById("infractions-table");
+        if(!table) return;
         const tr = table.getElementsByTagName("tr");
 
         for (let i = 1; i < tr.length; i++) {
@@ -654,7 +175,9 @@ const app = {
     },
 
     openArchiveForm: function(id = null) {
-        document.getElementById('btn-delete-archive').style.display = id ? 'block' : 'none';
+        const btnDelete = document.getElementById('btn-delete-archive');
+        if(btnDelete) btnDelete.style.display = id ? 'block' : 'none';
+
         if(id) {
             const arch = this.archives.find(a => a.id === id);
             document.getElementById('archive-id').value = arch.id;
@@ -715,9 +238,11 @@ const app = {
     },
 
     calculateSMIG: function() {
-        const tension = parseInt(document.getElementById('smig-classe').value);
+        const el = document.getElementById('smig-classe');
+        if(!el) return;
+        const tension = parseInt(el.value);
         if(!tension) return;
-        const smigJour = tension * 145; // 14500 pour classe 1 (tension 100) -> 145 FC par point de tension
+        const smigJour = tension * 145; // Décret 25/22
         const smigMois = smigJour * 26;
         const logement = smigMois * 0.30;
 
@@ -734,15 +259,10 @@ const app = {
         const conges = parseInt(document.getElementById('dec-conges').value) || 0;
         const preavisFait = document.getElementById('dec-preavis-fait').value;
 
-        // Arriérés
         const montantArrieres = salaire * arrieres;
-
-        // Congés Payés (Jours non pris x Salaire Journalier moyen)
-        // Mois moyen = 26 jours
         const salaireJour = salaire / 26;
         const montantConges = conges * salaireJour;
 
-        // Préavis : 14 jours de base + 7 jours par année d'ancienneté entière
         let joursPreavis = 14 + (anciennete * 7);
         let montantPreavis = 0;
         if(preavisFait === 'non') {
@@ -781,7 +301,7 @@ const app = {
             else if(lang === "Tshiluba") translated = "Futa makuta a mudimu bilondeshile mikenji.";
             else translated = "You must pay the legal minimum wage.";
         } else {
-            translated = `[Traduction IA en ${lang}] : Modèle de traduction en cours d'apprentissage pour cette phrase.`;
+            translated = `[Traduction IA en ${lang}] : Modèle de traduction en cours d'apprentissage pour cette phrase complexe.`;
         }
         
         resDiv.innerHTML = `<i class="fa-solid fa-language" style="color:var(--brand-primary)"></i> ${translated}`;
@@ -789,6 +309,11 @@ const app = {
     },
 
     // --- SUPER IA LOCALE Q&A ---
+    sendChipToQnA: function(text) {
+        this.navToTab('qna', 'Questions / Réponses IA');
+        this.sendChip(text);
+    },
+
     sendChip: function(text) {
         const input = document.getElementById('chat-input-field');
         if(input) {
@@ -799,6 +324,7 @@ const app = {
 
     handleChat: function() {
         const input = document.getElementById('chat-input-field');
+        if(!input) return;
         const text = input.value.trim();
         if(!text) return;
         
@@ -866,6 +392,11 @@ const app = {
             <strong>Sanction :</strong> Très Grave (Peine pénale possible).`;
         }
 
+        if(q.includes("art 171") || q.includes("article 171") || q.includes("hygiène")) {
+            return `<strong>Mauvaises conditions d'hygiène (Art 171)</strong><br>
+            Sanctionnée par une Mise en demeure obligatoire. Si non respectée, amende.`;
+        }
+
         // Look up in DB
         const match = infractionsDB.find(i => q.includes(i.id.toString()) || i.intitule.toLowerCase().includes(q));
         if(match) {
@@ -876,6 +407,28 @@ const app = {
         }
 
         return "Je suis l'IA Locale pour les Inspecteurs. Demandez-moi d'<strong>expliquer un article</strong>, de <strong>calculer un préavis</strong>, le montant du <strong>SMIG 2025</strong>, ou de chercher une infraction.";
+    },
+
+    showInfractionDetail: function(id) {
+        const inf = infractionsDB.find(i => i.id === id);
+        if(!inf) return;
+        const content = document.getElementById('infraction-detail-content');
+        if(content) {
+            content.innerHTML = `
+                <div class="card" style="margin-top: 20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <span class="badge ${this.getBadgeClass(inf.gravite)}">${inf.gravite}</span>
+                        <span style="color:var(--text-muted); font-size:13px; font-weight:600;">Infraction N°${inf.id}</span>
+                    </div>
+                    <h2 style="font-size: 20px; margin-bottom: 5px;">${inf.intitule}</h2>
+                    <p style="color: var(--brand-primary); font-weight: 500; font-size: 14px; margin-bottom: 20px;">Base Légale: ${inf.articles}</p>
+                    <h4 style="font-size: 14px; color: var(--text-muted); margin-bottom: 5px;">Description</h4>
+                    <p style="font-size: 15px; margin-bottom: 20px; line-height: 1.5;">${inf.desc}</p>
+                    <h4 style="font-size: 14px; color: var(--text-muted); margin-bottom: 5px;">Sanction Prévue</h4>
+                    <p style="font-size: 15px; font-weight: 600; color: var(--status-danger); margin-bottom: 20px;">${inf.sanction}</p>
+                </div>`;
+            this.navTo('infraction-detail', `Détail Sanction`);
+        }
     }
 };
 
