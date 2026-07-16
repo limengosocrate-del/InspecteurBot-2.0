@@ -33,11 +33,35 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  background: var(--bg);
+  background: linear-gradient(135deg, #87CEEB 0%, #4682B4 50%, #63b8ff 100%);
   color: var(--ink);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Nuages décoratifs fixes */
+.cloud {
+  position: fixed; pointer-events: none; z-index: 0;
+  background: rgba(255,255,255,0.85); border-radius: 50%;
+  box-shadow: 20px 20px 40px rgba(255,255,255,0.6), -20px 20px 40px rgba(255,255,255,0.4);
+  opacity: 0.7; animation: floatCloud 60s infinite ease-in-out alternate;
+}
+.cloud::before, .cloud::after { content:''; position:absolute; background:rgba(255,255,255,0.9); border-radius:50%; }
+.cloud.c1 { width:320px; height:120px; top:8%; left:-5%; animation-delay:0s; }
+.cloud.c1::before { width:140px; height:140px; top:-50px; left:50px; }
+.cloud.c1::after { width:100px; height:100px; top:-30px; left:160px; }
+.cloud.c2 { width:260px; height:100px; top:25%; right:-8%; animation-delay:-20s; animation-duration:70s; }
+.cloud.c2::before { width:110px; height:110px; top:-40px; left:40px; }
+.cloud.c2::after { width:90px; height:90px; top:-20px; left:130px; }
+.cloud.c3 { width:300px; height:110px; top:55%; left:-6%; animation-delay:-40s; animation-duration:65s; }
+.cloud.c3::before { width:130px; height:130px; top:-45px; left:50px; }
+.cloud.c3::after { width:100px; height:100px; top:-25px; left:140px; }
+@keyframes floatCloud {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(30px) translateY(10px); }
 }
 
 /* Ribbon */
@@ -80,6 +104,15 @@ body {
 .mobile-menu a { text-decoration: none; color: var(--ink-secondary); padding: 0.4rem 0.6rem; border-radius: var(--radius-small); }
 
 /* Sections */
+.toast { background: var(--primary); color:#fff; padding: 0.7rem 1rem; border-radius: 8px; box-shadow: 0 4px 20px rgba(10,37,64,0.3); font-size: 0.85rem; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; max-width: 340px; }
+.toast.success { background: var(--success); }
+.toast.info { background: var(--accent); color: var(--ink); }
+@keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(30px); } }
+
+main { position: relative; z-index: 10; }
+
+/* Section base */
 .section { display: none; max-width: 1200px; margin: 2rem auto; padding: 0 1.2rem; animation: fadeIn 0.35s ease; }
 .section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

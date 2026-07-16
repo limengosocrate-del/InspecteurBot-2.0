@@ -101,6 +101,15 @@ const ARTICLES = {
   }
 };
 
+function showToast(message, type) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + (type || 'info');
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.remove(); }, 3000);
+}
+
 // ==========================================
 // DOCUMENTATION
 // ==========================================
@@ -124,6 +133,7 @@ function filterArticles(query) {
 }
 
 function printDoc() {
+  showToast('Impression de la documentation lancée.', 'info');
   window.print();
 }
 
@@ -136,7 +146,7 @@ function exportDocPDF() {
     html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
-  html2pdf().set(opt).from(el).save();
+  html2pdf().set(opt).from(el).save().then(() => showToast('PDF exporté : base_juridique_art_187_198.pdf', 'success'));
 }
 
 // ==========================================
@@ -165,6 +175,7 @@ function createMission(e) {
   renderReportPreview(data);
   document.getElementById('reportPreviewArea').classList.remove('hidden');
   document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
+  showToast('Rapport généré avec succès — Aperçu A4 visible.', 'success');
   // Auto-archive
   STATE.archiveData.push({ ...data, id: Date.now(), status: 'active', timestamp: new Date().toISOString() });
   saveArchive();
@@ -228,11 +239,13 @@ function renderReportPreview(data) {
 }
 
 function printReport() {
+  showToast('Impression du rapport lancée.', 'info');
   window.print();
 }
 
 function exportReportPDF() {
   const el = document.getElementById('a4Paper');
+  if (!el) { showToast('Aucun rapport à exporter.', 'info'); return; }
   const opt = {
     margin: [8, 8, 8, 8],
     filename: 'rapport_mission_igt.pdf',
@@ -240,16 +253,16 @@ function exportReportPDF() {
     html2canvas: { scale: 3, useCORS: true },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
-  html2pdf().set(opt).from(el).save();
+  html2pdf().set(opt).from(el).save().then(() => showToast('PDF exporté : rapport_mission_igt.pdf', 'success'));
 }
 
 function saveReportToArchive() {
-  if (!STATE.currentMission) return;
-  alert('Rapport enregistré et archivé avec succès.');
+  if (!STATE.currentMission) { showToast('Aucune mission active à enregistrer.', 'info'); return; }
+  showToast('Rapport enregistré et archivé avec succès.', 'success');
 }
 
 function editCurrentReport() {
-  alert('Vous pouvez modifier le formulaire ci-dessus et régénérer le rapport.');
+  showToast('Modification activée. Utilisez le formulaire pour mettre à jour le rapport.', 'info');
   document.getElementById('missionForm').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -294,7 +307,7 @@ function buildModelLibrary() {
         .replace('{delai}', i % 2 === 0 ? '15 jours' : '30 jours')
         .replace('{docs}', 'registre du personnel, contrats de travail, bulletins de paie')
         .replace('{points}', 'mise à jour des registres, affichage des avis, régularisation des contrats, formation du personnel')
-        .replace('{nom}', 'Inspecteur TENGETENGE Jeanne');
+        .replace('{nom}', );
       STATE.modelLibrary.push({ category: cat, title: `Modèle ${i + 1} — ${cat}`, text: text });
     }
   });
@@ -317,7 +330,7 @@ function filterModels(cat) {
 
 function copyText(btn) {
   const text = btn.closest('.model-card').querySelector('.model-text').innerText;
-  navigator.clipboard.writeText(text).then(() => { btn.innerHTML = '<i class="fa-solid fa-check"></i> Copié'; setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier', 1200); });
+  navigator.clipboard.writeText(text).then(() => { btn.innerHTML = '<i class="fa-solid fa-check"></i> Copié'; showToast('Modèle copié dans le presse-papier.', 'success'); setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copier', 1200); });
 }
 
 function adaptText(encoded) {
@@ -328,7 +341,7 @@ function adaptText(encoded) {
   area.select();
   document.execCommand('copy');
   document.body.removeChild(area);
-  alert('Modèle copié dans le presse-papier. Vous pouvez le coller dans votre rapport.');
+  showToast('Modèle copié dans le presse-papier. Vous pouvez le coller dans votre rapport.', 'success');
 }
 
 // ==========================================
@@ -350,90 +363,83 @@ function startListening() {
   document.getElementById('iaStatusIndicator').classList.add('listening');
   document.getElementById('iaStatusText').textContent = 'Écoute active — Transcription en temps réel...';
   STATE.transcriptLog = [];
+  document.getElementById('iaTranscript').innerHTML = '';
 
-  const phrases = getPhrasesForMode(STATE.iaMode);
-  let index = 0;
-  STATE.listeningTimer = setInterval(() => {
-    const phrase = phrases[index % phrases.length];
-    const lang = detectLanguage(phrase);
-    const entry = { time: new Date().toLocaleTimeString('fr-FR'), text: phrase, lang: lang, mode: STATE.iaMode };
-    STATE.transcriptLog.push(entry);
-    renderTranscriptEntry(entry);
-    index++;
-    if (index > 30) {
-      // After 30 entries, generate output
-      generateIAOutput();
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Cette fonctionnalité nécessite un navigateur compatible (Chrome/Edge) et une connexion internet.', 'info');
+    document.getElementById('btnStop').click();
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  recognition.lang = 'fr-FR';
+
+  recognition.onstart = () => {
+    showToast('Microphone ouvert — Parlez clairement.', 'success');
+  };
+
+  recognition.onresult = (event) => {
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        const lang = detectLanguageReal(transcript);
+        const entry = { time: new Date().toLocaleTimeString('fr-FR'), text: transcript.trim(), lang: lang, mode: STATE.iaMode };
+        STATE.transcriptLog.push(entry);
+        renderTranscriptEntry(entry);
+        if (STATE.transcriptLog.length >= 5) {
+          generateIAOutput();
+        }
+      } else {
+        renderTranscriptEntry({ time: new Date().toLocaleTimeString('fr-FR'), text: transcript.trim() + ' ... (en cours)', lang: 'détection en cours', mode: STATE.iaMode });
+      }
     }
-  }, 3500);
+  };
 
-  // Auto-stop after duration
+  recognition.onerror = (event) => {
+    console.error('Speech recognition error', event);
+    showToast('Erreur d\'écoute : ' + event.error + '. Vérifiez votre connexion et le microphone.', 'info');
+  };
+
+  recognition.onend = () => {
+    if (STATE.isListening) {
+      recognition.start();
+    }
+  };
+
+  recognition.start();
+  STATE.currentRecognition = recognition;
+
   const duration = parseFloat(document.getElementById('iaDuration').value) * 3600 * 1000;
-  setTimeout(stopListening, Math.min(duration, 300000)); // max 5 min for demo, or duration
+  setTimeout(stopListening, Math.min(duration, 300000));
 }
 
 function stopListening() {
   STATE.isListening = false;
+  if (STATE.currentRecognition) {
+    STATE.currentRecognition.stop();
+    STATE.currentRecognition = null;
+  }
   clearInterval(STATE.listeningTimer);
   document.getElementById('btnStart').classList.remove('hidden');
   document.getElementById('btnStop').classList.add('hidden');
   document.getElementById('iaStatusIndicator').classList.remove('listening');
   document.getElementById('iaStatusText').textContent = 'Écoute terminée. Génération du document en cours...';
+  showToast('Écoute arrêtée. Génération du rapport en cours.', 'info');
   setTimeout(() => {
     generateIAOutput();
   }, 1200);
 }
 
-function getPhrasesForMode(mode) {
-  const fr = [
-    "Bonjour, nous commençons le contrôle de l'entreprise.",
-    "Pouvez-vous nous présenter le registre du personnel ?",
-    "Nous avons constaté l'absence des contrats de travail signés.",
-    "Le personnel n'est pas informé des consignes de sécurité.",
-    "Nous allons procéder à un procès-verbal d'obstruction au contrôle.",
-    "L'employeur refuse de nous donner accès au bureau du directeur.",
-    "Le nombre d'heures supplémentaires dépasse la limite légale.",
-    "Nous recommandons une mise en demeure dans un délai de 15 jours.",
-  ];
-  const en = [
-    "Good morning, we are starting the inspection.",
-    "Can you please present the staff register?",
-    "We noticed the absence of signed employment contracts.",
-    "Employees are not informed of safety instructions.",
-    "We will proceed with an obstruction report.",
-    "The employer refuses access to the manager's office.",
-    "Overtime exceeds the legal limit.",
-    "We recommend a formal notice within 15 days.",
-  ];
-  const ln = [
-    "Mbote, tozali kobanda contrôle ya entreprise.",
-    "Bokoki kopesa biso registre ya personnel ?",
-    "Tomoni ba contrats ya mosala ezangi.",
-    "Ba travailleurs bazali te na information ya sécurité.",
-    "Tokosala procès-verbal ya obstruction.",
-    "Employeur aboyi kopesa biso accès.",
-    "Ba heures supplémentaires eleki limite.",
-    "Tosengi mise en demeure na mikolo 15.",
-  ];
-  const sw = [
-    "Habari, tunaanza ukaguzi wa kampuni.",
-    "Tafadhali tufikishe rejesta ya wafanyakazi.",
-    "Tumegundua kutokuwepo kwa mikataba ya kazi.",
-    "Wafanyakazi hawajui maelekezo ya usalama.",
-    "Tutatoa ripoti ya kizuizi cha ukaguzi.",
-    "Mwajiri anakataa kutupatia ufikiaji.",
-    "Masaa ya ziada yamezidi kikomo.",
-    "Tunapendekeza onyo la siku 15.",
-  ];
-  const pool = { mission: [...fr, ...en, ...ln], reunion: [...en, ...fr], formation: [...fr, ...ln, ...sw], conversation: [...fr, ...en, ...ln, ...sw] };
-  return pool[mode] || pool.mission;
-}
-
-function detectLanguage(text) {
+function detectLanguageReal(text) {
   const lower = text.toLowerCase();
-  if (lower.includes('bonjour') || lower.includes('contrôle') || lower.includes('procès-verbal')) return 'français';
-  if (lower.includes('inspection') || lower.includes('good morning') || lower.includes('obstruction')) return 'anglais';
-  if (lower.includes('tobanda') || lower.includes('mosala') || lower.includes('biso')) return 'lingala';
-  if (lower.includes('habari') || lower.includes('tafadhali') || lower.includes('tunapendekeza')) return 'swahili';
+  if (lower.includes('bonjour') || lower.includes('contrôle') || lower.includes('procès-verbal') || lower.includes('mission') || lower.includes('inspection')) return 'français';
+  if (lower.includes('good morning') || lower.includes('inspection') || lower.includes('report') || lower.includes('obstruction') || lower.includes('overtime')) return 'anglais';
+  if (lower.includes('tobanda') || lower.includes('mosala') || lower.includes('biso') || lower.includes('kobanda')) return 'lingala';
+  if (lower.includes('habari') || lower.includes('tafadhali') || lower.includes('tunaanza') || lower.includes('tunapendekeza')) return 'swahili';
   return 'indéterminé';
 }
 
@@ -481,7 +487,7 @@ function generateIAOutput() {
         <tr><td style="font-weight:600;padding:0.3rem;">Ordre de service</td><td>OS-${Math.floor(Math.random() * 900) + 100}</td></tr>
         <tr><td style="font-weight:600;padding:0.3rem;">Groupe</td><td>G-${Math.floor(Math.random() * 10) + 1}</td></tr>
         <tr><td style="font-weight:600;padding:0.3rem;">Fonction</td><td>Inspecteur du Travail / Chef de mission</td></tr>
-        <tr><td style="font-weight:600;padding:0.3rem;">Participants</td><td>Inspecteur TENGETENGE Jeanne, Contrôleur KABEYA MUTAMBAYI Freddy</td></tr>
+        <tr><td style="font-weight:600;padding:0.3rem;">Participants</td><td></td></tr>
         <tr><td style="font-weight:600;padding:0.3rem;">Objectif</td><td>${mode === 'mission' ? 'Contrôle de conformité de la législation sociale' : mode === 'reunion' ? 'Réunion d\'information et coordination' : 'Formation et sensibilisation'}</td></tr>
         <tr><td style="font-weight:600;padding:0.3rem;">Matière</td><td>Inspection du travail — Application du Code du travail</td></tr>
         <tr><td style="font-weight:600;padding:0.3rem;">Entreprise visitée</td><td>${companyLine}</td></tr>
@@ -489,7 +495,7 @@ function generateIAOutput() {
       </table>
 
       <h4>Résumé de la mission</h4>
-      <p>La mission a été menée sur l'axe de Kinshasa — Gombe avec une méthodologie standard : présentation, identification, notification de l'objet, visite des lieux, entretiens et collecte des documents. L'IA a détecté ${STATE.transcriptLog.length} segments de conversation, dont plusieurs en ${detectLanguage(transcript.substring(0, 200))}.</p>
+      <p>La mission a été menée sur l'axe de Kinshasa — Gombe avec une méthodologie standard : présentation, identification, notification de l'objet, visite des lieux, entretiens et collecte des documents. L'IA a détecté ${STATE.transcriptLog.length} segments de conversation, dont plusieurs en ${detectLanguageReal(transcript.substring(0, 200))}.</p>
 
       <h4>Constats effectués</h4>
       <ul>
@@ -562,8 +568,8 @@ function loadArchive() {
       STATE.archiveData = JSON.parse(saved);
     } else {
       STATE.archiveData = [
-        { id: 1, date: '2025-04-14', order: '22/MET/IGT/AI-EPNT/070', group: 'G01', role: 'Chef de mission', participants: 'Inspecteur TENGETENGE Jeanne\nInspecteur TORO CUBAKA Eben Ezer', objective: 'Identifier les entreprises utilisant la main d\'œuvre nationale et étrangère', matter: 'Protection de la main d\'œuvre nationale', companies: 'REWA CONGO — Commerce générale\nRALPH SERVICES — Imprimerie et restaurant', addresses: 'KINSHASA, Gombe, Axe 24 Novembre', phone: '+243 99 876 6270', observations: 'Manque de moyens de transport — Non-respect des assujettis', status: 'archived', timestamp: '2025-05-09T09:00:00Z' },
-        { id: 2, date: '2025-06-20', order: 'OS-245', group: 'G03', role: 'Inspecteur du Travail', participants: 'Contrôleur KABEYA MUTAMBAYI Freddy', objective: 'Contrôle de conformité des registres', matter: 'Application du Code du travail', companies: 'STARTIMES MEDIA RDC — Télé distribution', addresses: 'KINSHASA, Ngaliema', phone: '+243 99 123 4567', observations: 'Document en ordre — Aucune irrégularité majeure', status: 'archived', timestamp: '2025-06-25T14:30:00Z' },
+        { id: 1, date: '2025-04-14', order: '22/MET/IGT/AI-EPNT/070', group: 'G01', role: 'Chef de mission', participants: '', objective: 'Identifier les entreprises utilisant la main d\'œuvre nationale et étrangère', matter: 'Protection de la main d\'œuvre nationale', companies: 'REWA CONGO — Commerce générale\nRALPH SERVICES — Imprimerie et restaurant', addresses: 'KINSHASA, Gombe, Axe 24 Novembre', phone: '+243 99 876 6270', observations: 'Manque de moyens de transport — Non-respect des assujettis', status: 'archived', timestamp: '2025-05-09T09:00:00Z' },
+        { id: 2, date: '2025-06-20', order: 'OS-245', group: 'G03', role: 'Inspecteur du Travail', participants: '', objective: 'Contrôle de conformité des registres', matter: 'Application du Code du travail', companies: 'STARTIMES MEDIA RDC — Télé distribution', addresses: 'KINSHASA, Ngaliema', phone: '+243 99 123 4567', observations: 'Document en ordre — Aucune irrégularité majeure', status: 'archived', timestamp: '2025-06-25T14:30:00Z' },
         { id: 3, date: '2025-07-10', order: 'OS-312', group: 'G02', role: 'Contrôleur du Travail', participants: 'Contrôleur LIBULA LISANGA Israël', objective: 'Vérification de la main d\'œuvre étrangère', matter: 'Protection de la main d\'œuvre étrangère', companies: 'POLYCLINIQUE DE KINSHASA — Santé', addresses: 'KINSHASA, Bandalungwa', phone: '+243 99 555 7777', observations: 'Obstruction au contrôle — Refus d\'accès', status: 'active', timestamp: '2025-07-10T10:00:00Z' },
       ];
     }
@@ -787,7 +793,7 @@ function initApp() {
 
 function copyDocText(num) {
   const text = ARTICLES[num].body.replace(/<[^>]*>/g, '') + '\n\n' + ARTICLES[num].title;
-  navigator.clipboard.writeText(text).then(() => alert('Article ' + num + ' copié.'));
+  navigator.clipboard.writeText(text).then(() => { showToast('Article ' + num + ' copié dans le presse-papier.', 'success'); });
 }
 
 // Initialize on DOMContentLoaded
