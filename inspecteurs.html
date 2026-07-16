@@ -16,7 +16,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <link rel="stylesheet" href="style-inspecteur.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -62,6 +62,7 @@
     <a href="#" onclick="showSection('itct-ia'); toggleMobileMenu()">IT/CT IA</a>
     <a href="#" onclick="showSection('archives'); toggleMobileMenu()">Archives</a>
     <a href="#" onclick="showSection('dashboard'); toggleMobileMenu()">Tableau de bord</a>
+    <a href="#" onclick="showSection('itct-ia'); toggleMobileMenu()">IT/CT IA (Corrective)</a>
   </div>
 
   <main id="app-main">
@@ -204,6 +205,7 @@
 
         <div class="form-actions">
           <button type="submit" class="btn-primary"><i class="fa-solid fa-file-contract"></i> Générer le rapport</button>
+          <button type="button" onclick="previewMission(event)" class="btn-secondary"><i class="fa-solid fa-eye"></i> Aperçu</button>
           <button type="button" onclick="resetMissionForm()" class="btn-outline"><i class="fa-solid fa-rotate-right"></i> Réinitialiser</button>
         </div>
       </form>
@@ -232,6 +234,7 @@
           <button onclick="printReport()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button>
           <button onclick="exportReportPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> Exporter PDF</button>
           <button onclick="exportReportWord()" class="btn-outline"><i class="fa-solid fa-file-word"></i> Exporter Word</button>
+          <button onclick="shareReport()" class="btn-outline"><i class="fa-solid fa-share-nodes"></i> Partager</button>
           <button onclick="saveReportToArchive()" class="btn-outline"><i class="fa-solid fa-floppy-disk"></i> Enregistrer dans l'archive</button>
           <button onclick="editCurrentReport()" class="btn-outline"><i class="fa-solid fa-pen-to-square"></i> Modifier</button>
         </div>
@@ -270,6 +273,7 @@
         <button onclick="setIAMode('reunion')" class="mode-btn" id="modeReunion">IA Réunion</button>
         <button onclick="setIAMode('formation')" class="mode-btn" id="modeFormation">IA Formation</button>
         <button onclick="setIAMode('conversation')" class="mode-btn" id="modeConversation">IA Conversation</button>
+        <button onclick="setIAMode('corrective')" class="mode-btn" id="modeCorrective">IA Corrective</button>
       </div>
 
       <div class="ia-panel">
@@ -313,6 +317,7 @@
         <div class="ia-output-body" id="iaOutputBody"></div>
         <div class="ia-output-actions">
           <button onclick="copyIAOutput()" class="btn-outline"><i class="fa-solid fa-copy"></i> Copier</button>
+          <button onclick="shareIAOutput()" class="btn-outline"><i class="fa-solid fa-share-nodes"></i> Partager</button>
           <button onclick="printIAOutput()" class="btn-outline"><i class="fa-solid fa-print"></i> Imprimer</button>
           <button onclick="exportIAOutputPDF()" class="btn-outline"><i class="fa-solid fa-file-pdf"></i> PDF</button>
         </div>
@@ -427,15 +432,13 @@
   <footer class="site-footer">
     <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
     <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
-    <p>Développé par Inspecteur Limengo (Pmiller).</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
   </footer>
 
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="app-inspecteur.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1bfb3992a915b7c',t:'MTc4NDE5MTIyMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script src="app.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c04a4d293c09d6',t:'MTc4NDE5NzM5Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-

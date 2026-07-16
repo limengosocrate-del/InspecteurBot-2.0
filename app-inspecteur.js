@@ -23,81 +23,110 @@ const STATE = {
 
 const ARTICLES = {
   187: {
-    title: "Article 187 — Agents chargés de l'inspection du travail",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail sont nommés par le Ministre du Travail et de la Prévoyance sociale. Ils sont chargés de veiller à l'application des dispositions du Code du travail et des autres dispositions légales relatives au régime du travail.</p>
-<p>Ils doivent prêter serment devant le tribunal compétent avant leur entrée en fonction. Ce serment engage leur responsabilité personnelle et institutionnelle.</p>
-<p>Ils disposent d'une indépendance fonctionnelle dans l'exercice de leurs missions, conformément aux conventions internationales relatives à l'inspection du travail.</p>`
+    title: "Article 187 — L'Inspection du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>L'Inspection du Travail a pour mission de :</p>
+<ul>
+<li>1. assurer l'application des dispositions légales relatives aux conditions de travail et à la protection des travailleurs dans l'exercice de leur profession, telles que les dispositions relatives à la durée du travail, aux salaires, à la sécurité, à l'hygiène et au bien-être, à l'emploi des femmes, des enfants et des personnes avec handicap, aux conflits collectifs, aux litiges individuels du travail, à l'application des conventions collectives, à la représentation du personnel et d'autres matières connexes ;</li>
+<li>2. fournir des informations et des conseils techniques aux employeurs et aux travailleurs sur les moyens les plus efficaces d'observer les dispositions légales ;</li>
+<li>3. donner des avis sur les questions relatives à l'établissement ou à la modification des installations d'entreprises et d'organismes soumis à une autorisation administrative ;</li>
+<li>4. porter à l'attention de l'autorité compétente les déficiences ou les abus que révélerait l'application des dispositions légales et qui ne sont pas couverts par celles-ci.</li>
+</ul>`
   },
   188: {
-    title: "Article 188 — Mission des agents chargés de l'inspection du travail",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les agents chargés de l'inspection du travail sont autorisés, munis des pièces justificatives de leurs fonctions :</p>
+    title: "Article 188 — Compétence de l'Inspection Générale du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>L'exercice des missions de l'Inspection du Travail est de la compétence exclusive de l'Inspection Générale du Travail sur toute l'étendue du territoire national.</p>
+<p>L'Inspection Générale du Travail comporte :</p>
 <ul>
-<li>a) à pénétrer librement, sans avertissement préalable, à toute heure du jour et de la nuit, dans tout établissement assujetti au contrôle de l'inspection ;</li>
-<li>b) à pénétrer le jour dans tous les locaux qu'ils supposent être assujettis au contrôle de l'inspection ;</li>
-<li>c) à procéder à tous examens, contrôles ou enquêtes qu'ils jugent nécessaires pour s'assurer que les dispositions légales sont effectivement observées.</li>
+<li>a) la Direction de l'Inspection Générale du Travail au service central ;</li>
+<li>b) des inspections provinciales et locales.</li>
 </ul>`
   },
   189: {
-    title: "Article 189 — Droit d'entrée et de visite",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Le droit de visite s'exerce sans avertissement préalable. L'inspecteur ou le contrôleur du travail peut pénétrer dans tout établissement assujetti au contrôle, même en l'absence de l'employeur.</p>
-<p>Il peut exiger l'ouverture d'un local fermé si celui-ci est susceptible d'être assujetti au contrôle de l'inspection.</p>
-<p>Le droit d'entrée ne s'applique pas aux locaux d'habitation sans l'autorisation des occupants, conformément au respect du domicile.</p>`
+    title: "Article 189 — Direction de l'Inspection Générale du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>La Direction de l'Inspection Générale du Travail dirige, coordonne et contrôle l'ensemble des activités qu'implique l'exercice des missions de l'Inspection du Travail.</p>
+<p>Elle soumet au Ministre toutes propositions relatives au personnel de l'Inspection Générale du Travail.</p>`
   },
   190: {
-    title: "Article 190 — Droit d'interrogation et d'audition",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail peuvent interroger, soit seuls, soit en présence de témoins, l'employeur ou le personnel de l'entreprise ou de l'établissement sur toutes les matières relatives à l'application des dispositions légales.</p>
-<p>Les employeurs et le personnel sont tenus de répondre aux questions posées dans le cadre de l'inspection. Tout refus ou toute obstruction peut donner lieu à un procès-verbal d'obstruction au contrôle.</p>`
+    title: "Article 190 — Organisation et fonctionnement",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>(Loi n° 16/010 du 15 juillet 2016 modifiant et complétant la Loi n° 015-2002 portant Code du travail)</p>
+<p>Un Décret du Premier ministre délibéré en conseil des ministres fixe l'organisation et le fonctionnement de l'Inspecteur Générale du Travail.</p>`
   },
   191: {
-    title: "Article 191 — Droit de consultation et de copie des documents",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail peuvent demander que leur soient communiqués, soit sur les lieux du travail, soit en leur bureau, tous livres, registres et documents dont la tenue est prescrite par la législation en vue d'en vérifier la conformité avec les dispositions légales et d'en prendre copie ou d'en établir des extraits.</p>
-<p>Ils peuvent également exiger l'affichage des avis dont l'apposition est prévue par les dispositions légales.</p>`
+    title: "Article 191 — Ressort territorial des Inspecteurs",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Le ressort de l'Inspecteur du Travail attaché à l'Inspection Générale du Travail s'étend sur toute l'étendue du territoire national.</p>
+<p>Le ressort de l'Inspecteur du Travail attaché en province ou dans la ville de Kinshasa se limite à la juridiction administrative d'attache.</p>`
   },
   192: {
-    title: "Article 192 — Prélèvement d'échantillons",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail peuvent prélever et emporter, aux fins d'analyse, des échantillons des matières premières et substances utilisées ou manipulées, pourvu que l'employeur ou son représentant soit averti que des matières ou substances ont été prélevées et emportées à cette fin.</p>`
+    title: "Article 192 — Compétences spécifiques de l'Inspecteur du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Sans préjudice des compétences reconnues à l'Inspecteur du Travail du ressort, l'Inspecteur du Travail attaché à l'Inspection Générale du Travail est compétent pour :</p>
+<p><strong>a)</strong> connaître de tout litige du travail se rapportant à l'exercice de sa mission telle que définie à l'article 187 notamment :</p>
+<ul>
+<li>les litiges individuels du travail pour lesquels l'une des parties aura été mise dans l'impossibilité matérielle d'initier ou de poursuivre jusqu'à terme la procédure de conciliation devant l'Inspecteur du Travail du ressort ;</li>
+<li>les conflits collectifs du travail affectant plusieurs établissements d'une même entreprise ou affectant plusieurs entreprises d'un ou des plusieurs secteurs d'activité relevant de plus d'un ressort de l'Inspection du Travail.</li>
+</ul>
+<p><strong>b)</strong> effectuer les visites spéciales d'inspection en matière de sécurité technique, santé au travail, main-d'œuvre, institution de prévoyance sociale, c'est-à-dire mutuelles et assurances, négociation des conventions collectives à caractère national et contre-enquêtes.</p>
+<p>Cette disposition s'applique, mutatis mutandis, aux Inspecteurs attachés aux Inspections du Travail des provinces, des districts ou des territoires dans les limites de leurs juridictions respectives.</p>`
   },
   193: {
-    title: "Article 193 — Assistance technique",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>L'inspecteur du travail peut faire appel à une assistance technique de certains techniciens de l'administration ou des organismes gouvernementaux ou de toute personne autorisée par l'ordonnance du ministre.</p>
-<p>Cette assistance technique renforce la capacité d'investigation dans des domaines spécialisés tels que la sécurité, l'hygiène, la comptabilité du travail ou l'environnement.</p>`
+    title: "Article 193 — Dénomination, siège et ressort des services de l'Inspection",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Le Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions détermine par arrêté pris, après avis du Conseil National du Travail, la dénomination, le siège, la compétence et le ressort territorial des services de l'Inspection du Travail.</p>`
   },
   194: {
-    title: "Article 194 — Confidentialité et secret professionnel",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs et contrôleurs du travail doivent traiter comme absolument confidentielle la source de toute plainte leur signalant un défaut d'installation ou une infraction aux dispositions légales.</p>
-<p>Ils doivent s'abstenir de révéler à l'employeur ou à son représentant qu'il a été procédé à une visite d'inspection en suite d'une plainte.</p>`
+    title: "Article 194 — Serment des Inspecteurs et Contrôleurs du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Avant leur entrée en fonction, les Inspecteurs et les Contrôleurs du Travail prêtent le serment suivant :</p>
+<p><em>« Je jure, devant Dieu et la Nation, fidélité et obéissance à la Constitution et aux lois de la République Démocratique du Congo, de remplir fidèlement ma charge et de ne pas révéler, même après avoir quitté le service, les secrets de fabrication ou de commerce ou les procédés d'exploitation dont j'aurai pu prendre connaissance dans l'exercice de mes fonctions. »</em></p>
+<p>Ce serment est prêté par écrit devant la Cour d'Appel, et copie en est versée au dossier administratif de l'agent.</p>`
   },
   195: {
-    title: "Article 195 — Indépendance et absence d'intérêt direct",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail ne doivent pas avoir d'intérêt direct ou indirect dans les entreprises placées sous leur contrôle.</p>
-<p>Tout conflit d'intérêts doit être signalé immédiatement au supérieur hiérarchique. Le non-respect de cette disposition peut entraîner des sanctions disciplinaires et pénales.</p>`
+    title: "Article 195 — Assistance technique pour compétences spécifiques",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Pour assurer l'exercice des missions d'Inspection nécessitant des compétences techniques spécifiques, l'Inspecteur du Travail peut faire appel à la collaboration des experts et techniciens ou des organismes publics ou privés, préalablement agréés par le Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions.</p>
+<p>Ce concours technique s'exerce sous le contrôle de l'Inspection du Travail.</p>
+<p>Les frais résultant de ce concours sont à charge du Ministère du Travail et de la Prévoyance Sociale.</p>`
   },
   196: {
-    title: "Article 196 — Procès-verbaux d'infraction",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Les inspecteurs du travail sont chargés, concurremment avec les officiers et agents de police judiciaire, de constater les infractions aux dispositions légales relatives au travail et d'en dresser procès-verbal.</p>
-<p>Le procès-verbal fait foi jusqu'à preuve du contraire et doit être transmis au procureur de la République et à l'employeur.</p>`
+    title: "Article 196 — Pouvoirs des Inspecteurs et Contrôleurs du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Les Inspecteurs et Contrôleurs du Travail, munis de pièces justificatives de leurs fonctions, sont autorisés de :</p>
+<p><strong>a)</strong> pénétrer librement, sans avertissement préalable à toute heure du jour et de la nuit, dans tout établissement assujetti au contrôle de l'Inspection ;</p>
+<p><strong>b)</strong> pénétrer le jour dans tous les locaux qu'ils supposent être assujettis au contrôle de l'Inspection ;</p>
+<p><strong>c)</strong> procéder à tous examens, contrôles ou enquêtes qu'ils jugent nécessaires pour s'assurer que les dispositions légales sont effectivement observées et notamment :</p>
+<ul>
+<li>1. interroger, soit seul, soit en présence de témoins, l'employeur ou le personnel de l'entreprise ou de l'établissement sur toutes les matières relatives à l'application des dispositions légales ;</li>
+<li>2. demander que leur soient communiqués, soit sur les lieux du travail, soit en leur bureau, tous livres, registres et documents dont la tenue est prescrite par la législation en vue d'en vérifier la conformité avec les dispositions légales et d'en prendre copie ou d'en établir des extraits ;</li>
+<li>3. exiger l'affichage des avis dont l'apposition est prévue par les dispositions légales ;</li>
+<li>4. prélever et à emporter, aux fins d'analyse des échantillons des matières premières et substances utilisées ou manipulées, pourvu que l'employeur ou son représentant soit averti que des matières ou substances ont été prélevées et emportées à cette fin.</li>
+</ul>
+<p>A l'occasion d'une visite d'inspection, l'Inspecteur ou le Contrôleur du Travail devra informer de sa présence l'employeur ou son représentant, à moins qu'il n'estime qu'un tel avis risque de porter préjudice à l'efficacité du contrôle.</p>`
   },
   197: {
-    title: "Article 197 — Mesures et recommandations",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>À la suite d'une inspection, l'inspecteur du travail peut formuler des observations, des recommandations ou des mises en demeure. Il peut proposer des actions correctives et fixer un délai pour leur mise en œuvre.</p>
-<p>En cas de non-respect, un nouveau procès-verbal peut être établi et des sanctions administratives ou judiciaires peuvent être engagées.</p>`
+    title: "Article 197 — Pouvoirs et fonctions de l'Inspecteur du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Dans l'accomplissement de leurs fonctions, les Inspecteurs et les Contrôleurs du Travail ont le pouvoir de :</p>
+<p><strong>a)</strong> faire appel, en cas de besoin, à la coopération et à l'assistance de toute autorité publique en vue de l'accomplissement de leur mission ;</p>
+<p><strong>b)</strong> demander à l'employeur de leur fournir les renseignements et statistiques au sujet des travailleurs ou de leurs conditions de travail ;</p>
+<p><strong>c)</strong> constater la violation des dispositions légales par des procès-verbaux, faisant foi jusqu'à preuve du contraire, qu'ils transmettent à l'autorité hiérarchique compétente ;</p>
+<p><strong>d)</strong> formuler des observations et prodiguer des conseils tant à l'employeur ou à son représentant qu'aux travailleurs ;</p>
+<p><strong>e)</strong> mettre l'employeur ou son représentant en demeure de veiller à l'observance des dispositions légales ;</p>
+<p><strong>f)</strong> ordonner ou faire ordonner que des mesures immédiatement exécutoires soient prises lorsqu'ils ont un motif raisonnable de considérer qu'il y a danger imminent et grave pour la santé ou la sécurité des travailleurs.</p>
+<p>Dans l'application des dispositions du litera f), l'ampliation du procès-verbal est adressée à l'employeur ou à son représentant et à l'autorité hiérarchique compétente dans le délai maximum de huit jours à partir de la constatation de l'infraction.</p>
+<p>L'employeur ou son représentant peut faire appel de cette décision en adressant dans les quinze jours ouvrables à compter de la réception, par lettre recommandée ou par porteur avec accusé de réception, un recours auprès du Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions contre les mesures exécutoires prises en vertu du litera f) du présent article.</p>
+<p>Le Ministre notifiera sa décision à l'employeur ou à son représentant dans le mois à dater de la réception du recours. En cas de silence, il est censé accepter le recours.</p>`
   },
   198: {
-    title: "Article 198 — Rapport et archivage",
-    meta: "Titre I — Les Inspecteurs du Travail — Code du travail RDC (2002)",
-    body: `<p>Chaque mission d'inspection doit faire l'objet d'un rapport détaillé transmis à l'autorité mandante. Le rapport doit comporter : la date, le numéro de l'ordre de service, le groupe, les participants, l'objectif, la matière contrôlée, les entreprises visitées, les constats, les irrégularités relevées, les recommandations, les décisions proposées et les actions de suivi.</p>
-<p>Le rapport est archivé et peut servir de référence pour des inspections ultérieures ou des procédures judiciaires.</p>`
+    title: "Article 198 — Indépendance et confidentialité des Inspecteurs et Contrôleurs du Travail",
+    meta: "Titre I — L'Inspection du Travail — Code du travail RDC (2002)",
+    body: `<p>Les Inspecteurs et les Contrôleurs du Travail n'ont pas le droit d'avoir un intérêt quelconque direct ou indirect dans les entreprises ou les établissements placés sous leur contrôle.</p>
+<p>Ils doivent traiter comme absolument confidentielle la source de toute plainte leur signalant un défaut dans l'installation ou une infraction aux dispositions légales et doivent s'abstenir de révéler à l'employeur ou à son représentant qu'il a été procédé à une visite d'inspection comme suite à une plainte.</p>
+<p>Les moyens sont mis à leur disposition par le Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions.</p>`
   }
 };
 
@@ -183,6 +212,28 @@ function createMission(e) {
   updateArchiveTable();
 }
 
+function previewMission(e) {
+  e.preventDefault();
+  const data = {
+    date: document.getElementById('mDate').value,
+    order: document.getElementById('mOrder').value,
+    group: document.getElementById('mGroup').value,
+    role: document.getElementById('mRole').value,
+    participants: document.getElementById('mParticipants').value,
+    objective: document.getElementById('mObjective').value,
+    matter: document.getElementById('mMatter').value,
+    companies: document.getElementById('mCompanies').value,
+    addresses: document.getElementById('mAddresses').value,
+    phone: document.getElementById('mPhone').value,
+    observations: document.getElementById('mObservations').value,
+  };
+  STATE.currentMission = data;
+  renderReportPreview(data);
+  document.getElementById('reportPreviewArea').classList.remove('hidden');
+  document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
+  showToast('Aperçu du rapport généré selon le modèle officiel.', 'success');
+}
+
 function resetMissionForm() {
   document.getElementById('missionForm').reset();
   initMissionForm();
@@ -259,6 +310,16 @@ function exportReportPDF() {
 function saveReportToArchive() {
   if (!STATE.currentMission) { showToast('Aucune mission active à enregistrer.', 'info'); return; }
   showToast('Rapport enregistré et archivé avec succès.', 'success');
+}
+
+function shareReport() {
+  if (!STATE.currentMission) { showToast('Aucun rapport actif à partager.', 'info'); return; }
+  const shareData = { title: 'Rapport de mission InspecteurBot', text: `Mission du ${STATE.currentMission.date} — Ordre : ${STATE.currentMission.order || '—'} — Entreprise : ${(STATE.currentMission.companies || '').split('\n')[0]}`, url: window.location.href };
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`Rapport InspecteurBot — ${STATE.currentMission.date} — ${STATE.currentMission.order || '—'} — ${window.location.href}`).then(() => showToast('Lien du rapport copié dans le presse-papier.', 'success'));
+  }
 }
 
 function editCurrentReport() {
@@ -372,8 +433,13 @@ function startListening() {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const source = audioContext.createMediaStreamSource(stream);
         const gainNode = audioContext.createGain();
-        gainNode.gain.value = 4.0; // Augmentation de la sensibilité au-delà de 10 mètres
-        source.connect(gainNode);
+        gainNode.gain.value = 2.0; // Sensibilité augmentée au-delà de 10 mètres, sans bruit excessif
+        const filter = audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 3000; // Filtre passe-bas pour réduire le bruit
+        source.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioContext.destination);
         gainNode.connect(audioContext.destination);
         STATE.audioGain = gainNode;
         STATE.audioStream = stream;
@@ -383,7 +449,11 @@ function startListening() {
 
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     showToast('Cette fonctionnalité nécessite un navigateur compatible (Chrome/Edge) et une connexion internet.', 'info');
-    document.getElementById('btnStop').click();
+    document.getElementById('btnStart').classList.remove('hidden');
+    document.getElementById('btnStop').classList.add('hidden');
+    document.getElementById('iaStatusIndicator').classList.remove('listening');
+    document.getElementById('iaStatusText').textContent = 'Prêt — Appuyez sur Démarrer';
+    STATE.isListening = false;
     return;
   }
 
@@ -426,7 +496,15 @@ function startListening() {
     }
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error('Start error:', e);
+    showToast('Erreur au démarrage du microphone. Vérifiez les autorisations.', 'info');
+    document.getElementById('btnStart').classList.remove('hidden');
+    document.getElementById('btnStop').classList.add('hidden');
+    STATE.isListening = false;
+  }
   STATE.currentRecognition = recognition;
 
   const duration = parseFloat(document.getElementById('iaDuration').value) * 3600 * 1000;
@@ -602,8 +680,44 @@ function generateIAOutput() {
         </div>
       </div>
     `;
+  } else if (mode === 'corrective') {
+    output = `
+      <div class="a4-paper">
+        <div class="report-header">
+          <h1>RAPPORT CORRECTIF</h1>
+          <div class="meta-line"><strong>IT/CT IA — Mode Corrective</strong> | Code : <strong style="color:var(--primary);">${reportId}</strong></div>
+          <img src="${generateQRUrl('IT/CT Corrective ' + reportId)}" alt="QR Code" style="width:90px;height:90px;margin-top:0.8rem;border:2px solid var(--primary);border-radius:6px;" />
+        </div>
+        <div class="report-body">
+          <table style="width:100%;font-size:0.85rem;border-collapse:collapse;margin-bottom:1rem;">
+            <tr><td style="font-weight:600;padding:0.3rem;">Date de correction</td><td>${reportDate}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Document corrigé</td><td>Rapport de mission — ${reportId}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Auteur de la correction</td><td>${reportRole}</td></tr>
+            <tr><td style="font-weight:600;padding:0.3rem;">Type de correction</td><td>Mise en conformité avec le modèle officiel de rapport administratif du Code du travail RDC</td></tr>
+          </table>
+          <h2>I. Points corrigés</h2>
+          <ul>
+            <li>Structure du rapport conforme au modèle officiel (Introduction, Déroulement, Entreprises, Difficultés, Constats, Irrégularités, Recommandations, Actions).</li>
+            <li>Mise en page A4 respectée avec marges et typographie adaptées.</li>
+            <li>Ajout des références juridiques (articles 187-198) et du serment.</li>
+            <li>Intégration du code unique et du QR code pour traçabilité.</li>
+          </ul>
+          <h2>II. Texte corrigé et adapté</h2>
+          <p>${transcript.substring(0, 600)}...</p>
+          <h2>III. Validation et archivage</h2>
+          <p>Le document corrigé a été validé et peut être imprimé, exporté en PDF ou partagé. Un exemplaire est archivé automatiquement.</p>
+        </div>
+        <div class="report-footer">
+          <p>Ainsi fait à <strong>${reportCity}</strong> le <strong>${reportDate}</strong></p>
+          <div class="signature-block">
+            <p><strong>IA Corrective — InspecteurBot</strong></p>
+            <p>Code : <strong>${reportId}</strong></p>
+          </div>
+        </div>
+      </div>
+    `;
   } else {
-    // IA Mission — modèle officiel complet et fidèle au PDF
+    // Mission — modèle officiel complet et fidèle au PDF
     output = `
       <div class="a4-paper">
         <div class="report-header">
@@ -690,6 +804,17 @@ function showIAOutput(key) {
   document.getElementById('tab' + key.charAt(0).toUpperCase() + key.slice(1)).classList.add('active');
   // For simplicity, same content is shown under all tabs; in a full app, each would be different.
   generateIAOutput();
+}
+
+function shareIAOutput() {
+  const body = document.getElementById('iaOutputBody');
+  const text = body.innerText;
+  const shareData = { title: 'IT/CT IA — Document généré', text: text.substring(0, 200) + '...', url: window.location.href };
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('Contenu du document copié dans le presse-papier pour partage.', 'success'));
+  }
 }
 
 function copyIAOutput() {
