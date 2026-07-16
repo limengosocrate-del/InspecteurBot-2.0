@@ -446,9 +446,12 @@ function detectLanguageReal(text) {
 function renderTranscriptEntry(entry) {
   const container = document.getElementById('iaTranscript');
   if (container.querySelector('.transcript-placeholder')) container.innerHTML = '';
-  const div = document.createElement('p');
-  div.innerHTML = `<span style="color:#bfa15f;font-weight:700;font-size:0.75rem;">[${entry.time} | ${entry.lang}]</span> ${entry.text}`;
-  container.appendChild(div);
+  // ChatGPT-style: continuous text without per-line separation or timestamp labels
+  const span = document.createElement('span');
+  span.style.display = 'inline';
+  span.style.marginRight = '0.5rem';
+  span.textContent = entry.text;
+  container.appendChild(span);
   container.scrollTop = container.scrollHeight;
 }
 
@@ -460,7 +463,15 @@ function generateIAOutput() {
   let output = '';
 
   if (mode === 'conversation') {
-    output = `<h4>Conversation — Transcription</h4><p>Mode conversation : aucune référence de rapport n'est requise. L'IA a retranscrit et analysé ${STATE.transcriptLog.length} segments.</p><p><strong>Contenu :</strong> ${transcript.substring(0, 400)}...</p>`;
+    const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
+    output = `
+      <h4>Conversation — Transcription en temps réel</h4>
+      <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:1rem;">Aucune référence de rapport requise. Cliquez sur le texte ci-dessous pour exporter en PDF.</p>
+      <div onclick="exportConversationPDF()" style="cursor:pointer;background:#fff;border:2px dashed var(--primary);border-radius:10px;padding:1rem;color:var(--ink);line-height:1.6;" title="Cliquer pour exporter ce texte en PDF">
+        <p><strong>Contenu transcrit :</strong> ${fullText || '(En cours d\'écoute...)'}</p>
+        <p style="font-size:0.75rem;color:var(--accent);margin-top:0.5rem;"><i class="fa-solid fa-file-pdf"></i> Cliquer ici pour générer le PDF automatiquement</p>
+      </div>
+    `;
   } else {
     const companies = ['REWA CONGO', 'RALPH SERVICES', 'STARTIMES MEDIA RDC', 'KABOD INVESTISMENT SARL', 'UBA', 'FONDATION ALLIANCE EUP', 'LIQUID TELECOM', 'AFRIQUE DIGITAL CONGO', 'POLYCLINIQUE DE KINSHASA', 'RESTAURANT CHEZ FRIDA', 'ABEAR PRESING', 'ERIGES LODGES', 'KIDS SPORS', 'BRAINS INTERNATIONAL', 'KIN CONGO NATURE', 'PRIMA SUPER MARKET', 'COOKS BISTRO', 'MAISON KAYSER'];
     const companyLine = companies[Math.floor(Math.random() * companies.length)];
@@ -544,6 +555,27 @@ function copyIAOutput() {
 
 function printIAOutput() {
   window.print();
+}
+
+function exportConversationPDF() {
+  const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
+  const content = `<h2>IT/CT IA — Transcription de conversation</h2><p>Date : ${new Date().toLocaleString('fr-FR')}</p><p>Mode : ${STATE.iaMode}</p><hr/><p>${fullText || 'Aucun texte transcrit.'}</p>`;
+  const opt = {
+    margin: [10, 10, 10, 10],
+    filename: 'conversation_transcription.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = content;
+  tempDiv.style.fontFamily = 'Inter, sans-serif';
+  tempDiv.style.padding = '20px';
+  document.body.appendChild(tempDiv);
+  html2pdf().set(opt).from(tempDiv).save().then(() => {
+    document.body.removeChild(tempDiv);
+    showToast('PDF généré automatiquement : conversation_transcription.pdf', 'success');
+  });
 }
 
 function exportIAOutputPDF() {

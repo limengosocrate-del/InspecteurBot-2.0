@@ -42,27 +42,7 @@ body {
   position: relative;
 }
 
-/* Nuages décoratifs fixes */
-.cloud {
-  position: fixed; pointer-events: none; z-index: 0;
-  background: rgba(255,255,255,0.85); border-radius: 50%;
-  box-shadow: 20px 20px 40px rgba(255,255,255,0.6), -20px 20px 40px rgba(255,255,255,0.4);
-  opacity: 0.7; animation: floatCloud 60s infinite ease-in-out alternate;
-}
-.cloud::before, .cloud::after { content:''; position:absolute; background:rgba(255,255,255,0.9); border-radius:50%; }
-.cloud.c1 { width:320px; height:120px; top:8%; left:-5%; animation-delay:0s; }
-.cloud.c1::before { width:140px; height:140px; top:-50px; left:50px; }
-.cloud.c1::after { width:100px; height:100px; top:-30px; left:160px; }
-.cloud.c2 { width:260px; height:100px; top:25%; right:-8%; animation-delay:-20s; animation-duration:70s; }
-.cloud.c2::before { width:110px; height:110px; top:-40px; left:40px; }
-.cloud.c2::after { width:90px; height:90px; top:-20px; left:130px; }
-.cloud.c3 { width:300px; height:110px; top:55%; left:-6%; animation-delay:-40s; animation-duration:65s; }
-.cloud.c3::before { width:130px; height:130px; top:-45px; left:50px; }
-.cloud.c3::after { width:100px; height:100px; top:-25px; left:140px; }
-@keyframes floatCloud {
-  0% { transform: translateX(0) translateY(0); }
-  100% { transform: translateX(30px) translateY(10px); }
-}
+/* Nuages supprimés — fond bleu ciel pur */
 
 /* Ribbon */
 .ribbon {
@@ -117,9 +97,9 @@ main { position: relative; z-index: 10; }
 .section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-h2 { font-family: var(--font-display); font-size: 1.9rem; color: var(--primary); margin-bottom: 0.3rem; letter-spacing: -0.02em; }
-h2 i { color: var(--accent); margin-right: 0.35rem; }
-.section-desc { color: var(--ink-muted); margin-bottom: 1.5rem; max-width: 720px; }
+h2 { font-family: var(--font-display); font-size: 1.9rem; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); margin-bottom: 0.3rem; letter-spacing: -0.02em; font-weight: 700; }
+h2 i { color: var(--accent); margin-right: 0.35rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+.section-desc { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); margin-bottom: 1.5rem; max-width: 720px; font-weight: 500; }
 
 /* Hero */
 .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; background: linear-gradient(135deg, #0a2540 0%, #163a5f 100%); border-radius: var(--radius); padding: 3rem 3.5rem; color: #fff; box-shadow: var(--shadow-strong); margin-bottom: 2.5rem; position: relative; overflow: hidden; }
@@ -277,14 +257,18 @@ h2 i { color: var(--accent); margin-right: 0.35rem; }
 .site-footer i { color: var(--accent); margin-right: 0.3rem; }
 .site-footer p { font-size: 0.85rem; opacity: 0.85; margin-top: 0.2rem; }
 
+.back-top-btn { position: fixed; bottom: 1.2rem; left: 1.2rem; z-index: 300; background: var(--primary); color: #fff; padding: 0.7rem 1rem; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 16px rgba(10,37,64,0.25); border: none; cursor: pointer; transition: background 0.15s; }
+.back-top-btn:hover { background: #0e3258; }
+
 /* Utilities */
 .hidden { display: none !important; }
 
 /* Print styles */
 @media print {
-  .ribbon, .main-nav, .hero-cta, .doc-controls, .form-actions, .ia-mode-selector, .tab-btn, .archive-search, .mobile-menu-btn, footer, .hero-visual { display: none !important; }
+  .ribbon, .main-nav, .hero-cta, .doc-controls, .form-actions, .ia-mode-selector, .tab-btn, .archive-search, .mobile-menu-btn, footer, .hero-visual, .toast { display: none !important; }
   body { background: #fff; }
-  .section { display: block !important; max-width: 100%; padding: 0; }
+  .section:not(.active) { display: none !important; }
+  .section.active { display: block !important; max-width: 100%; padding: 0; }
   .a4-paper { width: 100%; box-shadow: none; padding: 0; }
   .doc-content { border: none; box-shadow: none; padding: 0; }
   .archive-table-wrapper { overflow: visible; }
