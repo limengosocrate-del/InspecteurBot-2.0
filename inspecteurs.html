@@ -16,7 +16,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <link rel="stylesheet" href="style-inspecteur.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -80,7 +80,7 @@
           <h1>Module <span class="accent">Inspecteur et Contrôleur du Travail</span></h1>
           <p class="hero-sub">Outil professionnel, intelligent et conforme aux pratiques de l'Inspection Générale du Travail de la République Démocratique du Congo.</p>
           <div class="hero-cta">
-            <a href="#" onclick="showSection('mission')" class="btn-primary"><i class="fa-solid fa-rocket"></i> Élaboration d'un rapport de mission</a>
+            <a href="#" onclick="showSection('mission')" class="btn-primary"><i class="fa-solid fa-rocket"></i> Élaboration du rapport de mission</a>
             <a href="#" onclick="showSection('itct-ia')" class="btn-secondary"><i class="fa-solid fa-brain"></i> Lancer IT/CT IA</a>
           </div>
         </div>
@@ -101,7 +101,7 @@
         </article>
         <article class="card" onclick="showSection('mission')">
           <i class="fa-solid fa-clipboard-check card-icon"></i>
-          <h3>Élaboration d'un rapport de mission</h3>
+          <h3>Élaboration du rapport de mission</h3>
           <p>Créez une mission officielle, générez le rapport A4 et archivez automatiquement.</p>
         </article>
         <article class="card" onclick="showSection('ia-aide')">
@@ -245,6 +245,18 @@
           <div class="form-group full">
             <label for="mObservations">Observations préliminaires</label>
             <textarea id="mObservations" rows="2"></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mConstats">Constats effectués</label>
+            <textarea id="mConstats" rows="2" placeholder="Ex. Registres en ordre, avis affichés, conditions de sécurité respectées..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mRecommandations">Recommandations et décisions proposées</label>
+            <textarea id="mRecommandations" rows="2" placeholder="Ex. Mise en demeure immédiate, réinspection dans 15 jours..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label for="mConclusion">Conclusion</label>
+            <textarea id="mConclusion" rows="2" placeholder="Ex. Mission accomplie dans le respect des procédures. Aucune irrégularité majeure relevée."></textarea>
           </div>
         </div>
 
@@ -547,17 +559,14 @@
   <footer class="site-footer">
     <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
     <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
-    <p>Développé par Limengo (Pmiller).</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
   </footer>
 
   <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="app-inspecteur.js"></script>
-</body>
+  <script src="app.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1c1b0600f55f047',t:'MTc4NDIxMjA2MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
-
-

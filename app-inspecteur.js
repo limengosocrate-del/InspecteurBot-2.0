@@ -255,6 +255,9 @@ function createMission(e) {
     addresses: document.getElementById('mAddresses').value,
     phone: document.getElementById('mPhone').value,
     observations: document.getElementById('mObservations').value,
+    constats: document.getElementById('mConstats').value,
+    recommandations: document.getElementById('mRecommandations').value,
+    conclusion: document.getElementById('mConclusion').value,
     difficiles: document.getElementById('mDifficultes').value,
     logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
   };
@@ -285,6 +288,9 @@ function previewMission(e) {
     addresses: document.getElementById('mAddresses').value,
     phone: document.getElementById('mPhone').value,
     observations: document.getElementById('mObservations').value,
+    constats: document.getElementById('mConstats').value,
+    recommandations: document.getElementById('mRecommandations').value,
+    conclusion: document.getElementById('mConclusion').value,
     difficiles: document.getElementById('mDifficultes').value,
     logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
   };
@@ -309,7 +315,7 @@ function renderReportPreview(data) {
   const todayStr = data.date ? new Date(data.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
   const randId = Math.floor(Math.random() * 9000) + 1000;
   const reportCode = 'ITCT-' + todayStr + '-' + randId;
-  const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent('Rapport Mission ' + reportCode);
+  const qrUrl = generateQRUrl('Rapport Mission ' + reportCode);
   const meta = `
     <div style="text-align:center;font-size:0.9rem;color:#333;margin-bottom:0.5rem;">
       <strong>République Démocratique du Congo</strong><br/>
@@ -355,6 +361,30 @@ function renderReportPreview(data) {
 
     <h2>IV. Difficultés rencontrées</h2>
     <p>— ${data.difficiles || data.observations || 'Aucune difficulté particulière signalée.'}</p>
+
+    <h2>V. Constats effectués</h2>
+    <ul>
+      <li>${data.constats || 'Inspection des registres et documents obligatoires.'}</li>
+      <li>Vérification de l'affichage des avis prévus par la loi.</li>
+      <li>Contrôle des conditions de sécurité et d'hygiène.</li>
+      <li>Entretien avec le personnel et l'employeur.</li>
+    </ul>
+
+    <h2>VI. Irrégularités relevées</h2>
+    <ul>
+      <li>Absence de certains documents liés à la main d'œuvre nationale et étrangère.</li>
+      <li>Non-conformité des règlements internes.</li>
+      <li>Obstruction au contrôle relevée dans plusieurs établissements.</li>
+    </ul>
+
+    <h2>VII. Recommandations et décisions proposées</h2>
+    <ul>
+      <li><strong>${data.recommandations || 'Une mise en demeure immédiate — délai proposé : 15 à 30 jours.'}</strong></li>
+      <li>Réinspection complémentaire recommandée après régularisation.</li>
+    </ul>
+
+    <h2>VIII. Conclusion</h2>
+    <p>${data.conclusion || 'Mission accomplie dans le respect des procédures administratives et du secret professionnel. Aucune irrégularité majeure n\'a été relevée.'}</p>
   `;
   document.getElementById('previewBody').innerHTML = body;
   document.getElementById('previewDate').textContent = data.date ? new Date(data.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -663,6 +693,8 @@ function startListening() {
   document.getElementById('iaStatusText').textContent = 'Transcription en temps réel comme dans ChatGPT...';
   STATE.transcriptLog = [];
   document.getElementById('iaTranscript').innerHTML = '';
+  const actions = document.getElementById('transcriptActions');
+  if (actions) actions.remove();
 
   // Sensibilité audio : microphone sans bruit (désactivation écho/bruit)
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -767,6 +799,10 @@ function stopListening() {
       <button onclick="clearTranscript()" class="btn-outline" aria-label="Effacer la transcription"><i class="fa-solid fa-trash"></i> Effacer</button>
       <button onclick="downloadTranscript()" class="btn-outline" aria-label="Télécharger la transcription"><i class="fa-solid fa-download"></i> Télécharger</button>
       <button onclick="copyTranscript()" class="btn-outline" aria-label="Copier la transcription"><i class="fa-solid fa-copy"></i> Copier le texte</button>
+      <button onclick="sendTranscriptToMode('mission')" class="btn-outline" aria-label="Envoyer vers IA Mission"><i class="fa-solid fa-file-contract"></i> Envoyer vers IA Mission</button>
+      <button onclick="sendTranscriptToMode('formation')" class="btn-outline" aria-label="Envoyer vers IA Formation"><i class="fa-solid fa-chalkboard-user"></i> Envoyer vers IA Formation</button>
+      <button onclick="sendTranscriptToMode('reunion')" class="btn-outline" aria-label="Envoyer vers IA Réunion"><i class="fa-solid fa-handshake"></i> Envoyer vers IA Réunion</button>
+      <button onclick="sendTranscriptToMode('conversation')" class="btn-outline" aria-label="Envoyer vers IA Conversation"><i class="fa-solid fa-comments"></i> Envoyer vers IA Conversation</button>
     `;
     transcriptArea.appendChild(actionsDiv);
   }
@@ -795,6 +831,17 @@ function downloadTranscript() {
 function copyTranscript() {
   const fullText = STATE.transcriptLog.map(e => e.text).join(' ');
   navigator.clipboard.writeText(fullText || '').then(() => showToast('Transcription copiée dans le presse-papier.', 'success'));
+}
+
+function sendTranscriptToMode(mode) {
+  STATE.iaMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  const btnId = 'mode' + mode.charAt(0).toUpperCase() + mode.slice(1);
+  const btn = document.getElementById(btnId);
+  if (btn) btn.classList.add('active');
+  document.getElementById('iaOutput').classList.remove('hidden');
+  generateIAOutput();
+  showToast('Transcription envoyée vers IA ' + mode + '.', 'success');
 }
 
 function detectLanguageReal(text) {
@@ -838,7 +885,19 @@ function generateReportId() {
 }
 
 function generateQRUrl(text) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(text)}`;
+  const temp = document.createElement('div');
+  temp.style.display = 'none';
+  document.body.appendChild(temp);
+  try {
+    new QRCode(temp, { text: text, width: 120, height: 120, colorDark: '#0a2540', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+    const img = temp.querySelector('img');
+    const src = (img && img.src) ? img.src : '';
+    document.body.removeChild(temp);
+    return src || ('https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(text));
+  } catch (e) {
+    document.body.removeChild(temp);
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(text);
+  }
 }
 
 function generateIAOutput() {
@@ -1028,7 +1087,7 @@ function generateIAOutput() {
           </table>
 
           <h2>IV. Difficultés rencontrées</h2>
-          <p>— ${STATE.currentMission ? STATE.currentMission.observations || 'Aucune difficulté particulière signalée.' : 'Aucune difficulté particulière signalée.'}</p>
+          <p>— ${STATE.currentMission ? STATE.currentMission.difficiles || STATE.currentMission.observations || 'Aucune difficulté particulière signalée.' : 'Aucune difficulté particulière signalée.'}</p>
 
           <h2>V. Constats effectués</h2>
           <ul>

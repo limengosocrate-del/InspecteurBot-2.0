@@ -266,14 +266,21 @@ h2 i { color: var(--accent); margin-right: 0.35rem; text-shadow: 1px 1px 2px rgb
 
 /* Print styles */
 @media print {
-  .ribbon, .main-nav, .hero-cta, .doc-controls, .form-actions, .ia-mode-selector, .tab-btn, .archive-search, .mobile-menu-btn, footer, .hero-visual, .toast { display: none !important; }
+  .ribbon, .main-nav, .hero-cta, .doc-controls, .form-actions, .ia-mode-selector, .tab-btn, .archive-search, .mobile-menu-btn, footer, .hero-visual, .toast, .back-top-btn { display: none !important; }
   body { background: #fff; }
   .section:not(.active) { display: none !important; }
-  .section.active { display: block !important; max-width: 100%; padding: 0; }
-  .a4-paper { width: 100%; box-shadow: none; padding: 0; }
+  .section.active { display: block !important; max-width: 100%; padding: 0; margin: 0; }
+  /* Hide everything inside active section except A4 preview and AI output */
+  .section.active > * { display: none !important; }
+  #missionForm, .form-grid, .hero-cta, .quick-cards, .section-desc, h2:not(.report-header h1) { display: none !important; }
+  #reportPreviewArea, #previewFormation, #previewReunion, #previewConversation, #iaOutput { display: block !important; }
+  #reportPreviewArea > *:not(.a4-preview-wrapper), #iaOutput > *:not(.ia-output-body) { display: none !important; }
+  .a4-preview-wrapper, .ia-output-body { display: block !important; }
+  .a4-paper { width: 210mm !important; min-height: 297mm; padding: 18mm 16mm; box-shadow: none; margin: 0 auto; }
   .doc-content { border: none; box-shadow: none; padding: 0; }
   .archive-table-wrapper { overflow: visible; }
   .archive-table th { background: #333; color: #fff; }
+  .report-actions, #transcriptActions, .ia-left, .ia-right, .ia-mode-selector, .tab-btn { display: none !important; }
 }
 
 /* Difficultees idees (IA Aide) */
