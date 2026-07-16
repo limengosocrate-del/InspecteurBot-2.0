@@ -16,7 +16,7 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <link rel="stylesheet" href="style-inspecteur.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -467,23 +467,23 @@
         <div class="innovation-grid">
           <article class="innovation-card">
             <i class="fa-solid fa-wave-square"></i>
-            <h4>Détection émotionnelle <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel)</span></h4>
-            <p>L'IA analyse le ton de la voix pour détecter le stress, la confiance ou la réticence et adapte ses recommandations. <em>Concept futuriste non disponible.</em></p>
+            <h4>Détection émotionnelle <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel — vision future)</span></h4>
+            <p>L'IA analyse le ton de la voix (via le micro activé dans <code>startListening()</code>) pour détecter le stress, la confiance ou la réticence et adapte ses recommandations. <em>Concept futuriste non disponible actuellement.</em></p>
           </article>
           <article class="innovation-card">
             <i class="fa-solid fa-language"></i>
-            <h4>Traduction automatique <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel)</span></h4>
-            <p>Transcription et traduction en temps réel entre français, anglais, lingala et swahili sans configuration préalable. <em>Concept futuriste non disponible.</em></p>
+            <h4>Traduction automatique <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Basé sur SpeechRecognition — Chrome/Edge + Internet)</span></h4>
+            <p>Transcription en temps réel via le navigateur (SpeechRecognition API), nécessitant Chrome/Edge et une connexion internet active. Le texte s'écrit automatiquement dans <code>#iaTranscript</code> de manière continue, comme dans ChatGPT. <em>Fonction réelle du module.</em></p>
           </article>
           <article class="innovation-card">
             <i class="fa-solid fa-file-shield"></i>
-            <h4>Analyse de documents <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel)</span></h4>
-            <p>Simulez l'analyse d'un document scanné : l'IA extrait les données, détecte les irrégularités et propose un PV. <em>Concept futuriste non disponible.</em></p>
+            <h4>Analyse de documents <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel — vision future)</span></h4>
+            <p>Simulez l'analyse d'un document scanné : l'IA extrait les données, détecte les irrégularités et propose un procès-verbal. Intégré au modèle de rapport A4 avec code unique et QR. <em>Concept futuriste non disponible.</em></p>
           </article>
           <article class="innovation-card">
             <i class="fa-solid fa-brain"></i>
-            <h4>Mémoire contextuelle <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel)</span></h4>
-            <p>L'IA conserve le contexte d'une mission, apprend des interactions et affine ses recommandations au fil du temps. <em>Concept futuriste non disponible.</em></p>
+            <h4>Mémoire contextuelle <span style="font-size:0.75rem;color:var(--danger);font-weight:700;">(Fictionnel — vision future)</span></h4>
+            <p>L'IA conserve le contexte d'une mission (archive locale via <code>localStorage</code>), apprend des interactions et affine ses recommandations au fil du temps. Le module archive automatiquement chaque mission dans <code>inspecteurbot_archive</code>. <em>Concept futuriste non disponible.</em></p>
           </article>
         </div>
       </div>
@@ -495,7 +495,7 @@
       <p class="section-desc">Toutes les missions sont archivées automatiquement. Recherche avancée, ouverture, modification, impression et partage.</p>
 
       <div class="archive-search">
-        <input type="text" id="archiveSearch" placeholder="Recherche (date, ordre de service, groupe, chef, inspecteur, entreprise, province, secteur...)" oninput="searchArchives(this.value)" aria-label="Recherche dans les archives" />
+        <input type="text" id="archiveSearch" placeholder="Recherche avancée : date, ordre de service, groupe, entreprise, adresse, province/ville, chef/inspecteur/contrôleur, matière contrôlée, mot-clé, statut..." oninput="searchArchives(this.value)" aria-label="Recherche dans les archives" />
       </div>
 
       <div class="archive-table-wrapper">
@@ -570,7 +570,7 @@
   <footer class="site-footer">
     <p><i class="fa-solid fa-building-columns"></i> InspecteurBot — Module Inspecteur et Contrôleur du Travail — RDC</p>
     <p>Conforme au Code du travail de la RDC (2002) — Articles 187 à 198</p>
-    <p>Développé par Limengo (Pmiller).</p>
+    <p>Développement : HTML / CSS / app.js — Module professionnel, moderne et intelligent.</p>
   </footer>
 
   <!-- Scripts -->
@@ -578,6 +578,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="app-inspecteur.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

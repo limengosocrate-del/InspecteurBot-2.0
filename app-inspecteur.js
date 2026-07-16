@@ -1313,8 +1313,8 @@ function saveArchive() {
 function updateArchiveTable() {
   const tbody = document.getElementById('archiveTbody');
   const list = STATE.archiveData.slice().reverse();
-  tbody.innerHTML = list.map(item => `
-    <tr>
+  tbody.innerHTML = list.map((item, idx) => `
+    <tr data-id="${item.id}" data-index="${idx}" style="display:'';">
       <td>${item.date || '—'}</td>
       <td>${item.order || '—'}</td>
       <td>${item.group || '—'}</td>
@@ -1335,9 +1335,36 @@ function updateArchiveTable() {
 }
 
 function searchArchives(query) {
-  const q = query.toLowerCase();
-  document.querySelectorAll('#archiveTbody tr').forEach(row => {
-    const text = row.innerText.toLowerCase();
+  const q = query.toLowerCase().trim();
+  const tbody = document.getElementById('archiveTbody');
+  const rows = tbody.querySelectorAll('tr');
+  rows.forEach(row => {
+    const idStr = row.getAttribute('data-id');
+    const item = STATE.archiveData.find(i => String(i.id) === idStr);
+    if (!item) {
+      row.style.display = (q.length === 0) ? '' : 'none';
+      return;
+    }
+    const fields = [
+      item.date || '',
+      item.order || '',
+      item.group || '',
+      item.role || '',
+      item.participants || '',
+      item.objective || '',
+      item.matter || '',
+      item.companies || '',
+      item.addresses || '',
+      item.phone || '',
+      item.observations || '',
+      item.difficiles || '',
+      item.constats || '',
+      item.recommandations || '',
+      item.conclusion || '',
+      item.direction || '',
+      item.status || ''
+    ];
+    const text = fields.join(' ').toLowerCase();
     row.style.display = (q.length === 0 || text.includes(q)) ? '' : 'none';
   });
 }
