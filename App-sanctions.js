@@ -58,7 +58,12 @@ class InspecteurBotSanctions {
        this.initAssistantIA();
 
        this.loadAIConnection();
+       
        this.loadAIHistory();
+
+       this.initArchives();
+
+       this.initStatistics();
 
         this.showView("dashboard", false);
 
@@ -3560,6 +3565,7 @@ runAdvancedAI(){
         input.value
     );
 
+    this.saveAIAnalysis(analyse);
 
 
     this.displayAdvancedAI(
@@ -4097,3 +4103,769 @@ loadAIConnection(){
 
 }
 
+
+/* ==========================================================
+   PARTIE 7A
+   ARCHIVES + STATISTIQUES
+   Tableau de bord intelligent
+========================================================== */
+
+
+/* ===============================
+   Initialisation Archives
+=============================== */
+
+initArchives(){
+
+
+    this.archives = JSON.parse(
+
+        localStorage.getItem(
+            "inspecteurbot-archives"
+        )
+        ||
+        "[]"
+
+    );
+
+
+    this.renderArchives();
+
+
+}
+
+
+
+/* ===============================
+   Ajouter une archive
+=============================== */
+
+saveArchive(data){
+
+
+    let archives = JSON.parse(
+
+        localStorage.getItem(
+            "inspecteurbot-archives"
+        )
+        ||
+        "[]"
+
+    );
+
+
+
+    data.id =
+        Date.now();
+
+
+
+    data.date =
+        new Date()
+        .toLocaleString();
+
+
+
+    archives.unshift(data);
+
+
+
+    localStorage.setItem(
+
+        "inspecteurbot-archives",
+
+        JSON.stringify(archives)
+
+    );
+
+
+
+    this.renderArchives();
+
+
+}
+
+
+
+/* ===============================
+   Afficher archives
+=============================== */
+
+renderArchives(){
+
+
+    const zone =
+        document.getElementById(
+            "archivesList"
+        );
+
+
+
+    if(!zone) return;
+
+
+
+    const archives = JSON.parse(
+
+        localStorage.getItem(
+            "inspecteurbot-archives"
+        )
+        ||
+        "[]"
+
+    );
+
+
+
+    if(archives.length===0){
+
+
+        zone.innerHTML = `
+
+        <p>
+        Aucun dossier archivé.
+        </p>
+
+        `;
+
+
+        return;
+
+    }
+
+
+
+    zone.innerHTML="";
+
+
+
+    archives.forEach(item=>{
+
+
+        zone.innerHTML += `
+
+
+        <div class="archive-card">
+
+
+            <h3>
+
+            ${item.titre || "Dossier"}
+
+            </h3>
+
+
+            <p>
+
+            Type :
+            ${item.type || "Non défini"}
+
+            </p>
+
+
+            <p>
+
+            Date :
+            ${item.date}
+
+            </p>
+
+
+
+            <button
+
+            class="btn"
+
+            onclick="app.openArchive(${item.id})">
+
+
+            Ouvrir
+
+
+            </button>
+
+
+
+        </div>
+
+
+        `;
+
+
+    });
+
+
+}
+
+
+
+/* ===============================
+   Ouvrir archive
+=============================== */
+
+openArchive(id){
+
+
+    const archives = JSON.parse(
+
+        localStorage.getItem(
+            "inspecteurbot-archives"
+        )
+        ||
+        "[]"
+
+    );
+
+
+
+    const dossier =
+
+    archives.find(
+
+        a=>a.id===id
+
+    );
+
+
+
+    if(!dossier) return;
+
+
+
+    const zone =
+
+    document.getElementById(
+        "archiveDetails"
+    );
+
+
+
+    if(!zone) return;
+
+
+
+    zone.innerHTML = `
+
+
+    <div class="card">
+
+
+        <h2>
+
+        ${dossier.titre}
+
+        </h2>
+
+
+        <hr>
+
+
+        <pre>
+
+${JSON.stringify(
+
+    dossier,
+
+    null,
+
+    2
+
+)}
+
+        </pre>
+
+
+    </div>
+
+
+    `;
+
+
+}
+
+
+
+/* ===============================
+   Supprimer archive
+=============================== */
+
+deleteArchive(id){
+
+
+    let archives = JSON.parse(
+
+        localStorage.getItem(
+            "inspecteurbot-archives"
+        )
+        ||
+        "[]"
+
+    );
+
+
+
+    archives = archives.filter(
+
+        a=>a.id!==id
+
+    );
+
+
+
+    localStorage.setItem(
+
+        "inspecteurbot-archives",
+
+        JSON.stringify(archives)
+
+    );
+
+
+
+    this.renderArchives();
+
+
+}
+
+
+
+/* ===============================
+   Statistiques générales
+=============================== */
+
+updateDashboardStats(){
+
+
+    const stats = {
+
+
+        infractions:
+
+        this.infractions
+        ?
+        this.infractions.length
+        :
+        0,
+
+
+        sanctions:
+
+        this.aimData
+        ?
+        this.aimData.length
+        :
+        0,
+
+
+        documents:
+
+        this.documentsJuridiques
+        ?
+        this.documentsJuridiques.length
+        :
+        0,
+
+
+        archives:
+
+        JSON.parse(
+
+            localStorage.getItem(
+                "inspecteurbot-archives"
+            )
+            ||
+            "[]"
+
+        ).length
+
+
+    };
+
+
+
+    const elements = {
+
+
+        infractions:
+        "statInfractions",
+
+
+        sanctions:
+        "statSanctions",
+
+
+        documents:
+        "statDocuments",
+
+
+        archives:
+        "statArchives"
+
+
+    };
+
+
+
+    Object.keys(elements)
+    .forEach(key=>{
+
+
+        const el =
+
+        document.getElementById(
+            elements[key]
+        );
+
+
+
+        if(el){
+
+            el.textContent =
+            stats[key];
+
+        }
+
+
+    });
+
+
+
+}
+
+
+
+/* ===============================
+   Initialisation statistiques
+=============================== */
+
+initStatistics(){
+
+ this.updateDashboardStats();
+
+
+}
+
+
+/* ==========================================================
+   PARTIE 7C
+   FINALISATION MODULE SANCTIONS & INFRACTIONS
+   Nettoyage - Vérification - Maintenance
+========================================================== */
+
+
+/* ===============================
+   Initialisation finale module
+=============================== */
+
+finalizeModule(){
+
+
+    console.log(
+        "Module Sanctions & Infractions chargé."
+    );
+
+
+    this.checkModules();
+
+
+}
+
+
+
+/* ===============================
+   Vérification modules
+=============================== */
+
+checkModules(){
+
+
+    const modules = {
+
+
+        infractions:
+        !!this.infractions,
+
+
+        aim:
+        !!this.aimData,
+
+
+        bibliotheque:
+        !!this.documentsJuridiques,
+
+
+        articles:
+        !!this.articlesCodeTravail,
+
+
+        assistantIA:
+        !!this.aiKnowledge,
+
+
+        archives:
+        true
+
+
+    };
+
+
+
+    console.table(modules);
+
+
+
+    return modules;
+
+
+}
+
+
+
+/* ===============================
+   Informations module
+=============================== */
+
+getModuleInfo(){
+
+
+    return {
+
+
+        nom:
+
+        "Sanctions & Infractions",
+
+
+
+        application:
+
+        "InspecteurBot RDC",
+
+
+
+        version:
+
+        "1.0.0",
+
+
+
+        modules:
+
+
+        [
+
+            "65 Infractions",
+
+            "AIM 006/127",
+
+            "Bibliothèque juridique",
+
+            "Assistant IA",
+
+            "Archives"
+
+        ],
+
+
+
+        statut:
+
+        "Actif"
+
+
+    };
+
+
+}
+
+
+
+/* ===============================
+   Nettoyage données module
+=============================== */
+
+clearModuleData(){
+
+
+    if(
+
+        confirm(
+
+        "Supprimer uniquement les données du module Sanctions ?"
+
+        )
+
+    ){
+
+
+        localStorage.removeItem(
+
+            "inspecteurbot-favoris"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "aim-history"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "documents-favoris"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "documents-history"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "articles-favoris"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "inspecteurbot-ai-history"
+
+        );
+
+
+        localStorage.removeItem(
+
+            "inspecteurbot-archives"
+
+        );
+
+
+
+        alert(
+
+        "Données du module supprimées."
+
+        );
+
+
+
+        location.reload();
+
+
+    }
+
+
+}
+
+
+
+/* ===============================
+   Préparation intégration Dashboard
+=============================== */
+
+connectToInspectorDashboard(){
+
+
+    window.InspecteurBot =
+
+    window.InspecteurBot || {};
+
+
+
+    window.InspecteurBot.Sanctions = {
+
+
+        open:()=>{
+
+
+            this.showView(
+                "dashboard",
+                false
+            );
+
+
+        },
+
+
+        instance:this
+
+
+    };
+
+
+
+    console.log(
+
+    "Module connecté au Dashboard InspecteurBot."
+
+    );
+
+
+}
+
+
+
+/* ===============================
+   Démarrage final
+=============================== */
+
+startModule(){
+
+
+    this.loadTheme();
+
+
+    this.initInfractions();
+
+
+    this.initAIM();
+
+
+    this.initBibliotheque();
+
+
+    this.initArticlesCodeTravail();
+
+
+    this.initAssistantIA();
+
+
+    this.initArchives();
+
+
+    this.loadFavorites();
+
+
+    this.loadAIMHistory();
+
+
+    this.loadAIHistory();
+
+
+    this.initStatistics();
+
+
+    this.connectToInspectorDashboard();
+
+
+    this.finalizeModule();
+
+
+}
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+    app.init();
+
+    app.startModule();
+
+});
