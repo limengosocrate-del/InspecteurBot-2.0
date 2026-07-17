@@ -1,323 +1,5065 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inspecteur RDC Pro</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="sanctions.css">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
+    <title>
+        InspecteurBot IA RDC | Module Sanctions & Infractions
+    </title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="sanctions.css">
+
 </head>
+
 <body>
 
+    <!-- ========================= -->
+    <!-- APPLICATION -->
+    <!-- ========================= -->
+
     <div class="app-container">
-        
-        <!-- TOP NAV -->
-        <div class="top-bar">
-            <button class="back-btn hidden" id="back-btn" onclick="app.goBack()">
-                <i class="fa-solid fa-chevron-left"></i> <span id="back-text">Retour</span>
-            </button>
-            <div class="app-title" id="app-title">Tableau de Bord</div>
-            <button class="header-action" id="theme-btn"><i class="fa-regular fa-moon"></i></button>
-        </div>
 
-        <!-- CONTENT -->
-        <div class="content">
-            
-            <!-- VIEW: DASHBOARD -->
-            <div id="dashboard" class="view active">
-                <div style="margin-bottom: 20px;">
-                    <h2 style="font-size: 26px; font-weight: 700; color: var(--text-primary);">Accueil</h2>
-                    <p style="color: var(--text-muted); font-size: 15px;">Inspection Générale du Travail RDC</p>
-                </div>
+        <!-- ========================= -->
+        <!-- BARRE SUPÉRIEURE -->
+        <!-- ========================= -->
 
-                <h3 style="font-size: 18px; margin: 25px 0 15px; color: var(--text-primary);">Consultation & Tables Légales</h3>
-                <div class="menu-grid" style="margin-bottom: 25px;">
-                    <div class="menu-card" onclick="app.navTo('table-code', 'Tableau des 65 Infractions')">
-                        <i class="fa-solid fa-scale-unbalanced"></i>
-                        <span>Code du Travail (FC)</span>
-                    </div>
-                    <div class="menu-card" onclick="app.navTo('table-aim', 'Tableau AIM 006')">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span>Amendes AIM (USD)</span>
-                    </div>
-                </div>
+        <header class="top-bar">
 
-                <h3 style="font-size: 18px; margin: 25px 0 15px; color: var(--text-primary);">Assistants & Outils</h3>
-                <div class="menu-grid" style="margin-bottom: 25px;">
-                    <div class="menu-card" onclick="app.navToTab('qna', 'Questions / Réponses IA')">
-                        <i class="fa-solid fa-brain"></i>
-                        <span>Q&R IA Experte</span>
-                    </div>
-                    <div class="menu-card" onclick="app.navToTab('outils', 'Boîte à Outils')">
-                        <i class="fa-solid fa-toolbox"></i>
-                        <span>Boîte à Outils</span>
-                    </div>
-                    <div class="menu-card" onclick="app.navToTab('archives', 'Mes Dossiers')">
-                        <i class="fa-solid fa-folder-open"></i>
-                        <span>Archivage Intelligent</span>
-                    </div>
-                </div>
-            </div>
+            <!-- Le contenu sera ajouté dans la Partie 2 -->
 
-            <!-- VIEW: TABLE 1 - CODE DU TRAVAIL -->
-            <div id="table-code" class="view no-padding" style="display: none; flex-direction: column;">
-                <div class="info-box" style="margin: 15px; border-left-color: var(--brand-primary);">
-                    <h4><i class="fa-solid fa-circle-info"></i> Utilité du Tableau</h4>
-                    <p>Ce tableau répertorie les 65 infractions originelles prévues par le Code du Travail. Il affiche les montants de base en <strong>Francs Congolais (FC)</strong>.<br><br>
-                    <strong>Quand l'utiliser :</strong> Lors de la rédaction initiale de votre Procès-Verbal pour asseoir la base légale de l'infraction.</p>
-                </div>
+        </header>
 
-                <div class="table-container" style="margin: 0 15px;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>N°</th>
-                                <th>Infraction</th>
-                                <th>Article</th>
-                                <th>Amende / Peine (FC)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-code">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
+        <!-- ========================= -->
+        <!-- CONTENU PRINCIPAL -->
+        <!-- ========================= -->
 
-                <div class="info-box" style="margin: 15px; background: rgba(255, 149, 0, 0.1); border-left-color: var(--status-warning);">
-                    <h4 style="color: var(--status-warning);"><i class="fa-solid fa-lightbulb"></i> Recommandation de l'Inspecteur</h4>
-                    <p style="color: var(--text-primary);">Bien que ce tableau vous donne l'article de loi, <strong>n'utilisez pas ces montants en FC pour le recouvrement final</strong>. Ces montants sont devenus symboliques. Utilisez toujours le tableau AIM 006 (USD) pour la taxation.</p>
-                </div>
+        <main class="content">
 
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+       <div class="top-bar-left">
 
-            <!-- VIEW: TABLE 2 - AIM 006 -->
-            <div id="table-aim" class="view no-padding" style="display: none; flex-direction: column;">
-                <div class="info-box" style="margin: 15px; border-left-color: var(--status-success);">
-                    <h4><i class="fa-solid fa-circle-info"></i> Utilité du Tableau (AIM 006/127)</h4>
-                    <p>Ce tableau présente les taux réactualisés des amendes exprimés en <strong>Dollars Américains (USD)</strong> selon la catégorie de l'entreprise.<br><br>
-                    <strong>Quand l'utiliser :</strong> Lors de la taxation finale et du recouvrement pour adapter la sanction financière à la taille économique de l'entreprise.</p>
-                </div>
+    <button
+        class="back-btn hidden"
+        id="back-btn"
+        onclick="app.goBack()">
 
-                <div class="table-container" style="margin: 0 15px;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nature de la Sanction</th>
-                                <th>Catégorie A<br><small>(Mines, Télécoms)</small></th>
-                                <th>Catégorie B<br><small>(Construction, Énergie)</small></th>
-                                <th>Catégorie C<br><small>(Commerce, Banques)</small></th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-aim">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
+        <i class="fa-solid fa-chevron-left"></i>
 
-                <div class="info-box" style="margin: 15px; background: rgba(52, 199, 89, 0.1); border-left-color: var(--status-success);">
-                    <h4 style="color: var(--status-success);"><i class="fa-solid fa-check-double"></i> Recommandation de l'Inspecteur</h4>
-                    <p style="color: var(--text-primary);">C'est ce tableau qui a force de loi pour le paiement au Trésor Public. N'oubliez pas d'appliquer les multiplicateurs (ex: x3 pour le travail des enfants ou x2 pour le SMIG) sur ces bases.</p>
-                </div>
+    </button>
 
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+    <div class="logo-box">
 
-            <!-- VIEW: Q&A WITH IA -->
-            <div id="qna" class="view no-padding" style="height: calc(100vh - 131px); display: flex; flex-direction: column;">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="msg msg-ai">
-                        <i class="fa-solid fa-brain" style="color: var(--brand-primary); margin-bottom: 10px; font-size: 24px;"></i><br>
-                        <strong>Espace Questions & Réponses (IA d'apprentissage)</strong><br><br>
-                        Posez-moi vos questions pour maîtriser le Code du Travail, les amendes AIM 006, le nouveau SMIG 2025 et les méthodes de contrôle.<br><br>
-                        <i>Ex: "Explique-moi l'infraction de l'Art 157", "Quel est le SMIG d'un manœuvre ?"</i>
-                    </div>
-                </div>
-                
-                <div class="chat-suggestions" id="chat-chips">
-                    <div class="chip" onclick="app.sendChip('Explique-moi l\'article 133')">Article 133 (Enfants)</div>
-                    <div class="chip" onclick="app.sendChip('Quelles sont les amendes pour le SMIG ?')">Amende SMIG</div>
-                    <div class="chip" onclick="app.sendChip('Comment calculer le préavis ?')">Calcul Préavis</div>
-                </div>
+        <i class="fa-solid fa-scale-balanced"></i>
 
-                <div class="chat-input">
-                    <input type="text" id="chat-input-field" placeholder="Posez votre question...">
-                    <button class="chat-send" id="chat-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
+    </div>
 
-            <!-- VIEW: ARCHIVES (CRUD) -->
-            <div id="archives" class="view no-padding">
-                <div style="padding: 20px;">
-                    <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 10px;">Archivage Intelligent : Enregistrez et modifiez vos dossiers.</p>
-                </div>
-                <div class="list-group" id="archives-list" style="border-radius: 0; box-shadow: none; margin: 0;">
-                    <!-- JS Populated via LocalStorage -->
-                </div>
-                
-                <div style="padding: 20px;">
-                    <button class="btn" onclick="app.openArchiveForm()"><i class="fa-solid fa-plus"></i> Créer un nouveau dossier</button>
-                </div>
-            </div>
+    <div class="title-box">
 
-            <!-- VIEW: ARCHIVE FORM -->
-            <div id="archive-form" class="view">
-                <div class="card">
-                    <input type="hidden" id="archive-id">
-                    <div class="form-group">
-                        <label class="form-label">Nom de l'Entreprise</label>
-                        <input type="text" class="form-control" id="archive-nom" placeholder="Ex: [Saisir le nom de l'entreprise]">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Statut du Dossier</label>
-                        <select class="form-control" id="archive-statut">
-                            <option value="Ouvert">Ouvert (Contrôle en cours)</option>
-                            <option value="Urgent">Urgent (Mise en demeure)</option>
-                            <option value="Clos">Clos (Régularisé)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Infractions Constatées</label>
-                        <input type="text" class="form-control" id="archive-infractions" placeholder="Ex: [Saisir les articles violés]">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Notes d'Inspection</label>
-                        <textarea class="form-control" id="archive-notes" placeholder="Ex: [Saisir les détails de la visite]"></textarea>
-                    </div>
-                    <button class="btn" onclick="app.saveArchive()"><i class="fa-solid fa-save"></i> Enregistrer</button>
-                    <button class="btn btn-outline btn-danger" id="btn-delete-archive" onclick="app.deleteArchive()" style="display:none; margin-top: 15px;"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
-                </div>
-                
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+        <h2 id="app-title">
 
-            <!-- VIEW: BOITE A OUTILS & TRADUCTION -->
-            <div id="outils" class="view no-padding">
-                <div class="tool-section-title" style="padding: 20px 20px 0; font-weight: bold; color: var(--brand-primary);">Outils & Assistances</div>
-                
-                <div class="list-group" style="margin: 15px; border-radius: 12px;">
-                    <div class="list-item" onclick="app.navTo('traduction', 'Traducteur National')">
-                        <div class="list-item-content"><h4>Traducteur Terrain</h4><p>Kikongo, Tshiluba, Swahili, Lingala</p></div>
-                        <i class="fa-solid fa-language" style="color: var(--brand-primary); font-size: 24px;"></i>
-                    </div>
-                    <div class="list-item" onclick="app.navTo('generateur-convo', 'Convocation')">
-                        <div class="list-item-content"><h4>Générateur de Convocation</h4><p>Invitation officielle à l'employeur</p></div>
-                        <i class="fa-solid fa-envelope-open-text" style="color: var(--brand-primary); font-size: 24px;"></i>
-                    </div>
-                    <div class="list-item" onclick="app.navTo('delais-legaux', 'Délais Légaux')">
-                        <div class="list-item-content"><h4>Répertoire des Délais</h4><p>Prescriptions et échéances de la loi</p></div>
-                        <i class="fa-solid fa-calendar-day" style="color: var(--brand-primary); font-size: 24px;"></i>
-                    </div>
-                </div>
-            </div>
+            Sanctions & Infractions
 
-            <!-- VIEW: TRADUCTION -->
-            <div id="traduction" class="view">
-                <div class="card">
-                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-language"></i> Traduction IA</h3>
-                    <div class="form-group">
-                        <label class="form-label">Texte à traduire (Français)</label>
-                        <textarea class="form-control" id="trad-text" placeholder="Ex: [Saisissez la phrase légale à traduire]"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Traduire en :</label>
-                        <select class="form-control" id="trad-lang">
-                            <option value="Lingala">Lingala</option>
-                            <option value="Swahili">Swahili</option>
-                            <option value="Kikongo">Kikongo</option>
-                            <option value="Tshiluba">Tshiluba</option>
-                            <option value="Anglais">Anglais</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="app.translateText()"><i class="fa-solid fa-globe"></i> Lancer la Traduction</button>
-                    <div id="trad-result" style="display:none; margin-top: 20px; padding: 15px; background: var(--brand-light); border-radius: 10px; font-weight: 500; font-size: 16px; color: var(--brand-primary); border: 1px solid var(--brand-primary);"></div>
-                </div>
-                
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+        </h2>
 
-            <!-- VIEW: GENERATEUR CONVOCATION -->
-            <div id="generateur-convo" class="view">
-                <div class="card">
-                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-envelope-open-text"></i> Convocation au Bureau</h3>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Générez un texte type pour convoquer un employeur ou un représentant suite à un contrôle.</p>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Objet de la convocation</label>
-                        <select class="form-control" id="convo-objet">
-                            <option value="Audition suite à une inspection">Audition suite à une inspection</option>
-                            <option value="Dépôt de documents manquants">Dépôt de documents manquants</option>
-                            <option value="Conciliation suite à un litige">Conciliation suite à un litige</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="app.generateConvo()"><i class="fa-solid fa-wand-magic-sparkles"></i> Générer le texte</button>
-                    
-                    <div id="convo-result" style="display:none; margin-top: 20px; padding: 20px; background: var(--bg-surface-hover); border-radius: 10px; font-size: 14px; border: 1px solid var(--border-color); line-height: 1.6;"></div>
-                </div>
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+        <small>
 
-            <!-- VIEW: DELAIS LEGAUX -->
-            <div id="delais-legaux" class="view">
-                <div class="card">
-                    <h3 style="margin-bottom: 20px; color: var(--brand-primary);"><i class="fa-solid fa-calendar-day"></i> Répertoire des Délais (Prescription)</h3>
-                    
-                    <div style="border-left: 4px solid var(--status-danger); padding-left: 15px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 5px;">3 Ans (Prescription Salaire)</h4>
-                        <p style="font-size: 14px; color: var(--text-muted);">Art 311 : L'action en paiement du salaire et accessoires se prescrit par 3 ans.</p>
-                    </div>
-                    
-                    <div style="border-left: 4px solid var(--status-warning); padding-left: 15px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 5px;">48 Heures (Décompte Final)</h4>
-                        <p style="font-size: 14px; color: var(--text-muted);">Art 100 : L'employeur a au maximum 2 jours ouvrables après la fin du contrat pour payer le solde.</p>
-                    </div>
-                    
-                    <div style="border-left: 4px solid var(--brand-primary); padding-left: 15px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 5px;">8 Jours (Affiliation CNSS)</h4>
-                        <p style="font-size: 14px; color: var(--text-muted);">L'employeur doit s'affilier à la sécurité sociale dans les 8 jours suivant le premier embauche.</p>
-                    </div>
-                    
-                    <div style="border-left: 4px solid var(--status-success); padding-left: 15px;">
-                        <h4 style="margin-bottom: 5px;">Mise en demeure</h4>
-                        <p style="font-size: 14px; color: var(--text-muted);">Le délai laissé à l'appréciation de l'Inspecteur est généralement de 8 à 15 jours francs pour régularisation.</p>
-                    </div>
-                </div>
-                <div class="bottom-back-btn">
-                    <button class="btn btn-outline" onclick="app.goBack()"><i class="fa-solid fa-chevron-left"></i> Retour</button>
-                </div>
-            </div>
+            InspecteurBot IA RDC
 
-        </div>
+        </small>
 
-        <!-- BOTTOM NAV -->
-        <div class="bottom-nav">
-            <div class="nav-tab active" data-tab="dashboard" onclick="app.navToTab('dashboard', 'Tableau de Bord')">
-                <i class="fa-solid fa-house"></i><span>Accueil</span>
-            </div>
-            <div class="nav-tab" data-tab="qna" onclick="app.navToTab('qna', 'Questions / Réponses IA')">
-                <i class="fa-solid fa-comments"></i><span>IA Q&R</span>
-            </div>
-            <div class="nav-tab" data-tab="outils" onclick="app.navToTab('outils', 'Boîte à Outils')">
-                <i class="fa-solid fa-toolbox"></i><span>Outils</span>
-            </div>
-            <div class="nav-tab" data-tab="archives" onclick="app.navToTab('archives', 'Mes Dossiers')">
-                <i class="fa-solid fa-folder-open"></i><span>Archives</span>
-            </div>
+    </div>
+
+</div>
+
+<div class="top-bar-right">
+
+    <button
+        class="header-btn"
+        id="search-btn"
+        title="Recherche">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+    </button>
+
+    <button
+        class="header-btn"
+        id="notification-btn"
+        title="Notifications">
+
+        <i class="fa-regular fa-bell"></i>
+
+        <span class="notification-badge">
+
+            3
+
+        </span>
+
+    </button>
+
+    <button
+        class="header-btn"
+        id="theme-btn"
+        title="Changer le thème">
+
+        <i class="fa-regular fa-moon"></i>
+
+    </button>
+
+    <button
+        class="header-btn"
+        id="menu-btn"
+        title="Menu">
+
+        <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+</div>
+
+<!-- ========================================= -->
+<!-- ACCUEIL -->
+<!-- ========================================= -->
+
+<section id="dashboard" class="view active">
+
+    <!-- Carte de bienvenue -->
+
+    <div class="welcome-card">
+
+        <div class="welcome-text">
+
+            <h1>
+
+                <i class="fa-solid fa-scale-balanced"></i>
+
+                Module Sanctions & Infractions
+
+            </h1>
+
+            <p>
+
+                Bienvenue dans le centre de référence des Inspecteurs
+                et Contrôleurs du Travail.
+
+                Ce module permet de consulter les infractions,
+                les sanctions, les textes légaux,
+                les amendes AIM 006/127,
+                les procédures d'inspection,
+                les cas pratiques,
+                les outils de calcul,
+                ainsi que les ressources de formation
+                de l'Inspection du Travail.
+
+            </p>
+
         </div>
 
     </div>
 
-    <script src="App-sanctions.js"></script>
+    <!-- Statistiques -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-list-check"></i>
+
+            <h2 id="statInfractions">
+
+                65
+
+            </h2>
+
+            <p>
+
+                Infractions
+
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-gavel"></i>
+
+            <h2 id="statSanctions">
+
+                AIM
+
+            </h2>
+
+            <p>
+
+                Sanctions
+
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-book-open"></i>
+
+            <h2 id="statBibliotheque">
+
+                100+
+
+            </h2>
+
+            <p>
+
+                Références
+
+            </p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-user-graduate"></i>
+
+            <h2 id="statAcademie">
+
+                6
+
+            </h2>
+
+            <p>
+
+                Niveaux
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Citation -->
+
+    <div class="info-card">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        <div>
+
+            <strong>
+
+                Objectif du module
+
+            </strong>
+
+            <p>
+
+                Ce module constitue une bibliothèque juridique
+                intelligente destinée à aider les Inspecteurs
+                et Contrôleurs du Travail à maîtriser les infractions,
+                les sanctions, les procédures de contrôle
+                et les textes applicables en République
+                Démocratique du Congo.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    </section>
+
+    <!-- ========================================= -->
+<!-- MENU PRINCIPAL -->
+<!-- ========================================= -->
+
+<section class="dashboard-menu">
+
+    <h2 class="section-title">
+
+        <i class="fa-solid fa-table-cells-large"></i>
+
+        Modules Principaux
+
+    </h2>
+
+    <div class="menu-grid">
+
+        <!-- 65 Infractions -->
+
+        <div class="menu-card"
+             onclick="app.navTo('infractions65','Les 65 Infractions')">
+
+            <i class="fa-solid fa-list-check"></i>
+
+            <h3>
+
+                Les 65 Infractions
+
+            </h3>
+
+            <p>
+
+                Consultez les 65 infractions prévues par le Code du Travail avec leurs montants en Franc Congolais.
+
+            </p>
+
+        </div>
+
+        <!-- AIM -->
+
+        <div class="menu-card"
+             onclick="app.navTo('aim006','Tableau AIM 006/127')">
+
+            <i class="fa-solid fa-dollar-sign"></i>
+
+            <h3>
+
+                AIM 006 / 127
+
+            </h3>
+
+            <p>
+
+                Consultez les amendes actualisées en Dollars Américains selon la catégorie de l'entreprise.
+
+            </p>
+
+        </div>
+
+        <!-- Sanctions -->
+
+        <div class="menu-card"
+             onclick="app.navTo('sanctions','Bibliothèque des Sanctions')">
+
+            <i class="fa-solid fa-gavel"></i>
+
+            <h3>
+
+                Sanctions
+
+            </h3>
+
+            <p>
+
+                Toutes les sanctions administratives, pénales et financières prévues en matière de travail.
+
+            </p>
+
+        </div>
+
+        <!-- Bibliothèque -->
+
+        <div class="menu-card"
+             onclick="app.navTo('bibliotheque','Bibliothèque Juridique')">
+
+            <i class="fa-solid fa-book-open"></i>
+
+            <h3>
+
+                Bibliothèque Juridique
+
+            </h3>
+
+            <p>
+
+                Code du Travail, décrets, arrêtés, circulaires, conventions et autres textes applicables.
+
+            </p>
+
+        </div>
+
+        <!-- Académie -->
+
+        <div class="menu-card"
+             onclick="app.navTo('academie','Académie InspecteurBot')">
+
+            <i class="fa-solid fa-user-graduate"></i>
+
+            <h3>
+
+                Académie InspecteurBot
+
+            </h3>
+
+            <p>
+
+                Formation complète avec cours, quiz, examens et cas pratiques pour Inspecteurs et Contrôleurs.
+
+            </p>
+
+        </div>
+
+        <!-- Cas pratiques -->
+
+        <div class="menu-card"
+             onclick="app.navTo('cas-pratiques','Cas Pratiques')">
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            <h3>
+
+                Cas Pratiques
+
+            </h3>
+
+            <p>
+
+                Études de cas réels pour apprendre à qualifier correctement les infractions.
+
+            </p>
+
+        </div>
+
+        <!-- Guide -->
+
+        <div class="menu-card"
+             onclick="app.navTo('guide','Guide de l’Inspecteur')">
+
+            <i class="fa-solid fa-clipboard-check"></i>
+
+            <h3>
+
+                Guide de l'Inspecteur
+
+            </h3>
+
+            <p>
+
+                Toutes les étapes d'une mission d'inspection, du contrôle jusqu'à la clôture du dossier.
+
+            </p>
+
+        </div>
+
+        <!-- Calculateur -->
+
+        <div class="menu-card"
+             onclick="app.navTo('calculateur','Calculateur')">
+
+            <i class="fa-solid fa-calculator"></i>
+
+            <h3>
+
+                Calculateur
+
+            </h3>
+
+            <p>
+
+                Calcul automatique des amendes AIM, SMIG, indemnités et autres montants légaux.
+
+            </p>
+
+        </div>
+
+        <!-- Assistant IA -->
+
+        <div class="menu-card"
+             onclick="app.navTo('assistantIA','Assistant IA')">
+
+            <i class="fa-solid fa-robot"></i>
+
+            <h3>
+
+                Assistant IA
+
+            </h3>
+
+            <p>
+
+                Posez vos questions sur les infractions, sanctions, procédures et textes du droit du travail.
+
+            </p>
+
+        </div>
+
+        <!-- Recherche -->
+
+        <div class="menu-card"
+             onclick="app.navTo('recherche','Recherche Intelligente')">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <h3>
+
+                Recherche
+
+            </h3>
+
+            <p>
+
+                Recherchez rapidement un article, une infraction, une sanction ou un texte juridique.
+
+            </p>
+
+        </div>
+
+        <!-- Archives -->
+
+        <div class="menu-card"
+             onclick="app.navTo('archives','Archives')">
+
+            <i class="fa-solid fa-folder-open"></i>
+
+            <h3>
+
+                Archives
+
+            </h3>
+
+            <p>
+
+                Consultez, gérez et retrouvez vos dossiers d'inspection enregistrés.
+
+            </p>
+
+        </div>
+
+        <!-- Favoris -->
+
+        <div class="menu-card"
+             onclick="app.navTo('favoris','Favoris')">
+
+            <i class="fa-solid fa-star"></i>
+
+            <h3>
+
+                Favoris
+
+            </h3>
+
+            <p>
+
+                Enregistrez vos articles, infractions et documents les plus utilisés.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : LES 65 INFRACTIONS DU CODE DU TRAVAIL -->
+<!-- ====================================================== -->
+
+<section id="infractions65" class="view" style="display:none;">
+
+    <!-- En-tête -->
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-list-check"></i>
+
+            Les 65 Infractions du Code du Travail
+
+        </h2>
+
+        <p>
+
+            Répertoire complet des infractions prévues par le Code du Travail
+            avec leurs bases légales, leurs montants en Franc Congolais
+            et leurs explications.
+
+        </p>
+
+    </div>
+
+    <!-- Utilité -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Utilité de ce tableau
+
+        </h3>
+
+        <p>
+
+            Ce tableau constitue le principal outil de référence des
+            Inspecteurs et Contrôleurs du Travail.
+
+        </p>
+
+        <ul>
+
+            <li>✔ Identifier rapidement une infraction.</li>
+
+            <li>✔ Retrouver immédiatement l'article applicable.</li>
+
+            <li>✔ Connaître le montant prévu en Franc Congolais.</li>
+
+            <li>✔ Préparer correctement un Procès-Verbal.</li>
+
+            <li>✔ Uniformiser les contrôles sur tout le territoire.</li>
+
+            <li>✔ Éviter les erreurs de qualification juridique.</li>
+
+            <li>✔ Renforcer la maîtrise du Code du Travail.</li>
+
+        </ul>
+
+    </div>
+
+    <!-- Applications -->
+
+    <div class="info-card success">
+
+        <h3>
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            Quand utiliser ce tableau ?
+
+        </h3>
+
+        <ul>
+
+            <li>Inspection ordinaire.</li>
+
+            <li>Inspection inopinée.</li>
+
+            <li>Enquête.</li>
+
+            <li>Conciliation.</li>
+
+            <li>Mise en demeure.</li>
+
+            <li>Procès-Verbal.</li>
+
+            <li>Contrôle documentaire.</li>
+
+            <li>Formation des Inspecteurs.</li>
+
+        </ul>
+
+    </div>
+
+    <!-- Recherche -->
+
+    <div class="search-container">
+
+        <input
+
+            type="search"
+
+            id="searchInfraction"
+
+            placeholder="Rechercher une infraction, un article ou un mot-clé..."
+
+        >
+
+    </div>
+
+    <!-- Filtres -->
+
+    <div class="filter-buttons">
+
+        <button class="filter-btn active">
+
+            Toutes
+
+        </button>
+
+        <button class="filter-btn">
+
+            Contrat
+
+        </button>
+
+        <button class="filter-btn">
+
+            Salaire
+
+        </button>
+
+        <button class="filter-btn">
+
+            Temps de travail
+
+        </button>
+
+        <button class="filter-btn">
+
+            Sécurité
+
+        </button>
+
+        <button class="filter-btn">
+
+            Travail des enfants
+
+        </button>
+
+        <button class="filter-btn">
+
+            Femmes
+
+        </button>
+
+        <button class="filter-btn">
+
+            CNSS
+
+        </button>
+
+    </div>
+
+    <!-- Tableau -->
+
+    <div class="table-container">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>N°</th>
+
+                    <th>Infraction</th>
+
+                    <th>Article</th>
+
+                    <th>Montant (FC)</th>
+
+                    <th>Détails</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="infractionsTableBody">
+
+                <!-- Rempli automatiquement par App-sanctions.js -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- Résultat -->
+
+    <div id="infractionDetails">
+
+        <!-- Les détails seront générés automatiquement -->
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : TABLEAU AIM 006/127 -->
+<!-- ====================================================== -->
+
+<section id="aim006" class="view" style="display:none;">
+
+    <!-- En-tête -->
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-dollar-sign"></i>
+
+            Tableau AIM 006 / 127
+
+        </h2>
+
+        <p>
+
+            Tableau officiel des amendes administratives
+            exprimées en Dollars Américains (USD).
+
+        </p>
+
+    </div>
+
+    <!-- Utilité -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Pourquoi utiliser le tableau AIM ?
+
+        </h3>
+
+        <p>
+
+            Le tableau AIM permet aux Inspecteurs et Contrôleurs
+            du Travail de déterminer correctement les amendes
+            administratives applicables selon la catégorie
+            de l'entreprise et la nature de l'infraction.
+
+        </p>
+
+    </div>
+
+    <!-- Applications -->
+
+    <div class="info-card success">
+
+        <h3>
+
+            <i class="fa-solid fa-check-circle"></i>
+
+            Applications
+
+        </h3>
+
+        <ul>
+
+            <li>✔ Taxation des infractions.</li>
+
+            <li>✔ Calcul des amendes administratives.</li>
+
+            <li>✔ Rédaction des Procès-Verbaux.</li>
+
+            <li>✔ Préparation des mises en demeure.</li>
+
+            <li>✔ Formation des Inspecteurs.</li>
+
+            <li>✔ Uniformisation des sanctions.</li>
+
+            <li>✔ Assistance aux Contrôleurs du Travail.</li>
+
+        </ul>
+
+    </div>
+
+    <!-- Conseils -->
+
+    <div class="info-card warning">
+
+        <h3>
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            Conseils professionnels
+
+        </h3>
+
+        <ul>
+
+            <li>
+
+                Toujours identifier correctement
+                l'infraction avant de consulter AIM.
+
+            </li>
+
+            <li>
+
+                Vérifier la catégorie de l'entreprise.
+
+            </li>
+
+            <li>
+
+                Vérifier les circonstances aggravantes.
+
+            </li>
+
+            <li>
+
+                Vérifier les récidives éventuelles.
+
+            </li>
+
+            <li>
+
+                Contrôler les textes réglementaires applicables.
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- Recherche -->
+
+    <div class="search-container">
+
+        <input
+
+            type="search"
+
+            id="searchAim"
+
+            placeholder="Rechercher une sanction..."
+
+        >
+
+    </div>
+
+    <!-- Tableau -->
+
+    <div class="table-container">
+
+        <table class="data-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nature de la sanction</th>
+
+                    <th>Catégorie A</th>
+
+                    <th>Catégorie B</th>
+
+                    <th>Catégorie C</th>
+
+                    <th>Détails</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="aimTableBody">
+
+                <!-- Généré automatiquement -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- Fiche détaillée -->
+
+    <div id="aimDetails">
+
+        <!-- Créée automatiquement par App-sanctions.js -->
+
+    </div>
+
+    <!-- Calculateur rapide -->
+
+    <div class="card">
+
+        <h3>
+
+            <i class="fa-solid fa-calculator"></i>
+
+            Calculateur rapide AIM
+
+        </h3>
+
+        <p>
+
+            Sélectionnez une infraction et une catégorie
+            d'entreprise afin de calculer automatiquement
+            le montant de l'amende.
+
+        </p>
+
+        <button
+            class="btn"
+            onclick="app.openAimCalculator()">
+
+            <i class="fa-solid fa-calculator"></i>
+
+            Ouvrir le Calculateur
+
+        </button>
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+            
+<!-- ====================================================== -->
+<!-- VUE : BIBLIOTHÈQUE DES SANCTIONS -->
+<!-- ====================================================== -->
+
+<section id="sanctions" class="view" style="display:none;">
+
+    <!-- En-tête -->
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+            Bibliothèque des Sanctions
+
+        </h2>
+
+        <p>
+
+            Toutes les sanctions applicables en matière de travail
+            regroupées dans un seul espace.
+
+        </p>
+
+    </div>
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Pourquoi cette bibliothèque ?
+
+        </h3>
+
+        <p>
+
+            Cette bibliothèque aide les Inspecteurs et Contrôleurs
+            du Travail à identifier rapidement les différentes
+            sanctions prévues par les textes légaux et
+            réglementaires.
+
+        </p>
+
+    </div>
+
+    <!-- Les catégories -->
+
+    <div class="menu-grid">
+
+        <div class="menu-card"
+             onclick="app.navTo('sanction-administrative','Sanctions Administratives')">
+
+            <i class="fa-solid fa-building-shield"></i>
+
+            <h3>
+
+                Sanctions Administratives
+
+            </h3>
+
+            <p>
+
+                Toutes les sanctions administratives.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('sanction-penale','Sanctions Pénales')">
+
+            <i class="fa-solid fa-gavel"></i>
+
+            <h3>
+
+                Sanctions Pénales
+
+            </h3>
+
+            <p>
+
+                Infractions passibles de poursuites pénales.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('sanction-financiere','Sanctions Financières')">
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            <h3>
+
+                Sanctions Financières
+
+            </h3>
+
+            <p>
+
+                Amendes et pénalités.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('mise-demeure','Mise en Demeure')">
+
+            <i class="fa-solid fa-file-signature"></i>
+
+            <h3>
+
+                Mise en Demeure
+
+            </h3>
+
+            <p>
+
+                Conditions, délais et procédure.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('pv','Procès-Verbal')">
+
+            <i class="fa-solid fa-file-lines"></i>
+
+            <h3>
+
+                Procès-Verbal
+
+            </h3>
+
+            <p>
+
+                Rédaction et transmission.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('recouvrement','Recouvrement')">
+
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+
+            <h3>
+
+                Recouvrement
+
+            </h3>
+
+            <p>
+
+                Paiement des amendes.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Conseils -->
+
+    <div class="card">
+
+        <h3>
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            Conseils Professionnels
+
+        </h3>
+
+        <ul>
+
+            <li>Ne jamais appliquer une sanction sans base légale.</li>
+
+            <li>Qualifier correctement l'infraction avant toute décision.</li>
+
+            <li>Respecter les procédures prévues par les textes.</li>
+
+            <li>Conserver toutes les preuves recueillies.</li>
+
+            <li>Motiver toute décision dans le dossier d'inspection.</li>
+
+            <li>Respecter les droits des parties pendant la procédure.</li>
+
+        </ul>
+
+    </div>
+
+    <!-- Zone dynamique -->
+
+    <div id="sanctionDetails">
+
+        <!-- Générée automatiquement par App-sanctions.js -->
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+    </section>
+
+<!-- ====================================================== -->
+<!-- VUE : ACADÉMIE INSPECTEURBOT -->
+<!-- ====================================================== -->
+
+<section id="academie" class="view" style="display:none;">
+
+    <!-- En-tête -->
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-user-graduate"></i>
+
+            Académie InspecteurBot
+
+        </h2>
+
+        <p>
+
+            Centre de formation des Inspecteurs et Contrôleurs du Travail.
+
+        </p>
+
+    </div>
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-graduation-cap"></i>
+
+            Objectif
+
+        </h3>
+
+        <p>
+
+            Cette académie a pour mission de renforcer les connaissances
+            des Inspecteurs et Contrôleurs du Travail grâce à des cours,
+            des exercices, des études de cas, des quiz et des examens
+            inspirés des situations réelles rencontrées sur le terrain.
+
+        </p>
+
+    </div>
+
+    <!-- Progression -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            <h2 id="academyLevel">
+
+                1
+
+            </h2>
+
+            <span>
+
+                Niveau
+
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-star"></i>
+
+            <h2 id="academyPoints">
+
+                0
+
+            </h2>
+
+            <span>
+
+                Points
+
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-award"></i>
+
+            <h2 id="academyBadge">
+
+                0
+
+            </h2>
+
+            <span>
+
+                Badges
+
+            </span>
+
+        </div>
+
+        <div class="stat-card">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            <h2 id="academyScore">
+
+                0%
+
+            </h2>
+
+            <span>
+
+                Réussite
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Les niveaux -->
+
+    <div class="menu-grid">
+
+        <div class="menu-card"
+             onclick="app.startAcademy('debutant')">
+
+            <i class="fa-solid fa-seedling"></i>
+
+            <h3>
+
+                Débutant
+
+            </h3>
+
+            <p>
+
+                Les bases du droit du travail.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startAcademy('intermediaire')">
+
+            <i class="fa-solid fa-book"></i>
+
+            <h3>
+
+                Intermédiaire
+
+            </h3>
+
+            <p>
+
+                Mise en application des connaissances.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startAcademy('avance')">
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+            <h3>
+
+                Avancé
+
+            </h3>
+
+            <p>
+
+                Qualification des infractions.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startAcademy('expert')">
+
+            <i class="fa-solid fa-brain"></i>
+
+            <h3>
+
+                Expert
+
+            </h3>
+
+            <p>
+
+                Cas complexes et rédaction juridique.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startAcademy('inspecteur-principal')">
+
+            <i class="fa-solid fa-user-tie"></i>
+
+            <h3>
+
+                Inspecteur Principal
+
+            </h3>
+
+            <p>
+
+                Examens professionnels.
+
+            </p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startAcademy('maitre-inspecteur')">
+
+            <i class="fa-solid fa-crown"></i>
+
+            <h3>
+
+                Maître Inspecteur
+
+            </h3>
+
+            <p>
+
+                Niveau le plus difficile.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Défis -->
+
+    <div class="card">
+
+        <h3>
+
+            <i class="fa-solid fa-fire"></i>
+
+            Défis InspecteurBot
+
+        </h3>
+
+        <button class="btn"
+                onclick="app.startChallenge()">
+
+            <i class="fa-solid fa-bolt"></i>
+
+            Lancer un défi
+
+        </button>
+
+    </div>
+
+    <!-- Quiz -->
+
+    <div id="academyQuiz">
+
+        <!-- Généré automatiquement -->
+
+    </div>
+
+    <!-- Résultat -->
+
+    <div id="academyResult">
+
+        <!-- Généré automatiquement -->
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+                </section>
+
+<!-- ====================================================== -->
+<!-- VUE : BIBLIOTHÈQUE JURIDIQUE -->
+<!-- ====================================================== -->
+
+<section id="bibliotheque" class="view" style="display:none;">
+
+    <!-- En-tête -->
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-book-open-reader"></i>
+
+            Bibliothèque Juridique
+
+        </h2>
+
+        <p>
+
+            Consultez les principaux textes juridiques utilisés
+            par les Inspecteurs et Contrôleurs du Travail.
+
+        </p>
+
+    </div>
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Centre documentaire
+
+        </h3>
+
+        <p>
+
+            Cette bibliothèque rassemble les textes légaux,
+            réglementaires et pratiques indispensables à
+            l'exercice des missions d'inspection et de contrôle
+            du travail.
+
+        </p>
+
+    </div>
+
+    <!-- Recherche -->
+
+    <div class="search-container">
+
+        <input
+
+            type="search"
+
+            id="searchBibliotheque"
+
+            placeholder="Rechercher un texte, un décret, un article..."
+
+        >
+
+    </div>
+
+    <!-- Catégories -->
+
+    <div class="menu-grid">
+
+        <div class="menu-card" onclick="app.navTo('codeTravail','Code du Travail')">
+
+            <i class="fa-solid fa-book"></i>
+
+            <h3>Code du Travail</h3>
+
+            <p>Version complète du Code du Travail.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('decrets','Décrets')">
+
+            <i class="fa-solid fa-landmark"></i>
+
+            <h3>Décrets</h3>
+
+            <p>Décrets d'application.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('arretes','Arrêtés')">
+
+            <i class="fa-solid fa-file-signature"></i>
+
+            <h3>Arrêtés</h3>
+
+            <p>Arrêtés ministériels.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('circulaires','Circulaires')">
+
+            <i class="fa-solid fa-envelope-open-text"></i>
+
+            <h3>Circulaires</h3>
+
+            <p>Instructions administratives.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('smig','SMIG 2025')">
+
+            <i class="fa-solid fa-money-bill"></i>
+
+            <h3>SMIG 2025</h3>
+
+            <p>Grilles, catégories et calculs.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('aimDocs','AIM 006/127')">
+
+            <i class="fa-solid fa-dollar-sign"></i>
+
+            <h3>AIM 006 / 127</h3>
+
+            <p>Barèmes des amendes administratives.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('oit','Conventions OIT')">
+
+            <i class="fa-solid fa-earth-africa"></i>
+
+            <h3>Conventions OIT</h3>
+
+            <p>Conventions ratifiées applicables.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('emploisCongolais','Emplois réservés')">
+
+            <i class="fa-solid fa-user-check"></i>
+
+            <h3>Emplois réservés</h3>
+
+            <p>Professions réservées aux Congolais.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('jurisprudence','Jurisprudence')">
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+            <h3>Jurisprudence</h3>
+
+            <p>Décisions utiles à la pratique.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('faqJuridique','FAQ Juridique')">
+
+            <i class="fa-solid fa-circle-question"></i>
+
+            <h3>FAQ Juridique</h3>
+
+            <p>Questions les plus fréquentes.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('glossaire','Glossaire')">
+
+            <i class="fa-solid fa-book-atlas"></i>
+
+            <h3>Glossaire</h3>
+
+            <p>Définitions juridiques.</p>
+
+        </div>
+
+        <div class="menu-card" onclick="app.navTo('veille','Veille Juridique')">
+
+            <i class="fa-solid fa-bell"></i>
+
+            <h3>Veille Juridique</h3>
+
+            <p>Nouveaux textes et mises à jour.</p>
+
+        </div>
+
+    </div>
+
+    <!-- Documents -->
+
+    <div id="bibliothequeContent">
+
+        <!-- Chargé automatiquement depuis App-sanctions.js -->
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : GUIDE DE L'INSPECTEUR ET DU CONTRÔLEUR -->
+<!-- ====================================================== -->
+
+<section id="guide" class="view" style="display:none;">
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-clipboard-check"></i>
+
+            Guide de l'Inspecteur et du Contrôleur
+
+        </h2>
+
+        <p>
+
+            Manuel pratique pour conduire efficacement une mission
+            d'inspection et de contrôle du travail.
+
+        </p>
+
+    </div>
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Objectif
+
+        </h3>
+
+        <p>
+
+            Ce guide accompagne l'Inspecteur et le Contrôleur
+            dans toutes les étapes d'une mission afin de garantir
+            une application uniforme de la législation du travail.
+
+        </p>
+
+    </div>
+
+    <div class="menu-grid">
+
+        <div class="menu-card"
+             onclick="app.navTo('avantMission','Avant la mission')">
+
+            <i class="fa-solid fa-calendar-check"></i>
+
+            <h3>Avant la mission</h3>
+
+            <p>Préparation et planification.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('pendantMission','Pendant la mission')">
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            <h3>Pendant la mission</h3>
+
+            <p>Contrôles et constatations.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('apresMission','Après la mission')">
+
+            <i class="fa-solid fa-file-circle-check"></i>
+
+            <h3>Après la mission</h3>
+
+            <p>Rapport, PV et suivi.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('documentsControle','Documents à vérifier')">
+
+            <i class="fa-solid fa-folder-open"></i>
+
+            <h3>Documents obligatoires</h3>
+
+            <p>Documents que l'entreprise doit présenter.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('travailleursEtrangers','Travailleurs étrangers')">
+
+            <i class="fa-solid fa-passport"></i>
+
+            <h3>Travailleurs étrangers</h3>
+
+            <p>Permis de travail, autorisations, contrôles et sanctions.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('emploisReserves','Emplois réservés aux Congolais')">
+
+            <i class="fa-solid fa-user-check"></i>
+
+            <h3>Emplois réservés</h3>
+
+            <p>Vérification de la conformité avec la réglementation.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('conciliation','Conciliation')">
+
+            <i class="fa-solid fa-handshake"></i>
+
+            <h3>Conciliation</h3>
+
+            <p>Procédure de règlement des conflits.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('verbalisation','Verbalisation')">
+
+            <i class="fa-solid fa-file-signature"></i>
+
+            <h3>Verbalisation</h3>
+
+            <p>Rédaction du Procès-Verbal et suites administratives.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('bonnesPratiques','Bonnes pratiques')">
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            <h3>Bonnes pratiques</h3>
+
+            <p>Conseils et recommandations professionnelles.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.navTo('checklists','Check-lists')">
+
+            <i class="fa-solid fa-list-check"></i>
+
+            <h3>Check-lists</h3>
+
+            <p>Listes de vérification pour chaque type de contrôle.</p>
+
+        </div>
+
+    </div>
+
+    <div id="guideContent">
+
+        <!-- Chargé automatiquement depuis App-sanctions.js -->
+
+    </div>
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : CAS PRATIQUES D'INSPECTION -->
+<!-- ====================================================== -->
+
+<section id="cas-pratiques" class="view" style="display:none;">
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-briefcase"></i>
+
+            Cas Pratiques d'Inspection
+
+        </h2>
+
+        <p>
+
+            Entraînez-vous sur des situations inspirées des missions
+            d'inspection et de contrôle du travail.
+
+        </p>
+
+    </div>
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Objectif pédagogique
+
+        </h3>
+
+        <p>
+
+            Ce module permet d'apprendre à identifier les infractions,
+            choisir la procédure adaptée, proposer les sanctions
+            appropriées et rédiger correctement les actes d'inspection.
+
+        </p>
+
+    </div>
+
+    <!-- Catégories -->
+
+    <div class="menu-grid">
+
+        <div class="menu-card"
+             onclick="app.startCase('contrat')">
+
+            <i class="fa-solid fa-file-contract"></i>
+
+            <h3>Contrat de travail</h3>
+
+            <p>Études de cas sur les contrats.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('salaire')">
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            <h3>Salaire & SMIG</h3>
+
+            <p>Cas liés à la rémunération.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('securite')">
+
+            <i class="fa-solid fa-helmet-safety"></i>
+
+            <h3>Santé & Sécurité</h3>
+
+            <p>Prévention des risques professionnels.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('enfants')">
+
+            <i class="fa-solid fa-child"></i>
+
+            <h3>Travail des enfants</h3>
+
+            <p>Identification des infractions.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('etrangers')">
+
+            <i class="fa-solid fa-passport"></i>
+
+            <h3>Travailleurs étrangers</h3>
+
+            <p>Permis de travail et contrôles.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('licenciement')">
+
+            <i class="fa-solid fa-user-minus"></i>
+
+            <h3>Licenciement</h3>
+
+            <p>Rupture du contrat et procédures.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('cnss')">
+
+            <i class="fa-solid fa-shield-heart"></i>
+
+            <h3>CNSS</h3>
+
+            <p>Affiliation et cotisations.</p>
+
+        </div>
+
+        <div class="menu-card"
+             onclick="app.startCase('inspectionComplete')">
+
+            <i class="fa-solid fa-building"></i>
+
+            <h3>Inspection complète</h3>
+
+            <p>Simulation complète d'une mission.</p>
+
+        </div>
+
+    </div>
+
+    <!-- Niveau -->
+
+    <div class="card">
+
+        <h3>
+
+            <i class="fa-solid fa-layer-group"></i>
+
+            Niveau de difficulté
+
+        </h3>
+
+        <select
+            class="form-control"
+            id="caseLevel">
+
+            <option value="1">Niveau 1 - Débutant</option>
+
+            <option value="2">Niveau 2 - Intermédiaire</option>
+
+            <option value="3">Niveau 3 - Avancé</option>
+
+            <option value="4">Niveau 4 - Expert</option>
+
+            <option value="5">Niveau 5 - Inspecteur Principal</option>
+
+            <option value="6">Niveau 6 - Maître Inspecteur</option>
+
+        </select>
+
+    </div>
+
+    <!-- Zone du cas -->
+
+    <div id="caseContent">
+
+        <!-- Généré automatiquement -->
+
+    </div>
+
+    <!-- Correction -->
+
+    <div id="caseCorrection">
+
+        <!-- Générée automatiquement -->
+
+    </div>
+
+    <!-- Boutons -->
+
+    <div class="action-buttons">
+
+        <button
+            class="btn"
+            onclick="app.validateCase()">
+
+            <i class="fa-solid fa-check"></i>
+
+            Valider mes réponses
+
+        </button>
+
+        <button
+            class="btn btn-outline"
+            onclick="app.nextCase()">
+
+            <i class="fa-solid fa-forward"></i>
+
+            Cas suivant
+
+        </button>
+
+    </div>
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : RECHERCHE JURIDIQUE INTELLIGENTE -->
+<!-- ====================================================== -->
+
+<section id="recherche" class="view" style="display:none;">
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Recherche Juridique Intelligente
+
+        </h2>
+
+        <p>
+
+            Retrouvez rapidement une infraction, une sanction,
+            un article, un document ou une procédure.
+
+        </p>
+
+    </div>
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Recherche unifiée
+
+        </h3>
+
+        <p>
+
+            Une seule recherche permet d'explorer l'ensemble
+            du contenu d'InspecteurBot afin d'accéder
+            rapidement aux informations utiles.
+
+        </p>
+
+    </div>
+
+    <!-- Recherche -->
+
+    <div class="card">
+
+        <div class="form-group">
+
+            <label class="form-label">
+
+                Rechercher
+
+            </label>
+
+            <input
+                type="search"
+                id="globalSearch"
+                class="form-control"
+                placeholder="Ex : SMIG, contrat, CNSS, licenciement, enfant, étranger...">
+
+        </div>
+
+        <button
+            class="btn"
+            onclick="app.globalSearch()">
+
+            <i class="fa-solid fa-search"></i>
+
+            Rechercher
+
+        </button>
+
+    </div>
+
+    <!-- Recherche rapide -->
+
+    <div class="menu-grid">
+
+        <div class="menu-card" onclick="app.quickSearch('Infractions')">
+
+            <i class="fa-solid fa-list-check"></i>
+
+            <h3>
+
+                Infractions
+
+            </h3>
+
+        </div>
+
+        <div class="menu-card" onclick="app.quickSearch('Sanctions')">
+
+            <i class="fa-solid fa-gavel"></i>
+
+            <h3>
+
+                Sanctions
+
+            </h3>
+
+        </div>
+
+        <div class="menu-card" onclick="app.quickSearch('Articles')">
+
+            <i class="fa-solid fa-book"></i>
+
+            <h3>
+
+                Articles
+
+            </h3>
+
+        </div>
+
+        <div class="menu-card" onclick="app.quickSearch('SMIG')">
+
+            <i class="fa-solid fa-money-bill-wave"></i>
+
+            <h3>
+
+                SMIG
+
+            </h3>
+
+        </div>
+
+        <div class="menu-card" onclick="app.quickSearch('Travailleurs étrangers')">
+
+            <i class="fa-solid fa-passport"></i>
+
+            <h3>
+
+                Travailleurs étrangers
+
+            </h3>
+
+        </div>
+
+        <div class="menu-card" onclick="app.quickSearch('Conventions OIT')">
+
+            <i class="fa-solid fa-earth-africa"></i>
+
+            <h3>
+
+                Conventions OIT
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <!-- Résultats -->
+
+    <div id="searchResults">
+
+        <!-- Généré automatiquement -->
+
+    </div>
+
+    <!-- Suggestions -->
+
+    <div class="card">
+
+        <h3>
+
+            <i class="fa-solid fa-lightbulb"></i>
+
+            Recherches fréquentes
+
+        </h3>
+
+        <div class="chips">
+
+            <button class="chip" onclick="app.searchChip('Contrat de travail')">
+
+                Contrat de travail
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('SMIG')">
+
+                SMIG
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('CNSS')">
+
+                CNSS
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('Travail des enfants')">
+
+                Travail des enfants
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('Travailleurs étrangers')">
+
+                Travailleurs étrangers
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('Permis de travail')">
+
+                Permis de travail
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('Congés annuels')">
+
+                Congés annuels
+
+            </button>
+
+            <button class="chip" onclick="app.searchChip('Licenciement')">
+
+                Licenciement
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="bottom-back-btn">
+
+        <button
+            class="btn btn-outline"
+            onclick="app.goBack()">
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+            Retour
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : ASSISTANT IA JURIDIQUE -->
+<!-- ====================================================== -->
+
+<section id="assistantIA" class="view" style="display:none;">
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-robot"></i>
+
+            Assistant IA Juridique
+
+        </h2>
+
+        <p>
+
+            Votre assistant spécialisé en droit du travail,
+            procédures d'inspection et sanctions.
+
+        </p>
+
+    </div>
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-brain"></i>
+
+            Ce que l'IA peut faire
+
+        </h3>
+
+        <ul>
+
+            <li>Répondre aux questions sur le Code du Travail.</li>
+
+            <li>Expliquer les infractions.</li>
+
+            <li>Expliquer les sanctions.</li>
+
+            <li>Aider à qualifier une infraction.</li>
+
+            <li>Proposer la procédure adaptée.</li>
+
+            <li>Aider à rédiger un Procès-Verbal.</li>
+
+            <li>Expliquer les textes juridiques.</li>
+
+            <li>Aider les Inspecteurs débutants.</li>
+
+        </ul>
+
+    </div>
+
+    <div class="chat-messages" id="assistantMessages">
+
+        <!-- Conversation IA -->
+
+    </div>
+
+    <div class="chat-suggestions">
+
+        <button class="chip">Explique une infraction</button>
+
+        <button class="chip">Calculer une amende</button>
+
+        <button class="chip">Travailleurs étrangers</button>
+
+        <button class="chip">SMIG</button>
+
+        <button class="chip">Procès-Verbal</button>
+
+        <button class="chip">Mise en demeure</button>
+
+    </div>
+
+    <div class="chat-input">
+
+        <input
+            id="assistantQuestion"
+            type="text"
+            placeholder="Posez votre question...">
+
+        <button
+            class="chat-send"
+            onclick="app.askAI()">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+        </button>
+
+    </div>
+
+    </section>
+
+   <!-- ====================================================== -->
+<!-- VUE : CALCULATEUR DES SANCTIONS -->
+<!-- ====================================================== -->
+
+<section id="calculateur" class="view" style="display:none;">
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-calculator"></i>
+
+            Calculateur Intelligent des Sanctions
+
+        </h2>
+
+        <p>
+
+            Outil d'aide au calcul des amendes et sanctions
+            selon l'infraction constatée.
+
+        </p>
+
+    </div>
+
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Utilité de cet outil
+
+        </h3>
+
+        <p>
+
+            Ce calculateur aide les Inspecteurs et Contrôleurs
+            du Travail à déterminer rapidement les montants
+            applicables lors d'une procédure de contrôle.
+
+            Il permet également de comprendre l'impact de la
+            catégorie de l'entreprise et des circonstances
+            aggravantes.
+
+        </p>
+
+    </div>
+
+
+    <!-- Formulaire -->
+
+    <div class="card">
+
+
+        <div class="form-group">
+
+            <label class="form-label">
+
+                Choisir l'infraction
+
+            </label>
+
+
+            <select
+                id="calcInfraction"
+                class="form-control">
+
+                <option value="">
+
+                    Sélectionner une infraction
+
+                </option>
+
+                <!-- Rempli automatiquement par JS -->
+
+            </select>
+
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label class="form-label">
+
+                Catégorie de l'entreprise
+
+            </label>
+
+
+            <select
+                id="calcCategorie"
+                class="form-control">
+
+
+                <option value="A">
+
+                    Catégorie A
+
+                </option>
+
+
+                <option value="B">
+
+                    Catégorie B
+
+                </option>
+
+
+                <option value="C">
+
+                    Catégorie C
+
+                </option>
+
+
+            </select>
+
+
+        </div>
+
+
+
+        <div class="form-group">
+
+
+            <label class="form-label">
+
+                Circonstances particulières
+
+            </label>
+
+
+            <div class="checkbox-list">
+
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="recidive">
+
+                    Récidive
+
+                </label>
+
+
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="danger">
+
+                    Danger pour les travailleurs
+
+                </label>
+
+
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="enfant">
+
+                    Travail des enfants
+
+                </label>
+
+
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="non-conformite">
+
+                    Refus de régularisation
+
+                </label>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.calculateSanction()">
+
+
+            <i class="fa-solid fa-calculator"></i>
+
+
+            Calculer la sanction
+
+
+        </button>
+
+
+    </div>
+
+
+
+    <!-- Résultat -->
+
+    <div id="calculationResult"
+
+         class="result-box">
+
+
+        <!-- Résultat généré par JavaScript -->
+
+
+    </div>
+
+
+
+
+    <!-- Explication -->
+
+    <div class="info-card success">
+
+
+        <h3>
+
+            <i class="fa-solid fa-graduation-cap"></i>
+
+
+            Comprendre le résultat
+
+
+        </h3>
+
+
+        <p>
+
+
+            Après chaque calcul, InspecteurBot expliquera :
+
+        </p>
+
+
+        <ul>
+
+
+            <li>
+
+                La base juridique de l'infraction.
+
+            </li>
+
+
+            <li>
+
+                La méthode de calcul utilisée.
+
+            </li>
+
+
+            <li>
+
+                Les facteurs aggravants.
+
+            </li>
+
+
+            <li>
+
+                La procédure recommandée.
+
+            </li>
+
+
+            <li>
+
+                Les éléments à mentionner dans le Procès-Verbal.
+
+            </li>
+
+
+        </ul>
+
+
+    </div>
+
+
+
+    <!-- Historique -->
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+            Historique des calculs
+
+        </h3>
+
+
+        <div id="calculatorHistory">
+
+
+            <!-- Sauvegarde locale par JavaScript -->
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.goBack()">
+
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+
+            Retour
+
+
+        </button>
+
+
+    </div>
+
+
+                </section>
+
+<!-- ====================================================== -->
+<!-- VUE : MODÈLES PROFESSIONNELS -->
+<!-- ====================================================== -->
+
+<section id="modeles" class="view" style="display:none;">
+
+
+    <div class="page-header">
+
+        <h2>
+
+            <i class="fa-solid fa-file-signature"></i>
+
+            Modèles Professionnels
+
+        </h2>
+
+
+        <p>
+
+            Générateur intelligent des documents utilisés
+            par les Inspecteurs et Contrôleurs du Travail.
+
+        </p>
+
+
+    </div>
+
+
+
+    <!-- Présentation -->
+
+    <div class="info-card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Objectif
+
+        </h3>
+
+
+        <p>
+
+            Ce module permet de préparer rapidement les actes
+            administratifs liés aux missions d'inspection,
+            tout en respectant une structure professionnelle.
+
+        </p>
+
+
+    </div>
+
+
+
+
+    <!-- Catégories des documents -->
+
+    <div class="menu-grid">
+
+
+
+        <!-- PV -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('pv')">
+
+
+            <i class="fa-solid fa-file-circle-exclamation"></i>
+
+
+            <h3>
+
+                Procès-Verbal
+
+            </h3>
+
+
+            <p>
+
+                Constatation officielle des infractions.
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <!-- Mise en demeure -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('miseDemeure')">
+
+
+            <i class="fa-solid fa-file-signature"></i>
+
+
+            <h3>
+
+                Mise en Demeure
+
+            </h3>
+
+
+            <p>
+
+                Demande officielle de régularisation.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <!-- Convocation -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('convocation')">
+
+
+            <i class="fa-solid fa-envelope-open-text"></i>
+
+
+            <h3>
+
+                Convocation
+
+            </h3>
+
+
+            <p>
+
+                Invitation de l'employeur ou du travailleur.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <!-- Rapport -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('rapport')">
+
+
+            <i class="fa-solid fa-file-lines"></i>
+
+
+            <h3>
+
+                Rapport de Mission
+
+            </h3>
+
+
+            <p>
+
+                Compte rendu complet d'une inspection.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <!-- Fiche contrôle -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('ficheControle')">
+
+
+            <i class="fa-solid fa-clipboard-check"></i>
+
+
+            <h3>
+
+                Fiche de Contrôle
+
+            </h3>
+
+
+            <p>
+
+                Liste des points à vérifier.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <!-- Notification -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('notification')">
+
+
+            <i class="fa-solid fa-bell"></i>
+
+
+            <h3>
+
+                Notification
+
+            </h3>
+
+
+            <p>
+
+                Information officielle à une partie.
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <!-- Demande documents -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('documents')">
+
+
+            <i class="fa-solid fa-folder-open"></i>
+
+
+            <h3>
+
+                Demande de Documents
+
+            </h3>
+
+
+            <p>
+
+                Liste des pièces à fournir par l'entreprise.
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <!-- Rapport suivi -->
+
+        <div class="menu-card"
+
+             onclick="app.openTemplate('suivi')">
+
+
+            <i class="fa-solid fa-chart-line"></i>
+
+
+            <h3>
+
+                Rapport de Suivi
+
+            </h3>
+
+
+            <p>
+
+                Contrôle après régularisation.
+
+            </p>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- Formulaire génération -->
+
+    <div id="templateGenerator"
+
+         class="card">
+
+
+        <!-- Généré par JavaScript -->
+
+    </div>
+
+
+
+
+
+    <!-- Aperçu document -->
+
+    <div id="documentPreview"
+
+         class="document-preview">
+
+
+        <!-- Aperçu avant export PDF -->
+
+
+    </div>
+
+
+
+
+
+    <!-- Actions -->
+
+    <div class="action-buttons">
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.generatePDF()">
+
+
+            <i class="fa-solid fa-file-pdf"></i>
+
+
+            Exporter PDF
+
+
+        </button>
+
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.saveDocument()">
+
+
+            <i class="fa-solid fa-save"></i>
+
+
+            Archiver
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- Retour -->
+
+    <div class="bottom-back-btn">
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.goBack()">
+
+
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+
+            Retour
+
+
+        </button>
+
+
+    </div>
+
+
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : STATISTIQUES D'INSPECTION -->
+<!-- ====================================================== -->
+
+<section id="statistiques" class="view" style="display:none;">
+
+
+    <div class="page-header">
+
+
+        <h2>
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            Statistiques d'Inspection
+
+        </h2>
+
+
+        <p>
+
+            Analyse des activités de contrôle,
+            des infractions constatées et des sanctions appliquées.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <!-- Présentation -->
+
+
+    <div class="info-card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Utilité du tableau statistique
+
+        </h3>
+
+
+        <p>
+
+            Ce tableau permet de mesurer l'efficacité des missions
+            d'inspection, d'identifier les problèmes fréquents
+            et d'améliorer les stratégies de contrôle.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <!-- Cartes statistiques -->
+
+
+    <div class="stats-grid">
+
+
+
+        <div class="stat-card">
+
+
+            <i class="fa-solid fa-building-circle-check"></i>
+
+
+            <h2 id="totalControles">
+
+                0
+
+            </h2>
+
+
+            <p>
+
+                Contrôles réalisés
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <i class="fa-solid fa-file-circle-exclamation"></i>
+
+
+            <h2 id="totalInfractions">
+
+                0
+
+            </h2>
+
+
+            <p>
+
+                Infractions constatées
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <i class="fa-solid fa-dollar-sign"></i>
+
+
+            <h2 id="totalAmendes">
+
+                0 USD
+
+            </h2>
+
+
+            <p>
+
+                Amendes calculées
+
+            </p>
+
+
+        </div>
+
+
+
+
+
+        <div class="stat-card">
+
+
+            <i class="fa-solid fa-folder-open"></i>
+
+
+            <h2 id="totalDossiers">
+
+                0
+
+            </h2>
+
+
+            <p>
+
+                Dossiers archivés
+
+            </p>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Graphiques -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            Infractions les plus fréquentes
+
+        </h3>
+
+
+
+        <canvas id="infractionsChart">
+
+        </canvas>
+
+
+    </div>
+
+
+
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-chart-pie"></i>
+
+            Répartition par secteur
+
+        </h3>
+
+
+        <canvas id="secteursChart">
+
+        </canvas>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Analyse -->
+
+
+    <div class="info-card success">
+
+
+        <h3>
+
+            <i class="fa-solid fa-brain"></i>
+
+            Analyse intelligente InspecteurBot
+
+        </h3>
+
+
+
+        <p id="statisticsAI">
+
+
+            Analyse automatique des données d'inspection.
+
+        </p>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Filtres -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-filter"></i>
+
+            Filtrer les statistiques
+
+        </h3>
+
+
+
+        <select
+
+            id="statsPeriod"
+
+            class="form-control">
+
+
+
+            <option value="mois">
+
+                Ce mois
+
+            </option>
+
+
+
+            <option value="trimestre">
+
+                Ce trimestre
+
+            </option>
+
+
+
+            <option value="annee">
+
+                Cette année
+
+            </option>
+
+
+
+            <option value="personnalise">
+
+                Personnalisé
+
+            </option>
+
+
+
+        </select>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Export -->
+
+
+    <div class="action-buttons">
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.exportStatistics()">
+
+
+
+            <i class="fa-solid fa-file-export"></i>
+
+
+            Exporter Rapport
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Retour -->
+
+
+    <div class="bottom-back-btn">
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.goBack()">
+
+
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+
+            Retour
+
+
+        </button>
+
+
+    </div>
+
+
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : ARCHIVES INTELLIGENTES -->
+<!-- ====================================================== -->
+
+<section id="archivesIntelligentes" class="view" style="display:none;">
+
+
+    <div class="page-header">
+
+
+        <h2>
+
+            <i class="fa-solid fa-box-archive"></i>
+
+            Archives Intelligentes
+
+        </h2>
+
+
+        <p>
+
+            Gestion complète des dossiers d'inspection,
+            des documents et de l'historique des contrôles.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <!-- Présentation -->
+
+
+    <div class="info-card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Importance des archives
+
+        </h3>
+
+
+        <p>
+
+            Les archives permettent de conserver la trace des
+            missions réalisées, de suivre les entreprises,
+            d'assurer la continuité des contrôles et de faciliter
+            les rapports administratifs.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- Recherche dossier -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            Rechercher un dossier
+
+        </h3>
+
+
+
+        <input
+
+            type="search"
+
+            id="archiveSearch"
+
+            class="form-control"
+
+            placeholder="Nom entreprise, numéro PV, infraction...">
+
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.searchArchives()">
+
+
+
+            <i class="fa-solid fa-search"></i>
+
+
+            Rechercher
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Création dossier -->
+
+
+    <div class="action-buttons">
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.newArchive()">
+
+
+
+            <i class="fa-solid fa-plus"></i>
+
+
+            Nouveau dossier
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Filtres -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-filter"></i>
+
+            Filtrer les dossiers
+
+        </h3>
+
+
+
+        <select
+
+            id="archiveFilter"
+
+            class="form-control">
+
+
+
+            <option value="all">
+
+                Tous les dossiers
+
+            </option>
+
+
+
+            <option value="ouvert">
+
+                Contrôles en cours
+
+            </option>
+
+
+
+            <option value="regularisation">
+
+                En régularisation
+
+            </option>
+
+
+
+            <option value="clos">
+
+                Dossiers clôturés
+
+            </option>
+
+
+
+            <option value="sanction">
+
+                Avec sanctions
+
+            </option>
+
+
+        </select>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Liste dossiers -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-folder-open"></i>
+
+
+            Mes dossiers
+
+
+        </h3>
+
+
+
+        <div id="archivesList">
+
+
+            <!-- Chargement automatique JS -->
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Détail dossier -->
+
+
+    <div id="archiveDetails"
+
+         class="document-preview">
+
+
+
+        <!-- Affichage du dossier sélectionné -->
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Historique actions -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+
+            Historique des actions
+
+
+        </h3>
+
+
+
+        <div id="archiveHistory">
+
+
+            <!-- Historique généré automatiquement -->
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Signature -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-signature"></i>
+
+
+            Validation du dossier
+
+
+        </h3>
+
+
+
+        <p>
+
+            Chaque dossier peut être validé par :
+
+        </p>
+
+
+
+        <ul>
+
+
+            <li>
+
+                Inspecteur du Travail
+
+            </li>
+
+
+            <li>
+
+                Contrôleur du Travail
+
+            </li>
+
+
+        </ul>
+
+
+
+        <div id="signatureArea">
+
+
+            <!-- Zone signature électronique -->
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Export -->
+
+
+    <div class="action-buttons">
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.exportArchivePDF()">
+
+
+
+            <i class="fa-solid fa-file-pdf"></i>
+
+
+            Exporter le dossier PDF
+
+
+        </button>
+
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.backupArchives()">
+
+
+
+            <i class="fa-solid fa-database"></i>
+
+
+            Sauvegarder
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Retour -->
+
+
+    <div class="bottom-back-btn">
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.goBack()">
+
+
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+
+            Retour
+
+
+        </button>
+
+
+    </div>
+
+
+
+</section>
+
+<!-- ====================================================== -->
+<!-- VUE : PARAMÈTRES ET PERSONNALISATION -->
+<!-- ====================================================== -->
+
+<section id="parametres" class="view" style="display:none;">
+
+
+    <div class="page-header">
+
+
+        <h2>
+
+            <i class="fa-solid fa-gear"></i>
+
+            Paramètres InspecteurBot
+
+        </h2>
+
+
+        <p>
+
+            Personnalisez votre espace de travail,
+            vos préférences et vos paramètres de sécurité.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <!-- PROFIL UTILISATEUR -->
+
+
+    <div class="info-card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-user-shield"></i>
+
+            Profil professionnel
+
+        </h3>
+
+
+        <p>
+
+            Gérez les informations liées à votre fonction
+            dans le système.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <div class="card">
+
+
+        <div class="form-group">
+
+
+            <label class="form-label">
+
+                Fonction
+
+            </label>
+
+
+            <select
+
+                id="userRole"
+
+                class="form-control">
+
+
+                <option value="inspecteur">
+
+                    Inspecteur du Travail
+
+                </option>
+
+
+                <option value="controleur">
+
+                    Contrôleur du Travail
+
+                </option>
+
+
+                <option value="administrateur">
+
+                    Administrateur
+
+                </option>
+
+
+            </select>
+
+
+        </div>
+
+
+
+
+
+        <div class="form-group">
+
+
+            <label class="form-label">
+
+                Province / Zone d'intervention
+
+            </label>
+
+
+            <input
+
+                type="text"
+
+                id="userZone"
+
+                class="form-control"
+
+                placeholder="Votre zone d'intervention">
+
+
+        </div>
+
+
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.saveProfile()">
+
+
+
+            <i class="fa-solid fa-save"></i>
+
+
+            Enregistrer le profil
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- LANGUES -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-language"></i>
+
+            Langue de l'application
+
+        </h3>
+
+
+        <p>
+
+            Choisissez la langue adaptée à votre utilisation.
+
+        </p>
+
+
+
+        <select
+
+            id="appLanguage"
+
+            class="form-control"
+
+            onchange="app.changeLanguage()">
+
+
+
+            <option value="fr">
+
+                Français
+
+            </option>
+
+
+            <option value="en">
+
+                English
+
+            </option>
+
+
+            <option value="ln">
+
+                Lingala
+
+            </option>
+
+
+            <option value="kg">
+
+                Kikongo
+
+            </option>
+
+
+            <option value="ts">
+
+                Tshiluba
+
+            </option>
+
+
+            <option value="sw">
+
+                Kiswahili
+
+            </option>
+
+
+        </select>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- APPARENCE -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-palette"></i>
+
+            Apparence
+
+
+        </h3>
+
+
+
+        <div class="settings-option">
+
+
+            <span>
+
+                Mode sombre
+
+            </span>
+
+
+            <label class="switch">
+
+
+                <input
+
+                    type="checkbox"
+
+                    id="darkModeToggle"
+
+                    onchange="app.toggleTheme()">
+
+
+
+                <span class="slider"></span>
+
+
+            </label>
+
+
+        </div>
+
+
+
+
+        <div class="settings-option">
+
+
+            <span>
+
+                Animations de l'application
+
+            </span>
+
+
+
+            <label class="switch">
+
+
+                <input
+
+                    type="checkbox"
+
+                    id="animationToggle">
+
+
+                <span class="slider"></span>
+
+
+            </label>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- NOTIFICATIONS -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-bell"></i>
+
+            Notifications
+
+
+        </h3>
+
+
+
+        <div class="settings-option">
+
+
+            <span>
+
+                Rappels des dossiers ouverts
+
+            </span>
+
+
+
+            <input
+
+                type="checkbox"
+
+                id="notifyDossiers">
+
+
+        </div>
+
+
+
+        <div class="settings-option">
+
+
+            <span>
+
+                Alertes de suivi des mises en demeure
+
+            </span>
+
+
+
+            <input
+
+                type="checkbox"
+
+                id="notifySuivi">
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- SECURITE -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-lock"></i>
+
+            Sécurité
+
+
+        </h3>
+
+
+
+
+        <div class="settings-option">
+
+
+            <span>
+
+                Protection des dossiers sensibles
+
+            </span>
+
+
+
+            <input
+
+                type="checkbox"
+
+                id="secureFiles">
+
+
+        </div>
+
+
+
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.lockApplication()">
+
+
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+
+            Verrouiller l'application
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- INFORMATIONS -->
+
+
+    <div class="card">
+
+
+        <h3>
+
+            <i class="fa-solid fa-circle-question"></i>
+
+            À propos
+
+
+        </h3>
+
+
+        <p>
+
+
+            <strong>
+
+                InspecteurBot IA RDC
+
+            </strong>
+
+
+            <br>
+
+
+            Assistant intelligent destiné aux
+            Inspecteurs et Contrôleurs du Travail.
+
+
+            <br><br>
+
+
+            Version : 3.0 - 2026
+
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- ACTIONS -->
+
+
+    <div class="action-buttons">
+
+
+        <button
+
+            class="btn"
+
+            onclick="app.resetSettings()">
+
+
+
+            <i class="fa-solid fa-rotate"></i>
+
+
+            Restaurer les paramètres
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- RETOUR -->
+
+
+    <div class="bottom-back-btn">
+
+
+        <button
+
+            class="btn btn-outline"
+
+            onclick="app.goBack()">
+
+
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+
+            Retour
+
+
+        </button>
+
+
+    </div>
+
+
+
+  </section>
+
+
+<!-- ====================================================== -->
+<!-- FOOTER OFFICIEL INSPECTEURBOT IA RDC -->
+<!-- ====================================================== -->
+
+
+<footer class="app-footer">
+
+
+    <div class="footer-brand">
+
+
+        <div class="footer-icon">
+
+
+            <i class="fa-solid fa-scale-balanced"></i>
+
+
+        </div>
+
+
+
+        <h2>
+
+            InspecteurBot IA RDC
+
+        </h2>
+
+
+
+        <p>
+
+            Plateforme intelligente d'assistance juridique
+            destinée aux Inspecteurs et Contrôleurs du Travail.
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+    <div class="footer-menu">
+
+
+        <h3>
+
+            Modules disponibles
+
+        </h3>
+
+
+
+        <div class="footer-links">
+
+
+            <span>
+
+                <i class="fa-solid fa-gavel"></i>
+
+                Infractions & Sanctions
+
+            </span>
+
+
+
+            <span>
+
+                <i class="fa-solid fa-book"></i>
+
+                Code du Travail
+
+            </span>
+
+
+
+            <span>
+
+                <i class="fa-solid fa-file-signature"></i>
+
+                Procès-Verbaux
+
+            </span>
+
+
+
+            <span>
+
+                <i class="fa-solid fa-graduation-cap"></i>
+
+                Académie InspecteurBot
+
+            </span>
+
+
+
+            <span>
+
+                <i class="fa-solid fa-robot"></i>
+
+                Assistant IA
+
+            </span>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <div class="footer-info">
+
+
+        <h3>
+
+            Informations
+
+        </h3>
+
+
+
+        <p>
+
+            Application dédiée à la formation,
+            l'accompagnement et l'aide à la décision
+            des professionnels de l'inspection du travail.
+
+        </p>
+
+
+
+        <p>
+
+
+            Version :
+
+            <strong>
+
+                3.0 - 2026
+
+            </strong>
+
+
+        </p>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Créateur -->
+
+
+    <div class="footer-author">
+
+
+        <div class="author-line">
+
+
+            <i class="fa-solid fa-code"></i>
+
+
+            <span>
+
+
+                Créé par
+
+
+                <strong>
+
+                    Inspecteur Limengo (Pmiller)
+
+                </strong>
+
+
+            </span>
+
+
+        </div>
+
+
+
+
+
+        <div class="copyright">
+
+
+            © 2026 InspecteurBot IA RDC
+
+
+            <br>
+
+
+            Tous droits réservés.
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+</footer>
+
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- NAVIGATION MOBILE -->
+<!-- ====================================================== -->
+
+
+<div class="mobile-bottom-menu">
+
+
+    <button onclick="app.navToTab('dashboard','Accueil')">
+
+
+        <i class="fa-solid fa-house"></i>
+
+
+        <span>
+
+            Accueil
+
+        </span>
+
+
+    </button>
+
+
+
+    <button onclick="app.navTo('sanctions','Sanctions')">
+
+
+        <i class="fa-solid fa-gavel"></i>
+
+
+        <span>
+
+            Sanctions
+
+        </span>
+
+
+    </button>
+
+
+
+    <button onclick="app.navTo('assistantIA','Assistant IA')">
+
+
+        <i class="fa-solid fa-robot"></i>
+
+
+        <span>
+
+            IA
+
+        </span>
+
+
+    </button>
+
+
+
+    <button onclick="app.navTo('parametres','Paramètres')">
+
+
+        <i class="fa-solid fa-gear"></i>
+
+
+        <span>
+
+            Réglages
+
+        </span>
+
+
+    </button>
+
+
+</div>
+
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- SCRIPTS -->
+<!-- ====================================================== -->
+
+
+<script src="App-sanctions.js"></script>
+
+
+
+
+
 </body>
+
 </html>
