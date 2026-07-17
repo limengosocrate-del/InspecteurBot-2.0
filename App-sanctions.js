@@ -4811,6 +4811,236 @@ connectToInspectorDashboard(){
 }
 
 
+/* ==========================================================
+   MODULE QUIZ & ACADEMIE INSPECTEURBOT
+========================================================== */
+
+
+initQuiz(){
+
+    this.quizScore = 0;
+
+    this.quizQuestion = 0;
+
+    this.quizHistory = JSON.parse(
+
+        localStorage.getItem(
+            "quiz-history"
+        )
+        ||
+        "[]"
+
+    );
+
+
+    console.log(
+        "Module Quiz chargé"
+    );
+
+}
+
+
+
+startQuiz(level="expert"){
+
+
+    this.currentQuiz =
+
+    QuizSanctions.filter(q=>
+
+        q.niveau===level
+
+    );
+
+
+    this.quizQuestion = 0;
+
+    this.quizScore = 0;
+
+
+    this.showQuestion();
+
+}
+
+
+
+showQuestion(){
+
+
+    const q =
+
+    this.currentQuiz[
+        this.quizQuestion
+    ];
+
+
+    if(!q){
+
+        this.endQuiz();
+
+        return;
+
+    }
+
+
+
+    const zone =
+
+    document.getElementById(
+        "quizContainer"
+    );
+
+
+    if(!zone) return;
+
+
+
+    zone.innerHTML=`
+
+
+    <div class="card">
+
+
+    <h3>
+
+    Question 
+    ${this.quizQuestion+1}
+
+    </h3>
+
+
+    <p>
+
+    ${q.question}
+
+    </p>
+
+
+
+    ${q.options.map(
+        (o,i)=>
+
+        `
+
+        <button
+
+        class="btn"
+
+        onclick="app.answerQuiz(${i})">
+
+        ${o}
+
+        </button>
+
+        `
+
+    ).join("")}
+
+
+
+    </div>
+
+
+    `;
+
+
+}
+
+
+
+answerQuiz(index){
+
+
+    const q =
+
+    this.currentQuiz[
+        this.quizQuestion
+    ];
+
+
+
+    if(
+
+        index===q.correct
+
+    ){
+
+        this.quizScore++;
+
+    }
+
+
+
+    this.quizQuestion++;
+
+
+    this.showQuestion();
+
+
+}
+
+
+
+endQuiz(){
+
+
+    const resultat={
+
+
+        date:
+
+        new Date()
+        .toLocaleString(),
+
+
+        score:
+
+        this.quizScore,
+
+
+        total:
+
+        this.currentQuiz.length
+
+
+    };
+
+
+
+    this.quizHistory.push(
+        resultat
+    );
+
+
+
+    localStorage.setItem(
+
+        "quiz-history",
+
+        JSON.stringify(
+            this.quizHistory
+        )
+
+    );
+
+
+
+    alert(
+
+    "Quiz terminé : "
+    +
+    this.quizScore
+    +
+    "/"
+    +
+    this.currentQuiz.length
+
+    );
+
+
+       }
+
+
 
 /* ===============================
    Démarrage final
@@ -4818,45 +5048,33 @@ connectToInspectorDashboard(){
 
 startModule(){
 
-
     this.loadTheme();
-
 
     this.initInfractions();
 
-
     this.initAIM();
-
 
     this.initBibliotheque();
 
-
     this.initArticlesCodeTravail();
-
 
     this.initAssistantIA();
 
-
     this.initArchives();
-
 
     this.loadFavorites();
 
-
     this.loadAIMHistory();
-
 
     this.loadAIHistory();
 
-
     this.initStatistics();
-
 
     this.connectToInspectorDashboard();
 
+    this.initQuiz();
 
-    this.finalizeModule();
-
+    this.finalizeModule();  
 
 }
 
