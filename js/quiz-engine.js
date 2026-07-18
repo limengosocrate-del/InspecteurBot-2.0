@@ -1,15 +1,12 @@
 /* ==========================================================
    QUIZ ENGINE
-   ACADEMIE INSPECTEURBOT IGT RDC
+   ACADEMIE PROFESSIONNELLE INSPECTEURBOT IGT RDC
+   VERSION COMPATIBLE QUESTION_BANK V3.0
 
-   Moteur professionnel de quiz
-   Compatible :
-   - Quiz_Academie_IGT.html
-   - academie-igt.css
-   - question_bank.json
-
-   Développé par Inspecteur Limengo (Pmiller) © 2026
+   Développé par
+   Inspecteur Limengo (Pmiller) © 2026
 ========================================================== */
+
 
 
 "use strict";
@@ -19,17 +16,20 @@
 
 
 /* ==========================================================
-   VARIABLES GENERALES
+   CONFIGURATION GENERALE
 ========================================================== */
 
 
 const QuizEngine = {
 
 
-    version:"2.0",
+    version:"3.0",
 
 
     initialized:false,
+
+
+    questionFile:"question_bank.json",
 
 
     questions:[],
@@ -56,10 +56,14 @@ const QuizEngine = {
     progress:0,
 
 
-    startTime:null,
+    answered:false,
 
 
     timer:null,
+
+
+    time:0
+
 
 
 };
@@ -76,125 +80,160 @@ const QuizEngine = {
 ========================================================== */
 
 
-const DOM = {};
+const DOM = {
+
+
+    questionText:null,
+
+
+    answersContainer:null,
+
+
+    categorieQuiz:null,
+
+
+    timer:null,
+
+
+    numeroQuestion:null,
+
+
+    lifeDisplay:null,
+
+
+    rewardDisplay:null,
+
+
+    quizProgress:null,
+
+
+    feedback:null,
+
+
+    darkModeBtn:null,
+
+
+    notificationBtn:null
+
+
+};
 
 
 
+
+
+
+
+
+/* ==========================================================
+   CONNEXION ELEMENTS HTML
+========================================================== */
 
 
 function connectDOM(){
 
 
+
     DOM.questionText =
-    document.getElementById("questionText");
+
+    document.getElementById(
+    "questionText"
+    );
+
 
 
     DOM.answersContainer =
-    document.getElementById("answersContainer");
+
+    document.getElementById(
+    "answersContainer"
+    );
 
 
-    DOM.feedback =
-    document.getElementById("feedback");
+
+    DOM.categorieQuiz =
+
+    document.getElementById(
+    "categorieQuiz"
+    );
+
 
 
     DOM.timer =
-    document.getElementById("timer");
+
+    document.getElementById(
+    "timer"
+    );
+
 
 
     DOM.numeroQuestion =
-    document.getElementById("numeroQuestion");
+
+    document.getElementById(
+    "numeroQuestion"
+    );
+
 
 
     DOM.lifeDisplay =
-    document.getElementById("lifeDisplay");
 
+    document.getElementById(
+    "lifeDisplay"
+    );
 
-    DOM.lifeCount =
-    document.getElementById("lifeCount");
 
 
     DOM.rewardDisplay =
-    document.getElementById("rewardDisplay");
+
+    document.getElementById(
+    "rewardDisplay"
+    );
+
 
 
     DOM.quizProgress =
-    document.getElementById("quizProgress");
+
+    document.getElementById(
+    "quizProgress"
+    );
 
 
-    DOM.progressFill =
-    document.getElementById("progressFill");
 
+    DOM.feedback =
 
-    DOM.grade =
-    document.getElementById("grade");
+    document.getElementById(
+    "feedback"
+    );
 
-
-    DOM.gradeName =
-    document.getElementById("gradeName");
-
-
-    DOM.cdf =
-    document.getElementById("cdf");
-
-
-    DOM.usd =
-    document.getElementById("usd");
 
 
     DOM.darkModeBtn =
-    document.getElementById("darkModeBtn");
+
+    document.getElementById(
+    "darkModeBtn"
+    );
+
+
+
+    DOM.notificationBtn =
+
+    document.getElementById(
+    "notificationBtn"
+    );
+
 
 
 }
 
 
-
-
-
-
-
-
-/* ==========================================================
-   DEMARRAGE APPLICATION
-========================================================== */
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-    connectDOM();
-
-
-    QuizEngine.initialized=true;
-
-
-    console.log(
-    "Académie InspecteurBot IGT RDC chargée"
-    );
-
-
-});
-
 /* ==========================================================
    PARTIE 2
-   CHARGEMENT QUESTION_BANK.JSON
-   DEMARRAGE SECURISE DU QUIZ
+   CHARGEMENT QUESTION_BANK V3.0
+   FORMAT:
+   {
+      version:"3.0",
+      questions:[]
+   }
 ========================================================== */
-
-
-
-
-
-/* ==========================================================
-   CHEMIN BANQUE QUESTIONS
-========================================================== */
-
-
-QuizEngine.questionFile = "question_bank.json";
-
-
 
 
 
@@ -202,7 +241,7 @@ QuizEngine.questionFile = "question_bank.json";
 
 
 /* ==========================================================
-   CHARGEMENT DES QUESTIONS
+   CHARGEMENT BANQUE QUESTIONS
 ========================================================== */
 
 
@@ -212,14 +251,10 @@ async function loadQuestions(){
     try{
 
 
-        showLoadingMessage(
-        "Chargement des questions professionnelles..."
-        );
-
-
-
         const response = await fetch(
+
             QuizEngine.questionFile
+
         );
 
 
@@ -228,7 +263,9 @@ async function loadQuestions(){
 
 
             throw new Error(
-            "Impossible de charger question_bank.json"
+
+            "Fichier question_bank.json introuvable"
+
             );
 
 
@@ -240,11 +277,17 @@ async function loadQuestions(){
 
 
 
-        if(!Array.isArray(data)){
+        if(
+            !data.questions
+            ||
+            !Array.isArray(data.questions)
+        ){
 
 
             throw new Error(
-            "Format question_bank.json incorrect"
+
+            "Format question_bank.json invalide"
+
             );
 
 
@@ -252,54 +295,59 @@ async function loadQuestions(){
 
 
 
-        QuizEngine.questions = data;
+        QuizEngine.questions =
+
+        data.questions;
 
 
 
         console.log(
-            "Questions chargées :",
-            QuizEngine.questions.length
+
+        "Questions chargées :",
+
+        QuizEngine.questions.length
+
         );
 
 
 
-        hideLoadingMessage();
+        if(
+            QuizEngine.questions.length===0
+        ){
+
+
+            throw new Error(
+
+            "Aucune question disponible"
+
+            );
+
+
+        }
 
 
 
-        startQuiz();
+        showQuestion();
 
 
 
     }
+
 
     catch(error){
 
 
         console.error(
-            "Erreur chargement questions :",
-            error
+
+        "Erreur chargement questions :",
+
+        error
+
         );
 
 
 
-        showLoadingMessage(
-        "Erreur de chargement des questions"
-        );
-
-
-
-        if(DOM.questionText){
-
-
-            DOM.questionText.innerHTML =
-            `
-            ⚠️ Impossible de charger les questions.<br>
-            Vérifiez le fichier question_bank.json.
-            `;
-
-
-        }
+        showLoadingError();
 
 
     }
@@ -315,60 +363,44 @@ async function loadQuestions(){
 
 
 /* ==========================================================
-   PREMIER LANCEMENT QUIZ
+   MESSAGE ERREUR CHARGEMENT
 ========================================================== */
 
 
-function startQuiz(){
+function showLoadingError(){
 
 
     if(
-        QuizEngine.questions.length===0
+        DOM.questionText
     ){
 
 
-        console.error(
-        "Aucune question disponible"
-        );
+        DOM.questionText.innerHTML =
 
-
-        return;
+        `
+        ⚠️ Erreur de chargement des questions
+        `;
 
 
     }
 
 
 
-    QuizEngine.currentQuestion=0;
+    if(
+        DOM.answersContainer
+    ){
 
 
-    QuizEngine.score=0;
+        DOM.answersContainer.innerHTML =
+
+        `
+        <p>
+        Vérifiez la présence de question_bank.json
+        </p>
+        `;
 
 
-    QuizEngine.lives=5;
-
-
-    QuizEngine.rewardFC=0;
-
-
-    QuizEngine.rewardUSD=0;
-
-
-    QuizEngine.startTime =
-    new Date();
-
-
-
-    updateInterface();
-
-
-
-    displayQuestion();
-
-
-
-    startTimer();
-
+    }
 
 
 }
@@ -381,206 +413,56 @@ function startQuiz(){
 
 
 /* ==========================================================
-   MESSAGE CHARGEMENT
+   NETTOYAGE QUESTIONS INVALIDES
 ========================================================== */
 
 
-function showLoadingMessage(message){
-
-
-    const loader =
-    document.querySelector(
-    ".loading-academie"
-    );
+function prepareQuestions(){
 
 
 
-    if(loader){
+    QuizEngine.questions =
+
+    QuizEngine.questions.filter(
+
+        question =>{
 
 
-        loader.style.display="flex";
+            return (
 
+                question.question
+                &&
+                question.choix
+                &&
+                Array.isArray(question.choix)
 
-
-        const text =
-        loader.querySelector("p");
-
-
-
-        if(text){
-
-
-            text.textContent = message;
+            );
 
 
         }
 
-
-    }
-
-
-}
-
-
-
-
-
-function hideLoadingMessage(){
-
-
-    const loader =
-    document.querySelector(
-    ".loading-academie"
     );
 
 
 
-    if(loader){
+    console.log(
 
+    "Questions prêtes :",
 
-        loader.style.display="none";
+    QuizEngine.questions.length
 
-
-    }
+    );
 
 
 }
-
-
-
-
-
-
-
-
-/* ==========================================================
-   LANCEMENT AUTOMATIQUE
-========================================================== */
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
-    loadQuestions();
-
-
-});
-
 
 
 /* ==========================================================
    PARTIE 3
-   AFFICHAGE QUESTIONS
-   GENERATION REPONSES
-   VERIFICATION DES REPONSES
-========================================================== */
-
-
-
-
-
-
-/* ==========================================================
-   QUESTION ACTUELLE
-========================================================== */
-
-
-function getCurrentQuestion(){
-
-
-    return QuizEngine.questions[
-        QuizEngine.currentQuestion
-    ];
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
    AFFICHAGE QUESTION
+   CHOIX DE REPONSES
+   VALIDATION REPONSE "bonne"
 ========================================================== */
-
-
-function displayQuestion(){
-
-
-    const question =
-    getCurrentQuestion();
-
-
-
-    if(!question){
-
-
-        finishQuiz();
-
-
-        return;
-
-
-    }
-
-
-
-    if(DOM.questionText){
-
-
-        DOM.questionText.textContent =
-        question.question
-        ||
-        question.text
-        ||
-        "Question indisponible";
-
-
-    }
-
-
-
-
-    if(DOM.numeroQuestion){
-
-
-        DOM.numeroQuestion.textContent =
-
-        `${QuizEngine.currentQuestion + 1}
-        /
-        ${QuizEngine.questions.length}`;
-
-
-    }
-
-
-
-    if(DOM.answersContainer){
-
-
-        DOM.answersContainer.innerHTML="";
-
-
-    }
-
-
-
-    generateAnswers(question);
-
-
-
-    updateProgress();
-
-
-
-}
-
-
 
 
 
@@ -588,293 +470,11 @@ function displayQuestion(){
 
 
 /* ==========================================================
-   GENERATION DES REPONSES
+   AFFICHER QUESTION ACTUELLE
 ========================================================== */
 
 
-function generateAnswers(question){
-
-
-    let answers = [];
-
-
-    if(question.answers){
-
-
-        answers =
-        question.answers;
-
-
-    }
-
-    else if(question.options){
-
-
-        answers =
-        question.options;
-
-
-    }
-
-
-
-    answers.forEach(
-    (answer,index)=>{
-
-
-        const button =
-        document.createElement("button");
-
-
-
-        button.className =
-        "answer-option";
-
-
-
-        button.textContent =
-        answer;
-
-
-
-        button.dataset.index =
-        index;
-
-
-
-        button.addEventListener(
-        "click",
-        ()=>{
-
-
-            checkAnswer(index);
-
-
-        });
-
-
-
-        DOM.answersContainer.appendChild(
-        button
-        );
-
-
-    });
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   VERIFICATION REPONSE
-========================================================== */
-
-
-function checkAnswer(selectedIndex){
-
-
-    const question =
-    getCurrentQuestion();
-
-
-
-    let correct =
-    question.correctAnswer;
-
-
-
-    if(correct===undefined){
-
-
-        correct =
-        question.correct;
-
-
-    }
-
-
-
-    const buttons =
-    document.querySelectorAll(
-    ".answer-option"
-    );
-
-
-
-    buttons.forEach(
-    button=>{
-
-
-        button.disabled=true;
-
-
-    });
-
-
-
-    if(
-        selectedIndex ==
-        correct
-    ){
-
-
-        correctAnswer();
-
-
-    }
-
-    else{
-
-
-        wrongAnswer();
-
-
-    }
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   BONNE REPONSE
-========================================================== */
-
-
-function correctAnswer(){
-
-
-    QuizEngine.score++;
-
-
-
-    QuizEngine.rewardFC +=10000;
-
-
-
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-        `
-        ✅ Bonne réponse !<br>
-        +10 000 FC
-        `;
-
-
-
-        DOM.feedback.className =
-        "feedback success-message";
-
-
-    }
-
-
-
-    setTimeout(
-    nextQuestion,
-    1200
-    );
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   MAUVAISE REPONSE
-========================================================== */
-
-
-function wrongAnswer(){
-
-
-    QuizEngine.lives--;
-
-
-
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-        `
-        ❌ Mauvaise réponse.<br>
-        Une vie perdue.
-        `;
-
-
-
-        DOM.feedback.className =
-        "feedback error-message";
-
-
-    }
-
-
-
-    updateLives();
-
-
-
-    if(
-        QuizEngine.lives<=0
-    ){
-
-
-        gameOver();
-
-
-        return;
-
-
-    }
-
-
-
-    setTimeout(
-    nextQuestion,
-    1500
-    );
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   QUESTION SUIVANTE
-========================================================== */
-
-
-function nextQuestion(){
-
-
-    QuizEngine.currentQuestion++;
+function showQuestion(){
 
 
 
@@ -894,19 +494,417 @@ function nextQuestion(){
 
 
 
-    displayQuestion();
+
+    QuizEngine.answered = false;
+
+
+
+    const question =
+
+    QuizEngine.questions[
+
+        QuizEngine.currentQuestion
+
+    ];
+
+
+
+
+
+    if(!question){
+
+
+        handleError(
+
+        "Question inexistante"
+
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+
+
+    /* CATEGORIE */
+
+
+    if(DOM.categorieQuiz){
+
+
+        DOM.categorieQuiz.textContent =
+
+        question.categorie
+
+        ||
+        "Académie IGT";
+
+
+    }
+
+
+
+
+
+
+
+    /* TEXTE QUESTION */
+
+
+    if(DOM.questionText){
+
+
+        DOM.questionText.textContent =
+
+        question.question;
+
+
+    }
+
+
+
+
+
+
+
+    /* NUMERO QUESTION */
+
+
+    if(DOM.numeroQuestion){
+
+
+        DOM.numeroQuestion.textContent =
+
+
+        (
+
+            QuizEngine.currentQuestion + 1
+
+        )
+
+        +
+
+        " / "
+
+        +
+
+        QuizEngine.questions.length;
+
+
+
+    }
+
+
+
+
+
+
+
+    displayAnswers(question);
+
+
+
+    updateInterface();
 
 
 
 }
+
+
+
+
+
+
+
+
+/* ==========================================================
+   AFFICHAGE DES CHOIX
+========================================================== */
+
+
+function displayAnswers(question){
+
+
+
+    if(!DOM.answersContainer){
+
+
+        return;
+
+
+    }
+
+
+
+    DOM.answersContainer.innerHTML = "";
+
+
+
+
+
+    question.choix.forEach(
+
+        (choice,index)=>{
+
+
+            const button =
+
+            document.createElement(
+
+            "button"
+
+            );
+
+
+
+            button.className =
+
+            "answer-option";
+
+
+
+            button.innerHTML =
+
+
+            `
+
+            <span>
+
+            ${String.fromCharCode(65+index)}
+
+            .
+
+            </span>
+
+            ${choice}
+
+            `;
+
+
+
+            button.addEventListener(
+
+            "click",
+
+            ()=>{
+
+
+                checkAnswer(
+
+                    index,
+
+                    question,
+
+                    button
+
+                );
+
+
+            }
+
+            );
+
+
+
+            DOM.answersContainer.appendChild(
+
+            button
+
+            );
+
+
+        }
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   VERIFICATION REPONSE
+========================================================== */
+
+
+function checkAnswer(
+
+selected,
+
+question,
+
+button
+
+){
+
+
+
+    if(
+        QuizEngine.answered
+    ){
+
+
+        return;
+
+
+    }
+
+
+
+    QuizEngine.answered = true;
+
+
+
+
+
+    const correct =
+
+    question.bonne;
+
+
+
+
+
+
+
+    if(
+        selected === correct
+    ){
+
+
+
+        button.classList.add(
+
+        "correct"
+
+        );
+
+
+
+        QuizEngine.score++;
+
+
+
+        addReward(
+
+        question.recompense
+
+        );
+
+
+
+        showFeedback(
+
+        true,
+
+        question.explication
+
+        );
+
+
+
+        sendNotification(
+
+        "Bonne réponse ! Progression validée.",
+
+        "success"
+
+        );
+
+
+
+    }
+
+    else{
+
+
+
+        button.classList.add(
+
+        "wrong"
+
+        );
+
+
+
+        QuizEngine.lives--;
+
+
+
+        showFeedback(
+
+        false,
+
+        question.explication
+
+        );
+
+
+
+        sendNotification(
+
+        "Mauvaise réponse. Une vie a été perdue.",
+
+        "error"
+
+        );
+
+
+
+    }
+
+
+
+
+
+    saveProgress();
+
+
+
+    updateInterface();
+
+
+
+    setTimeout(
+
+    ()=>{
+
+
+        QuizEngine.currentQuestion++;
+
+
+        showQuestion();
+
+
+    },
+
+    2500
+
+    );
+
+
+           }
 
 
 /* ==========================================================
    PARTIE 4
-   SYSTEME VIES
-   CHRONOMETRE
+   RECOMPENSES
+   FC / USD
+   VIES
    PROGRESSION
-   MISE A JOUR INTERFACE
+   INTERFACE
 ========================================================== */
 
 
@@ -915,117 +913,63 @@ function nextQuestion(){
 
 
 /* ==========================================================
-   AFFICHAGE DES VIES
+   AJOUT RECOMPENSE
 ========================================================== */
 
 
-function updateLives(){
+function addReward(reward){
 
 
-    let hearts="";
+
+    if(!reward){
 
 
-    for(
-        let i=0;
-        i<QuizEngine.lives;
-        i++
+        return;
+
+
+    }
+
+
+
+
+
+    if(
+        reward.type === "CDF"
     ){
 
 
-        hearts += "❤️";
+        QuizEngine.rewardFC +=
+
+        Number(
+
+            reward.montant
+
+        )
+        ||
+        0;
+
 
 
     }
 
 
 
-    if(DOM.lifeDisplay){
+
+    if(
+        reward.type === "USD"
+    ){
 
 
-        DOM.lifeDisplay.textContent =
-        hearts || "💔";
+        QuizEngine.rewardUSD +=
 
+        Number(
 
-    }
+            reward.montant
 
+        )
+        ||
+        0;
 
-
-    if(DOM.lifeCount){
-
-
-        DOM.lifeCount.textContent =
-        QuizEngine.lives;
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   MISE A JOUR GENERALE INTERFACE
-========================================================== */
-
-
-function updateInterface(){
-
-
-    updateLives();
-
-
-
-    if(DOM.cdf){
-
-
-        DOM.cdf.textContent =
-
-        `${QuizEngine.rewardFC.toLocaleString()}
-        FC`;
-
-
-    }
-
-
-
-    if(DOM.usd){
-
-
-        DOM.usd.textContent =
-
-        `${QuizEngine.rewardUSD}
-        $`;
-
-
-    }
-
-
-
-    if(DOM.grade){
-
-
-        DOM.grade.textContent =
-        QuizEngine.level;
-
-
-    }
-
-
-
-    if(DOM.gradeName){
-
-
-        DOM.gradeName.textContent =
-
-        "Grade : "
-        +
-        QuizEngine.level;
 
 
     }
@@ -1042,46 +986,177 @@ function updateInterface(){
 
 
 /* ==========================================================
-   PROGRESSION QUIZ
+   CALCUL PROGRESSION
 ========================================================== */
 
 
-function updateProgress(){
+function calculateProgress(){
+
 
 
     if(
         QuizEngine.questions.length===0
     ){
 
-        return;
+
+        return 0;
+
 
     }
 
 
 
-    QuizEngine.progress =
-
-    Math.round(
+    return Math.round(
 
         (
+
         QuizEngine.currentQuestion
+
         /
+
         QuizEngine.questions.length
+
         )
+
         *
+
         100
 
     );
 
 
 
-    if(DOM.quizProgress){
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   MISE A JOUR INTERFACE COMPLETE
+========================================================== */
+
+
+function updateInterface(){
+
+
+
+    const progress =
+
+    calculateProgress();
+
+
+
+    QuizEngine.progress =
+
+    progress;
+
+
+
+
+
+
+
+    /* VIES */
+
+
+    if(
+        DOM.lifeDisplay
+    ){
+
+
+        let hearts="";
+
+
+
+        for(
+            let i=0;
+            i<5;
+            i++
+        ){
+
+
+            hearts +=
+
+            i < QuizEngine.lives
+
+            ?
+
+            "❤️"
+
+            :
+
+            "🖤";
+
+
+        }
+
+
+
+        DOM.lifeDisplay.textContent =
+
+        hearts;
+
+
+    }
+
+
+
+
+
+
+
+    /* RECOMPENSE */
+
+
+    if(
+        DOM.rewardDisplay
+    ){
+
+
+        DOM.rewardDisplay.textContent =
+
+
+        QuizEngine.rewardFC.toLocaleString()
+
+        +
+
+        " FC | "
+
+        +
+
+        QuizEngine.rewardUSD
+
+        +
+
+        " $";
+
+
+    }
+
+
+
+
+
+
+
+    /* PROGRESSION */
+
+
+    if(
+        DOM.quizProgress
+    ){
 
 
         DOM.quizProgress.textContent =
 
-        QuizEngine.progress
+        progress
+
         +
+
         " %";
 
 
@@ -1089,13 +1164,29 @@ function updateProgress(){
 
 
 
-    if(DOM.progressFill){
 
 
-        DOM.progressFill.style.width =
 
-        QuizEngine.progress
+
+    const fill =
+
+    document.getElementById(
+
+    "progressFill"
+
+    );
+
+
+
+    if(fill){
+
+
+        fill.style.width =
+
+        progress
+
         +
+
         "%";
 
 
@@ -1103,6 +1194,94 @@ function updateProgress(){
 
 
 
+
+
+
+
+    /* COMPTEUR VIES DASHBOARD */
+
+
+    const lifeCount =
+
+    document.getElementById(
+
+    "lifeCount"
+
+    );
+
+
+
+    if(lifeCount){
+
+
+        lifeCount.textContent =
+
+        QuizEngine.lives;
+
+
+    }
+
+
+
+
+
+
+
+    /* PORTE-MONNAIE */
+
+
+    const cdf =
+
+    document.getElementById(
+
+    "cdf"
+
+    );
+
+
+
+    const usd =
+
+    document.getElementById(
+
+    "usd"
+
+    );
+
+
+
+    if(cdf){
+
+
+        cdf.textContent =
+
+        QuizEngine.rewardFC.toLocaleString()
+
+        +
+
+        " FC";
+
+
+    }
+
+
+
+    if(usd){
+
+
+        usd.textContent =
+
+        QuizEngine.rewardUSD
+
+        +
+
+        " $";
+
+
+    }
+
+
+
 }
 
 
@@ -1113,70 +1292,55 @@ function updateProgress(){
 
 
 /* ==========================================================
-   CHRONOMETRE
+   VERIFICATION FIN DE QUIZ
 ========================================================== */
 
 
-function startTimer(){
-
-
-    let seconds=0;
+function checkLives(){
 
 
 
-    clearInterval(
-    QuizEngine.timer
-    );
+    if(
+        QuizEngine.lives <=0
+    ){
+
+
+        QuizEngine.lives = 0;
 
 
 
-    QuizEngine.timer =
+        showFeedback(
 
-    setInterval(
-    ()=>{
+        false,
 
+        "Toutes vos vies sont épuisées. Révision du niveau obligatoire."
 
-        seconds++;
-
-
-
-        let minutes =
-
-        Math.floor(
-        seconds / 60
         );
 
 
 
-        let sec =
-
-        seconds % 60;
+        saveProgress();
 
 
 
-        if(DOM.timer){
+        setTimeout(
+
+        ()=>{
 
 
-            DOM.timer.textContent =
+            location.reload();
 
 
-            String(minutes)
-            .padStart(2,"0")
-            +
-            ":"
-            +
-            String(sec)
-            .padStart(2,"0");
+        },
 
+        3000
 
-
-        }
+        );
 
 
 
-    },
-    1000
-    );
+    }
+
 
 
 }
@@ -1189,93 +1353,46 @@ function startTimer(){
 
 
 /* ==========================================================
-   ARRET CHRONOMETRE
+   INITIALISATION QUESTIONS
 ========================================================== */
 
 
-function stopTimer(){
-
-
-    clearInterval(
-    QuizEngine.timer
-    );
-
-
-}
+function startQuiz(){
 
 
 
+    prepareQuestions();
 
 
 
-
-
-/* ==========================================================
-   FIN DE NIVEAU
-========================================================== */
-
-
-function finishQuiz(){
-
-
-    stopTimer();
+    QuizEngine.currentQuestion = 0;
 
 
 
-    if(DOM.questionText){
-
-
-        DOM.questionText.innerHTML =
-
-        `
-        🎉 Félicitations !<br>
-        Niveau terminé.
-        `;
-
-
-    }
+    QuizEngine.score = 0;
 
 
 
-    if(DOM.answersContainer){
-
-
-        DOM.answersContainer.innerHTML="";
-
-
-    }
+    QuizEngine.answered = false;
 
 
 
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-        `
-        Score :
-        ${QuizEngine.score}
-        /
-        ${QuizEngine.questions.length}
-        `;
+    updateInterface();
 
 
 
-        DOM.feedback.className =
-        "feedback success-message";
-
-
-    }
+    showQuestion();
 
 
 
            }
 
+
 /* ==========================================================
    PARTIE 5
-   SYSTEME GRADES
-   NIVEAUX ACADEMIE
-   DEBLOCAGE PROGRESSIF
+   SYSTEME DE NIVEAUX
+   GRADES IGT
+   DEBLOCAGE CARRIERE
 ========================================================== */
 
 
@@ -1284,7 +1401,7 @@ function finishQuiz(){
 
 
 /* ==========================================================
-   LISTE DES GRADES
+   PARCOURS PROFESSIONNEL IGT
 ========================================================== */
 
 
@@ -1293,17 +1410,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:1,
 
-        id:1,
+        grade:"Débutant",
 
-
-        name:"Débutant",
-
-
-        requiredScore:60,
-
-
-        unlocked:true
+        scoreMinimum:70
 
 
     },
@@ -1311,17 +1422,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:2,
 
-        id:2,
+        grade:"Administratif",
 
-
-        name:"Administratif",
-
-
-        requiredScore:65,
-
-
-        unlocked:false
+        scoreMinimum:70
 
 
     },
@@ -1329,17 +1434,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:3,
 
-        id:3,
+        grade:"Contrôleur du Travail",
 
-
-        name:"Contrôleur",
-
-
-        requiredScore:70,
-
-
-        unlocked:false
+        scoreMinimum:75
 
 
     },
@@ -1347,17 +1446,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:4,
 
-        id:4,
+        grade:"Inspecteur du Travail",
 
-
-        name:"Inspecteur",
-
-
-        requiredScore:75,
-
-
-        unlocked:false
+        scoreMinimum:80
 
 
     },
@@ -1365,17 +1458,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:5,
 
-        id:5,
+        grade:"Directeur",
 
-
-        name:"Directeur",
-
-
-        requiredScore:80,
-
-
-        unlocked:false
+        scoreMinimum:85
 
 
     },
@@ -1383,17 +1470,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:6,
 
-        id:6,
+        grade:"Inspecteur Général Adjoint",
 
-
-        name:"Inspecteur Général Adjoint",
-
-
-        requiredScore:85,
-
-
-        unlocked:false
+        scoreMinimum:90
 
 
     },
@@ -1401,17 +1482,11 @@ const ACADEMIE_LEVELS = [
 
     {
 
+        niveau:7,
 
-        id:7,
+        grade:"Inspecteur Général du Travail",
 
-
-        name:"Inspecteur Général du Travail",
-
-
-        requiredScore:90,
-
-
-        unlocked:false
+        scoreMinimum:95
 
 
     }
@@ -1427,19 +1502,26 @@ const ACADEMIE_LEVELS = [
 
 
 /* ==========================================================
-   RECUPERATION NIVEAU ACTUEL
+   OBTENIR NIVEAU ACTUEL
 ========================================================== */
 
 
 function getCurrentLevel(){
 
 
+
     return ACADEMIE_LEVELS.find(
-    level=>
 
-        level.name === QuizEngine.level
+        level =>
 
-    );
+        level.grade === QuizEngine.level
+
+    )
+
+    ||
+
+    ACADEMIE_LEVELS[0];
+
 
 
 }
@@ -1452,7 +1534,7 @@ function getCurrentLevel(){
 
 
 /* ==========================================================
-   VERIFICATION REUSSITE NIVEAU
+   VERIFICATION DEBLOCAGE NIVEAU
 ========================================================== */
 
 
@@ -1460,45 +1542,28 @@ function checkLevelCompletion(){
 
 
 
-    const percentage =
+    const score =
 
+    calculateFinalScore();
 
-    Math.round(
-
-        (
-        QuizEngine.score
-        /
-        QuizEngine.questions.length
-        )
-        *
-        100
-
-    );
 
 
 
     const current =
+
     getCurrentLevel();
 
 
 
-    if(!current){
-
-
-        return;
-
-
-    }
-
-
 
     if(
-        percentage >=
-        current.requiredScore
+        score >= current.scoreMinimum
     ){
 
 
+
         unlockNextLevel();
+
 
 
     }
@@ -1506,10 +1571,15 @@ function checkLevelCompletion(){
     else{
 
 
-        showLevelFailed(
-        percentage,
-        current.requiredScore
+
+        sendNotification(
+
+        "Niveau non validé. Vous devez réviser avant de continuer.",
+
+        "error"
+
         );
+
 
 
     }
@@ -1533,13 +1603,14 @@ function checkLevelCompletion(){
 function unlockNextLevel(){
 
 
+
     const index =
 
     ACADEMIE_LEVELS.findIndex(
 
-        level=>
+        level =>
 
-        level.name === QuizEngine.level
+        level.grade === QuizEngine.level
 
     );
 
@@ -1547,41 +1618,55 @@ function unlockNextLevel(){
 
     const next =
 
-    ACADEMIE_LEVELS[
-        index + 1
-    ];
+    ACADEMIE_LEVELS[index + 1];
 
 
 
-    if(next){
 
 
-        next.unlocked=true;
-
-
-
-        QuizEngine.level =
-        next.name;
+    if(!next){
 
 
 
-        showLevelSuccess(
-        next.name
+        sendNotification(
+
+        "Félicitations ! Vous avez atteint le grade maximum IGT.",
+
+        "success"
+
         );
 
+
+        return;
 
 
     }
 
-    else{
 
 
-        showLevelSuccess(
-        "Inspecteur Général du Travail"
-        );
 
 
-    }
+
+
+    QuizEngine.level =
+
+    next.grade;
+
+
+
+
+
+    sendNotification(
+
+    "Nouveau grade débloqué : "
+
+    +
+
+    next.grade,
+
+    "success"
+
+    );
 
 
 
@@ -1589,7 +1674,8 @@ function unlockNextLevel(){
 
 
 
-    updateInterface();
+    updateCareerDisplay();
+
 
 
 }
@@ -1602,154 +1688,224 @@ function unlockNextLevel(){
 
 
 /* ==========================================================
-   MESSAGE REUSSITE
-========================================================== */
-
-
-function showLevelSuccess(level){
-
-
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-
-        `
-        🏆 Niveau validé !<br>
-        Nouveau grade :
-        <strong>${level}</strong>
-        `;
-
-
-
-        DOM.feedback.className =
-
-        "feedback success-message";
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   MESSAGE ECHEC
-========================================================== */
-
-
-function showLevelFailed(score,required){
-
-
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-
-        `
-        ❌ Niveau non validé.<br>
-        Score obtenu :
-        ${score}%<br>
-        Minimum requis :
-        ${required}%
-        `;
-
-
-
-        DOM.feedback.className =
-
-        "feedback error-message";
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   AFFICHAGE PARCOURS CARRIERE
+   AFFICHAGE CARRIERE
 ========================================================== */
 
 
 function updateCareerDisplay(){
 
 
+
     const items =
 
     document.querySelectorAll(
+
     ".career-item"
+
     );
 
 
 
+    if(
+        !items.length
+    ){
+
+
+        return;
+
+
+    }
+
+
+
+    const currentIndex =
+
+    ACADEMIE_LEVELS.findIndex(
+
+        level =>
+
+        level.grade === QuizEngine.level
+
+    );
+
+
+
+
+
     items.forEach(
-    (item,index)=>{
 
-
-        item.classList.remove(
-        "active",
-        "locked"
-        );
+        (item,index)=>{
 
 
 
-        const level =
-        ACADEMIE_LEVELS[index];
+            item.classList.remove(
 
-
-
-        if(
-            level.name === QuizEngine.level
-        ){
-
-
-            item.classList.add(
             "active"
+
             );
 
 
-        }
 
-        else if(
-            !level.unlocked
-        ){
+            item.classList.remove(
 
-
-            item.classList.add(
             "locked"
+
             );
+
+
+
+            if(
+                index <= currentIndex
+            ){
+
+
+                item.classList.add(
+
+                "active"
+
+                );
+
+
+            }
+
+            else{
+
+
+                item.classList.add(
+
+                "locked"
+
+                );
+
+
+            }
+
 
 
         }
 
+    );
 
-
-    });
 
 
 }
 
 
+
+
+
+
+
+
+/* ==========================================================
+   CONTROLE ACCES FORMATION
+========================================================== */
+
+
+function canAccessModule(requiredLevel){
+
+
+
+    const current =
+
+    getCurrentLevel().niveau;
+
+
+
+    return current >= requiredLevel;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   VERROUILLAGE FORMATIONS
+========================================================== */
+
+
+function updateFormationAccess(){
+
+
+
+    const modules =
+
+    document.querySelectorAll(
+
+    ".formation-card"
+
+    );
+
+
+
+    modules.forEach(
+
+    (module,index)=>{
+
+
+
+        const required =
+
+        index + 1;
+
+
+
+        if(
+            canAccessModule(required)
+        ){
+
+
+            module.classList.remove(
+
+            "locked"
+
+            );
+
+
+
+            module.classList.add(
+
+            "unlocked"
+
+            );
+
+
+        }
+
+        else{
+
+
+            module.classList.add(
+
+            "locked"
+
+            );
+
+
+        }
+
+
+
+    }
+
+    );
+
+
+
+       }
+
+
 /* ==========================================================
    PARTIE 6
-   LOCALSTORAGE
-   SAUVEGARDE PROFIL
-   RESTAURATION AUTOMATIQUE
+   SAUVEGARDE LOCALSTORAGE
+   RESTAURATION PROGRESSION
+   PROFIL APPRENANT IGT
 ========================================================== */
 
 
@@ -1764,7 +1920,7 @@ function updateCareerDisplay(){
 
 const STORAGE_KEY =
 
-"inspecteurbot_igt_academie";
+"inspecteurbot_academie_progression";
 
 
 
@@ -1774,65 +1930,104 @@ const STORAGE_KEY =
 
 
 /* ==========================================================
-   SAUVEGARDER LA PROGRESSION
+   SAUVEGARDE COMPLETE
 ========================================================== */
 
 
 function saveProgress(){
 
 
-    const saveData = {
+
+    const data = {
 
 
-        score:
-        QuizEngine.score,
 
+        version:
 
-        lives:
-        QuizEngine.lives,
+        QuizEngine.version,
 
-
-        rewardFC:
-        QuizEngine.rewardFC,
-
-
-        rewardUSD:
-        QuizEngine.rewardUSD,
 
 
         level:
+
         QuizEngine.level,
 
 
+
+        score:
+
+        QuizEngine.score,
+
+
+
         currentQuestion:
+
         QuizEngine.currentQuestion,
 
 
+
+        lives:
+
+        QuizEngine.lives,
+
+
+
+        rewardFC:
+
+        QuizEngine.rewardFC,
+
+
+
+        rewardUSD:
+
+        QuizEngine.rewardUSD,
+
+
+
         progress:
+
         QuizEngine.progress,
 
 
+
+        badges:
+
+        JSON.parse(
+
+        localStorage.getItem(
+
+        "igt_badges"
+
+        )
+
+        )
+
+        ||
+
+        [],
+
+
+
         date:
+
         new Date().toISOString()
+
 
 
     };
 
 
 
+
+
     localStorage.setItem(
 
-        STORAGE_KEY,
+    STORAGE_KEY,
 
-        JSON.stringify(saveData)
+    JSON.stringify(data)
 
     );
 
-
-
-    showSaveStatus(
-    "Progression sauvegardée"
-    );
 
 
 }
@@ -1845,22 +2040,28 @@ function saveProgress(){
 
 
 /* ==========================================================
-   RESTAURER LA PROGRESSION
+   CHARGEMENT PROGRESSION
 ========================================================== */
 
 
 function loadProgress(){
 
 
+
     const saved =
 
     localStorage.getItem(
+
     STORAGE_KEY
+
     );
 
 
 
-    if(!saved){
+    if(
+        !saved
+    ){
+
 
 
         return;
@@ -1871,6 +2072,7 @@ function loadProgress(){
 
 
     try{
+
 
 
         const data =
@@ -1879,64 +2081,125 @@ function loadProgress(){
 
 
 
-        QuizEngine.score =
-        data.score || 0;
-
-
-
-        QuizEngine.lives =
-        data.lives || 5;
-
-
-
-        QuizEngine.rewardFC =
-        data.rewardFC || 0;
-
-
-
-        QuizEngine.rewardUSD =
-        data.rewardUSD || 0;
-
 
 
         QuizEngine.level =
-        data.level || "Débutant";
+
+        data.level
+
+        ||
+
+        "Débutant";
+
+
+
+
+
+        QuizEngine.score =
+
+        data.score
+
+        ||
+
+        0;
+
+
 
 
 
         QuizEngine.currentQuestion =
-        data.currentQuestion || 0;
+
+        data.currentQuestion
+
+        ||
+
+        0;
+
+
+
+
+
+        QuizEngine.lives =
+
+        data.lives
+
+        ||
+
+        5;
+
+
+
+
+
+        QuizEngine.rewardFC =
+
+        data.rewardFC
+
+        ||
+
+        0;
+
+
+
+
+
+        QuizEngine.rewardUSD =
+
+        data.rewardUSD
+
+        ||
+
+        0;
+
+
 
 
 
         QuizEngine.progress =
-        data.progress || 0;
+
+        data.progress
+
+        ||
+
+        0;
+
+
 
 
 
         console.log(
-        "Progression restaurée"
+
+        "Progression restaurée",
+
+        data
+
         );
 
-
-        updateInterface();
 
 
     }
 
+
     catch(error){
+
 
 
         console.error(
 
-        "Erreur restauration :",
+        "Erreur restauration progression",
 
         error
 
         );
 
 
+
+        resetProgress();
+
+
+
     }
+
 
 
 }
@@ -1949,92 +2212,32 @@ function loadProgress(){
 
 
 /* ==========================================================
-   EFFACER PROGRESSION
+   SUPPRESSION PROGRESSION
 ========================================================== */
 
 
 function resetProgress(){
 
 
-    const confirmation =
 
-    confirm(
+    localStorage.removeItem(
 
-    "Voulez-vous recommencer toute l'académie ?"
+    STORAGE_KEY
 
     );
 
 
 
-    if(
-        confirmation
-    ){
+    localStorage.removeItem(
 
+    "igt_badges"
 
-        localStorage.removeItem(
-        STORAGE_KEY
-        );
-
-
-
-        location.reload();
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   STATUT SAUVEGARDE
-========================================================== */
-
-
-function showSaveStatus(message){
-
-
-    const status =
-
-    document.querySelector(
-    ".storage-status"
     );
 
 
 
-    if(status){
+    location.reload();
 
-
-        status.textContent =
-        message;
-
-
-
-        status.className =
-
-        "storage-status storage-online";
-
-
-
-        setTimeout(
-        ()=>{
-
-
-            status.textContent =
-            "";
-
-        },
-        3000
-        );
-
-
-    }
 
 
 }
@@ -2047,28 +2250,101 @@ function showSaveStatus(message){
 
 
 /* ==========================================================
-   SAUVEGARDE AUTOMATIQUE
+   PROFIL UTILISATEUR
 ========================================================== */
 
 
-setInterval(
-()=>{
+function updatePlayerProfile(){
 
 
-    if(
-        QuizEngine.initialized
-    ){
+
+    const gradeName =
+
+    document.getElementById(
+
+    "gradeName"
+
+    );
 
 
-        saveProgress();
+
+    const grade =
+
+    document.getElementById(
+
+    "grade"
+
+    );
+
+
+
+    const niveau =
+
+    document.getElementById(
+
+    "niveauName"
+
+    );
+
+
+
+
+
+    if(gradeName){
+
+
+        gradeName.textContent =
+
+        "Grade : "
+
+        +
+
+        QuizEngine.level;
 
 
     }
 
 
-},
-60000
-);
+
+
+
+    if(grade){
+
+
+        grade.textContent =
+
+        QuizEngine.level;
+
+
+    }
+
+
+
+
+
+    if(niveau){
+
+
+        const current =
+
+        getCurrentLevel();
+
+
+
+        niveau.textContent =
+
+        "Niveau "
+
+        +
+
+        current.niveau;
+
+
+    }
+
+
+
+}
 
 
 
@@ -2078,31 +2354,39 @@ setInterval(
 
 
 /* ==========================================================
-   RESTAURATION AU DEMARRAGE
+   SYNCHRONISATION PROFIL
 ========================================================== */
 
 
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
+function syncUserData(){
 
 
-    loadProgress();
+
+    updatePlayerProfile();
 
 
-}
 
-);
+    updateInterface();
 
+
+
+    updateCareerDisplay();
+
+
+
+    updateFormationAccess();
+
+
+
+    }
 
 
 /* ==========================================================
    PARTIE 7
-   MODE SOMBRE
+   TIMER
+   FEEDBACK
    NOTIFICATIONS
-   INTERACTIONS INTERFACE
+   MESSAGES ACADEMIE
 ========================================================== */
 
 
@@ -2111,80 +2395,46 @@ document.addEventListener(
 
 
 /* ==========================================================
-   MODE SOMBRE FACEBOOK / WHATSAPP
+   DEMARRER TIMER
 ========================================================== */
 
 
-function initDarkMode(){
-
-
-    const savedTheme =
-
-    localStorage.getItem(
-    "igt_dark_mode"
-    );
+function startTimer(){
 
 
 
-    if(
-        savedTheme === "active"
-    ){
-
-
-        document.body.classList.add(
-        "dark-mode"
-        );
-
-
-    }
+    stopTimer();
 
 
 
-    if(DOM.darkModeBtn){
+    QuizEngine.time = 0;
 
 
-        DOM.darkModeBtn.addEventListener(
 
-        "click",
+    QuizEngine.timer = setInterval(
+
+
 
         ()=>{
 
 
-            document.body.classList.toggle(
-            "dark-mode"
-            );
+
+            QuizEngine.time++;
 
 
 
-            const active =
-
-            document.body.classList.contains(
-            "dark-mode"
-            );
+            updateTimerDisplay();
 
 
 
-            localStorage.setItem(
+        },
 
-            "igt_dark_mode",
-
-            active ? "active" : "normal"
-
-            );
+        1000
 
 
 
-            updateDarkIcon(
-            active
-            );
+    );
 
-
-        }
-
-        );
-
-
-    }
 
 
 }
@@ -2197,42 +2447,179 @@ function initDarkMode(){
 
 
 /* ==========================================================
-   ICONE MODE SOMBRE
+   ARRETER TIMER
 ========================================================== */
 
 
-function updateDarkIcon(active){
+function stopTimer(){
 
 
-    if(!DOM.darkModeBtn){
 
-        return;
+    if(
+        QuizEngine.timer
+    ){
+
+
+        clearInterval(
+
+        QuizEngine.timer
+
+        );
+
+
+        QuizEngine.timer = null;
+
 
     }
 
 
 
-    const icon =
+}
 
-    DOM.darkModeBtn.querySelector(
-    "i"
+
+
+
+
+
+
+
+/* ==========================================================
+   AFFICHAGE TIMER
+========================================================== */
+
+
+function updateTimerDisplay(){
+
+
+
+    if(
+        !DOM.timer
+    ){
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    const minutes =
+
+    Math.floor(
+
+        QuizEngine.time / 60
+
     );
 
 
 
-    if(!icon){
+
+
+    const seconds =
+
+    QuizEngine.time % 60;
+
+
+
+
+
+    DOM.timer.textContent =
+
+
+
+    String(minutes)
+
+    .padStart(
+
+    2,
+
+    "0"
+
+    )
+
+    +
+
+    ":"
+
+    +
+
+    String(seconds)
+
+    .padStart(
+
+    2,
+
+    "0"
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   FEEDBACK REPONSE
+========================================================== */
+
+
+function showFeedback(
+
+success,
+
+message
+
+){
+
+
+
+    if(
+        !DOM.feedback
+    ){
+
 
         return;
+
 
     }
 
 
 
-    if(active){
 
 
-        icon.className =
-        "fa-solid fa-sun";
+    if(success){
+
+
+
+        DOM.feedback.className =
+
+        "feedback success";
+
+
+
+        DOM.feedback.innerHTML =
+
+
+
+        `
+
+        ✅ Bonne réponse !
+
+        <br>
+
+        ${message || ""}
+
+        `;
+
 
 
     }
@@ -2240,11 +2627,33 @@ function updateDarkIcon(active){
     else{
 
 
-        icon.className =
-        "fa-solid fa-moon";
+
+        DOM.feedback.className =
+
+        "feedback error";
+
+
+
+        DOM.feedback.innerHTML =
+
+
+
+        `
+
+        ❌ Réponse incorrecte
+
+        <br>
+
+        ${message || ""}
+
+        `;
+
 
 
     }
+
+
+
 
 
 }
@@ -2257,74 +2666,84 @@ function updateDarkIcon(active){
 
 
 /* ==========================================================
-   SYSTEME NOTIFICATIONS
+   SYSTEME NOTIFICATION
 ========================================================== */
 
 
-function sendNotification(message,type="info"){
+function sendNotification(
+
+message,
+
+type="info"
+
+){
+
 
 
     const list =
 
     document.getElementById(
+
     "notificationList"
+
     );
 
 
 
-    if(!list){
 
-        return;
+
+    if(list){
+
+
+
+        const li =
+
+        document.createElement(
+
+        "li"
+
+        );
+
+
+
+        li.className =
+
+        "notification-"
+
+        +
+
+        type;
+
+
+
+        li.textContent =
+
+        message;
+
+
+
+        list.prepend(
+
+        li
+
+        );
+
+
 
     }
 
 
 
-    const li =
 
-    document.createElement(
-    "li"
+
+    console.log(
+
+    "[Notification]",
+
+    message
+
     );
 
-
-
-    let icon = "🔔";
-
-
-
-    if(type==="success"){
-
-
-        icon="✅";
-
-
-    }
-
-
-    if(type==="error"){
-
-
-        icon="❌";
-
-
-    }
-
-
-
-    li.innerHTML =
-
-    `
-    ${icon}
-    ${message}
-    `;
-
-
-
-    list.prepend(li);
-
-
-
-    updateNotificationBadge();
 
 
 }
@@ -2337,480 +2756,72 @@ function sendNotification(message,type="info"){
 
 
 /* ==========================================================
-   BADGE NOTIFICATION
-========================================================== */
-
-
-function updateNotificationBadge(){
-
-
-    const badge =
-
-    document.querySelector(
-    ".badge"
-    );
-
-
-
-    const list =
-
-    document.querySelectorAll(
-    "#notificationList li"
-    );
-
-
-
-    if(
-        badge
-    ){
-
-
-        badge.textContent =
-        list.length;
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   BOUTON NOTIFICATION
+   INITIALISATION NOTIFICATIONS
 ========================================================== */
 
 
 function initNotifications(){
 
 
-    const btn =
 
-    document.getElementById(
-    "notificationBtn"
-    );
+    const button =
 
+    DOM.notificationBtn;
 
 
-    if(btn){
+
+    if(!button){
 
 
-        btn.addEventListener(
-
-        "click",
-
-        ()=>{
+        return;
 
 
-            sendNotification(
-
-            "Votre progression académique est enregistrée.",
-
-            "success"
-
-            );
+    }
 
 
-        }
+
+
+
+    button.addEventListener(
+
+    "click",
+
+    ()=>{
+
+
+
+        const list =
+
+        document.getElementById(
+
+        "notificationList"
 
         );
 
 
-    }
 
+        if(list){
 
-}
 
 
+            list.scrollIntoView({
 
-
-
-
-
-
-/* ==========================================================
-   INITIALISATION INTERFACE
-========================================================== */
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-    initDarkMode();
-
-
-    initNotifications();
-
-
-    updateNotificationBadge();
-
-
-});
-
-
-/* ==========================================================
-   PARTIE 8
-   SECURITE MOTEUR QUIZ
-   VALIDATION DONNEES
-   GESTION ERREURS
-========================================================== */
-
-
-
-
-
-
-/* ==========================================================
-   VALIDATION STRUCTURE QUESTION
-========================================================== */
-
-
-function validateQuestion(question){
-
-
-    if(!question){
-
-
-        return false;
-
-
-    }
-
-
-
-    const hasText =
-
-    question.question
-    ||
-    question.text;
-
-
-
-    const hasAnswers =
-
-    question.answers
-    ||
-    question.options;
-
-
-
-    if(
-        !hasText
-        ||
-        !hasAnswers
-    ){
-
-
-        console.warn(
-
-        "Question invalide détectée",
-
-        question
-
-        );
-
-
-        return false;
-
-
-    }
-
-
-
-    return true;
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   NETTOYAGE BANQUE QUESTIONS
-========================================================== */
-
-
-function cleanQuestionBank(){
-
-
-    QuizEngine.questions =
-
-    QuizEngine.questions.filter(
-
-        question =>
-
-        validateQuestion(question)
-
-    );
-
-
-
-    console.log(
-
-    "Questions valides :",
-
-    QuizEngine.questions.length
-
-    );
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   PROTECTION REPONSES MULTIPLES
-========================================================== */
-
-
-function preventDoubleAnswer(){
-
-
-    const buttons =
-
-    document.querySelectorAll(
-
-    ".answer-option"
-
-    );
-
-
-
-    buttons.forEach(
-
-    button=>{
-
-
-        button.addEventListener(
-
-        "click",
-
-        ()=>{
-
-
-            buttons.forEach(
-
-            btn=>{
-
-
-                btn.style.pointerEvents =
-                "none";
-
+                behavior:"smooth"
 
             });
 
 
-        },
-
-        {
-
-            once:true
 
         }
 
-        );
-
-
-    });
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   CONTROLE SCORE
-========================================================== */
-
-
-function secureScore(){
-
-
-    if(
-        QuizEngine.score < 0
-    ){
-
-
-        QuizEngine.score=0;
 
 
     }
-
-
-
-    if(
-        QuizEngine.score >
-        QuizEngine.questions.length
-    ){
-
-
-        QuizEngine.score =
-        QuizEngine.questions.length;
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   CONTROLE VIES
-========================================================== */
-
-
-function secureLives(){
-
-
-    if(
-        QuizEngine.lives < 0
-    ){
-
-
-        QuizEngine.lives=0;
-
-
-    }
-
-
-
-    if(
-        QuizEngine.lives > 5
-    ){
-
-
-        QuizEngine.lives=5;
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   PROTECTION LOCALSTORAGE
-========================================================== */
-
-
-function secureStorage(){
-
-
-    try{
-
-
-        JSON.parse(
-
-        localStorage.getItem(
-        STORAGE_KEY
-        )
-
-        );
-
-
-    }
-
-    catch(error){
-
-
-        localStorage.removeItem(
-        STORAGE_KEY
-        );
-
-
-
-        console.warn(
-
-        "Sauvegarde corrompue supprimée"
-
-        );
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================================
-   GESTION ERREURS GENERALE
-========================================================== */
-
-
-function handleError(error){
-
-
-    console.error(
-
-    "InspecteurBot Quiz Error:",
-
-    error
 
     );
 
 
 
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-        `
-        ⚠️ Une erreur est survenue.<br>
-        Veuillez réessayer.
-        `;
-
-
-
-        DOM.feedback.className =
-
-        "feedback error-message";
-
-
-    }
-
-
 }
 
 
@@ -2821,58 +2832,70 @@ function handleError(error){
 
 
 /* ==========================================================
-   VERIFICATION AVANT CHAQUE QUESTION
+   FIN DE SESSION QUIZ
 ========================================================== */
 
 
-function securityCheck(){
+function completeExam(){
 
 
-    secureScore();
+
+    stopTimer();
 
 
-    secureLives();
 
+    const score =
 
-    preventDoubleAnswer();
-
-
-}
+    calculateFinalScore();
 
 
 
 
 
+    sendNotification(
+
+
+
+    "Examen terminé avec un score de "
+
+    +
+
+    score
+
+    +
+
+    "%.",
+
+
+
+    "success"
+
+
+
+    );
+
+
+
+
+
+    checkLevelCompletion();
+
+
+
+    saveProgress();
+
+
+
+       }
 
 
 
 /* ==========================================================
-   APPLICATION DES CONTROLES
-========================================================== */
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>{
-
-
-    cleanQuestionBank();
-
-
-    secureStorage();
-
-
-});
-
-
-/* ==========================================================
-   PARTIE 9
-   RESULTATS EXAMEN
+   PARTIE 8
    SCORE FINAL
    BADGES
-   RECOMPENSES
+   CERTIFICATION
+   RECOMPENSE EXAMEN
 ========================================================== */
 
 
@@ -2888,8 +2911,9 @@ document.addEventListener(
 function calculateFinalScore(){
 
 
+
     if(
-        QuizEngine.questions.length===0
+        QuizEngine.questions.length === 0
     ){
 
 
@@ -2900,19 +2924,32 @@ function calculateFinalScore(){
 
 
 
+
+
     return Math.round(
 
+
+
         (
-        QuizEngine.score
-        /
-        QuizEngine.questions.length
+
+            QuizEngine.score
+
+            /
+
+            QuizEngine.questions.length
+
         )
+
         *
+
         100
+
+
 
     );
 
 
+
 }
 
 
@@ -2923,186 +2960,88 @@ function calculateFinalScore(){
 
 
 /* ==========================================================
-   AFFICHAGE RESULTAT FINAL
+   AJOUT BADGE
 ========================================================== */
 
 
-function displayFinalResult(){
-
-
-    const finalScore =
-
-    calculateFinalScore();
+function addBadge(badgeName){
 
 
 
-    let resultClass =
-    "failed";
+    let badges =
 
 
-    let message =
-    "Formation non validée";
+
+    JSON.parse(
+
+        localStorage.getItem(
+
+        "igt_badges"
+
+        )
+
+    )
+
+    ||
+
+    [];
+
+
 
 
 
     if(
-        finalScore >= 70
+
+        !badges.includes(
+
+        badgeName
+
+        )
+
     ){
 
 
-        resultClass =
-        "success";
 
+        badges.push(
 
-        message =
-        "Formation validée avec succès";
+        badgeName
 
-
-    }
+        );
 
 
 
-    if(DOM.questionText){
+        localStorage.setItem(
 
+        "igt_badges",
 
-        DOM.questionText.innerHTML =
+        JSON.stringify(
 
-        `
-        🎓 Résultat Académie<br><br>
+        badges
 
-        <strong>
-        ${message}
-        </strong>
-        `;
+        )
 
-
-    }
+        );
 
 
 
-    if(DOM.answersContainer){
+        sendNotification(
 
+        "Nouveau badge obtenu : "
 
-        DOM.answersContainer.innerHTML="";
-
-
-    }
-
-
-
-    if(DOM.feedback){
-
-
-        DOM.feedback.innerHTML =
-
-        `
-        Score final :
-        <strong>
-        ${finalScore}%
-        </strong>
-        `;
-
-
-
-        DOM.feedback.className =
-
-        "quiz-result "
         +
-        resultClass;
+
+        badgeName,
+
+        "success"
+
+        );
 
 
     }
 
-
-
-    if(
-        finalScore >=70
-    ){
-
-
-        checkLevelCompletion();
-
-
-    }
-
-
-    saveProgress();
 
 
 }
-
-
-
-
-
-
-
-
-/* ==========================================================
-   SYSTEME BADGES
-========================================================== */
-
-
-const BADGES_IGT = [
-
-
-    {
-
-
-        name:
-        "Juriste Débutant",
-
-
-        condition:
-        score => score>=50
-
-
-    },
-
-
-    {
-
-
-        name:
-        "Contrôleur Certifié",
-
-
-        condition:
-        score => score>=70
-
-
-    },
-
-
-    {
-
-
-        name:
-        "Inspecteur Professionnel",
-
-
-        condition:
-        score => score>=85
-
-
-    },
-
-
-    {
-
-
-        name:
-        "Expert IGT",
-
-
-        condition:
-        score => score>=95
-
-
-    }
-
-
-];
 
 
 
@@ -3119,31 +3058,97 @@ const BADGES_IGT = [
 function checkBadges(){
 
 
+
     const score =
 
     calculateFinalScore();
 
 
 
-    BADGES_IGT.forEach(
-
-    badge=>{
 
 
-        if(
-            badge.condition(score)
-        ){
+    if(
+
+        score >= 70
+
+    ){
 
 
-            unlockBadge(
-            badge.name
-            );
+
+        addBadge(
+
+        "📜 Juriste Débutant"
+
+        );
 
 
-        }
+    }
 
 
-    });
+
+
+
+    if(
+
+        score >= 80
+
+    ){
+
+
+
+        addBadge(
+
+        "⚖️ Contrôleur Certifié"
+
+        );
+
+
+    }
+
+
+
+
+
+    if(
+
+        score >= 90
+
+    ){
+
+
+
+        addBadge(
+
+        "🛡️ Inspecteur Professionnel"
+
+        );
+
+
+    }
+
+
+
+
+
+    if(
+
+        QuizEngine.level ===
+
+        "Inspecteur Général du Travail"
+
+    ){
+
+
+
+        addBadge(
+
+        "👑 Inspecteur Général"
+
+        );
+
+
+    }
+
 
 
 }
@@ -3156,58 +3161,263 @@ function checkBadges(){
 
 
 /* ==========================================================
-   DEBLOCAGE BADGE
+   AFFICHAGE BADGES
 ========================================================== */
 
 
-function unlockBadge(name){
+function displayBadges(){
 
 
-    let badges =
+
+    const container =
+
+    document.querySelector(
+
+    ".badge-grid"
+
+    );
+
+
+
+
+
+    if(!container){
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    const badges =
+
+
 
     JSON.parse(
 
-    localStorage.getItem(
-    "igt_badges"
-    )
+        localStorage.getItem(
+
+        "igt_badges"
+
+        )
 
     )
+
     ||
+
     [];
 
 
 
+
+
+    const cards =
+
+    container.querySelectorAll(
+
+    ".badge"
+
+    );
+
+
+
+
+
+    cards.forEach(
+
+        card=>{
+
+
+
+            const text =
+
+            card.textContent.trim();
+
+
+
+
+
+            const unlocked =
+
+            badges.some(
+
+                badge =>
+
+                text.includes(
+
+                badge.replace(
+
+                /[^\p{L}\s]/gu,
+
+                ""
+
+                )
+
+                )
+
+            );
+
+
+
+
+
+            if(unlocked){
+
+
+
+                card.classList.remove(
+
+                "locked"
+
+                );
+
+
+
+                card.classList.add(
+
+                "unlocked"
+
+                );
+
+
+            }
+
+
+
+        }
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   CERTIFICATION
+========================================================== */
+
+
+function generateCertificate(){
+
+
+
+    const score =
+
+    calculateFinalScore();
+
+
+
+
+
     if(
-        !badges.includes(name)
+
+        score < 70
+
     ){
-
-
-        badges.push(name);
-
-
-
-        localStorage.setItem(
-
-        "igt_badges",
-
-        JSON.stringify(badges)
-
-        );
 
 
 
         sendNotification(
 
-        "Nouveau badge obtenu : "
-        +
-        name,
+        "Certification impossible. Score minimum requis : 70%.",
 
-        "success"
+        "error"
 
         );
 
 
+        return;
+
+
     }
+
+
+
+
+
+
+
+    const certificate = {
+
+
+
+        nom:
+
+        document.getElementById(
+
+        "playerName"
+
+        )?.textContent
+
+        ||
+
+        "Inspecteur en Formation",
+
+
+
+        grade:
+
+        QuizEngine.level,
+
+
+
+        score:
+
+        score + "%",
+
+
+
+        date:
+
+        new Date().toLocaleDateString(
+
+        "fr-FR"
+
+        )
+
+
+
+    };
+
+
+
+
+
+    localStorage.setItem(
+
+    "igt_certificate",
+
+    JSON.stringify(
+
+    certificate
+
+    )
+
+    );
+
+
+
+
+
+    sendNotification(
+
+    "Votre certificat Académie InspecteurBot IGT est disponible.",
+
+    "success"
+
+    );
+
 
 
 }
@@ -3224,7 +3434,8 @@ function unlockBadge(name){
 ========================================================== */
 
 
-function giveExamReward(){
+function examReward(){
+
 
 
     const score =
@@ -3233,68 +3444,56 @@ function giveExamReward(){
 
 
 
+
+
     if(
-        score>=70
+
+        score >= 90
+
     ){
 
 
-        QuizEngine.rewardFC +=50000;
 
+        QuizEngine.rewardFC += 50000;
 
-
-        sendNotification(
-
-        "Récompense examen : +50 000 FC",
-
-        "success"
-
-        );
 
 
     }
+
+    else if(
+
+        score >= 70
+
+    ){
+
+
+
+        QuizEngine.rewardFC += 25000;
+
+
+
+    }
+
+
 
 
 
     updateInterface();
 
 
-}
 
+    saveProgress();
 
-
-
-
-
-
-
-/* ==========================================================
-   FIN QUIZ COMPLETE
-========================================================== */
-
-
-function completeExam(){
-
-
-    displayFinalResult();
-
-
-    checkBadges();
-
-
-    giveExamReward();
-
-
-    updateCareerDisplay();
 
 
 }
 
 
 /* ==========================================================
-   PARTIE 10 - DERNIERE PARTIE
-   FINALISATION MOTEUR QUIZ
-   INITIALISATION COMPLETE
-   EXPORT GLOBAL
+   PARTIE 9
+   INITIALISATION GENERALE
+   CONNEXION HTML
+   DEMARRAGE APPLICATION
 ========================================================== */
 
 
@@ -3303,66 +3502,48 @@ function completeExam(){
 
 
 /* ==========================================================
-   REMPLACEMENT FIN QUIZ
+   MODE SOMBRE
 ========================================================== */
 
 
-function finishQuiz(){
-
-
-    stopTimer();
-
-
-    completeExam();
-
-
-}
+function initDarkMode(){
 
 
 
+    if(
+        !DOM.darkModeBtn
+    ){
+
+
+        return;
+
+
+    }
 
 
 
 
 
-/* ==========================================================
-   INITIALISATION COMPLETE APPLICATION
-========================================================== */
+    const savedMode =
 
+    localStorage.getItem(
 
-function initializeAcademie(){
+    "igt_dark_mode"
 
-
-    try{
-
-
-        connectDOM();
+    );
 
 
 
-        loadProgress();
 
 
-
-        initDarkMode();
-
-
-
-        initNotifications();
+    if(
+        savedMode === "true"
+    ){
 
 
+        document.body.classList.add(
 
-        loadQuestions();
-
-
-
-        QuizEngine.initialized = true;
-
-
-
-        console.log(
-
-        "InspecteurBot Académie IGT RDC prête"
+        "dark-mode"
 
         );
 
@@ -3370,13 +3551,49 @@ function initializeAcademie(){
     }
 
 
-    catch(error){
 
 
-        handleError(error);
+
+    DOM.darkModeBtn.addEventListener(
+
+    "click",
+
+    ()=>{
+
+
+
+        document.body.classList.toggle(
+
+        "dark-mode"
+
+        );
+
+
+
+        const active =
+
+        document.body.classList.contains(
+
+        "dark-mode"
+
+        );
+
+
+
+        localStorage.setItem(
+
+        "igt_dark_mode",
+
+        active
+
+        );
+
 
 
     }
+
+    );
+
 
 
 }
@@ -3389,7 +3606,163 @@ function initializeAcademie(){
 
 
 /* ==========================================================
-   EVENEMENT DEMARRAGE UNIQUE
+   BOUTON MENU LATERAL
+========================================================== */
+
+
+function initMenu(){
+
+
+
+    const menuBtn =
+
+    document.getElementById(
+
+    "menuBtn"
+
+    );
+
+
+
+    const sidebar =
+
+    document.getElementById(
+
+    "sidebar"
+
+    );
+
+
+
+
+
+    if(
+
+        menuBtn
+
+        &&
+
+        sidebar
+
+    ){
+
+
+
+        menuBtn.addEventListener(
+
+        "click",
+
+        ()=>{
+
+
+
+            sidebar.classList.toggle(
+
+            "open"
+
+            );
+
+
+
+        }
+
+        );
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   INITIALISATION COMPLETE
+========================================================== */
+
+
+async function initQuizAcademie(){
+
+
+
+    console.log(
+
+    "Initialisation Académie InspecteurBot IGT RDC..."
+
+    );
+
+
+
+
+
+    connectDOM();
+
+
+
+    initDarkMode();
+
+
+
+    initMenu();
+
+
+
+    loadProgress();
+
+
+
+    await loadQuestions();
+
+
+
+    prepareQuestions();
+
+
+
+    syncUserData();
+
+
+
+    startTimer();
+
+
+
+    initNotifications();
+
+
+
+    QuizEngine.initialized = true;
+
+
+
+
+
+    console.log(
+
+    "Académie prête."
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   LANCEMENT AUTOMATIQUE
 ========================================================== */
 
 
@@ -3400,7 +3773,9 @@ document.addEventListener(
 ()=>{
 
 
-    initializeAcademie();
+
+    initQuizAcademie();
+
 
 
 }
@@ -3408,6 +3783,12 @@ document.addEventListener(
 );
 
 
+/* ==========================================================
+   PARTIE 10
+   GESTION ERREURS
+   DIAGNOSTIC
+   COMPATIBILITE MOBILE
+========================================================== */
 
 
 
@@ -3415,31 +3796,29 @@ document.addEventListener(
 
 
 /* ==========================================================
-   RACCOURCIS UTILITAIRES
+   GESTION ERREUR GLOBALE
 ========================================================== */
 
 
-window.resetAcademie =
+window.addEventListener(
 
-resetProgress;
+"error",
 
-
-
-window.saveAcademie =
-
-saveProgress;
+(event)=>{
 
 
 
-window.QuizEngine =
+    console.error(
 
-QuizEngine;
+    "Erreur Académie IGT :",
+
+    event.message
+
+    );
 
 
 
-window.ACADEMIE_LEVELS =
-
-ACADEMIE_LEVELS;
+});
 
 
 
@@ -3449,27 +3828,704 @@ ACADEMIE_LEVELS;
 
 
 /* ==========================================================
-   MESSAGE CONSOLE FINAL
+   MESSAGE ERREUR APPLICATION
 ========================================================== */
 
 
-console.log(
+function handleError(message){
 
-`
-====================================
 
- Académie Professionnelle
- InspecteurBot IGT RDC
 
- Moteur Quiz chargé
+    console.error(
 
- Version : ${QuizEngine.version}
+    message
 
- Développé par
- Inspecteur Limengo (Pmiller) © 2026
+    );
 
-====================================
-`
 
-);
+
+
+
+    if(DOM.questionText){
+
+
+
+        DOM.questionText.textContent =
+
+        "Erreur : "
+
+        +
+
+        message;
+
+
+
+    }
+
+
+
+
+
+    sendNotification(
+
+    message,
+
+    "error"
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   VERIFICATION STRUCTURE QUESTIONS
+========================================================== */
+
+
+function validateQuestions(){
+
+
+
+    if(
+
+        !Array.isArray(
+
+        QuizEngine.questions
+
+        )
+
+    ){
+
+
+
+        handleError(
+
+        "La banque de questions est invalide."
+
+        );
+
+
+
+        return false;
+
+
+    }
+
+
+
+
+
+    QuizEngine.questions =
+
+    QuizEngine.questions.filter(
+
+        question =>
+
+
+
+        question.question
+
+        &&
+
+        Array.isArray(
+
+        question.choix
+
+        )
+
+        &&
+
+        typeof question.bonne === "number"
+
+
+
+    );
+
+
+
+
+
+
+
+    console.log(
+
+    QuizEngine.questions.length
+
+    +
+
+    " questions valides chargées."
+
+    );
+
+
+
+
+
+    return true;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   MODE MOBILE
+========================================================== */
+
+
+function initMobileMode(){
+
+
+
+    const isMobile =
+
+    window.innerWidth <= 768;
+
+
+
+
+
+    if(
+
+        isMobile
+
+    ){
+
+
+
+        document.body.classList.add(
+
+        "mobile-device"
+
+        );
+
+
+
+    }
+
+
+
+
+
+    window.addEventListener(
+
+    "resize",
+
+    ()=>{
+
+
+
+        if(
+
+        window.innerWidth <= 768
+
+        ){
+
+
+
+            document.body.classList.add(
+
+            "mobile-device"
+
+            );
+
+
+
+        }
+
+        else{
+
+
+
+            document.body.classList.remove(
+
+            "mobile-device"
+
+            );
+
+
+
+        }
+
+
+
+    });
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   PROTECTION DOUBLE DEMARRAGE
+========================================================== */
+
+
+function preventMultipleStart(){
+
+
+
+    if(
+
+    QuizEngine.initialized
+
+    ){
+
+
+
+        console.warn(
+
+        "Académie déjà initialisée."
+
+        );
+
+
+        return true;
+
+
+    }
+
+
+
+    return false;
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   INFORMATIONS APPLICATION
+========================================================== */
+
+
+function showAppInfo(){
+
+
+
+    console.log(
+
+    `
+
+    ==================================
+
+    Académie Professionnelle
+
+    InspecteurBot IGT RDC
+
+
+    Version :
+
+    ${QuizEngine.version}
+
+
+    Développé par :
+
+    Inspecteur Limengo (Pmiller)
+
+    © 2026
+
+
+    ==================================
+
+    `
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   ACTIVATION MODULES SYSTEME
+========================================================== */
+
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+
+
+    initMobileMode();
+
+
+
+    showAppInfo();
+
+
+
+});
+
+
+/* ==========================================================
+   PARTIE 11
+   FINALISATION MOTEUR QUIZ
+   EXPORT FONCTIONS
+   CONTROLE FINAL
+========================================================== */
+
+
+
+
+
+
+/* ==========================================================
+   CONTROLE ELEMENTS HTML OBLIGATOIRES
+========================================================== */
+
+
+function checkHTMLCompatibility(){
+
+
+
+    const requiredElements = [
+
+
+
+        "questionText",
+
+        "answersContainer",
+
+        "feedback",
+
+        "timer",
+
+        "numeroQuestion",
+
+        "lifeDisplay",
+
+        "rewardDisplay",
+
+        "quizProgress",
+
+        "progressFill"
+
+
+
+    ];
+
+
+
+
+
+    let missing = [];
+
+
+
+
+
+    requiredElements.forEach(
+
+        id=>{
+
+
+
+            if(
+
+                !document.getElementById(id)
+
+            ){
+
+
+
+                missing.push(id);
+
+
+
+            }
+
+
+
+        }
+
+    );
+
+
+
+
+
+
+
+    if(
+
+        missing.length > 0
+
+    ){
+
+
+
+        console.warn(
+
+        "Éléments HTML manquants :",
+
+        missing
+
+        );
+
+
+
+    }
+
+    else{
+
+
+
+        console.log(
+
+        "Compatibilité HTML : OK"
+
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   CONTROLE CSS
+========================================================== */
+
+
+function checkCSSCompatibility(){
+
+
+
+    const classes = [
+
+
+
+        ".dark-mode",
+
+        ".feedback",
+
+        ".answers-container",
+
+        ".career-item",
+
+        ".formation-card"
+
+
+
+    ];
+
+
+
+
+
+    classes.forEach(
+
+        selector=>{
+
+
+
+            const element =
+
+            document.querySelector(
+
+            selector
+
+            );
+
+
+
+            if(
+
+                !element
+
+            ){
+
+
+
+                console.warn(
+
+                "Classe CSS non détectée : "
+
+                +
+
+                selector
+
+                );
+
+
+
+            }
+
+
+
+        }
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+
+/* ==========================================================
+   NETTOYAGE AVANT FERMETURE
+========================================================== */
+
+
+window.addEventListener(
+
+"beforeunload",
+
+()=>{
+
+
+
+    saveProgress();
+
+
+
+});
+
+
+
+
+
+
+
+
+/* ==========================================================
+   RACCOURCIS ADMINISTRATION
+========================================================== */
+
+
+window.InspecteurBotAcademie = {
+
+
+
+    reset:
+
+    resetProgress,
+
+
+
+    save:
+
+    saveProgress,
+
+
+
+    load:
+
+    loadProgress,
+
+
+
+    start:
+
+    startQuiz,
+
+
+
+    info:
+
+    showAppInfo,
+
+
+
+    badges:
+
+    displayBadges
+
+
+
+};
+
+
+
+
+
+
+
+
+/* ==========================================================
+   CONTROLE FINAL APPLICATION
+========================================================== */
+
+
+setTimeout(
+
+()=>{
+
+
+
+    checkHTMLCompatibility();
+
+
+
+    checkCSSCompatibility();
+
+
+
+},
+
+2000);
+
+
+
+/* ==========================================================
+   FIN DU MOTEUR QUIZ
+   Académie Professionnelle InspecteurBot IGT RDC
+
+   Développé par :
+   Inspecteur Limengo (Pmiller)
+
+   © 2026
+========================================================== */
+
+
 
