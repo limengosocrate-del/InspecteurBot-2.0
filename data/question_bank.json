@@ -1,0 +1,7223 @@
+{
+  "version": "3.0",
+  "application": "Académie InspecteurBot IGT RDC",
+
+  "questions": [
+
+    {
+      "id": 1,
+
+      "niveau": 1,
+
+      "grade": "Débutant",
+
+      "categorie": "Fondements de l'Inspection du Travail",
+
+      "module": "Introduction",
+
+      "difficulte": "Facile",
+
+      "type": "QCM",
+
+      "question":
+      "Quel est l'objectif principal de l'Inspection du Travail ?",
+
+      "choix": [
+        "Contrôler uniquement les entreprises étrangères",
+        "Assurer l'application de la législation du travail et protéger les travailleurs",
+        "Remplacer les employeurs dans la gestion des entreprises",
+        "Collecter uniquement les impôts"
+      ],
+
+      "bonne": 1,
+
+      "explication":
+      "L'Inspection du Travail veille au respect des dispositions légales relatives aux conditions de travail, à la protection des travailleurs et aux obligations des employeurs.",
+
+      "reference":
+      "Code du Travail RDC",
+
+      "article":
+      "Organisation et missions de l'Inspection du Travail",
+
+      "recompense":
+      {
+        "type":"CDF",
+        "montant":10000
+      },
+
+      "piege":false
+
+    },
+
+
+
+    {
+      "id":2,
+
+      "niveau":1,
+
+      "grade":"Débutant",
+
+      "categorie":"Déontologie professionnelle",
+
+      "module":"Comportement de base",
+
+      "difficulte":"Facile",
+
+      "type":"SITUATION",
+
+      "question":
+      "Un agent arrive régulièrement en retard pendant les heures de service. Quelle attitude professionnelle doit-il adopter ?",
+
+      "choix":[
+
+        "Continuer car ses collègues acceptent la situation",
+
+        "Respecter les horaires et les obligations liées à sa fonction",
+
+        "Demander à un collègue de signer sa présence",
+
+        "Ignorer les règles internes"
+
+      ],
+
+      "bonne":1,
+
+      "explication":
+      "Le respect des horaires constitue une obligation professionnelle et participe à la discipline administrative.",
+
+      "reference":
+      "Déontologie administrative",
+
+      "recompense":
+      {
+        "type":"CDF",
+        "montant":10000
+      },
+
+      "piege":true
+
+    },
+
+
+
+    {
+      "id":3,
+
+      "niveau":1,
+
+      "grade":"Débutant",
+
+      "categorie":"Éthique professionnelle",
+
+      "module":"Intégrité",
+
+      "difficulte":"Moyen",
+
+      "type":"CAS_PRATIQUE",
+
+      "question":
+      "Pendant une mission, un employeur propose un cadeau à l'inspecteur pour faciliter le contrôle. Quelle est la meilleure réaction ?",
+
+      "choix":[
+
+        "Accepter discrètement le cadeau",
+
+        "Refuser et respecter les règles d'intégrité professionnelle",
+
+        "Accepter si le cadeau est de faible valeur",
+
+        "Demander un cadeau plus important"
+
+      ],
+
+      "bonne":1,
+
+      "explication":
+      "L'inspecteur doit rester indépendant, impartial et éviter toute situation pouvant créer un conflit d'intérêts.",
+
+      "reference":
+      "Déontologie et intégrité professionnelle",
+
+      "recompense":
+      {
+        "type":"CDF",
+        "montant":15000
+      },
+
+      "piege":true
+
+    },
+
+
+
+    {
+      "id":4,
+
+      "niveau":1,
+
+      "grade":"Débutant",
+
+      "categorie":"Vie professionnelle",
+
+      "module":"Relations entre collègues",
+
+      "difficulte":"Moyen",
+
+      "type":"SITUATION",
+
+      "question":
+      "Deux collègues entretiennent une relation personnelle et l'un doit contrôler directement le travail de l'autre. Quel principe doit être respecté ?",
+
+      "choix":[
+
+        "Favoriser son collègue",
+
+        "Cacher la situation",
+
+        "Éviter tout conflit d'intérêts et respecter l'impartialité",
+
+        "Modifier les résultats du contrôle"
+
+      ],
+
+      "bonne":2,
+
+      "explication":
+      "Toute situation personnelle pouvant influencer une décision professionnelle doit être déclarée et gérée avec impartialité.",
+
+      "reference":
+      "Déontologie professionnelle",
+
+      "recompense":
+      {
+        "type":"CDF",
+        "montant":15000
+      },
+
+      "piege":true
+
+    }
+
+  ]
+}
+,
+
+{
+"id":5,
+
+"niveau":1,
+
+"grade":"Débutant",
+
+"categorie":"Code du Travail",
+
+"module":"Fondements du droit du travail",
+
+"difficulte":"Facile",
+
+"type":"QCM",
+
+"question":"Quelle est la finalité principale du Code du Travail ?",
+
+"choix":[
+"Organiser uniquement les activités commerciales",
+"Fixer les règles applicables aux relations professionnelles entre employeurs et travailleurs",
+"Remplacer les contrats entre entreprises",
+"Supprimer les obligations des employeurs"
+],
+
+"bonne":1,
+
+"explication":"Le Code du Travail établit les règles relatives aux relations de travail, aux droits et obligations des employeurs et des travailleurs.",
+
+"reference":"Code du Travail RDC",
+
+"recompense":{
+"type":"CDF",
+"montant":10000
+},
+
+"piege":false
+
+},
+
+
+{
+"id":6,
+
+"niveau":1,
+
+"grade":"Débutant",
+
+"categorie":"Code du Travail",
+
+"module":"Relations professionnelles",
+
+"difficulte":"Facile",
+
+"type":"VRAI_FAUX",
+
+"question":"Le droit du travail concerne uniquement les travailleurs et jamais les employeurs.",
+
+"choix":[
+"Vrai",
+"Faux"
+],
+
+"bonne":1,
+
+"explication":"Le droit du travail impose des droits et obligations aux deux parties : employeurs et travailleurs.",
+
+"reference":"Code du Travail RDC",
+
+"recompense":{
+"type":"CDF",
+"montant":10000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":7,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Code du Travail",
+
+"module":"Obligations professionnelles",
+
+"difficulte":"Moyen",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Un employeur refuse d'appliquer une disposition obligatoire du Code du Travail en affirmant que ses règles internes sont supérieures à la loi. Quelle est la bonne analyse ?",
+
+"choix":[
+"L'employeur a raison car il dirige son entreprise",
+"Le règlement interne peut remplacer la loi",
+"Les dispositions légales du travail doivent être respectées",
+"Le travailleur doit accepter sans discussion"
+],
+
+"bonne":2,
+
+"explication":"Les règles internes d'une entreprise ne peuvent pas supprimer les droits minimums garantis par la législation du travail.",
+
+"reference":"Code du Travail RDC",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":8,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Contrôle de conformité",
+
+"module":"Analyse juridique",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Lors d'une visite, un contrôleur constate qu'une entreprise applique une pratique contraire aux dispositions légales. Quelle doit être sa démarche ?",
+
+"choix":[
+"Ignorer la situation",
+"Constater les faits, analyser la violation et appliquer les procédures prévues",
+"Demander une récompense à l'entreprise",
+"Modifier les textes légaux"
+],
+
+"bonne":1,
+
+"explication":"Le contrôleur doit agir selon ses missions : constater, analyser, informer et appliquer les procédures prévues.",
+
+"reference":"Inspection du Travail",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":9,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Analyse juridique avancée",
+
+"module":"Interprétation des règles",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":"Pendant une mission, l'inspecteur découvre plusieurs irrégularités dans une entreprise. Quelle approche professionnelle est correcte ?",
+
+"choix":[
+"Sanctionner sans vérifier les faits",
+"Analyser les preuves, respecter la procédure et rédiger un rapport objectif",
+"Favoriser l'employeur",
+"Abandonner la mission"
+],
+
+"bonne":1,
+
+"explication":"L'inspecteur doit garantir l'impartialité, la preuve des faits et le respect de la procédure.",
+
+"reference":"Inspection du Travail RDC",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":10,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Leadership juridique",
+
+"module":"Vision stratégique",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Un responsable demande de minimiser volontairement une infraction grave constatée lors d'une mission. Quelle est la réaction attendue d'un Inspecteur Général ?",
+
+"choix":[
+"Accepter pour protéger l'administration",
+"Respecter l'indépendance professionnelle, la loi et l'intégrité du service",
+"Modifier les conclusions",
+"Cacher l'information"
+],
+
+"bonne":1,
+
+"explication":"Un haut responsable de l'Inspection doit protéger la crédibilité de l'institution et garantir l'application impartiale du droit.",
+
+"reference":"Éthique et déontologie IGT",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":11,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Inspection du Travail",
+
+"module":"Préparation d'une mission",
+
+"difficulte":"Moyen",
+
+"type":"QCM",
+
+"question":"Avant une mission d'inspection, quelle est une étape importante pour l'inspecteur ?",
+
+"choix":[
+"Arriver sans aucune préparation",
+"Prendre connaissance de l'objet de la mission et préparer les documents nécessaires",
+"Prévenir l'entreprise pour modifier les preuves",
+"Demander un avantage personnel"
+],
+
+"bonne":1,
+
+"explication":"Une mission efficace nécessite une préparation : objet du contrôle, documents nécessaires et objectifs de la visite.",
+
+"reference":"Procédure d'inspection du Travail",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":false
+
+},
+
+
+{
+"id":12,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Inspection du Travail",
+
+"module":"Visite d'entreprise",
+
+"difficulte":"Professionnel",
+
+"type":"MISSION",
+
+"question":"Pendant une visite, l'entreprise refuse l'accès au contrôleur du Travail. Quelle attitude est correcte ?",
+
+"choix":[
+"Forcer immédiatement l'entrée",
+"Abandonner définitivement la mission",
+"Rappeler les obligations légales et appliquer les procédures prévues",
+"Accepter de ne pas contrôler"
+],
+
+"bonne":2,
+
+"explication":"Le contrôleur doit agir conformément aux pouvoirs qui lui sont reconnus et respecter les procédures professionnelles.",
+
+"reference":"Inspection du Travail RDC",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":13,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Contrôle des documents",
+
+"module":"Documents professionnels",
+
+"difficulte":"Professionnel",
+
+"type":"QCM",
+
+"question":"Lors d'une inspection, pourquoi vérifier les documents de l'entreprise ?",
+
+"choix":[
+"Pour trouver un motif personnel de sanction",
+"Pour vérifier le respect des obligations légales",
+"Pour récupérer les documents de l'entreprise",
+"Pour remplacer le service administratif"
+],
+
+"bonne":1,
+
+"explication":"La vérification documentaire permet de contrôler la conformité de l'entreprise avec les règles applicables.",
+
+"reference":"Mission de contrôle",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":14,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Rapport de mission",
+
+"module":"Rédaction professionnelle",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Après une visite, l'inspecteur doit rédiger son rapport. Quel principe est essentiel ?",
+
+"choix":[
+"Écrire selon ses préférences personnelles",
+"Présenter des faits précis, vérifiés et objectifs",
+"Modifier les faits pour aider une partie",
+"Supprimer les irrégularités constatées"
+],
+
+"bonne":1,
+
+"explication":"Un rapport professionnel doit être fidèle aux constatations, précis et impartial.",
+
+"reference":"Rapport de mission IGT",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":15,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Relation avec l'employeur",
+
+"module":"Communication professionnelle",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":"Un employeur devient agressif pendant une mission. Quelle attitude doit adopter l'inspecteur ?",
+
+"choix":[
+"Répondre avec agressivité",
+"Garder son calme et maintenir une attitude professionnelle",
+"Quitter immédiatement sans rapport",
+"Accepter un arrangement personnel"
+],
+
+"bonne":1,
+
+"explication":"L'inspecteur doit conserver sa maîtrise, son impartialité et respecter son devoir professionnel.",
+
+"reference":"Déontologie professionnelle",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":16,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Gestion stratégique des missions",
+
+"module":"Leadership opérationnel",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MISSION",
+
+"question":"Un responsable découvre qu'un rapport d'inspection contient volontairement des informations fausses. Quelle décision doit-il prendre ?",
+
+"choix":[
+"Ignorer la situation",
+"Protéger la qualité du service, vérifier les faits et appliquer les règles",
+"Modifier lui-même le rapport sans procédure",
+"Favoriser l'agent concerné"
+],
+
+"bonne":1,
+
+"explication":"Les responsables doivent garantir la fiabilité des actes administratifs et la crédibilité de l'institution.",
+
+"reference":"Leadership IGT",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":17,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"ONEM",
+
+"module":"Documents administratifs",
+
+"difficulte":"Facile",
+
+"type":"QCM",
+
+"question":"Quel est l'objectif principal des documents administratifs transmis aux organismes compétents comme l'ONEM ?",
+
+"choix":[
+
+"Créer des difficultés aux entreprises",
+
+"Permettre le suivi administratif et social des travailleurs",
+
+"Remplacer les contrats de travail",
+
+"Supprimer les obligations des employeurs"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les documents administratifs permettent d'assurer la traçabilité, le suivi des travailleurs et le respect des obligations légales.",
+
+"reference":
+"Documents administratifs ONEM",
+
+"recompense":
+{
+"type":"CDF",
+"montant":10000
+},
+
+"piege":false
+
+},
+
+
+{
+"id":18,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"ONEM",
+
+"module":"Déclaration d'établissement",
+
+"difficulte":"Moyen",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une nouvelle entreprise commence ses activités mais ne réalise aucune déclaration administrative obligatoire. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"L'entreprise peut fonctionner sans aucune formalité",
+
+"La déclaration permet d'identifier officiellement l'établissement et ses obligations",
+
+"Seuls les travailleurs doivent être déclarés",
+
+"L'administration n'a aucun rôle"
+
+],
+
+"bonne":1,
+
+"explication":
+"La déclaration d'établissement constitue un élément important du suivi administratif des entreprises.",
+
+"reference":
+"Déclaration d'établissement",
+
+"recompense":
+{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":19,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"ONEM",
+
+"module":"DASMO",
+
+"difficulte":"Professionnel",
+
+"type":"DOCUMENT",
+
+"question":
+"Lors d'un contrôle, pourquoi un inspecteur doit-il examiner les documents sociaux transmis par l'entreprise ?",
+
+"choix":[
+
+"Pour récupérer les documents",
+
+"Pour vérifier la conformité administrative et sociale",
+
+"Pour modifier les informations",
+
+"Pour remplacer le service RH"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'analyse des documents sociaux permet de contrôler le respect des obligations de l'employeur.",
+
+"reference":
+"DASMO ONEM",
+
+"recompense":
+{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":20,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"ONEM",
+
+"module":"Bilan social",
+
+"difficulte":"Professionnel",
+
+"type":"ANALYSE",
+
+"question":
+"Le bilan social permet principalement de présenter quelles informations ?",
+
+"choix":[
+
+"Uniquement les bénéfices financiers",
+
+"Des informations relatives à la situation sociale de l'entreprise et des travailleurs",
+
+"Les informations personnelles des clients",
+
+"Les stratégies commerciales"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le bilan social donne une vision de la situation sociale de l'entreprise : effectifs, emploi, conditions sociales et éléments liés aux travailleurs.",
+
+"reference":
+"ONEM - Bilan social",
+
+"recompense":
+{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":21,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Contrôle administratif",
+
+"module":"Analyse des dossiers",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Lors d'une inspection, plusieurs documents administratifs présentent des incohérences. Quelle est la meilleure démarche ?",
+
+"choix":[
+
+"Modifier directement les documents",
+
+"Ignorer les anomalies",
+
+"Constater les faits, demander les explications nécessaires et établir un rapport",
+
+"Accepter une justification orale sans preuve"
+
+],
+
+"bonne":2,
+
+"explication":
+"L'inspecteur doit établir des constatations objectives et respecter la procédure professionnelle.",
+
+"reference":
+"Contrôle administratif IGT",
+
+"recompense":
+{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":22,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gestion institutionnelle",
+
+"module":"Supervision administrative",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un service reçoit régulièrement des dossiers incomplets provenant des entreprises. Quelle action stratégique est recommandée ?",
+
+"choix":[
+
+"Punir toutes les entreprises immédiatement",
+
+"Mettre en place une amélioration du contrôle, de la sensibilisation et du suivi",
+
+"Supprimer les obligations administratives",
+
+"Ne plus contrôler les documents"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un responsable doit rechercher une amélioration durable du système administratif tout en garantissant l'application des règles.",
+
+"reference":
+"Management IGT",
+
+"recompense":
+{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":23,
+
+"niveau":1,
+
+"grade":"Débutant",
+
+"categorie":"Éthique professionnelle",
+
+"module":"Discipline au travail",
+
+"difficulte":"Facile",
+
+"type":"SITUATION",
+
+"question":"Un agent arrive en retard plusieurs fois sans justification. Quelle attitude professionnelle est attendue ?",
+
+"choix":[
+
+"Continuer car personne ne remarque",
+
+"Respecter les horaires et les obligations professionnelles",
+
+"Demander à un collègue de couvrir ses absences",
+
+"Quitter le service quand il veut"
+
+],
+
+"bonne":1,
+
+"explication":
+"La ponctualité et la discipline constituent des obligations fondamentales dans l'administration.",
+
+"recompense":{
+"type":"CDF",
+"montant":10000
+},
+
+"piege":false
+
+},
+
+
+{
+"id":24,
+
+"niveau":1,
+
+"grade":"Débutant",
+
+"categorie":"Communication professionnelle",
+
+"module":"Respect au bureau",
+
+"difficulte":"Facile",
+
+"type":"SITUATION",
+
+"question":"Pendant les heures de service, un agent passe beaucoup de temps sur son téléphone personnel au lieu de travailler. Quelle est la bonne pratique ?",
+
+"choix":[
+
+"Utiliser le téléphone librement toute la journée",
+
+"Respecter les obligations professionnelles et limiter les usages personnels",
+
+"Demander aux collègues de faire son travail",
+
+"Publier les informations du service"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les outils personnels ne doivent pas empêcher l'exécution correcte des missions professionnelles.",
+
+"recompense":{
+"type":"CDF",
+"montant":10000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":25,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Corruption",
+
+"module":"Intégrité professionnelle",
+
+"difficulte":"Moyen",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Pendant une mission, un employeur propose de l'argent à un contrôleur pour fermer les yeux sur une infraction. Quelle est la réaction correcte ?",
+
+"choix":[
+
+"Accepter discrètement",
+
+"Refuser et signaler la tentative selon les procédures",
+
+"Accepter si le montant est faible",
+
+"Négocier un montant plus élevé"
+
+],
+
+"bonne":1,
+
+"explication":
+"Accepter un avantage pour influencer une décision professionnelle constitue une atteinte grave à l'intégrité.",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":26,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Relations professionnelles",
+
+"module":"Collègues",
+
+"difficulte":"Moyen",
+
+"type":"SITUATION",
+
+"question":"Deux collègues ont une relation personnelle et l'un doit évaluer le travail de l'autre. Quel principe doit être appliqué ?",
+
+"choix":[
+
+"Favoriser son collègue",
+
+"Cacher la situation",
+
+"Préserver l'impartialité et éviter le conflit d'intérêts",
+
+"Modifier les résultats"
+
+],
+
+"bonne":2,
+
+"explication":
+"Les relations personnelles ne doivent jamais influencer les décisions professionnelles.",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":27,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Mission terrain",
+
+"module":"Comportement pendant le contrôle",
+
+"difficulte":"Professionnel",
+
+"type":"MISSION",
+
+"question":"Lors d'une visite, un employeur essaie d'intimider le contrôleur. Quelle attitude est correcte ?",
+
+"choix":[
+
+"Répondre avec agressivité",
+
+"Garder son calme et appliquer les procédures",
+
+"Abandonner immédiatement",
+
+"Accepter un arrangement"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le professionnel doit rester calme, impartial et respecter son rôle institutionnel.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":28,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Confidentialité",
+
+"module":"Informations professionnelles",
+
+"difficulte":"Professionnel",
+
+"type":"SITUATION",
+
+"question":"Un agent partage dans un groupe WhatsApp public des informations sur une entreprise contrôlée. Quelle règle est violée ?",
+
+"choix":[
+
+"La confidentialité professionnelle",
+
+"La ponctualité",
+
+"La formation",
+
+"La gestion financière"
+
+],
+
+"bonne":0,
+
+"explication":
+"Les informations obtenues pendant une mission doivent rester confidentielles selon les obligations professionnelles.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":29,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Indépendance professionnelle",
+
+"module":"Pression hiérarchique",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Un supérieur demande à un inspecteur de modifier volontairement un rapport pour protéger une entreprise. Que doit faire l'inspecteur ?",
+
+"choix":[
+
+"Modifier le rapport",
+
+"Respecter les faits constatés et les règles professionnelles",
+
+"Supprimer les preuves",
+
+"Accepter pour éviter un problème"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit rester fidèle aux constatations et préserver l'intégrité de l'institution.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":30,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Leadership",
+
+"module":"Culture institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":"Un responsable constate que plusieurs agents adoptent des comportements contraires à l'éthique. Quelle est la meilleure action ?",
+
+"choix":[
+
+"Ignorer la situation",
+
+"Mettre en place une sensibilisation, un encadrement et des mesures correctives",
+
+"Cacher les problèmes",
+
+"Protéger uniquement les agents concernés"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un leader doit construire une culture professionnelle basée sur l'intégrité, la responsabilité et l'exemplarité.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":31,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Vie professionnelle",
+
+"module":"Comportement quotidien",
+
+"difficulte":"Moyen",
+
+"type":"SITUATION",
+
+"question":
+"Un agent critique publiquement un collègue dans un groupe WhatsApp professionnel au lieu de discuter directement avec lui. Quelle attitude est recommandée ?",
+
+"choix":[
+
+"Continuer les critiques publiques",
+
+"Favoriser une communication professionnelle et respectueuse",
+
+"Partager davantage les problèmes",
+
+"Insulter également le collègue"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les échanges professionnels doivent respecter la dignité, la collaboration et le respect entre collègues.",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":32,
+
+"niveau":2,
+
+"grade":"Administratif",
+
+"categorie":"Discipline administrative",
+
+"module":"Utilisation des ressources",
+
+"difficulte":"Moyen",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un agent utilise régulièrement le véhicule de service pour ses déplacements personnels sans autorisation. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"C'est normal car le véhicule appartient au service",
+
+"C'est une utilisation irrégulière d'un moyen professionnel",
+
+"Tous les agents peuvent faire la même chose",
+
+"Il n'existe aucune règle"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les moyens de l'administration doivent être utilisés uniquement dans le cadre professionnel autorisé.",
+
+"recompense":{
+"type":"CDF",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":33,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Mission terrain",
+
+"module":"Relation avec les travailleurs",
+
+"difficulte":"Professionnel",
+
+"type":"MISSION",
+
+"question":
+"Pendant une visite, un travailleur donne des informations importantes mais demande que son identité reste secrète. Quelle attitude adopter ?",
+
+"choix":[
+
+"Publier son identité immédiatement",
+
+"Respecter la confidentialité selon les règles professionnelles",
+
+"Partager l'information avec l'entreprise",
+
+"Ignorer son témoignage"
+
+],
+
+"bonne":1,
+
+"explication":
+"La protection des informations recueillies contribue à la confiance dans l'action de l'inspection.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":34,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Corruption",
+
+"module":"Tentatives indirectes",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un employeur invite un contrôleur à un repas coûteux après une mission afin de créer une relation favorable. Quelle est la bonne attitude ?",
+
+"choix":[
+
+"Accepter pour maintenir une bonne relation",
+
+"Évaluer la situation selon les règles d'éthique et éviter tout avantage pouvant influencer l'impartialité",
+
+"Demander une invitation plus importante",
+
+"Accepter en secret"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les avantages offerts peuvent créer une apparence de conflit d'intérêts et doivent être évités.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":35,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Rédaction professionnelle",
+
+"module":"Rapport d'inspection",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Un inspecteur découvre une erreur dans son propre rapport après transmission. Quelle démarche est professionnelle ?",
+
+"choix":[
+
+"Cacher l'erreur",
+
+"Signaler l'erreur et appliquer la procédure de correction",
+
+"Modifier discrètement sans informer",
+
+"Détruire le rapport"
+
+],
+
+"bonne":1,
+
+"explication":
+"La transparence professionnelle renforce la crédibilité des actes administratifs.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":36,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Gestion des conflits",
+
+"module":"Relations professionnelles",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Deux services de l'administration sont en conflit pendant une mission commune. Quel comportement est attendu d'un inspecteur ?",
+
+"choix":[
+
+"Prendre parti immédiatement",
+
+"Favoriser la collaboration et rechercher une solution professionnelle",
+
+"Créer davantage de tensions",
+
+"Refuser toute communication"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un inspecteur doit contribuer à la coopération institutionnelle et à l'efficacité du service public.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":37,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Leadership",
+
+"module":"Gestion des agents",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Un chef remarque qu'un agent performant mais souvent irrespectueux envers ses collègues crée des tensions. Quelle décision est appropriée ?",
+
+"choix":[
+
+"Ignorer car il travaille bien",
+
+"Encadrer l'agent et rappeler les règles de comportement professionnel",
+
+"Le promouvoir immédiatement",
+
+"Punir toute l'équipe"
+
+],
+
+"bonne":1,
+
+"explication":
+"La performance doit toujours être accompagnée d'un comportement professionnel et respectueux.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+},
+
+
+{
+"id":38,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Exemplarité",
+
+"module":"Responsabilité institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un responsable apprend qu'un agent demande de l'argent aux entreprises pendant les contrôles. Quelle réaction est attendue ?",
+
+"choix":[
+
+"Protéger l'agent",
+
+"Ignorer pour éviter un scandale",
+
+"Prendre les mesures appropriées et protéger l'intégrité du service",
+
+"Demander une partie de l'argent"
+
+],
+
+"bonne":2,
+
+"explication":
+"La lutte contre la corruption protège la crédibilité et la mission de l'Inspection du Travail.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":39,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Code du Travail",
+
+"module":"Analyse juridique avancée",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise affirme qu'elle respecte le salaire minimum légal, mais elle ne paie pas les heures supplémentaires effectuées par les travailleurs. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"Il n'existe aucune infraction car le SMIG est respecté",
+
+"L'entreprise respecte seulement une obligation mais peut violer d'autres règles du travail",
+
+"L'inspecteur ne peut pas intervenir",
+
+"Les heures supplémentaires ne concernent pas le droit du travail"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le respect du SMIG ne dispense pas l'employeur de respecter les autres obligations légales, notamment concernant la durée du travail et les heures supplémentaires.",
+
+"reference":
+"Code du Travail - Rémunération et durée du travail",
+
+"recompense":
+{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":40,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Procès-Verbaux",
+
+"module":"Élaboration d'un PV",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Lors de l'établissement d'un procès-verbal, quel élément est indispensable pour garantir sa qualité juridique ?",
+
+"choix":[
+
+"Ajouter des opinions personnelles",
+
+"Décrire précisément les faits constatés avec les éléments de preuve disponibles",
+
+"Écrire uniquement les accusations",
+
+"Supprimer les informations défavorables"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un PV professionnel doit présenter des faits précis, vérifiables et objectifs. L'inspecteur constate les faits mais ne doit pas transformer le PV en jugement personnel.",
+
+"reference":
+"Procédure de constatation des infractions",
+
+"recompense":
+{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":41,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Décompte final",
+
+"module":"Calcul des droits du travailleur",
+
+"difficulte":"Professionnel",
+
+"type":"CALCUL",
+
+"question":
+"Lors de la fin d'un contrat, pourquoi l'inspecteur doit-il vérifier le décompte final ?",
+
+"choix":[
+
+"Uniquement pour connaître le salaire de l'employeur",
+
+"Pour vérifier que les droits dus au travailleur ont été correctement calculés et payés",
+
+"Pour remplacer le service comptable",
+
+"Pour modifier librement les montants"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôle du décompte final permet de vérifier le respect des droits financiers du travailleur lors de la fin de la relation professionnelle.",
+
+"reference":
+"Décompte final",
+
+"recompense":
+{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":42,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Intérêts personnels",
+
+"module":"Conflit d'intérêts",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un inspecteur est chargé de contrôler une entreprise appartenant à un membre de sa famille. Quelle attitude doit-il adopter ?",
+
+"choix":[
+
+"Effectuer le contrôle normalement sans informer personne",
+
+"Déclarer la situation et éviter tout conflit d'intérêts selon les règles applicables",
+
+"Favoriser l'entreprise familiale",
+
+"Modifier les résultats du contrôle"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'impartialité exige d'éviter les situations où un intérêt personnel peut influencer une décision professionnelle.",
+
+"reference":
+"Éthique professionnelle IGT",
+
+"recompense":
+{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":43,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Sanctions",
+
+"module":"Infractions professionnelles",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Une entreprise commet plusieurs infractions différentes lors d'une inspection. Quelle approche doit adopter l'inspecteur ?",
+
+"choix":[
+
+"Ignorer les infractions mineures",
+
+"Constater chaque infraction conformément aux procédures",
+
+"Choisir seulement l'infraction qui concerne un ami",
+
+"Annuler toute la mission"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit constater objectivement toutes les violations relevées et respecter les procédures prévues.",
+
+"reference":
+"Infractions et sanctions du Code du Travail",
+
+"recompense":
+{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":44,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Management",
+
+"module":"Contrôle interne",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un responsable remarque que certains rapports d'inspection sont toujours incomplets. Quelle action est la plus professionnelle ?",
+
+"choix":[
+
+"Ne rien faire",
+
+"Mettre en place un suivi, une formation et un contrôle qualité",
+
+"Supprimer les rapports",
+
+"Accuser publiquement les agents"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le management professionnel consiste à améliorer les compétences et la qualité du service.",
+
+"reference":
+"Gestion administrative",
+
+"recompense":
+{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":45,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Leadership institutionnel",
+
+"module":"Intégrité du service",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Un responsable reçoit une demande extérieure pour influencer une décision d'inspection en faveur d'une entreprise. Quelle est la bonne réaction ?",
+
+"choix":[
+
+"Accepter pour préserver les relations",
+
+"Maintenir l'indépendance professionnelle et appliquer les règles",
+
+"Modifier les conclusions",
+
+"Demander une compensation"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'indépendance et l'intégrité sont essentielles pour préserver la crédibilité de l'Inspection du Travail.",
+
+"reference":
+"Déontologie et leadership",
+
+"recompense":
+{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":46,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"SMIG",
+
+"module":"Contrôle de la rémunération",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise paie ses travailleurs au-dessus du SMIG mais ne respecte pas les congés légaux. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"Aucune infraction car le salaire est supérieur au SMIG",
+
+"L'entreprise peut être en infraction concernant les congés",
+
+"Le SMIG remplace toutes les obligations",
+
+"L'inspecteur ne peut pas intervenir"
+],
+
+"bonne":1,
+
+"explication":
+"Le respect du SMIG constitue une obligation parmi plusieurs autres. L'employeur doit respecter l'ensemble des règles du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":47,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Salaire",
+
+"module":"Analyse de fiche de paie",
+
+"difficulte":"Professionnel",
+
+"type":"DOCUMENT",
+
+"question":
+"Lors du contrôle d'une fiche de paie, quel élément doit principalement vérifier l'inspecteur ?",
+
+"choix":[
+
+"Uniquement le nom du travailleur",
+
+"La conformité des éléments de rémunération avec les obligations légales",
+
+"Les dépenses personnelles du travailleur",
+
+"Les bénéfices de l'entreprise"
+],
+
+"bonne":1,
+
+"explication":
+"L'analyse de la paie permet de vérifier le respect des droits financiers du travailleur.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":48,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Heures supplémentaires",
+
+"module":"Durée du travail",
+
+"difficulte":"Expert",
+
+"type":"CALCUL",
+
+"question":
+"Une entreprise fait travailler régulièrement des employés au-delà de la durée normale sans paiement complémentaire. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"L'entreprise respecte la loi car le travailleur est volontaire",
+
+"Les heures supplémentaires doivent être contrôlées et traitées selon les règles applicables",
+
+"L'employeur décide seul sans aucune limite",
+
+"Il n'existe aucune obligation"
+],
+
+"bonne":1,
+
+"explication":
+"Le consentement du travailleur ne supprime pas les obligations légales relatives à la durée du travail et à la rémunération.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":49,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Décompte final",
+
+"module":"Fin de contrat",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Lorsqu'un contrat prend fin, pourquoi vérifier le décompte final ?",
+
+"choix":[
+
+"Pour connaître les secrets de l'entreprise",
+
+"Pour vérifier le paiement des droits dus au travailleur",
+
+"Pour remplacer le comptable",
+
+"Pour modifier les montants selon son avis personnel"
+],
+
+"bonne":1,
+
+"explication":
+"Le décompte final permet de vérifier que les sommes dues au travailleur ont été correctement calculées.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":50,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Congés",
+
+"module":"Droits du travailleur",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un employeur affirme que les travailleurs n'ont pas besoin de congés puisqu'ils préfèrent recevoir de l'argent. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"L'employeur décide librement",
+
+"Les droits aux congés doivent respecter les règles légales",
+
+"Les congés n'existent pas",
+
+"Le travailleur perd automatiquement ses droits"
+],
+
+"bonne":1,
+
+"explication":
+"Les droits sociaux sont encadrés par la loi et ne peuvent pas être supprimés simplement par accord informel.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":51,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Contrôle financier",
+
+"module":"Fraudes salariales",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Une entreprise déclare un salaire officiel mais verse une partie supplémentaire non déclarée. Quelle démarche professionnelle adopter ?",
+
+"choix":[
+
+"Ignorer car le travailleur reçoit plus",
+
+"Analyser les faits et vérifier la conformité des déclarations",
+
+"Demander une partie de la différence",
+
+"Féliciter l'entreprise"
+],
+
+"bonne":1,
+
+"explication":
+"Les éléments de rémunération doivent être analysés conformément aux obligations légales et administratives.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":52,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Calcul professionnel",
+
+"module":"Analyse du décompte final",
+
+"difficulte":"Expert",
+
+"type":"CALCUL",
+
+"question":
+"Un inspecteur constate une différence entre le montant annoncé par l'employeur et les documents de paie. Quelle est la première action ?",
+
+"choix":[
+
+"Accuser immédiatement l'employeur",
+
+"Comparer les documents, vérifier les éléments et établir les constatations",
+
+"Choisir le montant le plus élevé",
+
+"Fermer le dossier"
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit toujours baser son analyse sur les preuves et les documents disponibles.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":53,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Gestion du contrôle",
+
+"module":"Supervision des dossiers",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un responsable remarque que plusieurs contrôleurs commettent des erreurs dans l'analyse des salaires. Quelle décision est la plus efficace ?",
+
+"choix":[
+
+"Punir immédiatement sans analyse",
+
+"Organiser un renforcement des compétences et un contrôle qualité",
+
+"Supprimer les contrôles",
+
+"Ignorer les erreurs"
+],
+
+"bonne":1,
+
+"explication":
+"Un responsable doit améliorer la qualité du service par la formation et le suivi.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":54,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Politique sociale",
+
+"module":"Protection des travailleurs",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Une réforme salariale est proposée mais risque de réduire les protections des travailleurs. Quelle approche doit adopter un responsable de l'Inspection ?",
+
+"choix":[
+
+"Accepter sans analyse",
+
+"Analyser les impacts et défendre l'application correcte des normes du travail",
+
+"Ignorer les conséquences",
+
+"Favoriser uniquement l'entreprise"
+],
+
+"bonne":1,
+
+"explication":
+"L'Inspection du Travail doit contribuer à l'équilibre entre développement économique et protection des travailleurs.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":55,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Procès-verbal",
+
+"module":"Notions fondamentales du PV",
+
+"difficulte":"Professionnel",
+
+"type":"QCM",
+
+"question":
+"Quel est le rôle principal d'un procès-verbal établi par un agent de contrôle ?",
+
+"choix":[
+
+"Exprimer une opinion personnelle sur l'entreprise",
+
+"Constater officiellement des faits susceptibles de constituer une infraction",
+
+"Punir directement l'employeur",
+
+"Remplacer une décision judiciaire"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le procès-verbal sert principalement à rapporter des constatations objectives réalisées dans le cadre du contrôle.",
+
+"reference":
+"Procédure de constatation des infractions",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":56,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Procès-verbal",
+
+"module":"Qualité rédactionnelle",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un contrôleur rédige un PV en utilisant uniquement des phrases générales sans préciser les faits observés. Quelle est la faiblesse principale ?",
+
+"choix":[
+
+"Le PV est trop long",
+
+"L'absence de précisions peut réduire sa valeur professionnelle",
+
+"L'entreprise doit toujours accepter",
+
+"Le PV devient automatiquement une sanction"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un PV doit contenir des faits précis, datés, vérifiables et liés aux dispositions applicables.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":57,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Infractions",
+
+"module":"Qualification juridique",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Lorsqu'un inspecteur constate une violation du Code du Travail, quelle démarche est correcte ?",
+
+"choix":[
+
+"Condamner immédiatement l'employeur",
+
+"Identifier les faits, les textes applicables et suivre la procédure prévue",
+
+"Supprimer l'infraction si l'entreprise est importante",
+
+"Accepter une compensation personnelle"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur constate les faits et applique les procédures professionnelles sans agir comme une juridiction.",
+
+"reference":
+"Code du Travail et missions IGT",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":58,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Procédure",
+
+"module":"Refus de signature",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Lorsqu'un employeur refuse de signer un document de contrôle, quelle attitude est professionnelle ?",
+
+"choix":[
+
+"Détruire le document",
+
+"Forcer la signature",
+
+"Noter le refus selon la procédure applicable",
+
+"Abandonner toute la mission"
+
+],
+
+"bonne":2,
+
+"explication":
+"Le refus de signature doit être constaté et mentionné conformément aux règles professionnelles.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":59,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Sanctions",
+
+"module":"Application des règles",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise commet plusieurs infractions lors d'une même inspection. L'inspecteur doit-il choisir seulement une infraction ?",
+
+"choix":[
+
+"Oui toujours",
+
+"Non, il doit constater les violations relevées conformément aux procédures",
+
+"Oui si l'entreprise est influente",
+
+"Oui si l'employeur demande"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'égalité devant la loi exige une constatation objective des infractions découvertes.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":60,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Infractions Code du Travail",
+
+"module":"Analyse des violations",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise ne tient pas correctement certains documents obligatoires de travail. Quelle démarche doit adopter l'inspecteur ?",
+
+"choix":[
+
+"Ignorer car aucun travailleur ne se plaint",
+
+"Constater le manquement et appliquer la procédure prévue",
+
+"Demander un avantage personnel",
+
+"Modifier les documents lui-même"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les obligations documentaires font partie des éléments contrôlables dans une entreprise.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":61,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Responsabilité professionnelle",
+
+"module":"Erreur dans un PV",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Un inspecteur découvre après transmission qu'une erreur importante figure dans son PV. Quelle est la meilleure réaction ?",
+
+"choix":[
+
+"Cacher l'erreur",
+
+"Suivre la procédure de correction ou de signalement",
+
+"Détruire toutes les copies",
+
+"Accuser immédiatement un collègue"
+
+],
+
+"bonne":1,
+
+"explication":
+"La transparence et la correction professionnelle protègent la crédibilité administrative.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":62,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Supervision",
+
+"module":"Contrôle qualité des PV",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un responsable constate que plusieurs PV produits par son service présentent les mêmes erreurs. Quelle action est la plus efficace ?",
+
+"choix":[
+
+"Ignorer les erreurs",
+
+"Mettre en place une formation et un contrôle qualité",
+
+"Supprimer les PV",
+
+"Sanctionner sans analyse"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le responsable doit améliorer durablement la qualité du travail administratif.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":63,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gouvernance",
+
+"module":"Intégrité institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Un haut responsable reçoit une demande de supprimer un PV concernant une entreprise influente. Quelle décision respecte la mission de l'Inspection ?",
+
+"choix":[
+
+"Supprimer le PV pour protéger les relations",
+
+"Maintenir l'indépendance et respecter les procédures légales",
+
+"Modifier les faits",
+
+"Demander une contrepartie"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'Inspection du Travail doit rester indépendante, impartiale et fondée sur les règles applicables.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":64,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Mission terrain",
+
+"module":"Comportement face aux manipulations",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Pendant une inspection, un employeur présente uniquement les documents qui l'arrangent et refuse certains documents demandés. Quelle attitude doit adopter le contrôleur ?",
+
+"choix":[
+
+"Accepter sans vérifier",
+
+"Constater la situation, demander les documents nécessaires et appliquer la procédure",
+
+"Quitter immédiatement la mission",
+
+"Demander un avantage pour continuer"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôleur doit rechercher les éléments nécessaires à une analyse complète et objective.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":65,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Documents professionnels",
+
+"module":"Faux documents",
+
+"difficulte":"Professionnel",
+
+"type":"ANALYSE",
+
+"question":
+"Un contrôleur soupçonne qu'une fiche de paie présentée par une entreprise contient de fausses informations. Quelle est la meilleure démarche ?",
+
+"choix":[
+
+"Accuser immédiatement l'entreprise",
+
+"Vérifier les éléments disponibles et établir des constatations objectives",
+
+"Modifier lui-même la fiche",
+
+"Ignorer la situation"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une suspicion doit être vérifiée par des éléments objectifs avant toute conclusion.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":66,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Corruption",
+
+"module":"Avantages indirects",
+
+"difficulte":"Professionnel",
+
+"type":"SITUATION",
+
+"question":
+"Après une mission, un employeur propose un poste à un membre de la famille du contrôleur en échange d'une intervention favorable. Quelle règle est concernée ?",
+
+"choix":[
+
+"La rapidité administrative",
+
+"Le conflit d'intérêts et l'intégrité professionnelle",
+
+"La formation professionnelle",
+
+"La gestion du matériel"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les avantages indirects destinés aux proches peuvent influencer l'indépendance professionnelle.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":67,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Mission complexe",
+
+"module":"Pression de l'entreprise",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Un grand employeur menace de fermer l'entreprise si l'inspecteur applique les règles après constatation d'infractions. Quelle attitude est correcte ?",
+
+"choix":[
+
+"Abandonner le contrôle",
+
+"Appliquer les règles avec professionnalisme et objectivité",
+
+"Demander une compensation",
+
+"Modifier les constatations"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit rester impartial même face aux pressions économiques.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":68,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Confidentialité",
+
+"module":"Informations sensibles",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Un journaliste demande à un inspecteur les détails d'une enquête en cours concernant une entreprise. Quelle attitude adopter ?",
+
+"choix":[
+
+"Donner toutes les informations",
+
+"Respecter les règles de confidentialité et les procédures de communication",
+
+"Publier les documents",
+
+"Envoyer les informations dans un groupe WhatsApp"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les informations professionnelles obtenues pendant une mission doivent être protégées.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":69,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Relations institutionnelles",
+
+"module":"Autorités locales",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Pendant une mission, une autorité locale demande à l'inspecteur de favoriser une entreprise de sa connaissance. Quelle réaction est professionnelle ?",
+
+"choix":[
+
+"Accepter pour respecter l'autorité",
+
+"Maintenir l'impartialité et appliquer les règles",
+
+"Modifier le rapport",
+
+"Demander une faveur en échange"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'autorité professionnelle de l'inspecteur repose sur son indépendance et son impartialité.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":70,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Gestion des équipes",
+
+"module":"Responsabilité du chef",
+
+"difficulte":"Expert",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un chef de service découvre qu'un agent refuse régulièrement les missions difficiles. Quelle est la meilleure approche ?",
+
+"choix":[
+
+"Ignorer définitivement",
+
+"Analyser la situation, rappeler les obligations et accompagner l'agent",
+
+"Faire le travail à sa place",
+
+"Favoriser uniquement les autres agents"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le responsable doit gérer les difficultés par l'encadrement, le dialogue et le suivi.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":71,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Gouvernance",
+
+"module":"Pression institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Un responsable reçoit des instructions informelles pour réduire les contrôles dans certaines entreprises. Quelle décision est correcte ?",
+
+"choix":[
+
+"Suivre les instructions sans vérifier",
+
+"Respecter les missions officielles et les règles applicables",
+
+"Informer les entreprises à l'avance",
+
+"Supprimer les rapports"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les décisions administratives doivent respecter les missions légales et les procédures établies.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+},
+
+
+{
+"id":72,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Leadership supérieur",
+
+"module":"Crédibilité institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un responsable découvre un système organisé de favoritisme dans les contrôles. Quelle est sa responsabilité principale ?",
+
+"choix":[
+
+"Protéger les personnes impliquées",
+
+"Prendre les mesures nécessaires pour restaurer l'intégrité du service",
+
+"Ignorer pour éviter les conflits",
+
+"Supprimer les preuves"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un dirigeant doit protéger la crédibilité de l'institution et garantir l'équité.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":73,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Travailleurs étrangers",
+
+"module":"Contrôle de la main-d'œuvre",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Lors d'une inspection, une entreprise emploie un travailleur étranger sans les documents administratifs nécessaires. Quelle est l'attitude professionnelle du contrôleur ?",
+
+"choix":[
+
+"Ignorer car l'entreprise crée des emplois",
+
+"Constater la situation et vérifier la conformité avec les règles applicables",
+
+"Demander de l'argent à l'employeur",
+
+"Autoriser automatiquement le travailleur"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'emploi des travailleurs étrangers doit respecter les conditions légales et administratives prévues.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":74,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Protection des mineurs",
+
+"module":"Travail des enfants",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Un inspecteur découvre qu'un enfant effectue un travail dangereux dans une entreprise. Quelle est la priorité ?",
+
+"choix":[
+
+"Protéger la relation avec l'employeur",
+
+"Constater la situation et appliquer les mesures prévues pour protéger le mineur",
+
+"Ignorer si le salaire est correct",
+
+"Demander au mineur de continuer"
+
+],
+
+"bonne":1,
+
+"explication":
+"La protection des mineurs contre les travaux dangereux constitue une obligation fondamentale du contrôle du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":75,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Constatation d'infraction",
+
+"module":"Méthode de contrôle",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Pendant une visite, le contrôleur constate une violation évidente mais l'employeur demande de revenir plus tard avant de mentionner l'infraction. Quelle attitude adopter ?",
+
+"choix":[
+
+"Effacer l'infraction",
+
+"Effectuer les constatations selon les règles professionnelles",
+
+"Accepter uniquement après paiement",
+
+"Quitter définitivement"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôleur doit constater les faits au moment où ils sont observés conformément aux procédures.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":76,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Conflits internes",
+
+"module":"Relations collectives",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise connaît un conflit entre la direction et les travailleurs. Quel rôle peut jouer l'Inspection du Travail ?",
+
+"choix":[
+
+"Prendre automatiquement le parti des travailleurs",
+
+"Favoriser le respect du droit et rechercher une solution conforme aux règles",
+
+"Remplacer la direction",
+
+"Ignorer le conflit"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'Inspection intervient pour assurer l'application du droit du travail et contribuer à la résolution professionnelle des conflits.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":77,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Contrat de travail",
+
+"module":"Relation employeur-travailleur",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Un employeur utilise un travailleur pendant une longue période sans formaliser correctement la relation de travail. Quelle analyse doit faire l'inspecteur ?",
+
+"choix":[
+
+"Considérer uniquement la déclaration de l'employeur",
+
+"Examiner les faits réels et la situation professionnelle du travailleur",
+
+"Ignorer car le travailleur accepte",
+
+"Créer lui-même un contrat"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôle porte sur la réalité de la relation de travail et non seulement sur les déclarations des parties.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":78,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Organisation administrative",
+
+"module":"Rôle des Directions",
+
+"difficulte":"Expert",
+
+"type":"QCM",
+
+"question":
+"Pourquoi est-il important qu'un inspecteur connaisse le rôle des différentes directions administratives ?",
+
+"choix":[
+
+"Pour remplacer les responsables",
+
+"Pour orienter correctement les dossiers et assurer une meilleure coordination",
+
+"Pour éviter toute communication",
+
+"Pour prendre toutes les décisions seul"
+
+],
+
+"bonne":1,
+
+"explication":
+"La connaissance de l'organisation administrative améliore l'efficacité du service public.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":79,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Sanctions disciplinaires",
+
+"module":"Gestion des travailleurs",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un employeur sanctionne un travailleur sans respecter les règles disciplinaires applicables. Quelle démarche doit adopter l'inspecteur ?",
+
+"choix":[
+
+"Valider automatiquement la sanction",
+
+"Vérifier la conformité de la procédure disciplinaire",
+
+"Annuler tout contrat",
+
+"Punir personnellement l'employeur"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les sanctions disciplinaires doivent respecter les règles légales et les droits des parties.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":80,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Gestion institutionnelle",
+
+"module":"Coordination des services",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Deux directions administratives traitent le même dossier sans coordination. Quelle est la meilleure approche du responsable ?",
+
+"choix":[
+
+"Laisser le conflit continuer",
+
+"Organiser la coordination et clarifier les responsabilités",
+
+"Supprimer une direction",
+
+"Ignorer le problème"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une bonne gouvernance nécessite une répartition claire des missions et une coordination efficace.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":81,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Politique du travail",
+
+"module":"Protection sociale et emploi",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Une entreprise souhaite remplacer massivement des travailleurs nationaux par une main-d'œuvre étrangère sans respecter les règles applicables. Quelle est la responsabilité de l'Inspection ?",
+
+"choix":[
+
+"Ignorer la situation",
+
+"Vérifier la conformité légale et appliquer les procédures prévues",
+
+"Favoriser automatiquement l'entreprise",
+
+"Interdire toute activité étrangère sans analyse"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'Inspection doit assurer le respect du cadre légal tout en appliquant les règles de manière objective.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+}
+
+,
+
+{
+"id":82,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"ONEM",
+
+"module":"Déclaration d'établissement",
+
+"difficulte":"Professionnel",
+
+"type":"DOCUMENT",
+
+"question":
+"Lors d'un contrôle, pourquoi l'inspecteur doit-il vérifier la déclaration d'établissement d'une entreprise ?",
+
+"choix":[
+
+"Pour connaître uniquement le propriétaire",
+
+"Pour vérifier la situation administrative de l'établissement",
+
+"Pour calculer les bénéfices",
+
+"Pour remplacer le registre commercial"
+
+],
+
+"bonne":1,
+
+"explication":
+"La déclaration d'établissement permet de disposer d'informations administratives importantes sur l'entreprise contrôlée.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":83,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"ONEM",
+
+"module":"DASMO",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise emploie plusieurs travailleurs mais ne respecte pas ses obligations déclaratives auprès des services compétents. Quelle attitude doit adopter le contrôleur ?",
+
+"choix":[
+
+"Ignorer car les travailleurs ont un salaire",
+
+"Vérifier les obligations déclaratives et constater les manquements éventuels",
+
+"Demander une somme d'argent",
+
+"Fermer immédiatement l'entreprise"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les obligations administratives font partie des éléments contrôlables dans une entreprise.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":84,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"ONEM",
+
+"module":"Bilan social",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Quel est l'intérêt professionnel de l'analyse d'un bilan social d'entreprise ?",
+
+"choix":[
+
+"Connaître uniquement le chiffre d'affaires",
+
+"Analyser certains éléments liés à l'emploi et aux travailleurs",
+
+"Remplacer une inspection terrain",
+
+"Éviter tout contrôle"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les données sociales permettent d'avoir une meilleure compréhension de la situation de l'emploi dans l'entreprise.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":85,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Fiche de visite",
+
+"module":"Préparation d'une mission",
+
+"difficulte":"Professionnel",
+
+"type":"MISSION",
+
+"question":
+"Avant une visite d'inspection, pourquoi est-il important de préparer correctement la fiche de visite ?",
+
+"choix":[
+
+"Pour perdre du temps",
+
+"Pour organiser les informations nécessaires au contrôle",
+
+"Pour éviter toute constatation",
+
+"Pour remplacer le rapport final"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une bonne préparation améliore l'efficacité et la qualité de la mission.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":86,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Rapport professionnel",
+
+"module":"Rapport de mission",
+
+"difficulte":"Expert",
+
+"type":"DOCUMENT",
+
+"question":
+"Quel élément doit principalement apparaître dans un rapport de mission professionnel ?",
+
+"choix":[
+
+"Des opinions personnelles non vérifiées",
+
+"Les objectifs, constatations, résultats et recommandations",
+
+"Des informations confidentielles inutiles",
+
+"Des accusations sans preuve"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un rapport professionnel doit être structuré, objectif et basé sur les éléments constatés.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":87,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Documents employeur",
+
+"module":"Contrôle administratif",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise refuse de présenter certains documents obligatoires pendant une inspection. Quelle est l'approche correcte ?",
+
+"choix":[
+
+"Abandonner automatiquement",
+
+"Constater le refus et appliquer les procédures prévues",
+
+"Inventer les documents manquants",
+
+"Accepter sans contrôle"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le refus de présenter des documents peut constituer un élément à constater selon les règles applicables.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":88,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Contrôle documentaire",
+
+"module":"Documents falsifiés",
+
+"difficulte":"Expert",
+
+"type":"ENQUETE",
+
+"question":
+"Un inspecteur remarque que plusieurs documents d'une entreprise présentent des incohérences. Quelle est la meilleure démarche ?",
+
+"choix":[
+
+"Accuser immédiatement sans vérification",
+
+"Analyser les éléments disponibles et établir des constatations objectives",
+
+"Modifier les documents",
+
+"Supprimer le dossier"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le professionnel doit toujours travailler sur des faits vérifiables.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":89,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Gestion administrative",
+
+"module":"Classement des dossiers",
+
+"difficulte":"Expert",
+
+"type":"ORGANISATION",
+
+"question":
+"Pourquoi l'archivage correct des dossiers d'inspection est-il important ?",
+
+"choix":[
+
+"Uniquement pour remplir les armoires",
+
+"Pour assurer la traçabilité et le suivi administratif",
+
+"Pour cacher les erreurs",
+
+"Pour empêcher les contrôles"
+
+],
+
+"bonne":1,
+
+"explication":
+"La traçabilité des dossiers garantit la continuité et la crédibilité du service.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":90,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Management",
+
+"module":"Suivi des missions",
+
+"difficulte":"Inspecteur Général",
+
+"type":"GESTION",
+
+"question":
+"Un responsable constate que les rapports de mission arrivent souvent en retard. Quelle mesure est la plus efficace ?",
+
+"choix":[
+
+"Ignorer définitivement",
+
+"Mettre en place un système de suivi et rappeler les obligations",
+
+"Supprimer les rapports",
+
+"Transférer tous les dossiers"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le management doit améliorer l'organisation et la responsabilité des équipes.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":91,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gouvernance",
+
+"module":"Pilotage institutionnel",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Pourquoi un responsable national doit-il disposer de données fiables provenant des rapports et documents administratifs ?",
+
+"choix":[
+
+"Pour décorer les archives",
+
+"Pour prendre des décisions stratégiques basées sur des informations fiables",
+
+"Pour éviter les missions",
+
+"Pour supprimer les contrôles"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les données fiables permettent une meilleure planification et une amélioration du fonctionnement institutionnel.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":92,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Hygiène et sécurité",
+
+"module":"Inspection des lieux de travail",
+
+"difficulte":"Professionnel",
+
+"type":"MISSION",
+
+"question":
+"Lors d'une visite, le contrôleur constate que les travailleurs utilisent des machines dangereuses sans protection. Quelle est la priorité ?",
+
+"choix":[
+
+"Ignorer si la production est importante",
+
+"Constater le risque et vérifier les mesures de protection prévues",
+
+"Demander aux travailleurs de continuer",
+
+"Attendre un accident avant d'agir"
+
+],
+
+"bonne":1,
+
+"explication":
+"La prévention des risques professionnels est un élément essentiel de la mission de contrôle.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":93,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"EPI",
+
+"module":"Équipements de protection individuelle",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise fournit des équipements de protection mais les travailleurs ne les utilisent pas correctement. Quelle analyse doit faire l'inspecteur ?",
+
+"choix":[
+
+"Accuser uniquement les travailleurs",
+
+"Vérifier la formation, la disponibilité et l'utilisation effective des équipements",
+
+"Supprimer les équipements",
+
+"Arrêter automatiquement toute activité"
+
+],
+
+"bonne":1,
+
+"explication":
+"La sécurité dépend à la fois des moyens fournis, de la formation et du respect des règles.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":94,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Accident du travail",
+
+"module":"Enquête professionnelle",
+
+"difficulte":"Expert",
+
+"type":"ENQUETE",
+
+"question":
+"Après un accident grave dans une entreprise, quelle est la première démarche professionnelle ?",
+
+"choix":[
+
+"Accuser immédiatement l'employeur",
+
+"Établir les faits, recueillir les informations et analyser les circonstances",
+
+"Modifier les preuves",
+
+"Ignorer l'accident"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'enquête doit être objective et basée sur les éléments constatés.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":95,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Maladies professionnelles",
+
+"module":"Reconnaissance des risques",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Un travailleur développe une maladie liée à une exposition professionnelle prolongée. Quel élément doit analyser l'inspecteur ?",
+
+"choix":[
+
+"Uniquement l'ancienneté du travailleur",
+
+"Le lien possible entre l'activité professionnelle et le risque constaté",
+
+"Le salaire du travailleur",
+
+"La réputation de l'entreprise"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'analyse d'une maladie professionnelle nécessite l'étude du lien entre l'activité et l'exposition aux risques.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":96,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Sécurité",
+
+"module":"Responsabilité de l'employeur",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un employeur affirme qu'un accident est uniquement la faute du travailleur. Quelle approche doit adopter l'inspecteur ?",
+
+"choix":[
+
+"Accepter automatiquement",
+
+"Analyser toutes les circonstances de l'accident",
+
+"Punir immédiatement le travailleur",
+
+"Fermer le dossier"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'analyse doit tenir compte de l'organisation du travail, des mesures de prévention et des comportements.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":97,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Risques professionnels",
+
+"module":"Prévention",
+
+"difficulte":"Professionnel",
+
+"type":"QCM",
+
+"question":
+"Pourquoi la prévention des risques est-elle importante dans l'entreprise ?",
+
+"choix":[
+
+"Uniquement pour augmenter la production",
+
+"Pour protéger la santé et la sécurité des travailleurs",
+
+"Pour éviter les inspections",
+
+"Pour remplacer les contrats"
+
+],
+
+"bonne":1,
+
+"explication":
+"La prévention vise à réduire les accidents et protéger les travailleurs.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":98,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Sécurité industrielle",
+
+"module":"Gestion des risques",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise connaît plusieurs accidents similaires mais ne change aucune procédure de sécurité. Quelle est l'analyse correcte ?",
+
+"choix":[
+
+"La situation est normale",
+
+"L'employeur doit renforcer les mesures de prévention",
+
+"Les accidents ne concernent pas l'inspection",
+
+"Il faut cacher les statistiques"
+
+],
+
+"bonne":1,
+
+"explication":
+"La répétition des accidents révèle un problème de prévention qui doit être analysé.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":99,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Inspection technique",
+
+"module":"Visite des installations",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Lors d'une visite d'usine, l'inspecteur découvre une zone présentant un danger immédiat pour les travailleurs. Quelle attitude adopter ?",
+
+"choix":[
+
+"Continuer normalement sans remarque",
+
+"Constater le danger et appliquer les mesures prévues",
+
+"Demander un paiement",
+
+"Quitter sans rapport"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les risques graves nécessitent une réaction professionnelle conformément aux règles de sécurité.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":100,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Management sécurité",
+
+"module":"Politique prévention",
+
+"difficulte":"Inspecteur Général",
+
+"type":"GESTION",
+
+"question":
+"Un responsable constate une augmentation des accidents dans plusieurs entreprises d'une région. Quelle action est pertinente ?",
+
+"choix":[
+
+"Ignorer les statistiques",
+
+"Mettre en place une stratégie de prévention et renforcer les contrôles",
+
+"Supprimer les rapports",
+
+"Réduire les inspections"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le responsable doit utiliser les données pour améliorer la prévention et l'efficacité des contrôles.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":101,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Politique nationale du travail",
+
+"module":"Santé et sécurité",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Pourquoi la santé et sécurité au travail constitue-t-elle une priorité institutionnelle ?",
+
+"choix":[
+
+"Uniquement pour améliorer l'image de l'administration",
+
+"Parce qu'elle protège les travailleurs et contribue à un travail décent",
+
+"Parce qu'elle remplace les sanctions",
+
+"Parce qu'elle empêche toute activité économique"
+
+],
+
+"bonne":1,
+
+"explication":
+"La protection de la santé des travailleurs fait partie des missions essentielles de l'administration du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":102,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Relations sociales",
+
+"module":"Convention collective",
+
+"difficulte":"Professionnel",
+
+"type":"QCM",
+
+"question":
+"Quel est l'objectif principal d'une convention collective de travail ?",
+
+"choix":[
+
+"Remplacer totalement le Code du Travail",
+
+"Déterminer des règles et avantages applicables aux relations professionnelles",
+
+"Supprimer les droits des travailleurs",
+
+"Donner tous les pouvoirs à l'employeur"
+
+],
+
+"bonne":1,
+
+"explication":
+"La convention collective complète le cadre légal en organisant certains aspects des relations entre employeurs et travailleurs.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":103,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Syndicats",
+
+"module":"Liberté syndicale",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un employeur menace un travailleur parce qu'il participe aux activités d'un syndicat légalement reconnu. Quelle analyse doit faire l'inspecteur ?",
+
+"choix":[
+
+"Ignorer car l'employeur décide",
+
+"Vérifier les faits et examiner le respect des droits syndicaux",
+
+"Punir automatiquement l'employeur sans enquête",
+
+"Demander au travailleur de quitter le syndicat"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les droits syndicaux font partie des libertés professionnelles protégées par le droit du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":104,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Conflits collectifs",
+
+"module":"Gestion des conflits",
+
+"difficulte":"Expert",
+
+"type":"MISSION",
+
+"question":
+"Une grève éclate dans une entreprise suite à un désaccord salarial. Quel rôle peut jouer l'Inspection du Travail ?",
+
+"choix":[
+
+"Prendre automatiquement le parti d'une partie",
+
+"Favoriser le dialogue et rechercher une solution conforme au droit",
+
+"Fermer l'entreprise",
+
+"Ignorer le conflit"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'Inspection contribue au respect du droit social et à la prévention des conflits.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":105,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Dialogue social",
+
+"module":"Négociation collective",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Lors d'une négociation entre employeur et travailleurs, l'inspecteur doit-il imposer directement un accord ?",
+
+"choix":[
+
+"Oui toujours",
+
+"Non, il accompagne le processus dans le respect des règles",
+
+"Oui à la place des syndicats",
+
+"Oui à la place de l'employeur"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur facilite le respect du droit mais ne remplace pas les parties dans leurs responsabilités.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":106,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Relations professionnelles",
+
+"module":"Conflits internes",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Deux groupes de travailleurs s'opposent fortement dans une entreprise. Quelle approche est professionnelle ?",
+
+"choix":[
+
+"Favoriser son groupe préféré",
+
+"Analyser objectivement la situation et encourager le dialogue",
+
+"Créer une nouvelle division",
+
+"Ignorer le conflit"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit rester impartial et rechercher une solution professionnelle.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":107,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Convention collective",
+
+"module":"Application pratique",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise applique uniquement le minimum légal alors qu'une convention collective prévoit des avantages supplémentaires applicables. Quelle analyse est correcte ?",
+
+"choix":[
+
+"L'entreprise respecte automatiquement toutes les règles",
+
+"Il faut vérifier l'applicabilité des dispositions conventionnelles",
+
+"La convention collective n'a aucune valeur",
+
+"L'inspecteur doit ignorer"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les conventions collectives peuvent prévoir des dispositions professionnelles applicables selon les conditions prévues.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":108,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Médiation",
+
+"module":"Résolution des conflits",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Pendant une médiation, une partie refuse toute discussion. Quelle attitude doit adopter le médiateur professionnel ?",
+
+"choix":[
+
+"Forcer immédiatement un accord",
+
+"Créer les conditions d'un dialogue et respecter les procédures",
+
+"Abandonner sans rapport",
+
+"Favoriser une partie"
+
+],
+
+"bonne":1,
+
+"explication":
+"La médiation nécessite neutralité, écoute et respect du processus.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":109,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Management social",
+
+"module":"Prévention des conflits",
+
+"difficulte":"Inspecteur Général",
+
+"type":"GESTION",
+
+"question":
+"Un responsable constate une augmentation des conflits sociaux dans plusieurs entreprises. Quelle stratégie est adaptée ?",
+
+"choix":[
+
+"Réduire les inspections",
+
+"Renforcer le dialogue social, la prévention et le suivi",
+
+"Ignorer les plaintes",
+
+"Favoriser uniquement les employeurs"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une politique efficace privilégie la prévention et la qualité des relations professionnelles.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":110,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gouvernance sociale",
+
+"module":"Politique nationale du travail",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Pourquoi l'Inspection du Travail doit-elle maintenir son impartialité dans les conflits sociaux ?",
+
+"choix":[
+
+"Pour protéger uniquement l'image du service",
+
+"Pour garantir l'application équitable du droit du travail",
+
+"Pour éviter toute intervention",
+
+"Pour soutenir automatiquement une partie"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'impartialité est essentielle pour maintenir la confiance des travailleurs, employeurs et institutions.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":111,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Investigation",
+
+"module":"Méthode d'enquête",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un travailleur dépose une plainte contre son employeur pour violation de ses droits. Quelle est la première démarche professionnelle de l'inspecteur ?",
+
+"choix":[
+
+"Croire automatiquement le travailleur",
+
+"Recueillir les informations, vérifier les faits et analyser les éléments disponibles",
+
+"Condamner immédiatement l'employeur",
+
+"Refuser toute plainte"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une enquête professionnelle repose sur l'objectivité et la vérification des faits.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":112,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Corruption",
+
+"module":"Tentative d'influence",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Pendant une mission, un employeur propose discrètement une somme d'argent à l'inspecteur pour éviter une constatation. Quelle attitude est correcte ?",
+
+"choix":[
+
+"Accepter si personne ne voit",
+
+"Refuser et respecter les règles d'intégrité professionnelle",
+
+"Accepter puis réduire l'infraction",
+
+"Négocier le montant"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'indépendance et l'intégrité sont des principes fondamentaux de la fonction d'inspection.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":113,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Conflit d'intérêts",
+
+"module":"Neutralité professionnelle",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un inspecteur reçoit une mission de contrôle dans une entreprise appartenant à un membre proche de sa famille. Quelle est la meilleure décision ?",
+
+"choix":[
+
+"Cacher la relation familiale",
+
+"Signaler la situation et éviter tout conflit d'intérêts",
+
+"Faire le contrôle normalement sans informer",
+
+"Favoriser l'entreprise"
+
+],
+
+"bonne":1,
+
+"explication":
+"La transparence permet de préserver la crédibilité et l'impartialité du contrôle.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":114,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Preuves",
+
+"module":"Fiabilité des constatations",
+
+"difficulte":"Expert",
+
+"type":"ENQUETE",
+
+"question":
+"Lors d'une enquête, un inspecteur trouve deux informations contradictoires. Quelle démarche est correcte ?",
+
+"choix":[
+
+"Choisir automatiquement la première information",
+
+"Vérifier les sources et rechercher les éléments confirmant les faits",
+
+"Supprimer les deux informations",
+
+"Choisir selon ses préférences"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une enquête professionnelle exige une analyse rigoureuse des éléments disponibles.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":115,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Rapport administratif",
+
+"module":"Falsification de rapport",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Un agent modifie volontairement un rapport pour protéger une entreprise. Quelle est la nature principale du problème ?",
+
+"choix":[
+
+"Une simple erreur de frappe",
+
+"Une atteinte à l'intégrité professionnelle",
+
+"Une amélioration du rapport",
+
+"Une décision normale"
+
+],
+
+"bonne":1,
+
+"explication":
+"La modification volontaire des faits compromet la mission de contrôle.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":116,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Confidentialité",
+
+"module":"Informations sensibles",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un inspecteur partage dans un groupe WhatsApp privé des informations d'une enquête en cours. Quel principe peut être violé ?",
+
+"choix":[
+
+"La rapidité administrative",
+
+"La confidentialité professionnelle",
+
+"La productivité",
+
+"L'organisation interne"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les informations obtenues pendant les missions doivent être protégées.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":117,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Contrôle interne",
+
+"module":"Enquête sur un agent",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un responsable reçoit plusieurs plaintes concernant le comportement d'un agent. Quelle est la meilleure réaction ?",
+
+"choix":[
+
+"Punir immédiatement sans vérifier",
+
+"Ignorer les plaintes",
+
+"Organiser une vérification objective selon les procédures",
+
+"Protéger automatiquement l'agent"
+
+],
+
+"bonne":2,
+
+"explication":
+"Le responsable doit rechercher la vérité par une procédure équitable.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+},
+
+
+{
+"id":118,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Leadership",
+
+"module":"Gestion de crise",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Une équipe d'inspection est accusée publiquement de corruption. Quelle doit être la réaction d'un responsable ?",
+
+"choix":[
+
+"Cacher immédiatement l'affaire",
+
+"Organiser une analyse sérieuse et protéger la crédibilité du service",
+
+"Accuser publiquement sans preuve",
+
+"Supprimer les dossiers"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une institution crédible doit traiter les accusations avec transparence et équité.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":true
+
+},
+
+
+{
+"id":119,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Intégrité institutionnelle",
+
+"module":"Réforme administrative",
+
+"difficulte":"Inspecteur Général",
+
+"type":"STRATEGIE",
+
+"question":
+"Quelle mesure contribue le plus à réduire les risques de corruption dans une administration d'inspection ?",
+
+"choix":[
+
+"Réduire les contrôles",
+
+"Renforcer l'éthique, la transparence, la formation et les mécanismes de contrôle",
+
+"Supprimer les rapports",
+
+"Laisser chaque agent agir seul"
+
+],
+
+"bonne":1,
+
+"explication":
+"La prévention de la corruption nécessite une approche globale basée sur l'intégrité et la bonne gouvernance.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":120,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Décision supérieure",
+
+"module":"Responsabilité institutionnelle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_COMPLEXE",
+
+"question":
+"Un responsable découvre qu'une décision ancienne a favorisé injustement une entreprise. Quelle attitude respecte la gouvernance ?",
+
+"choix":[
+
+"Cacher l'information",
+
+"Analyser la situation et prendre les mesures correctives nécessaires",
+
+"Ignorer car la décision est ancienne",
+
+"Détruire les documents"
+
+],
+
+"bonne":1,
+
+"explication":
+"La responsabilité institutionnelle implique l'amélioration continue et la correction des dysfonctionnements.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":121,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"SMIG",
+
+"module":"Contrôle de rémunération",
+
+"difficulte":"Professionnel",
+
+"type":"CALCUL",
+
+"question":
+"Lors d'un contrôle, pourquoi l'inspecteur doit-il vérifier le respect du SMIG applicable ?",
+
+"choix":[
+
+"Uniquement pour connaître les bénéfices de l'entreprise",
+
+"Pour vérifier que les travailleurs reçoivent au moins la rémunération minimale prévue",
+
+"Pour calculer les impôts de l'entreprise",
+
+"Pour remplacer le contrat de travail"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôle du salaire minimum fait partie de la protection des droits économiques du travailleur.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":122,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Fiche de paie",
+
+"module":"Analyse salariale",
+
+"difficulte":"Professionnel",
+
+"type":"DOCUMENT",
+
+"question":
+"Une fiche de paie présente un salaire inférieur au minimum légal applicable. Quelle est la première démarche du contrôleur ?",
+
+"choix":[
+
+"Modifier lui-même la fiche",
+
+"Vérifier les éléments et constater le non-respect éventuel",
+
+"Ignorer si le travailleur accepte",
+
+"Demander une compensation personnelle"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôleur doit établir des constatations objectives avant toute conclusion.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":123,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Décompte final",
+
+"module":"Fin de relation de travail",
+
+"difficulte":"Expert",
+
+"type":"CALCUL",
+
+"question":
+"Lorsqu'un travailleur quitte une entreprise, pourquoi le décompte final doit-il être vérifié ?",
+
+"choix":[
+
+"Pour connaître les dépenses personnelles du travailleur",
+
+"Pour vérifier que les droits dus au travailleur ont été correctement calculés",
+
+"Pour remplacer le contrat",
+
+"Pour supprimer les archives"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le décompte final permet de vérifier le paiement des droits liés à la fin de la relation de travail.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":124,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Ancienneté",
+
+"module":"Calcul des droits",
+
+"difficulte":"Expert",
+
+"type":"CALCUL",
+
+"question":
+"Deux travailleurs ayant le même salaire mais une ancienneté différente peuvent-ils avoir les mêmes droits lors d'une rupture ?",
+
+"choix":[
+
+"Oui toujours",
+
+"Pas nécessairement, certains droits peuvent dépendre de l'ancienneté",
+
+"Jamais aucun droit",
+
+"Uniquement selon l'âge"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'ancienneté peut influencer certains droits selon les règles applicables.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":125,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Heures supplémentaires",
+
+"module":"Durée du travail",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Une entreprise fait régulièrement travailler des employés au-delà de la durée normale sans justification ni paiement conforme. Quelle analyse doit faire l'inspecteur ?",
+
+"choix":[
+
+"Ignorer car l'entreprise produit beaucoup",
+
+"Vérifier les horaires et les obligations liées aux heures supplémentaires",
+
+"Demander aux travailleurs de continuer",
+
+"Supprimer les registres"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les heures supplémentaires doivent respecter les règles relatives au temps de travail et à la rémunération.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":126,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Calcul professionnel",
+
+"module":"Erreur de calcul employeur",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Une entreprise présente un décompte final avec plusieurs erreurs de calcul. Quelle est la bonne réaction de l'inspecteur ?",
+
+"choix":[
+
+"Accepter le document",
+
+"Analyser les calculs et relever les anomalies constatées",
+
+"Refaire tout le système comptable de l'entreprise",
+
+"Supprimer le dossier"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur contrôle la conformité sociale mais ne remplace pas les services internes de l'entreprise.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":127,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Congés",
+
+"module":"Droits des travailleurs",
+
+"difficulte":"Expert",
+
+"type":"QCM",
+
+"question":
+"Pourquoi l'inspecteur doit-il vérifier les congés des travailleurs ?",
+
+"choix":[
+
+"Uniquement pour contrôler la présence",
+
+"Pour s'assurer du respect des droits liés au repos et aux congés",
+
+"Pour réduire les congés",
+
+"Pour remplacer le planning de l'entreprise"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les congés participent à la protection de la santé et du repos du travailleur.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":128,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Contrôle stratégique",
+
+"module":"Analyse des pratiques salariales",
+
+"difficulte":"Inspecteur Général",
+
+"type":"GESTION",
+
+"question":
+"Une direction régionale constate plusieurs plaintes concernant des erreurs salariales dans les entreprises. Quelle action est pertinente ?",
+
+"choix":[
+
+"Supprimer les contrôles",
+
+"Organiser des actions de contrôle et de sensibilisation",
+
+"Ignorer les plaintes",
+
+"Favoriser certaines entreprises"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une administration efficace combine contrôle, prévention et accompagnement.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":129,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Politique salariale",
+
+"module":"Protection économique",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Pourquoi le contrôle des rémunérations est-il une mission importante de l'Inspection du Travail ?",
+
+"choix":[
+
+"Pour augmenter les bénéfices des entreprises",
+
+"Pour garantir l'application des règles relatives aux droits des travailleurs",
+
+"Pour remplacer les employeurs",
+
+"Pour gérer les finances privées"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôle salarial participe à la protection du travail décent et à l'application du droit du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":130,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Expertise technique",
+
+"module":"Formation des inspecteurs",
+
+"difficulte":"Inspecteur Général",
+
+"type":"STRATEGIE",
+
+"question":
+"Pourquoi la maîtrise des calculs sociaux est-elle indispensable pour un inspecteur ?",
+
+"choix":[
+
+"Uniquement pour remplacer un comptable",
+
+"Pour pouvoir contrôler efficacement les obligations sociales des entreprises",
+
+"Pour éviter les missions",
+
+"Pour rédiger uniquement des rapports"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les compétences techniques renforcent la qualité des contrôles et la crédibilité de l'Inspection.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":131,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Procès-Verbal",
+
+"module":"Notion générale du PV",
+
+"difficulte":"Professionnel",
+
+"type":"QCM",
+
+"question":
+"Quel est l'objectif principal d'un procès-verbal établi par un agent de contrôle du travail ?",
+
+"choix":[
+
+"Punir directement l'employeur",
+
+"Consigner officiellement des constatations faites pendant une mission",
+
+"Remplacer une décision judiciaire",
+
+"Servir uniquement d'archive personnelle"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le PV est un document officiel qui rapporte les faits constatés selon les règles professionnelles.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":false
+
+},
+
+
+{
+"id":132,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Constatation",
+
+"module":"Établissement des faits",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Lors d'une inspection, le contrôleur constate une infraction mais ne dispose pas encore de tous les éléments nécessaires. Quelle attitude est correcte ?",
+
+"choix":[
+
+"Inventer les informations manquantes",
+
+"Rechercher les éléments nécessaires avant de conclure",
+
+"Modifier les faits",
+
+"Abandonner définitivement"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les constatations doivent être basées sur des éléments vérifiables et objectifs.",
+
+"recompense":{
+"type":"USD",
+"montant":10
+},
+
+"piege":true
+
+},
+
+
+{
+"id":133,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Procès-Verbal",
+
+"module":"Rédaction professionnelle",
+
+"difficulte":"Expert",
+
+"type":"DOCUMENT",
+
+"question":
+"Quel élément est indispensable dans un PV d'infraction ?",
+
+"choix":[
+
+"Les opinions personnelles de l'inspecteur",
+
+"La description précise des faits constatés",
+
+"Les rumeurs entendues",
+
+"Les informations sans source"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un PV doit présenter des faits précis, objectifs et vérifiables.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":134,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Preuves",
+
+"module":"Force du constat",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Pourquoi les preuves sont-elles importantes dans l'élaboration d'un PV ?",
+
+"choix":[
+
+"Pour augmenter la longueur du document",
+
+"Pour renforcer la crédibilité des constatations",
+
+"Pour remplacer les textes juridiques",
+
+"Pour éviter toute rédaction"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les éléments de preuve permettent de soutenir les faits constatés.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":135,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Infractions",
+
+"module":"Qualification juridique",
+
+"difficulte":"Expert",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Un inspecteur constate qu'une entreprise ne respecte pas une obligation prévue par le Code du Travail. Quelle étape est nécessaire avant une sanction ?",
+
+"choix":[
+
+"Identifier correctement le manquement constaté",
+
+"Sanctionner sans analyse",
+
+"Modifier la loi",
+
+"Demander l'autorisation de l'employeur"
+
+],
+
+"bonne":0,
+
+"explication":
+"La qualification correcte de l'infraction est nécessaire pour appliquer les mesures appropriées.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":136,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Sanctions",
+
+"module":"Infractions du Code du Travail",
+
+"difficulte":"Expert",
+
+"type":"QCM",
+
+"question":
+"Pourquoi un inspecteur doit-il maîtriser les infractions et sanctions prévues par le Code du Travail ?",
+
+"choix":[
+
+"Pour sanctionner arbitrairement",
+
+"Pour appliquer correctement les règles et éviter les erreurs",
+
+"Pour remplacer les tribunaux",
+
+"Pour négocier des avantages personnels"
+
+],
+
+"bonne":1,
+
+"explication":
+"La connaissance des sanctions garantit une application professionnelle et équitable du droit.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":137,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Erreur de procédure",
+
+"module":"Validité du PV",
+
+"difficulte":"Expert",
+
+"type":"CAS_COMPLEXE",
+
+"question":
+"Un PV contient des accusations personnelles contre un employeur sans description précise des faits. Quelle faiblesse présente ce document ?",
+
+"choix":[
+
+"Il est trop professionnel",
+
+"Il manque d'objectivité et de précision",
+
+"Il est automatiquement parfait",
+
+"Il remplace une enquête"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un PV doit rester neutre et présenter uniquement les éléments constatés.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":138,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Relation avec employeur",
+
+"module":"Après constatation",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Après avoir constaté une infraction, l'employeur demande à l'inspecteur de supprimer le PV en échange d'un avantage. Quelle réaction est correcte ?",
+
+"choix":[
+
+"Accepter",
+
+"Refuser et respecter les obligations professionnelles",
+
+"Négocier le prix",
+
+"Modifier le PV"
+
+],
+
+"bonne":1,
+
+"explication":
+"La corruption compromet l'indépendance et l'intégrité de la mission.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":139,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Contrôle qualité",
+
+"module":"Supervision des PV",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Pourquoi un responsable doit-il contrôler la qualité des PV produits par ses équipes ?",
+
+"choix":[
+
+"Pour supprimer tous les PV",
+
+"Pour garantir la qualité juridique et professionnelle des dossiers",
+
+"Pour favoriser certaines entreprises",
+
+"Pour éviter les inspections"
+
+],
+
+"bonne":1,
+
+"explication":
+"La supervision améliore la qualité des actes administratifs et la crédibilité du service.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":140,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gouvernance juridique",
+
+"module":"Politique de contrôle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Quelle est la principale valeur d'un système de PV bien élaboré dans une Inspection du Travail ?",
+
+"choix":[
+
+"Créer plus de documents",
+
+"Garantir des contrôles fiables, transparents et juridiquement solides",
+
+"Augmenter les conflits",
+
+"Remplacer toutes les lois"
+
+],
+
+"bonne":1,
+
+"explication":
+"Des PV de qualité renforcent l'efficacité et la crédibilité de l'administration du travail.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+
+,
+
+{
+"id":141,
+
+"niveau":2,
+
+"grade":"Agent administratif",
+
+"categorie":"Discipline professionnelle",
+
+"module":"Comportement au bureau",
+
+"difficulte":"Moyen",
+
+"type":"SITUATION",
+
+"question":
+"Un agent arrive régulièrement en retard sans justification et cela perturbe le fonctionnement du service. Quelle attitude professionnelle doit adopter le responsable ?",
+
+"choix":[
+
+"Ignorer définitivement",
+
+"Rappeler les obligations professionnelles et appliquer les procédures prévues",
+
+"Encourager les retards",
+
+"Modifier les horaires pour lui uniquement"
+
+],
+
+"bonne":1,
+
+"explication":
+"La discipline administrative garantit le bon fonctionnement du service public.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":142,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Image professionnelle",
+
+"module":"Comportement en public",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Pendant une mission, un contrôleur adopte un comportement agressif devant les travailleurs et l'employeur. Quel problème cela peut-il créer ?",
+
+"choix":[
+
+"Une meilleure autorité",
+
+"Une perte de crédibilité de l'institution",
+
+"Une meilleure communication",
+
+"Une accélération automatique du contrôle"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'autorité professionnelle repose sur le respect, la maîtrise de soi et le professionnalisme.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":143,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Communication numérique",
+
+"module":"WhatsApp professionnel",
+
+"difficulte":"Professionnel",
+
+"type":"SITUATION",
+
+"question":
+"Dans un groupe WhatsApp professionnel, un agent publie des informations sensibles concernant une entreprise contrôlée. Quelle règle peut être concernée ?",
+
+"choix":[
+
+"La rapidité du service",
+
+"Le secret professionnel et la confidentialité",
+
+"La pause administrative",
+
+"La formation technique"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les outils numériques professionnels doivent être utilisés avec responsabilité.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":144,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Relations professionnelles",
+
+"module":"Relations entre collègues",
+
+"difficulte":"Professionnel",
+
+"type":"CAS_PRATIQUE",
+
+"question":
+"Deux collègues sont en désaccord sur une méthode de travail. Quelle est l'approche la plus professionnelle ?",
+
+"choix":[
+
+"Créer un conflit personnel",
+
+"Dialoguer et rechercher une solution professionnelle",
+
+"Publier le problème sur les réseaux sociaux",
+
+"Refuser toute collaboration"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les conflits professionnels doivent être gérés par le dialogue et le respect mutuel.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":false
+
+},
+
+
+{
+"id":145,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Relations personnelles",
+
+"module":"Relation amoureuse entre collègues",
+
+"difficulte":"Expert",
+
+"type":"CAS_COMPLEXE",
+
+"question":
+"Deux collègues ayant une relation personnelle travaillent dans le même service et doivent traiter un même dossier sensible. Quelle précaution est recommandée ?",
+
+"choix":[
+
+"Cacher la situation",
+
+"Éviter tout conflit d'intérêts et maintenir la neutralité professionnelle",
+
+"Favoriser automatiquement son collègue",
+
+"Partager le dossier avec des personnes extérieures"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les relations personnelles ne doivent pas influencer les décisions professionnelles.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":146,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Gestion émotionnelle",
+
+"module":"Mission difficile",
+
+"difficulte":"Expert",
+
+"type":"SITUATION",
+
+"question":
+"Un employeur provoque volontairement un inspecteur pendant une mission. Quelle réaction démontre le professionnalisme ?",
+
+"choix":[
+
+"Répondre par la colère",
+
+"Rester calme et poursuivre la mission selon les règles",
+
+"Quitter sans rapport",
+
+"Insulter l'employeur"
+
+],
+
+"bonne":1,
+
+"explication":
+"La maîtrise de soi est une compétence essentielle dans les missions de contrôle.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":147,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Utilisation des réseaux sociaux",
+
+"module":"Réputation professionnelle",
+
+"difficulte":"Expert",
+
+"type":"ANALYSE",
+
+"question":
+"Un inspecteur publie sur son compte personnel des critiques contre une entreprise qu'il vient de contrôler. Quel risque existe ?",
+
+"choix":[
+
+"Aucun risque",
+
+"Un risque d'atteinte à la neutralité et à l'image professionnelle",
+
+"Une récompense automatique",
+
+"Une meilleure procédure juridique"
+
+],
+
+"bonne":1,
+
+"explication":
+"Les agents doivent préserver la neutralité et la réputation de leur institution.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":148,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Leadership",
+
+"module":"Comportement du supérieur",
+
+"difficulte":"Expert",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un chef humilie publiquement ses collaborateurs lorsqu'ils commettent une erreur. Quelle pratique serait préférable ?",
+
+"choix":[
+
+"Renforcer l'humiliation",
+
+"Corriger, expliquer et accompagner l'agent",
+
+"Ignorer toutes les erreurs",
+
+"Créer une peur permanente"
+
+],
+
+"bonne":1,
+
+"explication":
+"Un responsable doit développer ses équipes par l'encadrement et l'accompagnement.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":false
+
+},
+
+
+{
+"id":149,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Culture institutionnelle",
+
+"module":"Valeurs du service public",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Quelle valeur est essentielle pour maintenir la confiance du public envers l'Inspection du Travail ?",
+
+"choix":[
+
+"L'impartialité et le professionnalisme",
+
+"La proximité personnelle avec certaines entreprises",
+
+"L'absence de contrôle",
+
+"Les décisions selon les relations personnelles"
+
+],
+
+"bonne":0,
+
+"explication":
+"La confiance institutionnelle repose sur l'équité, la compétence et l'indépendance.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":150,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Exemplarité",
+
+"module":"Leadership supérieur",
+
+"difficulte":"Inspecteur Général",
+
+"type":"CAS_COMPLEXE",
+
+"question":
+"Pourquoi un Inspecteur Général doit-il être un modèle de comportement professionnel ?",
+
+"choix":[
+
+"Parce qu'il représente l'image et les valeurs de toute l'institution",
+
+"Uniquement pour être respecté",
+
+"Pour éviter les missions",
+
+"Pour obtenir des avantages personnels"
+
+],
+
+"bonne":0,
+
+"explication":
+"Les responsables supérieurs ont une responsabilité d'exemplarité envers toute l'administration.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+,
+
+{
+"id":151,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Mission terrain",
+
+"module":"Début d'inspection",
+
+"difficulte":"Professionnel",
+
+"type":"SIMULATION",
+
+"question":
+"Vous arrivez dans une entreprise pour une visite de contrôle. L'employeur refuse d'abord de vous recevoir en affirmant qu'il est occupé. Quelle attitude est correcte ?",
+
+"choix":[
+
+"Forcer l'accès sans procédure",
+
+"Rester professionnel, présenter la mission et appliquer les règles prévues",
+
+"Quitter immédiatement",
+
+"Proposer un avantage pour être reçu"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le contrôleur doit agir avec professionnalisme tout en respectant les procédures de contrôle.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":152,
+
+"niveau":3,
+
+"grade":"Contrôleur du Travail",
+
+"categorie":"Communication terrain",
+
+"module":"Entretien avec employeur",
+
+"difficulte":"Professionnel",
+
+"type":"SIMULATION",
+
+"question":
+"Pendant l'entretien, l'employeur affirme que les règles du travail sont trop difficiles et qu'il ne souhaite pas les appliquer. Quelle réponse est professionnelle ?",
+
+"choix":[
+
+"Accepter son argument",
+
+"Rappeler les obligations légales et expliquer les exigences applicables",
+
+"Menacer immédiatement",
+
+"Quitter la mission"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur informe, contrôle et applique les règles avec impartialité.",
+
+"recompense":{
+"type":"FC",
+"montant":15000
+},
+
+"piege":true
+
+},
+
+
+{
+"id":153,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Contrôle documentaire",
+
+"module":"Documents obligatoires",
+
+"difficulte":"Expert",
+
+"type":"SIMULATION",
+
+"question":
+"Lors d'une inspection, l'entreprise présente uniquement des documents favorables mais refuse certains registres obligatoires. Quelle démarche est correcte ?",
+
+"choix":[
+
+"Accepter les documents présentés",
+
+"Constater le refus et poursuivre les vérifications nécessaires",
+
+"Accuser immédiatement de fraude",
+
+"Annuler la mission"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit établir les faits de manière objective et complète.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":154,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Interview travailleurs",
+
+"module":"Recueil d'informations",
+
+"difficulte":"Expert",
+
+"type":"SIMULATION",
+
+"question":
+"Des travailleurs déclarent subir des violations mais demandent que leur identité ne soit pas révélée. Quelle précaution est importante ?",
+
+"choix":[
+
+"Publier leurs noms",
+
+"Respecter la confidentialité selon les règles professionnelles",
+
+"Informer immédiatement l'employeur",
+
+"Ignorer leurs déclarations"
+
+],
+
+"bonne":1,
+
+"explication":
+"La protection des informations recueillies est essentielle dans les missions d'inspection.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":155,
+
+"niveau":4,
+
+"grade":"Inspecteur du Travail",
+
+"categorie":"Découverte d'infractions",
+
+"module":"Analyse globale",
+
+"difficulte":"Expert",
+
+"type":"CAS_COMPLEXE",
+
+"question":
+"Pendant une visite, vous constatez plusieurs problèmes : absence d'EPI, salaires irréguliers et documents incomplets. Quelle approche est correcte ?",
+
+"choix":[
+
+"Choisir une seule infraction et ignorer les autres",
+
+"Analyser chaque constatation et appliquer les procédures appropriées",
+
+"Demander une somme globale à l'entreprise",
+
+"Fermer immédiatement l'entreprise"
+
+],
+
+"bonne":1,
+
+"explication":
+"Chaque manquement doit être examiné séparément avec une analyse professionnelle.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":156,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Pression pendant mission",
+
+"module":"Indépendance",
+
+"difficulte":"Expert",
+
+"type":"SIMULATION",
+
+"question":
+"Pendant une inspection, un responsable politique appelle l'inspecteur pour demander de réduire les constatations. Quelle réaction est professionnelle ?",
+
+"choix":[
+
+"Modifier le rapport",
+
+"Maintenir l'objectivité et respecter les règles professionnelles",
+
+"Supprimer certaines infractions",
+
+"Arrêter toute inspection"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'inspecteur doit préserver son indépendance et son impartialité.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":157,
+
+"niveau":5,
+
+"grade":"Expert",
+
+"categorie":"Analyse des preuves",
+
+"module":"Constatation",
+
+"difficulte":"Expert",
+
+"type":"ENQUETE",
+
+"question":
+"Deux documents présentés par l'entreprise contiennent des informations différentes concernant les travailleurs. Que doit faire l'inspecteur ?",
+
+"choix":[
+
+"Choisir celui qui arrange l'entreprise",
+
+"Comparer les informations et rechercher les éléments permettant d'établir la réalité",
+
+"Jeter les deux documents",
+
+"Accuser sans analyse"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'enquête professionnelle repose sur la vérification et l'analyse des faits.",
+
+"recompense":{
+"type":"USD",
+"montant":50
+},
+
+"piege":true
+
+},
+
+
+{
+"id":158,
+
+"niveau":6,
+
+"grade":"Inspecteur Général Adjoint",
+
+"categorie":"Supervision",
+
+"module":"Qualité des missions",
+
+"difficulte":"Inspecteur Général",
+
+"type":"MANAGEMENT",
+
+"question":
+"Un responsable remarque que plusieurs rapports d'inspection manquent de précision. Quelle action est adaptée ?",
+
+"choix":[
+
+"Supprimer tous les rapports",
+
+"Organiser un accompagnement et améliorer les méthodes de travail",
+
+"Ignorer le problème",
+
+"Punir toute l'équipe sans analyse"
+
+],
+
+"bonne":1,
+
+"explication":
+"Le responsable doit améliorer la qualité du service par la formation et le suivi.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":159,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Gestion stratégique",
+
+"module":"Organisation nationale du contrôle",
+
+"difficulte":"Inspecteur Général",
+
+"type":"DECISION",
+
+"question":
+"Une région présente une augmentation importante des violations du droit du travail. Quelle stratégie est la plus adaptée ?",
+
+"choix":[
+
+"Réduire les contrôles",
+
+"Analyser les causes et renforcer les actions de prévention et contrôle",
+
+"Ignorer les statistiques",
+
+"Supprimer les rapports régionaux"
+
+],
+
+"bonne":1,
+
+"explication":
+"Une administration efficace utilise les données pour orienter ses actions.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+},
+
+
+{
+"id":160,
+
+"niveau":7,
+
+"grade":"Inspecteur Général du Travail",
+
+"categorie":"Simulation finale",
+
+"module":"Mission complète",
+
+"difficulte":"Inspecteur Général",
+
+"type":"EPREUVE_FINALE",
+
+"question":
+"Après une mission complexe avec plusieurs infractions constatées, quelle est la meilleure qualité attendue d'un inspecteur ?",
+
+"choix":[
+
+"La rapidité sans vérification",
+
+"La capacité à rester objectif, professionnel et juridiquement rigoureux",
+
+"La proximité personnelle avec l'entreprise",
+
+"La capacité à éviter les conflits"
+
+],
+
+"bonne":1,
+
+"explication":
+"L'excellence d'un inspecteur repose sur la compétence, l'éthique et l'application correcte du droit.",
+
+"recompense":{
+"type":"USD",
+"montant":100
+},
+
+"piege":false
+
+}
+
+
+
