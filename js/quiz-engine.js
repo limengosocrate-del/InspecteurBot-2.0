@@ -1,35 +1,56 @@
-/* ==========================================
-   QUIZ ENGINE
+/* =====================================================
+   QUIZ ENGINE V3
    ACADEMIE INSPECTEURBOT IGT RDC
-========================================== */
+===================================================== */
 
 
-
-let banqueQuestions = [];
+let questions = [];
 
 let questionActuelle = null;
 
 let reponseCorrecte = null;
 
-let questionsValidees = [];
+let historiqueQuestions = [];
 
-let questionsErreur = [];
-
-let xp = 0;
-
-let vies = 5;
-
-let niveauActuel = 1;
-
-let derniereQuestion = null;
+let erreurs = [];
 
 
 
+/* ===============================
+ PROFIL JOUEUR
+=============================== */
 
 
-/* ==========================================
-   CHARGEMENT BANQUE QUESTIONS
-========================================== */
+let profil = {
+
+nom:"Inspecteur en Formation",
+
+grade:"Débutant",
+
+niveau:1,
+
+vies:5,
+
+cdf:0,
+
+usd:0,
+
+questionsValidees:0,
+
+examens:0,
+
+missions:0
+
+};
+
+
+
+
+
+
+/* ===============================
+ CHARGEMENT QUESTIONS
+=============================== */
 
 
 async function chargerQuestions(){
@@ -38,34 +59,32 @@ async function chargerQuestions(){
 try{
 
 
-let resultat = await fetch(
+let response = await fetch(
 "data/question_bank.json"
 );
 
 
-banqueQuestions =
-await resultat.json();
-
+questions = await response.json();
 
 
 chargerSauvegarde();
 
 
-demarrerJeu();
+nouvelleQuestion();
 
+
+afficherProfil();
 
 
 }
 
-catch(erreur){
-
+catch(error){
 
 console.error(
-"Erreur chargement questions",
-erreur
+"Erreur chargement banque questions",
+error
 );
 
-
 }
 
 
@@ -76,53 +95,26 @@ erreur
 
 
 
-/* ==========================================
-   DEMARRAGE
-========================================== */
+
+/* ===============================
+ NOUVELLE QUESTION
+=============================== */
 
 
-function demarrerJeu(){
-
-
-choisirQuestion();
-
-
-actualiserAffichage();
-
-
-}
-
-
-
-
-
-
-
-
-/* ==========================================
-   CHOISIR QUESTION ALEATOIRE
-========================================== */
-
-
-function choisirQuestion(){
-
+function nouvelleQuestion(){
 
 
 let disponibles =
-banqueQuestions.filter(q=>{
+questions.filter(q=>{
 
 
 return (
 
-q.niveau <= niveauActuel
+q.niveau <= profil.niveau
 
 &&
 
-!questionsValidees.includes(q.id)
-
-&&
-
-q.id !== derniereQuestion
+!historiqueQuestions.includes(q.id)
 
 );
 
@@ -131,27 +123,13 @@ q.id !== derniereQuestion
 
 
 
-
 if(disponibles.length===0){
 
 
-
-disponibles =
-banqueQuestions.filter(q=>{
+historiqueQuestions=[];
 
 
-return (
-
-q.niveau <= niveauActuel
-
-&&
-
-!questionsValidees.includes(q.id)
-
-);
-
-
-});
+disponibles=questions;
 
 
 }
@@ -159,25 +137,7 @@ q.niveau <= niveauActuel
 
 
 
-
-// Si toutes les questions sont maîtrisées
-
-if(disponibles.length===0){
-
-
-verifierFinNiveau();
-
-
-return;
-
-
-}
-
-
-
-
-
-let hasard =
+let index =
 Math.floor(
 Math.random()*disponibles.length
 );
@@ -185,12 +145,13 @@ Math.random()*disponibles.length
 
 
 questionActuelle =
-disponibles[hasard];
+disponibles[index];
 
 
 
-derniereQuestion =
-questionActuelle.id;
+historiqueQuestions.push(
+questionActuelle.id
+);
 
 
 
@@ -205,9 +166,10 @@ afficherQuestion();
 
 
 
-/* ==========================================
-   AFFICHER QUESTION
-========================================== */
+
+/* ===============================
+ AFFICHAGE QUESTION
+=============================== */
 
 
 function afficherQuestion(){
@@ -215,46 +177,25 @@ function afficherQuestion(){
 
 
 document.getElementById(
-"categorie"
+"categorieQuiz"
 ).innerHTML =
 
-questionActuelle.categorie;
+questionActuelle.categorie || "Formation";
 
 
 
 
 document.getElementById(
-"question"
+"questionText"
 ).innerHTML =
 
 questionActuelle.question;
 
 
 
-
-let choix =
-[...questionActuelle.choix];
-
-
-
-choix =
-melanger(choix);
-
-
-
-reponseCorrecte =
-choix.indexOf(
-questionActuelle.choix[
-questionActuelle.bonne
-]
-);
-
-
-
-
 let zone =
 document.getElementById(
-"reponses"
+"answersContainer"
 );
 
 
@@ -265,7 +206,20 @@ zone.innerHTML="";
 
 
 
-choix.forEach((texte,index)=>{
+let choix =
+[...questionActuelle.choix];
+
+
+
+choix.sort(
+()=>Math.random()-0.5
+);
+
+
+
+
+
+choix.forEach((texte)=>{
 
 
 let bouton =
@@ -275,12 +229,7 @@ document.createElement(
 
 
 
-bouton.innerHTML =
-
-(String.fromCharCode(65+index))
-+
-" - "
-+
+bouton.textContent =
 texte;
 
 
@@ -289,7 +238,7 @@ bouton.onclick=()=>{
 
 
 verifierReponse(
-index,
+texte,
 bouton
 );
 
@@ -307,6 +256,11 @@ bouton
 });
 
 
+
+afficherRecompense();
+
+
+
 }
 
 
@@ -314,18 +268,24 @@ bouton
 
 
 
-/* ==========================================
-   VERIFICATION REPONSE
-========================================== */
 
 
-function verifierReponse(index,bouton){
+
+/* ===============================
+ VERIFICATION
+=============================== */
+
+
+function verifierReponse(
+choix,
+bouton
+){
 
 
 
 let boutons =
 document.querySelectorAll(
-"#reponses button"
+"#answersContainer button"
 );
 
 
@@ -339,31 +299,42 @@ b.disabled=true;
 
 
 
-if(index===reponseCorrecte){
+
+let bonneReponse =
+
+questionActuelle.choix[
+questionActuelle.bonne
+];
+
+
+
+
+
+if(choix===bonneReponse){
 
 
 
 bouton.classList.add(
-"bonne"
+"correct"
 );
+
+
+
+profil.questionsValidees++;
+
+
+
+attribuerRecompense();
+
 
 
 
 document.getElementById(
-"message"
+"feedback"
 ).innerHTML =
 
-"✅ Bonne réponse";
+"✅ Bonne réponse ! Progression validée.";
 
-
-
-xp +=20;
-
-
-
-questionsValidees.push(
-questionActuelle.id
-);
 
 
 
@@ -373,31 +344,32 @@ else{
 
 
 bouton.classList.add(
-"mauvaise"
+"wrong"
 );
 
 
 
-document.getElementById(
-"message"
-).innerHTML =
-
-"❌ Mauvaise réponse";
+profil.vies--;
 
 
 
-vies--;
-
-
-
-questionsErreur.push(
+erreurs.push(
 questionActuelle.id
 );
 
 
 
-verifierVies();
+document.getElementById(
+"feedback"
+).innerHTML =
 
+"❌ Mauvaise réponse. Vous perdez une vie.";
+
+
+
+
+
+verifierVies();
 
 
 }
@@ -412,10 +384,10 @@ sauvegarder();
 setTimeout(()=>{
 
 
-choisirQuestion();
+nouvelleQuestion();
 
 
-},1200);
+},1500);
 
 
 
@@ -428,65 +400,154 @@ choisirQuestion();
 
 
 
+/* ===============================
+ SYSTEME RECOMPENSES
+=============================== */
 
-/* ==========================================
-   SYSTEME DE VIES
-========================================== */
+
+function attribuerRecompense(){
+
+
+
+let recompense =
+
+questionActuelle.recompense;
+
+
+
+if(!recompense){
+
+
+recompense={
+
+type:"CDF",
+
+montant:10000
+
+};
+
+
+}
+
+
+
+
+
+if(recompense.type==="CDF"){
+
+
+profil.cdf +=
+recompense.montant;
+
+
+}
+
+else{
+
+
+profil.usd +=
+recompense.montant;
+
+
+}
+
+
+
+
+}
+
+
+
+
+
+function afficherRecompense(){
+
+
+
+let zone =
+document.getElementById(
+"rewardDisplay"
+);
+
+
+
+if(!zone)
+return;
+
+
+
+
+let r =
+questionActuelle.recompense;
+
+
+
+if(r){
+
+
+if(r.type==="CDF")
+
+zone.innerHTML =
+r.montant+" FC";
+
+
+else
+
+zone.innerHTML =
+r.montant+" $";
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+ VIES
+=============================== */
 
 
 function verifierVies(){
 
 
 
-if(vies<=0){
+if(profil.vies<=0){
 
 
 
 alert(
 
-"⚠️ Toutes vos vies sont terminées.\n\nVotre parcours doit recommencer depuis le début avec une nouvelle série de questions."
+"⚠️ Toutes vos vies sont terminées.\nVotre parcours recommence au début du niveau."
 
 );
 
 
 
-reinitialiserProgression();
+profil.vies=5;
+
+profil.niveau=1;
+
+profil.cdf=0;
+
+profil.usd=0;
+
+profil.questionsValidees=0;
+
+
+
+historiqueQuestions=[];
 
 
 
 }
-
-
-
-}
-
-
-
-
-function reinitialiserProgression(){
-
-
-
-xp=0;
-
-
-vies=5;
-
-
-niveauActuel=1;
-
-
-questionsValidees=[];
-
-
-questionsErreur=[];
-
-
-
-localStorage.removeItem(
-"IGT_progression"
-);
-
 
 
 }
@@ -498,83 +559,30 @@ localStorage.removeItem(
 
 
 
-/* ==========================================
-   FIN DE NIVEAU
-========================================== */
+
+/* ===============================
+ GRADE
+=============================== */
 
 
-function verifierFinNiveau(){
-
-
-
-let niveauQuestions =
-
-banqueQuestions.filter(q=>{
-
-
-return q.niveau===niveauActuel;
-
-
-});
+function verifierPromotion(){
 
 
 
+if(
+profil.questionsValidees>=100
+&&
+profil.niveau===1
+){
 
 
-let termine =
+profil.niveau=2;
 
-niveauQuestions.every(q=>{
-
-
-return questionsValidees.includes(q.id);
-
-
-});
-
-
-
-
-
-if(termine){
-
-
-niveauActuel++;
-
+profil.grade="Administratif";
 
 
 alert(
-
-"🏆 Niveau réussi ! Nouveau niveau débloqué."
-
-);
-
-
-
-sauvegarder();
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   MELANGE
-========================================== */
-
-
-function melanger(tableau){
-
-
-return tableau.sort(
-()=>Math.random()-0.5
+"🎖️ Promotion obtenue : Administratif"
 );
 
 
@@ -582,49 +590,115 @@ return tableau.sort(
 
 
 
+}
 
 
 
 
 
-/* ==========================================
-   SAUVEGARDE
-========================================== */
+
+
+
+
+/* ===============================
+ AFFICHAGE PROFIL
+=============================== */
+
+
+function afficherProfil(){
+
+
+
+let vie =
+document.getElementById(
+"lifeDisplay"
+);
+
+
+
+if(vie)
+
+vie.innerHTML =
+"❤️".repeat(profil.vies);
+
+
+
+
+
+let fc =
+document.getElementById(
+"cdf"
+);
+
+
+
+if(fc)
+
+fc.innerHTML =
+profil.cdf+" FC";
+
+
+
+
+
+let usd =
+document.getElementById(
+"usd"
+);
+
+
+
+if(usd)
+
+usd.innerHTML =
+profil.usd+" $";
+
+
+
+
+
+let grade =
+document.getElementById(
+"grade"
+);
+
+
+
+if(grade)
+
+grade.innerHTML =
+profil.grade;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ===============================
+ SAUVEGARDE
+=============================== */
 
 
 function sauvegarder(){
 
 
-let donnees={
-
-
-xp,
-
-vies,
-
-niveauActuel,
-
-questionsValidees,
-
-questionsErreur
-
-
-};
-
-
-
 localStorage.setItem(
 
-"IGT_progression",
+"IGT_ACADEMIE",
 
-JSON.stringify(donnees)
+JSON.stringify(profil)
 
 );
 
 
 
-actualiserAffichage();
-
+afficherProfil();
 
 
 }
@@ -632,13 +706,6 @@ actualiserAffichage();
 
 
 
-
-
-
-
-/* ==========================================
-   CHARGER SAUVEGARDE
-========================================== */
 
 
 function chargerSauvegarde(){
@@ -647,7 +714,7 @@ function chargerSauvegarde(){
 
 let data =
 localStorage.getItem(
-"IGT_progression"
+"IGT_ACADEMIE"
 );
 
 
@@ -655,31 +722,10 @@ localStorage.getItem(
 if(data){
 
 
-let sauvegarde =
+profil =
 JSON.parse(data);
 
 
-
-xp =
-sauvegarde.xp ||0;
-
-
-vies =
-sauvegarde.vies ||5;
-
-
-niveauActuel =
-sauvegarde.niveauActuel ||1;
-
-
-questionsValidees =
-sauvegarde.questionsValidees ||[];
-
-
-questionsErreur =
-sauvegarde.questionsErreur ||[];
-
-
 }
 
 
@@ -692,46 +738,43 @@ sauvegarde.questionsErreur ||[];
 
 
 
-/* ==========================================
-   AFFICHAGE
-========================================== */
+/* ===============================
+ MODE SOMBRE
+=============================== */
 
 
-function actualiserAffichage(){
-
-
-
-let xpZone =
-document.getElementById("xp");
-
-
-if(xpZone)
-xpZone.innerHTML=xp;
-
-
-
-
-let vieZone =
-document.getElementById("vies");
-
-
-if(vieZone)
-vieZone.innerHTML=vies;
-
-
-
-let validation =
+let darkButton =
 document.getElementById(
-"validation"
+"darkModeBtn"
 );
 
 
 
-if(validation)
+if(darkButton){
 
-validation.innerHTML =
-questionsValidees.length;
 
+darkButton.onclick=function(){
+
+
+document.body.classList.toggle(
+"dark-mode"
+);
+
+
+
+localStorage.setItem(
+
+"theme",
+
+document.body.classList.contains(
+"dark-mode"
+)
+
+);
+
+
+
+};
 
 
 }
@@ -741,6 +784,27 @@ questionsValidees.length;
 
 
 
-// lancement automatique
+if(
+localStorage.getItem("theme")
+==="true"
+
+){
+
+
+document.body.classList.add(
+"dark-mode"
+);
+
+
+}
+
+
+
+
+
+/* ===============================
+ DEMARRAGE
+=============================== */
+
 
 chargerQuestions();
