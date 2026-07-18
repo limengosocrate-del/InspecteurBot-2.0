@@ -5,55 +5,136 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>
-Académie InspecteurBot IGT RDC
+Académie Professionnelle InspecteurBot IGT RDC
 </title>
 
+<meta
+name="description"
+content="Académie Professionnelle de formation des Inspecteurs et Contrôleurs du Travail de la RDC">
 
-<link rel="stylesheet" href="academie.css">
+<meta
+name="theme-color"
+content="#0b57d0">
+
+
+<!-- CSS -->
+
+<link
+rel="stylesheet"
+href="academie.css">
+
+
+<!-- Icônes -->
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 
 </head>
 
-
 <body>
 
 
-<div class="app">
+
+<!-- ===========================================
+APPLICATION
+=========================================== -->
+
+<div id="app">
 
 
-<!-- =========================
+
+<!-- ===========================================
 HEADER
-========================= -->
+=========================================== -->
+
+<header class="top-header">
 
 
-<header class="header">
+
+<div class="header-left">
+
+<button
+id="menuBtn"
+class="icon-btn">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
 
 
 <div class="logo">
 
-IGT
+<img
+src="../images/logo.png"
+alt="InspecteurBot">
 
 </div>
+
 
 
 <div>
 
-
 <h1>
-Académie InspecteurBot IGT RDC
+
+Académie InspecteurBot
+
 </h1>
 
-
 <p>
-Plateforme professionnelle de formation des Inspecteurs et Contrôleurs du Travail
-</p>
 
+Inspection Générale du Travail
+
+</p>
 
 </div>
 
+</div>
+
+
+
+
+
+<div class="header-right">
+
+
+
+<button
+id="darkModeBtn"
+class="icon-btn"
+title="Mode sombre">
+
+<i class="fa-solid fa-moon"></i>
+
+</button>
+
+
+
+<button
+id="notificationBtn"
+class="icon-btn">
+
+<i class="fa-solid fa-bell"></i>
+
+<span class="badge">
+
+0
+
+</span>
+
+</button>
+
+
+
+</div>
 
 </header>
 
@@ -61,198 +142,645 @@ Plateforme professionnelle de formation des Inspecteurs et Contrôleurs du Trava
 
 
 
-<!-- =========================
+
+<!-- ===========================================
 PROFIL UTILISATEUR
-========================= -->
+=========================================== -->
 
-
-<section class="profil">
-
-
-<h2>
-👤 Profil formation
-</h2>
+<section class="profile-card">
 
 
 
-<div class="stats">
+<div class="avatar">
 
-
-<div>
-
-⭐
-
-<p>XP</p>
-
-<strong id="xp">
-
-0
-
-</strong>
-
+<i class="fa-solid fa-user-tie"></i>
 
 </div>
 
 
 
-<div>
+<div class="profile-info">
+
+<h2 id="playerName">
+
+Inspecteur en Formation
+
+</h2>
+
+
+
+<p id="gradeName">
+
+Grade :
+Débutant
+
+</p>
+
+
+
+<p id="niveauName">
+
+Niveau 1
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="wallet">
+
+
+
+<h3>
+
+💰 Compte Académie
+
+</h3>
+
+
+
+<div class="money">
+
+<span id="cdf">
+
+0 FC
+
+</span>
+
+</div>
+
+
+
+<div class="money">
+
+<span id="usd">
+
+0 $
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+<!-- ===========================================
+STATISTIQUES
+=========================================== -->
+
+<section class="dashboard">
+
+<div class="dashboard-grid">
+
+
+
+<div class="card">
+
+<h3>
 
 ❤️
 
-<p>Vies</p>
+</h3>
 
-<strong id="vies">
+<p>
+
+Vies
+
+</p>
+
+<strong
+id="lifeCount">
 
 5
 
 </strong>
 
-
 </div>
 
 
 
 
-<div>
+
+<div class="card">
+
+<h3>
 
 🎖️
 
-<p>Grade</p>
+</h3>
 
-<strong id="grade">
+<p>
+
+Grade
+
+</p>
+
+<strong
+id="grade">
 
 Débutant
 
 </strong>
 
-
 </div>
 
 
 
 
-<div>
+
+<div class="card">
+
+<h3>
 
 📚
 
-<p>Questions validées</p>
+</h3>
 
-<strong id="validation">
+<p>
+
+Questions validées
+
+</p>
+
+<strong
+id="validated">
 
 0
 
 </strong>
 
-
 </div>
 
 
 
-</div>
 
 
-</section>
-
-
-
-
-
-<!-- =========================
-PROGRESSION
-========================= -->
-
-
-<section class="progression">
-
+<div class="card">
 
 <h3>
-Progression du parcours
+
+🏆
+
 </h3>
 
+<p>
 
-<div class="barre">
-
-
-<div id="progressBar">
-
-</div>
-
-
-</div>
-
-
-
-<p id="progressText">
-
-0 %
+Examens
 
 </p>
 
+<strong
+id="examSuccess">
 
-</section>
+0
 
+</strong>
 
-
-
-
-
-
-<!-- =========================
-MENU FORMATION
-========================= -->
+</div>
 
 
-<section class="modules">
+
+
+
+<div class="card">
+
+<h3>
+
+⭐
+
+</h3>
+
+<p>
+
+Classement
+
+</p>
+
+<strong
+id="ranking">
+
+Débutant
+
+</strong>
+
+</div>
+
+</div>
+
+  </section>
+
+  <!-- ===========================================
+MENU LATERAL
+=========================================== -->
+
+<aside id="sidebar" class="sidebar">
+
+
+<div class="sidebar-header">
+
+<h2>
+
+🎓 Académie
+
+</h2>
+
+<p>
+
+InspecteurBot IGT RDC
+
+</p>
+
+</div>
+
+
+
+<nav class="menu">
+
+
+
+<a href="#dashboard">
+
+<i class="fa-solid fa-house"></i>
+
+<span>
+
+Tableau de bord
+
+</span>
+
+</a>
+
+
+
+
+<a href="#formations">
+
+<i class="fa-solid fa-book-open"></i>
+
+<span>
+
+Mes Formations
+
+</span>
+
+</a>
+
+
+
+
+<a href="#quiz">
+
+<i class="fa-solid fa-circle-question"></i>
+
+<span>
+
+Quiz Académie
+
+</span>
+
+</a>
+
+
+
+
+<a href="#revision">
+
+<i class="fa-solid fa-rotate"></i>
+
+<span>
+
+Révisions
+
+</span>
+
+</a>
+
+
+
+
+<a href="#missions">
+
+<i class="fa-solid fa-clipboard-check"></i>
+
+<span>
+
+Simulations de missions
+
+</span>
+
+</a>
+
+
+
+
+<a href="#examens">
+
+<i class="fa-solid fa-file-signature"></i>
+
+<span>
+
+Examens
+
+</span>
+
+</a>
+
+
+
+
+<a href="#certificats">
+
+<i class="fa-solid fa-award"></i>
+
+<span>
+
+Certificats
+
+</span>
+
+</a>
+
+
+
+
+<a href="#classement">
+
+<i class="fa-solid fa-ranking-star"></i>
+
+<span>
+
+Classement
+
+</span>
+
+</a>
+
+
+
+
+<a href="../index.html">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+<span>
+
+Retour au menu principal
+
+</span>
+
+</a>
+
+
+
+</nav>
+
+
+</aside>
+
+
+
+
+
+
+<!-- ===========================================
+CONTENU PRINCIPAL
+=========================================== -->
+
+<main class="main-content">
+
+
+
+
+
+<!-- ===========================================
+BARRE DE PROGRESSION
+=========================================== -->
+
+<section class="progress-card">
+
+
+<div class="progress-header">
 
 
 <h2>
-📚 Modules de formation
+
+📈 Progression Académie
+
 </h2>
 
 
 
-<div class="cartes">
+<span id="progressPercent">
+
+0 %
+
+</span>
+
+
+</div>
 
 
 
-<div class="carte active">
+
+<div class="progress">
 
 
-<h3>
-📜 Code du Travail RDC
-</h3>
+
+<div
+id="progressFill"
+class="progress-fill">
+
+</div>
+
+
+
+</div>
+
+
 
 
 <p>
-Fondements juridiques et application pratique
+
+Vous devez réussir les évaluations pour débloquer le niveau suivant.
+
 </p>
 
 
-<button onclick="ouvrirModule('code')">
+</section>
+
+
+
+
+
+
+
+
+<!-- ===========================================
+GRADE ACTUEL
+=========================================== -->
+
+<section class="career-card">
+
+
+<h2>
+
+🎖️ Carrière Professionnelle
+
+</h2>
+
+
+
+
+<div class="career-grid">
+
+
+
+<div class="career-item active">
+
+1️⃣ Débutant
+
+</div>
+
+
+
+<div class="career-item locked">
+
+2️⃣ Administratif
+
+</div>
+
+
+
+<div class="career-item locked">
+
+3️⃣ Contrôleur
+
+</div>
+
+
+
+<div class="career-item locked">
+
+4️⃣ Inspecteur
+
+</div>
+
+
+
+<div class="career-item locked">
+
+5️⃣ Directeur
+
+</div>
+
+
+
+<div class="career-item locked">
+
+6️⃣ Inspecteur Général Adjoint
+
+</div>
+
+
+
+<div class="career-item locked">
+
+7️⃣ Inspecteur Général
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- ===========================================
+MODULES DE FORMATION
+=========================================== -->
+
+<section
+id="formations"
+class="formations">
+
+
+<h2>
+
+📚 Parcours Académie
+
+</h2>
+
+
+
+
+<div class="formation-grid">
+
+
+
+
+<div class="formation-card unlocked">
+
+<h3>
+
+📜 Code du Travail
+
+</h3>
+
+<p>
+
+Fondements juridiques
+
+</p>
+
+<span>
+
+100 Pages
+
+</span>
+
+<button>
 
 Commencer
 
 </button>
 
-
 </div>
 
 
 
 
 
-<div class="carte verrou">
-
+<div class="formation-card locked">
 
 <h3>
-🔒 Contrat de travail
+
+📄 Contrat de Travail
+
 </h3>
 
-
 <p>
-Niveau administratif requis
-</p>
 
+30 Pages
+
+</p>
 
 </div>
 
@@ -260,18 +788,199 @@ Niveau administratif requis
 
 
 
-<div class="carte verrou">
-
+<div class="formation-card locked">
 
 <h3>
-🔒 Inspection du Travail
+
+💰 Rémunération & SMIG
+
 </h3>
 
-
 <p>
-Niveau professionnel requis
+
+25 Pages
+
 </p>
 
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+⏰ Temps de Travail
+
+</h3>
+
+<p>
+
+15 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+🦺 Hygiène & Sécurité
+
+</h3>
+
+<p>
+
+35 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+🏥 Maladies Professionnelles
+
+</h3>
+
+<p>
+
+25 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+🏛 Inspection du Travail
+
+</h3>
+
+<p>
+
+25 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+⚖️ Infractions & Sanctions
+
+</h3>
+
+<p>
+
+35 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+📋 Documents ONEM
+
+</h3>
+
+<p>
+
+Déclarations - DASMO - Bilan Social
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+🤝 Convention Collective
+
+</h3>
+
+<p>
+
+15 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+🧭 Éthique & Déontologie
+
+</h3>
+
+<p>
+
+160 Pages
+
+</p>
+
+</div>
+
+
+
+
+
+<div class="formation-card locked">
+
+<h3>
+
+📝 Rapports & Procès-Verbaux
+
+</h3>
+
+<p>
+
+Formation professionnelle
+
+</p>
 
 </div>
 
@@ -279,58 +988,196 @@ Niveau professionnel requis
 
 </div>
 
+  </section>
 
-</section>
+  <!-- ===========================================
+ZONE QUIZ PROFESSIONNELLE
+=========================================== -->
 
+<section id="quiz" class="quiz-section">
 
-
-
-
-
-
-<!-- =========================
-ZONE QUIZ
-========================= -->
-
-
-<section class="quiz">
-
+<div class="quiz-header">
 
 <h2>
-🎯 Épreuve en cours
+
+🎯 Académie Professionnelle
+
 </h2>
 
+<p>
 
+Répondez correctement pour progresser. Une mauvaise réponse vous fait perdre une vie. Le niveau supérieur ne sera débloqué qu'après la réussite complète du niveau actuel.
 
-<div id="categorie">
-
-Catégorie
-
-</div>
-
-
-
-<div id="question">
-
-Chargement...
+</p>
 
 </div>
 
 
 
+<!-- Informations de la session -->
 
-<div id="reponses">
+<div class="quiz-info">
 
+
+
+<div class="info-box">
+
+⏱️
+
+<h4>
+
+Temps
+
+</h4>
+
+<strong id="timer">
+
+00:00
+
+</strong>
 
 </div>
 
 
 
-<div id="message">
 
+<div class="info-box">
+
+❓
+
+<h4>
+
+Question
+
+</h4>
+
+<strong id="numeroQuestion">
+
+1 / 20
+
+</strong>
 
 </div>
 
+
+
+
+<div class="info-box">
+
+❤️
+
+<h4>
+
+Vies
+
+</h4>
+
+<strong id="lifeDisplay">
+
+❤️❤️❤️❤️❤️
+
+</strong>
+
+</div>
+
+
+
+
+<div class="info-box">
+
+💰
+
+<h4>
+
+Récompense
+
+</h4>
+
+<strong id="rewardDisplay">
+
+10 000 FC
+
+</strong>
+
+</div>
+
+
+
+
+
+<div class="info-box">
+
+📈
+
+<h4>
+
+Progression
+
+</h4>
+
+<strong id="quizProgress">
+
+0 %
+
+</strong>
+
+</div>
+
+</div>
+
+
+
+
+
+<!-- Catégorie -->
+
+<div class="categorie-question">
+
+<span id="categorieQuiz">
+
+Code du Travail
+
+</span>
+
+</div>
+
+
+
+
+
+<!-- Question -->
+
+<div class="question-box">
+
+<h2 id="questionText">
+
+Chargement des questions...
+
+</h2>
+
+</div>
+
+
+
+
+
+<!-- Réponses -->
+
+<div id="answersContainer" class="answers-container">
+
+<!-- Généré automatiquement -->
+
+</div>
+
+
+
+
+
+<!-- Résultat -->
+
+<div id="feedback" class="feedback">
+
+</div>
 
 </section>
 
@@ -340,37 +1187,57 @@ Chargement...
 
 
 
+<!-- ===========================================
+OBJECTIFS DU JOUR
+=========================================== -->
 
-<!-- =========================
-ACTIONS
-========================= -->
+<section class="daily-objectives">
 
+<h2>
 
-<section class="actions">
+🎯 Objectifs Quotidiens
 
+</h2>
 
-<button onclick="revoirErreurs()">
+<div class="objective-grid">
 
-🔄 Réviser mes erreurs
+<div class="objective-card">
 
-</button>
+✅ Réussir 20 questions
 
+</div>
 
+<div class="objective-card">
 
-<button onclick="ouvrirExamen()">
+💰 Gagner 100 000 FC
 
-📝 Examen final
+</div>
 
-</button>
+<div class="objective-card">
 
+⭐ Réussir sans perdre une vie
 
+</div>
 
-<button onclick="retourMenu()">
+<div class="objective-card">
 
-⬅️ Retour menu principal
+📚 Étudier un nouveau module
 
-</button>
+</div>
 
+<div class="objective-card">
+
+🏆 Réussir un examen
+
+</div>
+
+<div class="objective-card">
+
+🧠 Réviser les erreurs
+
+</div>
+
+</div>
 
 </section>
 
@@ -380,175 +1247,232 @@ ACTIONS
 
 
 
-<!-- =========================
+<!-- ===========================================
+DEFIS HEBDOMADAIRES
+=========================================== -->
+
+<section class="weekly-challenges">
+
+<h2>
+
+🔥 Défis Hebdomadaires
+
+</h2>
+
+<div class="challenge-grid">
+
+<div class="challenge-card">
+
+🥇 Réussir 200 questions
+
+</div>
+
+<div class="challenge-card">
+
+💵 Gagner 500 $
+
+</div>
+
+<div class="challenge-card">
+
+📚 Terminer un cours complet
+
+</div>
+
+<div class="challenge-card">
+
+📝 Réussir deux examens
+
+</div>
+
+<div class="challenge-card">
+
+🚫 Aucune faute pendant une mission
+
+</div>
+
+<div class="challenge-card">
+
+👨‍⚖️ Débloquer le grade suivant
+
+</div>
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+<!-- ===========================================
+BADGES
+=========================================== -->
+
+<section class="badges-section">
+
+<h2>
+
+🏅 Mes Badges
+
+</h2>
+
+<div class="badge-grid">
+
+<div class="badge locked">
+
+📜
+
+<p>
+
+Juriste Débutant
+
+</p>
+
+</div>
+
+<div class="badge locked">
+
+⚖️
+
+<p>
+
+Contrôleur Certifié
+
+</p>
+
+</div>
+
+<div class="badge locked">
+
+🛡️
+
+<p>
+
+Inspecteur Professionnel
+
+</p>
+
+</div>
+
+<div class="badge locked">
+
+🏆
+
+<p>
+
+Expert IGT
+
+</p>
+
+</div>
+
+<div class="badge locked">
+
+👑
+
+<p>
+
+Inspecteur Général
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+<!-- ===========================================
+NOTIFICATIONS
+=========================================== -->
+
+<section class="notifications">
+
+<h2>
+
+🔔 Centre de Notifications
+
+</h2>
+
+<ul id="notificationList">
+
+<li>
+
+Bienvenue dans l'Académie InspecteurBot IGT RDC.
+
+</li>
+
+<li>
+
+Votre progression sera sauvegardée automatiquement.
+
+</li>
+
+<li>
+
+Les récompenses sont attribuées uniquement après une bonne réponse.
+
+</li>
+
+<li>
+
+En cas de perte de toutes les vies, la progression du niveau sera réinitialisée.
+
+</li>
+
+</ul>
+
+</section>
+
+
+
+
+
+
+
+<!-- ===========================================
 FOOTER
-========================= -->
+=========================================== -->
 
-
-<footer>
-
+<footer class="footer">
 
 <p>
 
-Nous travaillons activement à l'ajout de nouveaux chapitres, exercices pratiques, études de cas réels, simulations de missions d'inspection, modules interactifs et certifications.
+Nous travaillons activement à l'ajout de nouveaux chapitres, exercices pratiques, études de cas réels, simulations de missions d'inspection, modules interactifs, certifications professionnelles et parcours d'excellence destinés aux Inspecteurs et Contrôleurs du Travail.
 
 </p>
-
-
 
 <p>
 
-Version 1.0 — Académie InspecteurBot IGT, développé par Inspecteur Limengo (Pmiller) 2026 ©
+Version 2.0 — Académie InspecteurBot IGT RDC
 
 </p>
 
+<p>
+
+Développé par Inspecteur Limengo (Pmiller) © 2026
+
+</p>
 
 </footer>
 
-
+</main>
 
 </div>
 
-
-
-
-
-<script>
-
-
-// =================================
-// BASE DU SYSTEME
-// =================================
-
-
-let xp = 0;
-
-
-let vies = 5;
-
-
-let grade = "Débutant";
-
-
-let questionsValidees = [];
-
-
-let questionsErreur = [];
-
-
-let niveauActuel = 1;
-
-
-
-// ================================
-// AFFICHAGE PROFIL
-// ================================
-
-
-function actualiserProfil(){
-
-
-
-document.getElementById("xp").innerHTML=xp;
-
-
-document.getElementById("vies").innerHTML=vies;
-
-
-document.getElementById("grade").innerHTML=grade;
-
-
-document.getElementById("validation").innerHTML=
-
-questionsValidees.length;
-
-
-
-}
-
-
-
-
-// ================================
-// OUVERTURE MODULE
-// ================================
-
-
-function ouvrirModule(module){
-
-
-
-console.log(
-
-"Ouverture module : "+module
-
-);
-
-
-
-}
-
-
-
-
-
-// ================================
-// RETOUR MENU
-// ================================
-
-
-function retourMenu(){
-
-
-window.location.href="../index.html";
-
-
-}
-
-
-
-
-
-// ================================
-// PLACEHOLDERS
-// ================================
-
-
-function revoirErreurs(){
-
-
-alert(
-
-"Module de révision en préparation"
-
-);
-
-
-}
-
-
-
-function ouvrirExamen(){
-
-
-alert(
-
-"Examen final en préparation"
-
-);
-
-
-}
-
-
-
-actualiserProfil();
-
-
-
-</script>
-
+<script src="js/quiz-engine.js"></script>
 
 </body>
 
 </html>
+
+
