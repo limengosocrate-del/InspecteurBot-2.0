@@ -1,45 +1,381 @@
-/* =====================================================
-   QUIZ ENGINE V3
-   ACADEMIE INSPECTEURBOT IGT RDC
-===================================================== */
+/* =======================================================
+   INSPECTEURBOT IGT RDC
+   ACADÉMIE QUIZ PROFESSIONNELLE
+   PARTIE 5A : INITIALISATION DU MOTEUR
+======================================================= */
 
 
-let questions = [];
-
-let questionActuelle = null;
-
-let reponseCorrecte = null;
-
-let historiqueQuestions = [];
-
-let erreurs = [];
+"use strict";
 
 
-
-/* ===============================
- PROFIL JOUEUR
-=============================== */
+const QuizEngine = {
 
 
-let profil = {
+    // ===============================
+    // Configuration générale
+    // ===============================
 
-nom:"Inspecteur en Formation",
+    config: {
 
-grade:"Débutant",
+        totalVies: 5,
 
-niveau:1,
+        niveaux: [
 
-vies:5,
+            {
+                id:1,
+                nom:"Débutant",
+                grade:"Agent administratif",
+                recompense:"FC"
+            },
 
-cdf:0,
+            {
+                id:2,
+                nom:"Administratif",
+                grade:"Assistant administratif",
+                recompense:"FC"
+            },
 
-usd:0,
+            {
+                id:3,
+                nom:"Contrôleur du Travail",
+                grade:"Contrôleur",
+                recompense:"FC"
+            },
 
-questionsValidees:0,
+            {
+                id:4,
+                nom:"Inspecteur du Travail",
+                grade:"Inspecteur",
+                recompense:"USD"
+            },
 
-examens:0,
+            {
+                id:5,
+                nom:"Expert",
+                grade:"Expert IGT",
+                recompense:"USD"
+            },
 
-missions:0
+            {
+                id:6,
+                nom:"Inspecteur Général Adjoint",
+                grade:"IGT Adjoint",
+                recompense:"USD"
+            },
+
+            {
+                id:7,
+                nom:"Inspecteur Général du Travail",
+                grade:"IGT",
+                recompense:"USD"
+            }
+
+        ]
+
+    },
+
+
+
+    // ===============================
+    // Données du jeu
+    // ===============================
+
+
+    questions: [],
+
+    questionsUtilisees: [],
+
+    questionActuelle:null,
+
+    joueur:null,
+
+
+
+    // ===============================
+    // Initialisation
+    // ===============================
+
+
+    async init(){
+
+
+        console.log(
+            "🚀 Initialisation Académie IGT..."
+        );
+
+
+        this.chargerJoueur();
+
+
+        await this.chargerQuestions();
+
+
+        this.verifierProgression();
+
+
+        console.log(
+            "✅ Moteur Quiz IGT prêt"
+        );
+
+
+    },
+
+
+
+
+
+    // ===============================
+    // Chargement banque questions
+    // ===============================
+
+
+    async chargerQuestions(){
+
+
+        try{
+
+
+            const response =
+            await fetch(
+                "data/question_bank.json"
+            );
+
+
+            this.questions =
+            await response.json();
+
+
+            console.log(
+                this.questions.length +
+                " questions chargées"
+            );
+
+
+        }
+
+
+        catch(error){
+
+
+            console.error(
+                "Erreur chargement questions : ",
+                error
+            );
+
+
+        }
+
+
+    },
+
+
+
+
+
+    // ===============================
+    // Création profil joueur
+    // ===============================
+
+
+    nouveauJoueur(){
+
+
+        return {
+
+
+            nom:"",
+
+            grade:"Débutant",
+
+            niveau:1,
+
+
+            vies:this.config.totalVies,
+
+
+            argentFC:0,
+
+
+            argentUSD:0,
+
+
+            questionsRepondues:0,
+
+
+            bonnesReponses:0,
+
+
+            mauvaisesReponses:0,
+
+
+            questionsUtilisees:[],
+
+
+            niveauxDebloques:[1],
+
+
+            badges:[],
+
+
+            dateCreation:
+            new Date().toISOString()
+
+
+        };
+
+
+    },
+
+
+
+
+
+    // ===============================
+    // Charger sauvegarde
+    // ===============================
+
+
+    chargerJoueur(){
+
+
+        let sauvegarde =
+        localStorage.getItem(
+            "IGT_PLAYER"
+        );
+
+
+
+        if(sauvegarde){
+
+
+            this.joueur =
+            JSON.parse(
+                sauvegarde
+            );
+
+
+            console.log(
+                "Profil chargé"
+            );
+
+
+        }
+
+
+        else{
+
+
+            this.joueur =
+            this.nouveauJoueur();
+
+
+
+            this.sauvegarderJoueur();
+
+
+
+            console.log(
+                "Nouveau profil créé"
+            );
+
+
+        }
+
+
+    },
+
+
+
+
+
+
+    // ===============================
+    // Sauvegarde joueur
+    // ===============================
+
+
+    sauvegarderJoueur(){
+
+
+        localStorage.setItem(
+
+            "IGT_PLAYER",
+
+            JSON.stringify(
+                this.joueur
+            )
+
+        );
+
+
+    },
+
+
+
+
+
+
+
+    // ===============================
+    // Vérification progression
+    // ===============================
+
+
+    verifierProgression(){
+
+
+        let niveau =
+        this.joueur.niveau;
+
+
+
+        let disponible =
+        this.config.niveaux
+        .find(
+            n=>n.id===niveau
+        );
+
+
+
+        if(!disponible){
+
+
+            this.joueur.niveau=1;
+
+
+        }
+
+
+
+    },
+
+
+
+
+
+
+    // ===============================
+    // Obtenir niveau actuel
+    // ===============================
+
+
+    niveauActuel(){
+
+
+        return this.config.niveaux.find(
+
+            n =>
+            n.id ===
+            this.joueur.niveau
+
+        );
+
+
+    }
+
+
+
+
 
 };
 
@@ -47,764 +383,528 @@ missions:0
 
 
 
+// Démarrage automatique
 
-/* ===============================
- CHARGEMENT QUESTIONS
-=============================== */
+document.addEventListener(
 
+"DOMContentLoaded",
 
-async function chargerQuestions(){
-
-
-try{
+()=>{
 
 
-let response = await fetch(
-"data/question_bank.json"
-);
-
-
-questions = await response.json();
-
-
-chargerSauvegarde();
-
-
-nouvelleQuestion();
-
-
-afficherProfil();
-
-
-}
-
-catch(error){
-
-console.error(
-"Erreur chargement banque questions",
-error
-);
-
-}
-
-
-}
-
-
-
-
-
-
-
-/* ===============================
- NOUVELLE QUESTION
-=============================== */
-
-
-function nouvelleQuestion(){
-
-
-let disponibles =
-questions.filter(q=>{
-
-
-return (
-
-q.niveau <= profil.niveau
-
-&&
-
-!historiqueQuestions.includes(q.id)
-
-);
+    QuizEngine.init();
 
 
 });
 
 
+// =======================================================
+// PARTIE 5B : AFFICHAGE DU QUIZ
+// =======================================================
 
-if(disponibles.length===0){
 
 
-historiqueQuestions=[];
+QuizEngine.questionsNiveau = [];
 
+QuizEngine.reponsesMelangees = [];
 
-disponibles=questions;
 
 
-}
 
 
+// ===============================
+// Charger les questions du niveau
+// ===============================
 
 
-let index =
-Math.floor(
-Math.random()*disponibles.length
-);
+QuizEngine.chargerQuestionsNiveau = function(){
 
 
+    let niveau =
+    this.joueur.niveau;
 
-questionActuelle =
-disponibles[index];
 
 
+    this.questionsNiveau =
 
-historiqueQuestions.push(
-questionActuelle.id
-);
+    this.questions.filter(
 
+        q =>
 
+        q.niveau === niveau
 
-afficherQuestion();
+    );
 
 
-}
 
+    console.log(
 
+        "Questions niveau "+
+        niveau+
+        " : "+
+        this.questionsNiveau.length
 
-
-
-
-
-
-/* ===============================
- AFFICHAGE QUESTION
-=============================== */
-
-
-function afficherQuestion(){
-
-
-
-document.getElementById(
-"categorieQuiz"
-).innerHTML =
-
-questionActuelle.categorie || "Formation";
-
-
-
-
-document.getElementById(
-"questionText"
-).innerHTML =
-
-questionActuelle.question;
-
-
-
-let zone =
-document.getElementById(
-"answersContainer"
-);
-
-
-
-zone.innerHTML="";
-
-
-
-
-
-let choix =
-[...questionActuelle.choix];
-
-
-
-choix.sort(
-()=>Math.random()-0.5
-);
-
-
-
-
-
-choix.forEach((texte)=>{
-
-
-let bouton =
-document.createElement(
-"button"
-);
-
-
-
-bouton.textContent =
-texte;
-
-
-
-bouton.onclick=()=>{
-
-
-verifierReponse(
-texte,
-bouton
-);
+    );
 
 
 };
 
 
 
-zone.appendChild(
-bouton
-);
 
 
 
-});
 
+// ===============================
+// Choisir une nouvelle question
+// ===============================
 
 
-afficherRecompense();
+QuizEngine.nouvelleQuestion = function(){
 
 
 
-}
+    this.chargerQuestionsNiveau();
 
 
 
+    let disponibles =
 
 
+    this.questionsNiveau.filter(
 
 
+        q =>
 
+        !this.joueur.questionsUtilisees.includes(q.id)
 
-/* ===============================
- VERIFICATION
-=============================== */
 
+    );
 
-function verifierReponse(
-choix,
-bouton
-){
 
 
 
-let boutons =
-document.querySelectorAll(
-"#answersContainer button"
-);
 
+    // Si toutes les questions sont utilisées
 
+    if(disponibles.length===0){
 
-boutons.forEach(b=>{
 
-b.disabled=true;
+        this.joueur.questionsUtilisees=[];
 
-});
 
+        disponibles =
+        this.questionsNiveau;
 
 
+    }
 
 
-let bonneReponse =
 
-questionActuelle.choix[
-questionActuelle.bonne
-];
 
 
+    let index =
 
+    Math.floor(
 
+        Math.random() *
 
-if(choix===bonneReponse){
+        disponibles.length
 
+    );
 
 
-bouton.classList.add(
-"correct"
-);
 
 
 
-profil.questionsValidees++;
+    this.questionActuelle =
 
+    disponibles[index];
 
 
-attribuerRecompense();
 
 
 
+    this.joueur.questionsUtilisees.push(
 
-document.getElementById(
-"feedback"
-).innerHTML =
+        this.questionActuelle.id
 
-"✅ Bonne réponse ! Progression validée.";
+    );
 
 
 
 
-}
 
-else{
+    this.sauvegarderJoueur();
 
 
-bouton.classList.add(
-"wrong"
-);
 
 
 
-profil.vies--;
+    this.preparerReponses();
 
 
 
-erreurs.push(
-questionActuelle.id
-);
 
 
+    this.afficherQuestion();
 
-document.getElementById(
-"feedback"
-).innerHTML =
-
-"❌ Mauvaise réponse. Vous perdez une vie.";
-
-
-
-
-
-verifierVies();
-
-
-}
-
-
-
-
-sauvegarder();
-
-
-
-setTimeout(()=>{
-
-
-nouvelleQuestion();
-
-
-},1500);
-
-
-
-}
-
-
-
-
-
-
-
-
-/* ===============================
- SYSTEME RECOMPENSES
-=============================== */
-
-
-function attribuerRecompense(){
-
-
-
-let recompense =
-
-questionActuelle.recompense;
-
-
-
-if(!recompense){
-
-
-recompense={
-
-type:"CDF",
-
-montant:10000
-
-};
-
-
-}
-
-
-
-
-
-if(recompense.type==="CDF"){
-
-
-profil.cdf +=
-recompense.montant;
-
-
-}
-
-else{
-
-
-profil.usd +=
-recompense.montant;
-
-
-}
-
-
-
-
-}
-
-
-
-
-
-function afficherRecompense(){
-
-
-
-let zone =
-document.getElementById(
-"rewardDisplay"
-);
-
-
-
-if(!zone)
-return;
-
-
-
-
-let r =
-questionActuelle.recompense;
-
-
-
-if(r){
-
-
-if(r.type==="CDF")
-
-zone.innerHTML =
-r.montant+" FC";
-
-
-else
-
-zone.innerHTML =
-r.montant+" $";
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
- VIES
-=============================== */
-
-
-function verifierVies(){
-
-
-
-if(profil.vies<=0){
-
-
-
-alert(
-
-"⚠️ Toutes vos vies sont terminées.\nVotre parcours recommence au début du niveau."
-
-);
-
-
-
-profil.vies=5;
-
-profil.niveau=1;
-
-profil.cdf=0;
-
-profil.usd=0;
-
-profil.questionsValidees=0;
-
-
-
-historiqueQuestions=[];
-
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
- GRADE
-=============================== */
-
-
-function verifierPromotion(){
-
-
-
-if(
-profil.questionsValidees>=100
-&&
-profil.niveau===1
-){
-
-
-profil.niveau=2;
-
-profil.grade="Administratif";
-
-
-alert(
-"🎖️ Promotion obtenue : Administratif"
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
- AFFICHAGE PROFIL
-=============================== */
-
-
-function afficherProfil(){
-
-
-
-let vie =
-document.getElementById(
-"lifeDisplay"
-);
-
-
-
-if(vie)
-
-vie.innerHTML =
-"❤️".repeat(profil.vies);
-
-
-
-
-
-let fc =
-document.getElementById(
-"cdf"
-);
-
-
-
-if(fc)
-
-fc.innerHTML =
-profil.cdf+" FC";
-
-
-
-
-
-let usd =
-document.getElementById(
-"usd"
-);
-
-
-
-if(usd)
-
-usd.innerHTML =
-profil.usd+" $";
-
-
-
-
-
-let grade =
-document.getElementById(
-"grade"
-);
-
-
-
-if(grade)
-
-grade.innerHTML =
-profil.grade;
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ===============================
- SAUVEGARDE
-=============================== */
-
-
-function sauvegarder(){
-
-
-localStorage.setItem(
-
-"IGT_ACADEMIE",
-
-JSON.stringify(profil)
-
-);
-
-
-
-afficherProfil();
-
-
-}
-
-
-
-
-
-
-function chargerSauvegarde(){
-
-
-
-let data =
-localStorage.getItem(
-"IGT_ACADEMIE"
-);
-
-
-
-if(data){
-
-
-profil =
-JSON.parse(data);
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-/* ===============================
- MODE SOMBRE
-=============================== */
-
-
-let darkButton =
-document.getElementById(
-"darkModeBtn"
-);
-
-
-
-if(darkButton){
-
-
-darkButton.onclick=function(){
-
-
-document.body.classList.toggle(
-"dark-mode"
-);
-
-
-
-localStorage.setItem(
-
-"theme",
-
-document.body.classList.contains(
-"dark-mode"
-)
-
-);
 
 
 
 };
 
 
-}
 
 
 
 
 
 
-if(
-localStorage.getItem("theme")
-==="true"
 
-){
-
-
-document.body.classList.add(
-"dark-mode"
-);
+// ===============================
+// Mélange des réponses
+// ===============================
 
 
-}
+QuizEngine.preparerReponses = function(){
 
 
 
+    let question =
+
+    this.questionActuelle;
 
 
-/* ===============================
- DEMARRAGE
-=============================== */
 
 
-chargerQuestions();
+
+    this.reponsesMelangees =
+
+    question.choix.map(
+
+        (texte,index)=>{
+
+
+            return {
+
+
+                texte:texte,
+
+
+                index:index
+
+
+            };
+
+
+        }
+
+
+    );
+
+
+
+
+
+    this.reponsesMelangees.sort(
+
+        ()=>Math.random()-0.5
+
+    );
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
+// ===============================
+// Affichage écran
+// ===============================
+
+
+QuizEngine.afficherQuestion = function(){
+
+
+
+    let q =
+
+    this.questionActuelle;
+
+
+
+    let zoneQuestion =
+
+    document.getElementById(
+
+        "question-zone"
+
+    );
+
+
+
+    let zoneReponses =
+
+    document.getElementById(
+
+        "reponses-zone"
+
+    );
+
+
+
+
+
+    if(!zoneQuestion ||
+
+       !zoneReponses){
+
+
+        console.warn(
+
+        "Zones quiz absentes dans HTML"
+
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    zoneQuestion.innerHTML = `
+
+
+    <div class="quiz-card">
+
+
+        <h2>
+
+        Question ${
+
+        this.joueur.questionsRepondues + 1
+
+        }
+
+        </h2>
+
+
+        <p>
+
+        ${q.question}
+
+        </p>
+
+
+
+    </div>
+
+
+    `;
+
+
+
+
+
+
+
+    zoneReponses.innerHTML="";
+
+
+
+
+
+    this.reponsesMelangees.forEach(
+
+    (rep)=>{
+
+
+
+        let bouton =
+
+        document.createElement(
+
+            "button"
+
+        );
+
+
+
+        bouton.className=
+
+        "btn-reponse";
+
+
+
+        bouton.innerHTML=
+
+        rep.texte;
+
+
+
+
+
+        bouton.onclick=()=>{
+
+
+            this.verifierReponse(
+
+                rep.index
+
+            );
+
+
+        };
+
+
+
+
+
+        zoneReponses.appendChild(
+
+            bouton
+
+        );
+
+
+
+    }
+
+    );
+
+
+
+
+
+
+    this.actualiserInterface();
+
+
+
+};
+
+
+
+
+
+
+
+
+
+// ===============================
+// Interface joueur
+// ===============================
+
+
+QuizEngine.actualiserInterface=function(){
+
+
+
+    let vie =
+
+    document.getElementById(
+
+        "vies"
+
+    );
+
+
+
+    if(vie){
+
+
+        vie.innerHTML =
+
+        "❤️".repeat(
+
+        this.joueur.vies
+
+        );
+
+
+    }
+
+
+
+
+
+    let niveau =
+
+    document.getElementById(
+
+        "niveau"
+
+    );
+
+
+
+    if(niveau){
+
+
+        let info =
+
+        this.niveauActuel();
+
+
+
+        niveau.innerHTML =
+
+        info.nom+
+
+        " - "+
+
+        info.grade;
+
+
+    }
+
+
+
+
+
+
+    let argent =
+
+    document.getElementById(
+
+        "argent"
+
+    );
+
+
+
+    if(argent){
+
+
+
+        argent.innerHTML =
+
+        this.joueur.argentFC+
+
+        " FC | "+
+
+        this.joueur.argentUSD+
+
+        " $";
+
+
+    }
+
+
+
+};
+
+         
