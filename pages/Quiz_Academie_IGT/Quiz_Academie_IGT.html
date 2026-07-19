@@ -16,6 +16,20 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="top-left">
+      <button class="btn-icon" id="btn-toggle-sidebar" title="Menu principal">☰</button>
+      <div class="top-app-title">InspecteurBot RDC — Académie IGT</div>
+    </div>
+
+    <div class="top-right">
+      <button class="btn-icon" onclick="window.interfaceEngine.toggleNotificationModal()" title="Notifications">🔔</button>
+      <button class="btn-icon" id="btn-theme-toggle" title="Thème clair/sombre">🌙</button>
+      <button class="btn-icon" onclick="window.interfaceEngine.toggleProfileModal()" title="Mon profil">👤</button>
+    </div>
+  </header>
+
   <!-- App Shell -->
   <div class="app-shell">
 
@@ -24,39 +38,39 @@
       <div>
         <div class="brand-header">
           <div class="brand-logo">IGT</div>
-          <div>
-            <div class="brand-title">ACADÉMIE IGT</div>
-            <div class="brand-subtitle">RDC • Version 4.0</div>
+          <div class="brand-text-block">
+            <div class="brand-title">INSPECTEURBOT</div>
+            <div class="brand-subtitle">ACADÉMIE IGT</div>
           </div>
         </div>
 
         <div class="nav-group">
           <a class="nav-link active" data-target-view="view-dashboard">
-            <span class="nav-icon">📊</span> Tableau de bord
+            <span class="nav-icon">📊</span> <span class="nav-text">Tableau de bord</span>
           </a>
           <a class="nav-link" data-target-view="view-formation">
-            <span class="nav-icon">🎓</span> Académie
+            <span class="nav-icon">🎓</span> <span class="nav-text">Académie</span>
           </a>
           <a class="nav-link" data-target-view="view-revision">
-            <span class="nav-icon">📚</span> Révision
+            <span class="nav-icon">📚</span> <span class="nav-text">Révision</span>
           </a>
           <a class="nav-link" data-target-view="view-missions">
-            <span class="nav-icon">🕵️</span> Missions
+            <span class="nav-icon">🎯</span> <span class="nav-text">Missions</span>
           </a>
           <a class="nav-link" data-target-view="view-examens">
-            <span class="nav-icon">📝</span> Examens
+            <span class="nav-icon">📝</span> <span class="nav-text">Examens</span>
           </a>
           <a class="nav-link" data-target-view="view-badges">
-            <span class="nav-icon">🏅</span> Badges
+            <span class="nav-icon">🏆</span> <span class="nav-text">Badges</span>
           </a>
           <a class="nav-link" data-target-view="view-certificats">
-            <span class="nav-icon">📜</span> Certificats
+            <span class="nav-icon">📜</span> <span class="nav-text">Certificats</span>
           </a>
           <a class="nav-link" data-target-view="view-statistiques">
-            <span class="nav-icon">📈</span> Statistiques
+            <span class="nav-icon">📈</span> <span class="nav-text">Statistiques</span>
           </a>
           <a class="nav-link" data-target-view="view-settings">
-            <span class="nav-icon">⚙️</span> Paramètres
+            <span class="nav-icon">⚙️</span> <span class="nav-text">Paramètres</span>
           </a>
         </div>
       </div>
@@ -69,44 +83,39 @@
     <!-- Main Wrapper -->
     <main class="main-wrapper">
 
-      <!-- Header User Status Banner -->
-      <header class="header-banner">
-        <div class="user-greeting">
-          <h1>Bienvenue, Agent IGT 👋</h1>
-          <p id="user-grade-subtitle">Niveau 1 — Grade : Débutant</p>
-        </div>
-
-        <div class="user-stats-bar">
-          <div class="stat-chip vies" id="chip-vies">5/5 ❤️</div>
-          <div class="stat-chip xp" id="chip-xp">0 XP</div>
-          <div class="stat-chip solde" id="chip-solde">0 CDF</div>
-        </div>
-      </header>
-
       <!-- View 1: Dashboard -->
       <section id="view-dashboard" class="view-panel">
-        <div class="glass-card" style="margin-bottom:2rem; background:linear-gradient(135deg, rgba(13,22,45,0.9), rgba(28,45,92,0.8));">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
+        
+        <div class="greeting-hero">
+          <h1 class="greeting-title" id="user-greeting-heading">Bonjour, Inspecteur 👋</h1>
+          <p class="greeting-subtitle">Prêt à poursuivre votre parcours d'expertise professionnelle ?</p>
+          <div style="margin-top:1rem;">
+            <span class="badge-level-pill" id="user-grade-pill">Niveau 01 — Grade : Débutant</span>
+          </div>
+        </div>
+
+        <div class="main-progress-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
             <div>
-              <span class="quiz-meta-tag" style="background:rgba(251,191,36,0.2); color:var(--accent-gold); border-color:var(--accent-gold);">RÉCOMPENSES VIRTUELLES PÉDAGOGIQUES</span>
-              <h2 style="font-size:1.6rem; font-weight:900; margin-top:0.5rem;" id="dash-val-grade">Niveau 1 — Débutant</h2>
-              <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;">Complétez les 1 500 questions de formation et réussissez les examens pour débloquer les 7 grades officiels de l'Inspection Générale du Travail.</p>
+              <span class="badge-level-pill">◉ VOTRE PARCOURS</span>
+              <h2 style="font-size:1.4rem; font-weight:900; margin-top:0.5rem;">PROGRESSION GLOBALE</h2>
             </div>
-            <div>
-              <button class="btn-gold" onclick="window.interfaceEngine.switchView('view-formation')">
-                🚀 Continuer la Formation
-              </button>
+            <div style="font-size:2rem; font-weight:900; color:var(--accent-gold);" id="dash-main-bar-pct">
+              0 %
             </div>
           </div>
 
-          <div style="margin-top:1.5rem;">
-            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--text-muted);">
-              <span>Progression de Maîtrise</span>
-              <span id="dash-bar-text">0 / 100 questions (0%)</span>
+          <div class="progress-container" style="height:12px;">
+            <div class="progress-fill" id="dash-main-bar-fill" style="width:0%;"></div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; flex-wrap:wrap; gap:1rem;">
+            <div style="font-size:0.9rem; color:var(--text-muted); font-weight:700;">
+              <span id="dash-main-mastered-count" style="color:#fff;">0 compétences maîtrisées</span> • <span id="dash-main-success-rate" style="color:var(--accent-green);">0 % de réussite</span>
             </div>
-            <div class="progress-container">
-              <div class="progress-fill" id="dash-bar-fill" style="width:0%;"></div>
-            </div>
+            <button class="btn-gold" onclick="window.interfaceEngine.switchView('view-formation')">
+              CONTINUER LA FORMATION →
+            </button>
           </div>
         </div>
 
@@ -114,12 +123,13 @@
         <div id="level-cards-container" class="dashboard-grid">
           <!-- Dynamic level cards populated by interface.js -->
         </div>
+
       </section>
 
       <!-- View 2: Formation Quiz -->
       <section id="view-formation" class="view-panel" style="display:none;">
         <div id="quiz-question-container">
-          <!-- Live quiz shell loaded by quizEngine -->
+          <!-- Live quiz engine -->
         </div>
       </section>
 
@@ -158,14 +168,14 @@
       <!-- View 6: Badges -->
       <section id="view-badges" class="view-panel" style="display:none;">
         <div id="badges-container">
-          <!-- Populated dynamically by interface.js -->
+          <!-- Populated dynamically -->
         </div>
       </section>
 
       <!-- View 7: Certificats -->
       <section id="view-certificats" class="view-panel" style="display:none;">
         <div id="certificates-container">
-          <!-- Populated dynamically by interface.js -->
+          <!-- Populated dynamically -->
         </div>
       </section>
 
@@ -204,7 +214,7 @@
       <!-- Official Footer -->
       <footer class="official-footer">
         <div>InspecteurBot RDC — Académie IGT © 2026</div>
-        <div>Développé par Inspecteur Limengo (Pmiller) © 2026</div>
+        <div>Développé par Pmiller © 2026</div>
       </footer>
 
     </main>
@@ -219,13 +229,13 @@
       <i>🎓</i> Formation
     </a>
     <a class="mobile-nav-link" data-target-view="view-revision">
-      <i>📚</i> Révision
+      <i>🧠</i> Révision
     </a>
     <a class="mobile-nav-link" data-target-view="view-badges">
       <i>🏆</i> Profil
     </a>
     <a class="mobile-nav-link" data-target-view="view-settings">
-      <i>⚙️</i> Option
+      <i>⚙️</i> Paramètres
     </a>
   </nav>
 
