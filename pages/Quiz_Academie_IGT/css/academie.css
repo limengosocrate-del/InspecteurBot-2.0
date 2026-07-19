@@ -6015,8 +6015,8 @@ linear-gradient(
 }
 
 /* ==========================================================================
-27. QUIZ ENGINE — INTERFACE LAGOON PREMIUM
-Palette : Lagoon • Teal • Bleu Canard • Émeraude • Bleu Marine Profond
+27. QUIZ ENGINE — LAGOON BLUE OCEAN PREMIUM
+Palette : Lagoon • Teal • Bleu Océan • Bleu Canard • Émeraude • Bleu Marine
 Style : Grunge textile • Aquatique • Premium • Professionnel
 ========================================================================== */
 
@@ -6040,18 +6040,21 @@ border-radius: 22px;
 
 background:
 linear-gradient(
-145deg,
-#123f4a 0%,
-#0d303d 42%,
-#082536 72%,
-#061a2b 100%
+135deg,
+#062b45 0%,
+#083b52 18%,
+#0d4f5c 38%,
+#0d303d 58%,
+#082536 78%,
+#041a30 100%
 );
 
 border: 1px solid rgba(79, 209, 197, 0.32);
 
 box-shadow:
-0 24px 65px rgba(2, 20, 35, 0.55),
+0 24px 65px rgba(2, 20, 35, 0.6),
 0 0 40px rgba(45, 212, 191, 0.08),
+0 0 70px rgba(14, 116, 144, 0.1),
 inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
@@ -6064,7 +6067,7 @@ inset: 0;
 
 pointer-events: none;
 
-opacity: 0.08;
+opacity: 0.09;
 
 background-image:
 radial-gradient(
@@ -6093,10 +6096,11 @@ background:
 linear-gradient(
 90deg,
 transparent,
+#38bdf8,
 #2dd4bf,
 #4fd1c5,
-#38bdf8,
 #10b981,
+#38bdf8,
 transparent
 );
 
@@ -6141,13 +6145,14 @@ border-radius: 8px;
 background:
 linear-gradient(
 135deg,
+rgba(56, 189, 248, 0.16),
 rgba(45, 212, 191, 0.13),
-rgba(14, 116, 144, 0.18)
+rgba(14, 116, 144, 0.2)
 );
 
 border: 1px solid rgba(79, 209, 197, 0.42);
 
-color: #8ff3e7;
+color: #9ff8ed;
 
 font-size: 0.75rem;
 
@@ -6250,19 +6255,22 @@ cursor: pointer;
 background:
 linear-gradient(
 135deg,
-rgba(25, 83, 94, 0.88),
-rgba(10, 46, 61, 0.92)
+rgba(8, 65, 91, 0.95),
+rgba(12, 91, 104, 0.9),
+rgba(10, 57, 75, 0.95),
+rgba(7, 38, 59, 0.98)
 );
 
-border: 1px solid rgba(94, 234, 212, 0.22);
+border: 1px solid rgba(94, 234, 212, 0.25);
 
 border-radius: 13px;
 
 color: #e7fffb;
 
 box-shadow:
-inset 0 1px 0 rgba(255, 255, 255, 0.04),
-0 8px 22px rgba(2, 20, 35, 0.22);
+inset 0 1px 0 rgba(255, 255, 255, 0.05),
+0 8px 22px rgba(2, 20, 35, 0.28),
+0 0 15px rgba(14, 116, 144, 0.06);
 
 transition:
 transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -6288,6 +6296,7 @@ linear-gradient(
 100deg,
 transparent,
 rgba(165, 243, 235, 0.13),
+rgba(56, 189, 248, 0.1),
 transparent
 );
 
@@ -6312,15 +6321,17 @@ transform: translateX(6px);
 background:
 linear-gradient(
 135deg,
-rgba(26, 120, 132, 0.92),
-rgba(13, 72, 91, 0.96)
+rgba(14, 116, 144, 0.95),
+rgba(13, 148, 136, 0.88),
+rgba(8, 65, 91, 0.98)
 );
 
-border-color: rgba(94, 234, 212, 0.7);
+border-color: rgba(94, 234, 212, 0.72);
 
 box-shadow:
-0 10px 28px rgba(2, 20, 35, 0.35),
-0 0 22px rgba(45, 212, 191, 0.16);
+0 10px 28px rgba(2, 20, 35, 0.4),
+0 0 22px rgba(45, 212, 191, 0.18),
+0 0 35px rgba(56, 189, 248, 0.1);
 }
 
 /* APPUI */
@@ -6338,15 +6349,17 @@ transform: translateX(8px);
 background:
 linear-gradient(
 135deg,
-rgba(20, 184, 166, 0.34),
-rgba(14, 116, 144, 0.38)
+rgba(14, 116, 144, 0.95),
+rgba(20, 184, 166, 0.42),
+rgba(8, 47, 73, 0.98)
 );
 
 border-color: #5eead4;
 
 box-shadow:
 0 0 0 2px rgba(94, 234, 212, 0.12),
-0 0 28px rgba(45, 212, 191, 0.24);
+0 0 28px rgba(45, 212, 191, 0.24),
+0 0 40px rgba(56, 189, 248, 0.12);
 }
 
 /* =========================================================
@@ -6369,13 +6382,14 @@ border-radius: 9px;
 background:
 linear-gradient(
 145deg,
+rgba(56, 189, 248, 0.25),
 rgba(45, 212, 191, 0.22),
-rgba(8, 47, 73, 0.75)
+rgba(8, 47, 73, 0.82)
 );
 
-border: 1px solid rgba(94, 234, 212, 0.38);
+border: 1px solid rgba(94, 234, 212, 0.42);
 
-color: #99f6e4;
+color: #a5f3fc;
 
 font-size: 0.95rem;
 
@@ -6392,10 +6406,11 @@ background:
 linear-gradient(
 135deg,
 #5eead4,
+#38bdf8,
 #2dd4bf
 );
 
-color: #06323c;
+color: #032b35;
 
 transform: rotate(5deg) scale(1.08);
 }
@@ -6447,14 +6462,16 @@ RÉPONSE CORRECTE
 background:
 linear-gradient(
 135deg,
-rgba(16, 185, 129, 0.34),
-rgba(6, 78, 59, 0.58)
+rgba(16, 185, 129, 0.36),
+rgba(14, 116, 144, 0.52),
+rgba(6, 78, 59, 0.6)
 );
 
 border-color: #34d399;
 
 box-shadow:
-0 0 28px rgba(16, 185, 129, 0.24);
+0 0 28px rgba(16, 185, 129, 0.24),
+0 0 35px rgba(14, 116, 144, 0.12);
 }
 
 /* =========================================================
@@ -6466,7 +6483,8 @@ background:
 linear-gradient(
 135deg,
 rgba(239, 68, 68, 0.3),
-rgba(127, 29, 29, 0.55)
+rgba(127, 29, 29, 0.55),
+rgba(8, 47, 73, 0.75)
 );
 
 border-color: #f87171;
@@ -6496,8 +6514,9 @@ border-radius: 14px;
 background:
 linear-gradient(
 135deg,
-rgba(15, 73, 82, 0.82),
-rgba(7, 43, 57, 0.9)
+rgba(8, 65, 91, 0.92),
+rgba(13, 72, 91, 0.9),
+rgba(7, 43, 57, 0.96)
 );
 
 border: 1px solid rgba(94, 234, 212, 0.25);
@@ -6507,7 +6526,8 @@ color: #d9fffa;
 line-height: 1.6;
 
 box-shadow:
-inset 0 1px 0 rgba(255, 255, 255, 0.04);
+inset 0 1px 0 rgba(255, 255, 255, 0.04),
+0 0 25px rgba(14, 116, 144, 0.08);
 }
 
 .explanation-box.show {
@@ -6552,10 +6572,11 @@ linear-gradient(
 110deg,
 #2dd4bf,
 #0891b2,
+#075985,
 #0e7490
 );
 
-background-size: 200% 100%;
+background-size: 300% 100%;
 
 color: #032b35;
 
@@ -6578,7 +6599,8 @@ transform: translateY(-3px);
 
 box-shadow:
 0 10px 30px rgba(45, 212, 191, 0.28),
-0 0 25px rgba(14, 116, 144, 0.25);
+0 0 25px rgba(14, 116, 144, 0.25),
+0 0 35px rgba(56, 189, 248, 0.12);
 }
 
 #btn-submit-answer:active {
