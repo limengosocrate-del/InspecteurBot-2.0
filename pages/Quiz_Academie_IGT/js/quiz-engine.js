@@ -1,6 +1,6 @@
 /* ==========================================================================
    INSPECTEURBOT RDC - ACADÉMIE IGT
-   Module Quiz Engine: Core Question & Validation Engine (Fixed & Optimized)
+   Module Quiz Engine: Instant Auto-Validation & Fluid Transition Engine
    ========================================================================== */
 
 class QuizEngine {
@@ -8,20 +8,26 @@ class QuizEngine {
     this.currentQuestion = null;
     this.shuffledChoix = [];
     this.timerInterval = null;
+    this.autoAdvanceTimeout = null;
     this.timeLeft = 30;
     this.selectedOptionIds = [];
     this.isAnswered = false;
+    this.autoAdvanceDelay = 2500; // 2.5 seconds auto-advance delay
   }
 
   loadQuestion(question, containerEl, onFinishCallback) {
     if (!question || !containerEl) return;
+
+    // Clear previous timeouts
+    clearTimeout(this.autoAdvanceTimeout);
+    clearInterval(this.timerInterval);
 
     this.currentQuestion = question;
     this.onFinishCallback = onFinishCallback;
     this.selectedOptionIds = [];
     this.isAnswered = false;
 
-    // Shuffle options to ensure position independence!
+    // 9. Shuffle options dynamically for position-independent learning
     this.shuffledChoix = [...question.choix].sort(() => Math.random() - 0.5);
 
     this.renderQuestionUI(containerEl);
@@ -40,7 +46,7 @@ class QuizEngine {
       if (this.timeLeft <= 0) {
         clearInterval(this.timerInterval);
         if (!this.isAnswered) {
-          this.submitAnswer([], true); // Time out
+          this.autoSubmitOnTimeout();
         }
       }
     }, 1000);
@@ -48,14 +54,14 @@ class QuizEngine {
 
   renderQuestionUI(containerEl) {
     const q = this.currentQuestion;
-    const isMultiple = q.type === 'MULTIPLE' || (q.bonne && q.bonne.length > 1);
 
+    // 11. Scale / Fade Slide-up visual container transition
     containerEl.innerHTML = `
-      <div class="quiz-shell">
+      <div class="quiz-shell" style="animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);">
         <div class="quiz-header">
           <div>
             <span class="quiz-meta-tag">${q.type || 'QCM'} • ${q.difficulte || 'Normal'}</span>
-            <span class="quiz-meta-tag" style="margin-left:8px; border-color:var(--accent-gold); color:var(--accent-gold);">${q.categorie || 'General'}</span>
+            <span class="quiz-meta-tag" style="margin-left:8px; border-color:var(--accent-gold); color:var(--accent-gold);">${q.categorie || 'Code du Travail'}</span>
           </div>
           <div class="quiz-timer">
             ⏱️ <span id="quiz-timer-val">${q.temps || 30}s</span>
@@ -68,7 +74,7 @@ class QuizEngine {
 
         <div class="options-grid" id="options-grid-list">
           ${this.shuffledChoix.map((choix, idx) => `
-            <div class="option-card" data-choice-id="${choix.id}" tabindex="0" role="button" aria-pressed="false">
+            <div class="option-card" data-choice-id="${choix.id}" tabindex="0" role="button">
               <div class="option-key">${String.fromCharCode(65 + idx)}</div>
               <div class="option-text">${choix.texte}</div>
               <div class="option-check-indicator">⚪</div>
@@ -84,34 +90,34 @@ class QuizEngine {
           </div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; flex-wrap:wrap; gap:1rem;">
-          <button type="button" class="btn-glass" id="btn-audio-speak">🔊 Écouter</button>
-          <button type="button" class="btn-gold" id="btn-submit-answer">
-            Valider la réponse ➔
+        <div id="auto-advance-bar" style="display:none; margin-top:1.25rem; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); padding:0.75rem 1rem; border-radius:var(--radius-md); border:1px solid var(--border-glass);">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-weight:700;">
+            ⏳ Question suivante dans <span id="countdown-seconds" style="color:var(--accent-gold); font-weight:900;">2</span>s...
+          </div>
+          <button type="button" class="btn-gold" style="padding:0.5rem 1rem; font-size:0.85rem;" onclick="window.quizEngine.skipAutoAdvance()">
+            Passer Directement ➔
           </button>
+        </div>
+
+        <div style="display:flex; justify-content:flex-start; margin-top:1rem;">
+          <button type="button" class="btn-glass" id="btn-audio-speak" style="font-size:0.82rem; padding:0.4rem 0.85rem;">🔊 Écouter la question</button>
         </div>
       </div>
     `;
   }
 
+  // 1. Instant Event Delegation on Card Touch/Click
   setupCardEventListeners(containerEl) {
     const gridList = containerEl.querySelector('#options-grid-list');
-    const isMultiple = this.currentQuestion.type === 'MULTIPLE' || (this.currentQuestion.bonne && this.currentQuestion.bonne.length > 1);
 
     if (gridList) {
       gridList.addEventListener('click', (e) => {
+        if (this.isAnswered) return;
         const card = e.target.closest('.option-card');
         if (card) {
           const choiceId = card.getAttribute('data-choice-id');
-          this.toggleOption(choiceId, isMultiple);
+          this.processInstantChoiceSelection(choiceId);
         }
-      });
-    }
-
-    const btnSubmit = containerEl.querySelector('#btn-submit-answer');
-    if (btnSubmit) {
-      btnSubmit.addEventListener('click', () => {
-        this.validateSelection();
       });
     }
 
@@ -123,86 +129,45 @@ class QuizEngine {
     }
   }
 
-  toggleOption(choiceId, isMultiple) {
+  // 1 & 4. Instant Selection & Double Selection Prevention
+  processInstantChoiceSelection(choiceId) {
     if (this.isAnswered || !choiceId) return;
 
-    if (isMultiple) {
-      if (this.selectedOptionIds.includes(choiceId)) {
-        this.selectedOptionIds = this.selectedOptionIds.filter(id => id !== choiceId);
-      } else {
-        this.selectedOptionIds.push(choiceId);
-      }
-    } else {
-      this.selectedOptionIds = [choiceId];
-    }
-
-    // Update Visual States on all Option Cards
-    document.querySelectorAll('.option-card').forEach(card => {
-      const cid = card.getAttribute('data-choice-id');
-      const indicator = card.querySelector('.option-check-indicator');
-
-      if (this.selectedOptionIds.includes(cid)) {
-        card.classList.add('selected');
-        card.setAttribute('aria-pressed', 'true');
-        if (indicator) indicator.textContent = '🟢';
-      } else {
-        card.classList.remove('selected');
-        card.setAttribute('aria-pressed', 'false');
-        if (indicator) indicator.textContent = '⚪';
-      }
-    });
-  }
-
-  validateSelection() {
-    if (this.isAnswered) {
-      if (typeof this.onFinishCallback === 'function') {
-        this.onFinishCallback();
-      }
-      return;
-    }
-
-    if (this.selectedOptionIds.length === 0) {
-      if (window.interfaceEngine) {
-        window.interfaceEngine.showToast("Veuillez sélectionner au moins une option avant de valider.", "info");
-      }
-      return;
-    }
-
-    this.submitAnswer(this.selectedOptionIds, false);
-  }
-
-  submitAnswer(selectedIds, isTimeout = false) {
-    clearInterval(this.timerInterval);
     this.isAnswered = true;
+    clearInterval(this.timerInterval);
 
+    // 4. Lock options container immediately to prevent double clicks
+    const gridList = document.getElementById('options-grid-list');
+    if (gridList) {
+      gridList.style.pointerEvents = 'none';
+    }
+
+    this.selectedOptionIds = [choiceId];
     const q = this.currentQuestion;
     const correctIds = q.bonne || [];
+    const isCorrect = correctIds.includes(choiceId);
 
-    const isCorrect = !isTimeout &&
-      selectedIds.length === correctIds.length &&
-      selectedIds.every(id => correctIds.includes(id));
-
-    // Update UI Cards Visuals for Answer Correction
+    // 2. Instant Visual Feedback Rendering
     document.querySelectorAll('.option-card').forEach(card => {
       const cid = card.getAttribute('data-choice-id');
       const indicator = card.querySelector('.option-check-indicator');
 
-      if (correctIds.includes(cid)) {
+      if (cid === choiceId) {
+        if (isCorrect) {
+          card.classList.add('correct');
+          if (indicator) indicator.textContent = '✅';
+        } else {
+          card.classList.add('incorrect');
+          if (indicator) indicator.textContent = '❌';
+        }
+      } else if (correctIds.includes(cid)) {
+        // Highlight the true correct answer if user chose incorrectly
         card.classList.add('correct');
         if (indicator) indicator.textContent = '✅';
-      } else if (selectedIds.includes(cid)) {
-        card.classList.add('incorrect');
-        if (indicator) indicator.textContent = '❌';
       }
     });
 
-    // Update User Profile Data
-    const profile = window.persistenceEngine.getProfile();
-    const result = window.rewardEngine.awardAnswer(profile, q, isCorrect);
-    window.revisionEngine.updateMastery(profile, q.id, isCorrect, q.niveau);
-    window.persistenceEngine.saveProfile(profile);
-
-    // Show Explanation
+    // 3. Show Explanation Box
     const explBox = document.getElementById('explanation-box');
     const explTitle = document.getElementById('expl-verdict-title');
     const explText = document.getElementById('expl-text-content');
@@ -210,21 +175,57 @@ class QuizEngine {
     if (explBox && explTitle && explText) {
       explBox.classList.add('show');
       if (isCorrect) {
-        explTitle.innerHTML = `<span style="color:var(--accent-green)">✅ RÉPONSE CORRECTE !</span> (+${result.xpGained} XP)`;
+        explTitle.innerHTML = `<span style="color:var(--accent-green); font-size:1.05rem;">✅ BONNE RÉPONSE !</span> (+${q.recompense ? q.recompense.montant : 5000} CDF)`;
       } else {
-        explTitle.innerHTML = `<span style="color:var(--accent-red)">❌ RÉPONSE INCORRECTE</span> (-${q.perte_vie || 1} Vie)`;
+        explTitle.innerHTML = `<span style="color:var(--accent-red); font-size:1.05rem;">❌ MAUVAISE RÉPONSE</span> (-${q.perte_vie || 1} Vie)`;
       }
-      explText.innerHTML = q.explication || "Explication réglementaire d'ordre public.";
+      explText.innerHTML = q.explication || "Explication d'ordre public conforme au Code du Travail de la RDC.";
     }
 
-    const btnSubmit = document.getElementById('btn-submit-answer');
-    if (btnSubmit) {
-      btnSubmit.textContent = "Question Suivante ➔";
-    }
+    // 5. Update State & Auto-Persistence
+    const profile = window.persistenceEngine.getProfile();
+    window.rewardEngine.awardAnswer(profile, q, isCorrect);
+    window.revisionEngine.updateMastery(profile, q.id, isCorrect, q.niveau);
+    window.persistenceEngine.saveProfile(profile);
 
     if (window.interfaceEngine) {
       window.interfaceEngine.updateDashboardUI();
     }
+
+    // 6. Start Auto-Advance Timer & Countdown
+    this.triggerAutoAdvanceCountdown();
+  }
+
+  triggerAutoAdvanceCountdown() {
+    const bar = document.getElementById('auto-advance-bar');
+    const countEl = document.getElementById('countdown-seconds');
+    if (bar) bar.style.display = 'flex';
+
+    let secondsLeft = 2;
+    if (countEl) countEl.textContent = secondsLeft;
+
+    const interval = setInterval(() => {
+      secondsLeft--;
+      if (countEl) countEl.textContent = secondsLeft;
+      if (secondsLeft <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    this.autoAdvanceTimeout = setTimeout(() => {
+      this.skipAutoAdvance();
+    }, this.autoAdvanceDelay);
+  }
+
+  skipAutoAdvance() {
+    clearTimeout(this.autoAdvanceTimeout);
+    if (typeof this.onFinishCallback === 'function') {
+      this.onFinishCallback();
+    }
+  }
+
+  autoSubmitOnTimeout() {
+    this.processInstantChoiceSelection(null); // Trigger timeout failure
   }
 
   speakQuestion() {

@@ -38,8 +38,8 @@ class CertificationEngine {
           <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23d97706'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" alt="IGT Logo" style="height:50px;">
         </div>
         <div class="cert-header">République Démocratique du Congo</div>
-        <div style="font-size:0.85rem; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.1em;">Ministère de l'Emploi, Travail et Prévoyance Sociale</div>
-        <div style="font-size:1.1rem; font-weight:800; color:#1e293b; margin-top:0.25rem;">INSPECTION GÉNÉRALE DU TRAVAIL (IGT)</div>
+        <div style="font-size:0.95rem; font-weight:800; color:#1e293b; text-transform:uppercase; letter-spacing:0.1em; margin-top:0.25rem;">Ministère de l'Emploi, Travail .</div>
+        <div style="font-size:1.15rem; font-weight:900; color:#0f172a; margin-top:0.35rem;">INSPECTION GÉNÉRALE DU TRAVAIL (IGT)</div>
 
         <div class="cert-subtitle" style="margin-top:1.5rem;">CERTIFICAT D'APTITUDE PROFESSIONNELLE</div>
         <p style="margin-top:1rem; color:#475569; font-size:0.95rem;">Le présent certificat officiel est décerné à :</p>
@@ -50,23 +50,23 @@ class CertificationEngine {
           Pour avoir démontré une maîtrise conforme aux exigences légales et réglementaires de la République Démocratique du Congo et validé l'examen de passage officiel du <strong>Niveau ${levelNum} — Grade : ${gradeTitle}</strong> avec un score de <strong>${scorePct}%</strong>.
         </p>
 
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:3rem; padding-top:1.5rem; border-top:1px solid #cbd5e1;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:3.5rem; padding-top:1.5rem; border-top:1px solid #cbd5e1;">
           <div style="text-align:left;">
             <div style="font-size:0.75rem; color:#64748b;">Code de vérification unique :</div>
             <div style="font-weight:800; font-family:monospace; color:#0f172a;">${certId}</div>
             <div style="font-size:0.75rem; color:#64748b; margin-top:0.2rem;">Délivré à Kinshasa le : ${issueDate}</div>
           </div>
 
-          <div style="text-align:center;">
-            <div style="font-family:'Brush Script MT', cursive, sans-serif; font-size:1.5rem; color:#d97706;">Pmiller</div>
-            <div style="font-size:0.75rem; font-weight:800; color:#0f172a; border-top:1px solid #94a3b8; padding-top:0.25rem; margin-top:0.25rem;">
+          <div style="text-align:center; min-width:200px;">
+            <div style="height:45px;"></div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0f172a; border-top:1px solid #94a3b8; padding-top:0.3rem;">
               Inspecteur Général du Travail
             </div>
           </div>
         </div>
 
         <div class="official-footer" style="margin-top:1.5rem; border-top:none; color:#94a3b8; font-size:0.75rem;">
-          InspecteurBot RDC — Académie IGT © 2026 | Développé par Pmiller © 2026
+          InspecteurBot RDC — Académie IGT © 2026 | Développé Par Inspecteur limengo (Pmiller) 2026©
         </div>
       </div>
     `;

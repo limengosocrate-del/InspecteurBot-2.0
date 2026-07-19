@@ -37,15 +37,12 @@ class ExpertToolsEngine {
   }
 
   calculateDecompteFinal(salaireMensuel, ancienneteAnnees, joursCongeNonPris, isAbusif = false) {
-    // 1. Indemnité de préavis (Art 64 CT: 14 jours + 7j par année)
     const joursPreavis = 14 + (7 * ancienneteAnnees);
     const tauxJournalier = salaireMensuel / 26;
     const montantPreavis = Math.round(joursPreavis * tauxJournalier);
 
-    // 2. Indemnité de Congé payé prorata (Art 140 CT: 1.5j par mois)
     const montantConge = Math.round(joursCongeNonPris * tauxJournalier);
 
-    // 3. Dommages-intérêts pour licenciement abusif (Art 63 CT: max 36 mois)
     let montantAbusif = 0;
     if (isAbusif) {
       const moisDommages = Math.min(36, Math.max(3, ancienneteAnnees * 2));
@@ -71,7 +68,7 @@ class ExpertToolsEngine {
       <div class="certificate-frame" style="background:#fff; color:#0f172a; text-align:left; font-family:serif; border:3px double #1e293b;">
         <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:1rem; margin-bottom:1.5rem;">
           <h2 style="font-size:1.1rem; text-transform:uppercase; font-weight:900;">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</h2>
-          <h3 style="font-size:0.95rem; color:#475569;">MINISTÈRE DE L'EMPLOI, TRAVAIL ET PRÉVOYANCE SOCIALE</h3>
+          <h3 style="font-size:0.95rem; color:#475569; font-weight:800; text-transform:uppercase;">MINISTÈRE DE L'EMPLOI, TRAVAIL .</h3>
           <h3 style="font-size:1.2rem; font-weight:900; color:#0f172a; margin-top:0.25rem;">INSPECTION GÉNÉRALE DU TRAVAIL</h3>
           <div style="font-size:0.8rem; font-weight:800; color:#d97706; margin-top:0.25rem;">RÉFÉRENCE : ${pvRef}</div>
         </div>
@@ -99,14 +96,13 @@ class ExpertToolsEngine {
           <strong>DECISION ADMINISTRATIVE :</strong> L'employeur est enjoint de se conformer immédiatement aux dispositions légales édictées ci-dessus sous peine des poursuites pénales prévues aux articles 321 à 324 du Code du Travail.
         </p>
 
-        <div style="display:flex; justify-content:space-between; margin-top:3rem; padding-top:1rem; border-top:1px dashed #94a3b8;">
+        <div style="display:flex; justify-content:space-between; margin-top:3.5rem; padding-top:1rem; border-top:1px dashed #94a3b8;">
           <div>
             <strong>L'Employeur ou son Préposé :</strong><br><br><br>
             ______________________
           </div>
           <div style="text-align:right;">
-            <strong>L'Inspecteur du Travail Instrumentant :</strong><br><br>
-            <span style="font-family:'Brush Script MT', cursive; font-size:1.3rem; color:#b45309;">Pmiller</span><br>
+            <strong>L'Inspecteur du Travail Instrumentant :</strong><br><br><br>
             ______________________
           </div>
         </div>
