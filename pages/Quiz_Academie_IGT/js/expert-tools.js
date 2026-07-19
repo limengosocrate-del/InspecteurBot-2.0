@@ -106,7 +106,7 @@ class ExpertToolsEngine {
           </div>
           <div style="text-align:right;">
             <strong>L'Inspecteur du Travail Instrumentant :</strong><br><br>
-            <span style="font-family:'Brush Script MT', cursive; font-size:1.3rem; color:#b45309;">Limengo (Pmiller)</span><br>
+            <span style="font-family:'Brush Script MT', cursive; font-size:1.3rem; color:#b45309;">Pmiller</span><br>
             ______________________
           </div>
         </div>

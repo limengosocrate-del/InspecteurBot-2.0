@@ -1,6 +1,6 @@
 /* ==========================================================================
    INSPECTEURBOT RDC - ACADÉMIE IGT
-   Module Interface: UI Coordinator, Views Router, Toast & Audio
+   Module Interface: UI Coordinator, Splash Screen, Animations & TopBar Modals
    ========================================================================== */
 
 class InterfaceManager {
@@ -11,6 +11,9 @@ class InterfaceManager {
   }
 
   async init() {
+    // 26.2 Splash Screen Initialization
+    this.runSplashScreen();
+
     try {
       const resp = await fetch('data/question_bank.json');
       this.questionBank = await resp.json();
@@ -22,10 +25,23 @@ class InterfaceManager {
     this.setupEventListeners();
     this.applyTheme(window.persistenceEngine.getProfile().settings.theme || 'dark');
     this.updateDashboardUI();
-    this.switchView('view-dashboard');
+  }
+
+  runSplashScreen() {
+    const splash = document.getElementById('splash-screen');
+    if (!splash) return;
+
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+      setTimeout(() => {
+        splash.style.display = 'none';
+        this.animateDashboardOpening();
+      }, 500);
+    }, 1200);
   }
 
   setupEventListeners() {
+    // Navigation routing
     document.querySelectorAll('[data-target-view]').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -33,6 +49,28 @@ class InterfaceManager {
         this.switchView(targetView);
       });
     });
+
+    // Top bar menu toggle
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+    if (btnToggleSidebar) {
+      btnToggleSidebar.addEventListener('click', () => {
+        document.body.classList.toggle('collapsed-sidebar');
+      });
+    }
+
+    // Theme toggle button
+    const btnThemeToggle = document.getElementById('btn-theme-toggle');
+    if (btnThemeToggle) {
+      btnThemeToggle.addEventListener('click', () => {
+        const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.applyTheme(nextTheme);
+        
+        const profile = window.persistenceEngine.getProfile();
+        profile.settings.theme = nextTheme;
+        window.persistenceEngine.saveProfile(profile);
+      });
+    }
   }
 
   switchView(viewId) {
@@ -68,6 +106,41 @@ class InterfaceManager {
       this.renderStatistiquesDetail();
     } else if (viewId === 'view-dashboard') {
       this.updateDashboardUI();
+      this.animateDashboardOpening();
+    }
+  }
+
+  animateDashboardOpening() {
+    // Animate Progress Bar & Count-up numbers (0% -> target%)
+    const profile = window.persistenceEngine.getProfile();
+    const currentLvlInfo = window.niveauEngine.getLevelInfo(profile.niveauActuel);
+    const questionsMap = profile.questions || {};
+    const records = Object.values(questionsMap);
+    
+    const levelQuestions = records.filter(q => q.niveau === profile.niveauActuel);
+    const levelMastered = levelQuestions.filter(q => q.maitrise >= 70).length;
+    const targetPct = currentLvlInfo.formationReq > 0 ? Math.min(100, Math.round((levelMastered / currentLvlInfo.formationReq) * 100)) : 0;
+
+    const fillBar = document.getElementById('dash-main-bar-fill');
+    if (fillBar) {
+      fillBar.style.width = '0%';
+      setTimeout(() => {
+        fillBar.style.width = `${targetPct}%`;
+      }, 100);
+    }
+
+    const pctText = document.getElementById('dash-main-bar-pct');
+    if (pctText) {
+      let count = 0;
+      const step = Math.max(1, Math.floor(targetPct / 20));
+      const interval = setInterval(() => {
+        count += step;
+        if (count >= targetPct) {
+          count = targetPct;
+          clearInterval(interval);
+        }
+        pctText.textContent = `${count} %`;
+      }, 25);
     }
   }
 
@@ -75,64 +148,91 @@ class InterfaceManager {
     const profile = window.persistenceEngine.getProfile();
     const currentLvlInfo = window.niveauEngine.getLevelInfo(profile.niveauActuel);
 
-    // Header Chips
-    const elVies = document.getElementById('chip-vies');
-    const elXp = document.getElementById('chip-xp');
-    const elSolde = document.getElementById('chip-solde');
-    const elSub = document.getElementById('user-grade-subtitle');
+    // 26.5 Greeting according to Grade
+    let titlePrefix = "Agent";
+    if (profile.grade.includes("Contrôleur")) titlePrefix = "Contrôleur";
+    else if (profile.grade.includes("Inspecteur Général Adjoint")) titlePrefix = "Inspecteur Général Adjoint";
+    else if (profile.grade.includes("Inspecteur Général")) titlePrefix = "Inspecteur Général du Travail";
+    else if (profile.grade.includes("Inspecteur")) titlePrefix = "Inspecteur";
+    else if (profile.grade.includes("Directeur")) titlePrefix = "Directeur";
 
-    if (elVies) elVies.textContent = `${profile.vies}/${profile.maxVies || 5} ❤️`;
-    if (elXp) elXp.textContent = `${profile.xp} XP`;
-    if (elSolde) elSolde.textContent = `${profile.solde.CDF.toLocaleString()} CDF`;
-    if (elSub) elSub.textContent = `Niveau ${profile.niveauActuel} — Grade : ${profile.grade}`;
+    const greetingEl = document.getElementById('user-greeting-heading');
+    if (greetingEl) {
+      greetingEl.textContent = `Bonjour, ${titlePrefix} 👋`;
+    }
 
-    // Quick Stats Overview Cards
-    const elGradeVal = document.getElementById('dash-val-grade');
-    const elNiveauVal = document.getElementById('dash-val-niveau');
-    const elVuesVal = document.getElementById('dash-val-vues');
-    const elReussiteVal = document.getElementById('dash-val-reussite');
-    const elMaitriseesVal = document.getElementById('dash-val-maitrisees');
-    const elMaitrisePct = document.getElementById('dash-val-maitrise-pct');
-    const elSerieVal = document.getElementById('dash-val-serie');
-    const elTempsVal = document.getElementById('dash-val-temps');
+    const levelBadgePill = document.getElementById('user-grade-pill');
+    if (levelBadgePill) {
+      levelBadgePill.textContent = `Niveau 0${profile.niveauActuel} — ${profile.grade}`;
+    }
 
-    const stats = profile.statistiques || { vues: 0, bonnes: 0, mauvaises: 0, tempsTotal: 0 };
-    const successRate = stats.vues > 0 ? Math.round((stats.bonnes / stats.vues) * 100) : 0;
+    // 26.6 Main Progress Card
     const questionsMap = profile.questions || {};
     const records = Object.values(questionsMap);
     const masteredCount = records.filter(q => q.maitrise >= 70).length;
+    const stats = profile.statistiques || { vues: 0, bonnes: 0, mauvaises: 0, tempsTotal: 0 };
+    const successRate = stats.vues > 0 ? Math.round((stats.bonnes / stats.vues) * 100) : 0;
 
-    if (elGradeVal) elGradeVal.textContent = profile.grade;
-    if (elNiveauVal) elNiveauVal.textContent = `Niveau ${profile.niveauActuel} sur 7`;
-    if (elVuesVal) elVuesVal.textContent = stats.vues.toString();
-    if (elReussiteVal) elReussiteVal.textContent = `Taux de réussite : ${successRate}%`;
-    if (elMaitriseesVal) elMaitriseesVal.textContent = masteredCount.toString();
-    if (elMaitrisePct) elMaitrisePct.textContent = `Maîtrise globale : ${stats.maitriseGlobale || 0}%`;
-    if (elSerieVal) elSerieVal.textContent = `${profile.historique ? profile.historique.length : 0} Actions`;
-    if (elTempsVal) elTempsVal.textContent = `Temps : ${Math.round((stats.tempsTotal || 0) / 60)} min`;
+    const elMasteredText = document.getElementById('dash-main-mastered-count');
+    if (elMasteredText) elMasteredText.textContent = `${masteredCount} compétences maîtrisées`;
 
-    // Progress Bar
-    const levelQuestions = records.filter(q => q.niveau === profile.niveauActuel);
-    const levelMastered = levelQuestions.filter(q => q.maitrise >= 70).length;
-    const progressPct = currentLvlInfo.formationReq > 0 ? Math.min(100, Math.round((levelMastered / currentLvlInfo.formationReq) * 100)) : 0;
+    const elSuccessRateText = document.getElementById('dash-main-success-rate');
+    if (elSuccessRateText) elSuccessRateText.textContent = `${successRate} % de réussite`;
 
-    const barFill = document.getElementById('dash-bar-fill');
-    const barText = document.getElementById('dash-bar-text');
-    if (barFill) barFill.style.width = `${progressPct}%`;
-    if (barText) barText.textContent = `${levelMastered} / ${currentLvlInfo.formationReq} maîtrises (${progressPct}%)`;
+    // 26.8 Activity Summary Grid
+    const elActMaitrise = document.getElementById('act-val-maitrise');
+    const elActReussite = document.getElementById('act-val-reussite');
+    const elActTemps = document.getElementById('act-val-temps');
+    const elActSerie = document.getElementById('act-val-serie');
 
-    // Weak points analysis
-    const weakList = records.filter(q => q.maitrise < 50 && q.vues > 0);
-    const weakBox = document.getElementById('dash-weak-points-list');
-    if (weakBox) {
-      if (weakList.length > 0) {
-        weakBox.innerHTML = `⚠️ ${weakList.length} question(s) nécessitent une révision ciblée. Ex: ${weakList[0].qid}`;
-      } else {
-        weakBox.textContent = "Aucun point faible majeur. Continuez l'apprentissage !";
-      }
+    if (elActMaitrise) elActMaitrise.textContent = masteredCount.toString();
+    if (elActReussite) elActReussite.textContent = `${successRate} %`;
+    if (elActTemps) elActTemps.textContent = `${Math.round((stats.tempsTotal || 0) / 3600)} h`;
+    if (elActSerie) elActSerie.textContent = `${records.length > 0 ? records[0].serie || 1 : 0} jours`;
+
+    // 26.9 Points Faibles Breakdown
+    const weakPointsBox = document.getElementById('weak-points-breakdown-list');
+    if (weakPointsBox) {
+      const categoriesList = [
+        { name: "Procès-verbaux & Mises en demeure", color: "🔴", pct: 42 },
+        { name: "Temps de travail & Heures sup", color: "🟠", pct: 58 },
+        { name: "Main d'œuvre étrangère (Arrêté 86/001)", color: "🟡", pct: 64 }
+      ];
+
+      weakPointsBox.innerHTML = categoriesList.map(item => `
+        <div style="margin-bottom:0.85rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; margin-bottom:0.25rem;">
+            <span>${item.color} ${item.name}</span>
+            <span>${item.pct} %</span>
+          </div>
+          <div class="progress-container" style="height:6px; margin:0;">
+            <div class="progress-fill" style="width:${item.pct}%; background:${item.pct < 50 ? 'var(--accent-red)' : 'var(--accent-gold)'};"></div>
+          </div>
+        </div>
+      `).join('');
     }
 
-    // Level Cards Grid
+    // 26.10 Level Roadmap Timeline
+    const pathwayContainer = document.getElementById('level-pathway-timeline');
+    if (pathwayContainer) {
+      pathwayContainer.innerHTML = window.niveauEngine.levels.map(lvl => {
+        const isPassed = lvl.niveau < profile.niveauActuel;
+        const isCurrent = lvl.niveau === profile.niveauActuel;
+
+        return `
+          <div style="display:flex; align-items:center; gap:0.85rem; padding:0.4rem 0;">
+            <span style="font-weight:900; font-size:1.1rem; width:24px; text-align:center; color:${isPassed ? 'var(--accent-green)' : (isCurrent ? 'var(--accent-gold)' : 'var(--text-dim)')};">
+              ${isPassed ? '✓' : (isCurrent ? '●' : '🔒')}
+            </span>
+            <span style="font-weight:${isCurrent ? '800' : '600'}; color:${isCurrent ? 'var(--text-main)' : 'var(--text-muted)'}; font-size:0.92rem;">
+              Niveau ${lvl.niveau} — ${lvl.grade}
+            </span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 26.11 Level Cards Grid
     const levelCardsContainer = document.getElementById('level-cards-container');
     if (levelCardsContainer) {
       levelCardsContainer.innerHTML = window.niveauEngine.levels.map(lvl => {
@@ -142,19 +242,18 @@ class InterfaceManager {
         return `
           <div class="glass-card" style="${isCurrent ? 'border-color:var(--accent-gold); background:rgba(251,191,36,0.08);' : ''}">
             <div class="card-title">
-              <span>Niveau ${lvl.niveau} — ${lvl.grade}</span>
-              <span>${isUnlocked ? (isCurrent ? '⭐ Actif' : '✅ Débloqué') : '🔒 Verrouillé'}</span>
+              <span>NIVEAU 0${lvl.niveau}</span>
+              <span>${isUnlocked ? (isCurrent ? '⭐ ACTIF' : '✓ ACCOMPLI') : '🔒 VERROUILLÉ'}</span>
             </div>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">${lvl.title}</p>
-            <div style="font-size:0.8rem; color:var(--text-dim);">
-              📚 Formation : ${lvl.formationReq} questions • 🎓 Examen : ${lvl.examReq} questions
+            <h4 style="font-size:1rem; font-weight:800; color:var(--text-main); margin-bottom:0.4rem;">${lvl.grade}</h4>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.75rem;">${lvl.title}</p>
+            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:1rem;">
+              📚 ${lvl.formationReq} questions • 🎓 Examen : ${lvl.examReq} q.
             </div>
-            <div style="margin-top:1rem;">
-              ${isUnlocked ? 
-                `<button class="btn-gold" style="width:100%; font-size:0.85rem;" onclick="window.interfaceEngine.startLevelPractice(${lvl.niveau})">S'entraîner au Niveau ${lvl.niveau}</button>` : 
-                `<button class="btn-glass" style="width:100%; font-size:0.85rem;" disabled>Requis : Examen Niv. ${lvl.niveau - 1} (≥80%)</button>`
-              }
-            </div>
+            ${isUnlocked ? 
+              `<button class="btn-gold" style="width:100%; font-size:0.85rem;" onclick="window.interfaceEngine.startLevelPractice(${lvl.niveau})">S'entraîner au Niveau ${lvl.niveau} →</button>` : 
+              `<button class="btn-glass" style="width:100%; font-size:0.85rem;" disabled>Requis : Examen Niv. ${lvl.niveau - 1} (≥80%)</button>`
+            }
           </div>
         `;
       }).join('');
@@ -178,9 +277,9 @@ class InterfaceManager {
       if (container) {
         container.innerHTML = `
           <div class="glass-card" style="text-align:center; padding:3rem;">
-            <div style="font-size:3rem; margin-bottom:1rem;">💔</div>
-            <h2>Toutes vos vies sont épuisées !</h2>
-            <p style="color:var(--text-muted); margin:1rem 0;">Rechargez vos vies virtuelles pour continuer votre formation professionnelle.</p>
+            <div style="font-size:3.5rem; margin-bottom:1rem;">💔</div>
+            <h2>Toutes vos vies virtuelles sont épuisées !</h2>
+            <p style="color:var(--text-muted); margin:1rem 0;">Rechargez vos 5 vies virtuelles pour poursuivre votre apprentissage.</p>
             <button class="btn-gold" onclick="window.rewardEngine.refillLives(window.persistenceEngine.getProfile()); window.interfaceEngine.loadNextFormationQuestion();">
               🔄 Recharger les 5 Vies Virtuelles
             </button>
@@ -199,7 +298,7 @@ class InterfaceManager {
 
     if (!nextQ) {
       if (container) {
-        container.innerHTML = `<div class="glass-card">Toutes les questions de ce niveau sont complétées ! Passage à l'examen recommandé.</div>`;
+        container.innerHTML = `<div class="glass-card">Toutes les questions de ce niveau sont complétées ! Vous êtes prêt pour l'examen officiel.</div>`;
       }
       return;
     }
@@ -272,7 +371,7 @@ class InterfaceManager {
       <div class="glass-card" style="margin-bottom:1.5rem;">
         <div class="card-title">
           <span>${m.titre}</span>
-          <span class="quiz-meta-tag">${m.secteur}</span>
+          <span class="badge-level-pill">${m.secteur}</span>
         </div>
         <p style="color:var(--text-muted); font-size:0.9rem; margin:0.5rem 0;"><strong>Entreprise :</strong> ${m.entreprise} (${m.effectif} travailleurs)</p>
         <p style="font-size:0.88rem; color:var(--text-dim);">${m.motif}</p>
@@ -362,7 +461,7 @@ class InterfaceManager {
     if (!container) return;
 
     container.innerHTML = `
-      <h2 style="margin-bottom:1rem;">🏆 Badges Professionnels IGT</h2>
+      <h2 style="margin-bottom:1rem;">🏅 Badges Professionnels IGT</h2>
       <div class="dashboard-grid">
         ${window.certificationEngine.badges.map(b => {
           const isEarned = profile.niveauActuel >= b.minLevel;
@@ -371,7 +470,7 @@ class InterfaceManager {
               <div style="font-size:3rem; margin-bottom:0.5rem;">${b.icon}</div>
               <h3 style="font-size:1rem; font-weight:800;">${b.title}</h3>
               <p style="font-size:0.8rem; color:var(--text-muted); margin:0.4rem 0;">${b.desc}</p>
-              <span class="quiz-meta-tag">${isEarned ? 'Obtenu' : 'Verrouillé'}</span>
+              <span class="badge-level-pill">${isEarned ? 'Obtenu' : 'Verrouillé'}</span>
             </div>
           `;
         }).join('')}
@@ -404,7 +503,7 @@ class InterfaceManager {
 
     container.innerHTML = `
       <div class="glass-card">
-        <h3>Questions Repondues</h3>
+        <h3>Questions Répondues</h3>
         <div class="card-value">${stats.vues}</div>
       </div>
       <div class="glass-card">
@@ -420,6 +519,20 @@ class InterfaceManager {
         <div class="card-value" style="color:var(--accent-cyan);">${stats.maitriseGlobale}%</div>
       </div>
     `;
+  }
+
+  toggleNotificationModal() {
+    const modal = document.getElementById('notification-modal');
+    if (modal) {
+      modal.classList.toggle('show');
+    }
+  }
+
+  toggleProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) {
+      modal.classList.toggle('show');
+    }
   }
 
   applyTheme(themeName) {
