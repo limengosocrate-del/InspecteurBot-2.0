@@ -727,6 +727,18 @@ function startListening() {
     showToast('Microphone ouvert — Parlez clairement.', 'success');
   };
 
+  recognition.onspeechstart = () => {
+ showToast('Voix détectée...', 'success');
+};
+
+recognition.onspeechend = () => {
+ console.log('Fin de détection voix');
+};
+
+recognition.onnomatch = () => {
+ showToast('Aucune parole comprise.', 'info');
+};
+
   recognition.onresult = (event) => {
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
@@ -736,7 +748,10 @@ function startListening() {
         STATE.transcriptLog.push(entry);
         renderTranscriptEntry(entry);
       } else {
-        renderTranscriptEntry({ time: new Date().toLocaleTimeString('fr-FR'), text: transcript.trim() + ' ... (en cours)', lang: 'détection en cours', mode: STATE.iaMode });
+        renderTranscriptEntry({
+        text: transcript.trim(),
+        mode: STATE.iaMode
+      }, true);
       }
     }
   };
@@ -854,15 +869,31 @@ function detectLanguageReal(text) {
   return 'indéterminé';
 }
 
-function renderTranscriptEntry(entry) {
+function renderTranscriptEntry(entry, interim = false) {
   const container = document.getElementById('iaTranscript');
-  if (container.querySelector('.transcript-placeholder')) container.innerHTML = '';
-  // ChatGPT-style: continuous text without per-line separation or timestamp labels
-  const span = document.createElement('span');
-  span.style.display = 'inline';
-  span.style.marginRight = '0.5rem';
-  span.textContent = entry.text;
-  container.appendChild(span);
+
+  if (container.querySelector('.transcript-placeholder')) {
+    container.innerHTML = '';
+  }
+
+  let temp = document.getElementById('interimText');
+
+  if (!temp) {
+    temp = document.createElement('span');
+    temp.id = 'interimText';
+    temp.style.color = '#777';
+    container.appendChild(temp);
+  }
+
+  if (interim) {
+    temp.textContent = entry.text;
+  } else {
+    temp.remove();
+    const span = document.createElement('span');
+    span.textContent = entry.text + ' ';
+    container.appendChild(span);
+  }
+
   container.scrollTop = container.scrollHeight;
 }
 
