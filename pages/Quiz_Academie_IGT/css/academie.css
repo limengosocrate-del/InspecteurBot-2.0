@@ -6014,7 +6014,7 @@ linear-gradient(
 
 }
 
- /* ==========================================================================
+/* ==========================================================================
    27. QUIZ ENGINE — INTERFACE PROFESSIONNELLE DES RÉPONSES
    ========================================================================== */
 
@@ -6024,17 +6024,62 @@ linear-gradient(
   margin: 0 auto;
 }
 
-/* CONTENEUR DU QUIZ */
+/* =========================================================
+   COULEURS ADAPTATIVES DU QUIZ
+   ========================================================= */
+
+:root {
+  --quiz-answer-text: #111827;
+  --quiz-question-text: #111827;
+  --quiz-card-bg-1: rgba(255, 255, 255, 0.96);
+  --quiz-card-bg-2: rgba(248, 250, 252, 0.98);
+  --quiz-option-bg-1: rgba(15, 23, 42, 0.035);
+  --quiz-option-bg-2: rgba(15, 23, 42, 0.015);
+  --quiz-option-border: rgba(15, 23, 42, 0.14);
+}
+
+/* MODE SOMBRE */
+[data-theme="dark"],
+body.dark-mode,
+body[data-theme="dark"] {
+  --quiz-answer-text: #f8fafc;
+  --quiz-question-text: #f8fafc;
+  --quiz-card-bg-1: rgba(24, 33, 43, 0.97);
+  --quiz-card-bg-2: rgba(8, 13, 20, 0.98);
+  --quiz-option-bg-1: rgba(255, 255, 255, 0.06);
+  --quiz-option-bg-2: rgba(255, 255, 255, 0.025);
+  --quiz-option-border: rgba(255, 255, 255, 0.13);
+}
+
+/* MODE CLAIR */
+[data-theme="light"],
+body.light-mode,
+body[data-theme="light"] {
+  --quiz-answer-text: #111827;
+  --quiz-question-text: #111827;
+  --quiz-card-bg-1: rgba(255, 255, 255, 0.98);
+  --quiz-card-bg-2: rgba(248, 250, 252, 0.98);
+  --quiz-option-bg-1: rgba(15, 23, 42, 0.035);
+  --quiz-option-bg-2: rgba(15, 23, 42, 0.015);
+  --quiz-option-border: rgba(15, 23, 42, 0.14);
+}
+
+/* =========================================================
+   CONTENEUR DU QUIZ
+   ========================================================= */
+
 .quiz-shell {
   background:
     linear-gradient(
       145deg,
-      rgba(24, 33, 43, 0.97),
-      rgba(8, 13, 20, 0.98)
+      var(--quiz-card-bg-1),
+      var(--quiz-card-bg-2)
     );
 
   border: 1px solid rgba(251, 191, 36, 0.25);
+
   border-radius: 22px;
+
   padding: 2rem;
 
   box-shadow:
@@ -6042,14 +6087,17 @@ linear-gradient(
     0 0 35px rgba(251, 191, 36, 0.08);
 
   position: relative;
+
   overflow: hidden;
 }
 
 /* LIGNE LUMINEUSE SUPÉRIEURE */
+
 .quiz-shell::before {
   content: "";
 
   position: absolute;
+
   top: 0;
   left: 0;
   right: 0;
@@ -6068,21 +6116,29 @@ linear-gradient(
   opacity: 0.9;
 }
 
-/* HEADER DU QUIZ */
+/* =========================================================
+   HEADER DU QUIZ
+   ========================================================= */
+
 .quiz-header {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 1rem;
+
   margin-bottom: 1.5rem;
 
   flex-wrap: wrap;
 }
 
 /* BADGES MÉTADONNÉES */
+
 .quiz-meta-tag {
   display: inline-flex;
+
   align-items: center;
 
   padding: 0.4rem 0.75rem;
@@ -6090,19 +6146,25 @@ linear-gradient(
   border-radius: 8px;
 
   background: rgba(255, 255, 255, 0.05);
+
   border: 1px solid rgba(0, 242, 254, 0.3);
 
   color: var(--accent-cyan);
 
   font-size: 0.75rem;
+
   font-weight: 800;
+
   text-transform: uppercase;
 }
 
 /* TIMER */
+
 .quiz-timer {
   display: flex;
+
   align-items: center;
+
   gap: 0.4rem;
 
   padding: 0.5rem 0.85rem;
@@ -6110,6 +6172,7 @@ linear-gradient(
   border-radius: 10px;
 
   background: rgba(239, 68, 68, 0.08);
+
   border: 1px solid rgba(239, 68, 68, 0.3);
 
   color: var(--accent-red);
@@ -6117,7 +6180,10 @@ linear-gradient(
   font-weight: 900;
 }
 
-/* QUESTION */
+/* =========================================================
+   QUESTION
+   ========================================================= */
+
 .question-title {
   font-size: clamp(1.2rem, 2vw, 1.65rem);
 
@@ -6125,12 +6191,15 @@ linear-gradient(
 
   font-weight: 800;
 
-  color: var(--text-main);
+  color: var(--quiz-question-text) !important;
 
   margin-bottom: 1.75rem;
 }
 
-/* GRILLE DES RÉPONSES */
+/* =========================================================
+   GRILLE DES RÉPONSES
+   ========================================================= */
+
 .options-grid {
   display: flex;
 
@@ -6140,7 +6209,7 @@ linear-gradient(
 }
 
 /* =========================================================
-   BOUTON / CARTE DE RÉPONSE
+   CARTE DE RÉPONSE
    ========================================================= */
 
 .option-card {
@@ -6151,11 +6220,13 @@ linear-gradient(
   padding: 0.9rem 1rem;
 
   display: flex;
+
   align-items: center;
 
   gap: 1rem;
 
   position: relative;
+
   overflow: hidden;
 
   cursor: pointer;
@@ -6163,15 +6234,20 @@ linear-gradient(
   background:
     linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.06),
-      rgba(255, 255, 255, 0.025)
+      var(--quiz-option-bg-1),
+      var(--quiz-option-bg-2)
     );
 
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid var(--quiz-option-border);
 
   border-radius: 12px;
 
-  color: var(--text-main);
+  /*
+   * CORRECTION PRINCIPALE :
+   * Le texte est maintenant visible dans les deux modes.
+   */
+
+  color: var(--quiz-answer-text) !important;
 
   transition:
     transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -6180,16 +6256,45 @@ linear-gradient(
     box-shadow 220ms ease;
 }
 
-/* REFLET LUMINEUX */
+/* =========================================================
+   TEXTE DE LA RÉPONSE
+   ========================================================= */
+
+.option-text {
+  flex: 1;
+
+  font-size: 0.96rem;
+
+  line-height: 1.45;
+
+  font-weight: 650;
+
+  /*
+   * CORRECTION DÉFINITIVE DU MODE CLAIR
+   */
+
+  color: var(--quiz-answer-text) !important;
+
+  opacity: 1 !important;
+
+  visibility: visible !important;
+}
+
+/* =========================================================
+   REFLET LUMINEUX
+   ========================================================= */
+
 .option-card::before {
   content: "";
 
   position: absolute;
 
   top: 0;
+
   left: -120%;
 
   width: 70%;
+
   height: 100%;
 
   background:
@@ -6207,7 +6312,14 @@ linear-gradient(
   pointer-events: none;
 }
 
-/* HOVER */
+.option-card:hover::before {
+  left: 130%;
+}
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
 .option-card:hover {
   transform: translateX(6px);
 
@@ -6225,16 +6337,16 @@ linear-gradient(
     0 0 20px rgba(0, 242, 254, 0.15);
 }
 
-.option-card:hover::before {
-  left: 130%;
-}
-
 /* APPUI */
+
 .option-card:active {
   transform: translateX(4px) scale(0.985);
 }
 
-/* RÉPONSE SÉLECTIONNÉE */
+/* =========================================================
+   RÉPONSE SÉLECTIONNÉE
+   ========================================================= */
+
 .option-card.selected {
   transform: translateX(8px);
 
@@ -6250,17 +6362,31 @@ linear-gradient(
   box-shadow:
     0 0 0 2px rgba(0, 242, 254, 0.1),
     0 0 25px rgba(0, 242, 254, 0.2);
+
+  color: var(--quiz-answer-text) !important;
 }
 
-/* LETTRE A B C D */
+/* LE TEXTE RESTE VISIBLE APRÈS SÉLECTION */
+
+.option-card.selected .option-text {
+  color: var(--quiz-answer-text) !important;
+}
+
+/* =========================================================
+   LETTRE A B C D
+   ========================================================= */
+
 .option-key {
   width: 40px;
+
   height: 40px;
 
   flex: 0 0 40px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border-radius: 9px;
@@ -6289,26 +6415,21 @@ linear-gradient(
   transform: rotate(5deg) scale(1.08);
 }
 
-/* TEXTE DE LA RÉPONSE */
-.option-text {
-  flex: 1;
+/* =========================================================
+   INDICATEUR
+   ========================================================= */
 
-  font-size: 0.96rem;
-
-  line-height: 1.45;
-
-  font-weight: 650;
-}
-
-/* INDICATEUR */
 .option-check-indicator {
   width: 30px;
+
   height: 30px;
 
   flex: 0 0 30px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   font-size: 1.05rem;
@@ -6316,7 +6437,10 @@ linear-gradient(
   opacity: 0.8;
 }
 
-/* CORRECTE */
+/* =========================================================
+   RÉPONSE CORRECTE
+   ========================================================= */
+
 .option-card.correct {
   background:
     linear-gradient(
@@ -6329,9 +6453,18 @@ linear-gradient(
 
   box-shadow:
     0 0 25px rgba(16, 185, 129, 0.2);
+
+  color: var(--quiz-answer-text) !important;
 }
 
-/* INCORRECTE */
+.option-card.correct .option-text {
+  color: var(--quiz-answer-text) !important;
+}
+
+/* =========================================================
+   RÉPONSE INCORRECTE
+   ========================================================= */
+
 .option-card.incorrect {
   background:
     linear-gradient(
@@ -6346,9 +6479,18 @@ linear-gradient(
     0 0 25px rgba(239, 68, 68, 0.18);
 
   animation: answerError 420ms ease;
+
+  color: var(--quiz-answer-text) !important;
 }
 
-/* EXPLICATION */
+.option-card.incorrect .option-text {
+  color: var(--quiz-answer-text) !important;
+}
+
+/* =========================================================
+   EXPLICATION
+   ========================================================= */
+
 .explanation-box {
   display: none;
 
@@ -6363,6 +6505,8 @@ linear-gradient(
   border: 1px solid var(--border-glass);
 
   line-height: 1.6;
+
+  color: var(--text-main);
 }
 
 .explanation-box.show {
@@ -6389,7 +6533,10 @@ linear-gradient(
   font-size: 0.82rem;
 }
 
-/* BOUTON DE VALIDATION */
+/* =========================================================
+   BOUTON DE VALIDATION
+   ========================================================= */
+
 #btn-submit-answer {
   min-height: 56px;
 
@@ -6435,20 +6582,28 @@ linear-gradient(
   transform: scale(0.97);
 }
 
-/* ANIMATION EXPLICATION */
+/* =========================================================
+   ANIMATION EXPLICATION
+   ========================================================= */
+
 @keyframes explanationReveal {
   from {
     opacity: 0;
+
     transform: translateY(10px);
   }
 
   to {
     opacity: 1;
+
     transform: translateY(0);
   }
 }
 
-/* ANIMATION ERREUR */
+/* =========================================================
+   ANIMATION ERREUR
+   ========================================================= */
+
 @keyframes answerError {
   0%, 100% {
     transform: translateX(0);
@@ -6467,7 +6622,10 @@ linear-gradient(
   }
 }
 
-/* MOBILE */
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 600px) {
 
   .quiz-shell {
@@ -6486,6 +6644,7 @@ linear-gradient(
 
   .option-key {
     width: 34px;
+
     height: 34px;
 
     flex-basis: 34px;
@@ -6493,6 +6652,8 @@ linear-gradient(
 
   .option-text {
     font-size: 0.88rem;
+
+    color: var(--quiz-answer-text) !important;
   }
 
   .option-card:hover {
@@ -6506,4 +6667,6 @@ linear-gradient(
   #btn-submit-answer {
     width: 100%;
   }
-}
+     }
+
+      
