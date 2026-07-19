@@ -1,6 +1,6 @@
 /* ==========================================================================
    INSPECTEURBOT RDC - ACADÉMIE IGT
-   Module Interface: UI Coordinator, Splash Screen, Animations & TopBar Modals
+   Module Interface: UI Coordinator, Views Router, Profile Editor & Modals
    ========================================================================== */
 
 class InterfaceManager {
@@ -11,7 +11,7 @@ class InterfaceManager {
   }
 
   async init() {
-    // 26.2 Splash Screen Initialization
+    // Splash Screen Run
     this.runSplashScreen();
 
     try {
@@ -37,11 +37,10 @@ class InterfaceManager {
         splash.style.display = 'none';
         this.animateDashboardOpening();
       }, 500);
-    }, 1200);
+    }, 1100);
   }
 
   setupEventListeners() {
-    // Navigation routing
     document.querySelectorAll('[data-target-view]').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -50,7 +49,6 @@ class InterfaceManager {
       });
     });
 
-    // Top bar menu toggle
     const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
     if (btnToggleSidebar) {
       btnToggleSidebar.addEventListener('click', () => {
@@ -58,14 +56,13 @@ class InterfaceManager {
       });
     }
 
-    // Theme toggle button
     const btnThemeToggle = document.getElementById('btn-theme-toggle');
     if (btnThemeToggle) {
       btnThemeToggle.addEventListener('click', () => {
         const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
         const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
         this.applyTheme(nextTheme);
-        
+
         const profile = window.persistenceEngine.getProfile();
         profile.settings.theme = nextTheme;
         window.persistenceEngine.saveProfile(profile);
@@ -111,12 +108,11 @@ class InterfaceManager {
   }
 
   animateDashboardOpening() {
-    // Animate Progress Bar & Count-up numbers (0% -> target%)
     const profile = window.persistenceEngine.getProfile();
     const currentLvlInfo = window.niveauEngine.getLevelInfo(profile.niveauActuel);
     const questionsMap = profile.questions || {};
     const records = Object.values(questionsMap);
-    
+
     const levelQuestions = records.filter(q => q.niveau === profile.niveauActuel);
     const levelMastered = levelQuestions.filter(q => q.maitrise >= 70).length;
     const targetPct = currentLvlInfo.formationReq > 0 ? Math.min(100, Math.round((levelMastered / currentLvlInfo.formationReq) * 100)) : 0;
@@ -147,24 +143,30 @@ class InterfaceManager {
   updateDashboardUI() {
     const profile = window.persistenceEngine.getProfile();
     const currentLvlInfo = window.niveauEngine.getLevelInfo(profile.niveauActuel);
+    const userInfo = profile.userInfo || {};
 
-    // 26.5 Greeting according to Grade
-    let titlePrefix = "Agent";
-    if (profile.grade.includes("Contrôleur")) titlePrefix = "Contrôleur";
-    else if (profile.grade.includes("Inspecteur Général Adjoint")) titlePrefix = "Inspecteur Général Adjoint";
-    else if (profile.grade.includes("Inspecteur Général")) titlePrefix = "Inspecteur Général du Travail";
-    else if (profile.grade.includes("Inspecteur")) titlePrefix = "Inspecteur";
-    else if (profile.grade.includes("Directeur")) titlePrefix = "Directeur";
-
+    // 26.5 Dynamic Greeting with custom user name if defined!
     const greetingEl = document.getElementById('user-greeting-heading');
     if (greetingEl) {
-      greetingEl.textContent = `Bonjour, ${titlePrefix} 👋`;
+      const userDisplayName = userInfo.nomComplet || profile.grade;
+      greetingEl.textContent = `Bonjour, ${userDisplayName} 👋`;
     }
 
     const levelBadgePill = document.getElementById('user-grade-pill');
     if (levelBadgePill) {
       levelBadgePill.textContent = `Niveau 0${profile.niveauActuel} — ${profile.grade}`;
     }
+
+    // Populate profile modal input fields
+    const inputName = document.getElementById('prof-input-name');
+    const inputMat = document.getElementById('prof-input-mat');
+    const inputDir = document.getElementById('prof-input-dir');
+    const inputAnt = document.getElementById('prof-input-ant');
+
+    if (inputName) inputName.value = userInfo.nomComplet || "";
+    if (inputMat) inputMat.value = userInfo.matricule || "";
+    if (inputDir) inputDir.value = userInfo.direction || "";
+    if (inputAnt) inputAnt.value = userInfo.antenne || "";
 
     // 26.6 Main Progress Card
     const questionsMap = profile.questions || {};
@@ -260,6 +262,26 @@ class InterfaceManager {
     }
   }
 
+  saveUserProfileFields() {
+    const profile = window.persistenceEngine.getProfile();
+    if (!profile.userInfo) profile.userInfo = {};
+
+    const inputName = document.getElementById('prof-input-name');
+    const inputMat = document.getElementById('prof-input-mat');
+    const inputDir = document.getElementById('prof-input-dir');
+    const inputAnt = document.getElementById('prof-input-ant');
+
+    if (inputName) profile.userInfo.nomComplet = inputName.value.trim() || profile.grade;
+    if (inputMat) profile.userInfo.matricule = inputMat.value.trim();
+    if (inputDir) profile.userInfo.direction = inputDir.value.trim();
+    if (inputAnt) profile.userInfo.antenne = inputAnt.value.trim();
+
+    window.persistenceEngine.saveProfile(profile);
+    this.updateDashboardUI();
+    this.showToast("Profil professionnel enregistré avec succès !", "success");
+    this.toggleProfileModal();
+  }
+
   startLevelPractice(levelNum) {
     const profile = window.persistenceEngine.getProfile();
     profile.niveauActuel = levelNum;
@@ -351,7 +373,7 @@ class InterfaceManager {
         <p style="color:var(--text-muted); max-width:500px; margin:0 auto 1.5rem auto;">
           ${res.reussi ? 
             `Félicitations ! Vous avez validé le Grade : ${res.grade}. Votre certificat officiel IGT a été généré.` : 
-            `Vous devez obtenir au moins 80% pour valider le grade. Réévisez les chapitres puis réessayez.`
+            `Vous devez obtenir au moins 80% pour valider le grade. Réévisez les chapitres puis réessayer.`
           }
         </p>
         <div style="display:flex; justify-content:center; gap:1rem;">
@@ -483,10 +505,12 @@ class InterfaceManager {
     const container = document.getElementById('certificates-container');
     if (!container) return;
 
+    const candidateName = profile.userInfo && profile.userInfo.nomComplet ? profile.userInfo.nomComplet : "Inspecteur / Agent IGT";
+
     container.innerHTML = `
       <h2 style="margin-bottom:1rem;">📜 Certificat Officiel IGT</h2>
       ${window.certificationEngine.generateCertificateHTML(
-        "Inspecteur / Agent IGT",
+        candidateName,
         profile.niveauActuel,
         profile.grade,
         profile.statistiques.maitriseGlobale || 85

@@ -15,6 +15,12 @@ const DEFAULT_PROFILE = {
     CDF: 0,
     USD: 0
   },
+  userInfo: {
+    nomComplet: "Inspecteur / Agent IGT",
+    matricule: "IGT-2026-RDC",
+    direction: "Direction Générale IGT Kinshasa",
+    antenne: "Antenne Centrale"
+  },
   questions: {}, // qid -> { vues, bonnes, mauvaises, serie, maitrise, derniereVue, prochaineRevision }
   statistiques: {
     vues: 0,
@@ -45,7 +51,11 @@ class PersistenceManager {
       const data = localStorage.getItem(STORAGE_KEY);
       if (data) {
         const parsed = JSON.parse(data);
-        return { ...DEFAULT_PROFILE, ...parsed };
+        return {
+          ...DEFAULT_PROFILE,
+          ...parsed,
+          userInfo: { ...DEFAULT_PROFILE.userInfo, ...(parsed.userInfo || {}) }
+        };
       }
     } catch (err) {
       console.error("Error loading user profile from storage:", err);
@@ -71,7 +81,7 @@ class PersistenceManager {
   }
 
   resetProfile() {
-    this.profile = { ...DEFAULT_PROFILE };
+    this.profile = JSON.parse(JSON.stringify(DEFAULT_PROFILE));
     this.saveProfile();
     return this.profile;
   }
