@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>InspecteurBot RDC — Académie IGT</title>
+
+  <!-- PWA & Design System -->
+  <link rel="stylesheet" href="css/academie.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- App Shell -->
+  <div class="app-shell">
+
+    <!-- Desktop Sidebar -->
+    <nav class="desktop-sidebar">
+      <div>
+        <div class="brand-header">
+          <div class="brand-logo">IGT</div>
+          <div>
+            <div class="brand-title">ACADÉMIE IGT</div>
+            <div class="brand-subtitle">RDC • Version 4.0</div>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <a class="nav-link active" data-target-view="view-dashboard">
+            <span class="nav-icon">📊</span> Tableau de bord
+          </a>
+          <a class="nav-link" data-target-view="view-formation">
+            <span class="nav-icon">🎓</span> Académie
+          </a>
+          <a class="nav-link" data-target-view="view-revision">
+            <span class="nav-icon">📚</span> Révision
+          </a>
+          <a class="nav-link" data-target-view="view-missions">
+            <span class="nav-icon">🕵️</span> Missions
+          </a>
+          <a class="nav-link" data-target-view="view-examens">
+            <span class="nav-icon">📝</span> Examens
+          </a>
+          <a class="nav-link" data-target-view="view-badges">
+            <span class="nav-icon">🏅</span> Badges
+          </a>
+          <a class="nav-link" data-target-view="view-certificats">
+            <span class="nav-icon">📜</span> Certificats
+          </a>
+          <a class="nav-link" data-target-view="view-statistiques">
+            <span class="nav-icon">📈</span> Statistiques
+          </a>
+          <a class="nav-link" data-target-view="view-settings">
+            <span class="nav-icon">⚙️</span> Paramètres
+          </a>
+        </div>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--text-dim); text-align:center; padding-top:1rem; border-top:1px solid var(--border-glass);">
+        Inspection Générale du Travail © 2026
+      </div>
+    </nav>
+
+    <!-- Main Wrapper -->
+    <main class="main-wrapper">
+
+      <!-- Header User Status Banner -->
+      <header class="header-banner">
+        <div class="user-greeting">
+          <h1>Bienvenue, Agent IGT 👋</h1>
+          <p id="user-grade-subtitle">Niveau 1 — Grade : Débutant</p>
+        </div>
+
+        <div class="user-stats-bar">
+          <div class="stat-chip vies" id="chip-vies">5/5 ❤️</div>
+          <div class="stat-chip xp" id="chip-xp">0 XP</div>
+          <div class="stat-chip solde" id="chip-solde">0 CDF</div>
+        </div>
+      </header>
+
+      <!-- View 1: Dashboard -->
+      <section id="view-dashboard" class="view-panel">
+        <div class="glass-card" style="margin-bottom:2rem; background:linear-gradient(135deg, rgba(13,22,45,0.9), rgba(28,45,92,0.8));">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span class="quiz-meta-tag" style="background:rgba(251,191,36,0.2); color:var(--accent-gold); border-color:var(--accent-gold);">RÉCOMPENSES VIRTUELLES PÉDAGOGIQUES</span>
+              <h2 style="font-size:1.6rem; font-weight:900; margin-top:0.5rem;" id="dash-val-grade">Niveau 1 — Débutant</h2>
+              <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;">Complétez les 1 500 questions de formation et réussissez les examens pour débloquer les 7 grades officiels de l'Inspection Générale du Travail.</p>
+            </div>
+            <div>
+              <button class="btn-gold" onclick="window.interfaceEngine.switchView('view-formation')">
+                🚀 Continuer la Formation
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem;">
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--text-muted);">
+              <span>Progression de Maîtrise</span>
+              <span id="dash-bar-text">0 / 100 questions (0%)</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-fill" id="dash-bar-fill" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="margin-bottom:1.25rem; font-size:1.25rem; font-weight:800;">Les 7 Niveaux Officiels IGT</h2>
+        <div id="level-cards-container" class="dashboard-grid">
+          <!-- Dynamic level cards populated by interface.js -->
+        </div>
+      </section>
+
+      <!-- View 2: Formation Quiz -->
+      <section id="view-formation" class="view-panel" style="display:none;">
+        <div id="quiz-question-container">
+          <!-- Live quiz shell loaded by quizEngine -->
+        </div>
+      </section>
+
+      <!-- View 3: Revision -->
+      <section id="view-revision" class="view-panel" style="display:none;">
+        <div class="glass-card">
+          <h2>📚 Révision Intelligente Répétée</h2>
+          <p style="color:var(--text-muted); margin:0.5rem 0 1.5rem 0;">Le moteur sélectionne en priorité les questions échouées ou non encore maîtrisées pour garantir votre ancrage mémoriel juridique.</p>
+          <button class="btn-gold" onclick="window.interfaceEngine.loadNextFormationQuestion()">Démarrer une Session de Révision ➔</button>
+        </div>
+      </section>
+
+      <!-- View 4: Missions Terrain -->
+      <section id="view-missions" class="view-panel" style="display:none;">
+        <div id="missions-list-container">
+          <!-- Missions dynamic list -->
+        </div>
+      </section>
+
+      <!-- View 5: Examens de Grade -->
+      <section id="view-examens" class="view-panel" style="display:none;">
+        <div id="exam-question-container">
+          <div class="glass-card" style="text-align:center; padding:3rem;">
+            <div style="font-size:3.5rem; margin-bottom:1rem;">📝</div>
+            <h2>Examen Officiel de Passage de Grade</h2>
+            <p style="color:var(--text-muted); max-width:600px; margin:1rem auto 2rem auto;">
+              L'examen tire au sort les questions réservées d'examen du niveau actuel. Vous devez obtenir un score d'au moins <strong>80%</strong> pour valider le grade et débloquer le niveau supérieur.
+            </p>
+            <button class="btn-gold" onclick="window.interfaceEngine.startOfficialExam()">
+              🔥 Démarrer L'Examen Officiel
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 6: Badges -->
+      <section id="view-badges" class="view-panel" style="display:none;">
+        <div id="badges-container">
+          <!-- Populated dynamically by interface.js -->
+        </div>
+      </section>
+
+      <!-- View 7: Certificats -->
+      <section id="view-certificats" class="view-panel" style="display:none;">
+        <div id="certificates-container">
+          <!-- Populated dynamically by interface.js -->
+        </div>
+      </section>
+
+      <!-- View 8: Statistiques -->
+      <section id="view-statistiques" class="view-panel" style="display:none;">
+        <div class="glass-card">
+          <h2>📈 Statistiques & Bilan de Formation</h2>
+          <div class="dashboard-grid" style="margin-top:1.5rem;" id="stats-detail-grid">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 9: Settings -->
+      <section id="view-settings" class="view-panel" style="display:none;">
+        <div class="glass-card" style="max-width:600px;">
+          <h2>⚙️ Paramètres de l'Académie</h2>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1.25rem;">
+            <div>
+              <label style="font-weight:700; display:block; margin-bottom:0.4rem;">Thème Visuel</label>
+              <select id="select-theme" class="btn-glass" style="width:100%;" onchange="window.interfaceEngine.applyTheme(this.value)">
+                <option value="dark">Fond Bleu Nuit (Sombre)</option>
+                <option value="light">Mode Clair</option>
+              </select>
+            </div>
+
+            <div>
+              <button class="btn-glass" style="width:100%; justify-content:center; color:var(--accent-red); border-color:var(--accent-red);" onclick="if(confirm('Réinitialiser toute votre progression ?')){ window.persistenceEngine.resetProfile(); location.reload(); }">
+                ⚠️ Réinitialiser la Progression Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Official Footer -->
+      <footer class="official-footer">
+        <div>InspecteurBot RDC — Académie IGT © 2026</div>
+        <div>Développé par Inspecteur Limengo (Pmiller) © 2026</div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Mobile Fixed Bottom Navigation -->
+  <nav class="mobile-nav">
+    <a class="mobile-nav-link active" data-target-view="view-dashboard">
+      <i>🏠</i> Accueil
+    </a>
+    <a class="mobile-nav-link" data-target-view="view-formation">
+      <i>🎓</i> Formation
+    </a>
+    <a class="mobile-nav-link" data-target-view="view-revision">
+      <i>📚</i> Révision
+    </a>
+    <a class="mobile-nav-link" data-target-view="view-badges">
+      <i>🏆</i> Profil
+    </a>
+    <a class="mobile-nav-link" data-target-view="view-settings">
+      <i>⚙️</i> Option
+    </a>
+  </nav>
+
+  <!-- JS Modules Loading Sequence -->
+  <script src="js/persistence.js"></script>
+  <script src="js/niveau-system.js"></script>
+  <script src="js/reward-system.js"></script>
+  <script src="js/revision-engine.js"></script>
+  <script src="js/quiz-engine.js"></script>
+  <script src="js/mission-engine.js"></script>
+  <script src="js/examination-engine.js"></script>
+  <script src="js/certification.js"></script>
+  <script src="js/interface.js"></script>
+</body>
+</html>
