@@ -1,0 +1,11 @@
+{
+  "description": "Références de fonds du portail — administrées uniquement par la base de données",
+  "intervalle_secondes": 15,
+  "images": [
+    "uploads/hero-1.jpg",
+    "uploads/hero-2.jpg",
+    "uploads/hero-3.jpg",
+    "uploads/hero-4.jpg",
+    "uploads/hero-5.jpg"
+  ]
+}
