@@ -119,6 +119,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </div>
 </main>
+<script src="auth-gate.js?v=20261107-auth-localfirst-18"></script>
 <script>
 /* InspecteurBot — profil, paramètres et fiche professionnelle en stockage local uniquement. */
 (function(){
@@ -161,7 +162,7 @@ function show(){
  fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=data.professional?.[key]||''});
  if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
  else{$('profileAvatar').hidden=true;$('profileAvatarFallback').hidden=false}
- $('notice').textContent='Vos paramètres et informations sont conservés localement sur cet appareil. Aucune requête Supabase n’est utilisée sur cette page.';
+ $('notice').textContent='Vos paramètres et informations sont conservés localement sur cet appareil. Aucun envoi distant n’est effectué depuis cette page.';
  $('status').hidden=true;$('profile').hidden=false;
 }
 $('editProfile').addEventListener('submit',e=>{
