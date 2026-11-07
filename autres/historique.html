@@ -52,34 +52,24 @@ body{background:#f2f5f9!important;color:#17243b!important}
 
 <script src="../js/history.js?v=1"></script>
 <script>
+function safeRead(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){console.warn('Archive illisible :',key,e);return fallback;}}
+function safeText(v,fallback=''){return v==null?fallback:String(v);}
 function render() {
-  // Fusionner toutes les sources
-  const pvStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1")) || '{"records":[]}');
-  const pv = (pvStore.records || []).map(r => ({type:"Procès-verbal",desc:r.number || r.title || r.companyName || "Projet de PV",date:r.updatedAt || r.createdAt || r.date || new Date().toISOString(),data:r}));
-  const dfStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_v1")) || '{"archives":[]}');
-  const decompteFinals = (dfStore.archives || []).map(d => ({type:"Décompte Final",desc:d.id || d.numero || d.result?.travailleur?.nomComplet || "Décompte enregistré",date:d.date || d.createdAt || new Date().toISOString(),data:d}));
-  const decomptes = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_decomptes")) || "[]")
-    .map(d => ({type:"Décompte Final", desc:`${d.numero} — ${d.travailleur.nomComplet} (NET: ${d.netAPayer.toLocaleString("fr-FR")} FC)`, date:d.dateEmission, data:d}));
-  const missions = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_missions")) || "[]")
-    .map(m => ({type:"Mission GPS", desc:`${m.nom} @ ${m.lat.toFixed(4)},${m.lng.toFixed(4)}`, date:m.timestamp, data:m}));
-  const conv = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_ai_memory")) || "[]")
-    .map(c => ({type:"IA", desc:c.q.substring(0,80), date:c.ts, data:c}));
-  const hist = HISTORY.getAll();
-  const all = [...pv, ...decompteFinals, ...decomptes, ...missions, ...conv, ...hist].sort((a,b) => new Date(b.date) - new Date(a.date));
-  
-  const filtre = document.getElementById("filtre").value.toLowerCase();
-  const filtered = filtre 
-    ? all.filter(x => x.type.toLowerCase().includes(filtre) || x.desc.toLowerCase().includes(filtre))
-    : all;
-
-  const box = document.getElementById("listBody");
-  if (!filtered.length) { box.innerHTML = "<div class='info-card' style='background:rgba(255,215,0,0.1); padding:15px; color:#fff;'>Aucune activité.</div>"; return; }
-  box.innerHTML = `<div class="df-resultats"><h2 style="color:#FFD700;">📋 ${filtered.length} entrée(s)</h2>` +
-    filtered.slice(0, 200).map(x => `
-      <div class="hist-item">
-        <div><strong style="color:#FFD700;">[${x.type}]</strong> ${x.desc}</div>
-        <div style="font-size:12px; color:#ccc;">${new Date(x.date).toLocaleString("fr-FR")}</div>
-      </div>`).join("") + `</div>`;
+  const pvStore=safeRead(HISTORY.keyFor("inspecteurbot_pv_rdc_v1"),{records:[]});
+  const pv=(Array.isArray(pvStore.records)?pvStore.records:[]).map(r=>({type:"Procès-verbal",desc:safeText(r.number||r.title||r.companyName,"Projet de PV"),date:r.updatedAt||r.createdAt||r.date||new Date().toISOString(),data:r}));
+  const dfStore=safeRead(HISTORY.keyFor("inspecteurbot_v1"),{archives:[]});
+  const decompteFinals=(Array.isArray(dfStore.archives)?dfStore.archives:[]).map(d=>({type:"Décompte Final",desc:safeText(d.id||d.numero||d.result?.travailleur?.nomComplet,"Décompte enregistré"),date:d.date||d.createdAt||new Date().toISOString(),data:d}));
+  const decomptes=safeRead(HISTORY.keyFor("igt_decomptes"),[]).map(d=>({type:"Décompte Final",desc:safeText(d.numero,"Décompte")+" — "+safeText(d.travailleur?.nomComplet,"Travailleur non renseigné")+" (NET : "+(Number(d.netAPayer)||0).toLocaleString("fr-FR")+" FC)",date:d.dateEmission||d.createdAt||new Date().toISOString(),data:d}));
+  const missions=safeRead(HISTORY.keyFor("igt_missions"),[]).map(m=>({type:"Mission GPS",desc:safeText(m.nom,"Mission")+" @ "+(Number.isFinite(Number(m.lat))?Number(m.lat).toFixed(4):"—")+","+(Number.isFinite(Number(m.lng))?Number(m.lng).toFixed(4):"—"),date:m.timestamp||m.createdAt||new Date().toISOString(),data:m}));
+  const conv=safeRead(HISTORY.keyFor("igt_ai_memory"),[]).map(c=>({type:"IA",desc:safeText(c.q||c.question,"Échange IA").substring(0,80),date:c.ts||c.timestamp||new Date().toISOString(),data:c}));
+  const hist=HISTORY.getAll().map(h=>({type:safeText(h.type,"Activité"),desc:safeText(h.description,""),date:h.timestamp||h.date||new Date().toISOString(),data:h.data||h}));
+  const all=[...pv,...decompteFinals,...decomptes,...missions,...conv,...hist].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const filtre=document.getElementById("filtre").value.toLowerCase();
+  const filtered=filtre?all.filter(x=>x.type.toLowerCase().includes(filtre)||x.desc.toLowerCase().includes(filtre)):all;
+  const box=document.getElementById("listBody");
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  if(!filtered.length){box.innerHTML="<div class='info-card' style='background:rgba(255,215,0,.1);padding:15px;color:#fff'>Aucune activité enregistrée pour ce compte.</div>";return;}
+  box.innerHTML="<div class='df-resultats'><h2 style='color:#FFD700'>📋 "+filtered.length+" entrée(s)</h2>"+filtered.slice(0,200).map(x=>"<div class='hist-item'><div><strong style='color:#FFD700'>["+esc(x.type)+"]</strong> "+esc(x.desc)+"</div><div style='font-size:12px;color:#ccc'>"+esc(new Date(x.date).toLocaleString("fr-FR"))+"</div></div>").join("")+"</div>";
 }
 function exportAll() {
   const pvStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1")) || '{"records":[]}');
