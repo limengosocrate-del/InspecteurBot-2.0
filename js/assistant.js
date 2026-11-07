@@ -52,7 +52,13 @@ const ASSISTANT = {
     "Combien de jours de congé après 9 ans ?",
     "Formule du décompte final",
     "Taux CNSS en RDC",
-    "Différence entre licenciement et faute lourde",\n    "Quels sont les différents types de procès-verbaux ?",\n    "Prépare une trame de PV de constat d’infraction.",\n    "Quelles sont les étapes d’une mission d’inspection ?",\n    "Quels contrôles effectuer avec la fiche F03 ?",\n    "Explique les missions du menu IGT et de l’annuaire.",\n    "Quelles données faut-il pour établir un décompte final ?"
+    "Différence entre licenciement et faute lourde",
+    "Quels sont les différents types de procès-verbaux ?",
+    "Prépare une trame de PV de constat d’infraction.",
+    "Quelles sont les étapes d’une mission d’inspection ?",
+    "Quels contrôles effectuer avec la fiche F03 ?",
+    "Explique les missions du menu IGT et de l’annuaire.",
+    "Quelles données faut-il pour établir un décompte final ?"
   ],
 
   // ============ RECONNAISSANCE VOCALE ============
