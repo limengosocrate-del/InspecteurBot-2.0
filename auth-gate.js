@@ -64,8 +64,8 @@ function gate(t,mode){
  document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
  g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
- intro.textContent=mode==='loading'?'Nous vérifions votre session sécurisée…':'Connectez-vous avec votre compte existant pour accéder à l’application.';
- if(t)msg(t,mode==='loading');
+ intro.textContent=mode==='loading'?'':'Connectez-vous avec votre compte existant pour accéder à l’application.';
+ if(t&&mode!=='loading')msg(t,mode==='loading');
 }
 function makeGate(){
  if(byId('auth-gate'))return;
@@ -124,7 +124,7 @@ async function validate(session){
     document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!hamb.contains(e.target))setMenu(false)});
    }
    const label=chip.querySelector('.ib-account-label');label.textContent=data.display_name||session.user.email||'Utilisateur';
-   if(data.role==='super_admin'){const menu=chip.querySelector('#ib-auth-menu');if(menu&&!menu.querySelector('#ib-admin-link')){const link=document.createElement('a');link.id='ib-admin-link';link.href='admin.html';link.innerHTML='<i class="fa-solid fa-gauge-high"></i> Tableau de bord administrateur';const logout=menu.querySelector('#ib-auth-logout');menu.insertBefore(link,logout||null);}}
+   const menu=chip.querySelector('#ib-auth-menu');if(data.role==='super_admin'){if(menu&&!menu.querySelector('#ib-admin-link')){const link=document.createElement('a');link.id='ib-admin-link';link.href='admin.html';link.innerHTML='<i class="fa-solid fa-gauge-high"></i> Tableau de bord administrateur';const logout=menu.querySelector('#ib-auth-logout');menu.insertBefore(link,logout||null);}}else if(menu){menu.querySelectorAll('#ib-admin-link,a').forEach(link=>{if(/administrateur|admin\.html|se connecter comme/i.test(link.textContent+' '+link.getAttribute('href')))link.remove()})}
    const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
    if(data.avatar_url){avatarImg.src=data.avatar_url;avatarImg.hidden=false;avatarIcon.hidden=true}
    else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
