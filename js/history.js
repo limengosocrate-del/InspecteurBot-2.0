@@ -4,6 +4,7 @@
 
 let historyStorageKey = "igt_historique_local";
 const HISTORY = {
+  keyFor(base) { return base + historyStorageKey.slice("igt_historique".length); },
   ready: (async () => {
     const client = window.inspecteurBotAuthClient;
     if (!client || !client.auth) return;
