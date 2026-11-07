@@ -7,6 +7,18 @@
 // ==========================================
 // CONFIG & STATE
 // ==========================================
+let archiveStorageKey = 'inspecteurbot_archive_local';
+
+async function initArchiveAccountKey() {
+  const client = window.inspecteurBotAuthClient;
+  if (!client || !client.auth) return;
+  try {
+    const { data } = await client.auth.getSession();
+    const id = data && data.session && data.session.user && data.session.user.id;
+    if (id) archiveStorageKey = 'inspecteurbot_archive_' + id;
+  } catch (e) { console.warn('Compte local des archives indisponible', e); }
+}
+
 const STATE = {
   currentSection: 'accueil',
   currentArticle: 187,
@@ -1324,21 +1336,15 @@ function cancelManualEdit() {
 // ==========================================
 function loadArchive() {
   try {
-    const saved = localStorage.getItem('inspecteurbot_archive');
+    const saved = localStorage.getItem(archiveStorageKey);
     if (saved) {
       STATE.archiveData = JSON.parse(saved);
-    } else {
-      STATE.archiveData = [
-        { id: 1, date: '2025-04-14', order: '22/MET/IGT/AI-EPNT/070', group: 'G01', role: 'Chef de mission', participants: '', objective: 'Identifier les entreprises utilisant la main d\'œuvre nationale et étrangère', matter: 'Protection de la main d\'œuvre nationale', companies: 'REWA CONGO — Commerce générale\nRALPH SERVICES — Imprimerie et restaurant', addresses: 'KINSHASA, Gombe, Axe 24 Novembre', phone: '+243 99 876 6270', observations: 'Manque de moyens de transport — Non-respect des assujettis', status: 'archived', timestamp: '2025-05-09T09:00:00Z' },
-        { id: 2, date: '2025-06-20', order: 'OS-245', group: 'G03', role: 'Inspecteur du Travail', participants: '', objective: 'Contrôle de conformité des registres', matter: 'Application du Code du travail', companies: 'STARTIMES MEDIA RDC — Télé distribution', addresses: 'KINSHASA, Ngaliema', phone: '+243 99 123 4567', observations: 'Document en ordre — Aucune irrégularité majeure', status: 'archived', timestamp: '2025-06-25T14:30:00Z' },
-        { id: 3, date: '2025-07-10', order: 'OS-312', group: 'G02', role: 'Contrôleur du Travail', participants: 'Contrôleur LIBULA LISANGA Israël', objective: 'Vérification de la main d\'œuvre étrangère', matter: 'Protection de la main d\'œuvre étrangère', companies: 'POLYCLINIQUE DE KINSHASA — Santé', addresses: 'KINSHASA, Bandalungwa', phone: '+243 99 555 7777', observations: 'Obstruction au contrôle — Refus d\'accès', status: 'active', timestamp: '2025-07-10T10:00:00Z' },
-      ];
-    }
+    } else { STATE.archiveData = []; }
   } catch (e) { STATE.archiveData = []; }
 }
 
 function saveArchive() {
-  localStorage.setItem('inspecteurbot_archive', JSON.stringify(STATE.archiveData));
+  localStorage.setItem(archiveStorageKey, JSON.stringify(STATE.archiveData));
 }
 
 function updateArchiveTable() {
@@ -1562,7 +1568,8 @@ function toggleMobileMenu() {
 // ==========================================
 // INIT
 // ==========================================
-function initApp() {
+async function initApp() {
+  await initArchiveAccountKey();
   initMissionForm();
   buildModelLibrary();
   filterModels('all');
