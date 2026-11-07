@@ -24,6 +24,8 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 .wide{grid-column:1/-1}
 #status{padding:18px;text-align:center;background:white;border-radius:12px;color:var(--muted)}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}header h1{font-size:21px}}
+
+#documents{margin-top:16px}.doc-actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.doc-actions button,.doc-row button{border:0;border-radius:8px;padding:10px 13px;background:#075a96;color:white;font-weight:600;cursor:pointer}.doc-actions .secondary,.doc-row .secondary{background:#eaf1f7;color:#174365}.doc-help{font-size:12px;line-height:1.6;color:#687d90}.doc-list{display:grid;gap:9px;margin-top:14px}.doc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #e3ebf2;border-radius:10px;min-width:0}.doc-meta{min-width:0}.doc-meta strong{display:block;font-size:13px;overflow-wrap:anywhere}.doc-meta small{color:#687d90;font-size:11px}.doc-row-actions{display:flex;gap:7px;flex-shrink:0}.doc-empty{padding:18px;text-align:center;color:#687d90;background:#f7f9fb;border-radius:10px;font-size:13px}#docStatus{font-size:12px;color:#075a96;min-height:18px;margin-top:8px}@media(max-width:520px){.doc-row{align-items:flex-start;flex-direction:column}.doc-row-actions{width:100%}.doc-row-actions button{flex:1}}
 </style>
 </head>
 <body>
@@ -49,6 +51,18 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 <section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
 <section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
 <section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
+<section id="documents" class="wide">
+<h2>📁 Mes documents personnels</h2>
+<p class="doc-help">Ajoutez vos documents pour les conserver dans le navigateur de cet appareil. Ils sont privés à votre compte InspecteurBot sur cet appareil et ne sont pas envoyés vers Supabase.</p>
+<div class="doc-actions">
+<label for="docFiles" style="display:inline-flex;align-items:center;border-radius:8px;padding:10px 13px;background:#075a96;color:white;font-weight:600;cursor:pointer">＋ Ajouter des documents</label><input id="docFiles" type="file" multiple hidden>
+<button id="backupDocs" type="button" class="secondary">Exporter ma sauvegarde</button>
+<label for="restoreDocs" class="secondary" style="display:inline-flex;align-items:center;border-radius:8px;padding:10px 13px;font-weight:600;cursor:pointer">Restaurer une sauvegarde</label><input id="restoreDocs" type="file" accept="application/json,.json" hidden>
+</div>
+<div id="docStatus" role="status" aria-live="polite"></div>
+<div id="docList" class="doc-list"><div class="doc-empty">Chargement de vos documents…</div></div>
+<p class="doc-help">Attention : les documents restent dans le stockage de ce navigateur. Ils ne se synchronisent pas automatiquement avec vos autres appareils. Exportez régulièrement une sauvegarde JSON et conservez-la ailleurs. La suppression des données du navigateur peut effacer ces documents.</p>
+</section>
 </div>
 </div>
 </main>
@@ -64,6 +78,22 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function item(label,value){const empty=value===null||value===undefined||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
 function date(v){if(!v)return null;const d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR')}
 function role(v){return ({super_admin:'Super administrateur',admin:'Administrateur',agent:'Agent'})[v]||v}
+const DOC_DB='inspecteurbot_personal_documents_v1';
+function openDocDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DOC_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('documents')){const st=db.createObjectStore('documents',{keyPath:'id'});st.createIndex('owner','owner',{unique:false})}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Ouverture du stockage local impossible.'))})}
+function docTx(db,mode,fn){return new Promise((resolve,reject)=>{const tx=db.transaction('documents',mode),st=tx.objectStore('documents');let result;try{result=fn(st)}catch(e){reject(e);return}tx.oncomplete=()=>resolve(result?.result);tx.onerror=()=>reject(tx.error||Error('Erreur du stockage local.'));tx.onabort=()=>reject(tx.error||Error('Opération annulée.'))})}
+function fmtSize(n){if(n<1024)return n+' o';if(n<1048576)return (n/1024).toFixed(1)+' Ko';return (n/1048576).toFixed(2)+' Mo'}
+function safeName(n){return String(n||'document').replace(/[\\/:*?"<>|]/g,'_')}
+function readAsDataURL(file){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=()=>reject(Error('Lecture du fichier impossible : '+file.name));fr.readAsDataURL(file)})}
+function dataURLBlob(data){const parts=String(data).split(',');const mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const raw=atob(parts[1]||'');const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type:mime})}
+async function initDocuments(owner){const db=await openDocDB();const list=$('docList'),status=$('docStatus');
+ async function all(){const rows=await docTx(db,'readonly',st=>st.index('owner').getAll(owner));return rows||[]}
+ async function render(){const rows=await all();rows.sort((a,b)=>b.addedAt-a.addedAt);list.innerHTML='';if(!rows.length){list.innerHTML='<div class="doc-empty">Aucun document enregistré pour le moment.</div>';return}for(const d of rows){const row=document.createElement('div');row.className='doc-row';const meta=document.createElement('div');meta.className='doc-meta';const title=document.createElement('strong');title.textContent=d.name;const sub=document.createElement('small');sub.textContent=fmtSize(d.size)+' · Ajouté le '+new Date(d.addedAt).toLocaleString('fr-FR');meta.append(title,sub);const actions=document.createElement('div');actions.className='doc-row-actions';const down=document.createElement('button');down.type='button';down.textContent='Télécharger';down.addEventListener('click',()=>{const url=URL.createObjectURL(d.blob);const a=document.createElement('a');a.href=url;a.download=safeName(d.name);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)});const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Supprimer';del.addEventListener('click',async()=>{if(!confirm('Supprimer « '+d.name+' » de ce stockage local ?'))return;await docTx(db,'readwrite',st=>st.delete(d.id));status.textContent='Document supprimé du stockage local.';await render()});actions.append(down,del);row.append(meta,actions);list.appendChild(row)}}
+ $('docFiles').addEventListener('change',async e=>{const files=Array.from(e.target.files||[]);if(!files.length)return;status.textContent='Enregistrement des documents…';let count=0;try{for(const f of files){if(f.size>30*1024*1024)throw Error(f.name+' dépasse la limite de 30 Mo par fichier.');const rec={id:owner+'_'+Date.now()+'_'+Math.random().toString(36).slice(2),owner,name:f.name,type:f.type||'application/octet-stream',size:f.size,addedAt:Date.now(),blob:f};await docTx(db,'readwrite',st=>st.add(rec));count++}status.textContent=count+' document(s) enregistré(s) sur cet appareil.';await render()}catch(err){status.textContent='Enregistrement interrompu : '+err.message;await render()}finally{e.target.value=''}});
+ $('backupDocs').addEventListener('click',async()=>{try{status.textContent='Préparation de la sauvegarde…';const rows=await all();const out=[];for(const d of rows){const fr=await readAsDataURL(new File([d.blob],d.name,{type:d.type}));out.push({name:d.name,type:d.type,size:d.size,addedAt:d.addedAt,data:fr})}const payload={format:'InspecteurBot-Documents',version:1,exportedAt:new Date().toISOString(),documents:out};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='InspecteurBot-documents-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);status.textContent=out.length+' document(s) exporté(s) dans la sauvegarde.'}catch(err){status.textContent='Échec de la sauvegarde : '+err.message}});
+ $('restoreDocs').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>200*1024*1024)throw Error('La sauvegarde dépasse 200 Mo.');const payload=JSON.parse(await f.text());if(payload.format!=='InspecteurBot-Documents'||!Array.isArray(payload.documents))throw Error('Ce fichier n’est pas une sauvegarde InspecteurBot valide.');if(!confirm('Importer '+payload.documents.length+' document(s) dans le compte actuellement connecté ? Les fichiers existants seront conservés.'))return;let count=0;for(const d of payload.documents){if(!d.name||!d.data)continue;const blob=dataURLBlob(d.data);if(blob.size>30*1024*1024)continue;const rec={id:owner+'_restore_'+Date.now()+'_'+Math.random().toString(36).slice(2),owner,name:safeName(d.name),type:d.type||blob.type,size:blob.size,addedAt:d.addedAt||Date.now(),blob};await docTx(db,'readwrite',st=>st.add(rec));count++}status.textContent=count+' document(s) restauré(s) pour ce compte.';await render()}catch(err){status.textContent='Restauration impossible : '+err.message}finally{e.target.value=''}});
+ await render();
+}
+
 async function load(){
  const auth=await new Promise(resolve=>{
   if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient});return}
@@ -99,6 +129,7 @@ async function load(){
    finally{btn.disabled=false}
  });
  $('status').hidden=true;$('profile').hidden=false;
+ await initDocuments(session.user.id);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message});
 })();
