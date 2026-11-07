@@ -51,7 +51,7 @@ window.InspecteurApp = {
         const body = document.body;
 
         // Charger préférence locale
-        const savedTheme = localStorage.getItem("inspecteur_theme") || "light";
+        const savedTheme = localStorage.getItem("inspecteur_theme_v2") || "light";
         if (savedTheme === "light") {
             body.classList.add("light-theme");
             body.classList.remove("dark-theme");
@@ -68,7 +68,7 @@ window.InspecteurApp = {
                 const isLight = body.classList.contains("light-theme");
                 body.classList.toggle("dark-theme", !isLight);
                 if (icon) icon.textContent = isLight ? "☀️" : "🌙";
-                localStorage.setItem("inspecteur_theme", isLight ? "light" : "dark");
+                localStorage.setItem("inspecteur_theme_v2", isLight ? "light" : "dark");
                 if (window.InspecteurUtils) {
                     window.InspecteurUtils.showNotification(`Thème ${isLight ? "Clair (Jour)" : "Sombre (Nuit)"} activé`, "fa-circle-half-stroke");
                 }
