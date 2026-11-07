@@ -85,7 +85,7 @@ async function serverCheck(){
   if(!error&&payload?.success){clearTimeout(expiry);expiry=null;return}
   const code=payload?.code||'';
   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,250));continue}
-  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE'].includes(code);
+  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
   const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
   err.authFatal=fatal;err.authTransient=!fatal;throw err;
  }
