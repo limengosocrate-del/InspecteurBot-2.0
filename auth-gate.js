@@ -5,7 +5,7 @@ if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
 html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
@@ -53,6 +53,11 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splas
 @media(max-width:520px){#ib-auth-gate{padding:12px}#ib-auth-card{padding:20px!important;max-height:calc(100dvh - 24px)}#ib-auth-register-panel{padding:10px}#ib-auth-register-form{margin:8px auto;padding:18px}}
 `;
 document.head.appendChild(css);
+if(!document.getElementById('ib-startup-splash')){
+ const splash=document.createElement('div');splash.id='ib-startup-splash';splash.setAttribute('role','status');splash.setAttribute('aria-live','polite');
+ splash.innerHTML='<div class="ib-splash-title">InspecteurBot</div><div class="ib-splash-subtitle">Votre assistant numérique</div><div class="ib-splash-spinner" aria-hidden="true"></div>';
+ document.body.appendChild(splash);
+}
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
 function armSessionExpiry(payload){
@@ -64,8 +69,20 @@ function armSessionExpiry(payload){
  if(remaining<=0){void expireSession();return}
  expiry=setTimeout(expireSession,remaining);
 }
+async function updatePresence(){
+ if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline)return;
+ const now=new Date().toISOString();
+ const {error}=await client.from('user_presence').upsert({user_id:user.id,last_seen:now,updated_at:now},{onConflict:'user_id'});
+ if(error)console.warn('Mise à jour de présence indisponible',error);
+}
+function startPresenceTracking(){
+ clearInterval(presenceTimer);
+ void updatePresence();
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},30000);
+}
+function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 async function expireSession(){
- clearTimeout(expiry);expiry=null;sessionDeadline=0;
+ clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();
  try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session de 30 minutes est terminée. Veuillez vous reconnecter.');
@@ -123,7 +140,7 @@ async function serverCheck(){
  throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
 async function validate(session){
- if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
+ if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();gate();return}
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
@@ -132,7 +149,7 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;
+  user=session.user;profile=data;startPresenceTracking();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
@@ -174,8 +191,8 @@ async function validate(session){
  }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);sessionDeadline=0;clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden)void updatePresence()});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
