@@ -1761,3 +1761,21 @@ body.light-theme::before{background:#f4f2ec!important}
 body.light-theme .container,body.light-theme main,body.light-theme section,body.light-theme .card,body.light-theme .article-card,body.light-theme .search-section,body.light-theme .livre,body.light-theme .livre-page{background-color:#fffefa!important;color:#293542!important}
 body.light-theme .top-header{background:linear-gradient(135deg,#e9e5da,#f8f6f0)!important}
 body.light-theme .top-header h1,body.light-theme .top-header h2,body.light-theme .top-header h3,body.light-theme .top-header p{color:#293542!important}
+
+/* Thèmes finalisés : en-tête et pied de page toujours blanc cassé */
+body.light-theme .top-header,body.dark-theme .top-header{background:#fffefa!important;color:#243244!important;border:1px solid #e5e0d6!important;box-shadow:0 8px 24px rgba(15,35,55,.10)!important}
+body.light-theme .top-header h1,body.dark-theme .top-header h1{color:#14263b!important;text-shadow:none!important}
+body.light-theme .top-header h2,body.dark-theme .top-header h2{color:#8b6a18!important;text-shadow:none!important}
+body.light-theme .top-header h3,body.dark-theme .top-header h3,body.light-theme .top-header p,body.dark-theme .top-header p{color:#35465a!important;text-shadow:none!important}
+body.light-theme .top-header .info-item,body.dark-theme .top-header .info-item{color:#243244!important}
+body.light-theme .top-header .info-item span,body.dark-theme .top-header .info-item span{color:#243244!important}
+body.light-theme .footer,body.dark-theme .footer{background:#fffefa!important;color:#293542!important;border-top:1px solid #e5e0d6!important}
+body.light-theme .footer h2,body.dark-theme .footer h2,body.light-theme .footer h3,body.dark-theme .footer h3,body.light-theme .footer p,body.dark-theme .footer p,body.light-theme .footer a,body.dark-theme .footer a{color:#293542!important;text-shadow:none!important}
+body.dark-theme .livre-page,body.dark-theme .livre-page *{color:#f7f8fa!important}
+body.light-theme .livre-page,body.light-theme .livre-page *{color:#202b38!important}
+body.dark-theme .livre-page{background:#172331!important;border-color:#344456!important}
+body.light-theme .livre-page{background:#fffefa!important;border-color:#ded8cc!important}
+body.dark-theme .livre-pagination,body.dark-theme .livre-titre-section{color:#f7f8fa!important}
+body.light-theme .livre-pagination,body.light-theme .livre-titre-section{color:#202b38!important}
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}
+body{position:static!important}
