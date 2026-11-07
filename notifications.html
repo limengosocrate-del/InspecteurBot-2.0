@@ -17,12 +17,12 @@ form{display:grid;gap:10px}input,textarea,select{width:100%;padding:12px;border:
 @media(max-width:520px){header{padding:13px}.brand{font-size:18px}.back{font-size:12px}main{margin-top:18px}.panel{padding:14px}h1{font-size:21px}.item-head{flex-wrap:wrap}.item-time{width:100%}}
 </style>
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}</style>
-<script src="auth-gate.js?v=20261107-auth-smooth-14" defer></script>
+<script src="auth-gate.js?v=20261107-auth-smooth-15" defer></script>
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
 <main>
 <div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et échanges avec l’administration</p></div></div>
-<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="messages" type="button">Messages</button></div><div id="notificationList"><div class="empty"><i class="fa-solid fa-circle-notch fa-spin"></i>Chargement de vos notifications…</div></div></section>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="messages" type="button">Messages</button></div><div id="notificationList"><div class="empty"><i class="fa-solid fa-circle-notch fa-spin"></i>Centre de notifications prêt.</div></div></section>
 <section class="panel" id="writePanel"><h2 id="writeTitle"><i class="fa-regular fa-paper-plane"></i> Écrire à l’administrateur</h2><form id="messageForm"><textarea id="messageContent" maxlength="4000" required placeholder="Écrivez votre message à l’administrateur…"></textarea><button class="primary" id="sendMessage" type="submit">Envoyer le message</button><div class="notice" id="messageStatus" aria-live="polite"></div></form></section>
 <section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" maxlength="5000" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
 </main>
