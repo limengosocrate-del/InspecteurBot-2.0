@@ -60,6 +60,8 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
  .profile-hero p{font-size:13px}
 }
 @media(max-width:420px){.fields{grid-template-columns:1fr}.doc-row{align-items:flex-start;flex-direction:column}.doc-row-actions{width:100%}.doc-row-actions button{flex:1}}
+
+.admin-tools{border-color:#d9c99e;background:#fffdf7}.admin-tools h2{color:#173e61}.admin-links{display:flex;gap:10px;flex-wrap:wrap}.admin-action-link{display:inline-flex;align-items:center;gap:9px;padding:11px 15px;border-radius:10px;background:#12385c;color:#fff;text-decoration:none;font-size:12px;font-weight:750}.admin-action-link:hover{background:#1c527c}
 </style>
 </head>
 <body>
@@ -103,6 +105,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 <section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
 <section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
 <section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
+<section class="wide admin-tools" id="admin-tools" hidden><h2><i class="fa-solid fa-user-shield"></i> Espace administrateur</h2><p class="doc-help">Accédez aux outils autorisés pour votre rôle.</p><div class="admin-links" id="admin-links"></div></section>
 <section id="documents" class="wide">
 <h2>📁 Mes documents personnels</h2>
 <p class="doc-help">Ajoutez vos documents pour les conserver dans le navigateur de cet appareil. Ils restent enregistrés dans le navigateur de cet appareil.</p>
@@ -123,7 +126,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 /* InspecteurBot — profil, paramètres et fiche professionnelle en stockage local uniquement. */
 (function(){
 'use strict';
-function initProfileForAccount(user){
+function initProfileForAccount(user,profile){
  if(!user||!user.id)return;
  const KEY='inspecteurbot_local_profile_v1_'+user.id;
 const $=id=>document.getElementById(id);
@@ -151,12 +154,14 @@ function read(){
  return {username:user.user_metadata?.display_name||user.email?.split('@')[0]||'',email:user.email||'',phone:'',address:'',role:'Utilisateur',createdAt:'',avatar:'',professional:{}};
 }
 let data=read();
+if(profile?.role)data.role=profile.role==='super_admin'?'Super-administrateur':profile.role==='admin'?'Administrateur':'Agent';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
 function item(label,value){const empty=value===undefined||value===null||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
 function show(){
  $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Mode de conservation','Stockage local de cet appareil');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
+ const adminTools=$('admin-tools'),adminLinks=$('admin-links');if(adminTools&&adminLinks){const role=profile?.role||'agent';adminTools.hidden=!['admin','super_admin'].includes(role);adminLinks.innerHTML=role==='super_admin'?'<a class="admin-action-link" href="admin.html"><i class="fa-solid fa-gears"></i> Administration générale</a><a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':role==='admin'?'<a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':'';}
  $('editName').value=data.username||'';$('editPhone').value=data.phone||'';$('editAddress').value=data.address||'';
  fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=data.professional?.[key]||''});
  if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
@@ -196,8 +201,8 @@ show();
 documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
 
 }
-window.addEventListener('inspecteurbot:authenticated',event=>initProfileForAccount(event.detail?.user),{once:true});
-if(window.inspecteurBotAuthUser?.id)initProfileForAccount(window.inspecteurBotAuthUser);
+window.addEventListener('inspecteurbot:authenticated',event=>initProfileForAccount(event.detail?.user,event.detail?.profile),{once:true});
+if(window.inspecteurBotAuthUser?.id)initProfileForAccount(window.inspecteurBotAuthUser,window.inspecteurBotAuthProfile);
 })();
 </script>
 </body></html>
