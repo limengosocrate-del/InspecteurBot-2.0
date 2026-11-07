@@ -17,6 +17,17 @@
     <h1 style="color:var(--gold)">📘 Conventions collectives</h1>
     <p style="color:var(--muted);margin:8px 0 14px">Les CC peuvent être plus favorables que la loi — jamais en deçà du SMIG / ordre public social.</p>
     <div class="glass">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="btn-gold" id="newConventionBtn" type="button">＋ Nouvelle convention</button>
+        <span style="color:var(--muted);font-size:12px;align-self:center">Vos projets sont enregistrés uniquement sur cet appareil et dans votre compte.</span>
+      </div>
+      <form id="newConventionForm" hidden style="display:grid;gap:10px;margin:12px 0;padding:14px;border:1px solid var(--glass-border);border-radius:12px">
+        <label>Intitulé de la convention<input id="ccTitle" required maxlength="160" placeholder="Ex. Convention collective de l'entreprise"></label>
+        <label>Secteur ou entreprise<input id="ccSector" required maxlength="160" placeholder="Secteur d'activité / entreprise"></label>
+        <label>Texte ou dispositions<textarea id="ccText" rows="7" required placeholder="Saisissez les articles, salaires, primes, horaires, congés, préavis et autres clauses…"></textarea></label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-gold" type="submit">Enregistrer le projet</button><button class="btn-gold" id="cancelConvention" type="button">Annuler</button></div>
+      </form>
+      <div id="customConventionList"></div>
       <div id="list"></div>
       <div class="field" style="margin-top:14px">
         <label>Analyser une clause (collez le texte)</label>
@@ -38,6 +49,58 @@
         <strong style="color:var(--gold)">${c.id}</strong> — ${c.secteur}<br>
         <span style="color:var(--muted)">${c.resume}</span>
       </div>`).join("");
+
+    let conventionStorageKey = "inspecteurbot:conventions:local";
+    async function initConventionStorage(){
+      const client = window.inspecteurBotAuthClient;
+      if(client && client.auth){
+        try{
+          const {data}=await client.auth.getSession();
+          const id=data&&data.session&&data.session.user&&data.session.user.id;
+          if(id) conventionStorageKey="inspecteurbot:conventions:"+id;
+        }catch(e){console.warn("Compte local des conventions indisponible",e);}
+      }
+      renderCustomConventions();
+    }
+    function getCustomConventions(){
+      try{return JSON.parse(localStorage.getItem(conventionStorageKey)||"[]");}catch(e){return [];}
+    }
+    function renderCustomConventions(){
+      const host=document.getElementById("customConventionList");
+      const items=getCustomConventions();
+      host.innerHTML="";
+      if(!items.length)return;
+      const title=document.createElement("h3");
+      title.textContent="Mes projets de conventions";
+      title.style.margin="12px 0";
+      host.appendChild(title);
+      items.forEach(item=>{
+        const card=document.createElement("article");
+        card.style.cssText="padding:14px;margin:10px 0;border:1px solid var(--glass-border);border-radius:12px";
+        const heading=document.createElement("strong");
+        heading.textContent=item.title+" — "+item.sector;
+        const body=document.createElement("p");
+        body.style.cssText="white-space:pre-wrap;color:var(--muted);margin-top:8px";
+        body.textContent=item.text;
+        const date=document.createElement("small");
+        date.textContent="Projet local • "+new Date(item.createdAt).toLocaleString("fr-FR");
+        card.append(heading,body,date);
+        host.appendChild(card);
+      });
+    }
+    const conventionForm=document.getElementById("newConventionForm");
+    document.getElementById("newConventionBtn").onclick=()=>{conventionForm.hidden=false;document.getElementById("ccTitle").focus();};
+    document.getElementById("cancelConvention").onclick=()=>{conventionForm.reset();conventionForm.hidden=true;};
+    conventionForm.addEventListener("submit",event=>{
+      event.preventDefault();
+      const item={id:Date.now(),title:document.getElementById("ccTitle").value.trim(),sector:document.getElementById("ccSector").value.trim(),text:document.getElementById("ccText").value.trim(),createdAt:new Date().toISOString()};
+      if(!item.title||!item.sector||!item.text)return;
+      const items=getCustomConventions();items.unshift(item);
+      localStorage.setItem(conventionStorageKey,JSON.stringify(items));
+      conventionForm.reset();conventionForm.hidden=true;renderCustomConventions();
+      alert("Projet de convention enregistré localement pour votre compte.");
+    });
+    initConventionStorage();
     go.onclick = () => {
       const t = clause.value.trim();
       if (!t) return;
