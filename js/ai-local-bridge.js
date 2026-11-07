@@ -18,7 +18,7 @@
     {name:"Archives et profil", keys:["archive","historique","profil","photo","compte","utilisateur","paramètre"], info:"Les espaces Archives et Profil servent à retrouver les dossiers ou historiques disponibles et à gérer les informations du compte et la photo de profil. Les données personnelles d'un autre compte ne sont pas exposées à l'assistant local."}
   ];
 
-  const PV_TYPES = [
+  if (window.NeuroJuris && window.CODE_TRAVAIL_DB && !window.NeuroJuris.ready) {\n    const verifiedArticles = window.CODE_TRAVAIL_DB.filter(article => article.authentique === true);\n    window.NeuroJuris.build(verifiedArticles);\n  }\n\n  const PV_TYPES = [
     "Procès-verbal de constat d'infraction",
     "Procès-verbal d'obstruction",
     "Procès-verbal de non-conciliation",
@@ -104,22 +104,6 @@
       return { text: "L'annuaire professionnel IGT contient des fiches d'agents et des informations d'affectation. Pour retrouver une personne précise, la connexion sécurisée à l'annuaire Supabase est nécessaire. En mode hors connexion, je ne peux ni consulter ni inventer une fiche individuelle.\n\n" + DEV_NOTICE, confidence: 0.4, source: "annuaire local limité" };
     }
 
-    if (window.AI_CORE && typeof window.AI_CORE.ask === "function") {
-      try {
-        const result = window.AI_CORE.ask(q, { conversation: options.history || [] });
-        let answer = result && result.text ? result.text : "";
-        if (/smig|salaire minimum/.test(nq) && /chauffeur|cadre|catégorie|categorie|échelon|echelon/.test(nq)) {
-          answer += "\n\n⚠️ Le barème détaillé par fonction embarqué correspond au palier 1 de 2025. Le taux général du manœuvre ordinaire est de 21 500 FC/jour depuis janvier 2026 ; je ne déduis pas automatiquement un nouveau barème complet par fonction sans texte actualisé.";
-        }
-        if (/decompte|décompte|solde de tout compte/.test(nq)) {
-          answer += "\n\nPour un calcul chiffré fiable, il faut notamment le salaire de base, la catégorie, l'ancienneté exacte, le motif et la date de rupture, le préavis presté ou non, les congés non pris, les sommes restant dues et les éléments de rémunération. Le module Décompte Final de l'application permet de saisir ces éléments.";
-        }
-        return { text: answer + "\n\n" + DEV_NOTICE, confidence: 0.6, source: "AI_CORE local" };
-      } catch (e) {
-        console.warn("AI_CORE local indisponible", e);
-      }
-    }
-
     if (window.CODE_TRAVAIL_DB && window.CODE_TRAVAIL_DB.length) {
       const matchArticle = nq.match(/(?:article|art)\s*(\d{1,3})/);
       if (matchArticle) {
@@ -135,6 +119,22 @@
 
     const menu = menuAnswer(q);
     if (menu) return { text: menu + "\n\n" + DEV_NOTICE, confidence: 0.55, source: "connaissances des menus" };
+
+    if (window.AI_CORE && typeof window.AI_CORE.ask === "function") {
+      try {
+        const result = window.AI_CORE.ask(q, { conversation: options.history || [] });
+        let answer = result && result.text ? result.text : "";
+        if (/smig|salaire minimum/.test(nq) && /chauffeur|cadre|catégorie|categorie|échelon|echelon/.test(nq)) {
+          answer += "\n\n⚠️ Le barème détaillé par fonction embarqué correspond au palier 1 de 2025. Le taux général du manœuvre ordinaire est de 21 500 FC/jour depuis janvier 2026 ; je ne déduis pas automatiquement un nouveau barème complet par fonction sans texte actualisé.";
+        }
+        if (/decompte|décompte|solde de tout compte/.test(nq)) {
+          answer += "\n\nPour un calcul chiffré fiable, il faut notamment le salaire de base, la catégorie, l'ancienneté exacte, le motif et la date de rupture, le préavis presté ou non, les congés non pris, les sommes restant dues et les éléments de rémunération. Le module Décompte Final de l'application permet de saisir ces éléments.";
+        }
+        return { text: answer + "\n\n" + DEV_NOTICE, confidence: 0.6, source: "AI_CORE local" };
+      } catch (e) {
+        console.warn("AI_CORE local indisponible", e);
+      }
+    }
 
     if (window.NeuroJuris && window.NeuroJuris.ready) {
       try {
