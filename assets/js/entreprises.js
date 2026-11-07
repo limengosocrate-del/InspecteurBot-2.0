@@ -75,8 +75,24 @@ document.getElementById("city").textContent="Kinshasa";
  BASE DE DONNÉES
 =========================================================*/
 
-let entreprises =
-JSON.parse(localStorage.getItem("entreprises")) || [];
+let entreprises = [];
+let entreprisesStorageKey = "inspecteurbot:entreprises:local";
+
+function chargerCleEntreprises(){
+    const client = window.inspecteurBotAuthClient;
+    if (!client || !client.auth) {
+        entreprises = JSON.parse(localStorage.getItem(entreprisesStorageKey) || "[]");
+        return Promise.resolve();
+    }
+    return client.auth.getSession().then(({data}) => {
+        const userId = data && data.session && data.session.user && data.session.user.id;
+        entreprisesStorageKey = userId ? "inspecteurbot:entreprises:" + userId : "inspecteurbot:entreprises:local";
+        entreprises = JSON.parse(localStorage.getItem(entreprisesStorageKey) || "[]");
+    }).catch(() => {
+        entreprisesStorageKey = "inspecteurbot:entreprises:local";
+        entreprises = JSON.parse(localStorage.getItem(entreprisesStorageKey) || "[]");
+    });
+}
 
 /*=========================================================
  NOTIFICATION
@@ -120,7 +136,7 @@ function notification(message,type="success"){
 function sauvegarder(){
 
     localStorage.setItem(
-        "entreprises",
+        entreprisesStorageKey,
         JSON.stringify(entreprises)
     );
 
@@ -597,13 +613,7 @@ afficherEntreprises();
 
 function actualiser(){
 
-entreprises=
-
-JSON.parse(
-
-localStorage.getItem("entreprises")
-
-)||[];
+await chargerCleEntreprises();
 
 afficherEntreprises();
 
@@ -1064,7 +1074,7 @@ console.log(
  CHARGEMENT INITIAL
 =========================================================*/
 
-document.addEventListener("DOMContentLoaded",function(){
+document.addEventListener("DOMContentLoaded",async function(){
 
 /* Chargement des données */
 
