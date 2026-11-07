@@ -11,7 +11,7 @@
     <meta name="keywords" content="Code du Travail RDC, Inspection Générale du Travail, InspecteurBot, Droit du Travail, IA, Articles, Loi 16/010, SMIG, Congo, Kinshasa">
     <meta name="author" content="Inspecteur Limengo (Pmiller) & IGT RDC">
     <meta name="theme-color" content="#041c5c">
-    <meta name="color-scheme" content="light dark">
+    <meta name="color-scheme" content="dark">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -57,6 +57,15 @@
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/livre.css">
     <link rel="stylesheet" href="assets/css/igt-professional.css?v=20261107-1">
+<style id="igt-fixed-dark-theme">
+html,body,body.dark-theme{background:#0b0f14!important;color:#f5f7fa!important;color-scheme:dark!important}
+body.dark-theme .container,body.dark-theme main,body.dark-theme section,body.dark-theme .card,body.dark-theme .search-section,body.dark-theme .article-card,body.dark-theme .livre,body.dark-theme .livre-page{background-color:#111820!important;color:#f5f7fa!important}
+body.dark-theme h1,body.dark-theme h2,body.dark-theme h3,body.dark-theme h4,body.dark-theme p,body.dark-theme li,body.dark-theme label,body.dark-theme span,body.dark-theme strong,body.dark-theme .livre-contenu{color:#f5f7fa!important}
+body.dark-theme input,body.dark-theme textarea,body.dark-theme select{background:#18212b!important;color:#fff!important;border-color:#344354!important}
+body.dark-theme input::placeholder,body.dark-theme textarea::placeholder{color:#aab7c4!important}
+html,body{max-width:100%;overflow-x:hidden;overscroll-behavior-y:contain}
+img,video,canvas{max-width:100%;height:auto}
+</style>
 
     <!-- PWA (fonctionnement hors-ligne) -->
     <link rel="manifest" href="manifest.json">
@@ -166,6 +175,8 @@
             </button>
         </div>
     </section>
+
+    <div id="livreHost" class="livre-section"></div>
 
     <!--=================================================
     PARTIE 4 : RECHERCHE INTELLIGENTE & SÉMANTIQUE (IA)
