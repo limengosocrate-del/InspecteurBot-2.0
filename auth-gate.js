@@ -68,13 +68,13 @@ function gate(t,mode){
  document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
  g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
- intro.textContent=mode==='loading'?'':'Connectez-vous avec votre compte existant pour accéder à l’application.';
+ intro.textContent=mode==='loading'?'Préparation de votre espace sécurisé…':'Connectez-vous avec votre compte existant pour accéder à l’application.';
  if(t&&mode!=='loading')msg(t,mode==='loading');
 }
 function makeGate(){
  if(byId('auth-gate'))return;
  const g=document.createElement('div');g.id='ib-auth-gate';
- g.innerHTML='<section id="ib-auth-card" role="dialog" aria-modal="true"><div style="text-align:center;font-size:34px">🔐</div><h2>InspecteurBot RDC</h2><p id="ib-auth-intro">Connectez-vous avec votre compte existant pour accéder à l’application.</p><div id="ib-auth-loading" hidden role="status" aria-label="Chargement"></div><form id="ib-auth-form"><label for="ib-auth-email">Adresse e-mail du compte</label><input id="ib-auth-email" type="email" autocomplete="username" required placeholder="Adresse e-mail enregistrée"><label for="ib-auth-password">Mot de passe</label><input id="ib-auth-password" type="password" autocomplete="current-password" required placeholder="Votre mot de passe"><div id="ib-auth-confirm-wrap" hidden><label for="ib-auth-confirm">Confirmer le nouveau mot de passe</label><input id="ib-auth-confirm" type="password" autocomplete="new-password"></div><button id="ib-auth-submit" type="submit">Se connecter</button></form><button id="ib-auth-forgot" type="button">Mot de passe oublié ?</button><button id="ib-auth-retry" type="button" hidden style="width:100%;margin-top:16px;padding:13px;border:0;border-radius:9px;background:#07518a;color:#fff;font-weight:700">Réessayer</button><div id="ib-auth-message" role="status" aria-live="polite"></div><p style="font-size:12px">Accès réservé aux comptes autorisés de l’Inspection Générale du Travail.</p></section>';
+ g.innerHTML='<section id="ib-auth-card" role="dialog" aria-modal="true"><div style="text-align:center;font-size:34px">🔐</div><h2>InspecteurBot</h2><p style="margin:0 0 14px;color:#087eb5;font-weight:700;font-size:13px">Assistant numérique pour les agents de l’IGT</p><p id="ib-auth-intro">Connectez-vous avec votre compte existant pour accéder à l’application.</p><div id="ib-auth-loading" hidden role="status" aria-label="Chargement"></div><form id="ib-auth-form"><label for="ib-auth-email">Adresse e-mail du compte</label><input id="ib-auth-email" type="email" autocomplete="username" required placeholder="Adresse e-mail enregistrée"><label for="ib-auth-password">Mot de passe</label><input id="ib-auth-password" type="password" autocomplete="current-password" required placeholder="Votre mot de passe"><div id="ib-auth-confirm-wrap" hidden><label for="ib-auth-confirm">Confirmer le nouveau mot de passe</label><input id="ib-auth-confirm" type="password" autocomplete="new-password"></div><button id="ib-auth-submit" type="submit">Se connecter</button></form><button id="ib-auth-forgot" type="button">Mot de passe oublié ?</button><button id="ib-auth-retry" type="button" hidden style="width:100%;margin-top:16px;padding:13px;border:0;border-radius:9px;background:#07518a;color:#fff;font-weight:700">Réessayer</button><div id="ib-auth-message" role="status" aria-live="polite"></div><p style="font-size:12px">Accès réservé aux comptes autorisés de l’Inspection Générale du Travail.</p></section>';
  document.body.appendChild(g);
 }
 async function loadLib(){
@@ -176,7 +176,7 @@ function setup(){
  });
 }
 async function start(){
- makeGate();gate('Vérification de votre session…','loading');
+ makeGate();gate('Préparation de votre espace sécurisé…','loading');
  try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  // La session est contrôlée à la connexion et lors des événements Supabase TOKEN_REFRESHED. Le serveur impose aussi son délai d'expiration.
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
