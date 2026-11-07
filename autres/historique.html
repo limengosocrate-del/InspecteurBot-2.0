@@ -45,6 +45,8 @@ function render() {
   // Fusionner toutes les sources
   const pvStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1")) || '{"records":[]}');
   const pv = (pvStore.records || []).map(r => ({type:"Procès-verbal",desc:r.number || r.title || r.companyName || "Projet de PV",date:r.updatedAt || r.createdAt || r.date || new Date().toISOString(),data:r}));
+  const dfStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_v1")) || '{"archives":[]}');
+  const decompteFinals = (dfStore.archives || []).map(d => ({type:"Décompte Final",desc:d.id || d.numero || d.result?.travailleur?.nomComplet || "Décompte enregistré",date:d.date || d.createdAt || new Date().toISOString(),data:d}));
   const decomptes = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_decomptes")) || "[]")
     .map(d => ({type:"Décompte Final", desc:`${d.numero} — ${d.travailleur.nomComplet} (NET: ${d.netAPayer.toLocaleString("fr-FR")} FC)`, date:d.dateEmission, data:d}));
   const missions = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_missions")) || "[]")
@@ -52,7 +54,7 @@ function render() {
   const conv = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_ai_memory")) || "[]")
     .map(c => ({type:"IA", desc:c.q.substring(0,80), date:c.ts, data:c}));
   const hist = HISTORY.getAll();
-  const all = [...pv, ...decomptes, ...missions, ...conv, ...hist].sort((a,b) => new Date(b.date) - new Date(a.date));
+  const all = [...pv, ...decompteFinals, ...decomptes, ...missions, ...conv, ...hist].sort((a,b) => new Date(b.date) - new Date(a.date));
   
   const filtre = document.getElementById("filtre").value.toLowerCase();
   const filtered = filtre 
@@ -71,11 +73,13 @@ function render() {
 function exportAll() {
   const pvStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1")) || '{"records":[]}');
   const pv = pvStore.records || [];
+  const dfStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_v1")) || '{"archives":[]}');
+  const decompteFinals = dfStore.archives || [];
   const decomptes = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_decomptes")) || "[]");
   const missions = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_missions")) || "[]");
   const conv = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_ai_memory")) || "[]");
   const hist = HISTORY.getAll();
-  const data = { pv, decomptes, missions, conv, hist, exportDate: new Date().toISOString() };
+  const data = { pv, decompteFinals, decomptes, missions, conv, hist, exportDate: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -85,6 +89,7 @@ function exportAll() {
 function clearAll() {
   if (!confirm("⚠️ Effacer TOUT l'historique ? Cette action est irréversible.")) return;
   localStorage.removeItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1"));
+  localStorage.removeItem(HISTORY.keyFor("inspecteurbot_v1"));
   localStorage.removeItem(HISTORY.keyFor("igt_decomptes"));
   localStorage.removeItem(HISTORY.keyFor("igt_missions"));
   localStorage.removeItem(HISTORY.keyFor("igt_ai_memory"));
