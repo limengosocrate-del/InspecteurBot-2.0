@@ -773,7 +773,7 @@ function actualiserDonnees(){
 
 entreprises=
 JSON.parse(
-localStorage.getItem("entreprises")
+localStorage.getItem(entreprisesStorageKey)
 )||[];
 
 afficherEntreprises();
