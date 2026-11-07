@@ -91,13 +91,13 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </section>
 <div class="notice" id="notice">Les rubriques sont affichées même si certaines informations ne sont pas encore renseignées.</div>
-<section class="wide" style="margin-bottom:16px">
-<h2>✏️ Modifier mes coordonnées</h2>
+<section class="wide" id="parametres" style="margin-bottom:16px">
+<h2>⚙️ Paramètres du compte</h2>
 <form id="editProfile" class="fields">
-<label class="field"><small>Nom affiché *</small><input id="editName" maxlength="150" required style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
+<label class="field"><small>Nom d’utilisateur *</small><input id="editName" maxlength="150" required style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
 <label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
 <label class="field wide"><small>Adresse physique</small><input id="editAddress" maxlength="300" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
-<div class="wide"><button id="saveProfile" type="submit" style="border:0;border-radius:9px;padding:12px 18px;background:#075a96;color:white;font-weight:700">Enregistrer mes coordonnées</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span></div>
+<div class="wide"><button id="saveProfile" type="submit" style="border:0;border-radius:9px;padding:12px 18px;background:#075a96;color:white;font-weight:700">Enregistrer mes paramètres</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span></div>
 </form>
 </section>
 <div class="grid">
@@ -120,7 +120,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-avatar-persistent-session-5"></script>
+<script src="auth-gate.js?v=20261107-header-hero-transparent-6"></script>
 <script>
 (function(){
 'use strict';
@@ -164,7 +164,7 @@ async function load(){
  const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle();
  if(error||!p){$('status').textContent='Impossible de charger votre profil : '+(error?.message||'profil introuvable');return}
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
- $('account').innerHTML=item('Nom affiché',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
+ $('account').innerHTML=item('Nom d’utilisateur',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
  $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
  const avatar=$('profileAvatar'),fallback=$('profileAvatarFallback');
  function showAvatar(url){if(url){avatar.src=url;avatar.hidden=false;fallback.hidden=true}else{avatar.hidden=true;avatar.removeAttribute('src');fallback.hidden=false}if(window.inspecteurBotSetAvatar)window.inspecteurBotSetAvatar(url||'')}
@@ -207,10 +207,10 @@ async function load(){
    try{
      const {data,error}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value,telephone:$('editPhone').value,adresse_physique:$('editAddress').value}});
      if(error||!data?.success)throw new Error(data?.message||error?.message||'Enregistrement impossible.');
-     msg.textContent='Coordonnées enregistrées.';msg.style.color='#138a65';
+     msg.textContent='Paramètres enregistrés.';msg.style.color='#138a65';
      $('account').innerHTML=item('Nom affiché',data.profile.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(data.profile.role))+item('État du compte',data.profile.is_active?'Actif':'Suspendu')+item('Compte créé le',date(data.profile.created_at))+item('Dernière mise à jour',date(data.profile.updated_at));
      $('contact').innerHTML=item('Téléphone',data.profile.telephone)+item('Adresse physique',data.profile.adresse_physique);
-     $('notice').textContent='Vos coordonnées personnelles sont à jour. Les informations professionnelles restent liées à votre fiche agent IGT.';
+     $('notice').textContent='Votre nom d’utilisateur et vos coordonnées personnelles sont à jour. Les informations professionnelles restent liées à votre fiche agent IGT.';
    }catch(err){msg.textContent=err.message;msg.style.color='#b42318'}
    finally{btn.disabled=false}
  });
