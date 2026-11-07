@@ -17,6 +17,10 @@
   .smig-search input { flex:1; padding:10px; border-radius:6px; border:1px solid #FFD700; background:rgba(0,0,0,0.3); color:#fff; }
   .info-card { background:rgba(255,215,0,0.1); padding:15px; border-left:4px solid #FFD700; border-radius:8px; margin:15px 0; color:#fff; }
 </style>
+
+<!-- InspecteurBot : authentification obligatoire Supabase -->
+<style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
+<script src="../auth-gate.js" defer></script>
 </head>
 <body>
 <div class="background"></div>
