@@ -136,6 +136,11 @@
       } catch (e) { console.warn("Recherche juridique locale indisponible", e); }
     }
 
+    const menu = menuAnswer(q);
+    if (menu && /\b(menu|module|annuaire|entreprise|communique|gps|archive|profil|sanction|amende|rapport de mission|rapport de formation|rapport de reunion|rapport de réunion|inspection|parcours)\b/.test(nq)) {
+      return { text: menu + "\n\n" + DEV_NOTICE, confidence: 0.55, source: "connaissances des menus" };
+    }
+
     if (window.AI_CORE && typeof window.AI_CORE.ask === "function") {
       try {
         const result = window.AI_CORE.ask(q, { conversation: options.history || [] });
@@ -160,11 +165,6 @@
           return { text: "⚖️ **Analyse juridique locale**\n\n**Article " + first.numero + " — " + first.titre + "**\n\n" + first.contenu + (first.sanction ? "\n\n**Sanction enregistrée :** " + first.sanction : "") + "\n\n" + DEV_NOTICE, confidence: 0.65, source: "NeuroJuris local" };
         }
       } catch (e) { console.warn("Recherche juridique locale indisponible", e); }
-    }
-
-    const menu = menuAnswer(q);
-    if (menu && /\b(menu|module|annuaire|entreprise|communique|gps|archive|profil|sanction|amende|rapport de mission|rapport de formation|rapport de reunion|rapport de réunion|inspection|parcours)\b/.test(nq)) {
-      return { text: menu + "\n\n" + DEV_NOTICE, confidence: 0.55, source: "connaissances des menus" };
     }
 
     return {
