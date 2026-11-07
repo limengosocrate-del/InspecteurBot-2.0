@@ -1305,6 +1305,7 @@ Retour
 
 
 </header>
+<nav id="gpsQuickNav" class="gps-quick-nav" aria-label="Navigation GPS"></nav>
 
 
 
@@ -3551,6 +3552,53 @@ https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
 
 
 
+<style id="gps-professional-v2">
+:root{--gps-ink:#14263b;--gps-muted:#62748a;--gps-gold:#c89b35;--gps-paper:#f4f6f9;--gps-line:#dce4ed}
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y}
+body{background:#eef2f6!important;background-image:none!important;animation:none!important;color:var(--gps-ink)!important}
+body::before,body::after,.particles{display:none!important;animation:none!important}
+header{position:relative!important;top:auto!important;background:#fffefa!important;color:var(--gps-ink)!important;backdrop-filter:none!important;box-shadow:0 4px 18px rgba(15,35,55,.08)!important;border-bottom:1px solid var(--gps-line)!important;padding:14px clamp(14px,3vw,32px)!important}
+header .logo p{color:#536579!important}
+header .logo h1{color:#16385d!important}
+header .btn{box-shadow:none!important}
+.container{width:min(100% - 24px,1280px)!important;margin:18px auto!important}
+.section{background:#fffefa!important;color:var(--gps-ink)!important;border:1px solid var(--gps-line)!important;border-radius:16px!important;padding:clamp(16px,2.5vw,26px)!important;margin-bottom:16px!important;backdrop-filter:none!important;box-shadow:0 5px 18px rgba(15,35,55,.055)!important;overflow:visible!important}
+.section::before{display:none!important}
+.section h2{font-size:clamp(18px,2.2vw,22px)!important;color:#173b61!important;border-bottom:1px solid #e9edf2;padding-bottom:12px}
+.section p,.section label,.info-box,.status-panel{color:#394b60!important}
+.status-panel{background:#f3f6fa!important;border:1px solid var(--gps-line)!important}
+.info-box{background:#f5f7fa!important;border-left:4px solid var(--gps-gold)!important}
+.info-box span{color:#16385d!important}
+.card{background:#f7f9fc!important;border:1px solid var(--gps-line)!important;box-shadow:none!important}
+.card h3{color:#173b61!important}
+.card p{color:#596c81!important}
+.btn-gps{background:linear-gradient(135deg,#173f68,#245887)!important;color:#fff!important;border-radius:10px!important;box-shadow:none!important;padding:12px 18px!important}
+.btn-gps:hover{transform:translateY(-1px)!important;box-shadow:0 5px 12px rgba(20,50,80,.16)!important}
+input,textarea,select{background:#fff!important;color:#26384c!important;border:1px solid #d6dee8!important;border-radius:10px!important}
+label{color:#294966!important}
+#map{height:430px!important;border-radius:14px!important;border:1px solid var(--gps-line)!important;box-shadow:none!important}
+.footer{background:#fffefa!important;color:#536579!important;border-top:1px solid var(--gps-line)!important}
+.footer strong{color:#173b61!important}
+.fade-in{animation:none!important;opacity:1!important;transform:none!important}
+.gps-quick-nav{position:sticky;top:0;z-index:900;display:flex;gap:8px;overflow-x:auto;padding:10px 14px;background:rgba(255,254,250,.96);border-bottom:1px solid var(--gps-line);box-shadow:0 3px 10px rgba(15,35,55,.05);scrollbar-width:thin}
+.gps-quick-nav a{white-space:nowrap;padding:8px 12px;border-radius:8px;background:#eef3f8;color:#23496e;font-size:12px;font-weight:700;text-decoration:none}
+.gps-quick-nav a:active,.gps-quick-nav a:focus{background:#173f68;color:#fff}
+@media(max-width:600px){header{gap:12px;flex-wrap:wrap}header .logo img{width:52px;height:52px}header .logo h1{font-size:20px}.container{width:calc(100% - 16px)!important;margin:10px auto!important}#map{height:340px!important}.section{padding:15px!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const nav=document.getElementById('gpsQuickNav');
+ const sections=[...document.querySelectorAll('.container > .section')];
+ const labels=['Vue générale','Position GPS','Tableau de bord','Mission terrain','Carte interactive','Parcours','Actions rapides','Géolocalisation','Informations mission','Signature','Assistance SOS','Nouvelle mission','Historique','Rapport','Authentification'];
+ sections.forEach((section,i)=>{
+  const heading=section.querySelector('h2');
+  if(!heading)return;
+  const id='gps-section-'+i;section.id=id;
+  const a=document.createElement('a');a.href='#'+id;a.textContent=labels[i]||heading.textContent.trim().slice(0,22);nav.appendChild(a);
+ });
+});
+</script>
 </body>
 
  </html>
