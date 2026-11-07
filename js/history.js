@@ -5,15 +5,21 @@
 let historyStorageKey = "igt_historique_local";
 const HISTORY = {
   keyFor(base) { return base + historyStorageKey.slice("igt_historique".length); },
-  ready: (async () => {
-    const client = window.inspecteurBotAuthClient;
-    if (!client || !client.auth) return;
-    try {
-      const { data } = await client.auth.getSession();
-      const id = data && data.session && data.session.user && data.session.user.id;
-      if (id) historyStorageKey = "igt_historique_" + id;
-    } catch (e) { console.warn("Historique local : session indisponible", e); }
-  })(),
+  ready: new Promise(resolve => {
+    const init = async () => {
+      const client = window.inspecteurBotAuthClient;
+      if (client && client.auth) {
+        try {
+          const { data } = await client.auth.getSession();
+          const id = data && data.session && data.session.user && data.session.user.id;
+          if (id) historyStorageKey = "igt_historique_" + id;
+        } catch (e) { console.warn("Historique local : session indisponible", e); }
+      }
+      resolve();
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+    else init();
+  }),
 
   add(type, description, data = {}) {
     const hist = JSON.parse(localStorage.getItem(historyStorageKey) || "[]");
