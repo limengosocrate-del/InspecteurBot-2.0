@@ -159,18 +159,18 @@ const AI_CORE = {
   // Décompte final (résumé — le module complet arrive au LOT 2)
   answerDecompte(query, entities) {
     return { text:
-      \`🧮 **Décompte final — préparation du calcul**\\n\\n\` +
-      \`Le montant final dépend du motif de rupture, de la catégorie professionnelle, de l'ancienneté exacte, des éléments de rémunération et des retenues légalement applicables. Il ne faut pas appliquer une formule unique à tous les départs.\\n\\n\` +
-      \`**Données nécessaires :**\\n\` +
-      \`• Salaire de base mensuel et avantages pertinents ;\\n\` +
-      \`• Catégorie professionnelle (I à VII) et fonction ;\\n\` +
-      \`• Date d'engagement et date de fin du contrat ;\\n\` +
-      \`• Motif de départ (licenciement, démission, fin CDD, retraite, décès, force majeure ou faute lourde) ;\\n\` +
-      \`• Préavis presté, non presté ou dispensé ;\\n\` +
-      \`• Congés acquis, pris et restant dus ;\\n\` +
-      \`• Salaire du mois de sortie, primes et autres sommes dues ;\\n\` +
-      \`• Retenues justifiées et statut CNSS/IPR.\\n\\n\` +
-      \`Le module **Décompte Final automatique** d'InspecteurBot contient les champs de saisie, le calcul, l'aperçu A4, le PV associé et l'archivage. Fournissez les données ci-dessus pour une vérification structurée. Les résultats doivent être contrôlés au regard des textes en vigueur avant signature.\` };
+      `🧮 **Décompte final — préparation du calcul**\n\n` +
+      `Le montant final dépend du motif de rupture, de la catégorie professionnelle, de l'ancienneté exacte, des éléments de rémunération et des retenues légalement applicables. Il ne faut pas appliquer une formule unique à tous les départs.\n\n` +
+      `**Données nécessaires :**\n` +
+      `• Salaire de base mensuel et avantages pertinents ;\n` +
+      `• Catégorie professionnelle (I à VII) et fonction ;\n` +
+      `• Date d'engagement et date de fin du contrat ;\n` +
+      `• Motif de départ (licenciement, démission, fin CDD, retraite, décès, force majeure ou faute lourde) ;\n` +
+      `• Préavis presté, non presté ou dispensé ;\n` +
+      `• Congés acquis, pris et restant dus ;\n` +
+      `• Salaire du mois de sortie, primes et autres sommes dues ;\n` +
+      `• Retenues justifiées et statut CNSS/IPR.\n\n` +
+      `Le module **Décompte Final automatique** d'InspecteurBot contient les champs de saisie, le calcul, l'aperçu A4, le PV associé et l'archivage. Fournissez les données ci-dessus pour une vérification structurée. Les résultats doivent être contrôlés au regard des textes en vigueur avant signature.` };
   },
 
   // Congés
