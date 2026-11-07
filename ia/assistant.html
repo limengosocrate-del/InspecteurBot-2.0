@@ -58,7 +58,7 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
  <div class="chat-messages" id="messages" aria-live="polite"></div><div class="suggestions" id="suggestions"></div>
  <div class="composer-wrap"><div class="attachment-chip" id="attachmentChip"><span id="attachmentName"></span><button class="msg-tool" id="btnRemoveAttachment">Retirer ×</button></div>
  <div class="chat-input"><button id="btnAttach" title="Joindre un document">＋</button><input type="file" id="fileInput" hidden accept=".txt,.md,.csv,.json,.html,.htm,.xml,.log,.yaml,.yml,.pdf,.docx"><button id="btnVoice" title="Reconnaissance vocale">🎙</button><textarea id="input" rows="1" placeholder="Message à InspecteurBot…" aria-label="Votre message"></textarea><button id="btnSend" title="Envoyer">↑</button></div>
- <div class="composer-hint">InspecteurBot peut se tromper. Vérifiez les informations importantes. Les documents joints seront transmis au service IA pour analyse.</div></div>
+ <div class="composer-hint">Les conversations restent enregistrées localement sur ce téléphone et séparées par compte. Le texte de votre demande et du document est transmis temporairement au service IA pour générer la réponse.</div></div>
 </div></main></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
@@ -66,7 +66,7 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
 <script src="../js/ai-core.js?v=1"></script>
-<script src="../js/assistant.js?v=1"></script>
+<script src="../js/assistant.js?v=2"></script>
 <script>
 let speakAuto=false,attachedDocument=null;
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
@@ -91,11 +91,17 @@ function addBubble(role,text,ts){
  if(role!=="user"){const read=document.createElement("button");read.className="msg-tool";read.textContent="🔊 Lire";read.onclick=()=>ASSISTANT.speak(String(text??""));tools.appendChild(read);}
  wrap.append(div,time,tools);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return wrap;
 }
-function render(){const box=document.getElementById("messages");box.innerHTML="";const conv=ASSISTANT.loadConversation();if(!conv.length)ASSISTANT.addMessage("bot","Bonjour 👋 Je suis InspecteurBot IA. Je peux consulter l'annuaire professionnel de l'IGT, vous assister sur le droit du travail et vous aider à préparer vos documents et contrôles. Comment puis-je vous aider ?");ASSISTANT.conversation.forEach(m=>addBubble(m.role,m.text,m.ts));box.scrollTop=box.scrollHeight;}
+async function render(){
+ const box=document.getElementById("messages");box.innerHTML="";
+ try{const client=window.inspecteurBotAuthClient;if(client){const {data}=await client.auth.getUser();if(data&&data.user)ASSISTANT.setAccount(data.user.id);}}catch(e){console.warn("Chargement du compte local impossible",e);}
+ const conv=ASSISTANT.loadConversation();
+ if(!conv.length)ASSISTANT.addMessage("bot","Bonjour 👋 Je suis InspecteurBot IA. Je peux consulter l'annuaire professionnel de l'IGT, vous assister sur le droit du travail et vous aider à préparer vos documents et contrôles. Comment puis-je vous aider ?");
+ ASSISTANT.conversation.forEach(m=>addBubble(m.role,m.text,m.ts));box.scrollTop=box.scrollHeight;
+}
 document.getElementById("btnAttach").onclick=()=>document.getElementById("fileInput").click();
 document.getElementById("fileInput").onchange=async e=>{
  const f=e.target.files&&e.target.files[0];if(!f)return;
- if(f.size>150000){alert("Le document dépasse 150 Ko. Veuillez joindre un fichier plus léger.");e.target.value="";return;}
+ if(f.size>2*1024*1024){alert("Le document dépasse la limite autorisée de 2 Mo. Veuillez choisir un fichier plus léger.");e.target.value="";return;}
  try{
   const ext=f.name.split(".").pop().toLowerCase();let txt="";
   if(ext==="pdf"){
@@ -120,18 +126,21 @@ document.getElementById("btnRemoveAttachment").onclick=()=>{attachedDocument=nul
 async function send(){
  const input=document.getElementById("input"),sendButton=document.getElementById("btnSend"),q=input.value.trim();if((!q&&!attachedDocument)||sendButton.disabled)return;
  const client=window.inspecteurBotAuthClient;if(!client){addBubble("bot","Votre session sécurisée n'est pas prête. Rechargez la page ou reconnectez-vous.",new Date().toISOString());return;}
- const history=ASSISTANT.conversation.slice(-10).map(m=>({role:m.role==="bot"?"assistant":"user",content:String(m.text||"").slice(0,2500)}));
+ let history=[];
  const prompt=q||(attachedDocument?"Analyse le document joint et présente les points importants.":"");
  const shown=prompt+(attachedDocument?"\n\n📎 Document joint : "+attachedDocument.name:"");
- ASSISTANT.addMessage("user",shown);addBubble("user",shown,new Date().toISOString());input.value="";input.style.height="auto";input.disabled=true;sendButton.disabled=true;sendButton.textContent="…";
+ input.value="";input.style.height="auto";input.disabled=true;sendButton.disabled=true;sendButton.textContent="…";
  const pending=addBubble("bot","InspecteurBot analyse votre demande…",new Date().toISOString());
  try{
  const {data:sess,error:sessErr}=await client.auth.getSession();if(sessErr||!sess.session)throw Error("Session expirée. Reconnectez-vous.");
+ ASSISTANT.setAccount(sess.session.user.id);
+ history=ASSISTANT.conversation.slice(-10).map(m=>({role:m.role==="bot"?"assistant":"user",content:String(m.text||"").slice(0,2500)}));
+ ASSISTANT.addMessage("user",shown);addBubble("user",shown,new Date().toISOString());
  const body={question:prompt,history};if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\n\n"+attachedDocument.text;
  const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
  if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
  pending.remove();ASSISTANT.addMessage("bot",data.answer);addBubble("bot",data.answer,new Date().toISOString());if(speakAuto)ASSISTANT.speak(data.answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
- }catch(err){pending.remove();const msg=err&&err.message?err.message:"Une erreur est survenue.";ASSISTANT.addMessage("bot","⚠️ "+msg);addBubble("bot","⚠️ "+msg,new Date().toISOString());}
+ }catch(err){if(pending)pending.remove();const msg=err&&err.message?err.message:"Une erreur est survenue.";ASSISTANT.addMessage("bot","⚠️ "+msg);addBubble("bot","⚠️ "+msg,new Date().toISOString());}
  finally{input.disabled=false;sendButton.disabled=false;sendButton.textContent="↑";input.focus();}
 }
 document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
