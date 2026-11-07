@@ -750,7 +750,7 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v49',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v50',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
