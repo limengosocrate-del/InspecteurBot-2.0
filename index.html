@@ -39,66 +39,29 @@ body{
     color:#fff;  
 }  
   
-/* ================= SLIDER ================= */
-@media(max-width:520px){.banner{height:380px}.slider img{height:380px}.datetime-box{top:12px;right:10px;left:auto;width:max-content;max-width:calc(100% - 20px);padding:9px 11px}#clock{font-size:22px}#day,#date{font-size:11px}#weather{font-size:12px}#city{font-size:11px}}  
- .banner{  
-    width:100%;  
-    height:410px;  
-    overflow:hidden;  
-    position:relative;  
-}  
-  
-.datetime-box{position:absolute;top:14px;right:18px;left:auto;z-index:30;display:grid;gap:7px;width:max-content;max-width:calc(100% - 32px);padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:right;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,.85);pointer-events:none}.datetime-top,.datetime-date,.datetime-weather{display:flex;align-items:center;justify-content:flex-end;gap:9px;line-height:1.25}.datetime-top{font-size:23px}.datetime-date{font-size:12px}.datetime-weather{font-size:15px}.datetime-weather #weather{font-size:18px;color:#ffe044;font-weight:700}.datetime-weather #city{font-size:12px;color:#fff}@media(max-width:520px){.datetime-box{top:12px;right:12px;gap:5px;max-width:calc(100% - 24px)}.datetime-top{font-size:20px}.datetime-date{font-size:10px}.datetime-weather{font-size:13px}.datetime-weather #weather{font-size:16px}.datetime-weather #city{font-size:11px}}  
-  
-#clock{  
-    font-size:25px;  
-    font-weight:700;  
-    line-height:1;  
-    color:#FFD700;  
-    text-shadow:0 0 10px rgba(255,215,0,.8);  
-    margin-bottom:1px;  
-}  
-  
-#day{  
-    font-size:13px;  
-    color:#ffffff;  
-    line-height:1;  
-    margin:0;  
-}  
-  
-#date{  
-    font-size:13px;  
-    color:#dfeaff;  
-    line-height:1;  
-    margin-top:1px;  
-}  
-  
-#weather{  
-    margin-top:2px;  
-    font-size:14px;  
-    color:#FFD700;  
-    line-height:1;  
-}  
-  
-#city{  
-    font-size:12px;  
-    color:#ffffff;  
-    margin-top:1px;  
-    line-height:1;  
-}  
-  
-.slider img{  
-    width:100%;  
-    height:410px;  
-    object-fit:cover;  
-    position:absolute;  
-    opacity:0;  
-    transition:1s ease;  
-}  
-  
-.slider img.active{  
-    opacity:1;  
-}  
+/* ================= SLIDER OPTIMISÉ ================= */
+const images = document.querySelectorAll(".slider img");
+let currentImage = 0;
+function advanceSlide(){
+  if(images.length < 2) return;
+  const nextIndex = (currentImage + 1) % images.length;
+  const nextImage = images[nextIndex];
+  const activate = () => {
+    images[currentImage].classList.remove("active");
+    currentImage = nextIndex;
+    nextImage.classList.add("active");
+    setTimeout(advanceSlide, 3000);
+  };
+  if(nextImage.dataset.slideSrc){
+    nextImage.onload = () => { nextImage.onload = null; activate(); };
+    nextImage.onerror = () => { nextImage.onerror = null; setTimeout(advanceSlide, 3000); };
+    nextImage.src = nextImage.dataset.slideSrc;
+    delete nextImage.dataset.slideSrc;
+  } else {
+    activate();
+  }
+}
+if(images.length > 1) setTimeout(advanceSlide, 3000);
   
 /* ================= MOTIVATION ================= */  
 .motivation{  
