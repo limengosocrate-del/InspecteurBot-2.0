@@ -22,13 +22,16 @@ const HISTORY = {
   }),
 
   add(type, description, data = {}) {
-    const hist = JSON.parse(localStorage.getItem(historyStorageKey) || "[]");
+    let hist = [];
+    try { hist = JSON.parse(localStorage.getItem(historyStorageKey) || "[]"); if (!Array.isArray(hist)) hist = []; }
+    catch (e) { console.warn("Historique local corrompu : une liste vide est affichée.", e); }
     hist.unshift({
       id: "H-" + Date.now(),
       type, description, data,
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem(historyStorageKey, JSON.stringify(hist.slice(0,1000)));
+    try { localStorage.setItem(historyStorageKey, JSON.stringify(hist.slice(0,1000))); }
+    catch (e) { console.warn("Impossible de sauvegarder l’historique local.", e); }
   },
 
   getAll(filtre = "") {
@@ -42,7 +45,7 @@ const HISTORY = {
   },
 
   clear() {
-    localStorage.removeItem(historyStorageKey);
+    try { localStorage.removeItem(historyStorageKey); } catch (e) { console.warn("Impossible d’effacer l’historique local.", e); }
   },
 
   export() {
