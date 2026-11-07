@@ -17,7 +17,7 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 #ib-auth-card label{display:block;margin:14px 0 6px;font-weight:700;font-size:14px}
 #ib-auth-card input{box-sizing:border-box;width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:9px;font-size:16px}
 #ib-auth-submit{width:100%;margin-top:18px;padding:13px;border:0;border-radius:9px;background:#07518a;color:white;font-size:16px;font-weight:700}
-#ib-auth-message{min-height:22px;margin-top:12px;color:#b42318;font-size:14px}
+#ib-auth-message{min-height:22px;margin-top:12px;color:#b42318;font-size:14px}#ib-auth-loading:not([hidden]){display:flex!important;align-items:center;justify-content:center;gap:11px;margin:22px auto 8px;color:#07518a;font-size:14px;font-weight:700}#ib-auth-loading:before{content:'';width:24px;height:24px;border:3px solid #d9e8f2;border-top-color:#0786b3;border-radius:50%;animation:ibAuthSpin .75s linear infinite}@keyframes ibAuthSpin{to{transform:rotate(360deg)}}
 #ib-auth-forgot{margin-top:12px;padding:0;border:0;background:transparent;color:#07518a;text-decoration:underline}
 
 #ib-app-header{position:relative;z-index:1200;display:flex;align-items:center;gap:14px;min-height:88px;padding:10px clamp(14px,4vw,42px);background:#fff;color:#173b5c;border-bottom:1px solid #e3ebf2;box-shadow:0 2px 12px #102e4a0a}
@@ -63,7 +63,7 @@ function msg(t,ok){const n=byId('auth-message');if(n){n.textContent=t||'';n.styl
 function gate(t,mode){
  document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
- g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';
+ g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
  intro.textContent=mode==='loading'?'Nous vérifions votre session sécurisée…':'Connectez-vous avec votre compte existant pour accéder à l’application.';
  if(t)msg(t,mode==='loading');
 }
@@ -100,7 +100,7 @@ async function validate(session){
    client.from('profiles').select('display_name,role,is_active,avatar_url').eq('id',session.user.id).maybeSingle()
   ]);
   const {data,error}=profileResult;
-  if(error)throw error;
+  if(error){error.authTransient=true;throw error;}
   if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;
   document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
