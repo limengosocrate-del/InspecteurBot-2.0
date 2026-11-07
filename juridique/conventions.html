@@ -100,7 +100,7 @@
       conventionForm.reset();conventionForm.hidden=true;renderCustomConventions();
       alert("Projet de convention enregistré localement pour votre compte.");
     });
-    initConventionStorage();
+    document.addEventListener('DOMContentLoaded', initConventionStorage, {once:true});
     go.onclick = () => {
       const t = clause.value.trim();
       if (!t) return;
