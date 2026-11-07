@@ -6,7 +6,7 @@
     <meta charset="UTF-8">  
   
     <meta name="viewport"  
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">  
+          content="width=device-width, initial-scale=1">  
      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
      <meta http-equiv="Pragma" content="no-cache">
      <meta http-equiv="Expires" content="0">
@@ -395,6 +395,26 @@ footer img{
 .datetime-weather span{font-weight:600}
 @media(max-width:520px){.banner{min-height:340px}.datetime-box{top:12px!important;right:12px!important;width:205px;padding:12px!important}.datetime-top strong{font-size:31px}}
 @media(prefers-reduced-motion:reduce){.slider img{transition:none}}
+/* PERFORMANCE MOBILE — rendu léger, sans couches GPU multipliées */
+html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:auto}
+.banner{position:relative;isolation:isolate;overflow:hidden;contain:layout paint;height:clamp(250px,42vw,430px);min-height:250px}
+.slider{position:absolute;inset:0;overflow:hidden}
+.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .42s ease;backface-visibility:visible;will-change:auto}
+.slider img.active{opacity:1}
+.datetime-box{position:absolute!important;z-index:4!important;top:16px!important;right:20px!important;left:auto!important;bottom:auto!important;width:auto!important;max-width:48%;padding:0!important;margin:0!important;display:block!important;text-align:right!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fff!important}
+.datetime-top,.datetime-day,.datetime-date,.datetime-weather{display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:right!important;color:#fff!important}
+.datetime-top strong,#clock{display:block;font-size:24px!important;line-height:1.15!important;font-weight:700!important;letter-spacing:.2px!important;color:#fff!important;text-shadow:0 1px 5px #000b}
+.datetime-day{font-size:11px!important;font-weight:600!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-date,#date{font-size:10px!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-weather{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:5px!important;margin-top:3px!important;font-size:10px!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-weather strong,#weather{font-size:12px!important;font-weight:700!important;color:#fff!important}
+.datetime-weather span,#city{font-size:10px!important;color:#fff!important}
+.slider img,.menu-index a,.quick-card{animation:none!important}
+.menu-index a,.quick-card{transition:background-color .15s ease,border-color .15s ease!important;box-shadow:0 3px 10px rgba(0,0,0,.16)!important}
+.menu-index a::before,.quick-card::before{display:none!important}
+@media(max-width:520px){.banner{height:340px;min-height:340px}.datetime-box{top:12px!important;right:13px!important;max-width:55%}.datetime-top strong,#clock{font-size:21px!important}.datetime-day{font-size:10px!important}.datetime-date,#date,.datetime-weather span,#city{font-size:9px!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 </style>  
   
 
@@ -411,66 +431,9 @@ footer img{
 <section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-day" id="day">Chargement…</div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
   
     <!-- Images du slider -->  
-    <div class="slider" id="slider">  
-  
-        <img src="images/photos_igt/1.jpg" class="active" alt="" fetchpriority="high" decoding="async">  
-        <img data-slide-src="images/photos_igt/2.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/3.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/4.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/5.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/6.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/7.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/8.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/9.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/10.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/11.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/12.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/13.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/14.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/15.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/16.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/17.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/18.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/19.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/20.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/21.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/22.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/23.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/24.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/25.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/26.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/27.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/28.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/29.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/30.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/31.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/32.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/33.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/34.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/35.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/36.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/37.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/38.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/39.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/40.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/41.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/42.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/43.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/44.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/45.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/46.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/47.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/48.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/49.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/50.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/51.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/52.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/53.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/54.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/55.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/56.jpg" alt="" decoding="async">  
-        <img data-slide-src="images/photos_igt/57.jpg" alt="" decoding="async">  
-  
+    <div class="slider" id="slider" aria-label="Diaporama de l'IGT">
+        <img src="images/photos_igt/1.jpg" class="active" alt="" fetchpriority="high" decoding="async">
+        <img src="images/photos_igt/2.jpg" alt="" decoding="async" fetchpriority="low">
     </div>  
   
 </section>  
@@ -621,25 +584,37 @@ footer img{
   
 <script>  
   
-/* ================= SLIDER FIABLE ================= */
-const images = Array.from(document.querySelectorAll(".slider img"));
-let currentImage = 0;
-function advanceSlide(){
- if(images.length<2)return;
- let nextIndex=(currentImage+1)%images.length, attempts=0;
- while(images[nextIndex].dataset.slideFailed&&attempts<images.length){nextIndex=(nextIndex+1)%images.length;attempts++;}
- if(attempts>=images.length)return;
- const next=images[nextIndex];
- const activate=()=>{images[currentImage].classList.remove("active");currentImage=nextIndex;next.classList.add("active");setTimeout(advanceSlide,4500);};
- if(next.dataset.slideSrc){
-  next.onload=()=>{next.onload=null;next.onerror=null;activate();};
-  next.onerror=()=>{next.onload=null;next.onerror=null;next.dataset.slideFailed="1";next.style.display="none";setTimeout(advanceSlide,500);};
-  next.src=next.dataset.slideSrc;delete next.dataset.slideSrc;
- }else if(next.complete&&next.naturalWidth>0){activate();}
- else{next.onload=()=>{next.onload=null;activate();};next.onerror=()=>{next.dataset.slideFailed="1";setTimeout(advanceSlide,500);};}
-}
-if(images.length>1)setTimeout(advanceSlide,4500);
-
+/* ================= SLIDER LÉGER À DEUX IMAGES ================= */
+(()=>{
+ const frames=Array.from({length:57},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
+ const imgs=Array.from(document.querySelectorAll('#slider img'));
+ if(imgs.length!==2)return;
+ let index=0,front=imgs[0],back=imgs[1],timer=null;
+ const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function schedule(){clearTimeout(timer);timer=setTimeout(showNext,document.hidden?12000:7000);}
+ function showNext(){
+  if(document.hidden){schedule();return;}
+  let attempts=0;
+  const load=()=>{
+   index=(index+1)%frames.length;
+   back.onload=()=>{
+    back.onload=null;back.onerror=null;
+    back.classList.add('active');front.classList.remove('active');
+    const previous=front;front=back;back=previous;
+    schedule();
+   };
+   back.onerror=()=>{
+    back.onload=null;back.onerror=null;back.removeAttribute('src');
+    if(++attempts<frames.length)load();else schedule();
+   };
+   back.src=frames[index];
+  };
+  load();
+ }
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule();else clearTimeout(timer);});
+ schedule();
+})();
+ 
 /* ================= MOTIVATION ================= */  
   
 const motivations = [  
@@ -681,7 +656,7 @@ setInterval(() => {
   
     }  
   
-}, 3000);  
+}, 8000);  
   
     /* Les alertes réelles sont gérées par Supabase et le centre de notifications. */
   
@@ -734,7 +709,7 @@ loadKinshasaWeather();
     }  
   
     updateDateTime();  
-    setInterval(updateDateTime, 1000);  
+    setInterval(updateDateTime, 30000);  
   
     /* ================= DÉCONNEXION ================= */  
   
@@ -797,17 +772,11 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v39',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v40',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 </body>  
   
 </html>
 
-<style id="home-performance-v37">
-html,body{overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:auto}
-.banner,.slider{contain:layout paint;content-visibility:auto}
-.slider img{will-change:opacity;backface-visibility:hidden}
-.quick-card,.menu-index a{transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
-</style>
+
