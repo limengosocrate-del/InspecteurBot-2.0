@@ -12,7 +12,7 @@
   /* -------------------------------------------------------
    *  CONSTANTS & CONFIG
    * ----------------------------------------------------- */
-  const APP_KEY = 'inspecteurbot_v1';
+  let APP_KEY = 'inspecteurbot_v1_local';
   const YEAR = new Date().getFullYear();
 
   /** Paramètres de préavis selon catégorie (jours de base + jours/an d'ancienneté) */
@@ -1604,7 +1604,15 @@ $('#pvQualiteAgent').textContent =
   /* -------------------------------------------------------
    *  INIT
    * ----------------------------------------------------- */
-  function init() {
+  async function init() {
+    const client = window.inspecteurBotAuthClient;
+    if (client && client.auth) {
+      try {
+        const { data } = await client.auth.getSession();
+        const id = data && data.session && data.session.user && data.session.user.id;
+        if (id) APP_KEY = 'inspecteurbot_v1_' + id;
+      } catch (e) { console.warn('Stockage local du décompte indisponible', e); }
+    }
     // Splash
     setTimeout(() => {
       $('#splash').classList.add('hidden');
