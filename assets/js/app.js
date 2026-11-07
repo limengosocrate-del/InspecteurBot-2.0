@@ -51,7 +51,7 @@ window.InspecteurApp = {
         const body = document.body;
 
         // Charger préférence locale
-        const savedTheme = localStorage.getItem("inspecteur_theme") || "dark";
+        const savedTheme = localStorage.getItem("inspecteur_theme") || "light";
         if (savedTheme === "light") {
             body.classList.add("light-theme");
             body.classList.remove("dark-theme");
