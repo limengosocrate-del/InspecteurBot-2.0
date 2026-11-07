@@ -915,6 +915,8 @@ loadFavorites() {
 initAIM() {
     this.aimData = Array.isArray(window.IGT_AIM_DATA) ? window.IGT_AIM_DATA : [];
     this.renderAIMTable(this.aimData);
+    const legacyCategory = document.getElementById("calcCategorie");
+    if (legacyCategory && legacyCategory.closest(".form-group")) legacyCategory.closest(".form-group").style.display = "none";
 }
  
 /* ===============================
@@ -1165,226 +1167,42 @@ openAimCalculator(){
 =============================== */
 
 calculateSanction(){
-
-
-    const id =
-        document.getElementById(
-            "calcInfraction"
-        )?.value;
-
-
-
-    const categorie =
-        document.getElementById(
-            "calcCategorie"
-        )?.value;
-
-
-
-    if(!id){
-
-        alert(
-            "Veuillez sélectionner une infraction."
-        );
-
+    const id = document.getElementById("calcInfraction")?.value;
+    if (!id) {
+        alert("Veuillez sélectionner un droit ou une amende dans la liste.");
         return;
-
     }
-
-
-
-    const item =
-        this.aimData.find(
-            a=>a.id == id
-        );
-
-
-
-    if(!item) return;
-
-
-
-    let montant;
-
-
-
-    if(categorie==="A"){
-
-        montant=item.categorieA;
-
-    }
-
-    else if(categorie==="B"){
-
-        montant=item.categorieB;
-
-    }
-
-    else{
-
-        montant=item.categorieC;
-
-    }
-
-
-
-    let majoration = 0;
-
-
-
-    if(
-        document.getElementById("recidive")
-        ?.checked
-    ){
-
-        majoration += 50;
-
-    }
-
-
-
-    if(
-        document.getElementById("danger")
-        ?.checked
-    ){
-
-        majoration += 100;
-
-    }
-
-
-
-    if(
-        document.getElementById("enfant")
-        ?.checked
-    ){
-
-        majoration += 200;
-
-    }
-
-
-
-    if(
-        document.getElementById("non-conformite")
-        ?.checked
-    ){
-
-        majoration += 50;
-
-    }
-
-
-
-    const montantFinal =
-        montant.replace(
-            " USD",
-            ""
-        );
-
-
-
-    const total =
-        Number(montantFinal)
-        +
-        majoration;
-
-
-
-    const resultat =
-        document.getElementById(
-            "calculationResult"
-        );
-
-
-
-    if(resultat){
-
-
-        resultat.innerHTML = `
-
-
+    const item = this.aimData.find(a => String(a.id) === String(id));
+    if (!item) return;
+    const rate = item.categorieA || "Taux non précisé dans la retranscription";
+    const isRange = /à|au quintuple|selon/i.test(rate + " " + (item.categorieB || ""));
+    const result = document.getElementById("calculationResult");
+    const warning = isRange
+      ? "Attention : il s’agit d’une fourchette ou d’un multiplicateur légal. Aucun montant unique n’est calculé automatiquement. Déterminer le montant après examen du dossier, de la formalité concernée et du texte applicable."
+      : "Montant du droit indiqué dans la retranscription fournie. Paiement en francs congolais au taux officiel du jour. Vérifier le texte officiel en vigueur avant tout paiement.";
+    if (result) {
+      result.innerHTML = `
         <div class="card">
-
-
-            <h3>
-
-            Résultat du calcul
-
-            </h3>
-
-
-            <p>
-
-            <strong>Infraction :</strong>
-            ${item.sanction}
-
-            </p>
-
-
-            <p>
-
-            <strong>Catégorie :</strong>
-            ${categorie}
-
-            </p>
-
-
-            <p>
-
-            <strong>Montant de base :</strong>
-            ${montant}
-
-            </p>
-
-
-            <p>
-
-            <strong>Majoration :</strong>
-            ${majoration} USD
-
-            </p>
-
-
-            <hr>
-
-
-            <h2>
-
-            Total :
-            ${total} USD
-
-            </h2>
-
-
-        </div>
-
-
-        `;
-
-
+          <h3>Référence du barème AIM 006/2023</h3>
+          <p><strong>Prestation / amende :</strong> ${item.sanction}</p>
+          <p><strong>Taux indiqué :</strong> ${rate}</p>
+          <p><strong>Base / catégorie :</strong> ${item.categorieB || "Non précisée"}</p>
+          <p><strong>Portée :</strong> ${item.categorieC || "Voir les détails"}</p>
+          <hr>
+          <p>${item.details}</p>
+          <p style="padding:12px;background:#fff4d6;border-radius:8px"><strong>Vigilance :</strong> ${warning}</p>
+          <small>Source intégrée : Arrêté interministériel n°006/2023 du 03 octobre 2023, selon la retranscription communiquée. Ce résultat n’est pas un ordre de paiement.</small>
+        </div>`;
     }
-
-
-
     this.saveCalculation({
-
-        infraction:item.sanction,
-
-        categorie:categorie,
-
-        montant:total,
-
-        date:new Date()
-        .toLocaleString()
-
+      infraction:item.sanction,
+      categorie:item.categorieB || "Sans catégorie",
+      montant:rate,
+      date:new Date().toLocaleString(),
+      source:"AIM 006/2023"
     });
-
-
 }
-
-
-
+ 
 /* ===============================
    Historique calculs
 =============================== */
