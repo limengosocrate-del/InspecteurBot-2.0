@@ -510,7 +510,7 @@ initInfractions() {
       details: "Référence de sanction : " + (item.refSanction || "non précisée") + ". Gravité indicative : " + (item.gravite || "non précisée") + ". Vérifier le texte officiel applicable avant toute qualification."
     }));
     this.renderInfractions(this.infractions);
-},
+}
  
 /* ===============================
    Génération du tableau
@@ -936,7 +936,7 @@ loadFavorites() {
 initAIM() {
     this.aimData = Array.isArray(window.IGT_AIM_DATA) ? window.IGT_AIM_DATA : [];
     this.renderAIMTable(this.aimData);
-},
+}
  
 /* ===============================
    Génération du tableau AIM
