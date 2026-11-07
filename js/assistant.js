@@ -7,25 +7,28 @@ const ASSISTANT = {
   conversation: [],
   voiceEnabled: false,
   recognition: null,
+  accountId: null,
+  storageKey() { return this.accountId ? "igt_conversation_" + this.accountId : null; },
+  setAccount(userId) { this.accountId = String(userId || ""); this.conversation = []; this.loadConversation(); },
 
   // Ajouter un message à la conversation
   addMessage(role, text) {
     const msg = { role, text, ts: new Date().toISOString() };
     this.conversation.push(msg);
-    localStorage.setItem("igt_conversation", JSON.stringify(this.conversation.slice(-100)));
+    const key = this.storageKey(); if (key) localStorage.setItem(key, JSON.stringify(this.conversation.slice(-100)));
     return msg;
   },
 
   // Charger conversation précédente
   loadConversation() {
-    this.conversation = JSON.parse(localStorage.getItem("igt_conversation") || "[]");
+    const key = this.storageKey(); this.conversation = key ? JSON.parse(localStorage.getItem(key) || "[]") : [];
     return this.conversation;
   },
 
   // Effacer conversation
   clearConversation() {
     this.conversation = [];
-    localStorage.removeItem("igt_conversation");
+    const key = this.storageKey(); if (key) localStorage.removeItem(key);
   },
 
   // Poser une question à l'IA (avec contexte)
