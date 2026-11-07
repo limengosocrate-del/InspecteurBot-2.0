@@ -36,30 +36,24 @@ body{
     color:#fff;  
 }  
   
-/* ================= SLIDER ================= */  
-.banner{  
+/* ================= SLIDER ================= */
+@media(max-width:520px){.banner{height:300px}.slider img{height:300px}.datetime-box{top:12px;right:10px;padding:9px 11px}#clock{font-size:22px}#day,#date{font-size:11px}#weather{font-size:12px}#city{font-size:11px}}  
+ .banner{  
     width:100%;  
     height:330px;  
     overflow:hidden;  
     position:relative;  
 }  
   
-.datetime-box{  
-    position:absolute;  
-    top:4px;  
-    right:12px;  
-    padding:0;  
-    background:transparent;  
-    border:none;  
-    box-shadow:none;  
-    backdrop-filter:none;  
-    -webkit-backdrop-filter:none;  
-    text-align:right;  
-    z-index:1000;  
+.datetime-box{
+    position:absolute;top:14px;right:14px;width:max-content;max-width:calc(100% - 28px);
+    padding:12px 15px;background:rgba(3,24,52,.72);border:1px solid rgba(255,255,255,.24);
+    border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.22);backdrop-filter:blur(9px);
+    -webkit-backdrop-filter:blur(9px);text-align:right;z-index:20;
 }  
   
 #clock{  
-    font-size:28px;  
+    font-size:25px;  
     font-weight:700;  
     line-height:1;  
     color:#FFD700;  
@@ -448,7 +442,7 @@ footer img{
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
-<script src="auth-gate.js?v=20261107-user-menu-1" defer></script>
+<script src="auth-gate.js?v=20261107-header-performance-2" defer></script>
 </head>  
   
 <body>  
