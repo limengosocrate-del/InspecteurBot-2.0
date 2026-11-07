@@ -16,15 +16,15 @@ self.addEventListener('fetch',event=>{
  if(url.origin!==self.location.origin)return;
  const isPage=request.mode==='navigate'||/\\.(html|js)$/.test(url.pathname);
  if(isPage){
+  const refresh=fetch(request).then(response=>{
+   if(response&&response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone())).catch(()=>{});
+   return response;
+  }).catch(()=>null);
+  event.waitUntil(refresh.then(()=>undefined));
   event.respondWith((async()=>{
    const cache=await caches.open(CACHE);
    const cached=await cache.match(request,{ignoreSearch:true});
-   const refresh=fetch(request).then(response=>{
-    if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
-    return response;
-   }).catch(()=>null);
-   if(cached){event.waitUntil(refresh.then(()=>undefined));return cached;}
-   return (await refresh)||await cache.match('./index.html')||Response.error();
+   return cached||(await refresh)||await cache.match('./index.html')||Response.error();
   })());
   return;
  }
