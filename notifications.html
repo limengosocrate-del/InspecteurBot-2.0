@@ -37,20 +37,27 @@ const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'
 function status(id,t,ok){$(id).textContent=t;$(id).style.color=ok?'#138a65':'#b42318'}
 function empty(t){return '<div class="empty"><i class="fa-regular fa-bell-slash"></i>'+esc(t)+'</div>'}
 async function load(){
- const [a,m,r]=await Promise.all([
-  client.from('announcements').select('id,title,body,created_by,created_at').order('created_at',{ascending:false}),
-  client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').order('created_at',{ascending:false}),
-  client.from('announcement_reads').select('announcement_id').eq('user_id',user.id)
- ]);
- if(a.error)throw a.error;if(m.error)throw m.error;if(r.error)throw r.error;
- announcements=a.data||[];messages=m.data||[];
- const readIds=new Set((r.data||[]).map(x=>String(x.announcement_id)));
- const unread=announcements.filter(x=>x.created_by!==user.id&&!readIds.has(String(x.id)));
- if(unread.length){const {error}=await client.from('announcement_reads').upsert(unread.map(x=>({announcement_id:x.id,user_id:user.id})),{onConflict:'announcement_id,user_id',ignoreDuplicates:true});if(error)console.warn(error)}
- const incoming=messages.filter(x=>x.recipient_id===user.id&&!x.read_at);
- if(incoming.length){const stamp=new Date().toISOString();const {error}=await client.from('messages').update({read_at:stamp}).eq('recipient_id',user.id).is('read_at',null);if(error)console.warn(error);messages=messages.map(x=>x.recipient_id===user.id?{...x,read_at:stamp}:x)}
- if(isAdmin){const ids=[...new Set(messages.flatMap(x=>[x.sender_id,x.recipient_id]).filter(x=>x&&x!==user.id))];if(ids.length){const {data,error}=await client.from('profiles').select('id,display_name').in('id',ids);if(!error)(data||[]).forEach(x=>names[x.id]=x.display_name||'Utilisateur')}}
- render();
+ let timer;
+ const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('La connexion est lente. Appuyez sur Actualiser pour réessayer.')),10000)});
+ try{
+  const requests=Promise.all([
+   client.from('announcements').select('id,title,body,created_by,created_at').or('target_user_id.is.null,target_user_id.eq.'+user.id).order('created_at',{ascending:false}).limit(50),
+   client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+user.id+',recipient_id.eq.'+user.id).order('created_at',{ascending:false}).limit(100)
+  ]);
+  const [a,m]=await Promise.race([requests,timeout]);
+  if(a.error)throw a.error;if(m.error)throw m.error;
+  announcements=a.data||[];messages=m.data||[];
+  const ids=announcements.map(x=>x.id);
+  let reads=[];
+  if(ids.length){const {data,error}=await client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).in('announcement_id',ids);if(error)throw error;reads=data||[]}
+  const readIds=new Set(reads.map(x=>String(x.announcement_id)));
+  const unread=announcements.filter(x=>x.created_by!==user.id&&!readIds.has(String(x.id)));
+  if(unread.length){const {error}=await client.from('announcement_reads').upsert(unread.map(x=>({announcement_id:x.id,user_id:user.id})),{onConflict:'announcement_id,user_id',ignoreDuplicates:true});if(error)console.warn(error)}
+  const incoming=messages.filter(x=>x.recipient_id===user.id&&!x.read_at);
+  if(incoming.length){const stamp=new Date().toISOString(),messageIds=incoming.map(x=>x.id);const {error}=await client.from('messages').update({read_at:stamp}).in('id',messageIds);if(error)console.warn(error);messages=messages.map(x=>messageIds.includes(x.id)?{...x,read_at:stamp}:x)}
+  if(isAdmin){const userIds=[...new Set(messages.flatMap(x=>[x.sender_id,x.recipient_id]).filter(x=>x&&x!==user.id))];if(userIds.length){const {data,error}=await client.from('profiles').select('id,display_name').in('id',userIds).limit(100);if(!error)(data||[]).forEach(x=>names[x.id]=x.display_name||'Utilisateur')}}
+  render();
+ }finally{clearTimeout(timer)}
 }
 function render(){
  const ann=announcements.filter(x=>x.created_by!==user.id).map(x=>({kind:'announcement',date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
@@ -63,7 +70,7 @@ function render(){
 function init(d){
  if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=profile.role==='super_admin';
  if(isAdmin){$('writeTitle').innerHTML='<i class="fa-regular fa-paper-plane"></i> Répondre à un utilisateur';$('messageForm').insertAdjacentHTML('afterbegin','<select id="recipient" required><option value="">Choisir un destinataire…</option></select>');$('messageContent').placeholder='Rédigez votre réponse…';$('sendMessage').textContent='Envoyer la réponse';$('adminPanel').hidden=false;
-  client.from('profiles').select('id,display_name').neq('id',user.id).order('display_name').then(({data,error})=>{if(!error&&data)data.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.display_name||'Utilisateur';$('recipient').appendChild(o)})});
+  client.from('profiles').select('id,display_name').neq('id',user.id).order('display_name').limit(500).then(({data,error})=>{if(!error&&data)data.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.display_name||'Utilisateur';$('recipient').appendChild(o)})});
  }
  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));
  $('messageForm').addEventListener('submit',async e=>{e.preventDefault();const content=$('messageContent').value.trim(),recipient=isAdmin?$('recipient').value:ADMIN_ID;if(!content||!recipient){status('messageStatus','Choisissez un destinataire et saisissez un message.',false);return}
