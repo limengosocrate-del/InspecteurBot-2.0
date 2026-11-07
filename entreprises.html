@@ -68,6 +68,8 @@ rel="stylesheet">
 
 </div>
 
+
+<button type="button" id="entrepriseThemeToggle" class="entreprise-theme-toggle" aria-label="Basculer le thème"><i class="fa-solid fa-moon"></i><span>Thème sombre</span></button>
 </header>
 
 <section class="stats">
@@ -370,6 +372,10 @@ InspecteurBot RDC © 2026
 
 </div>
 
+
+<script>
+(()=>{const key='inspecteur-entreprises-theme-v2',btn=document.getElementById('entrepriseThemeToggle');let mode=localStorage.getItem(key)||'light';function apply(){document.body.classList.toggle('dark-theme',mode==='dark');if(btn){btn.innerHTML=mode==='dark'?'<i class="fa-solid fa-sun"></i><span>Thème clair</span>':'<i class="fa-solid fa-moon"></i><span>Thème sombre</span>';btn.setAttribute('aria-label',mode==='dark'?'Activer le thème clair':'Activer le thème sombre');}}apply();btn?.addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';localStorage.setItem(key,mode);apply();});})();
+</script>
 </body>
 
     </html>
