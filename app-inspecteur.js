@@ -8,6 +8,7 @@
 // CONFIG & STATE
 // ==========================================
 let archiveStorageKey = 'inspecteurbot_archive_local';
+let quickNotesStorageKey = 'inspecteurbot_quicknotes_local';
 
 async function initArchiveAccountKey() {
   const client = window.inspecteurBotAuthClient;
@@ -15,7 +16,7 @@ async function initArchiveAccountKey() {
   try {
     const { data } = await client.auth.getSession();
     const id = data && data.session && data.session.user && data.session.user.id;
-    if (id) archiveStorageKey = 'inspecteurbot_archive_' + id;
+    if (id) { archiveStorageKey = 'inspecteurbot_archive_' + id; quickNotesStorageKey = 'inspecteurbot_quicknotes_' + id; }
   } catch (e) { console.warn('Compte local des archives indisponible', e); }
 }
 
@@ -1243,7 +1244,7 @@ function exportIAOutputPDF() {
 // ==========================================
 function clearQuickNotes() {
   document.getElementById('quickNotes').value = '';
-  localStorage.removeItem('inspecteurbot_quicknotes');
+  localStorage.removeItem(quickNotesStorageKey);
   showToast('Notes rapides effacées.', 'info');
 }
 
@@ -1254,13 +1255,13 @@ function copyQuickNotes() {
 
 function saveQuickNotes() {
   const text = document.getElementById('quickNotes').value || '';
-  localStorage.setItem('inspecteurbot_quicknotes', text);
+  localStorage.setItem(quickNotesStorageKey, text);
   showToast('Notes rapides sauvegardées.', 'success');
 }
 
 function loadQuickNotes() {
   try {
-    const saved = localStorage.getItem('inspecteurbot_quicknotes');
+    const saved = localStorage.getItem(quickNotesStorageKey);
     if (saved !== null) {
       document.getElementById('quickNotes').value = saved;
     }
