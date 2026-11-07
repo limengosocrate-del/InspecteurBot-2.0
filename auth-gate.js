@@ -127,7 +127,7 @@ async function loadLib(){
 async function serverCheck(session){
  const sessionId=readSessionId(session?.access_token);
  const cacheKey=session?.user?.id?'inspecteurbot_server_check_v1_'+session.user.id:null;
- if(cacheKey&&sessionId){try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-cached.validated_at<30000){armSessionExpiry(cached);return {success:true,profile:cached.profile,cached:true}}}catch(_){}}
+ if(cacheKey&&sessionId){try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-cached.validated_at<120000){armSessionExpiry(cached);return {success:true,profile:cached.profile,cached:true}}}catch(_){}}
  for(let attempt=0;attempt<2;attempt++){
   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
   let payload=data||null;
