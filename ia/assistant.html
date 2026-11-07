@@ -96,7 +96,7 @@ function addBubble(role,text,ts){
 }
 function nettoyerSalutationIA(value){
  const text=String(value||"").trim();
- return text.replace(/^(?:bonjour|bonsoir|salut)(?:\\s*[!,.👋🙂😊]*)?\\s*/i,"").trim();
+ return text.replace(/^(?:bonjour|bonsoir|salut)(?:\s*[!,.👋🙂😊]*)?\s*/i,"").trim();
 }
 async function render(){
  const box=document.getElementById("messages");box.innerHTML="";
