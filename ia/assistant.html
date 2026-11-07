@@ -66,22 +66,16 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
 <script src="../js/ai-core.js?v=3"></script>
-<script src="../js/assistant.js?v=6"></script>
+<script src="../js/assistant.js?v=4"></script>
 <script src="../assets/js/code-travail/database.js?v=20261107-local-1"></script>
 <script src="../assets/js/ai-offline.js?v=20261107-local-1"></script>
-<script src="../js/ai-local-bridge.js?v=20261107-local-5"></script>
+<script src="../js/ai-local-bridge.js?v=20261107-local-6"></script>
 <script>
 let speakAuto=false,attachedDocument=null;
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
 function formatAnswer(raw){
- let t=String(raw??"").replace(/<br\s*\/?>/gi,"
-").replace(/\\r\
-/g,"
-").replace(/\
-/g,"
-");
- const lines=t.split("
-");let out="",p=[];
+ let t=String(raw??"").replace(/<br\s*\/?>/gi,"\n").replace(/\\r\\n/g,"\n").replace(/\\n/g,"\n");
+ const lines=t.split("\n");let out="",p=[];
  const flush=()=>{if(p.length){out+="<p>"+p.map(esc).join("<br>")+"</p>";p=[];}};
  for(const line of lines){const x=line.trim();if(!x){flush();continue;}
  if(/^###\s+/.test(x)){flush();out+="<h3>"+esc(x.replace(/^###\s+/,""))+"</h3>";continue;}
@@ -96,10 +90,7 @@ function addBubble(role,text,ts){
  wrap.className="msg-wrap "+(role==="user"?"user":"bot");div.className="msg "+(role==="user"?"user":"bot");div.innerHTML=formatAnswer(text);
  const time=document.createElement("div");time.className="msg-time";time.textContent=ts?new Date(ts).toLocaleTimeString("fr-FR"):"";
  const tools=document.createElement("div");tools.className="msg-tools";const copy=document.createElement("button");copy.className="msg-tool";copy.textContent="⧉ Copier";
- copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(text??"").replace(/<br\s*\/?>/gi,"
-").replace(/\
-/g,"
-"));copy.textContent="✓ Copié";setTimeout(()=>copy.textContent="⧉ Copier",1500);}catch(e){copy.textContent="Copie indisponible";}};tools.appendChild(copy);
+ copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(text??"").replace(/<br\s*\/?>/gi,"\n").replace(/\\n/g,"\n"));copy.textContent="✓ Copié";setTimeout(()=>copy.textContent="⧉ Copier",1500);}catch(e){copy.textContent="Copie indisponible";}};tools.appendChild(copy);
  if(role!=="user"){const read=document.createElement("button");read.className="msg-tool";read.textContent="🔊 Lire";read.onclick=()=>window.ASSISTANT.speak(String(text??""));tools.appendChild(read);}
  wrap.append(div,time,tools);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return wrap;
 }
@@ -125,9 +116,7 @@ document.getElementById("fileInput").onchange=async e=>{
    pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
    const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
    const pages=[];for(let n=1;n<=Math.min(pdf.numPages,30);n++){const page=await pdf.getPage(n);const data=await page.getTextContent();pages.push(data.items.map(x=>x.str||"").join(" "));}
-   txt=pages.join("
-
-");
+   txt=pages.join("\n\n");
    if(!txt.trim())throw Error("Ce PDF ne contient pas de texte sélectionnable. Les PDF scannés nécessitent une reconnaissance OCR.");
   }else if(ext==="docx"){
    if(!window.mammoth)throw Error("Le lecteur Word n'est pas disponible. Vérifiez votre connexion Internet.");
@@ -146,9 +135,7 @@ async function send(){
  const client=window.inspecteurBotAuthClient;if(!client){addBubble("bot","Votre session sécurisée n'est pas prête. Rechargez la page ou reconnectez-vous.",new Date().toISOString());return;}
  let history=[];
  const prompt=q||(attachedDocument?"Analyse le document joint et présente les points importants.":"");
- const shown=prompt+(attachedDocument?"
-
-📎 Document joint : "+attachedDocument.name:"");
+ const shown=prompt+(attachedDocument?"\n\n📎 Document joint : "+attachedDocument.name:"");
  input.value="";input.style.height="auto";input.disabled=true;sendButton.disabled=true;sendButton.textContent="…";
  const pending=addBubble("bot","InspecteurBot analyse votre demande…",new Date().toISOString());
  try{
@@ -156,15 +143,11 @@ async function send(){
  window.ASSISTANT.setAccount(sess.session.user.id);
  history=window.ASSISTANT.conversation.slice(-10).map(m=>({role:m.role==="bot"?"assistant":"user",content:String(m.text||"").slice(0,2500)}));
  window.ASSISTANT.addMessage("user",shown);addBubble("user",shown,new Date().toISOString());
- const body={question:prompt,history};if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"
-
-"+attachedDocument.text;
+ const body={question:prompt,history};if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\n\n"+attachedDocument.text;
  const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
  if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
  pending.remove();window.ASSISTANT.addMessage("bot",data.answer);addBubble("bot",data.answer,new Date().toISOString());if(speakAuto)window.ASSISTANT.speak(data.answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
- }catch(err){if(pending)pending.remove();let localText="L’application est encore en développement ; certaines informations ne sont pas encore prises en compte. Réessayez ultérieurement ou consultez les modules concernés.";try{if(window.InspecteurBotLocalAI&&typeof window.InspecteurBotLocalAI.answer==="function"){const local=window.InspecteurBotLocalAI.answer(prompt,{documentText:attachedDocument&&attachedDocument.text,fileName:attachedDocument&&attachedDocument.name,history:window.ASSISTANT&&window.window.ASSISTANT.conversation});if(local&&local.text)localText="⚙️ **Le service IA en ligne est indisponible. Le moteur local prend le relais.**\
-\
-"+local.text;}}catch(localErr){console.warn("Moteur IA local indisponible",localErr);}if(window.ASSISTANT&&typeof window.window.ASSISTANT.addMessage==="function")window.window.ASSISTANT.addMessage("bot",localText);addBubble("bot",localText,new Date().toISOString());if(attachedDocument){attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");}}
+ }catch(err){if(pending)pending.remove();let localText="L’application est encore en développement ; certaines informations ne sont pas encore prises en compte. Réessayez ultérieurement ou consultez les modules concernés.";try{if(window.InspecteurBotLocalAI&&typeof window.InspecteurBotLocalAI.answer==="function"){const local=window.InspecteurBotLocalAI.answer(prompt,{documentText:attachedDocument&&attachedDocument.text,fileName:attachedDocument&&attachedDocument.name,history:window.ASSISTANT&&window.window.ASSISTANT.conversation});if(local&&local.text)localText="⚙️ **Le service IA en ligne est indisponible. Le moteur local prend le relais.**\\n\\n"+local.text;}}catch(localErr){console.warn("Moteur IA local indisponible",localErr);}if(window.ASSISTANT&&typeof window.window.ASSISTANT.addMessage==="function")window.window.ASSISTANT.addMessage("bot",localText);addBubble("bot",localText,new Date().toISOString());if(attachedDocument){attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");}}
  finally{input.disabled=false;sendButton.disabled=false;sendButton.textContent="↑";input.focus();}
 }
 document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
@@ -177,12 +160,7 @@ document.getElementById("btnNewChat").onclick=newChat;document.getElementById("b
 document.getElementById("btnExportSide").onclick=()=>document.getElementById("btnExportChat").click();
 document.getElementById("btnSpeakToggle").onclick=()=>{speakAuto=!speakAuto;document.getElementById("btnSpeakToggle").textContent=speakAuto?"🔊 Lecture : ON":"🔊 Lecture : OFF";if(!speakAuto)window.ASSISTANT.stopSpeaking();};
 document.getElementById("btnVoice").onclick=()=>{const b=document.getElementById("btnVoice");b.classList.add("listening");b.textContent="🔴";window.ASSISTANT.startVoice(txt=>{document.getElementById("input").value=txt;b.classList.remove("listening");b.textContent="🎙";send();},err=>{alert("Erreur vocale : "+err);b.classList.remove("listening");b.textContent="🎙";});};
-document.getElementById("btnExportChat").onclick=()=>{const conv=window.ASSISTANT.loadConversation();let txt="=== CONVERSATION INSPECTEURBOT IA RDC ===
-
-";conv.forEach(m=>{txt+="["+new Date(m.ts).toLocaleString("fr-FR")+"] "+m.role.toUpperCase()+": "+String(m.text||"").replace(/<br\s*\/?>/gi,"
-")+"
-
-";});const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="conversation_inspecteurbot_"+Date.now()+".txt";a.click();URL.revokeObjectURL(a.href);};
+document.getElementById("btnExportChat").onclick=()=>{const conv=window.ASSISTANT.loadConversation();let txt="=== CONVERSATION INSPECTEURBOT IA RDC ===\n\n";conv.forEach(m=>{txt+="["+new Date(m.ts).toLocaleString("fr-FR")+"] "+m.role.toUpperCase()+": "+String(m.text||"").replace(/<br\s*\/?>/gi,"\n")+"\n\n";});const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="conversation_inspecteurbot_"+Date.now()+".txt";a.click();URL.revokeObjectURL(a.href);};
 render();
 </script>
 </body>
