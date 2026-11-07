@@ -107,7 +107,8 @@ function authReady(e){if(booted)return;booted=true;client=e.detail.client;curren
 window.addEventListener('inspecteurbot:authenticated',authReady);
 if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthProfile){authReady({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile}});}
 async function adminCall(body){const {data,error}=await client.functions.invoke('igt-admin-users',{body});if(error)throw new Error(data?.message||error.message||'Service administrateur indisponible.');if(!data?.success)throw new Error(data?.message||'Opération refusée.');return data;}
-function updateStats(){const total=users.length,active=users.filter(u=>u.is_active).length,online=users.filter(u=>u.online).length;const vals=[total,active,total-active,online],labels=['Comptes enregistrés','Accès autorisés','Accès suspendus','Activité récente'];$('stats').innerHTML=vals.map((v,i)=>'<div class="stat"><div class="stat-top">'+labels[i]+' <span class="stat-icon"><i class="fa-solid '+['fa-users','fa-user-check','fa-user-lock','fa-signal'][i]+'"></i></span></div><strong>'+v.toLocaleString('fr-FR')+'</strong><small>'+['Membres inscrits','Comptes actifs','Comptes suspendus','Membres en ligne'][i]+'</small></div>').join('');}
+function updateStats(){const total=users.length,active=users.filter(u=>u.is_active).length,online=users.filter(u=>u.online).length;const vals=[total,active,total-active,online],labels=['Comptes enregistrés','Accès autorisés','Accès suspendus','Connectés maintenant'];$('stats').innerHTML=vals.map((v,i)=>'<div class="stat"><div class="stat-top">'+labels[i]+' <span class="stat-icon"><i class="fa-solid '+['fa-users','fa-user-check','fa-user-lock','fa-signal'][i]+'"></i></span></div><strong>'+v.toLocaleString('fr-FR')+'</strong><small>'+['Membres inscrits','Comptes actifs','Comptes suspendus','Présence actualisée automatiquement'][i]+'</small></div>').join('');}
+window.setInterval(()=>{if(client&&document.visibilityState==='visible')loadUsers()},30000);window.addEventListener('focus',()=>{if(client&&document.visibilityState==='visible')loadUsers()});
 function renderUsers(){
  const q=$('member-search').value.trim().toLocaleLowerCase('fr');visibleUsers=users.filter(u=>{const a=u.agents||{};return [u.display_name,u.email,u.telephone,u.adresse_physique,a.nom_complet,a.matricule,a.categorie,a.grade,a.fonction,a.direction,a.lieu_affectation,a.province].some(v=>String(v??'').toLocaleLowerCase('fr').includes(q));});
  if(!visibleUsers.length){$('users-body').innerHTML='<tr><td colspan="8" class="empty">Aucun membre correspondant.</td></tr>';return;}
@@ -137,6 +138,6 @@ $('export-csv').addEventListener('click',()=>{const rows=[['Nom','E-mail','Tél�
 $('print-users').addEventListener('click',()=>window.print());
 })();
 </script>
-<script src="auth-gate.js?v=20261107-auth-smooth-14"></script>
+<script src="auth-gate.js?v=20261107-presence-26"></script>
 </body>
 </html>
