@@ -1236,6 +1236,25 @@ background:#06111f;
 
 /* FIN CSS */
 
+
+/* SMART GPS IGT — DESIGN PROFESSIONNEL ET THÈMES */
+:root{--gps-bg:#f3f0e8;--gps-card:#fffdf8;--gps-card2:#f7f4ec;--gps-ink:#18324b;--gps-muted:#61748a;--gps-line:#e3ddcf;--gps-accent:#b58b35;--gps-shadow:0 10px 28px rgba(20,43,67,.08)}
+html{scroll-behavior:smooth}body{background:var(--gps-bg)!important;background-image:none!important;color:var(--gps-ink)!important;animation:none!important;overflow-x:hidden!important}body:before,body:after,.particles{display:none!important}
+header{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;flex-wrap:wrap!important;padding:clamp(16px,2.4vw,28px)!important;margin:16px auto!important;width:min(1440px,calc(100% - 28px))!important;border-radius:22px!important;background:linear-gradient(120deg,#102d4b,#1d547c)!important;color:#fff!important;box-shadow:0 14px 34px rgba(14,39,64,.16)!important;border:1px solid #ffffff24!important}
+header h1{color:#f3d78b!important;font-size:clamp(20px,3vw,30px)!important}header p{color:#e2edf6!important}header .logo{display:flex!important;align-items:center!important;gap:15px!important}header .logo img{width:68px!important;height:68px!important;object-fit:contain!important}
+.gps-theme-toggle{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:12px;border:1px solid #ffffff55;background:#ffffff18;color:#fff;font-weight:750;cursor:pointer}
+.gps-quick-nav{position:sticky!important;top:0!important;z-index:1000!important;width:min(1440px,calc(100% - 28px))!important;margin:0 auto 18px!important;padding:10px!important;border:1px solid var(--gps-line)!important;border-radius:15px!important;background:#fffdf8ed!important;box-shadow:0 8px 22px #18324b12!important;backdrop-filter:blur(12px)!important;display:flex!important;gap:8px!important;overflow-x:auto!important}
+.gps-quick-nav a{flex:0 0 auto!important;padding:9px 13px!important;border-radius:10px!important;background:#f1ecdf!important;color:#29445f!important;font-size:12px!important;font-weight:750!important;text-decoration:none!important;white-space:nowrap!important;border:1px solid #e5dcc8!important}
+.container{width:min(1440px,100%)!important;margin:0 auto!important;padding:0 clamp(14px,2vw,28px) 40px!important}
+.section,.status-panel,.info-box,.map-container,.history-item,.form-section,.card,.panel{background:var(--gps-card)!important;color:var(--gps-ink)!important;border:1px solid var(--gps-line)!important;border-radius:18px!important;box-shadow:var(--gps-shadow)!important}
+.section{padding:clamp(16px,2.2vw,26px)!important;margin:16px 0!important}.section h2,.section h3,.section h4{color:#173e61!important}.section p,.section label,.section span{color:var(--gps-muted)}.section h2 i{color:var(--gps-accent)!important}
+.status-panel{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;gap:12px!important;padding:15px!important}.status-panel>div{padding:12px!important;border-radius:12px!important;background:var(--gps-card2)!important}.status-panel strong{color:#176a54!important}
+input,select,textarea{max-width:100%;background:var(--gps-card2)!important;color:var(--gps-ink)!important;border:1px solid var(--gps-line)!important;border-radius:10px!important;padding:11px!important}button,.btn{border-radius:11px!important}button[type=submit],.btn-primary{background:#173e61!important;color:#fff!important;border:0!important}
+.table-wrap, .table-container{max-width:100%;overflow-x:auto!important}table{width:100%;border-collapse:collapse}th{background:#e9e1d0!important;color:#173e61!important}td{color:var(--gps-ink)!important;border-bottom:1px solid var(--gps-line)!important}
+.leaflet-container{border-radius:15px!important;border:1px solid var(--gps-line)!important}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fffdf8!important;color:#18324b!important}
+body.dark-theme{--gps-bg:#0b1420;--gps-card:#142231;--gps-card2:#0e1c2a;--gps-ink:#edf3f8;--gps-muted:#b0bfcd;--gps-line:#2b4054;--gps-accent:#e8c979;--gps-shadow:0 12px 30px #0004}body.dark-theme .gps-quick-nav{background:#142231ed!important;border-color:#2b4054!important}body.dark-theme .gps-quick-nav a{background:#1b3043!important;color:#eaf2f8!important;border-color:#30475b!important}body.dark-theme .section h2,body.dark-theme .section h3,body.dark-theme .section h4{color:#f0d48b!important}body.dark-theme input,body.dark-theme select,body.dark-theme textarea{background:#0e1c2a!important;color:#edf3f8!important;border-color:#30475b!important}body.dark-theme th{background:#263c50!important;color:#f3d78b!important}body.dark-theme td{color:#edf3f8!important}body.dark-theme .leaflet-popup-content-wrapper,body.dark-theme .leaflet-popup-tip{background:#142231!important;color:#edf3f8!important}
+@media(max-width:700px){header{width:calc(100% - 18px)!important;margin:9px auto!important;gap:10px!important}header .logo img{width:54px!important;height:54px!important}.gps-theme-toggle,header>.btn{flex:1;justify-content:center}.gps-quick-nav{width:calc(100% - 18px)!important}.container{padding:0 9px 28px!important}.section{border-radius:14px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 
 
@@ -1293,6 +1312,8 @@ InspecteurBot RDC
 
 
 
+
+<button type="button" id="gpsThemeToggle" class="gps-theme-toggle"><i class="fa-solid fa-moon"></i><span>Thème sombre</span></button>
 
 <a href="../index.html"
 class="btn">
@@ -3592,6 +3613,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   const a=document.createElement('a');a.href='#'+id;a.textContent=labels[i]||heading.textContent.trim().slice(0,22);nav.appendChild(a);
  });
 });
+</script>
+
+<script>
+(()=>{const key='inspecteur-gps-theme-v2',btn=document.getElementById('gpsThemeToggle');let mode=localStorage.getItem(key)||'light';function apply(){document.body.classList.toggle('dark-theme',mode==='dark');if(btn){btn.innerHTML=mode==='dark'?'<i class="fa-solid fa-sun"></i><span>Thème clair</span>':'<i class="fa-solid fa-moon"></i><span>Thème sombre</span>';}}apply();btn?.addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';localStorage.setItem(key,mode);apply();});})();
 </script>
 </body>
 
