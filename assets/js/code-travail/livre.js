@@ -16,18 +16,10 @@ window.LivreEngine = {
     // Section livre insérée juste après la section de consultation classique
     let host = document.getElementById("livreHost");
     if (!host) {
-      // Créer la section livre dynamiquement avant le footer
-      const footer = document.querySelector(".footer");
-      const section = document.createElement("section");
-      section.className = "livre-section";
-      section.id = "livreHost";
-      section.innerHTML = this.template();
-      if (footer && footer.parentNode) {
-        footer.parentNode.insertBefore(section, footer);
-      } else {
-        document.querySelector(".container")?.appendChild(section);
-      }
+      const section=document.createElement("section"); section.className="livre-section"; section.id="livreHost";
+      document.querySelector(".container")?.appendChild(section); host=section;
     }
+    if (!host.innerHTML.trim()) host.innerHTML=this.template();
     this.bind();
     // Attendre le chargement des articles
     const tryRender = () => {
