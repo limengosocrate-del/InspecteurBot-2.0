@@ -364,7 +364,7 @@ Notifications :
 
 • 3 nouvelles mises à jour disponibles.
 
-• Le module AIM 006/127 est disponible.
+• Le module AIM 006/2023 est disponible.
 
 • La bibliothèque juridique a été actualisée.`
     );
@@ -382,7 +382,7 @@ openMenu() {
 
 1 = Accueil
 2 = Les 65 Infractions
-3 = AIM 006/127
+3 = AIM 006/2023
 4 = Sanctions
 5 = Bibliothèque
 6 = Académie
@@ -416,7 +416,7 @@ Entrez un numéro :`
 
             this.navTo(
                 "aim006",
-                "Tableau AIM 006/127"
+                "Tableau AIM 006/2023"
             );
 
             break;
@@ -832,7 +832,7 @@ loadFavorites() {
 
 /* ==========================================================
    PARTIE 4A
-   Tableau AIM 006/127
+   Tableau AIM 006/2023
    Base de données + Génération du tableau
 ========================================================== */
 
@@ -876,7 +876,7 @@ showAIMDetails(id) {
 
 /* ==========================================================
    PARTIE 4B
-   AIM 006/127
+   AIM 006/2023
    Recherche + Calculateur automatique
 ========================================================== */
 
@@ -1096,7 +1096,7 @@ saveCalculation(data){
 
 /* ==========================================================
    PARTIE 4C
-   AIM 006/127
+   AIM 006/2023
    Historique + Analyse + Gestion
 ========================================================== */
 
@@ -1448,7 +1448,7 @@ initBibliotheque(){
             "Arrêté sur les sanctions administratives",
 
             reference:
-            "AIM 006/127",
+            "AIM 006/2023",
 
             description:
             "Barème des amendes et sanctions applicables par l'Inspection du Travail.",
@@ -4241,7 +4241,7 @@ getModuleInfo(){
 
             "65 Infractions",
 
-            "AIM 006/127",
+            "AIM 006/2023",
 
             "Bibliothèque juridique",
 
