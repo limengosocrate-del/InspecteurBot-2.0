@@ -64,7 +64,7 @@ window.SpeechEngine = {
       const ordered = candidates.slice().sort((a,b) => a.name.localeCompare(b.name));
       return wantMale ? ordered[ordered.length - 1] : ordered[0];
     }
-    return null;
+    return wantMale ? null : (candidates[0] || null);
   },
 
   speak: function (text, lang) {
