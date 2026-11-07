@@ -1,7 +1,7 @@
 /* InspecteurBot — service worker unique, sans interception double des requêtes */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-07-v8';
-const SHELL=['./','./index.html','./profil.html','./notifications.html','./admin.html','./auth-gate.js'];
+const CACHE='inspecteurbot-shell-2026-11-07-v9';
+const SHELL=['./','./index.html','./profil.html','./notifications.html','./admin.html','./ia/assistant.html','./auth-gate.js'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL).catch(()=>{})));
  self.skipWaiting();
