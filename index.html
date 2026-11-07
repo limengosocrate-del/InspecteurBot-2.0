@@ -164,7 +164,7 @@ body{
 }  
   
 .menu-index a:hover{  
-    transform:translateY(-6px);  
+    transform:none;  
     border-color:rgba(255,255,255,.75);  
     box-shadow:  
         0 0 14px rgba(255,215,0,.40),  
@@ -182,7 +182,7 @@ body{
 }  
   
 .menu-index a:active{  
-    transform:translateY(-8px) scale(1.08);  
+    transform:none;  
     box-shadow:  
         0 0 35px #00d9ff,  
         0 0 60px #009dff;  
@@ -248,7 +248,7 @@ body{
 }  
   
 .quick-card:hover{  
-    transform:translateY(-8px) scale(1.03);  
+    transform:none;  
     box-shadow:  
         0 0 20px #00d9ff,  
         0 0 45px rgba(0,217,255,.6);  
@@ -281,7 +281,7 @@ body{
     );  
     border-radius:30px;  
     padding:30px;  
-    animation:pulse 2.8s infinite;  
+    animation:none;  
     box-shadow:0 0 25px rgba(0,190,255,.5);  
 }  
   
@@ -905,21 +905,30 @@ loadKinshasaWeather();
   
 <!-- ================= FICHIERS JAVASCRIPT ================= -->  
   
-<script src="assets/data/code-travail.js"></script>  
-  
-<script src="assets/js/vectorSearch.js"></script>  
-  
-<script src="assets/js/rag.js"></script>  
-  
-<script src="assets/js/search.js"></script>  
-  
-<script src="assets/js/speech.js"></script>  
-  
-<script src="assets/js/traduction.js"></script>  
-  
-<script src="assets/js/ia.js"></script>
-  
-<script src="js/decompte-final.js?v=1"></script>
+<script>
+/* Chargement différé des outils secondaires : le tableau de bord s'affiche d'abord. */
+(function(){
+ const files=[
+  'assets/data/code-travail.js',
+  'assets/js/vectorSearch.js',
+  'assets/js/rag.js',
+  'assets/js/search.js',
+  'assets/js/speech.js',
+  'assets/js/traduction.js',
+  'assets/js/ia.js',
+  'js/decompte-final.js?v=1'
+ ];
+ function loadNext(i){
+  if(i>=files.length)return;
+  const s=document.createElement('script');s.src=files[i];s.async=false;
+  s.onload=()=>loadNext(i+1);s.onerror=()=>{console.warn('Module différé indisponible :',files[i]);loadNext(i+1)};
+  document.body.appendChild(s);
+ }
+ const run=()=>loadNext(0);
+ if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:1800});
+ else setTimeout(run,1200);
+})();
+</script>
   
 <script>  
   
