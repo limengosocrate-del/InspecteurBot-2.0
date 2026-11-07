@@ -129,15 +129,41 @@ class InspecteurBotSanctions {
     ============================================ */
 
     navTo(viewId, title = "") {
-
-        this.showView(viewId, true);
-
-        if (title !== "" && this.appTitle) {
-
-            this.appTitle.textContent = title;
-
+        const routes = {
+            "sanction-administrative":"aim006",
+            "sanction-financiere":"aim006",
+            "sanction-penale":"infractions65",
+            "recouvrement":"aim006",
+            "mise-demeure":"sanctions",
+            "decrets":"bibliotheque","arretes":"bibliotheque","circulaires":"bibliotheque",
+            "oit":"bibliotheque","jurisprudence":"bibliotheque","faqJuridique":"bibliotheque",
+            "glossaire":"bibliotheque","veille":"bibliotheque",
+            "avantMission":"guide","pendantMission":"guide","apresMission":"guide",
+            "documentsControle":"guide","checklists":"guide","bonnesPratiques":"guide",
+            "conciliation":"cas-pratiques","verbalisation":"infractions65",
+            "emploisCongolais":"infractions65","travailleursEtrangers":"infractions65","emploisReserves":"infractions65"
+        };
+        if (routes[viewId]) return this.navTo(routes[viewId], title);
+        if (viewId === "archives") { window.location.href = "autres/historique.html"; return; }
+        if (viewId === "pv") { window.location.href = "pv.html"; return; }
+        if (viewId === "codeTravail") { window.location.href = "code-travail.html"; return; }
+        if (viewId === "favoris") {
+            let fav = [];
+            try { fav = JSON.parse(localStorage.getItem(sanctionsStorageKey("inspecteurbot-favoris")) || "[]"); } catch (_) {}
+            let section = document.getElementById("favoris");
+            if (!section) {
+                section = document.createElement("section");
+                section.id = "favoris"; section.className = "view";
+                const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+                const items = (this.infractions || []).filter(item => fav.includes(item.id));
+                section.innerHTML = '<div class="page-header"><h2><i class="fa-solid fa-star"></i> Mes favoris</h2><p>Vos infractions enregistrées sur ce compte.</p></div>' +
+                  (items.length ? items.map(item => '<article class="card"><h3>'+esc(item.infraction)+'</h3><p><strong>Article :</strong> '+esc(item.article)+'</p><p><strong>Amende / sanction :</strong> '+esc(item.montant)+'</p><button class="btn btn-outline" type="button" onclick="app.showInfraction('+Number(item.id)+')">Voir la fiche</button></article>').join('') : '<div class="card"><p>Aucun favori enregistré. Ajoutez une infraction depuis la liste des 65 infractions.</p><button class="btn" type="button" onclick="app.navTo(\'infractions65\',\'Les 65 Infractions\')">Consulter les infractions</button></div>');
+                document.querySelector(".content")?.appendChild(section);
+                this.views = document.querySelectorAll(".view");
+            }
         }
-
+        this.showView(viewId, true);
+        if (title !== "" && this.appTitle) this.appTitle.textContent = title;
     }
 
     showView(viewId, saveHistory = true) {
