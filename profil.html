@@ -14,7 +14,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:#f3f7fb;color:var(--ink);font-family:Poppins,Arial,sans-serif}
 .profile-hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(115deg,#062b58 0%,#075b91 62%,#0787b8 100%);padding:78px max(20px,calc((100% - 1120px)/2)) 46px;min-height:245px}
 .profile-hero:after{content:"";position:absolute;width:330px;height:330px;border:1px solid #ffffff25;border-radius:50%;right:-85px;top:-150px;box-shadow:0 0 0 35px #ffffff0c,0 0 0 75px #ffffff08}
-.topbar{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px;padding-right:210px}
+.topbar{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px;padding-right:0}
 .topbar a{color:#e4f4ff;text-decoration:none;font-size:13px;font-weight:600}
 .brand{font-size:11px;letter-spacing:1.5px;font-weight:700;color:#d6edff}
 .hero-inner{position:relative;z-index:1;max-width:760px}
@@ -49,7 +49,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 .doc-empty{padding:18px;text-align:center;color:var(--muted);background:#f7f9fb;border-radius:10px;font-size:13px}
 #docStatus{font-size:12px;color:var(--blue);min-height:18px;margin-top:8px}
 @media(max-width:680px){
- .profile-hero{padding:82px 18px 32px;min-height:220px}
+ .profile-hero{padding:22px 18px 32px;min-height:220px}
  .topbar{padding-right:0;margin-bottom:24px;align-items:flex-start;flex-direction:column;gap:8px}
  .brand{font-size:10px}
  main{padding:18px 13px 34px}
@@ -106,12 +106,12 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-user-menu-1"></script>
+<script src="auth-gate.js?v=20261107-header-performance-2"></script>
 <script>
 (function(){
 'use strict';
 // Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
-const PROFILE_VERSION='20261107-profile-redesign-3';
+const PROFILE_VERSION='20261107-profile-redesign-4';
 if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
@@ -138,19 +138,21 @@ async function initDocuments(owner){const db=await openDocDB();const list=$('doc
 
 async function load(){
  const auth=await new Promise(resolve=>{
-  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient});return}
+  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser});return}
   const done=e=>{window.removeEventListener('inspecteurbot:authenticated',done);resolve(e.detail)};
-  window.addEventListener('inspecteurbot:authenticated',done);
+  window.addEventListener('inspecteurbot:authenticated',done,{once:true});
  });
  const client=auth.client;
- const {data:{session}}=await client.auth.getSession();
- if(!session){$('status').textContent='La session a expiré. Reconnectez-vous depuis InspecteurBot.';return}
- const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique').eq('id',session.user.id).maybeSingle();
+ const user=auth.user;
+ if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';return}
+ // Start local document loading immediately, but do not block account/profile rendering.
+ const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
+ const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique').eq('id',user.id).maybeSingle();
  if(error||!p){$('status').textContent='Impossible de charger votre profil : '+(error?.message||'profil introuvable');return}
  let a=null;
  if(p.agent_id){const r=await client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle();if(!r.error)a=r.data}
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
- $('account').innerHTML=item('Nom affiché',p.display_name)+item('Adresse e-mail',session.user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
+ $('account').innerHTML=item('Nom affiché',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
  $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
  const fields=a?[
  ['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]
@@ -164,14 +166,15 @@ async function load(){
      const {data,error}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value,telephone:$('editPhone').value,adresse_physique:$('editAddress').value}});
      if(error||!data?.success)throw new Error(data?.message||error?.message||'Enregistrement impossible.');
      msg.textContent='Coordonnées enregistrées.';msg.style.color='#138a65';
-     $('account').innerHTML=item('Nom affiché',data.profile.display_name)+item('Adresse e-mail',session.user.email)+item('Type de compte',role(data.profile.role))+item('État du compte',data.profile.is_active?'Actif':'Suspendu')+item('Compte créé le',date(data.profile.created_at))+item('Dernière mise à jour',date(data.profile.updated_at));
+     $('account').innerHTML=item('Nom affiché',data.profile.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(data.profile.role))+item('État du compte',data.profile.is_active?'Actif':'Suspendu')+item('Compte créé le',date(data.profile.created_at))+item('Dernière mise à jour',date(data.profile.updated_at));
      $('contact').innerHTML=item('Téléphone',data.profile.telephone)+item('Adresse physique',data.profile.adresse_physique);
      $('notice').textContent='Vos coordonnées personnelles sont à jour. Les informations professionnelles restent liées à votre fiche agent IGT.';
    }catch(err){msg.textContent=err.message;msg.style.color='#b42318'}
    finally{btn.disabled=false}
  });
  $('status').hidden=true;$('profile').hidden=false;
- await initDocuments(session.user.id);
+ // Keep the page responsive even if local document storage takes longer.
+ await Promise.resolve(docsPromise);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message});
 })();
