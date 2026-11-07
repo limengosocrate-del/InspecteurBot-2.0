@@ -49,9 +49,9 @@ async function refreshNotificationBadge(){
  const badge=link.querySelector('.ib-notification-count');
  try{
   const [ar,rr,mr]=await Promise.all([
-   client.from('announcements').select('id,created_by'),
-   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id),
-   client.from('messages').select('id').eq('recipient_id',user.id).is('read_at',null)
+   client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(100),
+   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(100),
+   client.from('messages').select('id').eq('recipient_id',user.id).is('read_at',null).limit(100)
   ]);
   if(ar.error)throw ar.error;if(rr.error)throw rr.error;if(mr.error)throw mr.error;
   const seen=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
