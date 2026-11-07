@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Mon profil — InspecteurBot</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#092b50;--blue:#075a96;--pale:#eef5fb;--line:#dce6ef;--ink:#19344e;--muted:#687d90}
+*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font-family:Poppins,Arial,sans-serif}
+header{background:linear-gradient(120deg,#082849,#08639c);color:white;padding:24px max(18px,calc((100% - 1000px)/2))}
+header a{color:#d9edff;text-decoration:none;font-size:14px}header h1{margin:15px 0 4px;font-size:25px}header p{margin:0;color:#d4e8f8;font-size:13px}
+main{max-width:1000px;margin:24px auto;padding:0 16px 40px}
+.notice{padding:13px 16px;border-radius:12px;background:#fff8e8;border:1px solid #f0d9a6;color:#78551a;font-size:13px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+section{background:white;border:1px solid var(--line);border-radius:15px;padding:19px;box-shadow:0 5px 18px #173b5c0a}
+section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px;align-items:center}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{min-width:0;padding-bottom:10px;border-bottom:1px solid #edf1f5}
+.field small{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.field strong{display:block;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.missing{color:#a16a17!important;font-style:italic;font-weight:500!important}
+.wide{grid-column:1/-1}
+#status{padding:18px;text-align:center;background:white;border-radius:12px;color:var(--muted)}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}header h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+<a href="index.html">← Retour à InspecteurBot</a>
+<h1>👤 Mon profil</h1>
+<p>Informations de votre compte et votre fiche professionnelle IGT</p>
+</header>
+<main>
+<div id="status">Chargement de votre profil…</div>
+<div id="profile" hidden>
+<div class="notice" id="notice">Les rubriques sont affichées même si certaines informations ne sont pas encore renseignées.</div>
+<div class="grid">
+<section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
+<section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
+<section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
+</div>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="auth-gate.js"></script>
+<script>
+(function(){
+'use strict';
+const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
+const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function item(label,value){const empty=value===null||value===undefined||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
+function date(v){if(!v)return null;const d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR')}
+function role(v){return ({super_admin:'Super administrateur',admin:'Administrateur',agent:'Agent'})[v]||v}
+async function load(){
+ const client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ const {data:{session}}=await client.auth.getSession();
+ if(!session){$('status').textContent='Veuillez vous connecter pour consulter votre profil.';return}
+ const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique').eq('id',session.user.id).maybeSingle();
+ if(error||!p){$('status').textContent='Impossible de charger votre profil : '+(error?.message||'profil introuvable');return}
+ let a=null;
+ if(p.agent_id){const r=await client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle();if(!r.error)a=r.data}
+ $('account').innerHTML=item('Nom affiché',p.display_name)+item('Adresse e-mail',session.user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
+ $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
+ const fields=a?[
+ ['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]
+ ]:[['Fiche professionnelle',p.agent_id?'Fiche liée mais non consultable':'Aucune fiche agent liée au compte'],['Identifiant agent',p.agent_id]];
+ $('professional').innerHTML=fields.map(x=>item(x[0],x[1])).join('');
+ if(!p.display_name||!p.telephone||!p.adresse_physique||!p.agent_id){$('notice').textContent='Certaines informations de votre compte ne sont pas encore renseignées. Les rubriques restent visibles ; contactez l’administrateur pour compléter les données manquantes.'}
+ $('status').hidden=true;$('profile').hidden=false;
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message});
+})();
+</script>
+</body></html>
