@@ -66,7 +66,7 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
 <script src="../js/ai-core.js?v=1"></script>
-<script src="../js/assistant.js?v=3"></script>
+<script src="../js/assistant.js?v=4"></script>\n<script src="../assets/js/code-travail/database.js?v=20261107-local-1"></script>\n<script src="../assets/js/ai-offline.js?v=20261107-local-1"></script>\n<script src="../js/ai-local-bridge.js?v=1"></script>
 <script>
 let speakAuto=false,attachedDocument=null;
 function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
@@ -140,7 +140,7 @@ async function send(){
  const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
  if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
  pending.remove();ASSISTANT.addMessage("bot",data.answer);addBubble("bot",data.answer,new Date().toISOString());if(speakAuto)ASSISTANT.speak(data.answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
- }catch(err){if(pending)pending.remove();const msg=err&&err.message?err.message:"Une erreur est survenue.";ASSISTANT.addMessage("bot","⚠️ "+msg);addBubble("bot","⚠️ "+msg,new Date().toISOString());}
+ }catch(err){if(pending)pending.remove();let localText="L’application est encore en développement ; certaines informations ne sont pas encore prises en compte. Réessayez ultérieurement ou consultez les modules concernés.";try{if(window.InspecteurBotLocalAI&&typeof window.InspecteurBotLocalAI.answer==="function"){const local=window.InspecteurBotLocalAI.answer(prompt,{documentText:attachedDocument&&attachedDocument.text,fileName:attachedDocument&&attachedDocument.name,history:window.ASSISTANT&&window.ASSISTANT.conversation});if(local&&local.text)localText="⚙️ **Le service IA en ligne est indisponible. Le moteur local prend le relais.**\\n\\n"+local.text;}}catch(localErr){console.warn("Moteur IA local indisponible",localErr);}if(window.ASSISTANT&&typeof window.ASSISTANT.addMessage==="function")window.ASSISTANT.addMessage("bot",localText);addBubble("bot",localText,new Date().toISOString());if(attachedDocument){attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");}}
  finally{input.disabled=false;sendButton.disabled=false;sendButton.textContent="↑";input.focus();}
 }
 document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
