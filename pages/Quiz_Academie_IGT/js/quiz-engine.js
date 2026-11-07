@@ -9,6 +9,7 @@ class QuizEngine {
     this.shuffledChoix = [];
     this.timerInterval = null;
     this.autoAdvanceTimeout = null;
+    this.countdownInterval = null;
     this.timeLeft = 60;
     this.selectedOptionIds = [];
     this.isAnswered = false;
@@ -21,6 +22,7 @@ class QuizEngine {
     // Clear previous timeouts
     clearTimeout(this.autoAdvanceTimeout);
     clearInterval(this.timerInterval);
+    clearInterval(this.countdownInterval);
 
     this.currentQuestion = question;
     this.onFinishCallback = onFinishCallback;
@@ -130,8 +132,8 @@ class QuizEngine {
   }
 
   // 1 & 4. Instant Selection & Double Selection Prevention
-  processInstantChoiceSelection(choiceId) {
-    if (this.isAnswered || !choiceId) return;
+  processInstantChoiceSelection(choiceId, timedOut = false) {
+    if (this.isAnswered || (!choiceId && !timedOut)) return;
 
     this.isAnswered = true;
     clearInterval(this.timerInterval);
@@ -142,7 +144,7 @@ class QuizEngine {
       gridList.style.pointerEvents = 'none';
     }
 
-    this.selectedOptionIds = [choiceId];
+    this.selectedOptionIds = choiceId ? [choiceId] : [];
     const q = this.currentQuestion;
     const correctIds = q.bonne || [];
     const isCorrect = correctIds.includes(choiceId);
@@ -152,7 +154,7 @@ class QuizEngine {
       const cid = card.getAttribute('data-choice-id');
       const indicator = card.querySelector('.option-check-indicator');
 
-      if (cid === choiceId) {
+      if (choiceId && cid === choiceId) {
         if (isCorrect) {
           card.classList.add('correct');
           if (indicator) indicator.textContent = '✅';
@@ -174,7 +176,9 @@ class QuizEngine {
 
     if (explBox && explTitle && explText) {
       explBox.classList.add('show');
-      if (isCorrect) {
+      if (timedOut) {
+        explTitle.innerHTML = `<span style="color:var(--accent-red); font-size:1.05rem;">⏰ TEMPS ÉCOULÉ — BONNE RÉPONSE AFFICHÉE</span>`;
+      } else if (isCorrect) {
         explTitle.innerHTML = `<span style="color:var(--accent-green); font-size:1.05rem;">✅ BONNE RÉPONSE !</span> (+${q.recompense ? q.recompense.montant : 5000} CDF)`;
       } else {
         explTitle.innerHTML = `<span style="color:var(--accent-red); font-size:1.05rem;">❌ MAUVAISE RÉPONSE</span> (-${q.perte_vie || 1} Vie)`;
@@ -204,29 +208,31 @@ class QuizEngine {
     let secondsLeft = Math.ceil(this.autoAdvanceDelay / 1000);
     if (countEl) countEl.textContent = secondsLeft;
 
-    const interval = setInterval(() => {
+    clearInterval(this.countdownInterval);
+    this.countdownInterval = setInterval(() => {
       secondsLeft--;
       if (countEl) countEl.textContent = secondsLeft;
       if (secondsLeft <= 0) {
-        clearInterval(interval);
+        clearInterval(this.countdownInterval);
       }
     }, 1000);
 
     this.autoAdvanceTimeout = setTimeout(() => {
-      clearInterval(interval);
+      clearInterval(this.countdownInterval);
       this.skipAutoAdvance();
     }, this.autoAdvanceDelay);
   }
 
   skipAutoAdvance() {
     clearTimeout(this.autoAdvanceTimeout);
+    clearInterval(this.countdownInterval);
     if (typeof this.onFinishCallback === 'function') {
       this.onFinishCallback();
     }
   }
 
   autoSubmitOnTimeout() {
-    this.processInstantChoiceSelection(null); // Trigger timeout failure
+    this.processInstantChoiceSelection(null, true); // Révéler la bonne réponse puis passer après 14 secondes
   }
 
   speakQuestion() {
