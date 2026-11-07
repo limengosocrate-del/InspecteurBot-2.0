@@ -175,7 +175,7 @@ $('avatarFile').addEventListener('change',e=>{
  if(!/^image\/(jpeg|png|webp)$/.test(f.type)){ $('avatarMessage').textContent='Format accepté : JPG, PNG ou WEBP.';return}
  if(f.size>2*1024*1024){$('avatarMessage').textContent='La photo doit faire 2 Mo maximum.';return}
  const reader=new FileReader();
- reader.onload=()=>{data.avatar=reader.result;if(save()){show();$('avatarMessage').textContent='Photo enregistrée localement.'}};
+ reader.onload=()=>{data.avatar=reader.result;if(save()){show();$('avatarMessage').textContent='Profil mis à jour avec succès.';$('avatarMessage').style.color='#138a65';}};
  reader.onerror=()=>$('avatarMessage').textContent='Lecture de la photo impossible.';
  reader.readAsDataURL(f);e.target.value='';
 });
