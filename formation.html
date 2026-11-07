@@ -12,7 +12,7 @@
 </style>
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
 <script src="auth-gate.js?v=20261107-auth-smooth-12" defer></script>
-</head>
+<style>.written-course{white-space:normal;line-height:1.85;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px;color:var(--text);overflow-wrap:anywhere}.written-course br{display:block;margin-bottom:8px}</style></head>
 <body>
 <div class="shell">
 <header class="top">
@@ -37,10 +37,11 @@
  <form id="resource-form">
   <div class="grid">
    <div class="field"><label for="res-title">Titre de la formation</label><input id="res-title" required maxlength="180"></div>
-   <div class="field"><label for="res-kind">Type de contenu</label><select id="res-kind"><option value="audio">Formation audio</option><option value="pdf">Document PDF</option><option value="exercise">Exercice pratique</option></select></div>
+   <div class="field"><label for="res-kind">Type de contenu</label><select id="res-kind"><option value="audio">Formation audio</option><option value="pdf">Document PDF</option><option value="text">Cours écrit</option><option value="exercise">Exercice pratique</option></select></div>
   </div>
   <div class="field"><label for="res-desc">Description / objectif pédagogique</label><textarea id="res-desc" maxlength="2000"></textarea></div>
-  <div class="field" id="file-field"><label for="res-file">Fichier audio ou PDF</label><input id="res-file" type="file" accept="audio/*,.pdf,application/pdf"></div>
+  <div class="field" id="file-field"><label for="res-file">Fichier audio ou PDF (maximum 6 Mo)</label><input id="res-file" type="file" accept="audio/*,.pdf,application/pdf"><small class="muted">Taille maximale autorisée : 6 Mo par fichier.</small></div>
+  <div class="field hidden" id="text-field"><label for="res-text">Contenu du cours / leçon</label><textarea id="res-text" maxlength="30000" placeholder="Rédigez ici le contenu pédagogique de la formation…"></textarea></div>
   <div class="field hidden" id="exercise-field"><label for="res-exercise">Exercice (JSON) : questions, choix, bonne réponse et explication</label><textarea id="res-exercise" spellcheck="false" placeholder='{"questions":[{"question":"Question ?","options":["A","B","C"],"correctIndex":1,"explanation":"Explication"}]}'></textarea></div>
   <label class="field" style="display:flex;align-items:center;gap:9px"><input id="res-published" type="checkbox" style="width:auto"> Publier immédiatement pour les utilisateurs</label>
   <button class="btn primary" type="submit"><i class="fa-solid fa-cloud-arrow-up"></i> Enregistrer la formation</button>
@@ -73,8 +74,8 @@
   const sb=client();
   const {data,error}=await sb.from('training_resources').select('*').order('created_at',{ascending:false});
   if(error){byId('resource-list').innerHTML='<p class="notice">La bibliothèque de formation est momentanément indisponible. Vérifiez la connexion ou les droits de lecture.</p>';return;}
-  resources=data||[];
-  byId('resource-list').innerHTML=resources.length?resources.map(r=>`<article class="resource"><span class="tag">${r.kind==='audio'?'AUDIO':r.kind==='pdf'?'DOCUMENT PDF':'EXERCICE'} ${r.published?'· PUBLIÉ':'· BROUILLON'}</span><h3>${esc(r.title)}</h3><p class="muted">${esc(r.description)}</p><button class="btn primary" type="button" data-open="${r.id}">${r.kind==='audio'?'Écouter':r.kind==='pdf'?'Lire le PDF':'Faire l’exercice'}</button></article>`).join(''):'<p class="muted">Aucune formation publiée pour le moment. L’administrateur peut ajouter le premier contenu.</p>';
+  resources=(data||[]).filter(r=>['admin','super_admin'].includes(role)||r.published);
+  byId('resource-list').innerHTML=resources.length?resources.map(r=>`<article class="resource"><span class="tag">${r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'DOCUMENT PDF':'EXERCICE'} ${r.published?'· PUBLIÉ':'· BROUILLON'}</span><h3>${esc(r.title)}</h3><p class="muted">${esc(r.description)}</p><button class="btn primary" type="button" data-open="${r.id}">${r.exercise?.content?'Lire le cours':r.kind==='audio'?'Écouter':r.kind==='pdf'?'Lire le PDF':'Faire l’exercice'}</button></article>`).join(''):'<p class="muted">Aucune formation publiée pour le moment. L’administrateur peut ajouter le premier contenu.</p>';
   byId('resource-list').querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openResource(b.dataset.open)));
   if(['admin','super_admin'].includes(role))renderAdminList();
  }
@@ -95,6 +96,7 @@
   byId('lesson-panel').scrollIntoView({behavior:'smooth',block:'start'});
  }
  function renderExercise(r){
+  if(r.exercise?.content){byId('lesson-content').innerHTML='<article class="written-course">'+esc(r.exercise.content).replace(/\\r?\\n/g,'<br>')+'</article>';return;}
   const qs=Array.isArray(r.exercise?.questions)?r.exercise.questions:[];
   if(!qs.length){byId('lesson-content').innerHTML='<p class="notice">Cet exercice ne contient pas encore de questions valides.</p>';return;}
   byId('lesson-content').innerHTML=qs.map((q,i)=>`<div class="question"><strong>${i+1}. ${esc(q.question)}</strong>${(q.options||[]).map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join('')}<p id="explain-${i}" class="muted"></p></div>`).join('')+'<button class="btn gold" id="submit-exercise" type="button">Corriger mes réponses</button>';
@@ -114,22 +116,25 @@
   if(error)say('lesson-status','Votre activité est affichée, mais sa sauvegarde a échoué. Réessayez après vérification de la connexion.');
  }
  byId('close-lesson').addEventListener('click',()=>byId('lesson-panel').classList.add('hidden'));
- byId('res-kind').addEventListener('change',()=>{const ex=byId('res-kind').value==='exercise';byId('exercise-field').classList.toggle('hidden',!ex);byId('file-field').classList.toggle('hidden',ex);});
+ byId('res-kind').addEventListener('change',()=>{const kind=byId('res-kind').value,ex=kind==='exercise',txt=kind==='text',file=!ex&&!txt;byId('exercise-field').classList.toggle('hidden',!ex);byId('text-field').classList.toggle('hidden',!txt);byId('file-field').classList.toggle('hidden',!file);});
  byId('resource-form').addEventListener('submit',async e=>{
   e.preventDefault();if(!['admin','super_admin'].includes(role)){say('admin-status','Droits administrateur requis.');return;}
   const sb=client(),kind=byId('res-kind').value,title=byId('res-title').value.trim();let filePath=null,exercise={};
   try{
    if(kind==='exercise'){exercise=JSON.parse(byId('res-exercise').value);if(!Array.isArray(exercise.questions)||!exercise.questions.length)throw new Error('Ajoutez au moins une question valide.');}
-   else{const file=byId('res-file').files[0];if(!file)throw new Error('Choisissez un fichier audio ou PDF.');if(kind==='pdf'&&file.type!=='application/pdf')throw new Error('Le fichier doit être un PDF.');if(kind==='audio'&&!file.type.startsWith('audio/'))throw new Error('Le fichier doit être un audio.');const id=crypto.randomUUID();filePath=id+'/'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const up=await sb.storage.from('formation-resources').upload(filePath,file,{upsert:false});if(up.error)throw up.error;}
-   const ins=await sb.from('training_resources').insert({title,description:byId('res-desc').value.trim(),kind,file_path:filePath,exercise,published:byId('res-published').checked,created_by:user.id}).select().single();
+   else if(kind==='text'){exercise={content:byId('res-text').value.trim()};if(!exercise.content)throw new Error('Rédigez le contenu de la formation.');}
+   else{const file=byId('res-file').files[0];if(!file)throw new Error('Choisissez un fichier audio ou PDF.');if(file.size>6*1024*1024)throw new Error('Le fichier dépasse la limite autorisée de 6 Mo.');if(kind==='pdf'&&file.type!=='application/pdf')throw new Error('Le fichier doit être un PDF.');if(kind==='audio'&&!file.type.startsWith('audio/'))throw new Error('Le fichier doit être un audio.');const id=crypto.randomUUID();filePath=id+'/'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const up=await sb.storage.from('formation-resources').upload(filePath,file,{upsert:false});if(up.error)throw up.error;}
+   const storedKind=kind==='text'?'exercise':kind;
+   const ins=await sb.from('training_resources').insert({title,description:byId('res-desc').value.trim(),kind:storedKind,file_path:filePath,exercise,published:byId('res-published').checked,created_by:user.id}).select().single();
    if(ins.error)throw ins.error;
    byId('resource-form').reset();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
   }catch(err){say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
  });
  function renderAdminList(){
-  byId('admin-list').innerHTML=resources.map(r=>`<article class="resource"><span class="tag">${r.published?'PUBLIÉ':'BROUILLON'}</span><h3>${esc(r.title)}</h3><button class="btn" data-toggle="${r.id}" data-published="${r.published}">${r.published?'Dépublier':'Publier'}</button><button class="btn" data-delete="${r.id}">Supprimer</button></article>`).join('');
-  byId('admin-list').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const {error}=await client().from('training_resources').update({published:b.dataset.published!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);say('admin-status',error?'Modification refusée.': 'Publication mise à jour.');await loadResources();}));
-  byId('admin-list').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cette formation ?'))return;const item=resources.find(x=>x.id===b.dataset.delete);if(item?.file_path)await client().storage.from('formation-resources').remove([item.file_path]);const {error}=await client().from('training_resources').delete().eq('id',b.dataset.delete);say('admin-status',error?'Suppression refusée.':'Formation supprimée.');await loadResources();}));
+  byId('admin-list').innerHTML=resources.map(r=>`<article class="resource"><span class="tag">${r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'PDF':'EXERCICE'} · ${r.published?'PUBLIÉ':'BROUILLON'}</span><h3>${esc(r.title)}</h3>${r.file_path?'<button class="btn" data-download="'+r.id+'" type="button">Télécharger le fichier</button>':''}<button class="btn" data-toggle="${r.id}" data-published="${r.published}">${r.published?'Dépublier':'Publier'}</button><button class="btn" data-delete="${r.id}">Supprimer</button></article>`).join('');
+  byId('admin-list').querySelectorAll('[data-download]').forEach(b=>b.addEventListener('click',async()=>{try{const item=resources.find(x=>x.id===b.dataset.download);const url=await signedFile(item.file_path);window.open(url,'_blank','noopener');}catch(e){say('admin-status','Téléchargement indisponible : '+(e.message||'erreur'));}}));
+  byId('admin-list').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const {error}=await client().from('training_resources').update({published:b.dataset.published!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);say('admin-status',error?'Modification refusée.':'Publication mise à jour.');await loadResources();}));
+  byId('admin-list').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cette formation ?'))return;const item=resources.find(x=>x.id===b.dataset.delete);if(item?.file_path){const removed=await client().storage.from('formation-resources').remove([item.file_path]);if(removed.error){say('admin-status','Le fichier n’a pas pu être supprimé : '+removed.error.message);return;}}const {error}=await client().from('training_resources').delete().eq('id',b.dataset.delete);say('admin-status',error?'Suppression refusée.':'Formation supprimée.');await loadResources();}));
  }
  document.addEventListener('DOMContentLoaded',boot,{once:true});
 })();
