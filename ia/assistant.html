@@ -7,64 +7,34 @@
 <link rel="stylesheet" href="../fiche.css?v=41">
 <link rel="stylesheet" href="../autres/decompte-final.css?v=1">
 <style>
-:root{color-scheme:light;--ib-bg:#f7f7f8;--ib-panel:#fff;--ib-text:#202123;--ib-muted:#6b7280;--ib-border:#e5e7eb;--ib-dark:#172033;--ib-accent:#0f766e}
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-.background,.particles{display:none!important}
-body{display:flex;flex-direction:column;min-height:100dvh;background:var(--ib-bg);color:var(--ib-text);overflow:hidden}
-.header{height:72px;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(16px,4vw,42px);background:#fff;border-bottom:1px solid var(--ib-border);box-shadow:0 1px 3px rgba(0,0,0,.03);z-index:5}
-.header-left{display:flex;align-items:center;gap:13px;min-width:0}
-.logo{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:13px;background:#eef5f4;overflow:hidden}
-.logo img{width:34px;height:34px;object-fit:contain}
-.header-text h1{margin:0;color:#202123;font-size:17px;line-height:1.25;font-weight:700;letter-spacing:-.3px}
-.header-text h2{margin:3px 0 0;color:#59616d;font-size:12px;font-weight:500}
-.header-text p{display:none}
-.header-right{display:flex;align-items:center;gap:8px}
-.btn-retour{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid var(--ib-border);border-radius:10px;background:#fff;color:#374151;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap}
-.btn-retour:hover{background:#f3f4f6}
-.chat-container{width:min(100%,920px);flex:1;min-height:0;margin:0 auto;padding:14px clamp(14px,3vw,28px) 20px;display:flex}
-.chat-box{width:100%;min-height:0;display:flex;flex-direction:column;gap:10px;background:transparent;border:0;border-radius:0;padding:0;backdrop-filter:none}
-.chat-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:2px 0}
-.tool-btn{border:1px solid var(--ib-border);background:#fff;color:#4b5563;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
-.tool-btn:hover{background:#f0f2f4;border-color:#cbd5e1}
-.chat-messages{flex:1;min-height:180px;height:auto;overflow-y:auto;padding:22px 2px 28px;background:transparent;border:0;border-radius:0;margin:0;display:flex;flex-direction:column;gap:20px;scroll-behavior:smooth}
-.msg{max-width:82%;padding:13px 17px;border-radius:18px;margin:0;line-height:1.7;font-size:15px;animation:fadeIn .2s ease;overflow-wrap:anywhere;white-space:pre-wrap}
-@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.msg.user{align-self:flex-end;background:#e8e8eb;color:#242424;margin-left:auto;text-align:left;border-bottom-right-radius:5px}
-.msg.bot{align-self:flex-start;max-width:100%;background:transparent;color:#262a30;border:0;padding:4px 2px;border-radius:0}
-.msg-time{font-size:10px;color:#9298a1;margin-top:7px}
-.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 2px}
-.suggestions button{background:#fff;color:#46505d;border:1px solid #dfe3e8;padding:8px 12px;border-radius:18px;cursor:pointer;font-size:12px;transition:.15s}
-.suggestions button:hover{background:#edf3f2;border-color:#b8d5d0;color:#155e56}
-.chat-input{display:flex;gap:9px;align-items:center;padding:9px 10px 9px 13px;background:#fff;border:1px solid #d9dde3;border-radius:25px;box-shadow:0 4px 18px rgba(0,0,0,.06)}
-.chat-input input{flex:1;min-width:0;padding:12px 5px;border:0;outline:none;background:transparent;color:#202123;font-size:15px}
-.chat-input input::placeholder{color:#9298a1}
-.chat-input button{flex:0 0 43px;width:43px;height:43px;border:0;border-radius:50%;background:#202123;color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center}
-.chat-input button:hover{background:#3b414b}
-.chat-input button:disabled{opacity:.5;cursor:wait}
-#btnVoice{background:#eef0f2;color:#414852}
-.listening{background:#dc3545!important;color:#fff!important;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.chat-container code{background:#eef0f2;padding:2px 5px;border-radius:4px}
-@media(max-width:600px){
- .header{height:64px;min-height:64px;padding:0 13px}
- .logo{width:36px;height:36px;flex-basis:36px}
- .logo img{width:29px;height:29px}
- .header-text h1{font-size:15px}
- .header-text h2{font-size:10px}
- .btn-retour{padding:8px 10px;font-size:12px}
- .chat-container{padding:8px 12px 12px}
- .chat-actions{gap:6px}
- .tool-btn{padding:7px 9px;font-size:11px}
- .chat-messages{padding:15px 0 20px;gap:16px}
- .msg{max-width:91%;font-size:14px;padding:11px 14px}
- .msg.bot{max-width:100%}
- .suggestions{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
- .suggestions button{white-space:nowrap}
- .chat-input{gap:6px;padding:7px 8px 7px 11px}
- .chat-input input{font-size:14px}
- .chat-input button{width:39px;height:39px;flex-basis:39px}
-}
+:root{color-scheme:dark;--bg:#212121;--panel:#171717;--text:#ececec;--muted:#a1a1aa}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{display:none!important}
+.sidebar{width:260px;flex:0 0 260px;background:var(--panel);display:flex;flex-direction:column;padding:14px 12px;border-right:1px solid #292929}
+.side-top{display:flex;align-items:center;justify-content:space-between;padding:3px 4px 18px}.brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700}.brand img{width:30px;height:30px;object-fit:contain;background:#fff;border-radius:9px;padding:3px}
+.side-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:#e5e5e5;text-align:left;font-size:13px;cursor:pointer}.side-btn:hover{background:#292929}.side-label{margin:24px 8px 8px;color:#8c8c8c;font-size:11px;font-weight:700;text-transform:uppercase}.side-note{margin-top:auto;padding:12px 9px;color:#858585;font-size:11px;line-height:1.55;border-top:1px solid #303030}
+.app-main{min-width:0;flex:1;display:flex;flex-direction:column;height:100dvh;background:var(--bg)}
+.header{height:62px;min-height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #303030;background:#212121;z-index:3}
+.header-left{display:flex;align-items:center;gap:12px}.header-text h1{margin:0;font-size:15px;font-weight:650;color:var(--text)}.header-text h2{margin:3px 0 0;font-size:11px;color:var(--muted);font-weight:400}.header-text p{display:none}
+.header-right{display:flex;align-items:center;gap:8px}.btn-retour{padding:8px 12px;border:1px solid #484848;border-radius:9px;color:#ddd;text-decoration:none;font-size:12px}
+.icon-btn{width:36px;height:36px;display:grid;place-items:center;border:1px solid transparent;border-radius:9px;background:transparent;color:#ddd;font-size:17px;cursor:pointer}.icon-btn:hover,.side-btn:hover{background:#333}
+.chat-container{width:min(100%,900px);flex:1;min-height:0;margin:0 auto;padding:0 22px;display:flex}.chat-box{width:100%;min-height:0;display:flex;flex-direction:column}
+.chat-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:11px 0 3px}.tool-btn{border:1px solid #454545;background:#292929;color:#d5d5d5;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}
+.chat-messages{flex:1;min-height:160px;overflow-y:auto;padding:24px 5px 22px;display:flex;flex-direction:column;gap:26px;scroll-behavior:smooth}
+.msg-wrap{max-width:100%;width:100%;display:flex;flex-direction:column;gap:6px;animation:fade .18s ease}.msg-wrap.user{align-items:flex-end}.msg-wrap.bot{align-items:flex-start}
+.msg{max-width:min(84%,760px);padding:13px 17px;border-radius:18px;line-height:1.72;font-size:14px;overflow-wrap:anywhere;white-space:normal}.msg.user{background:#303030;color:#f1f1f1;border-bottom-right-radius:5px}.msg.bot{max-width:100%;padding:0;background:transparent;color:#ececec;border:0}
+.msg p{margin:0 0 12px}.msg p:last-child{margin-bottom:0}.msg h1,.msg h2,.msg h3{font-size:1.12em;margin:18px 0 8px}.msg ul,.msg ol{padding-left:23px;margin:8px 0 13px}.msg li{padding:2px 0}.msg strong{font-weight:700;color:#fff}.msg code{background:#3a3a3a;padding:2px 5px;border-radius:5px}
+.msg-time{font-size:10px;color:#858585;margin-top:7px}.msg-tools{display:flex;gap:5px;opacity:.75}.msg-tool{border:0;background:transparent;color:#a8a8a8;padding:5px 7px;border-radius:6px;font-size:11px;cursor:pointer}
+.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:0 0 12px}.suggestions button{background:transparent;color:#c9c9c9;border:1px solid #4a4a4a;padding:8px 11px;border-radius:18px;cursor:pointer;font-size:11px}
+.composer-wrap{padding:10px 0 14px}.attachment-chip{display:none;align-items:center;gap:8px;max-width:100%;margin:0 auto 8px;padding:7px 11px;border:1px solid #444;border-radius:10px;color:#ddd;font-size:11px}.attachment-chip.visible{display:flex}.attachment-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-input{display:flex;gap:7px;align-items:flex-end;padding:9px 10px;background:#2f2f2f;border:1px solid #505050;border-radius:25px;box-shadow:0 4px 22px rgba(0,0,0,.18)}
+.chat-input textarea{flex:1;min-width:0;max-height:180px;min-height:42px;resize:none;padding:11px 5px;border:0;outline:none;background:transparent;color:#f5f5f5;font:14px/1.5 inherit}.chat-input textarea::placeholder{color:#aaa}
+.chat-input button{flex:0 0 38px;width:38px;height:38px;border:0;border-radius:50%;background:#f5f5f5;color:#171717;font-size:17px;cursor:pointer;display:grid;place-items:center}.chat-input button:disabled{opacity:.45}
+#btnVoice,#btnAttach{background:transparent;color:#ddd;font-size:18px}.listening{background:#b42318!important;color:#fff!important}
+.composer-hint{text-align:center;color:#858585;font-size:10px;margin-top:8px}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.sidebar{position:fixed;inset:0 auto 0 0;z-index:20;transform:translateX(-105%);box-shadow:10px 0 30px #0008}.sidebar.open{transform:translateX(0)}.header{padding:0 12px;height:56px;min-height:56px}.chat-container{padding:0 12px}.chat-messages{padding:18px 2px}.msg{max-width:94%;font-size:13px;padding:11px 13px}.msg.bot{max-width:100%}.suggestions{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.suggestions button{white-space:nowrap}.btn-retour{padding:7px 9px}.header-text h2{font-size:9px}}
+@media(min-width:761px){#btnMenu{display:none}}
 </style>
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
@@ -72,191 +42,85 @@ body{display:flex;flex-direction:column;min-height:100dvh;background:var(--ib-bg
 <script src="../auth-gate.js?v=20261107-auth-smooth-12" defer></script>
 </head>
 <body>
-<div class="background"></div>
-<div class="particles"></div>
-
-<header class="header">
-  <div class="header-left">
-    <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
-    <div class="header-text">
-      <h1>InspecteurBot IA</h1>
-      <h2>Assistant intelligent de l'Inspection Générale du Travail • RDC</h2>
-      <p>Consultation professionnelle et assistance juridique</p>
-    </div>
-  </div>
-  <div class="header-right"><a href="../index.html#assistant-intelligent" class="btn-retour">← Accueil</a></div>
-</header>
-
-<main class="chat-container">
-  <div class="chat-box">
-    <div class="chat-actions">
-      <button class="tool-btn" id="btnNewChat">＋ Nouvelle conversation</button>
-      <button class="tool-btn" id="btnExportChat">↓ Exporter</button>
-      <button class="tool-btn" id="btnSpeakToggle">🔊 Lecture auto : OFF</button>
-    </div>
-
-    <div class="chat-messages" id="messages" aria-live="polite"></div>
-    <div class="suggestions" id="suggestions"></div>
-
-    <div class="chat-input">
-      <button id="btnVoice" title="Reconnaissance vocale" aria-label="Reconnaissance vocale">🎙</button>
-      <input type="text" id="input" placeholder="Écrivez votre message à InspecteurBot…" autocomplete="off" aria-label="Votre message">
-      <button id="btnSend" title="Envoyer" aria-label="Envoyer">↑</button>
-    </div>
-  </div>
-</main>
-
+<div class="sidebar" id="sidebar">
+ <div class="side-top"><div class="brand"><img src="../assets/images/logo-igt.png" alt="IGT"> InspecteurBot IA</div><button class="icon-btn" id="btnSidebarClose">×</button></div>
+ <button class="side-btn" id="btnNewChatSide">＋ Nouvelle conversation</button><button class="side-btn" id="btnExportSide">⇩ Exporter la conversation</button>
+ <div class="side-label">Assistant IGT</div>
+ <button class="side-btn" data-prompt="Présente les principales missions de l'Inspection Générale du Travail en RDC.">◉ Missions de l'IGT</button>
+ <button class="side-btn" data-prompt="Consulte l'annuaire pour rechercher un agent.">⌕ Annuaire professionnel</button>
+ <button class="side-btn" data-prompt="Aide-moi à comprendre une disposition du Code du travail de la RDC.">§ Droit du travail</button>
+ <button class="side-btn" data-prompt="Aide-moi à préparer un procès-verbal de contrôle du travail.">▤ Documents et contrôles</button>
+ <div class="side-note">Les réponses administratives et juridiques doivent être vérifiées auprès des services compétents de l'IGT.</div>
+</div>
+<div class="app-main"><header class="header"><div class="header-left"><button class="icon-btn" id="btnMenu">☰</button><div class="header-text"><h1>Assistant Intelligent InspecteurBot IA</h1><h2>Inspection Générale du Travail • République démocratique du Congo</h2></div></div><div class="header-right"><a href="../index.html#assistant-intelligent" class="btn-retour">← Accueil</a></div></header>
+<main class="chat-container"><div class="chat-box">
+ <div class="chat-actions"><button class="tool-btn" id="btnNewChat">＋ Nouvelle conversation</button><button class="tool-btn" id="btnSpeakToggle">🔊 Lecture : OFF</button></div>
+ <div class="chat-messages" id="messages" aria-live="polite"></div><div class="suggestions" id="suggestions"></div>
+ <div class="composer-wrap"><div class="attachment-chip" id="attachmentChip"><span id="attachmentName"></span><button class="msg-tool" id="btnRemoveAttachment">Retirer ×</button></div>
+ <div class="chat-input"><button id="btnAttach" title="Joindre un document">＋</button><input type="file" id="fileInput" hidden accept=".txt,.md,.csv,.json,.html,.htm,.xml,.log,.yaml,.yml"><button id="btnVoice" title="Reconnaissance vocale">🎙</button><textarea id="input" rows="1" placeholder="Message à InspecteurBot…" aria-label="Votre message"></textarea><button id="btnSend" title="Envoyer">↑</button></div>
+ <div class="composer-hint">InspecteurBot peut se tromper. Vérifiez les informations importantes. Les documents joints seront transmis au service IA pour analyse.</div></div>
+</div></main></div>
 <script src="../js/smig-data.js?v=1"></script>
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
 <script src="../js/ai-core.js?v=1"></script>
 <script src="../js/assistant.js?v=1"></script>
 <script>
-let speakAuto = false;
-
-function render() {
-  const box = document.getElementById("messages");
-  box.innerHTML = "";
-  const conv = ASSISTANT.loadConversation();
-  if (!conv.length) {
-    ASSISTANT.addMessage("bot", "Bonjour 👋 Je suis InspecteurBot IA. Je peux répondre à vos questions, consulter les informations professionnelles de l’annuaire IGT et vous assister sur le droit du travail, les contrôles, les fiches et les projets de documents. Posez votre question en langage naturel.");
-  }
-  ASSISTANT.conversation.forEach(m => addBubble(m.role, m.text, m.ts));
-  box.scrollTop = box.scrollHeight;
+let speakAuto=false,attachedDocument=null;
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function formatAnswer(raw){
+ let t=String(raw??"").replace(/<br\s*\/?>/gi,"\n").replace(/\\r\\n/g,"\n").replace(/\\n/g,"\n");
+ const lines=t.split("\n");let out="",p=[];
+ const flush=()=>{if(p.length){out+="<p>"+p.map(esc).join("<br>")+"</p>";p=[];}};
+ for(const line of lines){const x=line.trim();if(!x){flush();continue;}
+ if(/^###\s+/.test(x)){flush();out+="<h3>"+esc(x.replace(/^###\s+/,""))+"</h3>";continue;}
+ if(/^##\s+/.test(x)){flush();out+="<h2>"+esc(x.replace(/^##\s+/,""))+"</h2>";continue;}
+ if(/^#\s+/.test(x)){flush();out+="<h1>"+esc(x.replace(/^#\s+/,""))+"</h1>";continue;}
+ if(/^[-*]\s+/.test(x)){flush();out+="<ul><li>"+esc(x.replace(/^[-*]\s+/,""))+"</li></ul>";continue;}
+ if(/^\d+[.)]\s+/.test(x)){flush();out+="<ol><li>"+esc(x.replace(/^\d+[.)]\s+/,""))+"</li></ol>";continue;}p.push(x);
+ }flush();return out.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\x60([^\x60]+)\x60/g,"<code>$1</code>");
 }
-
-function addBubble(role, text, ts) {
-  const box = document.getElementById("messages");
-  const div = document.createElement("div");
-  div.className = "msg " + role;
-  const safeText = String(text || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  const html = safeText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-                   .replace(/`(.+?)`/g, "<code>$1</code>");
-  div.innerHTML = html + `<div class="msg-time">${ts ? new Date(ts).toLocaleTimeString("fr-FR") : ""}</div>`;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-  return div;
+function addBubble(role,text,ts){
+ const box=document.getElementById("messages"),wrap=document.createElement("div"),div=document.createElement("div");
+ wrap.className="msg-wrap "+(role==="user"?"user":"bot");div.className="msg "+(role==="user"?"user":"bot");div.innerHTML=formatAnswer(text);
+ const time=document.createElement("div");time.className="msg-time";time.textContent=ts?new Date(ts).toLocaleTimeString("fr-FR"):"";
+ const tools=document.createElement("div");tools.className="msg-tools";const copy=document.createElement("button");copy.className="msg-tool";copy.textContent="⧉ Copier";
+ copy.onclick=async()=>{try{await navigator.clipboard.writeText(String(text??"").replace(/<br\s*\/?>/gi,"\n").replace(/\\n/g,"\n"));copy.textContent="✓ Copié";setTimeout(()=>copy.textContent="⧉ Copier",1500);}catch(e){copy.textContent="Copie indisponible";}};tools.appendChild(copy);
+ if(role!=="user"){const read=document.createElement("button");read.className="msg-tool";read.textContent="🔊 Lire";read.onclick=()=>ASSISTANT.speak(String(text??""));tools.appendChild(read);}
+ wrap.append(div,time,tools);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return wrap;
 }
-async function send() {
-  const input = document.getElementById("input");
-  const sendButton = document.getElementById("btnSend");
-  const q = input.value.trim();
-  if (!q || sendButton.disabled) return;
-
-  const client = window.inspecteurBotAuthClient;
-  if (!client) {
-    addBubble("bot", "Votre session sécurisée n'est pas prête. Rechargez la page ou reconnectez-vous.", new Date().toISOString());
-    return;
-  }
-
-  const previous = ASSISTANT.conversation.slice(-10).map(m => ({
-    role: m.role === "bot" ? "assistant" : "user",
-    content: String(m.text || "").slice(0, 2500)
-  }));
-
-  ASSISTANT.addMessage("user", q);
-  addBubble("user", q, new Date().toISOString());
-  input.value = "";
-  input.disabled = true;
-  sendButton.disabled = true;
-  sendButton.textContent = "…";
-  const pending = addBubble("bot", "🧠 InspecteurBot analyse votre question et consulte les données IGT…", new Date().toISOString());
-
-  try {
-    const { data: sessionData, error: sessionError } = await client.auth.getSession();
-    if (sessionError || !sessionData.session) throw new Error("Session expirée. Reconnectez-vous à InspecteurBot.");
-
-    const { data, error } = await client.functions.invoke("inspecteurbot-ai", {
-      body: { question: q, history: previous }
-    });
-
-    if (error || !data || !data.answer) {
-      let message = data && data.error ? data.error : "Le service IA n'a pas répondu. Réessayez.";
-      if (error && error.context && typeof error.context.clone === "function") {
-        try {
-          const details = await error.context.clone().json();
-          if (details && details.error) message = details.error;
-        } catch (_) {}
-      }
-      throw new Error(message);
-    }
-
-    pending.remove();
-    ASSISTANT.addMessage("bot", data.answer);
-    addBubble("bot", data.answer, new Date().toISOString());
-    if (speakAuto) ASSISTANT.speak(data.answer);
-  } catch (err) {
-    pending.remove();
-    const message = err && err.message ? err.message : "Une erreur est survenue. Réessayez.";
-    ASSISTANT.addMessage("bot", "⚠️ " + message);
-    addBubble("bot", "⚠️ " + message, new Date().toISOString());
-  } finally {
-    input.disabled = false;
-    sendButton.disabled = false;
-    sendButton.textContent = "➤";
-    input.focus();
-  }
+function render(){const box=document.getElementById("messages");box.innerHTML="";const conv=ASSISTANT.loadConversation();if(!conv.length)ASSISTANT.addMessage("bot","Bonjour 👋 Je suis InspecteurBot IA. Je peux consulter l'annuaire professionnel de l'IGT, vous assister sur le droit du travail et vous aider à préparer vos documents et contrôles. Comment puis-je vous aider ?");ASSISTANT.conversation.forEach(m=>addBubble(m.role,m.text,m.ts));box.scrollTop=box.scrollHeight;}
+document.getElementById("btnAttach").onclick=()=>document.getElementById("fileInput").click();
+document.getElementById("fileInput").onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>150000){alert("Le document dépasse 150 Ko. Veuillez joindre un fichier plus léger.");e.target.value="";return;}try{const txt=await f.text();if(!txt.trim())throw Error("vide");attachedDocument={name:f.name,text:txt.slice(0,20000)};document.getElementById("attachmentName").textContent="📎 "+f.name+" • prêt à analyser";document.getElementById("attachmentChip").classList.add("visible");}catch(_){alert("Impossible de lire ce fichier. Essayez un document TXT, CSV, JSON ou Markdown.");}e.target.value="";};
+document.getElementById("btnRemoveAttachment").onclick=()=>{attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");};
+async function send(){
+ const input=document.getElementById("input"),sendButton=document.getElementById("btnSend"),q=input.value.trim();if((!q&&!attachedDocument)||sendButton.disabled)return;
+ const client=window.inspecteurBotAuthClient;if(!client){addBubble("bot","Votre session sécurisée n'est pas prête. Rechargez la page ou reconnectez-vous.",new Date().toISOString());return;}
+ const history=ASSISTANT.conversation.slice(-10).map(m=>({role:m.role==="bot"?"assistant":"user",content:String(m.text||"").slice(0,2500)}));
+ const prompt=q||(attachedDocument?"Analyse le document joint et présente les points importants.":"");
+ const shown=prompt+(attachedDocument?"\n\n📎 Document joint : "+attachedDocument.name:"");
+ ASSISTANT.addMessage("user",shown);addBubble("user",shown,new Date().toISOString());input.value="";input.style.height="auto";input.disabled=true;sendButton.disabled=true;sendButton.textContent="…";
+ const pending=addBubble("bot","InspecteurBot analyse votre demande…",new Date().toISOString());
+ try{
+ const {data:sess,error:sessErr}=await client.auth.getSession();if(sessErr||!sess.session)throw Error("Session expirée. Reconnectez-vous.");
+ const body={question:prompt,history};if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\n\n"+attachedDocument.text;
+ const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
+ if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
+ pending.remove();ASSISTANT.addMessage("bot",data.answer);addBubble("bot",data.answer,new Date().toISOString());if(speakAuto)ASSISTANT.speak(data.answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
+ }catch(err){pending.remove();const msg=err&&err.message?err.message:"Une erreur est survenue.";ASSISTANT.addMessage("bot","⚠️ "+msg);addBubble("bot","⚠️ "+msg,new Date().toISOString());}
+ finally{input.disabled=false;sendButton.disabled=false;sendButton.textContent="↑";input.focus();}
 }
-
-document.getElementById("btnSend").addEventListener("click", send);
-document.getElementById("input").addEventListener("keypress", e => { if (e.key === "Enter") send(); });
-
-// Suggestions
-const sugBox = document.getElementById("suggestions");
-ASSISTANT.suggestions.forEach(s => {
-  const b = document.createElement("button");
-  b.textContent = s;
-  b.onclick = () => { document.getElementById("input").value = s; send(); };
-  sugBox.appendChild(b);
-});
-
-// Reconnaissance vocale
-document.getElementById("btnVoice").addEventListener("click", () => {
-  const btn = document.getElementById("btnVoice");
-  btn.classList.add("listening");
-  btn.textContent = "🔴";
-  ASSISTANT.startVoice(
-    txt => { 
-      document.getElementById("input").value = txt; 
-      btn.classList.remove("listening"); btn.textContent = "🎙️"; 
-      send();
-    },
-    err => { 
-      alert("Erreur vocale: " + err); 
-      btn.classList.remove("listening"); btn.textContent = "🎙️"; 
-    }
-  );
-});
-
-// Lecture auto
-document.getElementById("btnSpeakToggle").addEventListener("click", () => {
-  speakAuto = !speakAuto;
-  document.getElementById("btnSpeakToggle").textContent = speakAuto ? "🔊 Lecture auto : ON" : "🔊 Lecture auto : OFF";
-  if (!speakAuto) ASSISTANT.stopSpeaking();
-});
-
-// Nouvelle conversation
-document.getElementById("btnNewChat").addEventListener("click", () => {
-  if (confirm("Effacer la conversation actuelle ?")) {
-    ASSISTANT.clearConversation();
-    render();
-  }
-});
-
-// Export
-document.getElementById("btnExportChat").addEventListener("click", () => {
-  const conv = ASSISTANT.loadConversation();
-  let txt = "=== CONVERSATION INSPECTEURBOT IA RDC ===\n\n";
-  conv.forEach(m => {
-    txt += `[${new Date(m.ts).toLocaleString("fr-FR")}] ${m.role.toUpperCase()}: ${m.text}\n\n`;
-  });
-  const blob = new Blob([txt], {type:"text/plain"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `conversation_${Date.now()}.txt`;
-  a.click();
-});
-
+document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
+document.getElementById("input").oninput=e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,180)+"px";};
+const sug=document.getElementById("suggestions");ASSISTANT.suggestions.slice(0,4).forEach(s=>{const b=document.createElement("button");b.textContent=s;b.onclick=()=>{document.getElementById("input").value=s;send();};sug.appendChild(b);});
+document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{document.getElementById("input").value=b.dataset.prompt;document.getElementById("input").focus();if(innerWidth<761)document.getElementById("sidebar").classList.remove("open");});
+document.getElementById("btnMenu").onclick=()=>document.getElementById("sidebar").classList.toggle("open");document.getElementById("btnSidebarClose").onclick=()=>document.getElementById("sidebar").classList.remove("open");
+function newChat(){if(confirm("Commencer une nouvelle conversation ? La conversation actuelle sera effacée de cet appareil.")){ASSISTANT.clearConversation();render();}}
+document.getElementById("btnNewChat").onclick=newChat;document.getElementById("btnNewChatSide").onclick=newChat;
+document.getElementById("btnExportSide").onclick=()=>document.getElementById("btnExportChat").click();
+document.getElementById("btnSpeakToggle").onclick=()=>{speakAuto=!speakAuto;document.getElementById("btnSpeakToggle").textContent=speakAuto?"🔊 Lecture : ON":"🔊 Lecture : OFF";if(!speakAuto)ASSISTANT.stopSpeaking();};
+document.getElementById("btnVoice").onclick=()=>{const b=document.getElementById("btnVoice");b.classList.add("listening");b.textContent="🔴";ASSISTANT.startVoice(txt=>{document.getElementById("input").value=txt;b.classList.remove("listening");b.textContent="🎙";send();},err=>{alert("Erreur vocale : "+err);b.classList.remove("listening");b.textContent="🎙";});};
+document.getElementById("btnExportChat").onclick=()=>{const conv=ASSISTANT.loadConversation();let txt="=== CONVERSATION INSPECTEURBOT IA RDC ===\n\n";conv.forEach(m=>{txt+="["+new Date(m.ts).toLocaleString("fr-FR")+"] "+m.role.toUpperCase()+": "+String(m.text||"").replace(/<br\s*\/?>/gi,"\n")+"\n\n";});const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="conversation_inspecteurbot_"+Date.now()+".txt";a.click();URL.revokeObjectURL(a.href);};
 render();
 </script>
 </body>
