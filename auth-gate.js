@@ -60,11 +60,17 @@ async function refreshNotificationBadge(){
  }catch(e){console.warn('Compteur de notifications indisponible',e);badge.hidden=true;link.setAttribute('aria-label','Notifications')}
 }
 function msg(t,ok){const n=byId('auth-message');if(n){n.textContent=t||'';n.style.color=ok?'#138a65':'#b42318'}}
-function gate(t){document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();byId('auth-gate').hidden=false;if(t)msg(t)}
+function gate(t,mode){
+ document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
+ const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
+ g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';
+ intro.textContent=mode==='loading'?'Nous vérifions votre session sécurisée…':'Connectez-vous avec votre compte existant pour accéder à l’application.';
+ if(t)msg(t,mode==='loading');
+}
 function makeGate(){
  if(byId('auth-gate'))return;
  const g=document.createElement('div');g.id='ib-auth-gate';
- g.innerHTML='<section id="ib-auth-card" role="dialog" aria-modal="true"><div style="text-align:center;font-size:34px">🔐</div><h2>InspecteurBot RDC</h2><p id="ib-auth-intro">Connectez-vous avec votre compte existant pour accéder à l’application.</p><form id="ib-auth-form"><label for="ib-auth-email">Adresse e-mail du compte</label><input id="ib-auth-email" type="email" autocomplete="username" required placeholder="Adresse e-mail enregistrée"><label for="ib-auth-password">Mot de passe</label><input id="ib-auth-password" type="password" autocomplete="current-password" required placeholder="Votre mot de passe"><div id="ib-auth-confirm-wrap" hidden><label for="ib-auth-confirm">Confirmer le nouveau mot de passe</label><input id="ib-auth-confirm" type="password" autocomplete="new-password"></div><button id="ib-auth-submit" type="submit">Se connecter</button></form><button id="ib-auth-forgot" type="button">Mot de passe oublié ?</button><div id="ib-auth-message" role="status" aria-live="polite"></div><p style="font-size:12px">Accès réservé aux comptes autorisés de l’Inspection Générale du Travail.</p></section>';
+ g.innerHTML='<section id="ib-auth-card" role="dialog" aria-modal="true"><div style="text-align:center;font-size:34px">🔐</div><h2>InspecteurBot RDC</h2><p id="ib-auth-intro">Connectez-vous avec votre compte existant pour accéder à l’application.</p><form id="ib-auth-form"><label for="ib-auth-email">Adresse e-mail du compte</label><input id="ib-auth-email" type="email" autocomplete="username" required placeholder="Adresse e-mail enregistrée"><label for="ib-auth-password">Mot de passe</label><input id="ib-auth-password" type="password" autocomplete="current-password" required placeholder="Votre mot de passe"><div id="ib-auth-confirm-wrap" hidden><label for="ib-auth-confirm">Confirmer le nouveau mot de passe</label><input id="ib-auth-confirm" type="password" autocomplete="new-password"></div><button id="ib-auth-submit" type="submit">Se connecter</button></form><button id="ib-auth-forgot" type="button">Mot de passe oublié ?</button><button id="ib-auth-retry" type="button" hidden style="width:100%;margin-top:16px;padding:13px;border:0;border-radius:9px;background:#07518a;color:#fff;font-weight:700">Réessayer</button><div id="ib-auth-message" role="status" aria-live="polite"></div><p style="font-size:12px">Accès réservé aux comptes autorisés de l’Inspection Générale du Travail.</p></section>';
  document.body.appendChild(g);
 }
 async function loadLib(){
@@ -72,9 +78,18 @@ async function loadLib(){
  await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=ok;s.onerror=()=>no(Error('Bibliothèque Supabase indisponible. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
 }
 async function serverCheck(){
- const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
- if(error||!data?.success)throw Error(data?.message||error?.message||'Session refusée ou révoquée.');
- clearTimeout(expiry);expiry=null;
+ for(let attempt=0;attempt<2;attempt++){
+  const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
+  let payload=data||null;
+  if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
+  if(!error&&payload?.success){clearTimeout(expiry);expiry=null;return}
+  const code=payload?.code||'';
+  if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,250));continue}
+  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE'].includes(code);
+  const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
+  err.authFatal=fatal;err.authTransient=!fatal;throw err;
+ }
+ throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
 async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
@@ -97,7 +112,7 @@ async function validate(session){
    let chip=byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-notification-link" href="/InspecteurBot-2.0/notifications/" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
     chip=document.createElement('div');chip.id='ib-auth-chip';
     chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
@@ -118,12 +133,14 @@ async function validate(session){
    if(!window.__ibNotificationRefreshTimer)window.__ibNotificationRefreshTimer=setInterval(refreshNotificationBadge,45000);
    window.addEventListener('focus',refreshNotificationBadge);
   }
- }catch(e){console.warn('Authentification InspecteurBot',e);await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
+ }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
 async function signOut(){clearTimeout(expiry);clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
 function setup(){
  const form=byId('auth-form'),email=byId('auth-email'),pw=byId('auth-password'),confirm=byId('auth-confirm'),wrap=byId('auth-confirm-wrap'),submit=byId('auth-submit'),forgot=byId('auth-forgot');
+ const retry=byId('auth-retry');
+ retry.addEventListener('click',async()=>{retry.disabled=true;gate('Nouvelle vérification de votre session…','loading');try{const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate()}catch(e){gate(e.message||'Vérification impossible. Réessayez.','retry')}finally{retry.disabled=false}});
  form.addEventListener('submit',async e=>{
   e.preventDefault();submit.disabled=true;msg('');
   try{
@@ -139,7 +156,7 @@ function setup(){
  });
 }
 async function start(){
- makeGate();gate('Vérification de votre session…');
+ makeGate();gate('Vérification de votre session…','loading');
  try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  // La session est contrôlée à la connexion et lors des événements Supabase TOKEN_REFRESHED. Le serveur impose aussi son délai d'expiration.
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
