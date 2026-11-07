@@ -40,32 +40,6 @@ body{
 }  
   
 /* ================= SLIDER OPTIMISÉ ================= */
-const images = document.querySelectorAll(".slider img");
-let currentImage = 0;
-function advanceSlide(){
-  if(images.length < 2) return;
-  let nextIndex = (currentImage + 1) % images.length;
-  let attempts = 0;
-  while(images[nextIndex].dataset.slideFailed && attempts < images.length){ nextIndex = (nextIndex + 1) % images.length; attempts++; }
-  if(attempts >= images.length) return;
-  const nextImage = images[nextIndex];
-  const activate = () => {
-    images[currentImage].classList.remove("active");
-    currentImage = nextIndex;
-    nextImage.classList.add("active");
-    setTimeout(advanceSlide, 3000);
-  };
-  if(nextImage.dataset.slideSrc){
-    nextImage.onload = () => { nextImage.onload = null; activate(); };
-    nextImage.onerror = () => { nextImage.onerror = null; nextImage.dataset.slideFailed = "true"; nextImage.style.display = "none"; setTimeout(advanceSlide, 3000); };
-    nextImage.src = nextImage.dataset.slideSrc;
-    delete nextImage.dataset.slideSrc;
-  } else {
-    activate();
-  }
-}
-if(images.length > 1) setTimeout(advanceSlide, 3000);
-  
 /* ================= MOTIVATION ================= */  
 .motivation{  
     background:transparent;  
@@ -405,6 +379,22 @@ footer img{
 /* Suppression des pictogrammes à côté de l’heure, de la date et de la température */
 .datetime-top i,.datetime-date i,.datetime-weather i,.datetime-box svg,.datetime-box .fa-clock,.datetime-box .fa-calendar,.datetime-box .fa-temperature-half,.datetime-box .fa-cloud-sun{display:none!important}
 @media(max-width:520px){.banner,.slider img{height:380px}}
+
+/* Bandeau d'accueil restauré : horloge et date lisibles sur les photos */
+.banner{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(250px,42vw,520px)}
+.slider{position:absolute;inset:0;overflow:hidden}
+.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
+.slider img.active{opacity:1}
+.banner:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,15,38,.58),rgba(3,15,38,.08) 72%),linear-gradient(0deg,rgba(3,15,38,.45),transparent 65%);z-index:1;pointer-events:none}
+.datetime-box{position:absolute!important;z-index:2!important;top:clamp(14px,3vw,30px)!important;right:clamp(14px,3vw,34px)!important;left:auto!important;bottom:auto!important;width:min(260px,calc(100% - 28px));padding:17px 20px!important;border:1px solid rgba(255,255,255,.35);border-radius:18px;background:rgba(5,20,43,.78)!important;color:#fff;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.25);backdrop-filter:blur(8px)}
+.datetime-top strong{display:block;font-size:clamp(30px,5vw,44px);line-height:1.1;color:#ffdc69;letter-spacing:1px;font-weight:800}
+.datetime-day{margin-top:5px;font-size:14px;font-weight:700;color:#fff}
+.datetime-date{margin-top:2px;font-size:12px;color:#e5edf7}
+.datetime-weather{display:flex;justify-content:center;gap:8px;align-items:center;margin-top:9px;font-size:13px;color:#fff}
+.datetime-weather strong{font-size:18px;color:#ffdc69}
+.datetime-weather span{font-weight:600}
+@media(max-width:520px){.banner{min-height:340px}.datetime-box{top:12px!important;right:12px!important;width:205px;padding:12px!important}.datetime-top strong{font-size:31px}}
+@media(prefers-reduced-motion:reduce){.slider img{transition:none}}
 </style>  
   
 
@@ -418,7 +408,7 @@ footer img{
 <!-- ================= DÉBUT DE LA PAGE ================= -->  
   
 <!-- SLIDER -->  
-<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
+<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-day" id="day">Chargement…</div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
   
     <!-- Images du slider -->  
     <div class="slider" id="slider">  
@@ -631,25 +621,25 @@ footer img{
   
 <script>  
   
-/* ================= SLIDER ================= */  
-  
-const images = document.querySelectorAll(".slider img");  
-let currentImage = 0;  
-  
-if (images.length > 0) {  
-  
-    setInterval(() => {  
-  
-        images[currentImage].classList.remove("active");  
-  
-        currentImage = (currentImage + 1) % images.length;  
-  
-        images[currentImage].classList.add("active");  
-  
-    }, 3000);  
-    
+/* ================= SLIDER FIABLE ================= */
+const images = Array.from(document.querySelectorAll(".slider img"));
+let currentImage = 0;
+function advanceSlide(){
+ if(images.length<2)return;
+ let nextIndex=(currentImage+1)%images.length, attempts=0;
+ while(images[nextIndex].dataset.slideFailed&&attempts<images.length){nextIndex=(nextIndex+1)%images.length;attempts++;}
+ if(attempts>=images.length)return;
+ const next=images[nextIndex];
+ const activate=()=>{images[currentImage].classList.remove("active");currentImage=nextIndex;next.classList.add("active");setTimeout(advanceSlide,4500);};
+ if(next.dataset.slideSrc){
+  next.onload=()=>{next.onload=null;next.onerror=null;activate();};
+  next.onerror=()=>{next.onload=null;next.onerror=null;next.dataset.slideFailed="1";next.style.display="none";setTimeout(advanceSlide,500);};
+  next.src=next.dataset.slideSrc;delete next.dataset.slideSrc;
+ }else if(next.complete&&next.naturalWidth>0){activate();}
+ else{next.onload=()=>{next.onload=null;activate();};next.onerror=()=>{next.dataset.slideFailed="1";setTimeout(advanceSlide,500);};}
+}
+if(images.length>1)setTimeout(advanceSlide,4500);
 
-}  
 /* ================= MOTIVATION ================= */  
   
 const motivations = [  
