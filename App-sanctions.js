@@ -481,16 +481,10 @@ Entrez un numéro :`
 =============================== */
 
 initInfractions() {
-    const source = Array.isArray(window.IGT_INFRACTIONS65) ? window.IGT_INFRACTIONS65 : [];
-    this.infractions = source.map(item => ({
-      id: item.id,
-      categorie: item.gravite || "À vérifier",
-      article: item.articles || "Référence à vérifier",
-      infraction: item.libelle || "Infraction sans intitulé",
-      montant: item.sanction || "Sanction à vérifier dans le texte officiel",
-      details: "Référence de sanction : " + (item.refSanction || "non précisée") + ". Gravité indicative : " + (item.gravite || "non précisée") + ". Vérifier le texte officiel applicable avant toute qualification."
-    }));
-    this.renderInfractions(this.infractions);
+  const source=Array.isArray(window.IGT_INFRACTIONS65)?window.IGT_INFRACTIONS65:[];
+  this.infractions=source.map(item=>({id:Number(item.id),categorie:item.gravite||"À vérifier",article:item.articles||"Référence à vérifier",infraction:item.libelle||"Infraction sans intitulé",montant:item.sanction||"Sanction à vérifier dans le texte officiel",refSanction:item.refSanction||"Non précisée",details:item.details||"Vérifier le texte officiel applicable avant toute verbalisation."})).sort((a,b)=>a.id-b.id);
+  this.renderInfractions(this.infractions);
+  const stat=document.getElementById("statInfractions"); if(stat)stat.textContent=String(this.infractions.length);
 }
  
 /* ===============================
@@ -498,45 +492,10 @@ initInfractions() {
 =============================== */
 
 renderInfractions(data) {
-
-    const tbody = document.getElementById("infractionsTableBody");
-
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    data.forEach(item => {
-
-        tbody.innerHTML += `
-
-        <tr>
-
-            <td>${item.id}</td>
-
-            <td>${item.infraction}</td>
-
-            <td>${item.article}</td>
-
-            <td>${item.montant}</td>
-
-            <td>
-
-                <button
-                    class="btn btn-outline"
-                    onclick="app.showInfraction(${item.id})">
-
-                    Voir
-
-                </button>
-
-            </td>
-
-        </tr>
-
-        `;
-
-    });
-
+  const tbody=document.getElementById("infractionsTableBody"); if(!tbody)return;
+  const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  const rows=Array.isArray(data)?data:[];
+  tbody.innerHTML=rows.length?rows.map(item=>`<tr><td>${esc(item.id)}</td><td>${esc(item.infraction)}</td><td>${esc(item.article)}</td><td><strong>${esc(item.montant)}</strong></td><td><button type="button" class="btn btn-outline" onclick="app.showInfraction(${Number(item.id)})">Consulter</button></td></tr>`).join(""):'<tr><td colspan="5">Aucune infraction ne correspond à cette recherche.</td></tr>';
 }
 
 /* ===============================
@@ -544,42 +503,11 @@ renderInfractions(data) {
 =============================== */
 
 showInfraction(id) {
-
-    const infraction = this.infractions.find(i => i.id === id);
-
-    if (!infraction) return;
-
-    const zone = document.getElementById("infractionDetails");
-
-    if (!zone) return;
-
-    zone.innerHTML = `
-
-    <div class="card">
-
-        <h3>${infraction.infraction}</h3>
-
-        <p><strong>Article :</strong> ${infraction.article}</p>
-
-        <p><strong>Catégorie :</strong> ${infraction.categorie}</p>
-
-        <p><strong>Montant :</strong> ${infraction.montant}</p>
-
-        <hr>
-
-        <p>${infraction.details}</p>
-
-    </div>
-
-    `;
-
-    zone.scrollIntoView({
-
-        behavior: "smooth"
-
-    });
-
-    }
+  const item=this.infractions.find(i=>Number(i.id)===Number(id)); const zone=document.getElementById("infractionDetails"); if(!item||!zone)return;
+  const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  zone.innerHTML=`<article class="card"><h3>Infraction n°${esc(item.id)} — ${esc(item.infraction)}</h3><p><strong>Disposition :</strong> ${esc(item.article)}</p><p><strong>Sanction / amende indiquée :</strong> ${esc(item.montant)}</p><p><strong>Référence de sanction :</strong> ${esc(item.refSanction)}</p><p><strong>Gravité indicative :</strong> ${esc(item.categorie)}</p><p class="legal-caution">${esc(item.details)}</p></article>`;
+  zone.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
 
 /* ==========================================================
    PARTIE 3B
@@ -627,8 +555,8 @@ initInfractionsEvents() {
 =============================== */
 
 searchInfractions(keyword) {
-
-    keyword = keyword.toLowerCase().trim();
+    keyword = String(keyword || "").toLowerCase().trim();
+    if (!keyword) { this.renderInfractions(this.infractions); return; }
 
     const resultat = this.infractions.filter(item => {
 
@@ -915,6 +843,7 @@ loadFavorites() {
 initAIM() {
     this.aimData = Array.isArray(window.IGT_AIM_DATA) ? window.IGT_AIM_DATA : [];
     this.renderAIMTable(this.aimData);
+    const aimStat=document.getElementById("statSanctions"); if(aimStat)aimStat.textContent=String(this.aimData.length);
     const legacyCategory = document.getElementById("calcCategorie");
     if (legacyCategory && legacyCategory.closest(".form-group")) legacyCategory.closest(".form-group").style.display = "none";
 }
@@ -924,50 +853,13 @@ initAIM() {
 =============================== */
 
 renderAIMTable(data) {
-
-    const tbody = document.getElementById("aimTableBody");
-
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    if (!Array.isArray(data) || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding:18px;text-align:center">Le barème complet AIM 006/127 n’est pas intégré à cette version. Aucun montant de démonstration ne sera présenté comme un tarif officiel. Ajoutez le texte officiel pour activer ce tableau.</td></tr>';
-        return;
-    }
-
-    data.forEach(item => {
-
-        tbody.innerHTML += `
-
-        <tr>
-
-            <td>${item.sanction}</td>
-
-            <td>${item.categorieA}</td>
-
-            <td>${item.categorieB}</td>
-
-            <td>${item.categorieC}</td>
-
-            <td>
-
-                <button
-                    class="btn btn-outline"
-                    onclick="app.showAIMDetails(${item.id})">
-
-                    Voir
-
-                </button>
-
-            </td>
-
-        </tr>
-
-        `;
-
-    });
-
+  const tbody=document.getElementById("aimTableBody"); if(!tbody)return;
+  const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  if(!Array.isArray(data)||!data.length){tbody.innerHTML='<tr><td colspan="5">Le barème AIM n’a pas pu être chargé. Actualisez la page.</td></tr>';return;}
+  tbody.innerHTML=data.map(item=>{
+    const rates=["categorieA","categorieB","categorieC","categorieD","categorieE","categorieF","taux","montant","droit"].map(k=>item[k]).filter(v=>v&&v!=="—");
+    return `<tr><td><strong>${esc(item.sanction||item.intitule||"Prestation AIM")}</strong></td><td>${esc([...new Set(rates)].join(" / ")||"Voir la fiche")}</td><td>${esc(item.base||item.reference||"AIM 006/2023")}</td><td>${esc(String(item.details||"").slice(0,180))}${String(item.details||"").length>180?"…":""}</td><td><button type="button" class="btn btn-outline" onclick="app.showAIMDetails(${Number(item.id)})">Consulter</button></td></tr>`;
+  }).join("");
 }
 
 /* ===============================
@@ -975,43 +867,11 @@ renderAIMTable(data) {
 =============================== */
 
 showAIMDetails(id) {
-
-    const item = this.aimData.find(a => a.id === id);
-
-    if (!item) return;
-
-    const zone = document.getElementById("aimDetails");
-
-    if (!zone) return;
-
-    zone.innerHTML = `
-
-    <div class="card">
-
-        <h2>${item.sanction}</h2>
-
-        <hr>
-
-        <p><strong>Catégorie A :</strong> ${item.categorieA}</p>
-
-        <p><strong>Catégorie B :</strong> ${item.categorieB}</p>
-
-        <p><strong>Catégorie C :</strong> ${item.categorieC}</p>
-
-        <hr>
-
-        <p>${item.details}</p>
-
-    </div>
-
-    `;
-
-    zone.scrollIntoView({
-
-        behavior: "smooth"
-
-    });
-
+  const item=this.aimData.find(a=>Number(a.id)===Number(id)); const zone=document.getElementById("aimDetails"); if(!item||!zone)return;
+  const esc=v=>String(v??"—").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  const rows=["categorieA","categorieB","categorieC","categorieD","categorieE","categorieF","taux","montant","droit"].filter(k=>item[k]&&item[k]!=="—").map(k=>`<p><strong>${esc(k.replace("categorie","Catégorie "))} :</strong> ${esc(item[k])}</p>`).join("");
+  zone.innerHTML=`<article class="card"><h2>${esc(item.sanction||item.intitule||"Référence AIM")}</h2>${rows}<hr><p><strong>Portée et conditions :</strong> ${esc(item.details||"Consulter le texte officiel.")}</p><p><strong>Référence :</strong> Arrêté interministériel n°006/2023 du 03 octobre 2023 (transcription à vérifier sur l’exemplaire signé).</p></article>`;
+  zone.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
 /* ==========================================================
@@ -4783,15 +4643,10 @@ function sanctionsStorageKey(key) { return key + "_" + sanctionsUserSuffix; }
 
 const app = new InspecteurBotSanctions();
 window.app = app;
-document.addEventListener("DOMContentLoaded", async () => {
-  const client = window.inspecteurBotAuthClient;
-  if (client && client.auth) {
-    try {
-      const { data } = await client.auth.getSession();
-      const id = data && data.session && data.session.user && data.session.user.id;
-      if (id) sanctionsUserSuffix = id;
-    } catch (e) { console.warn("Stockage privé Sanctions indisponible", e); }
-  }
-  app.init();
-  app.startModule();
-});
+async function bootSanctionsModule() {
+  const client=window.inspecteurBotAuthClient;
+  if(client&&client.auth){try{const {data}=await client.auth.getSession();const id=data&&data.session&&data.session.user&&data.session.user.id;if(id)sanctionsUserSuffix=id;}catch(e){console.warn("Stockage privé Sanctions indisponible",e);}}
+  app.init(); app.startModule();
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bootSanctionsModule,{once:true});
+else bootSanctionsModule();
