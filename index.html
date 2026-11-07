@@ -422,23 +422,16 @@ html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scro
 <script src="auth-gate.js?v=20261107-auth-localfirst-21" defer></script>
 
 <style id="ib-unified-shell">
-:root{--ib-shell-top:0px}
-body{overflow-x:hidden}
-.menu-index a,.quick-card{touch-action:manipulation}
+html{min-height:100%;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}
+body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:auto;touch-action:pan-y}
+.menu-index a,.quick-card,.ib-app-grid a{touch-action:manipulation}
 .ib-app-launcher{width:min(1180px,calc(100% - 28px));margin:20px auto 26px}
 .ib-app-launcher h2{color:#fff;text-align:center;font-size:clamp(19px,3vw,25px);margin:0 0 14px}
 .ib-app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:10px}
 .ib-app-grid a{min-height:82px;padding:14px 10px;border:1px solid #ffffff24;border-radius:14px;background:#ffffff0c;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;flex-direction:column;text-align:center;font-weight:650;font-size:13px;transition:background .12s ease}
 .ib-app-grid a i{font-size:21px;color:#f2d36c}
 .ib-app-grid a:active{background:#ffffff20}
-#ib-module-view{position:fixed;inset:0;z-index:2147482000;background:#f4f6f8;display:none;flex-direction:column;contain:layout paint}
-#ib-module-view[aria-hidden="false"]{display:flex}
-#ib-module-bar{height:54px;min-height:54px;display:flex;align-items:center;gap:12px;padding:0 12px;background:#082b50;color:#fff;box-shadow:0 1px 4px #0002}
-#ib-module-back{width:40px;height:40px;border:0;border-radius:11px;background:#ffffff18;color:#fff;font-size:18px}
-#ib-module-title{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-#ib-module-home{border:1px solid #ffffff35;border-radius:10px;background:transparent;color:#fff;padding:8px 11px;font-size:12px}
-#ib-module-frame{border:0;display:block;width:100%;height:calc(100% - 54px);background:#fff;flex:1;min-height:0}
-@media(max-width:600px){.ib-app-launcher{width:calc(100% - 20px)}.ib-app-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ib-app-grid a{min-height:76px;padding:10px 5px;font-size:11px}#ib-module-bar{height:50px;min-height:50px}#ib-module-frame{height:calc(100% - 50px)}}
+@media(max-width:600px){.ib-app-launcher{width:calc(100% - 20px)}.ib-app-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ib-app-grid a{min-height:76px;padding:10px 5px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ib-app-grid a{transition:none}}
 </style>
 </head>  
@@ -503,10 +496,7 @@ body{overflow-x:hidden}
         <span>Décompte final</span>
     </a>
 
-  <a href="ia/generation-docs.html">
-        <i class="fa fa-file-lines"></i>
-        <span>Rapport</span>
-  </a>
+  
 
   <a href="pages/Quiz_Academie_IGT/index.html">
     <i class="fa fa-graduation-cap"></i>
@@ -551,7 +541,7 @@ body{overflow-x:hidden}
     <span>Déconnexion</span>
 </a>
   
-    <a href="inspecteurs.html"><i class="fa fa-user-shield"></i><span>Inspection</span></a>
+    <a href="inspecteurs.html"><i class="fa fa-file-lines"></i><span>Rapport</span></a>
     </nav> 
   
 <!-- ================= ASSISTANT IA ================= -->  
@@ -574,13 +564,13 @@ body{overflow-x:hidden}
 <h2>Votre espace de travail IGT</h2>
 <div class="ib-app-grid">
 <a href="igt/index.html" data-ib-app><i class="fa-solid fa-landmark"></i><span>Annuaire numérique IGT</span></a>
-<a href="inspecteurs.html" data-ib-app><i class="fa-solid fa-user-shield"></i><span>Inspection</span></a>
+<a href="inspecteurs.html" data-ib-app><i class="fa-solid fa-file-lines"></i><span>Rapport</span></a>
 <a href="code-travail.html" data-ib-app><i class="fa-solid fa-scale-balanced"></i><span>Code du Travail</span></a>
 <a href="fiche.html" data-ib-app><i class="fa-solid fa-list-check"></i><span>Fiches de contrôle</span></a>
 <a href="pv.html" data-ib-app><i class="fa-solid fa-file-signature"></i><span>Procès-verbaux</span></a>
 <a href="sanctions.html" data-ib-app><i class="fa-solid fa-gavel"></i><span>Sanctions</span></a>
 <a href="autres/decompte-final.html" data-ib-app><i class="fa-solid fa-calculator"></i><span>Décompte final</span></a>
-<a href="ia/generation-docs.html" data-ib-app><i class="fa-solid fa-file-lines"></i><span>Rapports</span></a>
+
 <a href="pages/Quiz_Academie_IGT/index.html" data-ib-app><i class="fa-solid fa-graduation-cap"></i><span>Quiz Académie</span></a>
 <a href="entreprises.html" data-ib-app><i class="fa-solid fa-building"></i><span>Entreprises</span></a>
 <a href="formation.html" data-ib-app><i class="fa-solid fa-chalkboard-user"></i><span>Centre de Formation</span></a>
@@ -768,51 +758,7 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v43',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
-<section id="ib-module-view" aria-hidden="true" aria-label="Module InspecteurBot">
-<div id="ib-module-bar"><button id="ib-module-back" type="button" aria-label="Retour">←</button><strong id="ib-module-title">Application</strong><button id="ib-module-home" type="button">Accueil</button></div>
-<iframe id="ib-module-frame" title="Module InspecteurBot" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allow="geolocation; camera; microphone; clipboard-read; clipboard-write; fullscreen"></iframe>
-</section>
-<script id="ib-unified-router">
-(()=>{
- const view=document.getElementById('ib-module-view'),frame=document.getElementById('ib-module-frame'),title=document.getElementById('ib-module-title');
- if(!view||!frame)return;
- const names={'igt/index.html':'Annuaire numérique IGT','code-travail.html':'Code du Travail','fiche.html':'Fiches de contrôle','pv.html':'Procès-verbaux','sanctions.html':'Sanctions','autres/decompte-final.html':'Décompte final','ia/generation-docs.html':'Rapports','pages/Quiz_Academie_IGT/index.html':'Quiz Académie IGT','entreprises.html':'Entreprises','formation.html':'Centre de Formation','autres/gps.html':'GPS IGT','autres/smig.html':'Application SMIG','ia/assistant.html':'InspecteurBot IA','profil.html':'Mon profil','admin.html':'Administration','inspecteurs.html':'Inspection'};
- let current='';
- function normalize(href){try{const u=new URL(href,location.href);if(u.origin!==location.origin)return null;const p=u.pathname.replace(/^\/InspecteurBot-2\.0\//,'').replace(/^\//,'');return p.endsWith('.html')?p:null}catch(_){return null}}
- function open(path,push=true){
-  const clean=normalize(path)||path;if(!clean||clean==='index.html')return home(false);
-  current=clean;title.textContent=names[clean]||clean.split('/').pop().replace(/\.html$/,'').replace(/[-_]/g,' ');
-  view.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
-  if(push)history.pushState({ibModule:clean},'', '#app='+encodeURIComponent(clean));
-  if(frame.dataset.path!==clean){frame.dataset.path=clean;frame.src=clean;}
- }
- function home(){
-  if(history.state?.ibModule)history.replaceState({},'',location.pathname);
-  current='';view.setAttribute('aria-hidden','true');frame.removeAttribute('src');frame.dataset.path='';document.body.style.overflow='';
- }
- function goBack(){if(history.state?.ibModule)history.back();else home();}
- document.addEventListener('click',e=>{
-  const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target==='_blank')return;
-  const path=normalize(a.href);if(!path||path==='index.html')return;
-  e.preventDefault();open(path,true);
- });
- document.getElementById('ib-module-back').addEventListener('click',goBack);
- document.getElementById('ib-module-home').addEventListener('click',home);
- window.addEventListener('popstate',e=>{if(e.state?.ibModule)open(e.state.ibModule,false);else home(false)});
- frame.addEventListener('load',()=>{
-  try{
-   const doc=frame.contentDocument;if(!doc)return;
-   doc.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');if(!a||a.target==='_blank')return;
-    const path=normalize(a.href);if(!path)return;
-    e.preventDefault();e.stopPropagation();
-    if(path==='index.html')home();else open(path,true);
-   },true);
-  }catch(_){}
- });
- window.addEventListener('keydown',e=>{if(e.key==='Escape'&&view.getAttribute('aria-hidden')==='false')home()});
-})();
-</script>
+
 </body>  
   
 </html>
