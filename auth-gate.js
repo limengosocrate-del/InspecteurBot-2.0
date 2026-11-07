@@ -147,7 +147,7 @@ async function validate(session){
    const menu=chip.querySelector('#ib-auth-menu');if(data.role==='super_admin'){if(menu&&!menu.querySelector('#ib-admin-link')){const link=document.createElement('a');link.id='ib-admin-link';link.href='admin.html';link.innerHTML='<i class="fa-solid fa-gauge-high"></i> Tableau de bord administrateur';const logout=menu.querySelector('#ib-auth-logout');menu.insertBefore(link,logout||null);}}else if(menu){menu.querySelectorAll('#ib-admin-link,a').forEach(link=>{if(/administrateur|admin\.html|se connecter comme/i.test(link.textContent+' '+link.getAttribute('href')))link.remove()})}
    const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
    let localAvatar='';
-   try{const localProfile=JSON.parse(localStorage.getItem('inspecteurbot_local_profile_v1')||'null');if(localProfile&&typeof localProfile.avatar==='string')localAvatar=localProfile.avatar}catch(_){}
+   try{const localProfile=JSON.parse(localStorage.getItem('inspecteurbot_local_profile_v1_'+session.user.id)||'null');if(localProfile&&typeof localProfile.avatar==='string')localAvatar=localProfile.avatar}catch(_){}
    const initialAvatar=localAvatar||data.avatar_url||'';
    if(initialAvatar){avatarImg.src=initialAvatar;avatarImg.hidden=false;avatarIcon.hidden=true}
    else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
