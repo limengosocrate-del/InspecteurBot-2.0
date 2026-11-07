@@ -93,8 +93,7 @@ const ASSISTANT = {
   // ============ SYNTHÈSE VOCALE ============
   speak(text) {
     if (!("speechSynthesis" in window)) return;
-    const clean = text.replace(/\*\*/g,"").replace(/
-/g," ").replace(/[📄📖⚖️🤖💰🔎✅❌⚠️📊🏢🌍]/g,"");
+    const clean = text.replace(/\*\*/g,"").replace(/\n/g," ").replace(/[📄📖⚖️🤖💰🔎✅❌⚠️📊🏢🌍]/g,"");
     const u = new SpeechSynthesisUtterance(clean);
     u.lang = "fr-FR";
     u.rate = 1;
