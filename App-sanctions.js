@@ -508,7 +508,7 @@ Entrez un numéro :`
 
 initInfractions() {
   const source=Array.isArray(window.IGT_INFRACTIONS65)?window.IGT_INFRACTIONS65:[];
-  this.infractions=source.map(item=>({id:Number(item.id),categorie:item.gravite||"À vérifier",article:item.articles||"Référence à vérifier",infraction:item.libelle||"Infraction sans intitulé",montant:item.sanction||"Sanction à vérifier dans le texte officiel",refSanction:item.refSanction||"Non précisée",details:item.details||"Vérifier le texte officiel applicable avant toute verbalisation."})).sort((a,b)=>a.id-b.id);
+  this.infractions=source.map(item=>({id:Number(item.id),categorie:item.gravite||"À vérifier",article:item.articles||"Référence à vérifier",infraction:item.libelle||"Infraction sans intitulé",montant:(item.sanction&&/^(amende|amendes)$/i.test(String(item.sanction).trim()))?"Montant non chiffré dans la fiche source — vérifier l’article indiqué":(item.sanction||"Sanction à vérifier dans le texte officiel"),refSanction:item.refSanction||"Non précisée",details:item.details||"Vérifier le texte officiel applicable avant toute verbalisation."})).sort((a,b)=>a.id-b.id);
   this.renderInfractions(this.infractions);
   const stat=document.getElementById("statInfractions"); if(stat)stat.textContent=String(this.infractions.length);
 }
