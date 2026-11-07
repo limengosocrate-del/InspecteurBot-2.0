@@ -1078,13 +1078,7 @@ document.addEventListener("DOMContentLoaded",async function(){
 
 /* Chargement des données */
 
-entreprises=
-
-JSON.parse(
-
-localStorage.getItem("entreprises")
-
-)||[];
+await chargerCleEntreprises();
 
 /* Affichage */
 
