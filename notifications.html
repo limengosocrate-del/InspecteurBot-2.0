@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07518a"><title>Notifications | InspecteurBot</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f7fb;color:#18314d;font-family:Arial,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:15px clamp(14px,4vw,40px);background:#fff;border-bottom:1px solid #e3ebf2;box-shadow:0 2px 10px #173b5c0a}
+.back{color:#07518a;text-decoration:none;font-weight:700;white-space:nowrap}.brand{flex:1;color:#073b70;font-size:21px;font-weight:800}.brand small{display:block;margin-top:3px;color:#0754a0;font-size:12px;font-weight:500;font-style:italic}
+main{width:min(900px,calc(100% - 28px));margin:24px auto 50px}.heading{display:flex;align-items:center;gap:13px;margin-bottom:18px}.heading-icon{width:48px;height:48px;border-radius:14px;background:#e5f2fa;color:#087ca7;display:grid;place-items:center;font-size:22px}h1{margin:0;color:#123d68;font-size:24px}.sub{margin:5px 0 0;color:#6c7f91;font-size:14px}
+.panel{margin:14px 0;padding:18px;background:#fff;border:1px solid #e2eaf1;border-radius:16px;box-shadow:0 5px 18px #123d6808}.panel h2{display:flex;align-items:center;gap:9px;margin:0 0 14px;color:#123d68;font-size:17px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{padding:9px 14px;border:1px solid #d6e2ec;border-radius:30px;background:#fff;color:#36566e;font-weight:700}.tab.active{background:#07518a;color:#fff;border-color:#07518a}
+.item{margin:10px 0;padding:14px;border:1px solid #e5edf3;border-radius:12px;background:#fff}.item-head{display:flex;align-items:flex-start;gap:10px}.item-title{flex:1;color:#173b5c;font-weight:700}.item-time{color:#8191a1;font-size:11px;white-space:nowrap}.item-body{margin:9px 0;color:#52677a;font-size:14px;line-height:1.55;white-space:pre-wrap}.meta{color:#8091a0;font-size:12px}
+.empty{padding:28px 12px;text-align:center;color:#73869a}.empty i{display:block;margin-bottom:10px;color:#b6c8d7;font-size:30px}
+form{display:grid;gap:10px}input,textarea,select{width:100%;padding:12px;border:1px solid #d4e0e9;border-radius:10px;background:#fff;color:#18314d;font:inherit}textarea{min-height:105px;resize:vertical}.primary{padding:12px 16px;border:0;border-radius:10px;background:#07518a;color:#fff;font-weight:700}.primary:disabled{opacity:.6}.notice{min-height:18px;color:#138a65;font-size:13px}
+[hidden]{display:none!important}
+@media(max-width:520px){header{padding:13px}.brand{font-size:18px}.back{font-size:12px}main{margin-top:18px}.panel{padding:14px}h1{font-size:21px}.item-head{flex-wrap:wrap}.item-time{width:100%}}
+</style>
+<style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}</style>
+<script src="auth-gate.js?v=20261107-notifications-7" defer></script>
+</head><body>
+<header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
+<main>
+<div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et échanges avec l’administration</p></div></div>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="messages" type="button">Messages</button></div><div id="notificationList"><div class="empty"><i class="fa-solid fa-circle-notch fa-spin"></i>Chargement de vos notifications…</div></div></section>
+<section class="panel" id="writePanel"><h2 id="writeTitle"><i class="fa-regular fa-paper-plane"></i> Écrire à l’administrateur</h2><form id="messageForm"><textarea id="messageContent" maxlength="4000" required placeholder="Écrivez votre message à l’administrateur…"></textarea><button class="primary" id="sendMessage" type="submit">Envoyer le message</button><div class="notice" id="messageStatus" aria-live="polite"></div></form></section>
+<section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" maxlength="5000" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
+</main>
+<script>
+(function(){
+'use strict';
+const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
+let client,user,profile,isAdmin=false,announcements=[],messages=[],names={},tab='all',started=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
+function status(id,t,ok){$(id).textContent=t;$(id).style.color=ok?'#138a65':'#b42318'}
+function empty(t){return '<div class="empty"><i class="fa-regular fa-bell-slash"></i>'+esc(t)+'</div>'}
+async function load(){
+ const [a,m,r]=await Promise.all([
+  client.from('announcements').select('id,title,body,created_by,created_at').order('created_at',{ascending:false}),
+  client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').order('created_at',{ascending:false}),
+  client.from('announcement_reads').select('announcement_id').eq('user_id',user.id)
+ ]);
+ if(a.error)throw a.error;if(m.error)throw m.error;if(r.error)throw r.error;
+ announcements=a.data||[];messages=m.data||[];
+ const readIds=new Set((r.data||[]).map(x=>String(x.announcement_id)));
+ const unread=announcements.filter(x=>x.created_by!==user.id&&!readIds.has(String(x.id)));
+ if(unread.length){const {error}=await client.from('announcement_reads').upsert(unread.map(x=>({announcement_id:x.id,user_id:user.id})),{onConflict:'announcement_id,user_id',ignoreDuplicates:true});if(error)console.warn(error)}
+ const incoming=messages.filter(x=>x.recipient_id===user.id&&!x.read_at);
+ if(incoming.length){const stamp=new Date().toISOString();const {error}=await client.from('messages').update({read_at:stamp}).eq('recipient_id',user.id).is('read_at',null);if(error)console.warn(error);messages=messages.map(x=>x.recipient_id===user.id?{...x,read_at:stamp}:x)}
+ if(isAdmin){const ids=[...new Set(messages.flatMap(x=>[x.sender_id,x.recipient_id]).filter(x=>x&&x!==user.id))];if(ids.length){const {data,error}=await client.from('profiles').select('id,display_name').in('id',ids);if(!error)(data||[]).forEach(x=>names[x.id]=x.display_name||'Utilisateur')}}
+ render();
+}
+function render(){
+ const ann=announcements.filter(x=>x.created_by!==user.id).map(x=>({kind:'announcement',date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
+ const msgs=messages.map(x=>({kind:'message',date:x.created_at,title:isAdmin?(x.sender_id===user.id?'Vous':'De : '+(names[x.sender_id]||'Utilisateur')):(x.sender_id===user.id?'Vous':'Administrateur IGT'),body:x.content,meta:isAdmin?(x.recipient_id===user.id?'Message reçu':'Message envoyé'):(x.sender_id===user.id?'Message envoyé':'Message reçu'),sender:x.sender_id}));
+ let items=ann.concat(msgs).sort((x,y)=>new Date(y.date)-new Date(x.date));
+ if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');if(tab==='messages')items=items.filter(x=>x.kind==='message');
+ $('notificationList').innerHTML=items.length?items.map(x=>'<article class="item"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-regular fa-envelope"></i> ')+esc(x.title)+'</div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(isAdmin&&x.kind==='message'&&x.sender!==user.id?'<button type="button" class="primary reply" data-id="'+esc(x.sender)+'" style="margin-top:10px">Répondre</button>':'')+'</article>').join(''):empty(tab==='messages'?'Aucun message pour le moment.':'Aucune annonce ou notification.');
+ document.querySelectorAll('.reply').forEach(b=>b.addEventListener('click',()=>{$('recipient').value=b.dataset.id;$('messageContent').focus()}));
+}
+function init(d){
+ if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=['admin','super_admin'].includes(profile.role);
+ if(isAdmin){$('writeTitle').innerHTML='<i class="fa-regular fa-paper-plane"></i> Répondre à un utilisateur';$('messageForm').insertAdjacentHTML('afterbegin','<select id="recipient" required><option value="">Choisir un destinataire…</option></select>');$('messageContent').placeholder='Rédigez votre réponse…';$('sendMessage').textContent='Envoyer la réponse';$('adminPanel').hidden=false;
+  client.from('profiles').select('id,display_name').neq('id',user.id).order('display_name').then(({data,error})=>{if(!error&&data)data.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.display_name||'Utilisateur';$('recipient').appendChild(o)})});
+ }
+ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));
+ $('messageForm').addEventListener('submit',async e=>{e.preventDefault();const content=$('messageContent').value.trim(),recipient=isAdmin?$('recipient').value:ADMIN_ID;if(!content||!recipient){status('messageStatus','Choisissez un destinataire et saisissez un message.',false);return}
+  const b=$('sendMessage');b.disabled=true;status('messageStatus','Envoi en cours…',true);
+  try{const {error}=await client.from('messages').insert({sender_id:user.id,recipient_id:recipient,content});if(error)throw error;$('messageContent').value='';status('messageStatus',isAdmin?'Réponse envoyée.':'Votre message a été transmis à l’administrateur.',true);await load()}catch(e){status('messageStatus',e.message||'Envoi impossible.',false)}finally{b.disabled=false}
+ });
+ if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{e.preventDefault();const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim();if(!title||!body)return;const b=$('publishAnnouncement');b.disabled=true;status('announcementStatus','Publication en cours…',true);
+  try{const {error}=await client.from('announcements').insert({title,body,created_by:user.id,target_user_id:null});if(error)throw error;$('announcementTitle').value='';$('announcementBody').value='';status('announcementStatus','Annonce publiée avec succès.',true);await load()}catch(e){status('announcementStatus',e.message||'Publication impossible.',false)}finally{b.disabled=false}
+ });
+ load().catch(e=>{$('notificationList').innerHTML=empty('Impossible de charger les notifications : '+(e.message||'erreur de connexion'))});
+}
+document.addEventListener('inspecteurbot:authenticated',e=>init(e.detail));
+function existing(){if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser&&window.inspecteurBotAuthProfile)init({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile})}
+existing();setTimeout(existing,500);setTimeout(existing,1500);
+})();
+</script></body></html>
