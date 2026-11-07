@@ -626,7 +626,7 @@ afficherEntreprises();
  ACTUALISATION
 =========================================================*/
 
-function actualiser(){
+async function actualiser(){
 
 await chargerCleEntreprises();
 
