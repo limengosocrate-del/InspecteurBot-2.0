@@ -444,7 +444,7 @@ footer img{
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
-<script src="auth-gate.js?v=20261107-auth-localfirst-19" defer></script>
+<script src="auth-gate.js?v=20261107-auth-localfirst-20" defer></script>
 </head>  
   
 <body>  
@@ -971,7 +971,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v6',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261107-v8',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 </body>  
