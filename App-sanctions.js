@@ -290,7 +290,7 @@ toggleTheme() {
 
     html.setAttribute("data-theme", next);
 
-    localStorage.setItem("inspecteurbot-theme", next);
+    localStorage.setItem(sanctionsStorageKey("inspecteurbot-theme"), next);
 
     if (icon) {
 
@@ -308,7 +308,7 @@ toggleTheme() {
 
 loadTheme() {
 
-    const saved = localStorage.getItem("inspecteurbot-theme") || "light";
+    const saved = localStorage.getItem(sanctionsStorageKey("inspecteurbot-theme")) || "light";
 
     document.documentElement.setAttribute("data-theme", saved);
 
@@ -792,7 +792,7 @@ addFavorite(id) {
 
     let favoris = JSON.parse(
 
-        localStorage.getItem("inspecteurbot-favoris") || "[]"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-favoris")) || "[]"
 
     );
 
@@ -898,7 +898,7 @@ loadFavorites() {
 
     this.favoris = JSON.parse(
 
-        localStorage.getItem("inspecteurbot-favoris") || "[]"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-favoris")) || "[]"
 
     );
 
@@ -1410,7 +1410,7 @@ saveCalculation(data){
 
     localStorage.setItem(
 
-        "aim-history",
+        sanctionsStorageKey("aim-history"),
 
         JSON.stringify(history)
 
@@ -1565,7 +1565,7 @@ deleteAIMHistory(index){
 
     localStorage.setItem(
 
-        "aim-history",
+        sanctionsStorageKey("aim-history"),
 
         JSON.stringify(history)
 
@@ -1716,7 +1716,7 @@ sendToPV(data){
 
     localStorage.setItem(
 
-        "pv-from-sanction",
+        sanctionsStorageKey("pv-from-sanction"),
 
         JSON.stringify(data)
 
@@ -2329,7 +2329,7 @@ saveDocumentHistory(id){
 
     localStorage.setItem(
 
-        "documents-history",
+        sanctionsStorageKey("documents-history"),
 
         JSON.stringify(
             history
@@ -3681,7 +3681,7 @@ sendAIToPV(data){
 
     localStorage.setItem(
 
-        "pv-ai-analysis",
+        sanctionsStorageKey("pv-ai-analysis"),
 
         JSON.stringify(data)
 
@@ -3734,7 +3734,7 @@ saveAIAnalysis(data){
 
     localStorage.setItem(
 
-        "inspecteurbot-ai-history",
+        sanctionsStorageKey("inspecteurbot-ai-history"),
 
         JSON.stringify(history)
 
@@ -3903,7 +3903,7 @@ clearAIHistory(){
 
         localStorage.removeItem(
 
-            "inspecteurbot-ai-history"
+            sanctionsStorageKey("inspecteurbot-ai-history")
 
         );
 
@@ -4102,7 +4102,7 @@ saveArchive(data){
 
     localStorage.setItem(
 
-        "inspecteurbot-archives",
+        sanctionsStorageKey("inspecteurbot-archives"),
 
         JSON.stringify(archives)
 
@@ -4344,7 +4344,7 @@ deleteArchive(id){
 
     localStorage.setItem(
 
-        "inspecteurbot-archives",
+        sanctionsStorageKey("inspecteurbot-archives"),
 
         JSON.stringify(archives)
 
@@ -4630,49 +4630,49 @@ clearModuleData(){
 
         localStorage.removeItem(
 
-            "inspecteurbot-favoris"
+            sanctionsStorageKey("inspecteurbot-favoris")
 
         );
 
 
         localStorage.removeItem(
 
-            "aim-history"
+            sanctionsStorageKey("aim-history")
 
         );
 
 
         localStorage.removeItem(
 
-            "documents-favoris"
+            sanctionsStorageKey("documents-favoris")
 
         );
 
 
         localStorage.removeItem(
 
-            "documents-history"
+            sanctionsStorageKey("documents-history")
 
         );
 
 
         localStorage.removeItem(
 
-            "articles-favoris"
+            sanctionsStorageKey("articles-favoris")
 
         );
 
 
         localStorage.removeItem(
 
-            "inspecteurbot-ai-history"
+            sanctionsStorageKey("inspecteurbot-ai-history")
 
         );
 
 
         localStorage.removeItem(
 
-            "inspecteurbot-archives"
+            sanctionsStorageKey("inspecteurbot-archives")
 
         );
 
@@ -4945,7 +4945,7 @@ endQuiz(){
 
     localStorage.setItem(
 
-        "quiz-history",
+        sanctionsStorageKey("quiz-history"),
 
         JSON.stringify(
             this.quizHistory
@@ -4984,9 +4984,20 @@ startModule(){
 
 }
 
+let sanctionsUserSuffix = "local";
+function sanctionsStorageKey(key) { return key + "_" + sanctionsUserSuffix; }
+
 const app = new InspecteurBotSanctions();
 window.app = app;
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const client = window.inspecteurBotAuthClient;
+  if (client && client.auth) {
+    try {
+      const { data } = await client.auth.getSession();
+      const id = data && data.session && data.session.user && data.session.user.id;
+      if (id) sanctionsUserSuffix = id;
+    } catch (e) { console.warn("Stockage privé Sanctions indisponible", e); }
+  }
   app.init();
   app.startModule();
 });
