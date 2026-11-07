@@ -500,42 +500,18 @@ Entrez un numéro :`
 =============================== */
 
 initInfractions() {
-
-    this.infractions = [
-
-        {
-            id: 1,
-            categorie: "Contrat",
-            article: "Art. 1",
-            infraction: "Infraction exemple",
-            montant: "100 000 FC",
-            details: "Cette fiche sera remplacée progressivement par les données officielles."
-        },
-
-        {
-            id: 2,
-            categorie: "Salaire",
-            article: "Art. 2",
-            infraction: "Infraction exemple",
-            montant: "150 000 FC",
-            details: "Cette fiche sera remplacée progressivement par les données officielles."
-        },
-
-        {
-            id: 3,
-            categorie: "Sécurité",
-            article: "Art. 3",
-            infraction: "Infraction exemple",
-            montant: "250 000 FC",
-            details: "Cette fiche sera remplacée progressivement par les données officielles."
-        }
-
-    ];
-
+    const source = Array.isArray(window.IGT_INFRACTIONS65) ? window.IGT_INFRACTIONS65 : [];
+    this.infractions = source.map(item => ({
+      id: item.id,
+      categorie: item.gravite || "À vérifier",
+      article: item.articles || "Référence à vérifier",
+      infraction: item.libelle || "Infraction sans intitulé",
+      montant: item.sanction || "Sanction à vérifier dans le texte officiel",
+      details: "Référence de sanction : " + (item.refSanction || "non précisée") + ". Gravité indicative : " + (item.gravite || "non précisée") + ". Vérifier le texte officiel applicable avant toute qualification."
+    }));
     this.renderInfractions(this.infractions);
-
-}
-
+},
+ 
 /* ===============================
    Génération du tableau
 =============================== */
@@ -958,42 +934,10 @@ loadFavorites() {
 =============================== */
 
 initAIM() {
-
-    this.aimData = [
-
-        {
-            id: 1,
-            sanction: "Absence de contrat de travail",
-            categorieA: "50 USD",
-            categorieB: "100 USD",
-            categorieC: "150 USD",
-            details: "Montant applicable selon la catégorie de l'entreprise."
-        },
-
-        {
-            id: 2,
-            sanction: "Non-paiement du salaire",
-            categorieA: "100 USD",
-            categorieB: "200 USD",
-            categorieC: "300 USD",
-            details: "Sanction administrative prévue par le barème AIM."
-        },
-
-        {
-            id: 3,
-            sanction: "Non-respect des règles de sécurité",
-            categorieA: "150 USD",
-            categorieB: "300 USD",
-            categorieC: "500 USD",
-            details: "Applicable lorsqu'un danger est constaté."
-        }
-
-    ];
-
+    this.aimData = Array.isArray(window.IGT_AIM_DATA) ? window.IGT_AIM_DATA : [];
     this.renderAIMTable(this.aimData);
-
-}
-
+},
+ 
 /* ===============================
    Génération du tableau AIM
 =============================== */
@@ -1005,6 +949,11 @@ renderAIMTable(data) {
     if (!tbody) return;
 
     tbody.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="padding:18px;text-align:center">Le barème complet AIM 006/127 n’est pas intégré à cette version. Aucun montant de démonstration ne sera présenté comme un tarif officiel. Ajoutez le texte officiel pour activer ce tableau.</td></tr>';
+        return;
+    }
 
     data.forEach(item => {
 
