@@ -175,7 +175,9 @@ async function validate(session){
  finally{busy=false}
 }
 async function signOut(){clearTimeout(expiry);sessionDeadline=0;clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});\nwindow.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});\nfunction installPasswordEye(id){
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
+window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
+function installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
  const wrap=document.createElement('div');wrap.className='ib-password-wrap';
  input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);
