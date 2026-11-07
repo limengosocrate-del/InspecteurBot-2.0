@@ -49,7 +49,7 @@ async function validate(session){
   await serverCheck();
   const {data,error}=await client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle();
   if(error)throw error;if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
-  user=session.user;profile=data;document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
+  user=session.user;profile=data;document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
   let chip=byId('auth-chip');if(!chip){chip=document.createElement('div');chip.id='ib-auth-chip';document.body.appendChild(chip)}
   chip.replaceChildren();const name=document.createElement('span');name.textContent=(data.display_name||session.user.email||'Utilisateur')+' · '+(data.role==='super_admin'?'Administrateur':'Connecté');chip.appendChild(name);
   const out=document.createElement('button');out.type='button';out.textContent='Déconnexion';out.addEventListener('click',signOut);chip.appendChild(out);
@@ -75,7 +75,7 @@ function setup(){
 }
 async function start(){
  makeGate();gate('Vérification de votre session…');
- try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
+ try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  validation=setInterval(async()=>{if(user){const {data}=await client.auth.getSession();if(data.session)await validate(data.session)}},30000);
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
  window.inspecteurBotSignOut=signOut;
