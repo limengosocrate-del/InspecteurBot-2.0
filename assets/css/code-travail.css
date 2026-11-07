@@ -1748,3 +1748,16 @@ mark, .highlight {
 
 /* ===== FIN DU CSS FUTURISTE ===== */
 
+
+
+/* Correctifs de thème et de défilement — Code du Travail IGT */
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;touch-action:pan-y!important}
+body{position:static!important;-webkit-overflow-scrolling:touch!important}
+body.dark-theme{background:#101820!important;color:#f2f5f8!important;color-scheme:dark!important}
+body.dark-theme::before{background:#101820!important}
+body.dark-theme .container,body.dark-theme main,body.dark-theme section,body.dark-theme .card,body.dark-theme .article-card,body.dark-theme .search-section,body.dark-theme .livre,body.dark-theme .livre-page{background-color:#18222d!important;color:#f2f5f8!important}
+body.light-theme{background:#f4f2ec!important;color:#293542!important;color-scheme:light!important}
+body.light-theme::before{background:#f4f2ec!important}
+body.light-theme .container,body.light-theme main,body.light-theme section,body.light-theme .card,body.light-theme .article-card,body.light-theme .search-section,body.light-theme .livre,body.light-theme .livre-page{background-color:#fffefa!important;color:#293542!important}
+body.light-theme .top-header{background:linear-gradient(135deg,#e9e5da,#f8f6f0)!important}
+body.light-theme .top-header h1,body.light-theme .top-header h2,body.light-theme .top-header h3,body.light-theme .top-header p{color:#293542!important}
