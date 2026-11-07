@@ -47,6 +47,8 @@ function byId(id){return document.getElementById('ib-'+id)}
 async function refreshNotificationBadge(){
  const link=document.getElementById('ib-notification-link');if(!link||!client||!user)return;
  const badge=link.querySelector('.ib-notification-count');
+ try{const cached=JSON.parse(localStorage.getItem('inspecteurbot_notifications_cache_v2_'+user.id)||'null');if(cached){const anns=cached.announcements||[],msgs=cached.messages||[];const seen=new Set((JSON.parse(localStorage.getItem('inspecteurbot_announcement_reads_'+user.id)||'[]')).map(String));const count=anns.filter(x=>x.created_by!==user.id&&!seen.has(String(x.id))).length+msgs.filter(x=>x.recipient_id===user.id&&!x.read_at).length;badge.textContent=count>99?'99+':String(count);badge.hidden=count===0}}
+ catch(_){}
  try{
   const [ar,rr,mr]=await Promise.all([
    client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(100),
@@ -98,10 +100,26 @@ async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
  if(busy)return;busy=true;
  try{
-  const sessionResult=await serverCheck();
-  const data=sessionResult?.profile;
-  if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
-  if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
+  const routeIsAdmin=location.pathname.endsWith('/admin.html');
+  const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
+  let cached=null;
+  if(!routeIsAdmin){try{const saved=JSON.parse(localStorage.getItem(cacheKey)||'null');if(saved&&saved.profile?.id===session.user.id&&saved.profile.is_active===true)cached=saved.profile}catch(_){}}
+  let data;
+  if(cached){
+   data=cached;
+   Promise.resolve().then(()=>serverCheck()).then(fresh=>{
+    const updated=fresh?.profile;if(!updated||updated.is_active!==true)throw Object.assign(new Error('Compte suspendu ou profil indisponible.'),{authFatal:true});
+    localStorage.setItem(cacheKey,JSON.stringify({profile:updated,savedAt:Date.now()}));
+    profile=updated;window.inspecteurBotAuthProfile=updated;
+    window.dispatchEvent(new CustomEvent('inspecteurbot:profile-updated',{detail:{client,user,profile:updated}}));
+   }).catch(async err=>{if(err.authFatal){await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(err.message||'Accès révoqué.')}else console.warn('Validation serveur différée :',err.message)});
+  }else{
+   const sessionResult=await serverCheck();data=sessionResult?.profile;
+   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
+   if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
+   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
+  }
+  if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;
   document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
