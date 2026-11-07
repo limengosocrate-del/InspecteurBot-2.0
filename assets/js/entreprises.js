@@ -76,6 +76,7 @@ document.getElementById("city").textContent="Kinshasa";
 =========================================================*/
 
 let entreprises = [];
+let entretiensEnCours = [];
 let entreprisesStorageKey = "inspecteurbot:entreprises:local";
 
 function chargerCleEntreprises(){
@@ -243,7 +244,9 @@ entretiens: (() => {
     const date = document.getElementById("dateEntretien")?.value || "";
     const objet = document.getElementById("objetEntretien")?.value.trim() || "";
     const compteRendu = document.getElementById("compteRenduEntretien")?.value.trim() || "";
-    return date || objet || compteRendu ? [{date,objet,compteRendu,creeLe:new Date().toISOString()}] : [];
+    const all = [...entretiensEnCours];
+    if(date || objet || compteRendu) all.push({date,objet,compteRendu,creeLe:new Date().toISOString()});
+    return all;
 })()
 
 };
@@ -312,6 +315,7 @@ viderFormulaire();
 function viderFormulaire(){
 
 formulaire.reset();
+entretiensEnCours=[];
 
 window.scrollTo({
 
@@ -358,7 +362,8 @@ document.getElementById("adresse").value=entreprise.adresse;
 document.getElementById("secteur").value=entreprise.secteur;
 document.getElementById("statut").value=entreprise.statut;
 document.getElementById("observation").value=entreprise.observation;
-const dernierEntretien=(entreprise.entretiens||[]).slice(-1)[0]||{};
+entretiensEnCours=[...(entreprise.entretiens||[])];
+const dernierEntretien=entretiensEnCours.slice(-1)[0]||{};
 if(document.getElementById("dateEntretien"))document.getElementById("dateEntretien").value=dernierEntretien.date||"";
 if(document.getElementById("objetEntretien"))document.getElementById("objetEntretien").value=dernierEntretien.objet||"";
 if(document.getElementById("compteRenduEntretien"))document.getElementById("compteRenduEntretien").value=dernierEntretien.compteRendu||"";
