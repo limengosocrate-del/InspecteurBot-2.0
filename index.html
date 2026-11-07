@@ -21,8 +21,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">  
   
     <!-- Google Fonts -->  
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"  
-          rel="stylesheet">  
+      
   
     <style>  
   
@@ -787,17 +786,18 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
   if(push)history.pushState({ibModule:clean},'', '#app='+encodeURIComponent(clean));
   if(frame.dataset.path!==clean){frame.dataset.path=clean;frame.src=clean;}
  }
- function home(push=true){
-  if(push&&history.state?.ibModule){history.back();return;}
+ function home(){
+  if(history.state?.ibModule)history.replaceState({},'',location.pathname);
   current='';view.setAttribute('aria-hidden','true');frame.removeAttribute('src');frame.dataset.path='';document.body.style.overflow='';
  }
+ function goBack(){if(history.state?.ibModule)history.back();else home();}
  document.addEventListener('click',e=>{
   const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target==='_blank')return;
   const path=normalize(a.href);if(!path||path==='index.html')return;
   e.preventDefault();open(path,true);
  });
- document.getElementById('ib-module-back').addEventListener('click',()=>home(true));
- document.getElementById('ib-module-home').addEventListener('click',()=>home(true));
+ document.getElementById('ib-module-back').addEventListener('click',goBack);
+ document.getElementById('ib-module-home').addEventListener('click',home);
  window.addEventListener('popstate',e=>{if(e.state?.ibModule)open(e.state.ibModule,false);else home(false)});
  frame.addEventListener('load',()=>{
   try{
@@ -806,11 +806,11 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
     const a=e.target.closest('a[href]');if(!a||a.target==='_blank')return;
     const path=normalize(a.href);if(!path)return;
     e.preventDefault();e.stopPropagation();
-    if(path==='index.html')home(true);else open(path,true);
+    if(path==='index.html')home();else open(path,true);
    },true);
   }catch(_){}
  });
- window.addEventListener('keydown',e=>{if(e.key==='Escape'&&view.getAttribute('aria-hidden')==='false')home(true)});
+ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&view.getAttribute('aria-hidden')==='false')home()});
 })();
 </script>
 </body>  
