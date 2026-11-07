@@ -61,7 +61,7 @@ function render(){
  document.querySelectorAll('.reply').forEach(b=>b.addEventListener('click',()=>{$('recipient').value=b.dataset.id;$('messageContent').focus()}));
 }
 function init(d){
- if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=['admin','super_admin'].includes(profile.role);
+ if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=profile.role==='super_admin';
  if(isAdmin){$('writeTitle').innerHTML='<i class="fa-regular fa-paper-plane"></i> Répondre à un utilisateur';$('messageForm').insertAdjacentHTML('afterbegin','<select id="recipient" required><option value="">Choisir un destinataire…</option></select>');$('messageContent').placeholder='Rédigez votre réponse…';$('sendMessage').textContent='Envoyer la réponse';$('adminPanel').hidden=false;
   client.from('profiles').select('id,display_name').neq('id',user.id).order('display_name').then(({data,error})=>{if(!error&&data)data.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.display_name||'Utilisateur';$('recipient').appendChild(o)})});
  }
