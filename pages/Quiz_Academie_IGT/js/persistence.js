@@ -3,7 +3,7 @@
    Module Persistence: Storage Management (LocalStorage & State Recovery)
    ========================================================================== */
 
-const STORAGE_KEY = 'InspecteurBot_Academie_IGT_User_Profile_v4';
+let STORAGE_KEY = 'InspecteurBot_Academie_IGT_User_Profile_v4_local';
 
 const DEFAULT_PROFILE = {
   niveauActuel: 1,
@@ -106,3 +106,17 @@ class PersistenceManager {
 }
 
 window.persistenceEngine = new PersistenceManager();
+window.addEventListener('load', async () => {
+  const client = window.inspecteurBotAuthClient;
+  if (client && client.auth) {
+    try {
+      const { data } = await client.auth.getSession();
+      const id = data && data.session && data.session.user && data.session.user.id;
+      if (id) {
+        STORAGE_KEY = 'InspecteurBot_Academie_IGT_User_Profile_v4_' + id;
+        window.persistenceEngine.profile = window.persistenceEngine.loadProfile();
+        window.dispatchEvent(new Event('igt-profile-loaded'));
+      }
+    } catch (e) { console.warn('Profil Académie local : session indisponible', e); }
+  }
+});
