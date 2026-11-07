@@ -399,7 +399,7 @@ footer img{
 html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:auto}
 .banner{position:relative;isolation:isolate;overflow:hidden;contain:layout paint;height:clamp(250px,42vw,430px);min-height:250px}
 .slider{position:absolute;inset:0;overflow:hidden}
-.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .42s ease;backface-visibility:visible;will-change:auto}
+.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .42s ease;transform:none!important;backface-visibility:hidden;will-change:auto}
 .slider img.active{opacity:1}
 .datetime-box{position:absolute!important;z-index:4!important;top:16px!important;right:20px!important;left:auto!important;bottom:auto!important;width:auto!important;max-width:48%;padding:0!important;margin:0!important;display:block!important;text-align:right!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fff!important}
 .datetime-top,.datetime-day,.datetime-date,.datetime-weather{display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:right!important;color:#fff!important}
@@ -590,7 +590,6 @@ html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scro
  const imgs=Array.from(document.querySelectorAll('#slider img'));
  if(imgs.length!==2)return;
  let index=0,front=imgs[0],back=imgs[1],timer=null;
- const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  function schedule(){clearTimeout(timer);timer=setTimeout(showNext,document.hidden?12000:7000);}
  function showNext(){
   if(document.hidden){schedule();return;}
