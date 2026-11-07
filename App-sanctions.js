@@ -267,25 +267,6 @@ class InspecteurBotSanctions {
 
     }
 
-}
-
-/* ============================================
-   Instance Globale
-============================================ */
-
-const app = new InspecteurBotSanctions();
-
-/* ============================================
-   Démarrage
-============================================ */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    app.init();
-
-});
-
-
 /* ==========================================================
    PARTIE 2
    Thème - Recherche - Notifications - Menu
@@ -4996,43 +4977,16 @@ endQuiz(){
 =============================== */
 
 startModule(){
-
-    this.loadTheme();
-
-    this.initInfractions();
-
-    this.initAIM();
-
-    this.initBibliotheque();
-
-    this.initArticlesCodeTravail();
-
-    this.initAssistantIA();
-
-    this.initArchives();
-
-    this.loadFavorites();
-
-    this.loadAIMHistory();
-
-    this.loadAIHistory();
-
-    this.initStatistics();
-
-    this.connectToInspectorDashboard();
-
     this.initQuiz();
-
-    this.finalizeModule();  
+    this.connectToInspectorDashboard();
+    this.finalizeModule();
+}
 
 }
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-    app.init();
-
-    app.startModule();
-
+const app = new InspecteurBotSanctions();
+window.app = app;
+document.addEventListener("DOMContentLoaded", () => {
+  app.init();
+  app.startModule();
 });
