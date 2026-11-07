@@ -69,9 +69,11 @@ function render() {
       </div>`).join("") + `</div>`;
 }
 function exportAll() {
-  const decomptes = JSON.parse(localStorage.getItem("igt_decomptes") || "[]");
-  const missions = JSON.parse(localStorage.getItem("igt_missions") || "[]");
-  const conv = JSON.parse(localStorage.getItem("igt_ai_memory") || "[]");
+  const pvStore = JSON.parse(localStorage.getItem(HISTORY.keyFor("inspecteurbot_pv_rdc_v1")) || '{"records":[]}');
+  const pv = pvStore.records || [];
+  const decomptes = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_decomptes")) || "[]");
+  const missions = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_missions")) || "[]");
+  const conv = JSON.parse(localStorage.getItem(HISTORY.keyFor("igt_ai_memory")) || "[]");
   const hist = HISTORY.getAll();
   const data = { pv, decomptes, missions, conv, hist, exportDate: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
