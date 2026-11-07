@@ -8,7 +8,7 @@ const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
+html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;visibility:visible!important;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
 #ib-auth-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background-image:linear-gradient(135deg,#061a30 0%,#0b2d4d 55%,#071b34 100%);background-size:cover;background-position:center;background-repeat:no-repeat;font-family:Arial,sans-serif;visibility:visible!important}
 #ib-auth-gate[hidden]{display:none!important}
 #ib-auth-card{box-sizing:border-box;width:min(430px,100%);padding:30px 26px;border-radius:18px;background:rgba(255,255,255,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.58);color:#18314d;box-shadow:0 20px 65px #00152f80}
@@ -60,33 +60,13 @@ if(!document.getElementById('ib-startup-splash')){
 }
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
-function showSplash(){
- let splash=document.getElementById('ib-startup-splash');
- if(!splash){
-  splash=document.createElement('div');splash.id='ib-startup-splash';splash.setAttribute('role','status');splash.setAttribute('aria-live','polite');
-  splash.innerHTML='<div class="ib-splash-title">InspecteurBot</div><div class="ib-splash-subtitle">Ouverture de votre espace sécurisé…</div><div class="ib-splash-spinner" aria-hidden="true"></div>';
-  document.body.appendChild(splash);
- }
- splash.classList.remove('ib-splash-hide');
-}
-document.addEventListener('click',function(event){
- const link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
- if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
- if(link.target&&link.target!=='_self'||link.hasAttribute('download'))return;
- const raw=link.getAttribute('href')||'';
- if(!raw||raw.startsWith('#')||/^(javascript:|mailto:|tel:)/i.test(raw))return;
- let target;try{target=new URL(raw,location.href)}catch(_){return}
- if(target.origin!==location.origin||target.href===location.href)return;
- showSplash();
-},true);
 function armSessionExpiry(payload){
- clearTimeout(expiry);
- const startedAt=Date.parse(payload?.started_at||'');
- if(!Number.isFinite(startedAt))throw Object.assign(new Error('Date de session invalide. Reconnectez-vous.'),{authFatal:true});
- sessionDeadline=startedAt+30*60*1000;
- const remaining=sessionDeadline-Date.now();
- if(remaining<=0){void expireSession();return}
- expiry=setTimeout(expireSession,remaining);
+ clearTimeout(expiry);expiry=null;
+ // Pas de durée de session personnalisée : déconnexion ou révocation uniquement.
+ sessionDeadline=Number.POSITIVE_INFINITY;
+}
+function readSessionId(token){
+ try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
 }
 async function updatePresence(){
  if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline)return;
@@ -104,7 +84,7 @@ async function expireSession(){
  clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();
  try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
- gate('Votre session de 30 minutes est terminée. Veuillez vous reconnecter.');
+ gate('Votre session a été interrompue. Veuillez vous reconnecter.');
 }
 async function refreshNotificationBadge(){
  const link=document.getElementById('ib-notification-link');if(!link||!client||!user)return;
@@ -144,17 +124,22 @@ async function loadLib(){
  if(!document.querySelector('link[data-ib-supabase-preconnect]')){const p=document.createElement('link');p.rel='preconnect';p.href='https://cdn.jsdelivr.net';p.crossOrigin='anonymous';p.dataset.ibSupabasePreconnect='1';document.head.appendChild(p)}
  await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Bibliothèque Supabase indisponible. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
 }
-async function serverCheck(){
+async function serverCheck(session){
+ const sessionId=readSessionId(session?.access_token);
+ const cacheKey=session?.user?.id?'inspecteurbot_server_check_v1_'+session.user.id:null;
+ if(cacheKey&&sessionId){try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-cached.validated_at<30000)return {success:true,profile:cached.profile,cached:true}}catch(_){}}
  for(let attempt=0;attempt<2;attempt++){
   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
   let payload=data||null;
   if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
-  if(!error&&payload?.success){armSessionExpiry(payload);return payload}
+  if(!error&&payload?.success){
+   if(cacheKey&&sessionId&&payload.profile){try{sessionStorage.setItem(cacheKey,JSON.stringify({session_id:sessionId,validated_at:Date.now(),profile:payload.profile}))}catch(_){}}
+   return payload;
+  }
   const code=payload?.code||'';
-  if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,250));continue}
-  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED','SESSION_EXPIRED','SESSION_REVOKED'].includes(code);
-  const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
-  err.authFatal=fatal;err.authTransient=!fatal;throw err;
+  if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue}
+  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
+  const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');err.authFatal=fatal;err.authTransient=!fatal;throw err;
  }
  throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
@@ -163,7 +148,7 @@ async function validate(session){
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
-  const sessionResult=await serverCheck();
+  const sessionResult=await serverCheck(session);
   const data=sessionResult?.profile;
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
@@ -264,7 +249,7 @@ function setup(){
 async function start(){
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
  try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
- // La session est contrôlée à la connexion et lors des événements Supabase TOKEN_REFRESHED. Le serveur impose aussi son délai d'expiration.
+ // La session reste active jusqu'à la déconnexion ou à sa révocation. Supabase renouvelle automatiquement les jetons.
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
  window.inspecteurBotSignOut=signOut;
  }catch(e){console.error(e);gate(e.message||'Service d’authentification indisponible.')}
