@@ -28,7 +28,7 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 #ib-app-header .ib-header-actions{display:flex;align-items:center;gap:12px}
 #ib-auth-chip{position:relative;z-index:1201;top:auto;right:auto;max-width:min(350px,calc(100vw - 120px));font:13px Arial,sans-serif}
 #ib-auth-account{display:flex;align-items:center;gap:9px;max-width:100%;padding:7px 10px;border:1px solid #e0e8ef;border-radius:40px;background:#fff;color:#173b5c;box-shadow:0 2px 8px #00152f0d;font-weight:700;cursor:pointer}
-#ib-auth-account .ib-avatar{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#0799bd;color:#fff;font-size:17px}
+#ib-auth-account .ib-avatar{display:grid;place-items:center;position:relative;overflow:hidden;width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#0799bd;color:#fff;font-size:17px}#ib-auth-account .ib-avatar-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
 #ib-auth-account .ib-account-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;font-size:12px}
 #ib-auth-account>i:last-child{margin:0 5px;color:#36566e}
 #ib-auth-menu{position:absolute;left:0;right:auto;top:calc(100% + 9px);width:min(285px,calc(100vw - 24px));padding:8px;border:1px solid #dce7f1;border-radius:14px;background:#fff;box-shadow:0 15px 40px #00152f25}
@@ -56,9 +56,8 @@ async function loadLib(){
 }
 async function serverCheck(){
  const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
- if(error||!data?.success)throw Error(data?.message||error?.message||'Session refusée ou expirée.');
- const seconds=Number(data.expires_in_seconds)||0;if(seconds<=0)throw Error('Votre session de 20 minutes est terminée.');
- clearTimeout(expiry);expiry=setTimeout(signOut,seconds*1000);
+ if(error||!data?.success)throw Error(data?.message||error?.message||'Session refusée ou révoquée.');
+ clearTimeout(expiry);expiry=null;
 }
 async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
@@ -66,7 +65,7 @@ async function validate(session){
  try{
   const [sessionResult,profileResult]=await Promise.all([
    serverCheck(),
-   client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
+   client.from('profiles').select('display_name,role,is_active,avatar_url').eq('id',session.user.id).maybeSingle()
   ]);
   const {data,error}=profileResult;
   if(error)throw error;if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
@@ -74,10 +73,10 @@ async function validate(session){
   let chip=byId('auth-chip');
   if(!chip){
    const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-   appHeader.innerHTML='<div class="ib-header-actions"><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu du compte" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><div id="ib-auth-slot"></div></div><div class="ib-brand"><span class="ib-brand-mark"><i class="fa-solid fa-landmark"></i></span><span class="ib-brand-copy">InspecteurBot RDC<small>INSPECTION GÉNÉRALE DU TRAVAIL</small></span></div>';
+   appHeader.innerHTML='<div class="ib-header-actions"><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu du compte" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><div id="ib-auth-slot"></div></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot RDC<small>INSPECTION GÉNÉRALE DU TRAVAIL</small></span></div>';
    document.body.insertBefore(appHeader,document.body.firstChild);
    chip=document.createElement('div');chip.id='ib-auth-chip';
-   chip.innerHTML='<button type="button" id="ib-auth-account" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a id="ib-auth-profile-link" href="https://limengosocrate-del.github.io/InspecteurBot-2.0/profil.html"><i class="fa-solid fa-id-card"></i> Mon profil et mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
+   chip.innerHTML='<button type="button" id="ib-auth-account" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a id="ib-auth-profile-link" href="https://limengosocrate-del.github.io/InspecteurBot-2.0/profil.html"><i class="fa-solid fa-id-card"></i> Mon profil et mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
    appHeader.querySelector('#ib-auth-slot').appendChild(chip);
    const toggle=chip.querySelector('#ib-auth-account'),menu=chip.querySelector('#ib-auth-menu'),hamb=appHeader.querySelector('#ib-header-menu');
    function setMenu(open){menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));hamb.setAttribute('aria-expanded',String(open));hamb.innerHTML=open?'<i class="fa-solid fa-xmark"></i>':'<i class="fa-solid fa-bars"></i>'}
@@ -88,6 +87,9 @@ async function validate(session){
   }
   const label=chip.querySelector('.ib-account-label');
   label.textContent=(data.display_name||session.user.email||'Utilisateur')+' · '+(data.role==='super_admin'?'Administrateur':data.role==='admin'?'Administrateur':'Connecté');
+  const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
+  if(data.avatar_url){avatarImg.src=data.avatar_url;avatarImg.hidden=false;avatarIcon.hidden=true}else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
+  window.inspecteurBotSetAvatar=function(url){if(url){avatarImg.src=url;avatarImg.hidden=false;avatarIcon.hidden=true}else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}};
  }catch(e){console.warn('Authentification InspecteurBot',e);await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
