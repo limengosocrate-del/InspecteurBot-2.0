@@ -66,7 +66,7 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
 <script src="../js/ai-core.js?v=3"></script>
-<script src="../js/assistant.js?v=4"></script>
+<script src="../js/assistant.js?v=5"></script>
 <script src="../assets/js/code-travail/database.js?v=20261107-local-1"></script>
 <script src="../assets/js/ai-offline.js?v=20261107-local-1"></script>
 <script src="../js/ai-local-bridge.js?v=20261107-local-5"></script>
@@ -169,7 +169,7 @@ async function send(){
 }
 document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
 document.getElementById("input").oninput=e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,180)+"px";};
-const sug=document.getElementById("suggestions");window.ASSISTANT.suggestions.slice(0,4).forEach(s=>{const b=document.createElement("button");b.textContent=s;b.onclick=()=>{document.getElementById("input").value=s;send();};sug.appendChild(b);});
+const sug=document.getElementById("suggestions");window.ASSISTANT.suggestions.slice(0,6).forEach(s=>{const b=document.createElement("button");b.textContent=s;b.onclick=()=>{document.getElementById("input").value=s;send();};sug.appendChild(b);});
 document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{document.getElementById("input").value=b.dataset.prompt;document.getElementById("input").focus();if(innerWidth<761)document.getElementById("sidebar").classList.remove("open");});
 document.getElementById("btnMenu").onclick=()=>document.getElementById("sidebar").classList.toggle("open");document.getElementById("btnSidebarClose").onclick=()=>document.getElementById("sidebar").classList.remove("open");
 function newChat(){if(confirm("Commencer une nouvelle conversation ? La conversation actuelle sera effacée de cet appareil.")){window.ASSISTANT.clearConversation();render();}}
