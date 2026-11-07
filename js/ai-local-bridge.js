@@ -18,7 +18,12 @@
     {name:"Archives et profil", keys:["archive","historique","profil","photo","compte","utilisateur","paramètre"], info:"Les espaces Archives et Profil servent à retrouver les dossiers ou historiques disponibles et à gérer les informations du compte et la photo de profil. Les données personnelles d'un autre compte ne sont pas exposées à l'assistant local."}
   ];
 
-  if (window.NeuroJuris && window.CODE_TRAVAIL_DB && !window.NeuroJuris.ready) {\n    const verifiedArticles = window.CODE_TRAVAIL_DB.filter(article => article.authentique === true);\n    window.NeuroJuris.build(verifiedArticles);\n  }\n\n  const PV_TYPES = [
+  if (window.NeuroJuris && window.CODE_TRAVAIL_DB && !window.NeuroJuris.ready) {
+    const verifiedArticles = window.CODE_TRAVAIL_DB.filter(article => article.authentique === true);
+    window.NeuroJuris.build(verifiedArticles);
+  }
+
+  const PV_TYPES = [
     "Procès-verbal de constat d'infraction",
     "Procès-verbal d'obstruction",
     "Procès-verbal de non-conciliation",
