@@ -131,7 +131,7 @@ function addBubble(role, text, ts) {
   div.className = "msg " + role;
   const safeText = String(text || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const html = safeText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-                   .replace(/`(.+?)`/g, "<code>$1</code>")
+                   .replace(/`(.+?)`/g, "<code>$1</code>");
   div.innerHTML = html + `<div class="msg-time">${ts ? new Date(ts).toLocaleTimeString("fr-FR") : ""}</div>`;
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
