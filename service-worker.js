@@ -1,6 +1,6 @@
 /* InspecteurBot — service worker unique, sans interception double des requêtes */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-07-v29';
+const CACHE='inspecteurbot-shell-2026-11-07-v30';
 const SHELL=['./','./index.html','./profil.html','./notifications.html','./admin.html','./ia/assistant.html','./auth-gate.js','./js/assistant.js','./js/ai-core.js','./js/ai-knowledge.js','./js/ai-nlp.js','./js/smig-data.js','./js/ai-local-bridge.js','./assets/js/code-travail/database.js','./assets/js/ai-offline.js','./code-travail.html','./assets/css/igt-professional.css','./assets/css/entreprises.css','./assets/js/entreprises.js','./entreprises.html','./app-pv.js','./pv.html','./sanctions.html','./aim-006-data.js','./App-sanctions.js','./assets/js/code-travail/livre.js','./formation.html','./quiz-sanctions.js','./js/quiz-engine.js','./frontend/assets/js/data/infractions65.js','./pages/Quiz_Academie_IGT/js/quiz-engine.js','./pages/Quiz_Academie_IGT/js/persistence.js','./juridique/conventions.html','./autres/historique.html','./js/history.js','./auth-gate.js','./js/App-decompte.js','./js/ai-local-bridge.js','./app-inspecteur.js','./inspecteurs.html'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL).catch(()=>{})));
