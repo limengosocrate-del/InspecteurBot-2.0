@@ -57,9 +57,11 @@ body{display:flex;min-height:100dvh;overflow:hidden}.background,.particles{displ
  <div class="chat-actions"><button class="tool-btn" id="btnNewChat">＋ Nouvelle conversation</button><button class="tool-btn" id="btnExportChat">⇩ Exporter</button><button class="tool-btn" id="btnSpeakToggle">🔊 Lecture : OFF</button></div>
  <div class="chat-messages" id="messages" aria-live="polite"></div><div class="suggestions" id="suggestions"></div>
  <div class="composer-wrap"><div class="attachment-chip" id="attachmentChip"><span id="attachmentName"></span><button class="msg-tool" id="btnRemoveAttachment">Retirer ×</button></div>
- <div class="chat-input"><button id="btnAttach" title="Joindre un document">＋</button><input type="file" id="fileInput" hidden accept=".txt,.md,.csv,.json,.html,.htm,.xml,.log,.yaml,.yml"><button id="btnVoice" title="Reconnaissance vocale">🎙</button><textarea id="input" rows="1" placeholder="Message à InspecteurBot…" aria-label="Votre message"></textarea><button id="btnSend" title="Envoyer">↑</button></div>
+ <div class="chat-input"><button id="btnAttach" title="Joindre un document">＋</button><input type="file" id="fileInput" hidden accept=".txt,.md,.csv,.json,.html,.htm,.xml,.log,.yaml,.yml,.pdf,.docx"><button id="btnVoice" title="Reconnaissance vocale">🎙</button><textarea id="input" rows="1" placeholder="Message à InspecteurBot…" aria-label="Votre message"></textarea><button id="btnSend" title="Envoyer">↑</button></div>
  <div class="composer-hint">InspecteurBot peut se tromper. Vérifiez les informations importantes. Les documents joints seront transmis au service IA pour analyse.</div></div>
 </div></main></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
 <script src="../js/smig-data.js?v=1"></script>
 <script src="../js/ai-knowledge.js?v=1"></script>
 <script src="../js/ai-nlp.js?v=1"></script>
@@ -91,7 +93,29 @@ function addBubble(role,text,ts){
 }
 function render(){const box=document.getElementById("messages");box.innerHTML="";const conv=ASSISTANT.loadConversation();if(!conv.length)ASSISTANT.addMessage("bot","Bonjour 👋 Je suis InspecteurBot IA. Je peux consulter l'annuaire professionnel de l'IGT, vous assister sur le droit du travail et vous aider à préparer vos documents et contrôles. Comment puis-je vous aider ?");ASSISTANT.conversation.forEach(m=>addBubble(m.role,m.text,m.ts));box.scrollTop=box.scrollHeight;}
 document.getElementById("btnAttach").onclick=()=>document.getElementById("fileInput").click();
-document.getElementById("fileInput").onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>150000){alert("Le document dépasse 150 Ko. Veuillez joindre un fichier plus léger.");e.target.value="";return;}try{const txt=await f.text();if(!txt.trim())throw Error("vide");attachedDocument={name:f.name,text:txt.slice(0,20000)};document.getElementById("attachmentName").textContent="📎 "+f.name+" • prêt à analyser";document.getElementById("attachmentChip").classList.add("visible");}catch(_){alert("Impossible de lire ce fichier. Essayez un document TXT, CSV, JSON ou Markdown.");}e.target.value="";};
+document.getElementById("fileInput").onchange=async e=>{
+ const f=e.target.files&&e.target.files[0];if(!f)return;
+ if(f.size>150000){alert("Le document dépasse 150 Ko. Veuillez joindre un fichier plus léger.");e.target.value="";return;}
+ try{
+  const ext=f.name.split(".").pop().toLowerCase();let txt="";
+  if(ext==="pdf"){
+   if(!window.pdfjsLib)throw Error("Le lecteur PDF n'est pas disponible. Vérifiez votre connexion Internet.");
+   pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+   const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+   const pages=[];for(let n=1;n<=Math.min(pdf.numPages,30);n++){const page=await pdf.getPage(n);const data=await page.getTextContent();pages.push(data.items.map(x=>x.str||"").join(" "));}
+   txt=pages.join("\n\n");
+   if(!txt.trim())throw Error("Ce PDF ne contient pas de texte sélectionnable. Les PDF scannés nécessitent une reconnaissance OCR.");
+  }else if(ext==="docx"){
+   if(!window.mammoth)throw Error("Le lecteur Word n'est pas disponible. Vérifiez votre connexion Internet.");
+   const result=await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()});txt=result.value||"";
+  }else{txt=await f.text();}
+  if(!txt.trim())throw Error("Le fichier ne contient pas de texte lisible.");
+  attachedDocument={name:f.name,text:txt.slice(0,20000)};
+  document.getElementById("attachmentName").textContent="📎 "+f.name+" • prêt à analyser";
+  document.getElementById("attachmentChip").classList.add("visible");
+ }catch(err){alert(err.message||"Impossible de lire ce fichier.");}
+ e.target.value="";
+};
 document.getElementById("btnRemoveAttachment").onclick=()=>{attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");};
 async function send(){
  const input=document.getElementById("input"),sendButton=document.getElementById("btnSend"),q=input.value.trim();if((!q&&!attachedDocument)||sendButton.disabled)return;
