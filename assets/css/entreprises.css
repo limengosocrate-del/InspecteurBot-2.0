@@ -545,3 +545,22 @@ table{
         font-size:12px;
     }
     }
+
+
+/* Refonte professionnelle — Gestion des entreprises */
+body{background:#f2f5f9!important;color:#17243b!important}
+.container{width:min(1440px,100%)!important;padding:clamp(12px,2vw,28px)!important}
+.top-header{display:grid!important;grid-template-columns:auto 1fr auto!important;gap:20px!important;text-align:left!important;align-items:center!important;background:linear-gradient(120deg,#102e50,#1d568d)!important;border:0!important;border-radius:20px!important;box-shadow:0 12px 30px rgba(18,42,74,.14)!important;padding:24px!important}
+.top-header .logo-box{margin:0!important}.top-header .title-box h1{font-size:clamp(20px,2.8vw,30px)!important}.top-header .title-box h2,.top-header .title-box h3{font-size:14px!important}.top-header .title-box p{font-size:13px!important;color:#eaf2fb!important}
+.datetime-box{margin:0!important;padding:14px!important;border-radius:14px!important;background:rgba(4,20,39,.28)!important}
+.stats{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important;gap:14px!important}
+.stats .card{background:#fff!important;color:#17243b!important;border:1px solid #dce4ef!important;border-radius:16px!important;box-shadow:0 5px 18px rgba(25,45,75,.06)!important}
+.stats .card h2{color:#123b68!important}.stats .card p{color:#627089!important}.stats .card i{color:#b68a32!important}
+.search-section,.form-section,.table-section{background:#fff!important;color:#17243b!important;border:1px solid #dce4ef!important;border-radius:16px!important;box-shadow:0 5px 18px rgba(25,45,75,.05)!important;padding:20px!important}
+.form-section form{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.form-section form input,.form-section form select,.form-section form textarea{width:100%!important;min-width:0!important;border:1px solid #d6dfeb!important;border-radius:10px!important;background:#f9fbfd!important;color:#17243b!important;padding:12px 14px!important;font:inherit!important}
+.form-section form textarea,.form-section form .interview-fields,.form-section form .inspector,.form-section form button[type=submit]{grid-column:1/-1!important}
+.form-section form button[type=submit]{background:#174a78!important;color:#fff!important;border:0!important;border-radius:10px!important;padding:14px!important}
+.table-section{overflow:hidden!important}.table-section table{width:100%!important;border-collapse:collapse!important;color:#17243b!important}.table-section th{background:#edf2f8!important;color:#24425f!important}.table-section th,.table-section td{padding:12px!important;border-bottom:1px solid #e4eaf1!important;text-align:left!important}
+.actions{display:flex!important;gap:8px!important;flex-wrap:wrap!important}.actions button{border-radius:9px!important}
+@media(max-width:760px){.top-header{grid-template-columns:1fr!important;text-align:center!important}.datetime-box{display:none!important}.form-section form{grid-template-columns:1fr!important}.table-section{overflow-x:auto!important}.table-section table{min-width:650px!important}}
