@@ -97,7 +97,7 @@
 
     const nq = norm(q);
     if (/\b(types? de pv|quels pv|quels sont les pv|liste des pv)\b/.test(nq)) {
-      return { text: "**Types de documents prévus dans le module PV**\\n\\n" + PV_TYPES.map((name, i) => (i + 1) + ". " + name).join("\\n") + "\\n\\nJe peux ensuite préparer une trame avec les faits et les renseignements que vous fournissez.\\n\\n" + DEV_NOTICE, confidence: 0.7, source: "catalogue local PV" };
+      return { text: "**Types de documents prévus dans le module PV**\n\n" + PV_TYPES.map((name, i) => (i + 1) + ". " + name).join("\n") + "\n\nJe peux ensuite préparer une trame avec les faits et les renseignements que vous fournissez.\n\n" + DEV_NOTICE, confidence: 0.7, source: "catalogue local PV" };
     }
 
     if (/\b(pv|proces verbal|procès verbal|redige|rediger|elabore|elaborer|modele de pv|mise en demeure)\b/.test(nq)) {
@@ -126,7 +126,7 @@
         const articles = window.NeuroJuris.retrieve(q, 5).filter(a => a.authentique === true);
         if (articles.length) {
           const first = articles[0];
-          return { text: "⚖️ **Recherche dans les articles authentifiés disponibles**\\n\\n**Article " + first.numero + " — " + first.titre + "**\\n\\n" + first.contenu + (first.sanction ? "\\n\\n**Sanction enregistrée :** " + first.sanction : "") + "\\n\\n" + DEV_NOTICE, confidence: 0.65, source: "NeuroJuris local" };
+          return { text: "⚖️ **Recherche dans les articles authentifiés disponibles**\n\n**Article " + first.numero + " — " + first.titre + "**\n\n" + first.contenu + (first.sanction ? "\n\n**Sanction enregistrée :** " + first.sanction : "") + "\n\n" + DEV_NOTICE, confidence: 0.65, source: "NeuroJuris local" };
         }
       } catch (e) { console.warn("Recherche juridique locale indisponible", e); }
     }
@@ -159,7 +159,7 @@
 
     const menu = menuAnswer(q);
     if (menu && /\b(menu|module|annuaire|entreprise|communique|gps|archive|profil|sanction|amende|rapport de mission|rapport de formation|rapport de reunion|rapport de réunion|inspection|parcours)\b/.test(nq)) {
-      return { text: menu + "\\n\\n" + DEV_NOTICE, confidence: 0.55, source: "connaissances des menus" };
+      return { text: menu + "\n\n" + DEV_NOTICE, confidence: 0.55, source: "connaissances des menus" };
     }
 
     return {
