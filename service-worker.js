@@ -14,7 +14,7 @@ self.addEventListener('fetch',event=>{
  if(request.method!=='GET')return;
  const url=new URL(request.url);
  if(url.origin!==self.location.origin)return;
- const isPage=request.mode==='navigate'||/\\.(html|js)$/.test(url.pathname);
+ const isPage=request.mode==='navigate'||/\.(html|js)$/.test(url.pathname);
  if(isPage){
   const refresh=fetch(request).then(response=>{
    if(response&&response.ok)caches.open(CACHE).then(cache=>cache.put(request,response.clone())).catch(()=>{});
