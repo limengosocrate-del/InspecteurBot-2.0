@@ -93,7 +93,7 @@
    else renderExercise(r);
    await saveProgress(r.id,{opened:true},null,false);
   }catch(e){byId('lesson-content').innerHTML='<p class="notice">Le fichier ne peut pas être ouvert. L’administrateur doit vérifier le document ou le téléverser de nouveau.</p>';console.error(e);}
-  byId('lesson-panel').scrollIntoView({behavior:'smooth',block:'start'});
+  byId('lesson-panel').scrollIntoView({behavior:'auto',block:'start'});
  }
  function renderExercise(r){
   if(r.exercise?.content){byId('lesson-content').innerHTML='<article class="written-course">'+esc(r.exercise.content).replace(/\r?\n/g,'<br>')+'</article>';return;}
@@ -119,7 +119,7 @@
  byId('res-kind').addEventListener('change',()=>{const kind=byId('res-kind').value,ex=kind==='exercise',txt=kind==='text',file=!ex&&!txt;byId('exercise-field').classList.toggle('hidden',!ex);byId('text-field').classList.toggle('hidden',!txt);byId('file-field').classList.toggle('hidden',!file);});
  byId('resource-form').addEventListener('submit',async e=>{
   e.preventDefault();if(!['admin','super_admin'].includes(role)){say('admin-status','Droits administrateur requis.');return;}
-  const sb=client(),kind=byId('res-kind').value,title=byId('res-title').value.trim();let filePath=null,exercise={};
+  const sb=client(),kind=byId('res-kind').value,title=byId('res-title').value.trim();let filePath=null,exercise={},uploadedPath=null;
   try{
    if(kind==='exercise'){exercise=JSON.parse(byId('res-exercise').value);if(!Array.isArray(exercise.questions)||!exercise.questions.length)throw new Error('Ajoutez au moins une question valide.');}
    else if(kind==='text'){exercise={content:byId('res-text').value.trim()};if(!exercise.content)throw new Error('Rédigez le contenu de la formation.');}
@@ -128,11 +128,11 @@
    const ins=await sb.from('training_resources').insert({title,description:byId('res-desc').value.trim(),kind:storedKind,file_path:filePath,exercise,published:byId('res-published').checked,created_by:user.id}).select().single();
    if(ins.error)throw ins.error;
    byId('resource-form').reset();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
-  }catch(err){say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
+  }catch(err){if(uploadedPath){try{await sb.storage.from('formation-resources').remove([uploadedPath]);}catch(cleanupError){console.warn('Nettoyage du fichier temporaire impossible',cleanupError);}}say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
  });
  function renderAdminList(){
   byId('admin-list').innerHTML=resources.map(r=>`<article class="resource"><span class="tag">${r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'PDF':'EXERCICE'} · ${r.published?'PUBLIÉ':'BROUILLON'}</span><h3>${esc(r.title)}</h3>${r.file_path?'<button class="btn" data-download="'+r.id+'" type="button">Télécharger le fichier</button>':''}<button class="btn" data-toggle="${r.id}" data-published="${r.published}">${r.published?'Dépublier':'Publier'}</button><button class="btn" data-delete="${r.id}">Supprimer</button></article>`).join('');
-  byId('admin-list').querySelectorAll('[data-download]').forEach(b=>b.addEventListener('click',async()=>{try{const item=resources.find(x=>x.id===b.dataset.download);const url=await signedFile(item.file_path);const response=await fetch(url);if(!response.ok)throw new Error('Fichier indisponible');const blob=await response.blob();const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=item.file_path.split('/').pop()||'formation';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectUrl),1000);}catch(e){say('admin-status','Téléchargement indisponible : '+(e.message||'erreur'));}}));
+  byId('admin-list').querySelectorAll('[data-download]').forEach(b=>b.addEventListener('click',async()=>{try{const item=resources.find(x=>x.id===b.dataset.download);const {data:blob,error}=await client().storage.from('formation-resources').download(item.file_path);if(error)throw error;const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=item.file_path.split('/').pop()||'formation';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectUrl),10000);}catch(e){say('admin-status','Téléchargement indisponible : '+(e.message||'erreur'));}}));
   byId('admin-list').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const {error}=await client().from('training_resources').update({published:b.dataset.published!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);say('admin-status',error?'Modification refusée.':'Publication mise à jour.');await loadResources();}));
   byId('admin-list').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cette formation ?'))return;const item=resources.find(x=>x.id===b.dataset.delete);if(item?.file_path){const removed=await client().storage.from('formation-resources').remove([item.file_path]);if(removed.error){say('admin-status','Le fichier n’a pas pu être supprimé : '+removed.error.message);return;}}const {error}=await client().from('training_resources').delete().eq('id',b.dataset.delete);say('admin-status',error?'Suppression refusée.':'Formation supprimée.');await loadResources();}));
  }
