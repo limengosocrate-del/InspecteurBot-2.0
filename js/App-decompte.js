@@ -1613,11 +1613,9 @@ $('#pvQualiteAgent').textContent =
         if (id) APP_KEY = 'inspecteurbot_v1_' + id;
       } catch (e) { console.warn('Stockage local du décompte indisponible', e); }
     }
-    // Splash
-    setTimeout(() => {
-      $('#splash').classList.add('hidden');
-      $('#app').classList.remove('hidden');
-    }, 1800);
+    // Afficher immédiatement le module dès que l'initialisation est terminée.
+    $('#splash').classList.add('hidden');
+    $('#app').classList.remove('hidden');
 
     // Default date
     const today = new Date().toISOString().slice(0, 10);
