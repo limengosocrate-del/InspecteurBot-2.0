@@ -2,7 +2,7 @@
    ASSISTANT.JS — Chat conversationnel + reconnaissance vocale
    ================================================================== */
 
-const ASSISTANT = {
+(function () {\n'use strict';\nconst ASSISTANT = {
 
   conversation: [],
   voiceEnabled: false,
@@ -99,4 +99,4 @@ const ASSISTANT = {
   }
 };
 
-if (typeof window !== 'undefined') window.ASSISTANT = ASSISTANT;
+window.ASSISTANT = ASSISTANT;\n})();
