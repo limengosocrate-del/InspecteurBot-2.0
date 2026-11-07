@@ -800,9 +800,7 @@ addFavorite(id) {
 
         favoris.push(id);
 
-        localStorage.setItem(
-
-            "inspecteurbot-favoris",
+        localStorage.setItem(sanctionsStorageKey("inspecteurbot-favoris"),
 
             JSON.stringify(favoris)
 
@@ -1396,8 +1394,7 @@ saveCalculation(data){
 
     let history =
         JSON.parse(
-            localStorage.getItem(
-                "aim-history"
+            localStorage.getItem(sanctionsStorageKey("aim-history")
             )
             ||
             "[]"
@@ -1444,8 +1441,7 @@ loadAIMHistory(){
     const history =
         JSON.parse(
 
-            localStorage.getItem(
-                "aim-history"
+            localStorage.getItem(sanctionsStorageKey("aim-history")
             )
             ||
             "[]"
@@ -1550,8 +1546,7 @@ deleteAIMHistory(index){
     let history =
         JSON.parse(
 
-            localStorage.getItem(
-                "aim-history"
+            localStorage.getItem(sanctionsStorageKey("aim-history")
             )
             ||
             "[]"
@@ -1594,8 +1589,7 @@ clearAIMHistory(){
     ){
 
 
-        localStorage.removeItem(
-            "aim-history"
+        localStorage.removeItem(sanctionsStorageKey("aim-history")
         );
 
 
@@ -1682,8 +1676,7 @@ prepareAIMExport(){
     const history =
         JSON.parse(
 
-            localStorage.getItem(
-                "aim-history"
+            localStorage.getItem(sanctionsStorageKey("aim-history")
             )
             ||
             "[]"
@@ -2241,8 +2234,7 @@ addDocumentFavorite(id){
 
     JSON.parse(
 
-        localStorage.getItem(
-            "documents-favoris"
+        localStorage.getItem(sanctionsStorageKey("documents-favoris")
         )
         ||
         "[]"
@@ -2260,9 +2252,7 @@ addDocumentFavorite(id){
 
 
 
-        localStorage.setItem(
-
-            "documents-favoris",
+        localStorage.setItem(sanctionsStorageKey("documents-favoris"),
 
             JSON.stringify(
                 favoris
@@ -2305,8 +2295,7 @@ saveDocumentHistory(id){
 
     JSON.parse(
 
-        localStorage.getItem(
-            "documents-history"
+        localStorage.getItem(sanctionsStorageKey("documents-history")
         )
         ||
         "[]"
@@ -2832,8 +2821,7 @@ addArticleFavorite(id){
 
     JSON.parse(
 
-        localStorage.getItem(
-            "articles-favoris"
+        localStorage.getItem(sanctionsStorageKey("articles-favoris")
         )
         ||
         "[]"
@@ -2851,9 +2839,7 @@ addArticleFavorite(id){
 
 
 
-        localStorage.setItem(
-
-            "articles-favoris",
+        localStorage.setItem(sanctionsStorageKey("articles-favoris"),
 
             JSON.stringify(
                 favoris
@@ -3713,8 +3699,7 @@ saveAIAnalysis(data){
 
     let history = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-ai-history"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-ai-history")
         )
         ||
         "[]"
@@ -3764,8 +3749,7 @@ loadAIHistory(){
 
     const history = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-ai-history"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-ai-history")
         )
         ||
         "[]"
@@ -3861,8 +3845,7 @@ viewAIHistory(index){
 
     const history = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-ai-history"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-ai-history")
         )
         ||
         "[]"
@@ -4050,8 +4033,7 @@ initArchives(){
 
     this.archives = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-archives"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
         )
         ||
         "[]"
@@ -4075,8 +4057,7 @@ saveArchive(data){
 
     let archives = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-archives"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
         )
         ||
         "[]"
@@ -4137,8 +4118,7 @@ renderArchives(){
 
     const archives = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-archives"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
         )
         ||
         "[]"
@@ -4238,8 +4218,7 @@ openArchive(id){
 
     const archives = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-archives"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
         )
         ||
         "[]"
@@ -4324,8 +4303,7 @@ deleteArchive(id){
 
     let archives = JSON.parse(
 
-        localStorage.getItem(
-            "inspecteurbot-archives"
+        localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
         )
         ||
         "[]"
@@ -4400,8 +4378,7 @@ updateDashboardStats(){
 
         JSON.parse(
 
-            localStorage.getItem(
-                "inspecteurbot-archives"
+            localStorage.getItem(sanctionsStorageKey("inspecteurbot-archives")
             )
             ||
             "[]"
@@ -4754,8 +4731,7 @@ initQuiz(){
 
     this.quizHistory = JSON.parse(
 
-        localStorage.getItem(
-            "quiz-history"
+        localStorage.getItem(sanctionsStorageKey("quiz-history")
         )
         ||
         "[]"
