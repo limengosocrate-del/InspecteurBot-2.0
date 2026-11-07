@@ -50,7 +50,7 @@ body{background:#f2f5f9!important;color:#17243b!important}
   <div id="listBody"></div>
 </main>
 
-<script src="../js/history.js?v=1"></script>
+<script src="../js/history.js?v=2"></script>
 <script>
 function safeRead(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){console.warn('Archive illisible :',key,e);return fallback;}}
 function safeText(v,fallback=''){return v==null?fallback:String(v);}
