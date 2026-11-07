@@ -9,10 +9,10 @@ class QuizEngine {
     this.shuffledChoix = [];
     this.timerInterval = null;
     this.autoAdvanceTimeout = null;
-    this.timeLeft = 30;
+    this.timeLeft = 60;
     this.selectedOptionIds = [];
     this.isAnswered = false;
-    this.autoAdvanceDelay = 2500; // 2.5 seconds auto-advance delay
+    this.autoAdvanceDelay = 2200; // Affichage du résultat pendant 2,2 secondes
   }
 
   loadQuestion(question, containerEl, onFinishCallback) {
@@ -32,7 +32,7 @@ class QuizEngine {
 
     this.renderQuestionUI(containerEl);
     this.setupCardEventListeners(containerEl);
-    this.startTimer(question.temps || 30, containerEl.querySelector('#quiz-timer-val'));
+    this.startTimer(60, containerEl.querySelector('#quiz-timer-val'));
   }
 
   startTimer(seconds, timerDisplayEl) {
@@ -64,7 +64,7 @@ class QuizEngine {
             <span class="quiz-meta-tag" style="margin-left:8px; border-color:var(--accent-gold); color:var(--accent-gold);">${q.categorie || 'Code du Travail'}</span>
           </div>
           <div class="quiz-timer">
-            ⏱️ <span id="quiz-timer-val">${q.temps || 30}s</span>
+            ⏱️ <span id="quiz-timer-val">60s</span>
           </div>
         </div>
 
