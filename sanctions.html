@@ -6,7 +6,7 @@
 <title>Sanctions & Infractions | InspecteurBot IGT RDC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<link rel="stylesheet" href="sanctions.css?v=20261107-pro2">
+<link rel="stylesheet" href="sanctions.css?v=20261107-pro3">
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}</style>
 <script src="auth-gate.js?v=20261107-auth-smooth-12" defer></script>
 </head>
@@ -73,9 +73,9 @@
 <script type="module">
 import { INFRACTIONS } from './frontend/assets/js/data/infractions65.js';
 window.IGT_INFRACTIONS65 = INFRACTIONS;
-const aim = document.createElement('script'); aim.src = './aim-006-data.js?v=20261107-aim2';
-aim.onload = () => { const app = document.createElement('script'); app.src = './App-sanctions.js?v=20261107-rebuild1'; app.onerror = () => document.getElementById('infractionsList').textContent = 'Impossible de charger le module. Actualisez la page.'; document.body.appendChild(app); };
-aim.onerror = () => { const app = document.createElement('script'); app.src = './App-sanctions.js?v=20261107-rebuild1'; document.body.appendChild(app); };
+const aim = document.createElement('script'); aim.src = './aim-006-data.js?v=20261107-aim3';
+aim.onload = () => { const app = document.createElement('script'); app.src = './App-sanctions.js?v=20261107-rebuild2'; app.onerror = () => document.getElementById('infractionsList').textContent = 'Impossible de charger le module. Actualisez la page.'; document.body.appendChild(app); };
+aim.onerror = () => { const app = document.createElement('script'); app.src = './App-sanctions.js?v=20261107-rebuild2'; document.body.appendChild(app); };
 document.body.appendChild(aim);
 </script>
 </body></html>
