@@ -75,14 +75,15 @@ function makeGate(){
 }
 async function loadLib(){
  if(window.supabase?.createClient)return;
- await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=ok;s.onerror=()=>no(Error('Bibliothèque Supabase indisponible. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
+ if(!document.querySelector('link[data-ib-supabase-preconnect]')){const p=document.createElement('link');p.rel='preconnect';p.href='https://cdn.jsdelivr.net';p.crossOrigin='anonymous';p.dataset.ibSupabasePreconnect='1';document.head.appendChild(p)}
+ await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Bibliothèque Supabase indisponible. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
 }
 async function serverCheck(){
  for(let attempt=0;attempt<2;attempt++){
   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
   let payload=data||null;
   if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
-  if(!error&&payload?.success){clearTimeout(expiry);expiry=null;return}
+  if(!error&&payload?.success){clearTimeout(expiry);expiry=null;return payload}
   const code=payload?.code||'';
   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,250));continue}
   const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
@@ -95,18 +96,16 @@ async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
  if(busy)return;busy=true;
  try{
-  const [sessionResult,profileResult]=await Promise.all([
-   serverCheck(),
-   client.from('profiles').select('display_name,role,is_active,avatar_url').eq('id',session.user.id).maybeSingle()
-  ]);
-  const {data,error}=profileResult;
-  if(error){error.authTransient=true;throw error;}
+  const sessionResult=await serverCheck();
+  const data=sessionResult?.profile;
+  if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;
   document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
+  const path=location.pathname;
+  if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
-  const path=location.pathname;
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   if(isHome){
    let chip=byId('auth-chip');
@@ -125,6 +124,7 @@ async function validate(session){
     document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!hamb.contains(e.target))setMenu(false)});
    }
    const label=chip.querySelector('.ib-account-label');label.textContent=data.display_name||session.user.email||'Utilisateur';
+   if(data.role==='super_admin'){const menu=chip.querySelector('#ib-auth-menu');if(menu&&!menu.querySelector('#ib-admin-link')){const link=document.createElement('a');link.id='ib-admin-link';link.href='admin.html';link.innerHTML='<i class="fa-solid fa-gauge-high"></i> Tableau de bord administrateur';const logout=menu.querySelector('#ib-auth-logout');menu.insertBefore(link,logout||null);}}
    const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
    if(data.avatar_url){avatarImg.src=data.avatar_url;avatarImg.hidden=false;avatarIcon.hidden=true}
    else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
