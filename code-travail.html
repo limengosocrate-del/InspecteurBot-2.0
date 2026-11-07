@@ -91,6 +91,24 @@ img,video,canvas{max-width:100%;height:auto}
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
 <script src="auth-gate.js?v=20261107-auth-smooth-12" defer></script>
+<style id="theme-fixes-v37">
+/* En-tête institutionnel et pied de page restent blanc cassé dans les deux thèmes */
+body.light-theme .top-header,body.dark-theme .top-header{background:#fffefa!important;color:#243244!important;border:1px solid #e5e0d6!important;box-shadow:0 8px 24px rgba(15,35,55,.10)!important}
+body.light-theme .top-header h1,body.dark-theme .top-header h1{color:#14263b!important;text-shadow:none!important}
+body.light-theme .top-header h2,body.dark-theme .top-header h2{color:#8b6a18!important;text-shadow:none!important}
+body.light-theme .top-header h3,body.dark-theme .top-header h3,body.light-theme .top-header p,body.dark-theme .top-header p{color:#35465a!important;text-shadow:none!important}
+body.light-theme .top-header .info-item,body.dark-theme .top-header .info-item,body.light-theme .top-header .info-item span,body.dark-theme .top-header .info-item span{color:#243244!important}
+body.light-theme .footer,body.dark-theme .footer{background:#fffefa!important;color:#293542!important;border-top:1px solid #e5e0d6!important}
+body.light-theme .footer h2,body.dark-theme .footer h2,body.light-theme .footer h3,body.dark-theme .footer h3,body.light-theme .footer p,body.dark-theme .footer p,body.light-theme .footer a,body.dark-theme .footer a{color:#293542!important;text-shadow:none!important}
+body.dark-theme .livre-page,body.dark-theme .livre-page *{color:#f7f8fa!important}
+body.light-theme .livre-page,body.light-theme .livre-page *{color:#202b38!important}
+body.dark-theme .livre-page{background:#172331!important;border-color:#344456!important}
+body.light-theme .livre-page{background:#fffefa!important;border-color:#ded8cc!important}
+body.dark-theme .livre-pagination,body.dark-theme .livre-titre-section{color:#f7f8fa!important}
+body.light-theme .livre-pagination,body.light-theme .livre-titre-section{color:#202b38!important}
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}
+body{position:static!important}
+</style>
 </head>
 
 <body class="light-theme">
