@@ -441,7 +441,7 @@ footer img{
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
-<script src="auth-gate.js?v=20261107-auth-smooth-14" defer></script>
+<script src="auth-gate.js?v=20261107-auth-smooth-15" defer></script>
 </head>  
   
 <body>  
@@ -863,34 +863,7 @@ setInterval(() => {
   
 }, 3000);  
   
-    /* ================= NOTIFICATIONS ================= */  
-  
-    const notifications = [  
-        "Bienvenue 👋",  
-        "Mission active",  
-        "Inspection en cours",  
-        "Rapport prêt"  
-    ];  
-  
-    setInterval(() => {  
-  
-        const notifContainer = document.getElementById("notif");  
-  
-        if (!notifContainer) return;  
-  
-        const box = document.createElement("div");  
-        box.className = "msg";  
-        box.textContent = notifications[  
-            Math.floor(Math.random() * notifications.length)  
-        ];  
-  
-        notifContainer.appendChild(box);  
-  
-        setTimeout(() => {  
-            box.remove();  
-        }, 4000);  
-  
-    }, 6000);  
+    /* Les alertes réelles sont gérées par Supabase et le centre de notifications. */
   
     /* ================= DATE ET HEURE ================= */
 function loadKinshasaWeather(){
