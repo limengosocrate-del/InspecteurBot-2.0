@@ -54,9 +54,11 @@ window.InspecteurApp = {
         const savedTheme = localStorage.getItem("inspecteur_theme") || "dark";
         if (savedTheme === "light") {
             body.classList.add("light-theme");
+            body.classList.remove("dark-theme");
             if (icon) icon.textContent = "☀️";
         } else {
             body.classList.remove("light-theme");
+            body.classList.add("dark-theme");
             if (icon) icon.textContent = "🌙";
         }
 
@@ -64,6 +66,7 @@ window.InspecteurApp = {
             btn.addEventListener("click", () => {
                 body.classList.toggle("light-theme");
                 const isLight = body.classList.contains("light-theme");
+                body.classList.toggle("dark-theme", !isLight);
                 if (icon) icon.textContent = isLight ? "☀️" : "🌙";
                 localStorage.setItem("inspecteur_theme", isLight ? "light" : "dark");
                 if (window.InspecteurUtils) {
