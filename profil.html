@@ -65,9 +65,14 @@ function item(label,value){const empty=value===null||value===undefined||String(v
 function date(v){if(!v)return null;const d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR')}
 function role(v){return ({super_admin:'Super administrateur',admin:'Administrateur',agent:'Agent'})[v]||v}
 async function load(){
- const client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ const auth=await new Promise(resolve=>{
+  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient});return}
+  const done=e=>{window.removeEventListener('inspecteurbot:authenticated',done);resolve(e.detail)};
+  window.addEventListener('inspecteurbot:authenticated',done);
+ });
+ const client=auth.client;
  const {data:{session}}=await client.auth.getSession();
- if(!session){$('status').textContent='Veuillez vous connecter pour consulter votre profil.';return}
+ if(!session){$('status').textContent='La session a expiré. Reconnectez-vous depuis InspecteurBot.';return}
  const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique').eq('id',session.user.id).maybeSingle();
  if(error||!p){$('status').textContent='Impossible de charger votre profil : '+(error?.message||'profil introuvable');return}
  let a=null;
