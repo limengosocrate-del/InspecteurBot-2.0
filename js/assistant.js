@@ -9,7 +9,7 @@ const ASSISTANT = {
   recognition: null,
   accountId: null,
   storageKey() { return this.accountId ? "igt_conversation_" + this.accountId : null; },
-  setAccount(userId) { this.accountId = String(userId || ""); this.conversation = []; this.loadConversation(); },
+  setAccount(userId) { this.accountId = String(userId || ""); this.conversation = []; try { localStorage.removeItem("igt_conversation"); } catch (_) {} this.loadConversation(); },
 
   // Ajouter un message à la conversation
   addMessage(role, text) {
