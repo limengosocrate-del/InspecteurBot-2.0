@@ -5,10 +5,10 @@ if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}
+html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
 #ib-auth-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background-image:linear-gradient(135deg,#061a30 0%,#0b2d4d 55%,#071b34 100%);background-size:cover;background-position:center;background-repeat:no-repeat;font-family:Arial,sans-serif;visibility:visible!important}
 #ib-auth-gate[hidden]{display:none!important}
 #ib-auth-card{box-sizing:border-box;width:min(430px,100%);padding:30px 26px;border-radius:18px;background:rgba(255,255,255,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.58);color:#18314d;box-shadow:0 20px 65px #00152f80}
@@ -54,6 +54,22 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
+function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
+function armSessionExpiry(payload){
+ clearTimeout(expiry);
+ const startedAt=Date.parse(payload?.started_at||'');
+ if(!Number.isFinite(startedAt))throw Object.assign(new Error('Date de session invalide. Reconnectez-vous.'),{authFatal:true});
+ sessionDeadline=startedAt+30*60*1000;
+ const remaining=sessionDeadline-Date.now();
+ if(remaining<=0){void expireSession();return}
+ expiry=setTimeout(expireSession,remaining);
+}
+async function expireSession(){
+ clearTimeout(expiry);expiry=null;sessionDeadline=0;
+ try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
+ user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
+ gate('Votre session de 30 minutes est terminée. Veuillez vous reconnecter.');
+}
 async function refreshNotificationBadge(){
  const link=document.getElementById('ib-notification-link');if(!link||!client||!user)return;
  const badge=link.querySelector('.ib-notification-count');
@@ -77,7 +93,7 @@ function msg(t,ok){const n=byId('auth-message');if(n){n.textContent=t||'';n.styl
 function gate(t,mode){
  document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
- g.hidden=false;form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
+ g.hidden=false;g.dataset.loading=mode==='loading'?'true':'false';if(mode!=='loading')hideSplash();form.hidden=mode==='loading'||mode==='retry';forgot.hidden=mode==='loading'||mode==='retry';retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
  intro.textContent=mode==='loading'?'Préparation de votre espace sécurisé…':'Connectez-vous avec votre compte existant pour accéder à l’application.';
  if(t&&mode!=='loading')msg(t,mode==='loading');const regOpen=byId('auth-register-open');if(regOpen)regOpen.hidden=mode==='loading'||mode==='retry';
 }
@@ -97,10 +113,10 @@ async function serverCheck(){
   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
   let payload=data||null;
   if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
-  if(!error&&payload?.success){clearTimeout(expiry);expiry=null;return payload}
+  if(!error&&payload?.success){armSessionExpiry(payload);return payload}
   const code=payload?.code||'';
   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,250));continue}
-  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
+  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED','SESSION_EXPIRED','SESSION_REVOKED'].includes(code);
   const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
   err.authFatal=fatal;err.authTransient=!fatal;throw err;
  }
@@ -112,26 +128,17 @@ async function validate(session){
  try{
   const routeIsAdmin=location.pathname.endsWith('/admin.html');
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
-  let cached=null;
-  if(!routeIsAdmin){try{const saved=JSON.parse(localStorage.getItem(cacheKey)||'null');if(saved&&saved.profile?.id===session.user.id&&saved.profile.is_active===true)cached=saved.profile}catch(_){}}
-  let data;
-  if(cached){
-   data=cached;
-   Promise.resolve().then(()=>serverCheck()).then(fresh=>{
-    const updated=fresh?.profile;if(!updated||updated.is_active!==true)throw Object.assign(new Error('Compte suspendu ou profil indisponible.'),{authFatal:true});
-    localStorage.setItem(cacheKey,JSON.stringify({profile:updated,savedAt:Date.now()}));
-    profile=updated;window.inspecteurBotAuthProfile=updated;
-    window.dispatchEvent(new CustomEvent('inspecteurbot:profile-updated',{detail:{client,user,profile:updated}}));
-   }).catch(async err=>{if(err.authFatal){await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(err.message||'Accès révoqué.')}else console.warn('Validation serveur différée :',err.message)});
-  }else{
-   const sessionResult=await serverCheck();data=sessionResult?.profile;
-   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
-   if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
+  const sessionResult=await serverCheck();
+  data=sessionResult?.profile;
+  if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
+  if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
+  try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
+  if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
    try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
   }
   if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;
-  document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
+  hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
@@ -172,8 +179,8 @@ async function validate(session){
  }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-function installPasswordEye(id){
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});\nwindow.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});\nfunction installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
  const wrap=document.createElement('div');wrap.className='ib-password-wrap';
  input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);
