@@ -112,7 +112,7 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 <h1>👤 Mon profil</h1>
 <p>Informations de votre compte et votre fiche professionnelle IGT</p>
 </header>
-<nav class="menu-index">
+<nav class="menu-index" aria-label="Menu principal InspecteurBot" style="display:grid!important;visibility:visible!important;position:relative;z-index:5;width:100%">
 
     <!-- Ligne 1 -->
 
@@ -235,6 +235,9 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 <script>
 (function(){
 'use strict';
+// Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
+const PROFILE_VERSION='20261107-menu-docs-2';
+if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 const $=id=>document.getElementById(id);
