@@ -48,22 +48,23 @@ window.SpeechEngine = {
     if (!candidates.length) return null;
 
     // Heuristique genre : noms connus
-    const maleHints = ["male","homme","thomas","paul","daniel","google français","rémi","henri","man"];
-    const femaleHints = ["female","femme","amelie","amélie","marie","julie","celine","céline","aurelie","woman","zira","google uk english female"];
+    const maleHints = ["male","homme","thomas","paul","daniel","henri","man","fr-fr-x-frd"];
+    const femaleHints = ["female","femme","amelie","amélie","marie","julie","celine","céline","aurelie","woman","zira","fr-fr-x-frc"];
 
     const wantMale = this.currentVoiceGender === "male";
     const hints = wantMale ? maleHints : femaleHints;
 
     // 1) match par indice de nom
-    let match = candidates.find(v => hints.some(h => v.name.toLowerCase().includes(h)));
+    let match = candidates.find(v => hints.some(h => (v.name+" "+v.voiceURI).toLowerCase().includes(h)));
     if (match) return match;
 
     // 2) sinon on prend selon l'ordre (souvent index 0 = par défaut)
     // Pour varier male/female si pas d'indice : alterner
     if (candidates.length >= 2) {
-      return wantMale ? candidates[candidates.length - 1] : candidates[0];
+      const ordered = candidates.slice().sort((a,b) => a.name.localeCompare(b.name));
+      return wantMale ? ordered[ordered.length - 1] : ordered[0];
     }
-    return candidates[0];
+    return null;
   },
 
   speak: function (text, lang) {
@@ -86,9 +87,13 @@ window.SpeechEngine = {
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = lang === "en" ? "en-US" : "fr-FR";
     utter.rate = 0.98;
-    utter.pitch = this.currentVoiceGender === "male" ? 0.85 : 1.15; // grave vs aigu
+    utter.pitch = 1; // La différence repose sur deux voix vocales distinctes, pas sur un simple changement de hauteur.
     const voice = this.pickVoice(lang);
-    if (voice) utter.voice = voice;
+    if (!voice) {
+      if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Cette voix distincte n’est pas disponible sur cet appareil. Activez ou installez une deuxième voix française dans les paramètres de synthèse vocale Android.", "fa-volume-xmark");
+      return;
+    }
+    utter.voice = voice;
 
     utter.onstart = () => {
       this.isSpeaking = true;
