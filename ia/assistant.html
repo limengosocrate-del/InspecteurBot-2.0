@@ -94,6 +94,10 @@ function addBubble(role,text,ts){
  if(role!=="user"){const read=document.createElement("button");read.className="msg-tool";read.textContent="🔊 Lire";read.onclick=()=>window.ASSISTANT.speak(String(text??""));tools.appendChild(read);}
  wrap.append(div,time,tools);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return wrap;
 }
+function nettoyerSalutationIA(value){
+ const text=String(value||"").trim();
+ return text.replace(/^(?:bonjour|bonsoir|salut)(?:\\s*[!,.👋🙂😊]*)?\\s*/i,"").trim();
+}
 async function render(){
  const box=document.getElementById("messages");box.innerHTML="";
  const api=window.ASSISTANT;
@@ -102,7 +106,7 @@ async function render(){
  }
  try{const client=window.inspecteurBotAuthClient;if(client){const {data}=await client.auth.getSession();if(data&&data.session&&data.session.user)api.setAccount(data.session.user.id);}}catch(e){console.warn("Chargement du compte local impossible",e);}
  const conv=api.loadConversation();
- if(!conv.length)api.addMessage("bot","Bonjour 👋 Je suis InspecteurBot IA. Je peux consulter les connaissances locales de l'application, répondre sur le droit du travail, le SMIG, les décomptes et préparer des trames de PV. En cas d'indisponibilité du service IA en ligne, le moteur local prend le relais. Comment puis-je vous aider ?");
+ if(!conv.length)api.addMessage("bot","Je suis InspecteurBot IA. Je peux consulter les connaissances locales de l'application, répondre sur le droit du travail, le SMIG, les décomptes et préparer des trames de PV. En cas d'indisponibilité du service IA en ligne, le moteur local prend le relais. Quelle est votre demande ?");
  api.conversation.forEach(m=>addBubble(m.role,m.text,m.ts));box.scrollTop=box.scrollHeight;
 }
 document.getElementById("btnAttach").onclick=()=>document.getElementById("fileInput").click();
@@ -146,8 +150,8 @@ async function send(){
  const body={question:prompt,history};if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\n\n"+attachedDocument.text;
  const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
  if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
- pending.remove();window.ASSISTANT.addMessage("bot",data.answer);addBubble("bot",data.answer,new Date().toISOString());if(speakAuto)window.ASSISTANT.speak(data.answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
- }catch(err){if(pending)pending.remove();let localText="L’application est encore en développement ; certaines informations ne sont pas encore prises en compte. Réessayez ultérieurement ou consultez les modules concernés.";try{if(window.InspecteurBotLocalAI&&typeof window.InspecteurBotLocalAI.answer==="function"){const local=window.InspecteurBotLocalAI.answer(prompt,{documentText:attachedDocument&&attachedDocument.text,fileName:attachedDocument&&attachedDocument.name,history:window.ASSISTANT&&window.window.ASSISTANT.conversation});if(local&&local.text)localText="⚙️ **Le service IA en ligne est indisponible. Le moteur local prend le relais.**\\n\\n"+local.text;}}catch(localErr){console.warn("Moteur IA local indisponible",localErr);}if(window.ASSISTANT&&typeof window.window.ASSISTANT.addMessage==="function")window.window.ASSISTANT.addMessage("bot",localText);addBubble("bot",localText,new Date().toISOString());if(attachedDocument){attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");}}
+ pending.remove();const answer=nettoyerSalutationIA(data.answer);window.ASSISTANT.addMessage("bot",answer);addBubble("bot",answer,new Date().toISOString());if(speakAuto)window.ASSISTANT.speak(answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
+ }catch(err){if(pending)pending.remove();let localText="L’application est encore en développement ; certaines informations ne sont pas encore prises en compte. Réessayez ultérieurement ou consultez les modules concernés.";try{if(window.InspecteurBotLocalAI&&typeof window.InspecteurBotLocalAI.answer==="function"){const local=window.InspecteurBotLocalAI.answer(prompt,{documentText:attachedDocument&&attachedDocument.text,fileName:attachedDocument&&attachedDocument.name,history:window.ASSISTANT&&window.window.ASSISTANT.conversation});if(local&&local.text)localText="⚙️ **Le service IA en ligne est indisponible. Le moteur local prend le relais.**\\n\\n"+nettoyerSalutationIA(local.text);}}catch(localErr){console.warn("Moteur IA local indisponible",localErr);}if(window.ASSISTANT&&typeof window.window.ASSISTANT.addMessage==="function")window.localText=nettoyerSalutationIA(localText);window.ASSISTANT.addMessage("bot",localText);addBubble("bot",localText,new Date().toISOString());if(attachedDocument){attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");}}
  finally{input.disabled=false;sendButton.disabled=false;sendButton.textContent="↑";input.focus();}
 }
 document.getElementById("btnSend").onclick=send;document.getElementById("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
