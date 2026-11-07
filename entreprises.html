@@ -227,7 +227,14 @@ placeholder="Adresse complète">
 
 <textarea
 id="observation"
-placeholder="Observations..."></textarea>
+placeholder="Observations générales..."></textarea>
+
+<div class="interview-fields" style="display:grid;gap:10px;padding:14px;margin:12px 0;border:1px solid #d9e3f0;border-radius:14px;background:rgba(255,255,255,.04)">
+<strong>Compte rendu d’entretien (facultatif)</strong>
+<input type="date" id="dateEntretien" aria-label="Date de l’entretien">
+<input type="text" id="objetEntretien" maxlength="180" placeholder="Objet de l’entretien">
+<textarea id="compteRenduEntretien" rows="4" placeholder="Personnes rencontrées, déclarations, engagements, pièces remises et suites à donner..."></textarea>
+</div>
 
 <div class="inspector">
 
