@@ -1,0 +1,33 @@
+/* InspecteurBot — interface juridique professionnelle 2026 */
+:root{--igt-ink:#17243b;--igt-muted:#627089;--igt-line:#dce4ef;--igt-paper:#fff;--igt-blue:#123b68;--igt-blue2:#1d568d;--igt-gold:#b68a32}
+body.dark-theme{background:#f3f6fa!important;color:var(--igt-ink)!important}
+.container{width:min(1440px,100%)!important;margin:auto!important;padding:clamp(12px,2vw,28px)!important}
+.top-header{background:linear-gradient(120deg,#102e50,#1d568d)!important;border:0!important;border-radius:20px!important;box-shadow:0 12px 32px rgba(18,42,74,.16)!important;padding:26px!important;display:grid!important;grid-template-columns:auto 1fr auto!important;gap:24px!important;text-align:left!important;align-items:center!important}
+.top-header:before{display:none!important}
+.top-header .logo-box{margin:0!important}
+.top-header .title-box h1{font-size:clamp(22px,3vw,34px)!important;letter-spacing:.2px!important;text-shadow:none!important}
+.top-header .title-box h2{font-size:17px!important}
+.top-header .title-box h3{font-size:14px!important;color:#d9e7f5!important}
+.top-header .title-box p{font-size:12px!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.18)!important;color:#fff!important}
+.top-header .datetime-box{margin:0!important;display:grid!important;gap:8px!important;padding:14px!important;background:rgba(4,20,39,.28)!important;border:1px solid rgba(255,255,255,.15)!important;border-radius:14px!important}
+.top-header .info-item{font-size:12px!important}
+.toolbar,.search-section,.assistant-card,.article-card,.category-card,.outil-card{background:var(--igt-paper)!important;color:var(--igt-ink)!important;border:1px solid var(--igt-line)!important;border-radius:16px!important;box-shadow:0 5px 18px rgba(25,45,75,.06)!important}
+.toolbar{padding:14px 18px!important}
+.toolbar-left label,.section-title h2,.search-header h2,.article-title{color:var(--igt-blue)!important}
+.toolbar-left select{background:#f7f9fc!important;color:var(--igt-ink)!important;border:1px solid var(--igt-line)!important}
+.search-section{padding:22px!important}
+.search-box input{border:1px solid var(--igt-line)!important;box-shadow:none!important;border-radius:12px!important}
+.categories-grid{gap:14px!important}
+.category-card{min-height:170px!important;padding:20px!important;text-align:left!important;align-items:flex-start!important}
+.category-card i{font-size:30px!important;color:var(--igt-blue2)!important;filter:none!important}
+.category-card h3,.category-card p{color:var(--igt-ink)!important}
+.category-card p{color:var(--igt-muted)!important}
+.article-card{padding:clamp(18px,3vw,32px)!important;border-left:4px solid var(--igt-gold)!important}
+.article-number{background:#f5eddc!important;color:#70521a!important;box-shadow:none!important}
+.article-category{background:#eef3f8!important;color:#37516d!important;border:0!important}
+.article-title{border-color:var(--igt-line)!important}
+.article-content{color:#26354b!important;font-size:16px!important;line-height:1.85!important;text-align:left!important}
+.article-actions{border-color:var(--igt-line)!important}
+.article-actions button,.tool-btn{border-radius:10px!important}
+.footer{background:#102e50!important}
+@media(max-width:760px){.top-header{grid-template-columns:1fr!important;text-align:center!important;padding:20px 14px!important}.top-header .datetime-box{grid-template-columns:repeat(2,minmax(0,1fr))!important}.top-header .info-item{justify-content:center!important}.category-card{min-height:0!important}.article-content{font-size:15px!important}}
