@@ -31,14 +31,14 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 #ib-auth-account .ib-avatar{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:#0799bd;color:#fff;font-size:17px}
 #ib-auth-account .ib-account-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px;font-size:12px}
 #ib-auth-account>i:last-child{margin:0 5px;color:#36566e}
-#ib-auth-menu{position:absolute;right:0;top:calc(100% + 9px);width:min(285px,calc(100vw - 24px));padding:8px;border:1px solid #dce7f1;border-radius:14px;background:#fff;box-shadow:0 15px 40px #00152f25}
+#ib-auth-menu{position:absolute;left:0;right:auto;top:calc(100% + 9px);width:min(285px,calc(100vw - 24px));padding:8px;border:1px solid #dce7f1;border-radius:14px;background:#fff;box-shadow:0 15px 40px #00152f25}
 #ib-auth-menu[hidden]{display:none!important}
 #ib-auth-menu a,#ib-auth-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:0;border-radius:9px;background:transparent;color:#173b5c;text-decoration:none;text-align:left;font-weight:700;font-size:13px;cursor:pointer}
 #ib-auth-menu a:hover,#ib-auth-menu button:hover{background:#edf5fb}
 #ib-auth-menu button{color:#b42318}
 #ib-header-menu{display:grid;place-items:center;width:46px;height:46px;flex:0 0 46px;border:0;border-radius:50%;background:#f1f5f8;color:#173b5c;font-size:23px;cursor:pointer}
 #ib-header-menu:focus-visible,#ib-auth-account:focus-visible{outline:3px solid #0b9ac0;outline-offset:2px}
-@media(max-width:520px){#ib-app-header{min-height:66px;padding:8px 12px;gap:7px}#ib-app-header .ib-brand{gap:7px}#ib-app-header .ib-brand-mark{width:36px;height:36px;flex-basis:36px;font-size:16px}#ib-app-header .ib-brand-copy{font-size:12px}#ib-app-header .ib-brand-copy small{font-size:8px}#ib-app-header .ib-header-actions{gap:7px}#ib-auth-chip{max-width:calc(100vw - 145px)}#ib-auth-account{gap:6px;padding:5px 7px}#ib-auth-account .ib-avatar{width:34px;height:34px;flex-basis:34px}#ib-auth-account .ib-account-label{max-width:120px;font-size:11px}#ib-header-menu{width:40px;height:40px;flex-basis:40px;font-size:20px}}
+@media(max-width:520px){#ib-app-header{min-height:66px;padding:8px 12px;gap:7px}#ib-app-header .ib-brand{gap:7px;order:2;text-align:right}#ib-app-header .ib-brand-mark{width:36px;height:36px;flex-basis:36px;font-size:16px}#ib-app-header .ib-brand-copy{font-size:12px}#ib-app-header .ib-brand-copy small{font-size:8px}#ib-app-header .ib-header-actions{gap:7px;order:1;flex-direction:row-reverse}#ib-auth-chip{max-width:calc(100vw - 145px)}#ib-auth-account{gap:6px;padding:5px 7px}#ib-auth-account .ib-avatar{width:34px;height:34px;flex-basis:34px}#ib-auth-account .ib-account-label{max-width:120px;font-size:11px}#ib-header-menu{width:40px;height:40px;flex-basis:40px;font-size:20px}}
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
@@ -64,14 +64,17 @@ async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
  if(busy)return;busy=true;
  try{
-  await serverCheck();
-  const {data,error}=await client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle();
+  const [sessionResult,profileResult]=await Promise.all([
+   serverCheck(),
+   client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
+  ]);
+  const {data,error}=profileResult;
   if(error)throw error;if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;window.inspecteurBotAuthUser=user;window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
   let chip=byId('auth-chip');
   if(!chip){
    const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-   appHeader.innerHTML='<div class="ib-brand"><span class="ib-brand-mark"><i class="fa-solid fa-landmark"></i></span><span class="ib-brand-copy">InspecteurBot RDC<small>INSPECTION GÉNÉRALE DU TRAVAIL</small></span></div><div class="ib-header-actions"><div id="ib-auth-slot"></div><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu du compte" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+   appHeader.innerHTML='<div class="ib-header-actions"><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu du compte" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><div id="ib-auth-slot"></div></div><div class="ib-brand"><span class="ib-brand-mark"><i class="fa-solid fa-landmark"></i></span><span class="ib-brand-copy">InspecteurBot RDC<small>INSPECTION GÉNÉRALE DU TRAVAIL</small></span></div>';
    document.body.insertBefore(appHeader,document.body.firstChild);
    chip=document.createElement('div');chip.id='ib-auth-chip';
    chip.innerHTML='<button type="button" id="ib-auth-account" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a id="ib-auth-profile-link" href="https://limengosocrate-del.github.io/InspecteurBot-2.0/profil.html"><i class="fa-solid fa-id-card"></i> Mon profil et mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
