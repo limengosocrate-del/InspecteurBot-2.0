@@ -4993,11 +4993,23 @@
 <script type="module">
   import { INFRACTIONS } from "./frontend/assets/js/data/infractions65.js";
   window.IGT_INFRACTIONS65 = INFRACTIONS;
+  const load = src => new Promise((resolve,reject) => {
+    const script=document.createElement('script'); script.src=src;
+    script.onload=resolve; script.onerror=()=>reject(new Error('Chargement impossible : '+src));
+    document.body.appendChild(script);
+  });
+  try {
+    await load('js/quiz-engine.js');
+    await load('quiz-sanctions.js');
+    await load('aim-006-data.js?v=20261107-aim2');
+    await load('App-sanctions.js?v=20261107-sanctions-fix1');
+  } catch(error) {
+    console.error(error);
+    const notice=document.createElement('p'); notice.className='info-card warning';
+    notice.textContent='Le module Sanctions n’a pas pu charger toutes ses données. Vérifiez la connexion puis actualisez la page.';
+    document.querySelector('.app-container')?.prepend(notice);
+  }
 </script>
-<script src="js/quiz-engine.js"></script>
-<script src="quiz-sanctions.js"></script>
-<script src="aim-006-data.js?v=20261107-aim1"></script>
-<script src="App-sanctions.js"></script>
 
 
 
