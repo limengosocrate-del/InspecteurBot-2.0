@@ -48,8 +48,8 @@
     <div class="logo"><img src="../assets/images/logo-igt.png" alt="IGT"></div>
     <div class="header-text">
       <h1>🤖 ASSISTANT IA</h1>
-      <h2>Expert Droit du Travail RDC</h2>
-      <p>Conversation intelligente • Vocal • Multilingue</p>
+      <h2>Assistant connecté • Droit du travail RDC • Annuaire IGT</h2>
+      <p>IA conversationnelle • Consultation sécurisée des agents • Assistance juridique</p>
     </div>
   </div>
   <div class="header-right"><a href="../index.html" class="btn-retour">← Retour</a></div>
@@ -88,7 +88,7 @@ function render() {
   box.innerHTML = "";
   const conv = ASSISTANT.loadConversation();
   if (!conv.length) {
-    ASSISTANT.addMessage("bot", AI_CORE.greet());
+    ASSISTANT.addMessage("bot", "Bonjour 👋 Je suis InspecteurBot IA. Je peux répondre à vos questions, consulter les informations professionnelles de l’annuaire IGT et vous assister sur le droit du travail, les contrôles, les fiches et les projets de documents. Posez votre question en langage naturel.");
   }
   ASSISTANT.conversation.forEach(m => addBubble(m.role, m.text, m.ts));
   box.scrollTop = box.scrollHeight;
@@ -106,17 +106,65 @@ function addBubble(role, text, ts) {
   box.scrollTop = box.scrollHeight;
 }
 
-function send() {
+async function send() {
   const input = document.getElementById("input");
+  const sendButton = document.getElementById("btnSend");
   const q = input.value.trim();
-  if (!q) return;
+  if (!q || sendButton.disabled) return;
+
+  const client = window.inspecteurBotAuthClient;
+  if (!client) {
+    addBubble("bot", "Votre session sécurisée n'est pas prête. Rechargez la page ou reconnectez-vous.", new Date().toISOString());
+    return;
+  }
+
+  const previous = ASSISTANT.conversation.slice(-10).map(m => ({
+    role: m.role === "bot" ? "assistant" : "user",
+    content: String(m.text || "").slice(0, 2500)
+  }));
+
+  ASSISTANT.addMessage("user", q);
   addBubble("user", q, new Date().toISOString());
   input.value = "";
-  setTimeout(() => {
-    const r = ASSISTANT.ask(q);
-    addBubble("bot", r.text, new Date().toISOString());
-    if (speakAuto) ASSISTANT.speak(r.text);
-  }, 300);
+  input.disabled = true;
+  sendButton.disabled = true;
+  sendButton.textContent = "…";
+  const pending = addBubble("bot", "🧠 InspecteurBot analyse votre question et consulte les données IGT…", new Date().toISOString());
+
+  try {
+    const { data: sessionData, error: sessionError } = await client.auth.getSession();
+    if (sessionError || !sessionData.session) throw new Error("Session expirée. Reconnectez-vous à InspecteurBot.");
+
+    const { data, error } = await client.functions.invoke("inspecteurbot-ai", {
+      body: { question: q, history: previous }
+    });
+
+    if (error || !data || !data.answer) {
+      let message = data && data.error ? data.error : "Le service IA n'a pas répondu. Réessayez.";
+      if (error && error.context && typeof error.context.clone === "function") {
+        try {
+          const details = await error.context.clone().json();
+          if (details && details.error) message = details.error;
+        } catch (_) {}
+      }
+      throw new Error(message);
+    }
+
+    pending.remove();
+    ASSISTANT.addMessage("bot", data.answer);
+    addBubble("bot", data.answer, new Date().toISOString());
+    if (speakAuto) ASSISTANT.speak(data.answer);
+  } catch (err) {
+    pending.remove();
+    const message = err && err.message ? err.message : "Une erreur est survenue. Réessayez.";
+    ASSISTANT.addMessage("bot", "⚠️ " + message);
+    addBubble("bot", "⚠️ " + message, new Date().toISOString());
+  } finally {
+    input.disabled = false;
+    sendButton.disabled = false;
+    sendButton.textContent = "➤";
+    input.focus();
+  }
 }
 
 document.getElementById("btnSend").addEventListener("click", send);
