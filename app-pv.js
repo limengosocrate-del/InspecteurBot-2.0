@@ -1,9 +1,9 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'inspecteurbot_pv_rdc_v1';
-  const THEME_KEY = 'inspecteurbot_pv_theme';
-  const LOGO_KEY = 'inspecteurbot_logo_igt';
+  let STORAGE_KEY = 'inspecteurbot_pv_rdc_v1_local';
+  let THEME_KEY = 'inspecteurbot_pv_theme_local';
+  let LOGO_KEY = 'inspecteurbot_logo_igt_local';
   const APP_VERSION = '1.0.0-local';
   const DEFAULT_IGT_LOGO = 'assets/logo-igt.svg';
 
@@ -809,7 +809,19 @@
 
   document.addEventListener('DOMContentLoaded', init);
 
-  function init() {
+  async function init() {
+    const client = window.inspecteurBotAuthClient;
+    if (client && client.auth) {
+      try {
+        const { data } = await client.auth.getSession();
+        const id = data && data.session && data.session.user && data.session.user.id;
+        if (id) {
+          STORAGE_KEY = 'inspecteurbot_pv_rdc_v1_' + id;
+          THEME_KEY = 'inspecteurbot_pv_theme_' + id;
+          LOGO_KEY = 'inspecteurbot_logo_igt_' + id;
+        }
+      } catch (e) { console.warn('Compte local PV indisponible', e); }
+    }
     applySavedTheme();
     loadStore();
     ensureDefaults();
