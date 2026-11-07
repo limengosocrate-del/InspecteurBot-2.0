@@ -60,6 +60,25 @@ if(!document.getElementById('ib-startup-splash')){
 }
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
+function showSplash(){
+ let splash=document.getElementById('ib-startup-splash');
+ if(!splash){
+  splash=document.createElement('div');splash.id='ib-startup-splash';splash.setAttribute('role','status');splash.setAttribute('aria-live','polite');
+  splash.innerHTML='<div class="ib-splash-title">InspecteurBot</div><div class="ib-splash-subtitle">Ouverture de votre espace sécurisé…</div><div class="ib-splash-spinner" aria-hidden="true"></div>';
+  document.body.appendChild(splash);
+ }
+ splash.classList.remove('ib-splash-hide');
+}
+document.addEventListener('click',function(event){
+ const link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
+ if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+ if(link.target&&link.target!=='_self'||link.hasAttribute('download'))return;
+ const raw=link.getAttribute('href')||'';
+ if(!raw||raw.startsWith('#')||/^(javascript:|mailto:|tel:)/i.test(raw))return;
+ let target;try{target=new URL(raw,location.href)}catch(_){return}
+ if(target.origin!==location.origin||target.href===location.href)return;
+ showSplash();
+},true);
 function armSessionExpiry(payload){
  clearTimeout(expiry);
  const startedAt=Date.parse(payload?.started_at||'');
