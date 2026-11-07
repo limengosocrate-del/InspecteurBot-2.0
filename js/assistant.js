@@ -2,7 +2,9 @@
    ASSISTANT.JS — Chat conversationnel + reconnaissance vocale
    ================================================================== */
 
-(function () {\n'use strict';\nconst ASSISTANT = {
+(function () {
+'use strict';
+const ASSISTANT = {
 
   conversation: [],
   voiceEnabled: false,
@@ -85,7 +87,8 @@
   // ============ SYNTHÈSE VOCALE ============
   speak(text) {
     if (!("speechSynthesis" in window)) return;
-    const clean = text.replace(/\*\*/g,"").replace(/\n/g," ").replace(/[📄📖⚖️🤖💰🔎✅❌⚠️📊🏢🌍]/g,"");
+    const clean = text.replace(/\*\*/g,"").replace(/
+/g," ").replace(/[📄📖⚖️🤖💰🔎✅❌⚠️📊🏢🌍]/g,"");
     const u = new SpeechSynthesisUtterance(clean);
     u.lang = "fr-FR";
     u.rate = 1;
@@ -99,4 +102,5 @@
   }
 };
 
-window.ASSISTANT = ASSISTANT;\n})();
+window.ASSISTANT = ASSISTANT;
+})();
