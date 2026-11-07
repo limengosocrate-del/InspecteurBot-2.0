@@ -45,7 +45,7 @@ body{
     position:relative;  
 }  
   
-.datetime-box{position:absolute;top:14px;right:18px;left:auto;z-index:30;display:grid;gap:7px;width:max-content;max-width:calc(100% - 32px);padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:right;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,.85);pointer-events:none}.datetime-top,.datetime-date,.datetime-weather{display:flex;align-items:center;justify-content:flex-end;gap:9px;line-height:1.25}.datetime-top{font-size:23px}.datetime-top i,.datetime-date i{font-size:17px}.datetime-date{font-size:12px}.datetime-weather{font-size:15px}.datetime-weather #weather{font-size:18px;color:#ffe044;font-weight:700}.datetime-weather #city{font-size:12px;color:#fff}@media(max-width:520px){.datetime-box{top:12px;right:12px;gap:5px;max-width:calc(100% - 24px)}.datetime-top{font-size:20px}.datetime-date{font-size:10px}.datetime-weather{font-size:13px}.datetime-weather #weather{font-size:16px}.datetime-weather #city{font-size:11px}}  
+.datetime-box{position:absolute;top:14px;right:18px;left:auto;z-index:30;display:grid;gap:7px;width:max-content;max-width:calc(100% - 32px);padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:right;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,.85);pointer-events:none}.datetime-top,.datetime-date,.datetime-weather{display:flex;align-items:center;justify-content:flex-end;gap:9px;line-height:1.25}.datetime-top{font-size:23px}.datetime-date{font-size:12px}.datetime-weather{font-size:15px}.datetime-weather #weather{font-size:18px;color:#ffe044;font-weight:700}.datetime-weather #city{font-size:12px;color:#fff}@media(max-width:520px){.datetime-box{top:12px;right:12px;gap:5px;max-width:calc(100% - 24px)}.datetime-top{font-size:20px}.datetime-date{font-size:10px}.datetime-weather{font-size:13px}.datetime-weather #weather{font-size:16px}.datetime-weather #city{font-size:11px}}  
   
 #clock{  
     font-size:25px;  
@@ -438,7 +438,7 @@ footer img{
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
-<script src="auth-gate.js?v=20261107-header-hero-transparent-6" defer></script>
+<script src="auth-gate.js?v=20261107-notifications-7" defer></script>
 </head>  
   
 <body>  
@@ -446,7 +446,7 @@ footer img{
 <!-- ================= DÉBUT DE LA PAGE ================= -->  
   
 <!-- SLIDER -->  
-<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><i class="fa-regular fa-clock"></i><strong id="clock">--:--</strong></div><div class="datetime-date"><i class="fa-regular fa-calendar-days"></i><span id="date">Chargement…</span></div><div class="datetime-weather"><span id="weatherIcon">☀️</span><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
+<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
   
     <!-- Images du slider -->  
     <div class="slider" id="slider">  
@@ -891,12 +891,11 @@ setInterval(() => {
   
     /* ================= DATE ET HEURE ================= */
 function loadKinshasaWeather(){
- const city=document.getElementById('city'),weather=document.getElementById('weather'),icon=document.getElementById('weatherIcon');
- if(city)city.textContent='Kinshasa';
- fetch('https://api.open-meteo.com/v1/forecast?latitude=-4.325&longitude=15.322&current=temperature_2m,weather_code&timezone=Africa%2FKinshasa')
+ const weather=document.getElementById('weather');
+ fetch('https://api.open-meteo.com/v1/forecast?latitude=-4.325&longitude=15.322&current=temperature_2m&timezone=Africa%2FKinshasa')
  .then(r=>{if(!r.ok)throw Error('Météo indisponible');return r.json()})
- .then(d=>{const c=d.current;if(!c)return;if(weather)weather.textContent=Math.round(c.temperature_2m)+'°C';const code=c.weather_code;if(icon)icon.textContent=code===0?'☀️':code<=3?'🌤️':code<=48?'🌫️':code<=67?'🌧️':code<=82?'🌦️':'⛈️'})
- .catch(()=>{if(weather)weather.textContent='';if(icon)icon.textContent='📍'});
+ .then(d=>{if(weather&&d.current)weather.textContent=Math.round(d.current.temperature_2m)+'°C'})
+ .catch(()=>{if(weather)weather.textContent=''});
 }
 loadKinshasaWeather();  
   
