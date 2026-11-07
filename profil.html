@@ -123,7 +123,9 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 /* InspecteurBot — profil, paramètres et fiche professionnelle en stockage local uniquement. */
 (function(){
 'use strict';
-const KEY='inspecteurbot_local_profile_v1';
+function initProfileForAccount(user){
+ if(!user||!user.id)return;
+ const KEY='inspecteurbot_local_profile_v1_'+user.id;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fields=[
@@ -138,17 +140,15 @@ function read(){
   const saved=JSON.parse(localStorage.getItem(KEY)||'null');
   if(saved&&typeof saved==='object')return saved;
  }catch(e){}
- // Migration ponctuelle d'une fiche déjà mise en cache sur cet appareil.
+ // Migration uniquement depuis le cache de profil du même compte.
  try{
-  for(let i=0;i<localStorage.length;i++){
-   const k=localStorage.key(i);
-   if(k&&k.startsWith('inspecteurbot_profile_cache_v2_')){
-    const old=JSON.parse(localStorage.getItem(k)||'null')?.profile;
-    if(old){let professional={};try{for(let j=0;j<localStorage.length;j++){const ak=localStorage.key(j);if(ak&&ak.startsWith('inspecteurbot_agent_cache_v1_')){const agent=JSON.parse(localStorage.getItem(ak)||'null');if(agent?.data){professional={nom_complet:agent.data.nom_complet||'',matricule:agent.data.matricule||'',grade:agent.data.grade||'',fonction:agent.data.fonction||'',categorie:agent.data.categorie||'',direction:agent.data.direction||'',lieu_affectation:agent.data.lieu_affectation||'',province:agent.data.province||'',telephone_pro:agent.data.telephone||'',statut:agent.data.statut||'',numero_ordre:agent.data.numero_ordre||''};break}}}}catch(_){}const migrated={username:old.display_name||'',email:old.email||'',phone:old.telephone||'',address:old.adresse_physique||'',role:old.role||'Utilisateur',createdAt:old.created_at||'',avatar:old.avatar_local||'',professional};localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
-   }
+  const old=JSON.parse(localStorage.getItem('inspecteurbot_profile_cache_v2_'+user.id)||'null')?.profile;
+  if(old){
+   const migrated={username:old.display_name||'',email:old.email||user.email||'',phone:old.telephone||'',address:old.adresse_physique||'',role:old.role||'Utilisateur',createdAt:old.created_at||'',avatar:old.avatar_local||'',professional:{}};
+   localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;
   }
  }catch(e){}
- return {username:'',email:'',phone:'',address:'',role:'Utilisateur',createdAt:'',avatar:'',professional:{}};
+ return {username:user.user_metadata?.display_name||user.email?.split('@')[0]||'',email:user.email||'',phone:'',address:'',role:'Utilisateur',createdAt:'',avatar:'',professional:{}};
 }
 let data=read();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
@@ -175,7 +175,7 @@ $('avatarFile').addEventListener('change',e=>{
  if(!/^image\/(jpeg|png|webp)$/.test(f.type)){ $('avatarMessage').textContent='Format accepté : JPG, PNG ou WEBP.';return}
  if(f.size>2*1024*1024){$('avatarMessage').textContent='La photo doit faire 2 Mo maximum.';return}
  const reader=new FileReader();
- reader.onload=()=>{data.avatar=reader.result;if(save()){show();$('avatarMessage').textContent='Profil mis à jour avec succès.';$('avatarMessage').style.color='#138a65';}};
+ reader.onload=()=>{data.avatar=reader.result;if(save()){show();if(typeof window.inspecteurBotSetAvatar==='function')window.inspecteurBotSetAvatar(data.avatar);$('avatarMessage').textContent='Profil mis à jour avec succès.';$('avatarMessage').style.color='#138a65';}};
  reader.onerror=()=>$('avatarMessage').textContent='Lecture de la photo impossible.';
  reader.readAsDataURL(f);e.target.value='';
 });
@@ -194,6 +194,10 @@ async function documents(){
 fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+'</small><input id="edit_'+key+'" maxlength="180" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').querySelector('.wide').before(wrap)});
 show();
 documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
+
+}
+window.addEventListener('inspecteurbot:authenticated',event=>initProfileForAccount(event.detail?.user),{once:true});
+if(window.inspecteurBotAuthUser?.id)initProfileForAccount(window.inspecteurBotAuthUser);
 })();
 </script>
 </body></html>
