@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>Mon profil — InspecteurBot</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root{--navy:#092b50;--blue:#075a96;--pale:#eef5fb;--line:#dce6ef;--ink:#19344e;--muted:#687d90}
 *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font-family:Poppins,Arial,sans-serif}
@@ -26,6 +26,84 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 @media(max-width:650px){.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr 1fr}header h1{font-size:21px}}
 
 #documents{margin-top:16px}.doc-actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.doc-actions button,.doc-row button{border:0;border-radius:8px;padding:10px 13px;background:#075a96;color:white;font-weight:600;cursor:pointer}.doc-actions .secondary,.doc-row .secondary{background:#eaf1f7;color:#174365}.doc-help{font-size:12px;line-height:1.6;color:#687d90}.doc-list{display:grid;gap:9px;margin-top:14px}.doc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #e3ebf2;border-radius:10px;min-width:0}.doc-meta{min-width:0}.doc-meta strong{display:block;font-size:13px;overflow-wrap:anywhere}.doc-meta small{color:#687d90;font-size:11px}.doc-row-actions{display:flex;gap:7px;flex-shrink:0}.doc-empty{padding:18px;text-align:center;color:#687d90;background:#f7f9fb;border-radius:10px;font-size:13px}#docStatus{font-size:12px;color:#075a96;min-height:18px;margin-top:8px}@media(max-width:520px){.doc-row{align-items:flex-start;flex-direction:column}.doc-row-actions{width:100%}.doc-row-actions button{flex:1}}
+/* ================= MENU ================= */  
+.menu-index{  
+    display:grid;  
+    grid-template-columns:repeat(auto-fit,minmax(100px,1fr));  
+    gap:18px;  
+    padding:20px;  
+    background:linear-gradient(180deg,#03153d,#02102f);  
+}  
+  
+.menu-index a{  
+    position:relative;  
+    display:flex;  
+    flex-direction:column;  
+    justify-content:center;  
+    align-items:center;  
+    height:105px;  
+    background:linear-gradient(180deg,#07285d,#03183c);  
+    border:1.5px solid rgba(255,255,255,.30);  
+    border-radius:22px;  
+    text-decoration:none;  
+    color:#ffffff;  
+    box-shadow:0 0 8px rgba(255,215,0,.18);  
+    transition:.35s;  
+    overflow:hidden;  
+}  
+  
+.menu-index a::before{  
+    content:"";  
+    position:absolute;  
+    top:0;  
+    left:-120%;  
+    width:60%;  
+    height:100%;  
+    background:rgba(255,255,255,.15);  
+    transform:skewX(-25deg);  
+    transition:.8s;  
+}  
+  
+.menu-index a i{  
+    font-size:30px;  
+    margin-bottom:10px;  
+    color:#FFD700;  
+    text-shadow:0 0 6px rgba(255,215,0,.45);  
+    transition:.35s;  
+}  
+  
+.menu-index a span{  
+    color:#ffffff;  
+    font-weight:600;  
+    text-shadow:0 0 2px rgba(255,255,255,.45);  
+}  
+  
+.menu-index a:hover{  
+    transform:translateY(-6px);  
+    border-color:rgba(255,255,255,.75);  
+    box-shadow:  
+        0 0 14px rgba(255,215,0,.40),  
+        0 0 26px rgba(255,215,0,.18);  
+}  
+  
+.menu-index a:hover::before,  
+.menu-index a:active::before{  
+    left:140%;  
+}  
+  
+.menu-index a:hover i,  
+.menu-index a:active i{  
+    transform:scale(1.25) rotate(8deg);  
+}  
+  
+.menu-index a:active{  
+    transform:translateY(-8px) scale(1.08);  
+    box-shadow:  
+        0 0 35px #00d9ff,  
+        0 0 60px #009dff;  
+}  
+  
+
 </style>
 </head>
 <body>
@@ -34,6 +112,92 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 <h1>👤 Mon profil</h1>
 <p>Informations de votre compte et votre fiche professionnelle IGT</p>
 </header>
+<nav class="menu-index">
+
+    <!-- Ligne 1 -->
+
+   <a href="igt/index.html">
+        <i class="fa fa-landmark"></i>
+        <span>IGT RDC</span>
+    </a>
+
+    <a href="code-travail.html">
+        <i class="fa fa-scale-balanced"></i>
+        <span>Code du Travail</span>
+    </a>
+
+    <a href="fiche.html">
+        <i class="fa fa-list-check"></i>
+        <span>Fiche Contrôle</span>
+    </a>
+
+    <!-- Ligne 2 -->
+
+    <a href="pv.html">
+        <i class="fa fa-file-signature"></i>
+        <span>PV</span>
+    </a>
+
+    <a href="sanctions.html">
+        <i class="fa fa-gavel"></i>
+        <span>Sanctions</span>
+    </a>
+
+  <a href="inspecteurs.html">
+        <i class="fa fa-user-tie"></i>
+        <span>IT / CT</span>
+  </a>
+
+  <a href="pages/Quiz_Academie_IGT/index.html">
+    <i class="fa fa-graduation-cap"></i>
+    <span>Quiz Académie IGT</span>
+  </a>
+
+    <!-- Ligne 3 -->
+
+    <a href="entreprises.html">
+        <i class="fa fa-building"></i>
+        <span>Entreprises</span>
+    </a>
+
+    <a href="communiques.html">
+        <i class="fa fa-podcast"></i>
+        <span>Communiqués</span>
+    </a>
+
+    <a href="formation.html">
+        <i class="fa fa-graduation-cap"></i>
+        <span>Formation</span>
+    </a>
+
+        <!-- GPS -->
+
+  <a href="autres/gps.html">
+    <i class="fa fa-location-dot"></i>
+    <span>GPS</span>
+  </a>
+  
+
+    <!-- Ligne 4 -->
+
+   <a href="archives.html">
+        <i class="fa fa-box-archive"></i>
+        <span>Archives</span>
+   </a>
+
+    <a href="profil.html">
+        <i class="fa fa-user-circle"></i>
+        <span>Utilisateur</span>
+    </a>
+
+<!-- Déconnexion -->
+
+<a href="#" onclick="return false;">
+    <i class="fa fa-right-from-bracket"></i>
+    <span>Déconnexion</span>
+</a>
+  
+</nav>
 <main>
 <div id="status">Chargement de votre profil…</div>
 <div id="profile" hidden>
@@ -61,7 +225,7 @@ section h2{font-size:16px;margin:0 0 15px;color:var(--navy);display:flex;gap:9px
 </div>
 <div id="docStatus" role="status" aria-live="polite"></div>
 <div id="docList" class="doc-list"><div class="doc-empty">Chargement de vos documents…</div></div>
-<p class="doc-help">Attention : les documents restent dans le stockage de ce navigateur. Ils ne se synchronisent pas automatiquement avec vos autres appareils. Exportez régulièrement une sauvegarde JSON et conservez-la ailleurs. La suppression des données du navigateur peut effacer ces documents.</p>
+
 </section>
 </div>
 </div>
