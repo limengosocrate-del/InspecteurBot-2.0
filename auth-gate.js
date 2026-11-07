@@ -20,10 +20,10 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 #ib-auth-message{min-height:22px;margin-top:12px;color:#b42318;font-size:14px}
 #ib-auth-forgot{margin-top:12px;padding:0;border:0;background:transparent;color:#07518a;text-decoration:underline}
 
-#ib-app-header{position:relative;z-index:1200;display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:76px;padding:10px clamp(14px,4vw,42px);background:#fff;color:#173b5c;border-bottom:1px solid #e3ebf2;box-shadow:0 2px 12px #102e4a0a}
-#ib-app-header .ib-brand{display:flex;align-items:center;gap:10px;min-width:0;font-weight:800;color:#073b70;letter-spacing:.2px}
+#ib-app-header{position:relative;z-index:1200;display:flex;align-items:center;gap:14px;min-height:88px;padding:10px clamp(14px,4vw,42px);background:#fff;color:#173b5c;border-bottom:1px solid #e3ebf2;box-shadow:0 2px 12px #102e4a0a}
+#ib-app-header .ib-brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1;font-weight:800;color:#073b70;letter-spacing:.2px}
 #ib-app-header .ib-brand-mark{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:50%;background:#0799bd;color:#fff;font-size:19px}
-#ib-app-header .ib-brand-copy{font-size:14px;line-height:1.25}
+#ib-app-header .ib-brand-copy{font-size:clamp(18px,3vw,25px);line-height:1.15;font-weight:800;letter-spacing:-.4px}#ib-app-header .ib-brand-copy small{display:block;margin-top:4px;color:#0754a0;font-size:clamp(11px,2vw,15px);font-style:italic;letter-spacing:0;font-weight:500}#ib-app-header .ib-header-actions{display:flex;align-items:center;gap:14px;order:3;margin-left:auto}#ib-auth-chip{position:relative;z-index:1201;flex:0 0 auto;max-width:60px}#ib-auth-account{width:64px;height:64px;justify-content:center;padding:0;border:0;border-radius:50%;box-shadow:none;background:#0799bd}#ib-auth-account .ib-avatar{width:58px;height:58px;flex-basis:58px;background:#0799bd;font-size:27px}#ib-auth-account .ib-account-label,#ib-auth-account>i:last-child{display:none}#ib-auth-menu{left:0;right:auto;top:calc(100% + 10px)}#ib-notification-link{position:relative;display:grid;place-items:center;width:42px;height:46px;color:#073b70;text-decoration:none;font-size:28px}#ib-notification-link .ib-notification-count{position:absolute;top:0;right:-1px;display:grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:50px;background:#dc2638;color:#fff;font:700 11px Arial,sans-serif;border:2px solid #fff}#ib-header-menu{width:46px;height:46px;border:0;border-radius:0;background:transparent;color:#073b70;font-size:30px}
 #ib-app-header .ib-brand-copy small{display:block;margin-top:3px;color:#71869a;font-size:9px;letter-spacing:1.1px;font-weight:700}
 #ib-app-header .ib-header-actions{display:flex;align-items:center;gap:12px}
 #ib-auth-chip{position:relative;z-index:1201;top:auto;right:auto;max-width:min(350px,calc(100vw - 120px));font:13px Arial,sans-serif}
@@ -38,7 +38,7 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!imp
 #ib-auth-menu button{color:#b42318}
 #ib-header-menu{display:grid;place-items:center;width:46px;height:46px;flex:0 0 46px;border:0;border-radius:50%;background:#f1f5f8;color:#173b5c;font-size:23px;cursor:pointer}
 #ib-header-menu:focus-visible,#ib-auth-account:focus-visible{outline:3px solid #0b9ac0;outline-offset:2px}
-@media(max-width:520px){#ib-app-header{min-height:66px;padding:8px 12px;gap:7px}#ib-app-header .ib-brand{gap:7px;order:2;text-align:right}#ib-app-header .ib-brand-mark{width:36px;height:36px;flex-basis:36px;font-size:16px}#ib-app-header .ib-brand-copy{font-size:12px}#ib-app-header .ib-brand-copy small{font-size:8px}#ib-app-header .ib-header-actions{gap:7px;order:1;flex-direction:row-reverse}#ib-auth-chip{max-width:calc(100vw - 145px)}#ib-auth-account{gap:6px;padding:5px 7px}#ib-auth-account .ib-avatar{width:34px;height:34px;flex-basis:34px}#ib-auth-account .ib-account-label{max-width:120px;font-size:11px}#ib-header-menu{width:40px;height:40px;flex-basis:40px;font-size:20px}}
+@media(max-width:520px){#ib-app-header{min-height:78px;padding:8px 12px;gap:9px}#ib-app-header .ib-brand{gap:6px;order:0;text-align:left}#ib-app-header .ib-brand-copy{font-size:19px}#ib-app-header .ib-brand-copy small{font-size:11px}#ib-app-header .ib-header-actions{gap:8px;order:3;flex-direction:row}#ib-auth-chip{max-width:48px}#ib-auth-account{width:46px;height:46px;padding:0}#ib-auth-account .ib-avatar{width:44px;height:44px;flex-basis:44px;font-size:22px}#ib-notification-link{width:34px;height:40px;font-size:24px}#ib-notification-link .ib-notification-count{min-width:18px;height:18px;font-size:10px}#ib-header-menu{width:36px;height:40px;flex-basis:36px;font-size:27px}}
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
@@ -68,28 +68,36 @@ async function validate(session){
    client.from('profiles').select('display_name,role,is_active,avatar_url').eq('id',session.user.id).maybeSingle()
   ]);
   const {data,error}=profileResult;
-  if(error)throw error;if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
-  user=session.user;profile=data;document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;window.inspecteurBotAuthUser=user;window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
-  let chip=byId('auth-chip');
-  if(!chip){
-   const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-   appHeader.innerHTML='<div class="ib-header-actions"><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu du compte" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><div id="ib-auth-slot"></div></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot RDC<small>INSPECTION GÉNÉRALE DU TRAVAIL</small></span></div>';
-   document.body.insertBefore(appHeader,document.body.firstChild);
-   chip=document.createElement('div');chip.id='ib-auth-chip';
-   chip.innerHTML='<button type="button" id="ib-auth-account" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a id="ib-auth-profile-link" href="https://limengosocrate-del.github.io/InspecteurBot-2.0/profil.html"><i class="fa-solid fa-id-card"></i> Mon profil et mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
-   appHeader.querySelector('#ib-auth-slot').appendChild(chip);
-   const toggle=chip.querySelector('#ib-auth-account'),menu=chip.querySelector('#ib-auth-menu'),hamb=appHeader.querySelector('#ib-header-menu');
-   function setMenu(open){menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));hamb.setAttribute('aria-expanded',String(open));hamb.innerHTML=open?'<i class="fa-solid fa-xmark"></i>':'<i class="fa-solid fa-bars"></i>'}
-   toggle.addEventListener('click',()=>setMenu(menu.hidden));
-   hamb.addEventListener('click',()=>setMenu(menu.hidden));
-   chip.querySelector('#ib-auth-logout').addEventListener('click',signOut);
-   document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!hamb.contains(e.target))setMenu(false)});
+  if(error)throw error;
+  if(!data||data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
+  user=session.user;profile=data;
+  document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
+  window.inspecteurBotAuthUser=user;
+  window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
+  const path=location.pathname;
+  const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
+  if(isHome){
+   let chip=byId('auth-chip');
+   if(!chip){
+    const appHeader=document.createElement('header');appHeader.id='ib-app-header';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-notification-link" href="notifications.html" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count">2</span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    document.body.insertBefore(appHeader,document.body.firstChild);
+    chip=document.createElement('div');chip.id='ib-auth-chip';
+    chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
+    appHeader.querySelector('#ib-auth-slot').appendChild(chip);
+    const toggle=chip.querySelector('#ib-auth-account'),menu=chip.querySelector('#ib-auth-menu'),hamb=appHeader.querySelector('#ib-header-menu');
+    function setMenu(open){menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));hamb.setAttribute('aria-expanded',String(open));hamb.innerHTML=open?'<i class="fa-solid fa-xmark"></i>':'<i class="fa-solid fa-bars"></i>'}
+    toggle.addEventListener('click',()=>setMenu(menu.hidden));
+    hamb.addEventListener('click',()=>setMenu(menu.hidden));
+    chip.querySelector('#ib-auth-logout').addEventListener('click',signOut);
+    document.addEventListener('click',e=>{if(!chip.contains(e.target)&&!hamb.contains(e.target))setMenu(false)});
+   }
+   const label=chip.querySelector('.ib-account-label');label.textContent=data.display_name||session.user.email||'Utilisateur';
+   const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
+   if(data.avatar_url){avatarImg.src=data.avatar_url;avatarImg.hidden=false;avatarIcon.hidden=true}
+   else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
+   window.inspecteurBotSetAvatar=function(url){if(url){avatarImg.src=url;avatarImg.hidden=false;avatarIcon.hidden=true}else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}};
   }
-  const label=chip.querySelector('.ib-account-label');
-  label.textContent=(data.display_name||session.user.email||'Utilisateur')+' · '+(data.role==='super_admin'?'Administrateur':data.role==='admin'?'Administrateur':'Connecté');
-  const avatarBox=chip.querySelector('.ib-avatar'),avatarImg=chip.querySelector('.ib-avatar-image'),avatarIcon=avatarBox.querySelector('i');
-  if(data.avatar_url){avatarImg.src=data.avatar_url;avatarImg.hidden=false;avatarIcon.hidden=true}else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
-  window.inspecteurBotSetAvatar=function(url){if(url){avatarImg.src=url;avatarImg.hidden=false;avatarIcon.hidden=true}else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}};
  }catch(e){console.warn('Authentification InspecteurBot',e);await client.auth.signOut().catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
