@@ -1,13 +1,134 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex">
-<meta http-equiv="refresh" content="0;url=pages/Quiz_Academie_IGT/index.html">
-<title>Formation et Académie IGT | InspecteurBot</title>
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f2f6fb;color:#173b5c;font:600 16px Arial,sans-serif}.box{padding:28px;text-align:center;background:#fff;border:1px solid #dce7f1;border-radius:16px;box-shadow:0 10px 30px #123b5c12}a{color:#07518a}</style>
-<script>location.replace("pages/Quiz_Academie_IGT/index.html");</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0b1118">
+<title>Formation professionnelle | InspecteurBot IGT</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+:root{color-scheme:dark;--bg:#0b1118;--panel:#141e29;--panel2:#192634;--line:#2b3a49;--text:#f4f7fb;--muted:#aebdca;--gold:#e8c547;--blue:#4da3e5}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;max-width:100%;background:var(--bg);color:var(--text);font:15px Inter,Arial,sans-serif;overflow-x:hidden;overscroll-behavior-x:none}button,input,textarea,select{font:inherit}a{color:var(--blue)}.shell{max-width:1200px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 0 22px;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center}.brand i{font-size:28px;color:var(--gold)}h1{font-size:clamp(22px,4vw,32px);margin:0;color:#fff}h2{font-size:19px;margin:0 0 12px;color:#fff}.sub,.muted{color:var(--muted);line-height:1.6}.btn{border:1px solid var(--line);background:var(--panel2);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}.btn.primary{background:#145d91;border-color:#247db7}.btn.gold{background:#d7b63c;color:#111;border-color:#d7b63c}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}.resource{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}.resource h3{margin:0;font-size:17px}.tag{display:inline-flex;width:max-content;padding:4px 9px;border-radius:20px;background:#24394b;color:#d7e9f7;font-size:11px;font-weight:800}.field{display:grid;gap:7px;margin:10px 0}.field label{font-size:13px;color:#d7e3ee;font-weight:700}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;background:#0e1720;color:#fff;padding:11px}.field textarea{min-height:100px;resize:vertical}.notice{padding:12px;border:1px solid #705e2c;background:#302914;color:#f6e4a0;border-radius:10px;font-size:13px;line-height:1.5}.hidden{display:none!important}.player{width:100%;margin-top:8px}.viewer{width:100%;height:min(75vh,800px);border:1px solid var(--line);border-radius:10px;background:#fff}.question{padding:13px;border:1px solid var(--line);border-radius:10px;margin:10px 0}.question label{display:block;padding:6px 0;color:#eaf1f7}.status{min-height:22px;color:#9fdbb7;font-size:13px}.admin-tools{border-color:#675827}.footer{text-align:center;color:var(--muted);padding:20px;font-size:12px}@media(max-width:600px){.shell{padding:12px}.panel{padding:14px}.top .btn{font-size:12px}.viewer{height:65vh}}
+</style>
+<style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body > *:not(#ib-auth-gate){visibility:hidden!important}</style>
+<script src="auth-gate.js?v=20261107-auth-smooth-12" defer></script>
 </head>
-<body><div class="box">Ouverture de Formation et Académie IGT…<p><a href="pages/Quiz_Academie_IGT/index.html">Continuer</a></p></div></body>
-</html>
+<body>
+<div class="shell">
+<header class="top">
+ <div class="brand"><i class="fa-solid fa-graduation-cap"></i><div><h1>Centre de formation IGT</h1><div class="sub">Cours audio · Documents PDF · Exercices pratiques</div></div></div>
+ <a class="btn" href="index.html"><i class="fa-solid fa-house"></i> Menu principal</a>
+</header>
+<section class="panel">
+ <h2><i class="fa-solid fa-book-open"></i> Bibliothèque de formation</h2>
+ <p class="muted">Les contenus publiés par l’administration sont accessibles à tous les comptes autorisés. Votre progression et vos résultats restent privés à votre compte.</p>
+ <div id="resource-list" class="grid"><p class="muted">Chargement des formations…</p></div>
+ <p id="user-status" class="status" role="status"></p>
+</section>
+<section id="lesson-panel" class="panel hidden">
+ <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><h2 id="lesson-title">Formation</h2><button class="btn" id="close-lesson" type="button">Fermer</button></div>
+ <p id="lesson-description" class="muted"></p>
+ <div id="lesson-content"></div>
+ <div id="lesson-status" class="status"></div>
+</section>
+<section id="admin-panel" class="panel admin-tools hidden">
+ <h2><i class="fa-solid fa-user-shield"></i> Gestion administrateur des formations</h2>
+ <p class="muted">Seuls les comptes ayant le rôle administrateur peuvent ajouter, publier ou retirer des contenus.</p>
+ <form id="resource-form">
+  <div class="grid">
+   <div class="field"><label for="res-title">Titre de la formation</label><input id="res-title" required maxlength="180"></div>
+   <div class="field"><label for="res-kind">Type de contenu</label><select id="res-kind"><option value="audio">Formation audio</option><option value="pdf">Document PDF</option><option value="exercise">Exercice pratique</option></select></div>
+  </div>
+  <div class="field"><label for="res-desc">Description / objectif pédagogique</label><textarea id="res-desc" maxlength="2000"></textarea></div>
+  <div class="field" id="file-field"><label for="res-file">Fichier audio ou PDF</label><input id="res-file" type="file" accept="audio/*,.pdf,application/pdf"></div>
+  <div class="field hidden" id="exercise-field"><label for="res-exercise">Exercice (JSON) : questions, choix, bonne réponse et explication</label><textarea id="res-exercise" spellcheck="false" placeholder='{"questions":[{"question":"Question ?","options":["A","B","C"],"correctIndex":1,"explanation":"Explication"}]}'></textarea></div>
+  <label class="field" style="display:flex;align-items:center;gap:9px"><input id="res-published" type="checkbox" style="width:auto"> Publier immédiatement pour les utilisateurs</label>
+  <button class="btn primary" type="submit"><i class="fa-solid fa-cloud-arrow-up"></i> Enregistrer la formation</button>
+ </form>
+ <p id="admin-status" class="status" role="status"></p>
+ <h2 style="margin-top:24px">Gestion des contenus existants</h2><div id="admin-list" class="grid"></div>
+</section>
+<footer class="footer">InspecteurBot · Espace pédagogique de l’Inspection Générale du Travail</footer>
+</div>
+<script>
+(() => {
+ 'use strict';
+ const client=()=>window.inspecteurBotAuthClient;
+ let user=null,role='agent',resources=[],activeResource=null;
+ const byId=id=>document.getElementById(id);
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const say=(id,msg)=>{byId(id).textContent=msg||''};
+ async function boot(){
+  const sb=client(); if(!sb){say('user-status','Connexion sécurisée indisponible. Rechargez la page.');return;}
+  const {data,error}=await sb.auth.getUser(); if(error||!data.user){say('user-status','Connectez-vous avec votre compte InspecteurBot.');return;}
+  user=data.user;
+  const profile=await sb.from('profiles').select('role').eq('id',user.id).maybeSingle();
+  if(profile.error){say('user-status','Impossible de vérifier les droits du compte.');return;}
+  role=profile.data?.role||'agent';
+  if(['admin','super_admin'].includes(role)){byId('admin-panel').classList.remove('hidden');}
+  say('user-status','Session active · votre progression est enregistrée séparément.');
+  await loadResources();
+ }
+ async function loadResources(){
+  const sb=client();
+  const {data,error}=await sb.from('training_resources').select('*').order('created_at',{ascending:false});
+  if(error){byId('resource-list').innerHTML='<p class="notice">La bibliothèque de formation est momentanément indisponible. Vérifiez la connexion ou les droits de lecture.</p>';return;}
+  resources=data||[];
+  byId('resource-list').innerHTML=resources.length?resources.map(r=>`<article class="resource"><span class="tag">${r.kind==='audio'?'AUDIO':r.kind==='pdf'?'DOCUMENT PDF':'EXERCICE'} ${r.published?'· PUBLIÉ':'· BROUILLON'}</span><h3>${esc(r.title)}</h3><p class="muted">${esc(r.description)}</p><button class="btn primary" type="button" data-open="${r.id}">${r.kind==='audio'?'Écouter':r.kind==='pdf'?'Lire le PDF':'Faire l’exercice'}</button></article>`).join(''):'<p class="muted">Aucune formation publiée pour le moment. L’administrateur peut ajouter le premier contenu.</p>';
+  byId('resource-list').querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openResource(b.dataset.open)));
+  if(['admin','super_admin'].includes(role))renderAdminList();
+ }
+ async function signedFile(path){
+  const {data,error}=await client().storage.from('formation-resources').createSignedUrl(path,3600);
+  if(error)throw error;return data.signedUrl;
+ }
+ async function openResource(id){
+  const r=resources.find(x=>x.id===id);if(!r)return;activeResource=r;
+  byId('lesson-title').textContent=r.title;byId('lesson-description').textContent=r.description||'';
+  byId('lesson-content').innerHTML='<p class="muted">Ouverture du contenu…</p>';byId('lesson-panel').classList.remove('hidden');
+  try{
+   if(r.kind==='audio'){const url=await signedFile(r.file_path);byId('lesson-content').innerHTML=`<audio class="player" controls preload="metadata" src="${esc(url)}"></audio>`;}
+   else if(r.kind==='pdf'){const url=await signedFile(r.file_path);byId('lesson-content').innerHTML=`<iframe class="viewer" title="${esc(r.title)}" src="${esc(url)}"></iframe><p><a href="${esc(url)}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a></p>`;}
+   else renderExercise(r);
+   await saveProgress(r.id,{opened:true},null,false);
+  }catch(e){byId('lesson-content').innerHTML='<p class="notice">Le fichier ne peut pas être ouvert. L’administrateur doit vérifier le document ou le téléverser de nouveau.</p>';console.error(e);}
+  byId('lesson-panel').scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ function renderExercise(r){
+  const qs=Array.isArray(r.exercise?.questions)?r.exercise.questions:[];
+  if(!qs.length){byId('lesson-content').innerHTML='<p class="notice">Cet exercice ne contient pas encore de questions valides.</p>';return;}
+  byId('lesson-content').innerHTML=qs.map((q,i)=>`<div class="question"><strong>${i+1}. ${esc(q.question)}</strong>${(q.options||[]).map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join('')}<p id="explain-${i}" class="muted"></p></div>`).join('')+'<button class="btn gold" id="submit-exercise" type="button">Corriger mes réponses</button>';
+  byId('submit-exercise').addEventListener('click',async()=>{
+   let score=0;const answers={};
+   qs.forEach((q,i)=>{const picked=byId('lesson-content').querySelector('input[name="q'+i+'"]:checked');const val=picked?Number(picked.value):-1;answers[i]=val;const ok=val===Number(q.correctIndex);if(ok)score++;byId('explain-'+i).textContent=(ok?'Bonne réponse. ':'Réponse incorrecte. ')+(q.explanation||'');});
+   const pct=Math.round(score/qs.length*100);say('lesson-status',`Résultat : ${score}/${qs.length} — ${pct} %. Résultat enregistré dans votre compte.`);
+   await saveProgress(r.id,answers,pct,true);
+  });
+ }
+ async function saveProgress(resourceId,answers,score,completed){
+  const payload={resource_id:resourceId,user_id:user.id,answers,score,completed_at:completed?new Date().toISOString():null,updated_at:new Date().toISOString()};
+  const {error}=await client().from('training_progress').upsert(payload,{onConflict:'resource_id,user_id'});
+  if(error)say('lesson-status','Votre activité est affichée, mais sa sauvegarde a échoué. Réessayez après vérification de la connexion.');
+ }
+ byId('close-lesson').addEventListener('click',()=>byId('lesson-panel').classList.add('hidden'));
+ byId('res-kind').addEventListener('change',()=>{const ex=byId('res-kind').value==='exercise';byId('exercise-field').classList.toggle('hidden',!ex);byId('file-field').classList.toggle('hidden',ex);});
+ byId('resource-form').addEventListener('submit',async e=>{
+  e.preventDefault();if(!['admin','super_admin'].includes(role)){say('admin-status','Droits administrateur requis.');return;}
+  const sb=client(),kind=byId('res-kind').value,title=byId('res-title').value.trim();let filePath=null,exercise={};
+  try{
+   if(kind==='exercise'){exercise=JSON.parse(byId('res-exercise').value);if(!Array.isArray(exercise.questions)||!exercise.questions.length)throw new Error('Ajoutez au moins une question valide.');}
+   else{const file=byId('res-file').files[0];if(!file)throw new Error('Choisissez un fichier audio ou PDF.');if(kind==='pdf'&&file.type!=='application/pdf')throw new Error('Le fichier doit être un PDF.');if(kind==='audio'&&!file.type.startsWith('audio/'))throw new Error('Le fichier doit être un audio.');const id=crypto.randomUUID();filePath=id+'/'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const up=await sb.storage.from('formation-resources').upload(filePath,file,{upsert:false});if(up.error)throw up.error;}
+   const ins=await sb.from('training_resources').insert({title,description:byId('res-desc').value.trim(),kind,file_path:filePath,exercise,published:byId('res-published').checked,created_by:user.id}).select().single();
+   if(ins.error)throw ins.error;
+   byId('resource-form').reset();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
+  }catch(err){say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
+ });
+ function renderAdminList(){
+  byId('admin-list').innerHTML=resources.map(r=>`<article class="resource"><span class="tag">${r.published?'PUBLIÉ':'BROUILLON'}</span><h3>${esc(r.title)}</h3><button class="btn" data-toggle="${r.id}" data-published="${r.published}">${r.published?'Dépublier':'Publier'}</button><button class="btn" data-delete="${r.id}">Supprimer</button></article>`).join('');
+  byId('admin-list').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const {error}=await client().from('training_resources').update({published:b.dataset.published!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);say('admin-status',error?'Modification refusée.': 'Publication mise à jour.');await loadResources();}));
+  byId('admin-list').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cette formation ?'))return;const item=resources.find(x=>x.id===b.dataset.delete);if(item?.file_path)await client().storage.from('formation-resources').remove([item.file_path]);const {error}=await client().from('training_resources').delete().eq('id',b.dataset.delete);say('admin-status',error?'Suppression refusée.':'Formation supprimée.');await loadResources();}));
+ }
+ document.addEventListener('DOMContentLoaded',boot,{once:true});
+})();
+</script>
+</body></html>
