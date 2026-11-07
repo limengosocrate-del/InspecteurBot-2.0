@@ -75,7 +75,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </header>
 <main>
-<div id="status">Chargement de votre profil…</div>
+<div id="status" hidden></div>
 <div id="profile" hidden>
 <section class="wide avatar-card" style="margin-bottom:16px">
 <h2>📷 Ma photo de profil</h2>
@@ -160,7 +160,7 @@ async function load(){
  });
  const client=auth.client;
  const user=auth.user;
- if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';return}
+ if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';$('status').hidden=false;return}
  // Start local document loading immediately, but do not block account/profile rendering.
  const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
  let p=auth.profile;
@@ -168,7 +168,7 @@ async function load(){
  if(!p?.id||!('telephone' in p)||!('adresse_physique' in p)||!('agent_id' in p)){
   try{const result=await Promise.race([client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Le chargement du profil prend trop de temps. Réessayez.')),9000))]);
    if(result.error||!result.data)throw result.error||new Error('Profil introuvable.');p=result.data;try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){}
-  }catch(error){$('status').textContent=error.message||'Impossible de charger votre profil.';return}
+  }catch(error){$('status').textContent=error.message||'Impossible de charger votre profil.';$('status').hidden=false;return}
  }
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
  $('account').innerHTML=item('Nom d’utilisateur',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
@@ -229,7 +229,7 @@ async function load(){
  // Le stockage documentaire reste indépendant : il ne bloque jamais l’affichage du profil.
  void docsPromise;
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message;$('status').hidden=false}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message;$('status').hidden=false});
 })();
 </script>
 </body></html>
