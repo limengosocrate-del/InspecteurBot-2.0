@@ -120,12 +120,12 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-auth-localfirst-16"></script>
+<script src="auth-gate.js?v=20261107-auth-localfirst-18"></script>
 <script>
 (function(){
 'use strict';
 // Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
-const PROFILE_VERSION='20261107-profile-localfirst-8';
+const PROFILE_VERSION='20261107-profile-localfirst-9';
 if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
@@ -154,7 +154,7 @@ async function initDocuments(owner){const db=await openDocDB();const list=$('doc
 
 async function load(){
  const auth=await new Promise(resolve=>{
-  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser});return}
+  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile});return}
   const done=e=>{window.removeEventListener('inspecteurbot:authenticated',done);resolve(e.detail)};
   window.addEventListener('inspecteurbot:authenticated',done,{once:true});
  });
@@ -163,13 +163,18 @@ async function load(){
  if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';$('status').hidden=false;return}
  // Start local document loading immediately, but do not block account/profile rendering.
  const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
- let p=auth.profile;
+ let p=auth.profile||window.inspecteurBotAuthProfile||null;
  try{const saved=JSON.parse(localStorage.getItem(PROFILE_LOCAL_PREFIX+user.id)||'null');if(saved?.profile?.id===user.id&&saved.profile.is_active===true)p={...saved.profile,...(p||{})}}catch(_){}
  if(!p?.id||!('telephone' in p)||!('adresse_physique' in p)||!('agent_id' in p)){
-  try{const result=await Promise.race([client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Le chargement du profil prend trop de temps. Réessayez.')),9000))]);
-   if(result.error||!result.data)throw result.error||new Error('Profil introuvable.');p=result.data;try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){}
-  }catch(error){$('status').textContent=error.message||'Impossible de charger votre profil.';$('status').hidden=false;return}
+  try{
+   const result=await Promise.race([
+    client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle(),
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error('Synchronisation différée')),3000))
+   ]);
+   if(!result.error&&result.data){p={...p,...result.data};try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){}}
+  }catch(error){console.info('Profil local affiché ; synchronisation distante différée.',error.message)}
  }
+ if(!p?.id)p={id:user.id,display_name:user.email||'Utilisateur',role:'agent',is_active:true,telephone:'',adresse_physique:'',agent_id:null,avatar_url:null};
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
  $('account').innerHTML=item('Nom d’utilisateur',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
  $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
