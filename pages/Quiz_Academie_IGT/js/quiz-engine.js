@@ -12,7 +12,7 @@ class QuizEngine {
     this.timeLeft = 60;
     this.selectedOptionIds = [];
     this.isAnswered = false;
-    this.autoAdvanceDelay = 35000; // Résultat et explication visibles pendant 35 secondes
+    this.autoAdvanceDelay = 14000; // Réponse et explication visibles pendant 14 secondes
   }
 
   loadQuestion(question, containerEl, onFinishCallback) {
