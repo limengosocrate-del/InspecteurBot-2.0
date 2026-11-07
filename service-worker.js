@@ -1,6 +1,6 @@
 /* InspecteurBot — service worker unique, sans interception double des requêtes */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-07-v5';
+const CACHE='inspecteurbot-shell-2026-11-07-v6';
 const SHELL=['./','./index.html','./profil.html','./notifications.html','./admin.html','./auth-gate.js'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL).catch(()=>{})));
@@ -16,17 +16,24 @@ self.addEventListener('fetch',event=>{
  if(url.origin!==self.location.origin)return;
  const isPage=request.mode==='navigate'||/\\.(html|js)$/.test(url.pathname);
  if(isPage){
-  event.respondWith(fetch(request).then(response=>{
-   if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});}
-   return response;
-  }).catch(async()=>{
-   const cached=await caches.match(request);
-   return cached||caches.match('./index.html');
-  }));
+  event.respondWith((async()=>{
+   const cache=await caches.open(CACHE);
+   const cached=await cache.match(request,{ignoreSearch:true});
+   const refresh=fetch(request).then(response=>{
+    if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
+    return response;
+   }).catch(()=>null);
+   if(cached){event.waitUntil(refresh.then(()=>undefined));return cached;}
+   return (await refresh)||await cache.match('./index.html')||Response.error();
+  })());
   return;
  }
- event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{
-  if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});}
+ event.respondWith((async()=>{
+  const cache=await caches.open(CACHE);
+  const cached=await cache.match(request);
+  if(cached)return cached;
+  const response=await fetch(request);
+  if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
   return response;
- })));
+ })());
 });
