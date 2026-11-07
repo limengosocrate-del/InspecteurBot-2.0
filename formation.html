@@ -96,7 +96,7 @@
   byId('lesson-panel').scrollIntoView({behavior:'smooth',block:'start'});
  }
  function renderExercise(r){
-  if(r.exercise?.content){byId('lesson-content').innerHTML='<article class="written-course">'+esc(r.exercise.content).replace(/\\r?\\n/g,'<br>')+'</article>';return;}
+  if(r.exercise?.content){byId('lesson-content').innerHTML='<article class="written-course">'+esc(r.exercise.content).replace(/\r?\n/g,'<br>')+'</article>';return;}
   const qs=Array.isArray(r.exercise?.questions)?r.exercise.questions:[];
   if(!qs.length){byId('lesson-content').innerHTML='<p class="notice">Cet exercice ne contient pas encore de questions valides.</p>';return;}
   byId('lesson-content').innerHTML=qs.map((q,i)=>`<div class="question"><strong>${i+1}. ${esc(q.question)}</strong>${(q.options||[]).map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join('')}<p id="explain-${i}" class="muted"></p></div>`).join('')+'<button class="btn gold" id="submit-exercise" type="button">Corriger mes réponses</button>';
