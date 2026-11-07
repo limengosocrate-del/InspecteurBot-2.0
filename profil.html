@@ -120,12 +120,12 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-auth-smooth-15"></script>
+<script src="auth-gate.js?v=20261107-auth-localfirst-16"></script>
 <script>
 (function(){
 'use strict';
 // Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
-const PROFILE_VERSION='20261107-profile-fastload-7';
+const PROFILE_VERSION='20261107-profile-localfirst-8';
 if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
@@ -134,6 +134,8 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function item(label,value){const empty=value===null||value===undefined||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
 function date(v){if(!v)return null;const d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR')}
 function role(v){return ({super_admin:'Super administrateur',admin:'Administrateur',agent:'Agent'})[v]||v}
+const PROFILE_LOCAL_PREFIX='inspecteurbot_profile_cache_v2_';
+const AGENT_LOCAL_PREFIX='inspecteurbot_agent_cache_v1_';
 const DOC_DB='inspecteurbot_personal_documents_v1';
 function openDocDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DOC_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('documents')){const st=db.createObjectStore('documents',{keyPath:'id'});st.createIndex('owner','owner',{unique:false})}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Ouverture du stockage local impossible.'))})}
 function docTx(db,mode,fn){return new Promise((resolve,reject)=>{const tx=db.transaction('documents',mode),st=tx.objectStore('documents');let result;try{result=fn(st)}catch(e){reject(e);return}tx.oncomplete=()=>resolve(result?.result);tx.onerror=()=>reject(tx.error||Error('Erreur du stockage local.'));tx.onabort=()=>reject(tx.error||Error('Opération annulée.'))})}
@@ -162,9 +164,10 @@ async function load(){
  // Start local document loading immediately, but do not block account/profile rendering.
  const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
  let p=auth.profile;
+ try{const saved=JSON.parse(localStorage.getItem(PROFILE_LOCAL_PREFIX+user.id)||'null');if(saved?.profile?.id===user.id&&saved.profile.is_active===true)p={...saved.profile,...(p||{})}}catch(_){}
  if(!p?.id||!('telephone' in p)||!('adresse_physique' in p)||!('agent_id' in p)){
   try{const result=await Promise.race([client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Le chargement du profil prend trop de temps. Réessayez.')),9000))]);
-   if(result.error||!result.data)throw result.error||new Error('Profil introuvable.');p=result.data;
+   if(result.error||!result.data)throw result.error||new Error('Profil introuvable.');p=result.data;try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){}
   }catch(error){$('status').textContent=error.message||'Impossible de charger votre profil.';return}
  }
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
@@ -194,14 +197,17 @@ async function load(){
      const avatarUrl=publicData.publicUrl+'?v='+Date.now();
      const {data:updated,error:updateError}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value||p.display_name||user.email,telephone:$('editPhone').value,adresse_physique:$('editAddress').value,avatar_url:avatarUrl}});
      if(updateError||!updated?.success)throw Error(updated?.message||updateError?.message||'Impossible d’enregistrer la photo.');
-     p.avatar_url=avatarUrl;showAvatar(avatarUrl);msg.textContent='Photo de profil enregistrée et synchronisée.';msg.style.color='#138a65';
+     p.avatar_url=avatarUrl;try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){};showAvatar(avatarUrl);msg.textContent='Photo de profil enregistrée et synchronisée.';msg.style.color='#138a65';
    }catch(err){msg.textContent=err.message||'Envoi de la photo impossible.';msg.style.color='#b42318'}
    finally{btn.removeAttribute('aria-disabled');e.target.value=''}
  });
- $('professional').innerHTML=item('Fiche professionnelle',p.agent_id?'Chargement des informations professionnelles…':'Aucune fiche agent liée au compte');
+ const agentFields=a=>[['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]];
+ let cachedAgent=null;try{cachedAgent=JSON.parse(localStorage.getItem(AGENT_LOCAL_PREFIX+user.id)||'null')}catch(_){}
+ if(cachedAgent?.agentId===p.agent_id&&cachedAgent.data)$('professional').innerHTML=agentFields(cachedAgent.data).map(x=>item(x[0],x[1])).join('');
+ else $('professional').innerHTML=p.agent_id?'Fiche professionnelle':'Aucune fiche agent liée au compte';
  if(p.agent_id){
    client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle().then(r=>{
-     if(!r.error&&r.data){const a=r.data;const fields=[['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]];$('professional').innerHTML=fields.map(x=>item(x[0],x[1])).join('')}
+     if(!r.error&&r.data){const a=r.data;try{localStorage.setItem(AGENT_LOCAL_PREFIX+user.id,JSON.stringify({agentId:p.agent_id,data:a,savedAt:Date.now()}))}catch(_){};$('professional').innerHTML=agentFields(a).map(x=>item(x[0],x[1])).join('')}
    }).catch(()=>{});
  }
  if(!p.display_name||!p.telephone||!p.adresse_physique||!p.agent_id){$('notice').textContent='Certaines informations de votre compte ne sont pas encore renseignées. Les rubriques restent visibles ; contactez l’administrateur pour compléter les données manquantes.'}
@@ -211,6 +217,7 @@ async function load(){
    try{
      const {data,error}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value,telephone:$('editPhone').value,adresse_physique:$('editAddress').value}});
      if(error||!data?.success)throw new Error(data?.message||error?.message||'Enregistrement impossible.');
+     try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:data.profile,savedAt:Date.now()}))}catch(_){}
      msg.textContent='Paramètres enregistrés.';msg.style.color='#138a65';
      $('account').innerHTML=item('Nom affiché',data.profile.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(data.profile.role))+item('État du compte',data.profile.is_active?'Actif':'Suspendu')+item('Compte créé le',date(data.profile.created_at))+item('Dernière mise à jour',date(data.profile.updated_at));
      $('contact').innerHTML=item('Téléphone',data.profile.telephone)+item('Adresse physique',data.profile.adresse_physique);
