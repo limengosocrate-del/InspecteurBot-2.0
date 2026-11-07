@@ -106,8 +106,11 @@
   });
  }
  async function saveProgress(resourceId,answers,score,completed){
-  const payload={resource_id:resourceId,user_id:user.id,answers,score,completed_at:completed?new Date().toISOString():null,updated_at:new Date().toISOString()};
-  const {error}=await client().from('training_progress').upsert(payload,{onConflict:'resource_id,user_id'});
+  const sb=client();
+  const prior=await sb.from('training_progress').select('answers,score,completed_at').eq('resource_id',resourceId).eq('user_id',user.id).maybeSingle();
+  const old=prior.data||{};
+  const payload={resource_id:resourceId,user_id:user.id,answers:{...(old.answers||{}),...(answers||{})},score:score==null?(old.score??null):score,completed_at:completed?new Date().toISOString():(old.completed_at||null),updated_at:new Date().toISOString()};
+  const {error}=await sb.from('training_progress').upsert(payload,{onConflict:'resource_id,user_id'});
   if(error)say('lesson-status','Votre activité est affichée, mais sa sauvegarde a échoué. Réessayez après vérification de la connexion.');
  }
  byId('close-lesson').addEventListener('click',()=>byId('lesson-panel').classList.add('hidden'));
