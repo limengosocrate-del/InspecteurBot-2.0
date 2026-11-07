@@ -58,12 +58,19 @@
     <link rel="stylesheet" href="assets/css/livre.css">
     <link rel="stylesheet" href="assets/css/igt-professional.css?v=20261107-1">
 <style id="igt-fixed-dark-theme">
-html,body,body.dark-theme{background:#0b0f14!important;color:#f5f7fa!important;color-scheme:dark!important}
-body.dark-theme .container,body.dark-theme main,body.dark-theme section,body.dark-theme .card,body.dark-theme .search-section,body.dark-theme .article-card,body.dark-theme .livre,body.dark-theme .livre-page{background-color:#111820!important;color:#f5f7fa!important}
-body.dark-theme h1,body.dark-theme h2,body.dark-theme h3,body.dark-theme h4,body.dark-theme p,body.dark-theme li,body.dark-theme label,body.dark-theme span,body.dark-theme strong,body.dark-theme .livre-contenu{color:#f5f7fa!important}
-body.dark-theme input,body.dark-theme textarea,body.dark-theme select{background:#18212b!important;color:#fff!important;border-color:#344354!important}
+:root{color-scheme:dark;--ct-bg:#0b0f14;--ct-surface:#111820;--ct-text:#f5f7fa;--ct-muted:#b9c5d1;--ct-input:#18212b}
+body.dark-theme{background:var(--ct-bg)!important;color:var(--ct-text)!important;color-scheme:dark!important}
+body.dark-theme .container,body.dark-theme main,body.dark-theme section,body.dark-theme .card,body.dark-theme .search-section,body.dark-theme .article-card,body.dark-theme .livre,body.dark-theme .livre-page{background-color:var(--ct-surface)!important;color:var(--ct-text)!important}
+body.dark-theme h1,body.dark-theme h2,body.dark-theme h3,body.dark-theme h4,body.dark-theme p,body.dark-theme li,body.dark-theme label,body.dark-theme span,body.dark-theme strong,body.dark-theme .livre-contenu{color:var(--ct-text)!important}
+body.dark-theme input,body.dark-theme textarea,body.dark-theme select{background:var(--ct-input)!important;color:#fff!important;border-color:#344354!important}
 body.dark-theme input::placeholder,body.dark-theme textarea::placeholder{color:#aab7c4!important}
-html,body{max-width:100%;overflow-x:hidden;overscroll-behavior-y:contain}
+body.light-theme{background:#f5f3ee!important;color:#263342!important;color-scheme:light!important}
+body.light-theme .container,body.light-theme main,body.light-theme section,body.light-theme .card,body.light-theme .search-section,body.light-theme .article-card,body.light-theme .livre,body.light-theme .livre-page{background-color:#fffefa!important;color:#263342!important}
+body.light-theme h1,body.light-theme h2,body.light-theme h3,body.light-theme h4,body.light-theme p,body.light-theme li,body.light-theme label,body.light-theme span,body.light-theme strong,body.light-theme .livre-contenu{color:#263342!important}
+body.light-theme input,body.light-theme textarea,body.light-theme select{background:#fff!important;color:#263342!important;border-color:#d8d4ca!important}
+body.light-theme input::placeholder,body.light-theme textarea::placeholder{color:#777b80!important}
+html,body{width:100%;max-width:100%;height:auto!important;min-height:100%;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;touch-action:pan-y}
+body{position:static!important;-webkit-overflow-scrolling:touch}
 img,video,canvas{max-width:100%;height:auto}
 </style>
 
