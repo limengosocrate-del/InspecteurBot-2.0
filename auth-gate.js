@@ -126,17 +126,12 @@ async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);gate();return}
  if(busy)return;busy=true;
  try{
-  const routeIsAdmin=location.pathname.endsWith('/admin.html');
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
   const sessionResult=await serverCheck();
-  data=sessionResult?.profile;
+  const data=sessionResult?.profile;
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
-   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  }
-  if(data.is_active!==true)throw Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.');
   user=session.user;profile=data;
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
