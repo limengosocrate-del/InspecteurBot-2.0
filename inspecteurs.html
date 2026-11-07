@@ -116,7 +116,7 @@
         <article class="card highlight-card" onclick="showSection('itct-ia')">
           <i class="fa-solid fa-brain card-icon"></i>
           <h3>IT/CT IA</h3>
-          <p>Intelligence artificielle locale pour l'écoute, la retranscription et la génération automatique de rapports.</p>
+          <p>Assistant d'aide à la rédaction, de structuration des constats et de préparation des rapports.</p>
         </article>
       </div>
     </section>
@@ -397,7 +397,7 @@
     <!-- ====== IT/CT IA ====== -->
     <section id="itct-ia" class="section">
       <h2><i class="fa-solid fa-brain"></i> IT/CT IA — Intelligence Artificielle du Travail</h2>
-      <p class="section-desc">Écoute, retranscription en temps réel, détection automatique de la langue (français, anglais, lingala, swahili) et génération automatique de rapports structurés.</p>
+      <p class="section-desc">Préparez vos rapports à partir de notes saisies manuellement. Aucun enregistrement audio ni transcription automatique n'est lancé.</p>
 
       <div class="ia-mode-selector">
         <button onclick="setIAMode('mission')" class="mode-btn active" id="modeMission">IA Mission</button>
@@ -411,12 +411,9 @@
         <div class="ia-left">
           <div class="ia-status-card">
             <div class="ia-status-indicator" id="iaStatusIndicator"></div>
-            <h4>Statut de l'écoute</h4>
-            <p id="iaStatusText">Prêt — Appuyez sur Démarrer</p>
+            <h4>Préparation du rapport</h4>
+            <p id="iaStatusText">Prêt — Saisissez les faits et les éléments utiles ci-dessous.</p>
           </div>
-          <button onclick="startListening()" class="btn-primary big-btn" id="btnStart" aria-label="Démarrer l'écoute IA"><i class="fa-solid fa-microphone-lines"></i> Démarrer</button>
-          <button onclick="stopListening()" class="btn-danger big-btn hidden" id="btnStop" aria-label="Arrêter l'écoute IA"><i class="fa-solid fa-microphone-slash"></i> Arrêter</button>
-
           <div class="ia-settings">
             <label for="iaDuration">Durée max (heures)</label>
             <input type="number" id="iaDuration" value="4" min="1" max="8" step="0.5" aria-label="Durée maximale en heures" />
@@ -428,8 +425,8 @@
         </div>
 
         <div class="ia-right">
-          <div class="ia-transcript" id="iaTranscript" aria-live="polite" aria-label="Transcription en temps réel">
-            <p class="transcript-placeholder">La transcription apparaîtra ici dès le démarrage...</p>
+          <div class="ia-transcript" id="iaTranscript" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Notes et faits constatés">
+            <p class="transcript-placeholder">Saisissez ici les faits constatés, les déclarations, les pièces examinées, les dates et les observations utiles au rapport…</p>
           </div>
         </div>
       </div>
