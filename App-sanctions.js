@@ -137,7 +137,7 @@ class InspecteurBotSanctions {
             "mise-demeure":"sanctions",
             "decrets":"bibliotheque","arretes":"bibliotheque","circulaires":"bibliotheque",
             "oit":"bibliotheque","jurisprudence":"bibliotheque","faqJuridique":"bibliotheque",
-            "glossaire":"bibliotheque","veille":"bibliotheque",
+            "glossaire":"bibliotheque","veille":"bibliotheque","smig":"bibliotheque","aimDocs":"aim006",
             "avantMission":"guide","pendantMission":"guide","apresMission":"guide",
             "documentsControle":"guide","checklists":"guide","bonnesPratiques":"guide",
             "conciliation":"cas-pratiques","verbalisation":"infractions65",
@@ -157,7 +157,7 @@ class InspecteurBotSanctions {
                 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
                 const items = (this.infractions || []).filter(item => fav.includes(item.id));
                 section.innerHTML = '<div class="page-header"><h2><i class="fa-solid fa-star"></i> Mes favoris</h2><p>Vos infractions enregistrées sur ce compte.</p></div>' +
-                  (items.length ? items.map(item => '<article class="card"><h3>'+esc(item.infraction)+'</h3><p><strong>Article :</strong> '+esc(item.article)+'</p><p><strong>Amende / sanction :</strong> '+esc(item.montant)+'</p><button class="btn btn-outline" type="button" onclick="app.navTo('infractions65','Les 65 Infractions')">Voir les infractions</button></article>').join('') : '<div class="card"><p>Aucun favori enregistré. Ajoutez une infraction depuis la liste des 65 infractions.</p><button class="btn" type="button" onclick="app.navTo(\'infractions65\',\'Les 65 Infractions\')">Consulter les infractions</button></div>');
+                  (items.length ? items.map(item => '<article class="card"><h3>'+esc(item.infraction)+'</h3><p><strong>Article :</strong> '+esc(item.article)+'</p><p><strong>Amende / sanction :</strong> '+esc(item.montant)+'</p><button class="btn btn-outline" type="button" onclick="app.navTo(&quot;infractions65&quot;,&quot;Les 65 Infractions&quot;)">Voir les infractions</button></article>').join('') : '<div class="card"><p>Aucun favori enregistré. Ajoutez une infraction depuis la liste des 65 infractions.</p><button class="btn" type="button" onclick="app.navTo(\'infractions65\',\'Les 65 Infractions\')">Consulter les infractions</button></div>');
                 document.querySelector(".content")?.appendChild(section);
                 this.views = document.querySelectorAll(".view");
             }
