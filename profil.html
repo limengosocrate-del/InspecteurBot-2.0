@@ -37,6 +37,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 #editProfile .field{display:block}
 #saveProfile{border:0;border-radius:9px;padding:12px 18px;background:var(--navy);color:white;font-weight:700;cursor:pointer}
 #saveProfile:disabled{opacity:.6;cursor:wait}
+.avatar-editor{display:flex;align-items:center;gap:18px}.avatar-editor img,.avatar-fallback{width:104px;height:104px;flex:0 0 104px;border-radius:50%;object-fit:cover;border:3px solid #e5eef6}.avatar-fallback{display:grid;place-items:center;background:#eaf4fb;color:#0787b8;font-size:38px}.avatar-controls{display:grid;gap:10px}.avatar-controls p{font-size:12px;color:var(--muted);margin:0}.avatar-upload{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;padding:10px 14px;border-radius:9px;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer}.avatar-upload[aria-disabled="true"]{opacity:.6;pointer-events:none}#avatarMessage{font-size:11px;color:var(--muted)}
 #documents{margin-top:16px}
 .doc-actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
 .doc-actions button,.doc-row button{border:0;border-radius:8px;padding:10px 13px;background:var(--navy);color:white;font-weight:600;cursor:pointer}
@@ -76,6 +77,19 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 <main>
 <div id="status">Chargement de votre profil…</div>
 <div id="profile" hidden>
+<section class="wide avatar-card" style="margin-bottom:16px">
+<h2>📷 Ma photo de profil</h2>
+<div class="avatar-editor">
+<img id="profileAvatar" alt="Photo de profil" src="" hidden>
+<div id="profileAvatarFallback" class="avatar-fallback"><i class="fa-solid fa-user"></i></div>
+<div class="avatar-controls">
+<p>Ajoutez une photo qui sera visible dans le menu de votre compte sur InspecteurBot.</p>
+<label for="avatarFile" class="avatar-upload">＋ Ajouter ou modifier ma photo</label>
+<input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<small id="avatarMessage" role="status" aria-live="polite">JPG, PNG ou WEBP · 2 Mo maximum</small>
+</div>
+</div>
+</section>
 <div class="notice" id="notice">Les rubriques sont affichées même si certaines informations ne sont pas encore renseignées.</div>
 <section class="wide" style="margin-bottom:16px">
 <h2>✏️ Modifier mes coordonnées</h2>
@@ -106,12 +120,12 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-header-performance-2"></script>
+<script src="auth-gate.js?v=20261107-avatar-persistent-session-5"></script>
 <script>
 (function(){
 'use strict';
 // Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
-const PROFILE_VERSION='20261107-profile-redesign-4';
+const PROFILE_VERSION='20261107-avatar-persistent-session-5';
 if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
@@ -147,17 +161,45 @@ async function load(){
  if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';return}
  // Start local document loading immediately, but do not block account/profile rendering.
  const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
- const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique').eq('id',user.id).maybeSingle();
+ const {data:p,error}=await client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle();
  if(error||!p){$('status').textContent='Impossible de charger votre profil : '+(error?.message||'profil introuvable');return}
- let a=null;
- if(p.agent_id){const r=await client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle();if(!r.error)a=r.data}
  $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
  $('account').innerHTML=item('Nom affiché',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
  $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
- const fields=a?[
- ['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]
- ]:[['Fiche professionnelle',p.agent_id?'Fiche liée mais non consultable':'Aucune fiche agent liée au compte'],['Identifiant agent',p.agent_id]];
- $('professional').innerHTML=fields.map(x=>item(x[0],x[1])).join('');
+ const avatar=$('profileAvatar'),fallback=$('profileAvatarFallback');
+ function showAvatar(url){if(url){avatar.src=url;avatar.hidden=false;fallback.hidden=true}else{avatar.hidden=true;avatar.removeAttribute('src');fallback.hidden=false}if(window.inspecteurBotSetAvatar)window.inspecteurBotSetAvatar(url||'')}
+ showAvatar(p.avatar_url);
+ $('avatarFile').addEventListener('change',async e=>{
+   const file=e.target.files?.[0];if(!file)return;
+   const msg=$('avatarMessage'),btn=document.querySelector('.avatar-upload');btn.setAttribute('aria-disabled','true');msg.textContent='Optimisation et envoi de la photo…';
+   try{
+     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Choisissez une image JPG, PNG ou WEBP.');
+     if(file.size>2*1024*1024)throw Error('La photo ne doit pas dépasser 2 Mo.');
+     let uploadFile=file;
+     if(file.size>700*1024&&'createImageBitmap' in window){
+       const bitmap=await createImageBitmap(file);const scale=Math.min(1,900/Math.max(bitmap.width,bitmap.height));
+       const canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);
+       canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+       const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.82));if(blob)uploadFile=new File([blob],'avatar.webp',{type:'image/webp'});
+     }
+     const ext=uploadFile.type==='image/png'?'png':uploadFile.type==='image/webp'?'webp':'jpg';
+     const path=user.id+'/profile.'+ext;
+     const {error:uploadError}=await client.storage.from('avatars').upload(path,uploadFile,{upsert:true,contentType:uploadFile.type,cacheControl:'3600'});
+     if(uploadError)throw uploadError;
+     const {data:publicData}=client.storage.from('avatars').getPublicUrl(path);
+     const avatarUrl=publicData.publicUrl+'?v='+Date.now();
+     const {data:updated,error:updateError}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value||p.display_name||user.email,telephone:$('editPhone').value,adresse_physique:$('editAddress').value,avatar_url:avatarUrl}});
+     if(updateError||!updated?.success)throw Error(updated?.message||updateError?.message||'Impossible d’enregistrer la photo.');
+     p.avatar_url=avatarUrl;showAvatar(avatarUrl);msg.textContent='Photo de profil enregistrée et synchronisée.';msg.style.color='#138a65';
+   }catch(err){msg.textContent=err.message||'Envoi de la photo impossible.';msg.style.color='#b42318'}
+   finally{btn.removeAttribute('aria-disabled');e.target.value=''}
+ });
+ $('professional').innerHTML=item('Fiche professionnelle',p.agent_id?'Chargement des informations professionnelles…':'Aucune fiche agent liée au compte');
+ if(p.agent_id){
+   client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle().then(r=>{
+     if(!r.error&&r.data){const a=r.data;const fields=[['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]];$('professional').innerHTML=fields.map(x=>item(x[0],x[1])).join('')}
+   }).catch(()=>{});
+ }
  if(!p.display_name||!p.telephone||!p.adresse_physique||!p.agent_id){$('notice').textContent='Certaines informations de votre compte ne sont pas encore renseignées. Les rubriques restent visibles ; contactez l’administrateur pour compléter les données manquantes.'}
  $('editProfile').addEventListener('submit',async e=>{
    e.preventDefault();
