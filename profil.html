@@ -100,7 +100,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 <div class="wide"><button id="saveProfile" type="submit" style="border:0;border-radius:9px;padding:12px 18px;background:#075a96;color:white;font-weight:700">Enregistrer mes paramètres</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span></div>
 </form>
 </section>
-<div class="grid">
+<div class="grid" id="mes-informations">
 <section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
 <section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
 <section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
@@ -119,122 +119,82 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="auth-gate.js?v=20261107-auth-localfirst-18"></script>
 <script>
+/* InspecteurBot — profil, paramètres et fiche professionnelle en stockage local uniquement. */
 (function(){
 'use strict';
-// Force une URL versionnée afin d'éviter une ancienne copie HTML conservée par le navigateur ou un service worker.
-const PROFILE_VERSION='20261107-profile-localfirst-9';
-if(new URLSearchParams(location.search).get('v')!==PROFILE_VERSION){const u=new URL(location.href);u.searchParams.set('v',PROFILE_VERSION);location.replace(u.toString());return;}
-const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
-const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
+const KEY='inspecteurbot_local_profile_v1';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function item(label,value){const empty=value===null||value===undefined||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
-function date(v){if(!v)return null;const d=new Date(v);return isNaN(d)?v:d.toLocaleString('fr-FR')}
-function role(v){return ({super_admin:'Super administrateur',admin:'Administrateur',agent:'Agent'})[v]||v}
-const PROFILE_LOCAL_PREFIX='inspecteurbot_profile_cache_v2_';
-const AGENT_LOCAL_PREFIX='inspecteurbot_agent_cache_v1_';
-const DOC_DB='inspecteurbot_personal_documents_v1';
-function openDocDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DOC_DB,1);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('documents')){const st=db.createObjectStore('documents',{keyPath:'id'});st.createIndex('owner','owner',{unique:false})}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Ouverture du stockage local impossible.'))})}
-function docTx(db,mode,fn){return new Promise((resolve,reject)=>{const tx=db.transaction('documents',mode),st=tx.objectStore('documents');let result;try{result=fn(st)}catch(e){reject(e);return}tx.oncomplete=()=>resolve(result?.result);tx.onerror=()=>reject(tx.error||Error('Erreur du stockage local.'));tx.onabort=()=>reject(tx.error||Error('Opération annulée.'))})}
-function fmtSize(n){if(n<1024)return n+' o';if(n<1048576)return (n/1024).toFixed(1)+' Ko';return (n/1048576).toFixed(2)+' Mo'}
-function safeName(n){return String(n||'document').replace(/[\\/:*?"<>|]/g,'_')}
-function readAsDataURL(file){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=()=>reject(Error('Lecture du fichier impossible : '+file.name));fr.readAsDataURL(file)})}
-function dataURLBlob(data){const parts=String(data).split(',');const mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const raw=atob(parts[1]||'');const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type:mime})}
-async function initDocuments(owner){const db=await openDocDB();const list=$('docList'),status=$('docStatus');
- async function all(){const rows=await docTx(db,'readonly',st=>st.index('owner').getAll(owner));return rows||[]}
- async function render(){const rows=await all();rows.sort((a,b)=>b.addedAt-a.addedAt);list.innerHTML='';if(!rows.length){list.innerHTML='<div class="doc-empty">Aucun document enregistré pour le moment.</div>';return}for(const d of rows){const row=document.createElement('div');row.className='doc-row';const meta=document.createElement('div');meta.className='doc-meta';const title=document.createElement('strong');title.textContent=d.name;const sub=document.createElement('small');sub.textContent=fmtSize(d.size)+' · Ajouté le '+new Date(d.addedAt).toLocaleString('fr-FR');meta.append(title,sub);const actions=document.createElement('div');actions.className='doc-row-actions';const down=document.createElement('button');down.type='button';down.textContent='Télécharger';down.addEventListener('click',()=>{const url=URL.createObjectURL(d.blob);const a=document.createElement('a');a.href=url;a.download=safeName(d.name);document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)});const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Supprimer';del.addEventListener('click',async()=>{if(!confirm('Supprimer « '+d.name+' » de ce stockage local ?'))return;await docTx(db,'readwrite',st=>st.delete(d.id));status.textContent='Document supprimé du stockage local.';await render()});actions.append(down,del);row.append(meta,actions);list.appendChild(row)}}
- $('docFiles').addEventListener('change',async e=>{const files=Array.from(e.target.files||[]);if(!files.length)return;status.textContent='Enregistrement des documents…';let count=0;try{for(const f of files){if(f.size>30*1024*1024)throw Error(f.name+' dépasse la limite de 30 Mo par fichier.');const rec={id:owner+'_'+Date.now()+'_'+Math.random().toString(36).slice(2),owner,name:f.name,type:f.type||'application/octet-stream',size:f.size,addedAt:Date.now(),blob:f};await docTx(db,'readwrite',st=>st.add(rec));count++}status.textContent=count+' document(s) enregistré(s) sur cet appareil.';await render()}catch(err){status.textContent='Enregistrement interrompu : '+err.message;await render()}finally{e.target.value=''}});
- $('backupDocs').addEventListener('click',async()=>{try{status.textContent='Préparation de la sauvegarde…';const rows=await all();const out=[];for(const d of rows){const fr=await readAsDataURL(new File([d.blob],d.name,{type:d.type}));out.push({name:d.name,type:d.type,size:d.size,addedAt:d.addedAt,data:fr})}const payload={format:'InspecteurBot-Documents',version:1,exportedAt:new Date().toISOString(),documents:out};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='InspecteurBot-documents-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);status.textContent=out.length+' document(s) exporté(s) dans la sauvegarde.'}catch(err){status.textContent='Échec de la sauvegarde : '+err.message}});
- $('restoreDocs').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>200*1024*1024)throw Error('La sauvegarde dépasse 200 Mo.');const payload=JSON.parse(await f.text());if(payload.format!=='InspecteurBot-Documents'||!Array.isArray(payload.documents))throw Error('Ce fichier n’est pas une sauvegarde InspecteurBot valide.');if(!confirm('Importer '+payload.documents.length+' document(s) dans le compte actuellement connecté ? Les fichiers existants seront conservés.'))return;let count=0;for(const d of payload.documents){if(!d.name||!d.data)continue;const blob=dataURLBlob(d.data);if(blob.size>30*1024*1024)continue;const rec={id:owner+'_restore_'+Date.now()+'_'+Math.random().toString(36).slice(2),owner,name:safeName(d.name),type:d.type||blob.type,size:blob.size,addedAt:d.addedAt||Date.now(),blob};await docTx(db,'readwrite',st=>st.add(rec));count++}status.textContent=count+' document(s) restauré(s) pour ce compte.';await render()}catch(err){status.textContent='Restauration impossible : '+err.message}finally{e.target.value=''}});
+const fields=[
+ ['Nom complet','nom_complet'],['Matricule','matricule'],['Grade','grade'],
+ ['Fonction','fonction'],['Catégorie','categorie'],['Direction','direction'],
+ ['Lieu d’affectation','lieu_affectation'],['Province','province'],
+ ['Téléphone professionnel','telephone_pro'],['Statut professionnel','statut'],
+ ['Numéro d’ordre','numero_ordre']
+];
+function read(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY)||'null');
+  if(saved&&typeof saved==='object')return saved;
+ }catch(e){}
+ // Migration ponctuelle d'une fiche déjà mise en cache sur cet appareil.
+ try{
+  for(let i=0;i<localStorage.length;i++){
+   const k=localStorage.key(i);
+   if(k&&k.startsWith('inspecteurbot_profile_cache_v2_')){
+    const old=JSON.parse(localStorage.getItem(k)||'null')?.profile;
+    if(old){const migrated={username:old.display_name||'',email:old.email||'',phone:old.telephone||'',address:old.adresse_physique||'',role:old.role||'Utilisateur',createdAt:old.created_at||'',avatar:old.avatar_local||'',professional:{}};localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
+   }
+  }
+ }catch(e){}
+ return {username:'',email:'',phone:'',address:'',role:'Utilisateur',createdAt:'',avatar:'',professional:{}};
+}
+let data=read();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
+function item(label,value){const empty=value===undefined||value===null||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
+function show(){
+ $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Mode de conservation','Stockage local de cet appareil');
+ $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
+ $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
+ $('editName').value=data.username||'';$('editPhone').value=data.phone||'';$('editAddress').value=data.address||'';
+ fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=data.professional?.[key]||''});
+ if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
+ else{$('profileAvatar').hidden=true;$('profileAvatarFallback').hidden=false}
+ $('notice').textContent='Vos paramètres et informations sont conservés localement sur cet appareil. Aucune requête Supabase n’est utilisée sur cette page.';
+ $('status').hidden=true;$('profile').hidden=false;
+}
+$('editProfile').addEventListener('submit',e=>{
+ e.preventDefault();
+ data.username=$('editName').value.trim();data.phone=$('editPhone').value.trim();data.address=$('editAddress').value.trim();
+ data.professional=data.professional||{};
+ fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)data.professional[key]=el.value.trim()});
+ if(save()){show();$('saveMessage').textContent='Enregistré sur cet appareil.';$('saveMessage').style.color='#138a65'}
+});
+$('avatarFile').addEventListener('change',e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ if(!/^image\/(jpeg|png|webp)$/.test(f.type)){ $('avatarMessage').textContent='Format accepté : JPG, PNG ou WEBP.';return}
+ if(f.size>2*1024*1024){$('avatarMessage').textContent='La photo doit faire 2 Mo maximum.';return}
+ const reader=new FileReader();
+ reader.onload=()=>{data.avatar=reader.result;if(save()){show();$('avatarMessage').textContent='Photo enregistrée localement.'}};
+ reader.onerror=()=>$('avatarMessage').textContent='Lecture de la photo impossible.';
+ reader.readAsDataURL(f);e.target.value='';
+});
+/* Documents personnels : IndexedDB, sans service distant. */
+const DB='inspecteurbot_personal_documents_local_v1';
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('docs'))r.result.createObjectStore('docs',{keyPath:'id'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function documents(){
+ const db=await openDB(),status=$('docStatus'),list=$('docList');
+ const all=()=>new Promise((resolve,reject)=>{const r=db.transaction('docs').objectStore('docs').getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error)});
+ const render=async()=>{const rows=await all();list.innerHTML='';if(!rows.length){list.innerHTML='<div class="doc-empty">Aucun document enregistré sur cet appareil.</div>';return}rows.sort((a,b)=>b.addedAt-a.addedAt).forEach(d=>{const row=document.createElement('div');row.className='doc-row';const meta=document.createElement('div');meta.className='doc-meta';const title=document.createElement('strong');title.textContent=d.name;const sub=document.createElement('small');sub.textContent=(d.blob.size/1024).toFixed(1)+' Ko · '+new Date(d.addedAt).toLocaleDateString('fr-FR');meta.append(title,sub);const actions=document.createElement('div');actions.className='doc-row-actions';const dl=document.createElement('button');dl.textContent='Télécharger';dl.onclick=()=>{const u=URL.createObjectURL(d.blob),a=document.createElement('a');a.href=u;a.download=d.name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500)};const del=document.createElement('button');del.className='secondary';del.textContent='Supprimer';del.onclick=async()=>{if(!confirm('Supprimer ce document ?'))return;await new Promise((res,rej)=>{const tx=db.transaction('docs','readwrite');tx.objectStore('docs').delete(d.id);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)});render()};actions.append(dl,del);row.append(meta,actions);list.append(row)})};
+ $('docFiles').addEventListener('change',async e=>{for(const f of Array.from(e.target.files||[])){await new Promise((res,rej)=>{const tx=db.transaction('docs','readwrite');tx.objectStore('docs').put({id:Date.now()+'_'+Math.random(),name:f.name,blob:f,addedAt:Date.now()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}status.textContent='Documents enregistrés sur cet appareil.';await render();e.target.value=''});
+ $('backupDocs').addEventListener('click',async()=>{const rows=await all(),out=[];for(const d of rows){const dataUrl=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(d.blob)});out.push({name:d.name,data:dataUrl,addedAt:d.addedAt})}const blob=new Blob([JSON.stringify({format:'InspecteurBot-local-documents-v1',documents:out})],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='InspecteurBot-documents.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);status.textContent='Sauvegarde exportée.'});
+ $('restoreDocs').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());if(p.format!=='InspecteurBot-local-documents-v1'||!Array.isArray(p.documents))throw Error('Fichier de sauvegarde invalide');for(const d of p.documents){const parts=d.data.split(','),mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/octet-stream',raw=atob(parts[1]),bytes=Uint8Array.from(raw,c=>c.charCodeAt(0)),blob=new Blob([bytes],{type:mime});await new Promise((res,rej)=>{const tx=db.transaction('docs','readwrite');tx.objectStore('docs').put({id:Date.now()+'_'+Math.random(),name:d.name,blob,addedAt:d.addedAt||Date.now()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}status.textContent='Sauvegarde restaurée.';await render()}catch(err){status.textContent='Restauration impossible : '+err.message}e.target.value=''});
  await render();
 }
-
-async function load(){
- const auth=await new Promise(resolve=>{
-  if(window.inspecteurBotAuthClient&&document.documentElement.classList.contains('inspecteur-auth-ready')){resolve({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile});return}
-  const done=e=>{window.removeEventListener('inspecteurbot:authenticated',done);resolve(e.detail)};
-  window.addEventListener('inspecteurbot:authenticated',done,{once:true});
- });
- const client=auth.client;
- const user=auth.user;
- if(!user?.id){$('status').textContent='Session non disponible. Reconnectez-vous.';$('status').hidden=false;return}
- // Start local document loading immediately, but do not block account/profile rendering.
- const docsPromise=initDocuments(user.id).catch(e=>{$('docStatus').textContent='Documents momentanément indisponibles : '+e.message});
- let p=auth.profile||window.inspecteurBotAuthProfile||null;
- try{const saved=JSON.parse(localStorage.getItem(PROFILE_LOCAL_PREFIX+user.id)||'null');if(saved?.profile?.id===user.id&&saved.profile.is_active===true)p={...saved.profile,...(p||{})}}catch(_){}
- if(!p?.id||!('telephone' in p)||!('adresse_physique' in p)||!('agent_id' in p)){
-  try{
-   const result=await Promise.race([
-    client.from('profiles').select('id,display_name,role,is_active,created_at,updated_at,agent_id,telephone,adresse_physique,avatar_url').eq('id',user.id).maybeSingle(),
-    new Promise((_,reject)=>setTimeout(()=>reject(new Error('Synchronisation différée')),3000))
-   ]);
-   if(!result.error&&result.data){p={...p,...result.data};try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){}}
-  }catch(error){console.info('Profil local affiché ; synchronisation distante différée.',error.message)}
- }
- if(!p?.id)p={id:user.id,display_name:user.email||'Utilisateur',role:'agent',is_active:true,telephone:'',adresse_physique:'',agent_id:null,avatar_url:null};
- $('editName').value=p.display_name||'';$('editPhone').value=p.telephone||'';$('editAddress').value=p.adresse_physique||'';
- $('account').innerHTML=item('Nom d’utilisateur',p.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(p.role))+item('État du compte',p.is_active?'Actif':'Suspendu')+item('Compte créé le',date(p.created_at))+item('Dernière mise à jour',date(p.updated_at));
- $('contact').innerHTML=item('Téléphone',p.telephone)+item('Adresse physique',p.adresse_physique);
- const avatar=$('profileAvatar'),fallback=$('profileAvatarFallback');
- function showAvatar(url){if(url){avatar.src=url;avatar.hidden=false;fallback.hidden=true}else{avatar.hidden=true;avatar.removeAttribute('src');fallback.hidden=false}if(window.inspecteurBotSetAvatar)window.inspecteurBotSetAvatar(url||'')}
- showAvatar(p.avatar_url);
- $('avatarFile').addEventListener('change',async e=>{
-   const file=e.target.files?.[0];if(!file)return;
-   const msg=$('avatarMessage'),btn=document.querySelector('.avatar-upload');btn.setAttribute('aria-disabled','true');msg.textContent='Optimisation et envoi de la photo…';
-   try{
-     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Choisissez une image JPG, PNG ou WEBP.');
-     if(file.size>2*1024*1024)throw Error('La photo ne doit pas dépasser 2 Mo.');
-     let uploadFile=file;
-     if(file.size>700*1024&&'createImageBitmap' in window){
-       const bitmap=await createImageBitmap(file);const scale=Math.min(1,900/Math.max(bitmap.width,bitmap.height));
-       const canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);
-       canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
-       const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.82));if(blob)uploadFile=new File([blob],'avatar.webp',{type:'image/webp'});
-     }
-     const ext=uploadFile.type==='image/png'?'png':uploadFile.type==='image/webp'?'webp':'jpg';
-     const path=user.id+'/profile.'+ext;
-     const {error:uploadError}=await client.storage.from('avatars').upload(path,uploadFile,{upsert:true,contentType:uploadFile.type,cacheControl:'3600'});
-     if(uploadError)throw uploadError;
-     const {data:publicData}=client.storage.from('avatars').getPublicUrl(path);
-     const avatarUrl=publicData.publicUrl+'?v='+Date.now();
-     const {data:updated,error:updateError}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value||p.display_name||user.email,telephone:$('editPhone').value,adresse_physique:$('editAddress').value,avatar_url:avatarUrl}});
-     if(updateError||!updated?.success)throw Error(updated?.message||updateError?.message||'Impossible d’enregistrer la photo.');
-     p.avatar_url=avatarUrl;try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:p,savedAt:Date.now()}))}catch(_){};showAvatar(avatarUrl);msg.textContent='Photo de profil enregistrée et synchronisée.';msg.style.color='#138a65';
-   }catch(err){msg.textContent=err.message||'Envoi de la photo impossible.';msg.style.color='#b42318'}
-   finally{btn.removeAttribute('aria-disabled');e.target.value=''}
- });
- const agentFields=a=>[['Nom complet',a.nom_complet],['Catégorie',a.categorie],['Matricule',a.matricule],['Grade',a.grade],['Fonction',a.fonction],['Lieu d’affectation',a.lieu_affectation],['Province',a.province],['Direction',a.direction],['Statut professionnel',a.statut],['Sexe',a.sexe],['Numéro d’ordre',a.numero_ordre],['Téléphone professionnel',a.telephone]];
- let cachedAgent=null;try{cachedAgent=JSON.parse(localStorage.getItem(AGENT_LOCAL_PREFIX+user.id)||'null')}catch(_){}
- if(cachedAgent?.agentId===p.agent_id&&cachedAgent.data)$('professional').innerHTML=agentFields(cachedAgent.data).map(x=>item(x[0],x[1])).join('');
- else $('professional').innerHTML=p.agent_id?'Fiche professionnelle':'Aucune fiche agent liée au compte';
- if(p.agent_id){
-   client.from('agents').select('id,nom_complet,categorie,matricule,grade,fonction,lieu_affectation,province,direction,statut,sexe,numero_ordre,telephone').eq('id',p.agent_id).maybeSingle().then(r=>{
-     if(!r.error&&r.data){const a=r.data;try{localStorage.setItem(AGENT_LOCAL_PREFIX+user.id,JSON.stringify({agentId:p.agent_id,data:a,savedAt:Date.now()}))}catch(_){};$('professional').innerHTML=agentFields(a).map(x=>item(x[0],x[1])).join('')}
-   }).catch(()=>{});
- }
- if(!p.display_name||!p.telephone||!p.adresse_physique||!p.agent_id){$('notice').textContent='Certaines informations de votre compte ne sont pas encore renseignées. Les rubriques restent visibles ; contactez l’administrateur pour compléter les données manquantes.'}
- $('editProfile').addEventListener('submit',async e=>{
-   e.preventDefault();
-   const btn=$('saveProfile'),msg=$('saveMessage');btn.disabled=true;msg.textContent='Enregistrement…';msg.style.color='#687d90';
-   try{
-     const {data,error}=await client.functions.invoke('igt-update-profile',{body:{display_name:$('editName').value,telephone:$('editPhone').value,adresse_physique:$('editAddress').value}});
-     if(error||!data?.success)throw new Error(data?.message||error?.message||'Enregistrement impossible.');
-     try{localStorage.setItem(PROFILE_LOCAL_PREFIX+user.id,JSON.stringify({profile:data.profile,savedAt:Date.now()}))}catch(_){}
-     msg.textContent='Paramètres enregistrés.';msg.style.color='#138a65';
-     $('account').innerHTML=item('Nom affiché',data.profile.display_name)+item('Adresse e-mail',user.email)+item('Type de compte',role(data.profile.role))+item('État du compte',data.profile.is_active?'Actif':'Suspendu')+item('Compte créé le',date(data.profile.created_at))+item('Dernière mise à jour',date(data.profile.updated_at));
-     $('contact').innerHTML=item('Téléphone',data.profile.telephone)+item('Adresse physique',data.profile.adresse_physique);
-     $('notice').textContent='Votre nom d’utilisateur et vos coordonnées personnelles sont à jour. Les informations professionnelles restent liées à votre fiche agent IGT.';
-   }catch(err){msg.textContent=err.message;msg.style.color='#b42318'}
-   finally{btn.disabled=false}
- });
- $('status').hidden=true;$('profile').hidden=false;
- // Le stockage documentaire reste indépendant : il ne bloque jamais l’affichage du profil.
- void docsPromise;
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>load().catch(e=>{$('status').textContent='Erreur : '+e.message;$('status').hidden=false}));else load().catch(e=>{$('status').textContent='Erreur : '+e.message;$('status').hidden=false});
+fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+'</small><input id="edit_'+key+'" maxlength="180" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').querySelector('.wide').before(wrap)});
+show();
+documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
 })();
 </script>
 </body></html>
