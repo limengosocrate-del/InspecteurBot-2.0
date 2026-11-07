@@ -145,7 +145,7 @@ function read(){
    const k=localStorage.key(i);
    if(k&&k.startsWith('inspecteurbot_profile_cache_v2_')){
     const old=JSON.parse(localStorage.getItem(k)||'null')?.profile;
-    if(old){const migrated={username:old.display_name||'',email:old.email||'',phone:old.telephone||'',address:old.adresse_physique||'',role:old.role||'Utilisateur',createdAt:old.created_at||'',avatar:old.avatar_local||'',professional:{}};localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
+    if(old){let professional={};try{for(let j=0;j<localStorage.length;j++){const ak=localStorage.key(j);if(ak&&ak.startsWith('inspecteurbot_agent_cache_v1_')){const agent=JSON.parse(localStorage.getItem(ak)||'null');if(agent?.data){professional={nom_complet:agent.data.nom_complet||'',matricule:agent.data.matricule||'',grade:agent.data.grade||'',fonction:agent.data.fonction||'',categorie:agent.data.categorie||'',direction:agent.data.direction||'',lieu_affectation:agent.data.lieu_affectation||'',province:agent.data.province||'',telephone_pro:agent.data.telephone||'',statut:agent.data.statut||'',numero_ordre:agent.data.numero_ordre||''};break}}}}catch(_){}const migrated={username:old.display_name||'',email:old.email||'',phone:old.telephone||'',address:old.adresse_physique||'',role:old.role||'Utilisateur',createdAt:old.created_at||'',avatar:old.avatar_local||'',professional};localStorage.setItem(KEY,JSON.stringify(migrated));return migrated;}
    }
   }
  }catch(e){}
