@@ -12,7 +12,7 @@ class QuizEngine {
     this.timeLeft = 60;
     this.selectedOptionIds = [];
     this.isAnswered = false;
-    this.autoAdvanceDelay = 2200; // Affichage du résultat pendant 2,2 secondes
+    this.autoAdvanceDelay = 35000; // Résultat et explication visibles pendant 35 secondes
   }
 
   loadQuestion(question, containerEl, onFinishCallback) {
@@ -201,7 +201,7 @@ class QuizEngine {
     const countEl = document.getElementById('countdown-seconds');
     if (bar) bar.style.display = 'flex';
 
-    let secondsLeft = 2;
+    let secondsLeft = Math.ceil(this.autoAdvanceDelay / 1000);
     if (countEl) countEl.textContent = secondsLeft;
 
     const interval = setInterval(() => {
@@ -213,6 +213,7 @@ class QuizEngine {
     }, 1000);
 
     this.autoAdvanceTimeout = setTimeout(() => {
+      clearInterval(interval);
       this.skipAutoAdvance();
     }, this.autoAdvanceDelay);
   }
