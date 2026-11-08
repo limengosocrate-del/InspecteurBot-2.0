@@ -35,7 +35,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   else page=page.replace('</head>',scroll+'\n</head>');
   const themeLink='<link rel="stylesheet" href="../global-theme.css?v=20261108-theme-1">';
   const themeScript='<script src="../global-theme.js?v=20261108-theme-1" defer>'+'<'+'/script>';
-  const noSecondLogin='<style id="igt-no-second-login">#igt-auth-gate:not([data-password-setup="true"]){display:none!important}</style>';
+  const noSecondLogin='<style id="igt-no-second-login">#igt-auth-gate:not([data-password-setup="true"]){display:none!important}body:not(.igt-session-ready)>*:not(#igt-auth-gate){visibility:hidden!important}body:not(.igt-session-ready)::before{content:"InspecteurBot — Vérification de votre session sécurisée…";position:fixed;inset:0;z-index:999998;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70,#071b35 65%,#031126);color:#fff;font:700 16px Arial,sans-serif;text-align:center}</style>';
   page=page.replace('</head>',themeLink+themeScript+noSecondLogin+'</head>');
   document.open();document.write(page);document.close();
  }catch(error){
