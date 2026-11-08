@@ -11,7 +11,13 @@ class InterfaceManager {
   }
 
   async init() {
-    // Splash Screen Run
+    // Attendre l'identification Supabase avant de charger les données personnelles du quiz.
+    if (!window.persistenceEngine.storageReady) {
+      await new Promise(resolve => {
+        if (window.persistenceEngine.storageReady) return resolve();
+        window.addEventListener('igt-profile-loaded', resolve, { once: true });
+      });
+    }
     this.runSplashScreen();
 
     try {
@@ -23,7 +29,7 @@ class InterfaceManager {
     }
 
     this.setupEventListeners();
-    this.applyTheme(window.persistenceEngine.getProfile().settings.theme || 'dark');
+    this.applyTheme(window.persistenceEngine.getProfile().settings.theme || 'light');
     this.updateDashboardUI();
   }
 
@@ -192,26 +198,44 @@ class InterfaceManager {
     if (elActTemps) elActTemps.textContent = `${Math.round((stats.tempsTotal || 0) / 3600)} h`;
     if (elActSerie) elActSerie.textContent = `${records.length > 0 ? records[0].serie || 1 : 0} jours`;
 
-    // 26.9 Points Faibles Breakdown
+    // 26.9 Points faibles calculés uniquement à partir de la progression locale du compte connecté.
     const weakPointsBox = document.getElementById('weak-points-breakdown-list');
     if (weakPointsBox) {
       const categoriesList = [
-        { name: "Procès-verbaux & Mises en demeure", color: "🔴", pct: 42 },
-        { name: "Temps de travail & Heures sup", color: "🟠", pct: 58 },
-        { name: "Main d'œuvre étrangère (Arrêté 86/001)", color: "🟡", pct: 64 }
+        { name: "Procès-verbaux & Mises en demeure", color: "🔴", match: /proc[eè]s.?verb|mise.?en.?demeure|\\bpv\\b/i },
+        { name: "Temps de travail & Heures sup", color: "🟠", match: /temps.?de.?travail|heures?.?sup|dur[eé]e.?du.?travail|horaire/i },
+        { name: "Main d'œuvre étrangère (Arrêté 86/001)", color: "🟡", match: /main.?d.?œuvre.?[eé]trang[eè]re|travailleur.?[eé]tranger|86.?001/i }
       ];
-
-      weakPointsBox.innerHTML = categoriesList.map(item => `
-        <div style="margin-bottom:0.85rem;">
-          <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; margin-bottom:0.25rem;">
-            <span>${item.color} ${item.name}</span>
-            <span>${item.pct} %</span>
+      const recordsById = profile.questions || {};
+      const bank = Array.isArray(this.questionBank) ? this.questionBank : [];
+      weakPointsBox.innerHTML = categoriesList.map(item => {
+        const categoryQuestions = bank.filter(question =>
+          item.match.test([question.categorie, question.category, question.question, question.source_document].filter(Boolean).join(' '))
+        );
+        let records = categoryQuestions.map(question => recordsById[question.id]).filter(Boolean);
+        if (!records.length) {
+          records = Object.values(recordsById).filter(record =>
+            item.match.test([record.categorie, record.category, record.questionText].filter(Boolean).join(' '))
+          );
+        }
+        const mastery = records.length
+          ? Math.round(records.reduce((sum, record) => sum + Math.max(0, Math.min(100, Number(record.maitrise) || 0)), 0) / records.length)
+          : null;
+        const difficulty = mastery === null ? null : 100 - mastery;
+        const display = difficulty === null ? 'Pas encore évalué' : difficulty + ' %';
+        const width = difficulty === null ? 0 : difficulty;
+        return `
+          <div style="margin-bottom:0.85rem;">
+            <div style="display:flex;justify-content:space-between;gap:10px;font-size:0.85rem;font-weight:700;margin-bottom:0.25rem;">
+              <span>${item.color} ${item.name}</span>
+              <span>${display}</span>
+            </div>
+            <div class="progress-container" style="height:6px;margin:0;">
+              <div class="progress-fill" style="width:${width}%;background:${difficulty !== null && difficulty >= 50 ? 'var(--accent-red)' : 'var(--accent-gold)'};"></div>
+            </div>
           </div>
-          <div class="progress-container" style="height:6px; margin:0;">
-            <div class="progress-fill" style="width:${item.pct}%; background:${item.pct < 50 ? 'var(--accent-red)' : 'var(--accent-gold)'};"></div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // 26.10 Level Roadmap Timeline
