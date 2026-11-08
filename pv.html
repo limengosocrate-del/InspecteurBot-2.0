@@ -10,7 +10,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 @keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
-<link rel="preload" as="style" href="styles-pv.css">
+<link rel="preload" as="style" href="styles-pv.css?v=20261108-pv-pro2">
   <title>InspecteurBot IA RDC — Module Procès-Verbaux</title>
   <link rel="stylesheet" href="styles-pv.css">
 
@@ -39,7 +39,6 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
         </label>
         <button class="btn ghost" id="btnResetLogoTop" type="button">Logo défaut</button>
         <button class="btn ghost" id="btnThemeToggle" type="button" aria-label="Basculer le mode sombre ou clair">🌙 Mode sombre</button>
-        <button class="btn ghost" id="btnGlobalListen" type="button">🎙️ Dictée</button>
         <button class="btn ghost" id="btnReadPreview" type="button">🔊 Lire le PV</button>
         <button class="btn primary" id="btnPrintTop" type="button">🖨️ Export PDF</button>
       </div>
@@ -48,10 +47,10 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
     <nav class="main-nav" aria-label="Navigation du module PV">
       <button class="nav-item active" data-view="dashboard" type="button">Tableau de bord</button>
       <button class="nav-item" data-view="create" type="button">Création PV</button>
-      <button class="nav-item" data-view="history" type="button">Historique & Archivage</button>
       <button class="nav-item" data-view="legal" type="button">Base juridique</button>
+      <button class="nav-item" data-view="history" type="button">Historique & Archivage</button>
       <button class="nav-item" data-view="settings" type="button">Paramètres</button>
-      <button class="nav-item" data-view="help" type="button">Guide local IA</button>
+      <button class="nav-item" data-view="help" type="button">Guide PV</button>
     </nav>
 
     <main class="main-content">
