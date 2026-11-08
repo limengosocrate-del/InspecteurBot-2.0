@@ -6,7 +6,7 @@
  const normalize=value=>value==='dark'?'dark':'light';
  function updateControls(){
   const icon=current==='dark'?'☀️':'🌙';
-  ['themeIcon','btn-theme-toggle','themeToggle'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(id==='themeIcon')el.textContent=icon;else if(el.tagName==='BUTTON'&&!el.querySelector('i'))el.textContent=icon;});
+  ['themeIcon','btn-theme-toggle','themeToggle'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(id==='themeIcon')el.textContent=icon;else if(el.tagName==='BUTTON'&&!el.querySelector('i,span'))el.textContent=icon;});
   const select=document.getElementById('select-theme');if(select)select.value=current;
   const global=document.getElementById('ib-global-theme-toggle');if(global){global.textContent=icon;global.title=current==='dark'?'Passer au thème clair':'Passer au thème sombre';global.setAttribute('aria-label',global.title);}
  }
@@ -15,6 +15,7 @@
   const body=document.body;
   body.classList.remove('light-theme','dark-theme','dark');
   body.classList.add(current==='dark'?'dark-theme':'light-theme');
+  if(current==='dark')body.classList.add('dark');
   document.documentElement.dataset.ibTheme=current;
   document.documentElement.style.colorScheme=current;
   if(persist&&userId){try{localStorage.setItem(PREFIX+userId,current)}catch(_){}}
