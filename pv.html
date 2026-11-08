@@ -18,7 +18,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
-<script src="auth-gate.js?v=20261108-stable-36" defer></script>
+<script src="auth-gate.js?v=20261108-forms-pro1" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head>
 <body>
@@ -248,7 +248,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
             </article>
 
             <article class="panel collapsible open" data-panel="facts">
-              <button class="panel-toggle" type="button"><span>4. Faits, observations et assistant IA local</span><strong>−</strong></button>
+              <button class="panel-toggle" type="button"><span>4. Faits, observations et assistance InspecteurBot</span><strong>−</strong></button>
               <div class="panel-body">
                 <label>Faits constatés / contexte / déclarations
                   <textarea id="facts" name="facts" rows="5" placeholder="Décrivez les faits. Vous pouvez utiliser la dictée audio..."></textarea>
@@ -259,7 +259,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
                   <button class="btn secondary" id="btnGenerateObservations" type="button">✍️ Générer observations</button>
                   <button class="btn primary" id="btnAutoDraft" type="button">🧾 Rédiger le PV</button>
                 </div>
-                <div id="aiOutput" class="ai-output empty-state">L'IA locale fonctionne sans Internet : elle compare les faits aux infractions intégrées, propose les articles et rédige le modèle sélectionné.</div>
+                <div id="aiOutput" class="ai-output empty-state">InspecteurBot compare les faits aux infractions intégrées, propose les articles applicables et aide à rédiger le modèle sélectionné.</div>
                 <label>Observations / rédaction complémentaire
                   <textarea id="observations" name="observations" rows="4"></textarea>
                 </label>
@@ -492,7 +492,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
         <div class="section-heading">
           <div>
             <p class="eyebrow">Mode d'emploi</p>
-            <h2 id="helpTitle">Guide local IA & conformité de saisie</h2>
+            <h2 id="helpTitle">Guide PV & conformité de saisie</h2>
           </div>
         </div>
         <article class="panel legal-guide">
@@ -500,7 +500,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
           <ol>
             <li>Choisissez le modèle officiel : constat d'infraction, obstruction, non-conciliation, mise en demeure ou installation du comité SHE.</li>
             <li>Complétez l'administration, l'auteur du PV, l'entreprise et les faits.</li>
-            <li>Utilisez l'IA locale pour proposer les infractions, les articles et une rédaction conforme au modèle fourni.</li>
+            <li>Utilisez InspecteurBot pour examiner les faits, proposer les références juridiques et préparer une rédaction conforme au modèle fourni.</li>
             <li>Sélectionnez plusieurs infractions, ajustez les quantités et amendes si nécessaire, puis signez en bleu.</li>
             <li>Validez le PV : un UUID, un numéro officiel, un code de vérification et un QR Code sont attachés.</li>
             <li>Utilisez « Export PDF / Imprimer » puis choisissez « Enregistrer au format PDF » dans le navigateur.</li>
