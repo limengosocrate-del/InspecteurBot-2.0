@@ -774,10 +774,11 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261108-v62',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261108-v63',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
+<script>(()=>{const s=document.getElementById('slider');if(!s)return;const a=[...s.querySelectorAll('img')];if(a.length<2)return;let n=-1;const show=()=>{let k=Math.floor(Math.random()*a.length);if(k===n)k=(k+1)%a.length;n=k;a.forEach((im,i)=>im.classList.toggle('active',i===n))};show();setInterval(show,5000)})();</script>
 </body>  
   
 </html>
