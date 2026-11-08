@@ -64,7 +64,7 @@ window.SpeechEngine = {
       const ordered = candidates.slice().sort((a,b) => a.name.localeCompare(b.name));
       return wantMale ? ordered[ordered.length - 1] : ordered[0];
     }
-    return wantMale ? null : (candidates[0] || null);
+    return candidates[0] || null;
   },
 
   speak: function (text, lang) {
@@ -87,7 +87,7 @@ window.SpeechEngine = {
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = lang === "en" ? "en-US" : "fr-FR";
     utter.rate = 0.98;
-    utter.pitch = 1; // La différence repose sur deux voix vocales distinctes, pas sur un simple changement de hauteur.
+    utter.pitch = this.currentVoiceGender === "male" ? 0.82 : 1.08; // Préférence masculine renforcée si Android ne fournit qu’une seule voix française.
     const voice = this.pickVoice(lang);
     if (!voice) {
       if (window.InspecteurUtils) window.InspecteurUtils.showNotification("Cette voix distincte n’est pas disponible sur cet appareil. Activez ou installez une deuxième voix française dans les paramètres de synthèse vocale Android.", "fa-volume-xmark");
