@@ -428,7 +428,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 @keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
-<script src="auth-gate.js?v=20261108-stable-30" defer></script>
+<script src="auth-gate.js?v=20261108-stable-31" defer></script>
 
 <style id="ib-unified-shell">
 html{min-height:100%;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}
@@ -773,7 +773,7 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261108-v52',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261108-v53',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
