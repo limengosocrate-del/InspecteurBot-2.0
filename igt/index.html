@@ -36,7 +36,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   const themeLink='<link rel="stylesheet" href="../global-theme.css?v=20261108-theme-3">';
   const themeScript='<script src="../global-theme.js?v=20261108-theme-3" defer>'+'<'+'/script>';
   const publicThemeStyle='<style id="igt-public-directory-mode">#igt-auth-gate,#igt-auth-user,#igt-agent-tools,#igt-open-admin,#igt-workspace,#igt-inbox,#igt-registration-panel{display:none!important}body.igt-auth-pending{overflow:auto!important}</style>';
-  const staticAuth='<script id="igt-supabase-auth">(function(){document.body.classList.add("igt-session-ready","light-theme");document.body.dataset.publicTheme="true";var gate=document.getElementById("igt-auth-gate");if(gate)gate.hidden=true;var userBox=document.getElementById("igt-auth-user");if(userBox)userBox.hidden=true;var tools=document.getElementById("igt-agent-tools");if(tools)tools.hidden=true;})();<'+'/script>';
+  const staticAuth='<script id="igt-supabase-auth">(function(){document.body.classList.remove("igt-auth-pending");document.body.classList.add("igt-session-ready","light-theme");document.body.dataset.publicTheme="true";var gate=document.getElementById("igt-auth-gate");if(gate)gate.hidden=true;var userBox=document.getElementById("igt-auth-user");if(userBox)userBox.hidden=true;var tools=document.getElementById("igt-agent-tools");if(tools)tools.hidden=true;})();<'+'/script>';
   page=page.replace(/<script id="igt-supabase-auth">[\s\S]*?<\/script>/i,staticAuth);
   page=page.replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>','');
   page=page.replace(/<script id="igt-annuaire-v3-registration-and-admin">[\s\S]*?<\/script>/i,'');
