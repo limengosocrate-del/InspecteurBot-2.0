@@ -40,7 +40,6 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
         <button class="btn ghost" id="btnResetLogoTop" type="button">Logo défaut</button>
         <button class="btn ghost" id="btnThemeToggle" type="button" aria-label="Basculer le mode sombre ou clair">🌙 Mode sombre</button>
         <button class="btn ghost" id="btnReadPreview" type="button">🔊 Lire le PV</button>
-        <button class="btn primary" id="btnPrintTop" type="button">🖨️ Export PDF</button>
       </div>
     </header>
 
@@ -90,10 +89,6 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
           </div>
           <div class="toolbar">
             <button class="btn ghost" id="btnResetForm" type="button">Nouveau</button>
-            <button class="btn secondary" id="btnSaveDraft" type="button">Sauver brouillon</button>
-            <button class="btn primary" id="btnValidate" type="button">Valider PV</button>
-            <button class="btn warning" id="btnDuplicateCurrent" type="button">Dupliquer</button>
-            <button class="btn dark" id="btnPrint" type="button">Export PDF / Imprimer</button>
           </div>
         </div>
 
@@ -374,6 +369,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
                 <button class="btn tiny" id="btnRefreshPreview" type="button">Actualiser</button>
                 <button class="btn tiny" id="btnReadSelection" type="button">Lire aperçu</button>
                 <button class="btn tiny" id="btnToggleScale" type="button">Zoom</button>
+                <button class="btn primary" id="btnPrint" type="button">Généré en PDF</button>
               </div>
               <div id="printArea" class="a4-preview"></div>
             </article>
