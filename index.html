@@ -460,7 +460,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
     <!-- Images du slider -->  
     <div class="slider" id="slider" aria-label="Diaporama de l'IGT">
         <img src="images/photos_igt/1.jpg" class="active" alt="" fetchpriority="high" decoding="async">
-        <img src="images/photos_igt/2.jpg" alt="" decoding="async" fetchpriority="low">
+        <img src="images/photos_igt/2.jpg" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="eager" fetchpriority="high">
     </div>  
   
 </section>  
@@ -610,34 +610,51 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
   
 <script>  
   
-/* ================= SLIDER LÉGER À DEUX IMAGES ================= */
+/* ================= SLIDER ROBUSTE — CHARGEMENT PROGRESSIF ================= */
 (()=>{
- const frames=Array.from({length:57},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
  const imgs=Array.from(document.querySelectorAll('#slider img'));
  if(imgs.length!==2)return;
- let index=0,front=imgs[0],back=imgs[1],timer=null;
- function schedule(){clearTimeout(timer);timer=setTimeout(showNext,document.hidden?12000:7000);}
+ const frames=Array.from({length:57},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
+ let front=imgs.find(x=>x.classList.contains('active'))||imgs[0];
+ let back=imgs.find(x=>x!==front);
+ let index=Math.max(0,frames.indexOf(front.getAttribute('src')));
+ let timer=null,loading=false,attempts=0;
+ imgs.forEach((img,i)=>{
+  img.decoding='async';
+  img.loading='eager';
+  if(i===0)img.fetchPriority='high';
+ });
+ function schedule(){clearTimeout(timer);if(!document.hidden)timer=setTimeout(showNext,6500)}
  function showNext(){
-  if(document.hidden){schedule();return;}
-  let attempts=0;
-  const load=()=>{
+  if(document.hidden||loading){schedule();return}
+  loading=true;
+  const tryNext=()=>{
    index=(index+1)%frames.length;
-   back.onload=()=>{
+   const target=frames[index];
+   const probe=new Image();
+   probe.decoding='async';
+   probe.onload=()=>{
     back.onload=null;back.onerror=null;
+    back.src=target;
     back.classList.add('active');front.classList.remove('active');
-    const previous=front;front=back;back=previous;
-    schedule();
+    const prev=front;front=back;back=prev;
+    attempts=0;loading=false;schedule();
    };
-   back.onerror=()=>{
-    back.onload=null;back.onerror=null;back.removeAttribute('src');
-    if(++attempts<frames.length)load();else schedule();
+   probe.onerror=()=>{
+    if(++attempts<frames.length)tryNext();
+    else{loading=false;schedule()}
    };
-   back.src=frames[index];
+   probe.src=target;
   };
-  load();
+  tryNext();
  }
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule();else clearTimeout(timer);});
- schedule();
+ // Les deux premières diapositives restent immédiatement disponibles.
+ if(back.complete&&back.naturalWidth>0){schedule()}
+ else{
+  back.addEventListener('load',schedule,{once:true});
+  back.addEventListener('error',()=>{back.src=front.currentSrc||front.src; schedule()},{once:true});
+ }
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)clearTimeout(timer);else schedule()});
 })();
  
 /* ================= MOTIVATION ================= */  
