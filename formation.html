@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -17,14 +17,16 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 <style>
 :root{color-scheme:dark;--bg:#0b1118;--panel:#141e29;--panel2:#192634;--line:#2b3a49;--text:#f4f7fb;--muted:#aebdca;--gold:#e8c547;--blue:#4da3e5}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;max-width:100%;background:var(--bg);color:var(--text);font:15px Inter,Arial,sans-serif;overflow-x:hidden;overscroll-behavior-x:none}button,input,textarea,select{font:inherit}a{color:var(--blue)}.shell{max-width:1200px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 0 22px;border-bottom:1px solid var(--line)}.brand{display:flex;gap:12px;align-items:center}.brand i{font-size:28px;color:var(--gold)}h1{font-size:clamp(22px,4vw,32px);margin:0;color:#fff}h2{font-size:19px;margin:0 0 12px;color:#fff}.sub,.muted{color:var(--muted);line-height:1.6}.btn{border:1px solid var(--line);background:var(--panel2);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;text-decoration:none;display:inline-flex;gap:8px;align-items:center}.btn.primary{background:#145d91;border-color:#247db7}.btn.gold{background:#d7b63c;color:#111;border-color:#d7b63c}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}.resource{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}.resource h3{margin:0;font-size:17px}.tag{display:inline-flex;width:max-content;padding:4px 9px;border-radius:20px;background:#24394b;color:#d7e9f7;font-size:11px;font-weight:800}.field{display:grid;gap:7px;margin:10px 0}.field label{font-size:13px;color:#d7e3ee;font-weight:700}.field input,.field textarea,.field select{width:100%;min-width:0;border:1px solid var(--line);border-radius:9px;background:#0e1720;color:#fff;padding:11px}.field textarea{min-height:100px;resize:vertical}.notice{padding:12px;border:1px solid #705e2c;background:#302914;color:#f6e4a0;border-radius:10px;font-size:13px;line-height:1.5}.hidden{display:none!important}.player{width:100%;margin-top:8px}.viewer{width:100%;height:min(75vh,800px);border:1px solid var(--line);border-radius:10px;background:#fff}.question{padding:13px;border:1px solid var(--line);border-radius:10px;margin:10px 0}.question label{display:block;padding:6px 0;color:#eaf1f7}.status{min-height:22px;color:#9fdbb7;font-size:13px}.admin-tools{border-color:#675827}.footer{text-align:center;color:var(--muted);padding:20px;font-size:12px}@media(max-width:600px){.shell{padding:12px}.panel{padding:14px}.top .btn{font-size:12px}.viewer{height:65vh}}
-</style>
+body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,238,238,.96);--line:rgba(21,48,58,.18);--text:#172b35;--muted:#526a72;color-scheme:light}body.dark-theme{--bg:#0b141a;--panel:rgba(20,30,37,.96);--panel2:rgba(27,39,47,.94);--line:rgba(255,255,255,.12);--text:#f1f5f3;--muted:#9aaeb1;color-scheme:dark}body.light-theme h1,body.light-theme h2{color:#172b35}body.dark-theme h1,body.dark-theme h2{color:#f1f5f3}.exercise-table{display:grid;gap:12px}.exercise-question{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:14px}.exercise-question strong{display:block;margin-bottom:10px}.exercise-option{display:flex!important;align-items:flex-start;gap:10px;padding:9px 10px!important;border:1px solid var(--line);border-radius:9px;margin:6px 0!important;background:var(--panel)}.exercise-option input{width:18px!important;height:18px;flex:0 0 18px;margin-top:2px}.media-tools,.pdf-toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:12px 0}.pdf-sheet{background:#fff;border-radius:12px;padding:10px;display:flex;justify-content:center;overflow:auto}.pdf-sheet canvas{max-width:100%;height:auto;box-shadow:0 4px 18px #0002}.pdf-toolbar .btn:disabled{opacity:.45;cursor:not-allowed}.submission-card{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}.submission-card p{margin:7px 0;line-height:1.55}.submission-answer{padding:8px 10px;border-left:3px solid var(--lagoon,#0e9aa7);margin:7px 0;background:var(--panel);border-radius:5px}</style>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
 <script src="auth-gate.js?v=20261108-stable-33" defer></script>
+<link rel="stylesheet" href="global-theme.css?v=20261108-theme-3">
+<script src="global-theme.js?v=20261108-theme-3" defer></script>
 <style>.written-course{white-space:normal;line-height:1.85;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px;color:var(--text);overflow-wrap:anywhere}.written-course br{display:block;margin-bottom:8px}</style><style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head>
-<body>
+<body class="light-theme">
 <div class="shell">
 <header class="top">
  <div class="brand"><i class="fa-solid fa-graduation-cap"></i><div><h1>Centre de formation IGT</h1><div class="sub">Cours audio · Documents PDF · Exercices pratiques</div></div></div>
@@ -36,12 +38,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
  <div id="resource-list" class="grid"><p class="muted">Chargement des formations…</p></div>
  <p id="user-status" class="status" role="status"></p>
 </section>
-<section class="panel" id="training-contact">
- <h2><i class="fa-solid fa-envelope"></i> Messagerie avec l’administration</h2>
- <p class="muted">Posez une question sur une formation ou signalez un problème. Votre message sera transmis à l’administration.</p>
- <form id="training-message-form"><div class="field"><label for="training-message">Votre message</label><textarea id="training-message" maxlength="2500" required placeholder="Écrivez votre message…"></textarea></div><button class="btn primary" type="submit"><i class="fa-solid fa-paper-plane"></i> Envoyer le message</button></form>
- <p id="training-message-status" class="status" role="status"></p><div id="training-message-history" class="grid"><p class="muted">Vos échanges apparaîtront ici.</p></div>
-</section>
+
 <section id="lesson-panel" class="panel hidden">
  <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><h2 id="lesson-title">Formation</h2><button class="btn" id="close-lesson" type="button">Fermer</button></div>
  <p id="lesson-description" class="muted"></p>
@@ -65,6 +62,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
  </form>
  <p id="admin-status" class="status" role="status"></p>
  <h2 style="margin-top:24px">Gestion des contenus existants</h2><div id="admin-list" class="grid"></div>
+ <h2 style="margin-top:28px">Boîte de réception — réponses des apprenants</h2><p class="muted">Les réponses aux exercices arrivent ici avec le nom du participant et la date d’envoi.</p><div id="training-submissions" class="grid"><p class="muted">Chargement des réponses…</p></div>
 </section>
 <footer class="footer">InspecteurBot · Espace pédagogique de l’Inspection Générale du Travail</footer>
 </div>
@@ -72,37 +70,31 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 (() => {
  'use strict';
  const client=()=>window.inspecteurBotAuthClient;
- let user=null,role='agent',resources=[],activeResource=null,bootStarted=false;
+ let user=null,role='agent',resources=[],activeResource=null,bootStarted=false,displayName='Utilisateur';
  const byId=id=>document.getElementById(id);
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const say=(id,msg)=>{byId(id).textContent=msg||''};
  async function boot(event){
   if(bootStarted)return;
   const detail=event?.detail||{};const sb=detail.client||client();
-  if(!sb||!detail.user){say('user-status','Vérification de votre session sécurisée…');return;}
+  if(!sb||!detail.user){say('user-status','Vérification de votre session…');return;}
   bootStarted=true;user=detail.user;
-  const roleFromSession=detail.profile?.role;
-  if(roleFromSession)role=roleFromSession;
-  else{const profile=await sb.from('profiles').select('role').eq('id',user.id).maybeSingle();if(profile.error){say('user-status','Impossible de vérifier les droits du compte.');bootStarted=false;return;}role=profile.data?.role||'agent';}
-  if(['admin','super_admin'].includes(role)){byId('admin-panel').classList.remove('hidden');}
-  say('user-status','Session active · votre progression est enregistrée séparément.');
-  await loadResources();await loadMessageHistory();
+  const ownProfile=await sb.from('profiles').select('role,display_name').eq('id',user.id).maybeSingle();
+  if(ownProfile.error){say('user-status','Impossible de charger votre profil. Réessayez.');bootStarted=false;return;}
+  role=detail.profile?.role||ownProfile.data?.role||'agent';
+  displayName=detail.profile?.display_name||ownProfile.data?.display_name||user.email||'Utilisateur';
+  if(['admin','super_admin'].includes(role))byId('admin-panel').classList.remove('hidden');
+  say('user-status','Session active · vos activités sont enregistrées dans votre compte.');
+  await loadResources();
  }
  async function loadResources(){
   const sb=client();
   const {data,error}=await sb.from('training_resources').select('*').order('created_at',{ascending:false});
   if(error){byId('resource-list').innerHTML='<p class="notice">La bibliothèque de formation est momentanément indisponible. Vérifiez la connexion ou les droits de lecture.</p>';return;}
   resources=(data||[]).filter(r=>['admin','super_admin'].includes(role)||r.published);
-  byId('resource-list').innerHTML=resources.length?resources.map(r=>`<article class="resource"><span class="tag">${r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'DOCUMENT PDF':'EXERCICE'} ${r.published?'· PUBLIÉ':'· BROUILLON'}</span><h3>${esc(r.title)}</h3><p class="muted">${esc(r.description)}</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="button" data-open="${r.id}">${r.exercise?.content?'Lire le cours':r.kind==='audio'?'Écouter':r.kind==='pdf'?'Lire le PDF':'Faire l’exercice'}</button>${r.file_path?`<button class="btn" type="button" data-download-public="${r.id}"><i class="fa-solid fa-download"></i> Télécharger</button>`:''}</div></article>`).join(''):'<p class="muted">Aucune formation publiée pour le moment. L’administrateur peut ajouter le premier contenu.</p>';
+  byId('resource-list').innerHTML=resources.length?resources.map(r=>'<article class="resource"><span class="tag">'+(r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'DOCUMENT PDF':'EXERCICE')+(r.published?' · PUBLIÉ':' · BROUILLON')+'</span><h3>'+esc(r.title)+'</h3><p class="muted">'+esc(r.description)+'</p><button class="btn primary" type="button" data-open="'+r.id+'">'+(r.exercise?.content?'Lire le cours':r.kind==='audio'?'Écouter':r.kind==='pdf'?'Lire le PDF':'Répondre à l’exercice')+'</button></article>').join(''):'<p class="muted">Aucune formation publiée pour le moment. L’administrateur peut ajouter le premier contenu.</p>';
   byId('resource-list').querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openResource(b.dataset.open)));
-  byId('resource-list').querySelectorAll('[data-download-public]').forEach(b=>b.addEventListener('click',()=>downloadResource(b.dataset.downloadPublic)));
-  if(['admin','super_admin'].includes(role))renderAdminList();
- }
- async function downloadResource(id){
-  const item=resources.find(x=>x.id===id);if(!item?.file_path)return;
-  const status=byId('user-status');status.textContent='Préparation du téléchargement…';
-  try{const {data:blob,error}=await client().storage.from('formation-resources').download(item.file_path);if(error)throw error;const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=item.file_path.split('/').pop()||item.title||'formation';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);status.textContent='Téléchargement lancé.';}
-  catch(e){status.textContent='Téléchargement impossible : '+(e.message||'vérifiez vos droits ou votre connexion.');}
+  if(['admin','super_admin'].includes(role)){renderAdminList();await loadSubmissions();}
  }
  async function signedFile(path){
   const {data,error}=await client().storage.from('formation-resources').createSignedUrl(path,3600);
@@ -110,26 +102,63 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
  }
  async function openResource(id){
   const r=resources.find(x=>x.id===id);if(!r)return;activeResource=r;
+  if(window.speechSynthesis)window.speechSynthesis.cancel();
   byId('lesson-title').textContent=r.title;byId('lesson-description').textContent=r.description||'';
-  byId('lesson-content').innerHTML='<p class="muted">Ouverture du contenu…</p>';byId('lesson-panel').classList.remove('hidden');
+  byId('lesson-content').innerHTML='<p class="muted">Ouverture du contenu…</p>';byId('lesson-panel').classList.remove('hidden');say('lesson-status','');
   try{
-   if(r.kind==='audio'){const url=await signedFile(r.file_path);byId('lesson-content').innerHTML=`<audio class="player" controls preload="metadata" src="${esc(url)}"></audio>`;}
-   else if(r.kind==='pdf'){const url=await signedFile(r.file_path);byId('lesson-content').innerHTML=`<iframe class="viewer" title="${esc(r.title)}" src="${esc(url)}"></iframe><p><a href="${esc(url)}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a></p>`;}
+   if(r.kind==='audio'){
+    const url=await signedFile(r.file_path);
+    byId('lesson-content').innerHTML='<div class="media-tools"><audio id="training-audio" class="player" controls preload="metadata" src="'+esc(url)+'"></audio><label for="audio-speed">Vitesse</label><select id="audio-speed" class="btn"><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="1.75">1,75×</option><option value="2">2×</option></select><button id="share-audio" class="btn primary" type="button">Partager sur WhatsApp</button></div><p class="muted">Écoutez directement ici. Vous pouvez ralentir ou accélérer la lecture.</p>';
+    const audio=byId('training-audio');byId('audio-speed').addEventListener('change',e=>{audio.playbackRate=Number(e.target.value)||1;});
+    byId('share-audio').addEventListener('click',async()=>{const text=r.title+' — Écouter la formation : '+url;try{if(navigator.share)await navigator.share({title:r.title,text,url});else window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');}catch(err){if(err?.name!=='AbortError')window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');}});
+   }
+   else if(r.kind==='pdf'){const url=await signedFile(r.file_path);await renderPdfBook(url,r.title);}
    else renderExercise(r);
    await saveProgress(r.id,{opened:true},null,false);
-  }catch(e){byId('lesson-content').innerHTML='<p class="notice">Le fichier ne peut pas être ouvert. L’administrateur doit vérifier le document ou le téléverser de nouveau.</p>';console.error(e);}
+  }catch(e){byId('lesson-content').innerHTML='<p class="notice">Le fichier ne peut pas être ouvert dans l’application. Vérifiez le document ou réessayez avec une connexion stable.</p>';console.error(e);}
   byId('lesson-panel').scrollIntoView({behavior:'auto',block:'start'});
+ }
+ async function ensurePdfJs(){
+  if(window.pdfjsLib)return window.pdfjsLib;
+  await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('Le lecteur PDF est indisponible.'));document.head.appendChild(script);});
+  if(!window.pdfjsLib)throw new Error('Le lecteur PDF est indisponible.');
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  return window.pdfjsLib;
+ }
+ async function renderPdfBook(url,title){
+  const pdfjs=await ensurePdfJs();const doc=await pdfjs.getDocument({url}).promise;let pageNumber=1,pageText='',renderToken=0;
+  byId('lesson-content').innerHTML='<div class="pdf-toolbar"><button class="btn" id="pdf-prev" type="button">← Page précédente</button><span id="pdf-page-label" class="muted">Page 1 / '+doc.numPages+'</span><button class="btn" id="pdf-next" type="button">Page suivante →</button><button class="btn primary" id="pdf-speak" type="button">🔊 Écouter</button><button class="btn" id="pdf-stop" type="button">■ Arrêter</button></div><div class="pdf-sheet"><canvas id="pdf-canvas" aria-label="Page du document PDF"></canvas></div><p class="muted">Lecture page par page. La lecture vocale reste dans l’application.</p>';
+  const canvas=byId('pdf-canvas'),ctx=canvas.getContext('2d');
+  async function renderPage(){
+   const token=++renderToken;const page=await doc.getPage(pageNumber);const base=page.getViewport({scale:1});const available=Math.max(260,byId('lesson-content').clientWidth-34);const scale=Math.min(2,Math.max(.65,available/base.width));const viewport=page.getViewport({scale});const ratio=window.devicePixelRatio||1;
+   canvas.width=Math.floor(viewport.width*ratio);canvas.height=Math.floor(viewport.height*ratio);canvas.style.width=Math.floor(viewport.width)+'px';canvas.style.height=Math.floor(viewport.height)+'px';
+   const task=page.render({canvasContext:ctx,viewport,transform:ratio!==1?[ratio,0,0,ratio,0,0]:null});await task.promise;if(token!==renderToken)return;
+   const text=await page.getTextContent();pageText=(text.items||[]).map(x=>x.str||'').join(' ').trim();
+   byId('pdf-page-label').textContent='Page '+pageNumber+' / '+doc.numPages;
+   byId('pdf-prev').disabled=pageNumber<=1;byId('pdf-next').disabled=pageNumber>=doc.numPages;
+  }
+  byId('pdf-prev').addEventListener('click',()=>{if(pageNumber>1){pageNumber--;if(window.speechSynthesis)window.speechSynthesis.cancel();renderPage().catch(console.error);}});
+  byId('pdf-next').addEventListener('click',()=>{if(pageNumber<doc.numPages){pageNumber++;if(window.speechSynthesis)window.speechSynthesis.cancel();renderPage().catch(console.error);}});
+  byId('pdf-speak').addEventListener('click',()=>{if(!('speechSynthesis'in window)){say('lesson-status','La lecture vocale n’est pas disponible sur cet appareil.');return;}if(!pageText){say('lesson-status','Cette page ne contient pas de texte sélectionnable.');return;}speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(title+'. Page '+pageNumber+'. '+pageText);utterance.lang='fr-FR';utterance.rate=1;speechSynthesis.speak(utterance);say('lesson-status','Lecture vocale de la page '+pageNumber+' en cours.');});
+  byId('pdf-stop').addEventListener('click',()=>{if(window.speechSynthesis)speechSynthesis.cancel();say('lesson-status','Lecture vocale arrêtée.');});
+  await renderPage();
  }
  function renderExercise(r){
   if(r.exercise?.content){byId('lesson-content').innerHTML='<article class="written-course">'+esc(r.exercise.content).replace(/\r?\n/g,'<br>')+'</article>';return;}
   const qs=Array.isArray(r.exercise?.questions)?r.exercise.questions:[];
   if(!qs.length){byId('lesson-content').innerHTML='<p class="notice">Cet exercice ne contient pas encore de questions valides.</p>';return;}
-  byId('lesson-content').innerHTML=qs.map((q,i)=>`<div class="question"><strong>${i+1}. ${esc(q.question)}</strong>${(q.options||[]).map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join('')}<p id="explain-${i}" class="muted"></p></div>`).join('')+'<button class="btn gold" id="submit-exercise" type="button">Corriger mes réponses</button>';
+  byId('lesson-content').innerHTML='<div class="exercise-table">'+qs.map((q,i)=>'<div class="exercise-question"><strong>'+String(i+1)+'. '+esc(q.question)+'</strong>'+(q.options||[]).map((o,j)=>'<label class="exercise-option"><input type="checkbox" name="q'+i+'" value="'+j+'"><span>'+esc(o)+'</span></label>').join('')+'</div>').join('')+'</div><button class="btn gold" id="submit-exercise" type="button" style="margin-top:16px">Envoyer mes réponses à l’administration</button>';
   byId('submit-exercise').addEventListener('click',async()=>{
-   let score=0;const answers={};
-   qs.forEach((q,i)=>{const picked=byId('lesson-content').querySelector('input[name="q'+i+'"]:checked');const val=picked?Number(picked.value):-1;answers[i]=val;const ok=val===Number(q.correctIndex);if(ok)score++;byId('explain-'+i).textContent=(ok?'Bonne réponse. ':'Réponse incorrecte. ')+(q.explanation||'');});
-   const pct=Math.round(score/qs.length*100);say('lesson-status',`Résultat : ${score}/${qs.length} — ${pct} %. Résultat enregistré dans votre compte.`);
-   await saveProgress(r.id,answers,pct,true);
+   const button=byId('submit-exercise');button.disabled=true;button.textContent='Envoi en cours…';
+   const answers={};let selectedCount=0;
+   qs.forEach((q,i)=>{const selected=[...byId('lesson-content').querySelectorAll('input[name="q'+i+'"]:checked')].map(x=>Number(x.value));answers[i]=selected;selectedCount+=selected.length;});
+   if(!selectedCount){say('lesson-status','Cochez au moins une réponse avant l’envoi.');button.disabled=false;button.textContent='Envoyer mes réponses à l’administration';return;}
+   try{
+    const {error}=await client().from('training_submissions').insert({resource_id:r.id,user_id:user.id,respondent_name:displayName,answers,status:'received'});
+    if(error)throw error;
+    say('lesson-status','Vos réponses ont été envoyées à l’administrateur. Merci pour votre participation.');
+    button.textContent='Réponses envoyées';button.disabled=true;
+   }catch(err){console.error(err);say('lesson-status','Envoi impossible : '+(err.message||'vérifiez votre connexion puis réessayez.'));button.disabled=false;button.textContent='Réessayer l’envoi';}
   });
  }
  async function saveProgress(resourceId,answers,score,completed){
@@ -155,14 +184,31 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
    byId('resource-form').reset();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
   }catch(err){if(uploadedPath){try{await sb.storage.from('formation-resources').remove([uploadedPath]);}catch(cleanupError){console.warn('Nettoyage du fichier temporaire impossible',cleanupError);}}say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
  });
+ async function loadSubmissions(){
+  const box=byId('training-submissions');if(!box)return;
+  const {data,error}=await client().from('training_submissions').select('*').order('created_at',{ascending:false}).limit(100);
+  if(error){box.innerHTML='<p class="notice">Impossible de charger les réponses : '+esc(error.message)+'</p>';return;}
+  if(!data?.length){box.innerHTML='<p class="muted">Aucune réponse reçue pour le moment.</p>';return;}
+  box.innerHTML=data.map(item=>{
+   const resource=resources.find(x=>x.id===item.resource_id),questions=resource?.exercise?.questions||[];
+   const responseHtml=Object.entries(item.answers||{}).map(([key,values])=>{
+    const q=questions[Number(key)];const chosen=(Array.isArray(values)?values:[values]).map(Number);
+    const labels=chosen.map(i=>q?.options?.[i]).filter(Boolean);
+    return '<div class="submission-answer"><b>'+esc(q?.question||('Question '+(Number(key)+1)))+'</b><br>'+esc(labels.join(' · ')||'Aucune réponse cochée')+'</div>';
+   }).join('');
+   const date=item.created_at?new Date(item.created_at).toLocaleString('fr-FR'):'Date inconnue';
+   return '<article class="submission-card"><span class="tag">'+(item.status==='read'?'CONSULTÉE':'NOUVELLE RÉPONSE')+'</span><h3>'+esc(item.respondent_name||'Utilisateur')+'</h3><p><b>Formation :</b> '+esc(resource?.title||'Formation supprimée')+'</p><p class="muted">'+esc(date)+'</p>'+responseHtml+'<button class="btn" type="button" data-mark-read="'+item.id+'" '+(item.status==='read'?'disabled':'')+'>Marquer comme consultée</button></article>';
+  }).join('');
+  box.querySelectorAll('[data-mark-read]').forEach(button=>button.addEventListener('click',async()=>{const {error}=await client().from('training_submissions').update({status:'read'}).eq('id',button.dataset.markRead);if(error){say('admin-status','Impossible de mettre à jour le statut : '+error.message);return;}await loadSubmissions();}));
+ }
  function renderAdminList(){
-  byId('admin-list').innerHTML=resources.map(r=>`<article class="resource"><span class="tag">${r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'PDF':'EXERCICE'} · ${r.published?'PUBLIÉ':'BROUILLON'}</span><h3>${esc(r.title)}</h3>${r.file_path?'<button class="btn" data-download="'+r.id+'" type="button">Télécharger le fichier</button>':''}<button class="btn" data-toggle="${r.id}" data-published="${r.published}">${r.published?'Dépublier':'Publier'}</button><button class="btn" data-delete="${r.id}">Supprimer</button></article>`).join('');
-  byId('admin-list').querySelectorAll('[data-download]').forEach(b=>b.addEventListener('click',async()=>{try{const item=resources.find(x=>x.id===b.dataset.download);const {data:blob,error}=await client().storage.from('formation-resources').download(item.file_path);if(error)throw error;const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=item.file_path.split('/').pop()||'formation';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectUrl),10000);}catch(e){say('admin-status','Téléchargement indisponible : '+(e.message||'erreur'));}}));
+  byId('admin-list').innerHTML=resources.map(r=>'<article class="resource"><span class="tag">'+(r.exercise?.content?'COURS ÉCRIT':r.kind==='audio'?'AUDIO':r.kind==='pdf'?'PDF':'EXERCICE')+' · '+(r.published?'PUBLIÉ':'BROUILLON')+'</span><h3>'+esc(r.title)+'</h3><button class="btn" type="button" data-preview="'+r.id+'">Aperçu dans l’application</button><button class="btn" type="button" data-toggle="'+r.id+'" data-published="'+r.published+'">'+(r.published?'Dépublier':'Publier')+'</button><button class="btn" type="button" data-delete="'+r.id+'">Supprimer</button></article>').join('');
+  byId('admin-list').querySelectorAll('[data-preview]').forEach(b=>b.addEventListener('click',()=>openResource(b.dataset.preview)));
   byId('admin-list').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',async()=>{const {error}=await client().from('training_resources').update({published:b.dataset.published!=='true',updated_at:new Date().toISOString()}).eq('id',b.dataset.toggle);say('admin-status',error?'Modification refusée.':'Publication mise à jour.');await loadResources();}));
   byId('admin-list').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Supprimer définitivement cette formation ?'))return;const item=resources.find(x=>x.id===b.dataset.delete);if(item?.file_path){const removed=await client().storage.from('formation-resources').remove([item.file_path]);if(removed.error){say('admin-status','Le fichier n’a pas pu être supprimé : '+removed.error.message);return;}}const {error}=await client().from('training_resources').delete().eq('id',b.dataset.delete);say('admin-status',error?'Suppression refusée.':'Formation supprimée.');await loadResources();}));
  }
  window.addEventListener('inspecteurbot:authenticated',boot);
- if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser&&window.inspecteurBotAuthProfile){boot({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile}});}
+ if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser){boot({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile}});}
 })();
 </script>
 </body></html>
