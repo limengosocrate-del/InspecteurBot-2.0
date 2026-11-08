@@ -78,38 +78,52 @@ class RevisionEngine {
   }
 
   selectNextQuestion(questionBank, profile, targetLevel = 1, lastQuestionId = null) {
-    const pool = questionBank.filter(q => q.niveau === targetLevel && q.source === 'FORMATION');
-    if (!pool || pool.length === 0) return null;
+    const pool = (questionBank || []).filter(q => Number(q.niveau) === Number(targetLevel) && q.source === 'FORMATION');
+    if (!pool.length) return null;
 
-    const qMap = profile.questions || {};
+    if (!profile.questions) profile.questions = {};
+    if (!profile.questionCycles) profile.questionCycles = {};
+    let cycle = profile.questionCycles[targetLevel] || { cycle: 1, seenIds: [], initialized: false };
+    const seen = new Set((cycle.seenIds || []).map(String));
 
-    // Partition pool into priority buckets
-    const priorityMax = [];
-    const priorityMed = [];
-    const priorityLow = [];
+    // Migration des anciennes progressions : les questions déjà traitées sont considérées comme vues.
+    if (!cycle.initialized) {
+      pool.forEach(q => {
+        const record = profile.questions[String(q.id)];
+        if (record && Number(record.vues) > 0) seen.add(String(q.id));
+      });
+      cycle.initialized = true;
+    }
 
-    pool.forEach(q => {
-      if (q.id === lastQuestionId && pool.length > 1) return; // Avoid immediate repeat
+    let remaining = pool.filter(q => !seen.has(String(q.id)));
+    if (!remaining.length) {
+      // Un cycle complet est terminé : nouveau tirage sans répétition immédiate.
+      cycle = { cycle: Number(cycle.cycle || 1) + 1, seenIds: [], initialized: true };
+      remaining = pool.slice();
+    }
 
-      const rec = qMap[q.id];
-      const status = this.getQuestionStatus(rec);
+    let candidates = remaining.filter(q => String(q.id) !== String(lastQuestionId));
+    if (!candidates.length) candidates = remaining;
 
-      if (status === 'NOUVELLE' || status === 'EN APPRENTISSAGE') {
-        priorityMax.push(q);
-      } else if (status === 'RÉUSSIE') {
-        priorityMed.push(q);
-      } else {
-        priorityLow.push(q);
-      }
-    });
+    const status = q => this.getQuestionStatus(profile.questions[String(q.id)]);
+    const newOrWeak = candidates.filter(q => status(q) === 'NOUVELLE' || status(q) === 'EN APPRENTISSAGE');
+    const learning = candidates.filter(q => status(q) === 'RÉUSSIE');
+    const mastered = candidates.filter(q => status(q) === 'MAÎTRISÉE');
+    const selectedPool = newOrWeak.length ? newOrWeak : (learning.length ? learning : (mastered.length ? mastered : candidates));
 
-    let selectedList = priorityMax;
-    if (selectedList.length === 0) selectedList = priorityMed;
-    if (selectedList.length === 0) selectedList = priorityLow;
-    if (selectedList.length === 0) selectedList = pool;
+    // Mélange Fisher–Yates : chaque question n'est proposée qu'une fois par cycle de niveau.
+    const shuffled = selectedPool.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const selected = shuffled[0];
+    if (!selected) return null;
 
-    const randomIndex = Math.floor(Math.random() * selectedList.length);
-    return selectedList[randomIndex];
+    cycle.seenIds = Array.from(new Set([...(cycle.seenIds || []).map(String), String(selected.id)]));
+    profile.questionCycles[targetLevel] = cycle;
+    if (window.persistenceEngine && window.persistenceEngine.storageReady) window.persistenceEngine.saveProfile(profile);
+    return selected;
   }
 }
 
