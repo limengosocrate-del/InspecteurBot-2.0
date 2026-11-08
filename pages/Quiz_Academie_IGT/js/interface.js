@@ -202,7 +202,7 @@ class InterfaceManager {
     const weakPointsBox = document.getElementById('weak-points-breakdown-list');
     if (weakPointsBox) {
       const categoriesList = [
-        { name: "Procès-verbaux & Mises en demeure", color: "🔴", match: /proc[eè]s.?verb|mise.?en.?demeure|\\bpv\\b/i },
+        { name: "Procès-verbaux & Mises en demeure", color: "🔴", match: /proc[eè]s.?verb|mise.?en.?demeure|\bpv\b/i },
         { name: "Temps de travail & Heures sup", color: "🟠", match: /temps.?de.?travail|heures?.?sup|dur[eé]e.?du.?travail|horaire/i },
         { name: "Main d'œuvre étrangère (Arrêté 86/001)", color: "🟡", match: /main.?d.?œuvre.?[eé]trang[eè]re|travailleur.?[eé]tranger|86.?001/i }
       ];
