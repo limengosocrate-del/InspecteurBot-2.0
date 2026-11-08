@@ -1,0 +1,89 @@
+
+<script id="igt-footer-cleanup">
+document.addEventListener('DOMContentLoaded',function(){
+ const footer=document.getElementById('igt-footer');
+ if(!footer)return;
+ footer.querySelectorAll('a,span,p,div,h2,h3,h4').forEach(function(el){
+  const label=(el.textContent||'').trim().toLocaleLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ');
+  if(label==='direction provinciale'||label==='directions provinciales'||
+     label==='direction provincial'||label==='directions provincial'){
+   el.remove();
+  }
+ });
+});
+</script>
+
+<script id="igt-ui-improvements-2026">
+(function(){
+ const $=id=>document.getElementById(id);
+ function addEye(id){const input=$(id);if(!input||input.dataset.eyeReady)return;input.dataset.eyeReady='1';const wrap=document.createElement('div');wrap.style.cssText='position:relative;width:100%;display:block';input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);input.style.paddingRight='58px';const eye=document.createElement('button');eye.type='button';eye.textContent='👁 Voir';eye.setAttribute('aria-label','Afficher le mot de passe');eye.style.cssText='position:absolute;right:7px;top:50%;transform:translateY(-50%);border:1px solid #cbd5e1;border-radius:7px;background:#f8fafc;color:#123d60;padding:6px 9px;font-size:12px;font-weight:700;cursor:pointer;z-index:2';eye.addEventListener('click',()=>{const visible=input.type==='password';input.type=visible?'text':'password';eye.textContent=visible?'Masquer':'👁 Voir';eye.setAttribute('aria-label',visible?'Masquer le mot de passe':'Afficher le mot de passe');});wrap.appendChild(eye);}
+ ['igt-auth-password','igt-auth-confirm','igt-reg-password','igt-reg-password2'].forEach(addEye);
+ const search=$('igt-admin-search'),list=$('igt-admin-name-suggestions');if(search&&list){search.setAttribute('list','igt-admin-name-suggestions');function refreshSuggestions(){const term=search.value.trim().toLocaleLowerCase('fr');const names=[...document.querySelectorAll('#igt-admin-users-body tr td:first-child b')].map(el=>el.textContent.trim()).filter(Boolean);const unique=[...new Set(names)].filter(n=>!term||n.toLocaleLowerCase('fr').includes(term)).slice(0,12);list.innerHTML=unique.map(n=>'<option value="'+n.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"></option>').join('');}search.addEventListener('focus',refreshSuggestions);search.addEventListener('input',refreshSuggestions);const body=$('igt-admin-users-body');if(body)new MutationObserver(refreshSuggestions).observe(body,{childList:true,subtree:true});}
+ const message=$('igt-auth-message');if(message){const observer=new MutationObserver(()=>{const t=message.textContent||'';if(/compte.*suspendu|accès suspendu/i.test(t)&&!message.dataset.warningStyled){message.dataset.warningStyled='1';message.style.cssText='display:block;margin-top:16px;padding:17px 18px;border:2px solid #c83c46;border-left-width:7px;border-radius:12px;background:#fff1f2;color:#7f1d1d;font-size:15px;line-height:1.65;font-weight:600;white-space:normal;text-align:left;box-shadow:0 5px 18px rgba(127,29,29,.10)';const title=document.createElement('div');title.textContent='⚠ ACCÈS SUSPENDU';title.style.cssText='font-size:17px;font-weight:900;letter-spacing:.5px;margin-bottom:8px;color:#991b1b';message.prepend(title);}else if(!/compte.*suspendu|accès suspendu/i.test(t)&&message.dataset.warningStyled){message.dataset.warningStyled='';message.removeAttribute('style');}});observer.observe(message,{childList:true,characterData:true,subtree:true});}
+
+})();
+</script>
+
+<style id="igt-national-dashboard-v13">
+#igt-national-dashboard{margin:16px 0 20px;padding:18px;border:1px solid #dce7f0;border-radius:15px;background:linear-gradient(150deg,#f8fbfe,#eef5fa);color:#18364f}
+#igt-national-dashboard .igt-nd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+#igt-national-dashboard h3{margin:0;color:#123d60;font-size:19px}
+#igt-national-dashboard .igt-nd-sub{font-size:12px;color:#64788a;margin-top:5px;line-height:1.5}
+#igt-national-dashboard .igt-nd-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+#igt-national-dashboard .igt-nd-card{background:#fff;border:1px solid #e0e9f0;border-radius:12px;padding:13px;min-width:0}
+#igt-national-dashboard .igt-nd-card small{display:block;color:#61788c;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+#igt-national-dashboard .igt-nd-card strong{display:block;color:#124f78;font-size:25px;margin-top:5px;font-variant-numeric:tabular-nums}
+#igt-national-dashboard .igt-nd-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);gap:12px;margin-top:12px}
+#igt-national-dashboard .igt-nd-panel{background:#fff;border:1px solid #e0e9f0;border-radius:12px;padding:14px;min-width:0}
+#igt-national-dashboard .igt-nd-panel h4{margin:0 0 12px;color:#244b68;font-size:14px}
+#igt-national-dashboard .igt-nd-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(70px,2fr) 45px;gap:9px;align-items:center;margin:9px 0;font-size:12px}
+#igt-national-dashboard .igt-nd-track{height:9px;background:#e8eff5;border-radius:20px;overflow:hidden}
+#igt-national-dashboard .igt-nd-fill{height:100%;background:linear-gradient(90deg,#0876bd,#17a1a5);border-radius:20px}
+#igt-national-dashboard .igt-nd-table-wrap{overflow:auto;max-height:300px}
+#igt-national-dashboard table{width:100%;border-collapse:collapse;font-size:12px}
+#igt-national-dashboard th,#igt-national-dashboard td{padding:8px;border-bottom:1px solid #edf1f5;text-align:left;white-space:nowrap}
+#igt-national-dashboard th{color:#526c80;background:#f7fafc;position:sticky;top:0}
+#igt-national-dashboard .igt-nd-note{font-size:11px;color:#64788a;line-height:1.5;margin-top:12px}
+#igt-national-dashboard button{border:1px solid #c7d9e7;border-radius:8px;padding:8px 11px;background:#fff;color:#15547d;font-weight:700;cursor:pointer}
+@media(max-width:720px){#igt-national-dashboard{padding:13px}#igt-national-dashboard .igt-nd-cards{grid-template-columns:repeat(2,minmax(0,1fr))}#igt-national-dashboard .igt-nd-grid{grid-template-columns:1fr}#igt-national-dashboard .igt-nd-card strong{font-size:22px}}
+</style>
+<script id="igt-national-dashboard-v13-script">
+(function(){
+ 'use strict';
+ function init(){
+  const workspace=document.getElementById('igt-workspace');
+  const anchor=document.getElementById('igt-admin-stats');
+  if(!workspace||!anchor||document.getElementById('igt-national-dashboard'))return;
+  const panel=document.createElement('section');panel.id='igt-national-dashboard';
+  panel.innerHTML='<div class="igt-nd-head"><div><h3>Tableau de bord national — ANI-IGT</h3><div class="igt-nd-sub">Vue de synthèse du registre actuellement intégré à l’annuaire. Les chiffres ne constituent pas encore un état certifié des effectifs en service.</div></div><button type="button" id="igt-nd-export">Exporter la synthèse CSV</button></div><div class="igt-nd-cards" id="igt-nd-cards"><div class="igt-nd-card"><small>Chargement</small><strong>—</strong></div></div><div class="igt-nd-grid"><div class="igt-nd-panel"><h4>Répartition par province</h4><div id="igt-nd-provinces">Préparation des données…</div></div><div class="igt-nd-panel"><h4>Qualité des informations</h4><div id="igt-nd-quality"></div></div></div><div class="igt-nd-panel" style="margin-top:12px"><h4>Répartition par catégorie et province</h4><div class="igt-nd-table-wrap" id="igt-nd-breakdown"></div></div><div class="igt-nd-note">Source : données embarquées dans la version actuelle de l’annuaire. Les agents administratifs et les agents issus du registre principal sont comptabilisés séparément pour éviter les doubles comptes. Une synchronisation certifiée avec la base Supabase et une validation des effectifs par les services compétents seront nécessaires avant usage comme statistique officielle.</div>';
+  anchor.parentNode.insertBefore(panel,anchor);
+  function render(){
+   try{
+    const main=Array.isArray(window.officialAgents)?window.officialAgents:(typeof officialAgents!=='undefined'?officialAgents:[]);
+    const admins=Array.isArray(window.agentsAdministratifs)?window.agentsAdministratifs:(typeof agentsAdministratifs!=='undefined'?agentsAdministratifs:[]);
+    const active=main.filter(a=>a&&a.id&&!a.annuaire_inactif);
+    const norm=v=>(String(v||'').trim()||'Non renseignée');
+    const provinces={};
+    active.forEach(a=>{const province=norm(a.province_affectation||a.province);if(!provinces[province])provinces[province]={total:0,inspecteur:0,controleur:0,autre:0};provinces[province].total++;const c=String(a.categorie||'').toLowerCase();if(c.includes('inspect'))provinces[province].inspecteur++;else if(c.includes('control'))provinces[province].controleur++;else provinces[province].autre++;});
+    const sorted=Object.entries(provinces).sort((a,b)=>b[1].total-a[1].total);
+    const inspect=active.filter(a=>String(a.categorie||'').toLowerCase().includes('inspect')).length;
+    const control=active.filter(a=>String(a.categorie||'').toLowerCase().includes('control')).length;
+    const complete=active.filter(a=>a.nom_complet_transcrit&&a.matricule_transcrit&&a.province_affectation&&a.lieu_affectation).length;
+    const pct=active.length?Math.round(complete/active.length*100):0;
+    const cards=[['Fiches du registre principal',active.length],['Inspecteurs',inspect],['Contrôleurs',control],['Agents administratifs (liste séparée)',admins.length]];
+    document.getElementById('igt-nd-cards').innerHTML=cards.map(x=>'<div class="igt-nd-card"><small>'+x[0]+'</small><strong>'+Number(x[1]).toLocaleString('fr-FR')+'</strong></div>').join('');
+    const max=Math.max(1,...sorted.map(x=>x[1].total));
+    document.getElementById('igt-nd-provinces').innerHTML=sorted.length?sorted.slice(0,15).map(([name,v])=>'<div class="igt-nd-row"><span>'+name.replace(/[<>]/g,'')+'</span><div class="igt-nd-track"><div class="igt-nd-fill" style="width:'+(v.total/max*100)+'%"></div></div><b>'+v.total+'</b></div>').join(''):'Aucune donnée provinciale disponible.';
+    document.getElementById('igt-nd-quality').innerHTML='<div style="font-size:30px;font-weight:850;color:#12628e">'+pct+' %</div><div style="font-size:12px;color:#61788c;margin:4px 0 10px">Fiches avec nom, matricule, province et lieu renseignés</div><div class="igt-nd-track"><div class="igt-nd-fill" style="width:'+pct+'%"></div></div><p style="font-size:12px;color:#526c80;line-height:1.5">'+complete.toLocaleString('fr-FR')+' fiches complètes sur '+active.length.toLocaleString('fr-FR')+'. Les champs vides doivent être vérifiés et complétés par les services habilités.</p>';
+    document.getElementById('igt-nd-breakdown').innerHTML='<table><thead><tr><th>Province</th><th>Total</th><th>Inspecteurs</th><th>Contrôleurs</th><th>Autres catégories</th></tr></thead><tbody>'+sorted.map(([n,v])=>'<tr><td>'+n.replace(/[<>]/g,'')+'</td><td>'+v.total+'</td><td>'+v.inspecteur+'</td><td>'+v.controleur+'</td><td>'+v.autre+'</td></tr>').join('')+'</tbody></table>';
+    document.getElementById('igt-nd-export').onclick=function(){const rows=[['Province','Total','Inspecteurs','Contrôleurs','Autres catégories'],...sorted.map(([n,v])=>[n,v.total,v.inspecteur,v.controleur,v.autre])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ANI-IGT_synthese_nationale.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+   }catch(err){document.getElementById('igt-nd-cards').textContent='Impossible de calculer la synthèse : '+(err&&err.message?err.message:'erreur inconnue');}
+  }
+  render();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+</body></html>

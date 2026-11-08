@@ -1,87 +1,31 @@
 <!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style id="inspecteurbot-auth-lock">
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}
-html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 70px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;letter-spacing:.2px;visibility:visible!important}
-html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc(50% - 16px);top:calc(50% + 16px);z-index:2147482998;width:28px;height:28px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-first-paint-spin .8s linear infinite;visibility:visible!important}
-@keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}
-html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
-</style>
-<link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://icymfsvbuandgvrhwmaw.supabase.co" crossorigin>
-<link rel="preload" as="script" href="../auth-gate.js?v=20261108-stable-31" crossorigin>
-<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<meta name="theme-color" content="#082b4c">
-<title>Annuaire numérique IGT | InspecteurBot RDC</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" media="print" onload="this.media='all'">
-<link rel="preconnect" href="https://icymfsvbuandgvrhwmaw.supabase.co">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
-<script src="../auth-gate.js?v=20261108-stable-31" defer></script>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#082b4c"><title>Annuaire national IGT — InspecteurBot</title>
 <style>
-:root{color-scheme:light;--navy:#082b4c;--blue:#07558a;--gold:#e4b94f;--ink:#17324a;--muted:#6b7e90;--line:#dce6ee;--paper:#f3f6f9}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper)}body{padding-bottom:34px}
-.topbar{background:linear-gradient(120deg,#061d35,#0b4774);color:#fff;padding:20px clamp(16px,4vw,42px);box-shadow:0 8px 24px #061d3530}
-.toprow{max-width:1200px;margin:auto;display:flex;align-items:center;gap:14px}.mark{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#ffffff18;color:#ffdc78;font-size:24px}.brand{min-width:0;flex:1}.brand strong{display:block;font-size:clamp(19px,3vw,25px);letter-spacing:-.4px}.brand small{display:block;margin-top:4px;color:#d6e8f5}.back{border:1px solid #ffffff55;border-radius:12px;padding:10px 14px;color:#fff;text-decoration:none;font-weight:700;white-space:nowrap}
-main{max-width:1200px;margin:26px auto;padding:0 clamp(12px,3vw,24px)}.intro{margin-bottom:18px}.intro h1{margin:0 0 7px;color:var(--navy);font-size:clamp(25px,4vw,34px)}.intro p{margin:0;color:var(--muted);line-height:1.55}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.stat{padding:17px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 4px 14px #082b4c08}.stat b{display:block;color:var(--blue);font-size:clamp(22px,4vw,30px)}.stat span{color:var(--muted);font-size:13px;font-weight:650}
-.panel{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 28px #082b4c0b}.filters{display:grid;grid-template-columns:minmax(0,2fr) minmax(160px,1fr) minmax(160px,1fr);gap:10px;padding:16px;border-bottom:1px solid var(--line)}.filters input,.filters select{width:100%;min-width:0;padding:13px 14px;border:1px solid #ccd9e4;border-radius:11px;background:#fff;color:var(--ink);font:inherit;outline-color:#1686b9}
-.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:13px 15px;text-align:left;border-bottom:1px solid #edf1f5;font-size:13px}th{position:sticky;top:0;background:#f5f8fb;color:#51677b;font-size:11px;letter-spacing:.07em;text-transform:uppercase}td strong{display:block;color:#143b5c;font-size:14px}td small{color:#74879a}.pill{display:inline-block;padding:5px 9px;border-radius:30px;background:#eaf3f9;color:#14557d;font-weight:700;font-size:11px}.empty{padding:35px 16px;text-align:center;color:var(--muted)}.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;color:var(--muted);font-size:13px}.pager{display:flex;gap:8px}.pager button{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 12px;color:var(--ink);font-weight:700}.pager button:disabled{opacity:.4}.status{padding:14px 16px;color:var(--muted);font-size:13px}.status.error{color:#a52b2b}
-@media(max-width:640px){.toprow{flex-wrap:wrap}.back{margin-left:62px}.stats{gap:8px}.stat{padding:13px 10px}.stat span{font-size:11px}.filters{grid-template-columns:1fr}.foot{align-items:flex-start;flex-direction:column}}
-</style>
-</head>
-<body>
-<header class="topbar"><div class="toprow"><div class="mark"><i class="fa-solid fa-landmark"></i></div><div class="brand"><strong>Inspection Générale du Travail</strong><small>Annuaire numérique national · République Démocratique du Congo</small></div><a class="back" href="../index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a></div></header>
-<main>
-<section class="intro"><h1>Annuaire des agents de l’IGT</h1><p>Consultez le répertoire professionnel national. Recherchez par nom, matricule, fonction, province ou lieu d’affectation.</p></section>
-<section class="stats" aria-label="Statistiques de l'annuaire"><div class="stat"><b id="total">—</b><span>Agents référencés</span></div><div class="stat"><b id="inspecteurs">—</b><span>Inspecteurs du travail</span></div><div class="stat"><b id="controleurs">—</b><span>Contrôleurs du travail</span></div></section>
-<section class="panel">
-<div class="filters"><input id="search" type="search" placeholder="Rechercher un nom, matricule, fonction…" autocomplete="off"><select id="province"><option value="">Toutes les provinces</option></select><select id="category"><option value="">Toutes les catégories</option><option value="inspecteur_travail">Inspecteurs</option><option value="controleur_travail">Contrôleurs</option><option value="agent_administratif">Agents administratifs</option></select></div>
-<div id="status" class="status" role="status">Chargement de l’annuaire sécurisé…</div>
-<div class="table-wrap"><table><thead><tr><th>Agent</th><th>Matricule</th><th>Catégorie</th><th>Fonction / Grade</th><th>Affectation</th><th>Province</th></tr></thead><tbody id="rows"></tbody></table></div>
-<div class="foot"><span id="range">—</span><div class="pager"><button id="prev" type="button" disabled>Précédent</button><button id="next" type="button" disabled>Suivant</button></div></div>
-</section>
-</main>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071b35;font-family:Arial,sans-serif}
+#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:white;background:radial-gradient(circle at 50% 35%,#123f70,#071b35 65%,#031126);font-weight:800}
+#spin{width:32px;height:32px;border:3px solid #ffffff40;border-top-color:#e6b63f;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}#hint{font-size:12px;font-weight:500;color:#d8e8f5}
+iframe{display:block;width:100%;height:100%;height:100dvh;border:0;background:#f5f8fb;touch-action:pan-y}
+</style></head><body><div id="load"><div id="spin"></div><div>InspecteurBot — Annuaire national IGT</div><div id="hint">Restauration du contenu officiel de l’annuaire…</div></div>
 <script>
-(()=>{'use strict';
-const PAGE=40;let client=null,all=[],filtered=[],page=0,ready=false;
-const el=id=>document.getElementById(id);
-const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const category=v=>({'inspecteur_travail':'Inspecteur du travail','controleur_travail':'Contrôleur du travail','agent_administratif':'Agent administratif'}[v]||v||'—');
-function status(t,error=false){el('status').textContent=t;el('status').className='status'+(error?' error':'')}
-function draw(){
- const start=page*PAGE,items=filtered.slice(start,start+PAGE);
- el('rows').innerHTML=items.map(a=>'<tr><td><strong>'+safe(a.nom_complet)+'</strong><small>'+safe(a.direction||'')+'</small></td><td>'+safe(a.matricule||'—')+'</td><td><span class="pill">'+safe(category(a.categorie))+'</span></td><td>'+safe(a.fonction||a.grade||'—')+'</td><td>'+safe(a.lieu_affectation||'—')+'</td><td>'+safe(a.province||'—')+'</td></tr>').join('');
- if(!items.length)el('rows').innerHTML='<tr><td colspan="6" class="empty">Aucun agent ne correspond à votre recherche.</td></tr>';
- el('range').textContent=filtered.length?('Affichage '+(start+1)+'–'+Math.min(start+PAGE,filtered.length)+' sur '+filtered.length):'0 résultat';
- el('prev').disabled=page===0;el('next').disabled=start+PAGE>=filtered.length;
-}
-function filter(){
- const q=el('search').value.trim().toLocaleLowerCase('fr'),p=el('province').value,c=el('category').value;
- filtered=all.filter(a=>(!c||a.categorie===c)&&(!p||a.province===p)&&(!q||[a.nom_complet,a.matricule,a.fonction,a.grade,a.lieu_affectation,a.province,a.direction].some(v=>String(v||'').toLocaleLowerCase('fr').includes(q))));
- page=0;draw();
-}
-async function boot(ev){
- const d=ev?.detail||{};client=d.client||window.inspecteurBotAuthClient;if(!client||ready)return;ready=true;
+(async()=>{
+ const names=Array.from({length:11},(_,i)=>'part-'+String(i+1).padStart(3,'0')+'.txt?v=20261108-v13-restored');
  try{
-  const {data,error}=await client.from('agents').select('id,nom_complet,matricule,categorie,grade,fonction,lieu_affectation,province,direction,statut,telephone').order('nom_complet',{ascending:true}).limit(5000);
-  if(error)throw error;all=data||[];
-  el('total').textContent=all.length.toLocaleString('fr-FR');
-  el('inspecteurs').textContent=all.filter(a=>a.categorie==='inspecteur_travail').length.toLocaleString('fr-FR');
-  el('controleurs').textContent=all.filter(a=>a.categorie==='controleur_travail').length.toLocaleString('fr-FR');
-  [...new Set(all.map(a=>a.province).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr')).forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;el('province').appendChild(o)});
-  status(all.length+' agents chargés depuis le répertoire national.');filter();
- }catch(e){ready=false;status('Impossible de charger l’annuaire : '+(e.message||'vérifiez votre connexion et vos autorisations.'),true)}
-}
-['search','province','category'].forEach(id=>el(id).addEventListener(id==='search'?'input':'change',filter));
-el('prev').addEventListener('click',()=>{if(page>0){page--;draw()}});
-el('next').addEventListener('click',()=>{if((page+1)*PAGE<filtered.length){page++;draw()}});
-window.addEventListener('inspecteurbot:authenticated',boot);
-if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser)boot({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser}});
+  const parts=await Promise.all(names.map(async name=>{const r=await fetch('./v13/'+name,{cache:'force-cache'});if(!r.ok)throw new Error('Chargement du contenu '+name+' impossible');return r.text()}));
+  let page=parts.join('');
+  const marker='remainingSeconds=Number(data.expires_in_seconds)||0;';
+  const start=page.indexOf(marker);
+  if(start<0)throw new Error('Le contrôle de session IGT attendu est introuvable.');
+  const end=page.indexOf('return data;',start);
+  if(end<0)throw new Error('Fin du contrôle de session IGT introuvable.');
+  page=page.slice(0,start)+'remainingSeconds=Number.POSITIVE_INFINITY; clearTimeout(expiryTimer); // Session sans expiration locale; révocation serveur conservée.\n   '+page.slice(end);
+  page=page.replace(/const left=Number\(data\.expires_in_seconds\)\|\|0;\s*if\(left<=0\)throw new Error\('Votre session de 20 minutes est terminée\.'\);/,'// Session vérifiée côté serveur; aucune expiration locale de 20 minutes.');
+  page=page.replace(/<meta name="viewport"[^>]*>/i,'<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">');
+  page=page.replace(/<title[^>]*>[\s\S]*?<\/title>/i,'<title>Annuaire national IGT — Version 13 restaurée | InspecteurBot</title>');
+  const scroll='<style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important}.shell,.main{min-height:100%;min-width:0}</style>';
+  page=page.replace('</head>', '<base href="/InspecteurBot-2.0/igt/">\n'+scroll+'\n</head>');
+  const frame=document.createElement('iframe');frame.title='Annuaire national de l’IGT';frame.setAttribute('allow','clipboard-read; clipboard-write');frame.srcdoc=page;
+  document.body.replaceChildren(frame);
+ }catch(e){document.getElementById('hint').textContent=e.message||'Erreur de chargement. Rechargez la page.';document.getElementById('spin').style.display='none';}
 })();
-</script>
-</body></html>
+</script></body></html>

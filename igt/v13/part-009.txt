@@ -1,0 +1,100 @@
+           loc.innerHTML='';
+           const a=document.createElement('a');a.href=mapUrl;a.target='_blank';a.rel='noopener';
+           a.textContent=address+' · Voir sur Maps';a.title='Ouvrir cette adresse dans Google Maps';
+           a.style.color='inherit';a.style.textDecoration='underline';
+           loc.appendChild(a);
+         })
+         .catch(()=>{loc.innerHTML='';const a=document.createElement('a');a.href=mapUrl;a.target='_blank';a.rel='noopener';a.textContent='Adresse non disponible · Voir sur Maps';a.style.color='inherit';loc.appendChild(a);});
+     },err=>{
+       loc.textContent=err.code===1?'Localisation : autorisation refusée':'Localisation : indisponible';
+     },{enableHighAccuracy:false,timeout:12000,maximumAge:300000});
+   }
+ }
+})();
+</script>
+
+
+<style id="igt-layout-refinement-v2">
+/* Institutional header: logo left, compact live information and menu at upper right. */
+.top.igt-masthead{
+  height:150px!important;min-height:150px!important;
+  padding:10px clamp(14px,3vw,34px)!important;
+  display:flex!important;flex-direction:row!important;
+  align-items:center!important;justify-content:space-between!important;
+  gap:14px!important;overflow:visible!important;
+}
+.igt-brand-image{
+  display:flex!important;align-items:center!important;
+  flex:1 1 auto!important;width:auto!important;
+  max-width: min(70%, 720px)!important;min-width:0!important;
+  height:128px!important;overflow:visible!important;
+}
+.igt-brand-image img{
+  display:block!important;width:100%!important;height:100%!important;
+  max-width:100%!important;object-fit:contain!important;
+  object-position:left center!important;
+}
+.igt-header-right{
+  flex:0 0 auto!important;display:flex!important;
+  flex-direction:row!important;align-items:center!important;
+  justify-content:flex-end!important;gap:12px!important;
+  position:relative!important;min-width:0!important;
+}
+.igt-live-clock{
+  display:flex!important;flex-direction:column!important;
+  align-items:flex-end!important;justify-content:center!important;
+  gap:2px!important;white-space:nowrap!important;
+  font-size:11px!important;line-height:1.25!important;
+}
+.igt-live-clock strong{font-size:16px!important;line-height:1.2!important}
+.header-menu-toggle{
+  flex:0 0 46px!important;width:46px!important;height:46px!important;
+  border-radius:50%!important;font-size:25px!important;
+}
+/* Hero/slide is edge-to-edge like the ENABEL reference, without side gutters. */
+.content{
+  width:100%!important;max-width:none!important;
+  margin:0!important;padding:0 0 42px!important;
+  overflow:visible!important;
+}
+.hero-carousel{
+  display:block!important;position:relative!important;
+  width:100vw!important;max-width:none!important;
+  margin:0 0 0 calc(50% - 50vw)!important;
+  border-radius:0!important;
+  height:clamp(500px,68vh,760px)!important;
+}
+.igt-search-panel{
+  margin:28px auto 24px!important;
+  width:calc(100% - 36px)!important;max-width:1080px!important;
+}
+.top-results{width:calc(100% - 36px)!important;max-width:1080px!important}
+/* Full-width institutional footer with a lighter copyright strip. */
+.igt-footer{
+  display:block!important;width:100vw!important;max-width:none!important;
+  margin:40px 0 0 calc(50% - 50vw)!important;
+  padding:0!important;border:0!important;border-radius:0!important;
+  background:#1d4787!important;color:#fff!important;text-align:left!important;
+}
+.igt-footer .footer-inner{
+  width:100%!important;max-width:1180px!important;
+  margin:0 auto!important;padding:38px clamp(18px,4vw,42px) 26px!important;
+}
+.igt-identity-line{
+  margin:0 0 27px!important;padding:0 0 18px!important;
+  border-bottom:1px solid #ffffff35!important;
+  color:#fff!important;font-size:16px!important;
+  font-weight:700!important;letter-spacing:.01em!important;
+}
+.igt-footer .footer-links{gap:18px!important;margin-bottom:26px!important}
+.igt-footer .footer-inner h2{font-size:26px!important;margin:0 0 18px!important}
+.igt-footer .footer-inner h3{font-size:19px!important;margin:22px 0 8px!important}
+.igt-footer .footer-inner p{font-size:16px!important;line-height:1.65!important}
+.igt-footer .footer-bottom{
+  width:100vw!important;max-width:none!important;
+  margin:30px 0 -26px calc(50% - 50vw)!important;
+  padding:20px 16px!important;background:#079bc9!important;
+  text-align:center!important;color:#fff!important;
+}
+@media(max-width:700px){
+  .top.igt-masthead{

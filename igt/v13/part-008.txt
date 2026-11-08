@@ -1,0 +1,100 @@
+.igt-presence i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#d49b32}
+.igt-presence.is-online i{background:#18a66a;box-shadow:0 0 0 3px #18a66a20}
+.igt-presence.is-offline i{background:#d34a4a}
+.igt-location{max-width:210px;overflow:hidden;text-overflow:ellipsis}
+.header-menu-toggle{width:48px;height:48px;border:0;border-radius:50%;background:#f4f8fb;color:#173f70;font-size:27px;cursor:pointer;display:grid;place-items:center}
+.header-menu-toggle:hover{background:#e8f3f9}
+.header-dropdown{position:absolute;right:0;top:calc(100% + 13px);width:min(310px,calc(100vw - 28px));max-height:75vh;overflow:auto;background:#fff;border:1px solid #e1e8ef;border-radius:14px;box-shadow:0 16px 40px #0c2e4b26;padding:12px;z-index:1000}
+.header-dropdown[hidden]{display:none!important}
+.header-dropdown a{display:block;padding:11px 12px;margin:3px 0;border-radius:8px;color:#24415e;text-decoration:none;font-size:14px;font-weight:650}
+.header-dropdown a:hover{background:#eef6fb;color:#087fba}
+.igt-dropdown-heading{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:800;color:#8090a1;padding:6px 10px}
+#igt-menu-profile:empty,#igt-menu-messages:empty,#igt-menu-admin:empty{display:none}
+#igt-menu-profile #igt-auth-user{position:static!important;max-width:100%!important;width:100%;margin:4px 0 8px!important;box-shadow:none!important;flex-wrap:wrap}
+#igt-menu-messages #igt-agent-tools{position:static!important;display:flex!important;flex-direction:column;align-items:stretch;max-width:none!important;width:100%;gap:7px;margin:4px 0 9px}
+#igt-menu-messages #igt-agent-tools[hidden]{display:none!important}
+#igt-menu-messages #igt-agent-tools button{width:100%;text-align:left;padding:11px 12px!important;border-radius:8px!important;box-shadow:none!important}
+#igt-menu-admin #igt-open-admin{width:100%;margin:0 0 8px}
+.content{padding-top:0!important;background:#f3f6f9!important}
+.hero-carousel{width:100%!important;height:clamp(480px,68vh,720px)!important;margin:0!important;border-radius:0!important}
+.hero-copy{transform:translateY(-12px)!important}
+.hero-copy h1{font-size:clamp(30px,5vw,58px)!important}
+.hero-search{display:block!important;position:static!important;opacity:1!important;animation:none!important;transform:none!important}
+.igt-search-panel{max-width:1080px;margin:28px auto 22px;padding:24px clamp(17px,3vw,30px);background:#fff;border:1px solid #e7edf2;border-radius:20px;box-shadow:0 8px 25px #173f700c}
+.igt-search-heading h2{font-size:21px;color:#1b416d;margin:0 0 6px}
+.igt-search-heading p{font-size:14px;color:#718096;margin:0 0 17px}
+.igt-search-panel .hero-search{width:100%!important;max-width:none!important;margin:0!important;bottom:auto!important}
+.igt-search-panel .hero-search>p{display:none!important}
+.igt-search-panel .directory-search-single{width:100%;margin:0!important}
+.igt-search-panel .professional-search{min-height:62px;border:1px solid #d7e1e9!important;border-radius:14px!important;padding:6px!important;box-shadow:none!important}
+.igt-search-panel .professional-search input{font-size:16px!important}
+.igt-search-panel .search-btn{min-height:48px;background:#087fba!important;border-radius:10px!important}
+.top-results{max-width:1080px;margin:12px auto!important}
+.sectionhead,.metrics,.grid{max-width:1080px;margin-left:auto!important;margin-right:auto!important}
+.igt-footer{margin-top:38px!important}
+@media(max-width:700px){
+ .top.igt-masthead{height:150px!important;min-height:150px!important;padding:10px 15px!important;align-items:center!important;gap:8px}
+ .igt-brand-image{height:105px;width:calc(100% - 64px);max-width:calc(100% - 64px)}
+ .igt-brand-image img{object-position:left center}
+ .igt-header-right{gap:7px;flex-direction:column-reverse;align-items:flex-end}
+ .header-menu-toggle{width:39px;height:39px;font-size:23px}
+ .igt-live-clock{font-size:9px;gap:1px}
+ .igt-live-clock strong{font-size:13px}
+ .igt-location{max-width:140px;font-size:9px}
+ .hero-carousel{height:clamp(490px,65vh,620px)!important}
+ .hero-copy{transform:translateY(-5px)!important;padding:16px!important}
+ .hero-copy h1{font-size:34px!important}
+ .hero-copy p{font-size:15px!important}
+ .igt-search-panel{margin:17px 12px;padding:18px 15px;border-radius:17px}
+ .igt-search-heading h2{font-size:19px}
+ .igt-search-heading p{font-size:12px}
+ .igt-search-panel .professional-search{min-height:55px}
+ .igt-search-panel .professional-search input{font-size:13px!important;min-width:0}
+ .igt-search-panel .search-btn{font-size:11px!important;padding:0 10px!important}
+}
+</style>
+<script id="igt-professional-final-behavior">
+(function(){
+ const $=id=>document.getElementById(id);
+ const toggle=$('igt-header-menu-toggle'),menu=$('igt-header-dropdown');
+ const profile=$('igt-auth-user'),agentTools=$('igt-agent-tools');
+ if(profile&&$('igt-menu-profile'))$('igt-menu-profile').appendChild(profile);
+ if(agentTools&&$('igt-menu-messages')){
+   // Keep the messages and administrator actions inside the single clean header menu.
+   $('igt-menu-messages').appendChild(agentTools);
+   const admin=$('igt-open-admin');
+   if(admin)$('igt-menu-admin').appendChild(admin);
+ }
+ if(toggle&&menu){
+   toggle.addEventListener('click',()=>{menu.hidden=!menu.hidden;toggle.setAttribute('aria-expanded',String(!menu.hidden));});
+   document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!toggle.contains(e.target)){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+   menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
+ }
+ function updateClock(){
+   const now=new Date();
+   if($('igt-date'))$('igt-date').textContent=new Intl.DateTimeFormat('fr-FR',{weekday:'short',day:'2-digit',month:'long',year:'numeric'}).format(now);
+   if($('igt-time'))$('igt-time').textContent=new Intl.DateTimeFormat('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
+ }
+ updateClock();setInterval(updateClock,1000);
+ function networkStatus(){
+   const el=$('igt-presence');if(!el)return;
+   const online=navigator.onLine;
+   el.classList.toggle('is-online',online);el.classList.toggle('is-offline',!online);
+   el.textContent=online?'● En ligne (connexion active)':'● Hors ligne';
+ }
+ networkStatus();window.addEventListener('online',networkStatus);window.addEventListener('offline',networkStatus);
+ // Geolocation is requested through the browser's permission prompt; it is never silently bypassed.
+ const loc=$('igt-location');
+ if(loc){
+   if(!('geolocation' in navigator)){loc.textContent='Localisation : non disponible';}
+   else{
+     loc.textContent='Localisation : autorisation requise';
+     navigator.geolocation.getCurrentPosition(pos=>{
+       const lat=pos.coords.latitude,lon=pos.coords.longitude;
+       loc.textContent='Adresse : recherche en cours…';
+       loc.title='Adresse obtenue avec votre autorisation de localisation';
+       const mapUrl='https://www.google.com/maps?q='+encodeURIComponent(lat+','+lon);
+       fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon)+'&zoom=18&addressdetails=1&accept-language=fr')
+         .then(r=>{if(!r.ok) throw new Error('Géocodage indisponible');return r.json();})
+         .then(data=>{
+           const address=data.display_name || 'Adresse non disponible';
