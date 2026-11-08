@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Déclaration d’établissement ONEM | InspecteurBot</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<style>
+:root{--onem-navy:#173b61;--onem-gold:#bd963b;--onem-bg:#f4f6f8;--onem-line:#d5dde6}
+body{background:var(--onem-bg);color:#172536}.page{max-width:1180px;margin:20px auto;padding:18px}
+.form-card{background:#fff;border:1px solid var(--onem-line);border-radius:15px;padding:clamp(14px,2vw,24px);margin:14px 0;box-shadow:0 6px 20px #102c4910}
+.form-head{text-align:center;border-bottom:3px solid var(--onem-navy);padding:12px 8px 18px}.form-head h1{font-size:clamp(20px,3vw,29px);color:var(--onem-navy);margin:10px 0}.form-head p{margin:4px 0;color:#43556a}.form-head .legal{font-size:12px}
+h2{font-size:17px;color:var(--onem-navy);background:#edf2f7;border-left:4px solid var(--onem-gold);padding:10px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.field{display:grid;gap:6px;font-size:13px;font-weight:650;color:#26394d}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #c5ced8;border-radius:8px;background:#fff;color:#111;min-width:0}
+fieldset{border:1px solid var(--onem-line);border-radius:10px;padding:12px;margin:12px 0}legend{font-weight:750;color:var(--onem-navy);padding:0 6px}.choices{display:flex;gap:16px;flex-wrap:wrap}.choices label{display:flex;align-items:center;gap:6px;font-size:13px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}table{border-collapse:collapse;width:100%;min-width:900px;font-size:12px}th,td{border:1px solid #aeb9c5;padding:6px;text-align:center}thead th{background:#e8eef4;color:#173b61}tbody th{text-align:left;white-space:nowrap}td input{width:58px;min-width:45px;padding:6px;border:1px solid #c5ced8;border-radius:5px;text-align:center;color:#111;background:white}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.actions button,.actions a{border:0;border-radius:8px;padding:11px 15px;font-weight:750;text-decoration:none;background:var(--onem-navy);color:white}.actions .gold{background:#bd963b;color:#132b44}.actions .light{background:#e8eef4;color:#173b61}.saved table{min-width:600px}
+@media(max-width:650px){.page{padding:8px}.form-card{padding:12px}.actions>*{flex:1 1 100%}}
+@media print{@page{size:A4 landscape;margin:10mm}body{background:white}.page{max-width:none;margin:0;padding:0}.no-print,.back-link,.saved{display:none!important}.form-card{box-shadow:none;border:0;padding:4px;margin:5px 0;break-inside:avoid}.form-head h1{font-size:18pt}h2{font-size:11pt;padding:6px}.grid{grid-template-columns:repeat(3,1fr)}table{font-size:8pt;min-width:0}td input{border:0;padding:2px;width:100%;font-size:8pt}.form-card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main class="page">
+<a class="back-link no-print" href="../fiche.html">← Retour aux fiches de contrôle</a>
+<header class="form-head form-card">
+<p><strong>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</strong></p><p>MINISTÈRE DE L’EMPLOI, TRAVAIL ET PRÉVOYANCE SOCIALE</p><p><strong>OFFICE NATIONAL DE L’EMPLOI — ONEM</strong></p>
+<h1>DÉCLARATION D’ÉTABLISSEMENT</h1>
+<p class="legal">Article 216 du Code du Travail et Arrêté n°008/CAB/PVPM/ETPS/2010 du 01/04/2010</p>
+<label class="field" style="max-width:420px;margin:12px auto 0">Direction Provinciale<input data-field="direction" placeholder="Direction Provinciale de …"></label>
+</header>
+<form id="establishmentForm">
+<section class="form-card">
+<h2>1. IDENTIFICATION DU DÉCLARANT</h2>
+<div class="grid">
+<label class="field">Nom ou raison sociale<input data-field="raisonSociale" required></label>
+<label class="field">Adresse<input data-field="adresse"></label>
+<label class="field">Boîte postale (B.P.)<input data-field="bp"></label>
+<label class="field">Téléphone<input data-field="telephone"></label>
+<label class="field">Email<input data-field="email" type="email"></label>
+<label class="field">Activité principale<input data-field="activite"></label>
+<label class="field">N° INSS<input data-field="inss"></label>
+<label class="field">N° ONEM<input data-field="onem"></label>
+</div>
+<fieldset><legend>Statut du déclarant</legend><div class="choices">
+<label><input type="checkbox" data-field="statut_propriete"> Propriété individuelle</label>
+<label><input type="checkbox" data-field="statut_societe"> Société</label>
+<label><input type="checkbox" data-field="statut_public"> Service public</label>
+<label><input type="checkbox" data-field="statut_parastatal"> Parastatal</label>
+<label><input type="checkbox" data-field="statut_profession"> Profession libérale</label>
+<label><input type="checkbox" data-field="statut_asbl"> Association sans but lucratif</label>
+<label><input type="checkbox" data-field="statut_syndicat"> Syndicat</label>
+<label><input type="checkbox" data-field="statut_bienfaisance"> Établissement public ou privé de bienfaisance</label>
+</div></fieldset>
+</section>
+<section class="form-card">
+<h2>2. DÉCLARATION D’OUVERTURE — DE RÉOUVERTURE</h2>
+<fieldset><legend>Nature de la déclaration</legend><div class="choices">
+<label><input type="radio" name="ouverture" value="Déclaration d’activité définitive" data-field="ouverture"> Déclaration d’activité définitive</label>
+<label><input type="radio" name="ouverture" value="Changement temporaire" data-field="ouverture"> Changement temporaire</label>
+</div></fieldset>
+</section>
+<section class="form-card">
+<h2>3. DÉCLARATION DE CHANGEMENTS DIVERS</h2>
+<fieldset><legend>Changement déclaré</legend><div class="choices">
+<label><input type="checkbox" data-field="changement_definitif"> Changement d’activité définitive</label>
+<label><input type="checkbox" data-field="changement_temporaire"> Changement d’activité temporaire</label>
+</div></fieldset>
+<div class="grid">
+<label class="field">Date de cessation d’activité<input type="date" data-field="dateCessation"></label>
+<label class="field">Nouvelle activité principale<input data-field="nouvelleActivite"></label>
+<label class="field">Date du changement<input type="date" data-field="dateChangement"></label>
+<label class="field">B.P. après changement<input data-field="bpChangement"></label>
+<label class="field">Téléphone après changement<input data-field="telChangement"></label>
+<label class="field">Nouveau statut juridique<input data-field="nouveauStatut"></label>
+<label class="field">Date du nouveau statut<input type="date" data-field="dateStatut"></label>
+<label class="field">Nouveau chef d’établissement<input data-field="nouveauChef"></label>
+<label class="field">Date de nomination<input type="date" data-field="dateChef"></label>
+<label class="field">Nouvel emplacement de l’établissement<input data-field="nouvelEmplacement"></label>
+<label class="field">Date du nouvel emplacement<input type="date" data-field="dateEmplacement"></label>
+<label class="field">Nouvelle B.P.<input data-field="nouvelleBp"></label>
+<label class="field">Nouveau téléphone<input data-field="nouveauTelephone"></label>
+</div>
+</section>
+<section class="form-card">
+<h2>4. EFFECTIFS DES TRAVAILLEURS À EMBAUCHER — EN SERVICE — À LICENCIER</h2>
+<p>Renseigner les effectifs par catégorie, nationalité et sexe, conformément au modèle ONEM.</p>
+<div class="table-wrap"><table><thead><tr><th rowspan="2">Nature d’emplois</th><th rowspan="2">Catégorie</th><th colspan="3">Congolais</th><th colspan="3">Étrangers</th><th colspan="3">Effectif global</th></tr><tr><th>H</th><th>F</th><th>Total</th><th>H</th><th>F</th><th>Total</th><th>H</th><th>F</th><th>Total</th></tr></thead><tbody>
+<tr><th>Catégories de la classification générale des emplois</th><th>1ère</th><td><input type="number" min="0" step="1" data-field="effectif_0_0" aria-label="1ère 1"></td><td><input type="number" min="0" step="1" data-field="effectif_0_1" aria-label="1ère 2"></td><td><input type="number" min="0" step="1" data-field="effectif_0_2" aria-label="1ère 3"></td><td><input type="number" min="0" step="1" data-field="effectif_0_3" aria-label="1ère 4"></td><td><input type="number" min="0" step="1" data-field="effectif_0_4" aria-label="1ère 5"></td><td><input type="number" min="0" step="1" data-field="effectif_0_5" aria-label="1ère 6"></td><td><input type="number" min="0" step="1" data-field="effectif_0_6" aria-label="1ère 7"></td><td><input type="number" min="0" step="1" data-field="effectif_0_7" aria-label="1ère 8"></td><td><input type="number" min="0" step="1" data-field="effectif_0_8" aria-label="1ère 9"></td></tr><tr><th></th><th>2ème</th><td><input type="number" min="0" step="1" data-field="effectif_1_0" aria-label="2ème 1"></td><td><input type="number" min="0" step="1" data-field="effectif_1_1" aria-label="2ème 2"></td><td><input type="number" min="0" step="1" data-field="effectif_1_2" aria-label="2ème 3"></td><td><input type="number" min="0" step="1" data-field="effectif_1_3" aria-label="2ème 4"></td><td><input type="number" min="0" step="1" data-field="effectif_1_4" aria-label="2ème 5"></td><td><input type="number" min="0" step="1" data-field="effectif_1_5" aria-label="2ème 6"></td><td><input type="number" min="0" step="1" data-field="effectif_1_6" aria-label="2ème 7"></td><td><input type="number" min="0" step="1" data-field="effectif_1_7" aria-label="2ème 8"></td><td><input type="number" min="0" step="1" data-field="effectif_1_8" aria-label="2ème 9"></td></tr><tr><th></th><th>3ème</th><td><input type="number" min="0" step="1" data-field="effectif_2_0" aria-label="3ème 1"></td><td><input type="number" min="0" step="1" data-field="effectif_2_1" aria-label="3ème 2"></td><td><input type="number" min="0" step="1" data-field="effectif_2_2" aria-label="3ème 3"></td><td><input type="number" min="0" step="1" data-field="effectif_2_3" aria-label="3ème 4"></td><td><input type="number" min="0" step="1" data-field="effectif_2_4" aria-label="3ème 5"></td><td><input type="number" min="0" step="1" data-field="effectif_2_5" aria-label="3ème 6"></td><td><input type="number" min="0" step="1" data-field="effectif_2_6" aria-label="3ème 7"></td><td><input type="number" min="0" step="1" data-field="effectif_2_7" aria-label="3ème 8"></td><td><input type="number" min="0" step="1" data-field="effectif_2_8" aria-label="3ème 9"></td></tr><tr><th></th><th>4ème</th><td><input type="number" min="0" step="1" data-field="effectif_3_0" aria-label="4ème 1"></td><td><input type="number" min="0" step="1" data-field="effectif_3_1" aria-label="4ème 2"></td><td><input type="number" min="0" step="1" data-field="effectif_3_2" aria-label="4ème 3"></td><td><input type="number" min="0" step="1" data-field="effectif_3_3" aria-label="4ème 4"></td><td><input type="number" min="0" step="1" data-field="effectif_3_4" aria-label="4ème 5"></td><td><input type="number" min="0" step="1" data-field="effectif_3_5" aria-label="4ème 6"></td><td><input type="number" min="0" step="1" data-field="effectif_3_6" aria-label="4ème 7"></td><td><input type="number" min="0" step="1" data-field="effectif_3_7" aria-label="4ème 8"></td><td><input type="number" min="0" step="1" data-field="effectif_3_8" aria-label="4ème 9"></td></tr><tr><th></th><th>5ème</th><td><input type="number" min="0" step="1" data-field="effectif_4_0" aria-label="5ème 1"></td><td><input type="number" min="0" step="1" data-field="effectif_4_1" aria-label="5ème 2"></td><td><input type="number" min="0" step="1" data-field="effectif_4_2" aria-label="5ème 3"></td><td><input type="number" min="0" step="1" data-field="effectif_4_3" aria-label="5ème 4"></td><td><input type="number" min="0" step="1" data-field="effectif_4_4" aria-label="5ème 5"></td><td><input type="number" min="0" step="1" data-field="effectif_4_5" aria-label="5ème 6"></td><td><input type="number" min="0" step="1" data-field="effectif_4_6" aria-label="5ème 7"></td><td><input type="number" min="0" step="1" data-field="effectif_4_7" aria-label="5ème 8"></td><td><input type="number" min="0" step="1" data-field="effectif_4_8" aria-label="5ème 9"></td></tr><tr><th></th><th>Agent de maîtrise</th><td><input type="number" min="0" step="1" data-field="effectif_5_0" aria-label="Agent de maîtrise 1"></td><td><input type="number" min="0" step="1" data-field="effectif_5_1" aria-label="Agent de maîtrise 2"></td><td><input type="number" min="0" step="1" data-field="effectif_5_2" aria-label="Agent de maîtrise 3"></td><td><input type="number" min="0" step="1" data-field="effectif_5_3" aria-label="Agent de maîtrise 4"></td><td><input type="number" min="0" step="1" data-field="effectif_5_4" aria-label="Agent de maîtrise 5"></td><td><input type="number" min="0" step="1" data-field="effectif_5_5" aria-label="Agent de maîtrise 6"></td><td><input type="number" min="0" step="1" data-field="effectif_5_6" aria-label="Agent de maîtrise 7"></td><td><input type="number" min="0" step="1" data-field="effectif_5_7" aria-label="Agent de maîtrise 8"></td><td><input type="number" min="0" step="1" data-field="effectif_5_8" aria-label="Agent de maîtrise 9"></td></tr><tr><th></th><th>Cadre de Direction</th><td><input type="number" min="0" step="1" data-field="effectif_6_0" aria-label="Cadre de Direction 1"></td><td><input type="number" min="0" step="1" data-field="effectif_6_1" aria-label="Cadre de Direction 2"></td><td><input type="number" min="0" step="1" data-field="effectif_6_2" aria-label="Cadre de Direction 3"></td><td><input type="number" min="0" step="1" data-field="effectif_6_3" aria-label="Cadre de Direction 4"></td><td><input type="number" min="0" step="1" data-field="effectif_6_4" aria-label="Cadre de Direction 5"></td><td><input type="number" min="0" step="1" data-field="effectif_6_5" aria-label="Cadre de Direction 6"></td><td><input type="number" min="0" step="1" data-field="effectif_6_6" aria-label="Cadre de Direction 7"></td><td><input type="number" min="0" step="1" data-field="effectif_6_7" aria-label="Cadre de Direction 8"></td><td><input type="number" min="0" step="1" data-field="effectif_6_8" aria-label="Cadre de Direction 9"></td></tr>
+<tr><th colspan="2">Totaux</th><td><input type="number" min="0" step="1" data-field="effectif_total_0" aria-label="Total 1"></td><td><input type="number" min="0" step="1" data-field="effectif_total_1" aria-label="Total 2"></td><td><input type="number" min="0" step="1" data-field="effectif_total_2" aria-label="Total 3"></td><td><input type="number" min="0" step="1" data-field="effectif_total_3" aria-label="Total 4"></td><td><input type="number" min="0" step="1" data-field="effectif_total_4" aria-label="Total 5"></td><td><input type="number" min="0" step="1" data-field="effectif_total_5" aria-label="Total 6"></td><td><input type="number" min="0" step="1" data-field="effectif_total_6" aria-label="Total 7"></td><td><input type="number" min="0" step="1" data-field="effectif_total_7" aria-label="Total 8"></td><td><input type="number" min="0" step="1" data-field="effectif_total_8" aria-label="Total 9"></td></tr>
+</tbody></table></div>
+</section>
+<section class="form-card">
+<h2>5. SIGNATURE DU DÉCLARANT</h2>
+<div class="grid">
+<label class="field">Destinataire<select data-field="destinataire"><option value="">Sélectionner</option><option>I.T</option><option>S.R.E</option><option>D.I.E</option></select></label>
+<label class="field">Fait à<input data-field="lieu"></label>
+<label class="field">Le<input type="date" data-field="dateSignature"></label>
+<label class="field">Nom et qualité du déclarant<input data-field="declarant"></label>
+</div>
+<p style="font-size:12px;color:#4b5b6c">Nota : À adresser à l’Inspecteur du Travail du ressort en 1 exemplaire et à l’Office National de l’Emploi en 2 exemplaires. Rayer la mention inutile.</p>
+</section>
+<div class="actions no-print">
+<button type="button" id="save" class="gold">💾 Sauvegarder</button>
+<button type="button" id="pdf">📄 Générer en PDF A4</button>
+<a class="light" href="https://onem.cd/fileadmin/contenu/PDF/ONEM-DeclarationEtablissement.pdf" target="_blank" rel="noopener">Télécharger le formulaire original PDF</a>
+</div>
+</form>
+<section class="form-card saved no-print"><h2>Documents sauvegardés</h2><div id="savedList"></div><div id="savedDetail"></div></section>
+<footer class="form-card" style="text-align:center;font-size:11px;color:#66778a">Formulaire structuré à partir du modèle ONEM — Article 216 et Arrêté n°008/CAB/PVPM/ETPS/2010 du 01/04/2010.</footer>
+</main>
+<script>
+(()=>{'use strict';
+const form=document.getElementById('establishmentForm'),key='inspecteurbot:onem:declaration-etablissement:v1';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const values=()=>Array.from(form.querySelectorAll('[data-field]')).map(el=>({key:el.dataset.field,label:el.getAttribute('aria-label')||el.closest('label')?.firstChild?.textContent?.trim()||el.dataset.field,value:el.type==='checkbox'?el.checked:el.value}));
+function render(){const rows=JSON.parse(localStorage.getItem(key)||'[]');document.getElementById('savedList').innerHTML=rows.length?'<div class="table-wrap"><table><thead><tr><th>Date</th><th>Déclarant</th><th>Rubriques</th><th></th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+esc(r.date)+'</td><td>'+esc(r.company)+'</td><td>'+r.values.length+'</td><td><button type="button" data-open="'+i+'">Consulter</button></td></tr>').join('')+'</tbody></table></div>':'<p>Aucun document sauvegardé sur cet appareil.</p>';document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{const r=rows[+b.dataset.open];document.getElementById('savedDetail').innerHTML='<h3>'+esc(r.company)+'</h3><div class="table-wrap"><table><tbody>'+r.values.map(v=>'<tr><th>'+esc(v.label||v.key)+'</th><td>'+esc(v.value)+'</td></tr>').join('')+'</tbody></table></div>';});}
+document.getElementById('save').onclick=()=>{if(!form.reportValidity())return;const v=values(),company=form.querySelector('[data-field="raisonSociale"]').value;const rows=JSON.parse(localStorage.getItem(key)||'[]');const r={date:new Date().toLocaleString('fr-CD'),company,values:v};rows.unshift(r);localStorage.setItem(key,JSON.stringify(rows.slice(0,100)));render();document.getElementById('savedDetail').textContent='Déclaration sauvegardée.';};
+document.getElementById('pdf').onclick=()=>{if(!form.reportValidity())return;window.print();};
+render();
+})();
+</script>
+</body></html>
