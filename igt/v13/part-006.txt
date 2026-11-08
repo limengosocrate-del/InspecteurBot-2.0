@@ -65,11 +65,11 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
     if(payload?.code==='SESSION_ALREADY_INITIALIZED'){remainingSeconds=Number.POSITIVE_INFINITY;clearTimeout(expiryTimer);return {success:true,reused:true};}
     throw new Error(await readFunctionError(error,'Impossible de démarrer la session.'));
    }
+   if(data?.code==='SESSION_ALREADY_INITIALIZED'){remainingSeconds=Number.POSITIVE_INFINITY;clearTimeout(expiryTimer);return {success:true,reused:true};}
    if(!data?.success){let message=data?.message||'Impossible de démarrer la session.';if(data?.code==='ACCOUNT_SUSPENDED')message="Votre compte ANI-IGT a été suspendu par l'administrateur Pmiller. Pour demander le rétablissement de votre accès, veuillez contacter directement l'administrateur et attendre son autorisation. Nous vous prions de ne pas multiplier les tentatives de connexion tant que votre compte n'a pas été réactivé. Merci de votre compréhension.";throw new Error(message);}
-   remainingSeconds=Number(data.expires_in_seconds)||0;
-   if(remainingSeconds<=0)throw new Error('Votre session a expiré. Veuillez vous reconnecter.');
+   // La session Supabase principale reste valide jusqu'à déconnexion ou révocation.
+   remainingSeconds=Number.POSITIVE_INFINITY;
    clearTimeout(expiryTimer);
-   expiryTimer=setTimeout(async()=>{clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;await client.auth.signOut();gate.hidden=false;toolsBox.hidden=true;userBox.hidden=true;document.body.classList.add('igt-auth-pending');setMessage('Votre session obligatoire de 20 minutes est terminée. Veuillez vous reconnecter.','#b42318');},remainingSeconds*1000);
    return data;
   })();
   try{return await sessionStartPromise;}finally{sessionStartPromise=null;}
@@ -80,7 +80,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   try{
    // Le serveur vérifie à nouveau le statut du compte, la révocation et l'âge absolu.
    const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
-   let alreadyInitialized=false;
+   let alreadyInitialized=data?.code==='SESSION_ALREADY_INITIALIZED';
    if(error){
     let payload=null;try{if(error.context&&typeof error.context.clone==='function')payload=await error.context.clone().json()}catch(_){}
     if(payload?.code==='SESSION_ALREADY_INITIALIZED')alreadyInitialized=true;
