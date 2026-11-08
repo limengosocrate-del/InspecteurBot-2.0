@@ -29,9 +29,9 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
  if(!window.supabase||!window.supabase.createClient){message.textContent='Service de connexion indisponible. Rechargez la page.';return;}
  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  window.igtSupabase=client;
- function showLogin(){passwordSetupMode=false;title.textContent='Annuaire numérique de l’inspection générale du Travail';intro.textContent='Retrouver un agent par son nom ou son numéro matricule.';confirmWrap.hidden=true;emailLabel.hidden=false;emailInput.hidden=false;emailInput.required=true;passwordLabel.textContent='Mot de passe';passwordInput.autocomplete='current-password';submit.textContent='Se connecter';forgotButton.hidden=false;}
+ function showLogin(){gate.removeAttribute('data-password-setup');passwordSetupMode=false;title.textContent='Annuaire numérique de l’inspection générale du Travail';intro.textContent='Retrouver un agent par son nom ou son numéro matricule.';confirmWrap.hidden=true;emailLabel.hidden=false;emailInput.hidden=false;emailInput.required=true;passwordLabel.textContent='Mot de passe';passwordInput.autocomplete='current-password';submit.textContent='Se connecter';forgotButton.hidden=false;}
  function urlIndicatesSetup(){const q=new URLSearchParams(location.search),h=new URLSearchParams(location.hash.replace(/^#/,''));return [q.get('type'),h.get('type')].some(v=>v==='invite'||v==='recovery'||v==='signup');}
- function showPasswordSetup(){passwordSetupMode=true;gate.hidden=false;document.body.classList.add('igt-auth-pending');title.textContent='Réinitialiser votre mot de passe';intro.textContent='Choisissez un nouveau mot de passe pour votre compte IGT.';emailLabel.hidden=true;emailInput.hidden=true;emailInput.required=false;passwordLabel.textContent='Nouveau mot de passe';passwordInput.value='';passwordInput.autocomplete='new-password';confirmWrap.hidden=false;submit.textContent='Enregistrer mon mot de passe';forgotButton.hidden=true;}
+ function showPasswordSetup(){gate.setAttribute('data-password-setup','true');passwordSetupMode=true;gate.hidden=false;document.body.classList.add('igt-auth-pending');title.textContent='Réinitialiser votre mot de passe';intro.textContent='Choisissez un nouveau mot de passe pour votre compte IGT.';emailLabel.hidden=true;emailInput.hidden=true;emailInput.required=false;passwordLabel.textContent='Nouveau mot de passe';passwordInput.value='';passwordInput.autocomplete='new-password';confirmWrap.hidden=false;submit.textContent='Enregistrer mon mot de passe';forgotButton.hidden=true;}
  function setMessage(text,color){message.textContent=text;message.style.color=color||'#a32626';}
  async function readFunctionError(error,fallback){
   let message='';
@@ -111,7 +111,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
  async function heartbeat(){if(!currentUser)return;const {error}=await client.from('user_presence').upsert({user_id:currentUser.id,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)console.warn('Présence non actualisée',error);}
  async function showSessionInternal(session){
   if(passwordSetupMode||updatingPassword)return;
-  if(!session){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;gate.hidden=false;userBox.hidden=true;toolsBox.hidden=true;document.body.classList.add('igt-auth-pending');return;}
+  if(!session){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;location.replace('../index.html?from=igt');return;}
   // Ignore les événements Supabase répétés pour un compte déjà initialisé.
   if(currentUser?.id===session.user.id&&!gate.hidden)return;
   try{
@@ -120,8 +120,8 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
     client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
    ]);
    const {data,error}=profileResult;
-   if(error||!data||data.is_active!==true){await client.auth.signOut();gate.hidden=false;toolsBox.hidden=true;setMessage('Votre compte est suspendu. Veuillez contacter l’administrateur Pmiller pour obtenir l’autorisation de réactivation.');return;}
-   currentUser=session.user;currentProfile=data;
+   if(error||!data||data.is_active!==true){location.replace('../index.html?from=igt&auth=inactive');return;}
+   currentUser=session.user;currentProfile=data;window.igtCurrentUser=session.user;window.igtCurrentProfile=data;window.inspecteurBotAuthUser=session.user;window.inspecteurBotAuthProfile=data;window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{user:session.user,profile:data}}));
    gate.hidden=true;document.body.classList.remove('igt-auth-pending');userBox.hidden=false;toolsBox.hidden=false;adminButton.hidden=!(session.user.id===ADMIN_ID&&data.role==='super_admin');
    const topRight=document.querySelector('.topright');if(topRight&&!userBox.parentElement.isSameNode(topRight))topRight.appendChild(userBox);
    userBox.replaceChildren();const avatar=document.createElement('span');avatar.textContent=(data.display_name||session.user.email||'U').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();avatar.style.cssText='width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#d9edf8;color:#0876bd;font-weight:800;flex:0 0 30px';userBox.appendChild(avatar);const identity=document.createElement('span');identity.style.cssText='min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';identity.textContent=(data.display_name||session.user.email||'Utilisateur')+' · '+(data.role==='super_admin'?'Administrateur':'Agent');userBox.appendChild(identity);
