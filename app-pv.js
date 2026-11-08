@@ -838,7 +838,7 @@
     renderSettings();
     updateDocPanels();
     updatePreview();
-    toast('Module PV chargé : modèles officiels et IA locale prêts.');
+    // Message d'accueil automatique retiré à la demande de l'utilisateur.
   }
 
   function applySavedTheme() {
