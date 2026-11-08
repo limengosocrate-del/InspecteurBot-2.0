@@ -139,6 +139,39 @@ placeholder="Rechercher une entreprise...">
 
 </section>
 
+<section class="table-section">
+
+<h2>
+
+<i class="fa-solid fa-table"></i>
+
+Liste des Entreprises
+
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>N°</th>
+
+<th>Entreprise</th><th>RCCM</th><th>ID NAT</th><th>Impôt</th><th>CNSS</th><th>Directeur</th><th>Travailleurs</th><th>Téléphone</th><th>E-mail</th><th>Province</th><th>Ville</th><th>Adresse</th><th>Secteur</th><th>Statut</th><th>Observations</th><th>Inspecteur</th><th>Entretien</th><th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableEntreprise">
+
+</tbody>
+
+</table>
+
+</section>
+
+
 <section class="form-section">
 
 <h2>
@@ -269,46 +302,6 @@ Enregistrer l'entreprise
 
 </section>
 
-<section class="table-section">
-
-<h2>
-
-<i class="fa-solid fa-table"></i>
-
-Liste des Entreprises
-
-</h2>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>N°</th>
-
-<th>Entreprise</th>
-
-<th>Province</th>
-
-<th>Secteur</th>
-
-<th>Statut</th>
-
-<th>Actions</th>
-
-</tr>
-
-</thead>
-
-<tbody id="tableEntreprise">
-
-</tbody>
-
-</table>
-
-</section>
-
 <section class="actions">
 
 <button onclick="window.print()">
@@ -335,13 +328,7 @@ Excel
 
 </button>
 
-<button onclick="genererQRCode()">
 
-<i class="fa-solid fa-qrcode"></i>
-
-QR Code
-
-</button>
 
 <button onclick="viderFormulaire()">
 
@@ -376,7 +363,7 @@ InspecteurBot RDC © 2026
 </footer>
 
 <style>.form-section h2,.table-section h2,.form-section h2 i,.table-section h2 i{color:#111!important}</style>
-<script src="assets/js/entreprises.js?v=20261107-contrast1"></script>
+<script src="assets/js/entreprises.js?v=20261108-entreprises-pro2"></script>
 
 </div>
 
@@ -384,6 +371,7 @@ InspecteurBot RDC © 2026
 <script>
 (()=>{const key='inspecteur-entreprises-theme-v2',btn=document.getElementById('entrepriseThemeToggle');let mode=localStorage.getItem(key)||'light';function apply(){document.body.classList.toggle('dark-theme',mode==='dark');if(btn){btn.innerHTML=mode==='dark'?'<i class="fa-solid fa-sun"></i><span>Thème clair</span>':'<i class="fa-solid fa-moon"></i><span>Thème sombre</span>';btn.setAttribute('aria-label',mode==='dark'?'Activer le thème clair':'Activer le thème sombre');}}apply();btn?.addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';localStorage.setItem(key,mode);apply();});})();
 </script>
+<style>.table-section{overflow-x:auto;margin-bottom:24px}.table-section table{min-width:1450px}.table-section th,.table-section td{white-space:normal;vertical-align:top;max-width:220px;overflow-wrap:anywhere}</style>
 </body>
 
     </html>
