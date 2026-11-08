@@ -38,7 +38,24 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   try{const context=error?.context;if(context&&typeof context.clone==='function'){const body=await context.clone().json();message=body?.message||body?.error||'';if(body?.code==='ACCOUNT_SUSPENDED')message="Votre compte ANI-IGT a été suspendu par l'administrateur Pmiller. Pour demander le rétablissement de votre accès, veuillez contacter directement l'administrateur et attendre son autorisation. Nous vous prions de ne pas multiplier les tentatives de connexion tant que votre compte n'a pas été réactivé. Merci de votre compréhension.";}}catch(_){}
   return message||fallback||error?.message||'Une erreur est survenue.';
  }
- async function startSession(){
+ function reuseInspecteurBotSession(session){
+  try{
+   const tokenPart=String(session?.access_token||'').split('.')[1];
+   if(!tokenPart||!session?.user?.id)return null;
+   const base64=tokenPart.replace(/-/g,'+').replace(/_/g,'/');
+   const jwt=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));
+   const sessionId=typeof jwt.session_id==='string'?jwt.session_id:null;
+   if(!sessionId)return null;
+   const cached=JSON.parse(sessionStorage.getItem('inspecteurbot_server_check_v1_'+session.user.id)||'null');
+   if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-Number(cached.validated_at)<120000)return cached;
+  }catch(_){}
+  return null;
+ }
+ async function startSession(session){
+  // L'accueil a déjà validé cette même session auprès de Supabase.
+  // Réutiliser sa preuve récente évite un deuxième démarrage de session et une reconnexion inutile.
+  const sharedSession=reuseInspecteurBotSession(session);
+  if(sharedSession){remainingSeconds=Number.POSITIVE_INFINITY;clearTimeout(expiryTimer);return {success:true,profile:sharedSession.profile,reused:true};}
   if(sessionStartPromise)return sessionStartPromise;
   sessionStartPromise=(async()=>{
    const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
@@ -88,7 +105,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   if(currentUser?.id===session.user.id&&!gate.hidden)return;
   try{
    const [,profileResult]=await Promise.all([
-    startSession(),
+    startSession(session),
     client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
    ]);
    const {data,error}=profileResult;
