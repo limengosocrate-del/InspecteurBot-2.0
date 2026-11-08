@@ -248,7 +248,7 @@ function setup(){
  });
 }
 async function loadGlobalTheme(){
- const authScript=Array.from(document.scripts).find(s=>/auth-gate\\.js(?:\\?|$)/.test(s.src));
+ const authScript=Array.from(document.scripts).find(s=>s.src.includes('auth-gate.js'));
  const base=authScript?new URL('./',authScript.src):new URL('./',location.href);
  if(!document.querySelector('link[data-ib-global-theme]')){const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('global-theme.css?v=20261108-theme-1',base).href;link.dataset.ibGlobalTheme='1';document.head.appendChild(link);}
  if(window.InspecteurBotTheme)return;
