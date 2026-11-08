@@ -56,6 +56,7 @@ class QuizEngine {
 
   renderQuestionUI(containerEl) {
     const q = this.currentQuestion;
+    const initialLives = Number(window.persistenceEngine?.getProfile?.().vies ?? 5);
 
     // 11. Scale / Fade Slide-up visual container transition
     containerEl.innerHTML = `
@@ -69,8 +70,8 @@ class QuizEngine {
             <div class="quiz-timer">
               ⏱️ <span id="quiz-timer-val">60s</span>
             </div>
-            <div id="quiz-lives-val" hidden style="display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border:1px solid var(--border-glass);border-radius:999px;background:var(--bg-card);color:var(--text-main);font-size:0.82rem;font-weight:800;white-space:nowrap;">
-              ❤️ 5 vies restantes
+            <div id="quiz-lives-val" style="display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border:1px solid var(--border-glass);border-radius:999px;background:var(--bg-card);color:var(--text-main);font-size:0.82rem;font-weight:800;white-space:nowrap;">
+              ❤️ ${initialLives} vie(s) restante(s)
             </div>
           </div>
         </div>
