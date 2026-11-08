@@ -1495,8 +1495,8 @@
       byId('aiOutput').textContent = 'Aucune infraction fortement liée aux faits. Complétez les détails ou recherchez manuellement dans la base.';
       return;
     }
-    const lines = scored.map((r, idx) => `${idx + 1}. ${r.item.infraction}\n   Texte violé : ${r.item.texteViole}\n   Gravité : ${r.item.gravity} · Amende suggérée : ${formatUSD(r.item.amountUSD)} · Score IA : ${r.score}`).join('\n\n');
-    byId('aiOutput').textContent = `Infractions proposées par l’IA locale :\n\n${lines}\n\nCliquez sur « Ajouter les propositions » pour les sélectionner.`;
+    const lines = scored.map((r, idx) => `${idx + 1}. ${r.item.infraction}\n   Texte violé : ${r.item.texteViole}\n   Gravité : ${r.item.gravity} · Amende suggérée : ${formatUSD(r.item.amountUSD)} · Score de correspondance : ${r.score}`).join('\n\n');
+    byId('aiOutput').textContent = `Infractions proposées par InspecteurBot :\n\n${lines}\n\nCliquez sur « Ajouter les propositions » pour les sélectionner.`;
     const btn = document.createElement('button');
     btn.className = 'btn secondary';
     btn.type = 'button';
@@ -1539,7 +1539,7 @@
     const record = collectRecord();
     const text = generatePlainDraft(record);
     setVal('observations', text);
-    byId('aiOutput').textContent = `Rédaction IA locale du modèle « ${documentLabel(record.fields.docType)} » :\n\n${text}`;
+    byId('aiOutput').textContent = `Rédaction InspecteurBot du modèle « ${documentLabel(record.fields.docType)} » :\n\n${text}`;
     updatePreview();
   }
 
