@@ -949,7 +949,8 @@
     byId('btnPrintTop').addEventListener('click', printDocument);
     byId('btnReadPreview').addEventListener('click', readPreview);
     byId('btnReadSelection').addEventListener('click', readPreview);
-    const dictationButton = byId('btnGlobalListen');\n    if (dictationButton) dictationButton.addEventListener('click', toggleDictation);
+    const dictationButton = byId('btnGlobalListen');
+    if (dictationButton) dictationButton.addEventListener('click', toggleDictation);
     byId('logoIgtFile').addEventListener('change', handleLogoIgtUpload);
     byId('logoIgtFileTop').addEventListener('change', handleLogoIgtUpload);
     byId('btnClearLogoIgt').addEventListener('click', clearLogoIgt);
