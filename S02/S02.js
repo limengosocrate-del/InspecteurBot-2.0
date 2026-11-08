@@ -872,10 +872,9 @@ function renderEffectifBlock(kind, idx) {
         <strong>InspecteurBot IA RDC — ${esc(d.code)}</strong>
         <button type="button" data-action="save">Enregistrer</button>
         <button type="button" data-action="load">Charger dernier</button>
-        <button type="button" data-action="ai">Analyse IA</button>
-        <button type="button" data-action="dictation">Dictée vocale</button>
+        <button type="button" data-action="history">Historique par date</button>
+
         <button type="button" data-action="report">Rapport</button>
-        <button type="button" data-action="json">Exporter JSON</button>
         <button type="button" data-action="print">Imprimer / PDF</button>
       </div>
     `;
@@ -945,6 +944,7 @@ function renderEffectifBlock(kind, idx) {
 
     app.innerHTML = `
       ${renderToolbar(d)}
+      <section id="formArchivePanel" class="no-print" style="display:none;margin:12px auto;max-width:1100px;padding:16px;border:1px solid #b9c9d8;border-radius:14px;background:#fff;color:#172b42"><h3>Mes formulaires enregistrés</h3><div id="formArchiveList"></div></section>
       ${datalists()}
       <div class="sheet-wrap">
         <section class="sheet ${d.code === "S03" ? "short-sheet" : ""}" id="officialSheet">
@@ -955,7 +955,6 @@ function renderEffectifBlock(kind, idx) {
           ${renderQR()}
         </section>
       </div>
-      ${renderAIDrawer()}
     `;
   }
 
@@ -1245,6 +1244,7 @@ function renderEffectifBlock(kind, idx) {
 
     writeArchives(archives);
     updateQR();
+    renderArchiveList();
 
     window.parent?.postMessage({
       type: "InspecteurBot:formSaved",
@@ -1259,6 +1259,12 @@ function renderEffectifBlock(kind, idx) {
     }, "*");
 
     alert(`Formulaire ${CURRENT_CODE} enregistré : ${data.id}`);
+  }
+
+  function renderArchiveList() {
+    const list=document.getElementById("formArchiveList");if(!list)return;
+    const rows=readArchives().filter(x=>x.code===CURRENT_CODE).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));
+    list.innerHTML=rows.length?rows.map(x=>`<div style="display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #dbe3ea"><span><strong>${esc(x.fields?.raison||x.fields?.nom_entreprise||x.id)}</strong><br><small>${new Date(x.savedAt).toLocaleString("fr-FR")} · ${esc(x.fields?.province||"Province non précisée")} · ${esc(x.fields?.statut_dossier||"Enregistré")}</small></span><button type="button" data-load-record="${esc(x.id)}">Ouvrir</button></div>`).join(""):"<p>Aucun enregistrement pour ce formulaire.</p>";
   }
 
   function loadLatest() {
@@ -1505,12 +1511,10 @@ ${ai}
 
       if (action === "save") saveData();
       if (action === "load") loadLatest();
-      if (action === "ai") runAI();
-      if (action === "dictation") startDictation();
       if (action === "report") generateReport();
-      if (action === "json") exportJSON();
       if (action === "print") window.print();
-      if (action === "close-ai") document.getElementById("aiDrawer")?.classList.remove("open");
+      if (action === "history") {const p=document.getElementById("formArchivePanel");if(p){p.style.display=p.style.display==="none"?"block":"none";renderArchiveList();}}
+      const record=e.target.closest("[data-load-record]");if(record){const item=readArchives().find(x=>x.id===record.dataset.loadRecord);if(item){applyData(item);window.scrollTo({top:0,behavior:"smooth"});}}
     });
       }
 
@@ -1520,7 +1524,6 @@ ${ai}
       save: saveData,
       loadLatest,
       exportJSON,
-      runAI,
       collectData,
       applyData
     };
@@ -1534,6 +1537,7 @@ ${ai}
   bindToolbar();
   initDefaults();
   exposeDashboardAPI();
+  renderArchiveList();
 
 })();
 
