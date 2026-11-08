@@ -65,8 +65,13 @@ class QuizEngine {
             <span class="quiz-meta-tag">${q.type || 'QCM'} • ${q.difficulte || 'Normal'}</span>
             <span class="quiz-meta-tag" style="margin-left:8px; border-color:var(--accent-gold); color:var(--accent-gold);">${q.categorie || 'Code du Travail'}</span>
           </div>
-          <div class="quiz-timer">
-            ⏱️ <span id="quiz-timer-val">60s</span>
+          <div class="quiz-status-right" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+            <div class="quiz-timer">
+              ⏱️ <span id="quiz-timer-val">60s</span>
+            </div>
+            <div id="quiz-lives-val" hidden style="display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border:1px solid var(--border-glass);border-radius:999px;background:var(--bg-card);color:var(--text-main);font-size:0.82rem;font-weight:800;white-space:nowrap;">
+              ❤️ 5 vies restantes
+            </div>
           </div>
         </div>
 
@@ -188,8 +193,13 @@ class QuizEngine {
 
     // 5. Update State & Auto-Persistence
     const profile = window.persistenceEngine.getProfile();
-    window.rewardEngine.awardAnswer(profile, q, isCorrect);
-    window.revisionEngine.updateMastery(profile, q.id, isCorrect, q.niveau);
+    const answerResult = window.rewardEngine.awardAnswer(profile, q, isCorrect);
+    window.revisionEngine.updateMastery(profile, q.id, isCorrect, q.niveau, q.categorie || q.category || '');
+    const livesDisplay = document.getElementById('quiz-lives-val');
+    if (livesDisplay) {
+      livesDisplay.hidden = false;
+      livesDisplay.textContent = '❤️ ' + Number(answerResult.livesLeft ?? profile.vies) + ' vie(s) restante(s)';
+    }
     window.persistenceEngine.saveProfile(profile);
 
     if (window.interfaceEngine) {
