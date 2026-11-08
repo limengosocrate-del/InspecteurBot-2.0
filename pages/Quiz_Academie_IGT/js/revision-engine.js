@@ -13,7 +13,7 @@ class RevisionEngine {
     return 'MAÎTRISÉE';
   }
 
-  updateMastery(profile, questionId, isCorrect, levelNum = 1) {
+  updateMastery(profile, questionId, isCorrect, levelNum = 1, categoryName = '') {
     if (!profile.questions) profile.questions = {};
     
     let record = profile.questions[questionId] || {
@@ -28,6 +28,7 @@ class RevisionEngine {
       prochaineRevision: null
     };
 
+    if (categoryName) record.categorie = categoryName;
     record.vues += 1;
     record.derniereVue = new Date().toISOString();
 
