@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;letter-spacing:.2px;visibility:visible!important}html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc(50% - 16px);top:calc(50% + 16px);z-index:2147482998;width:28px;height:28px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-first-paint-spin .8s linear infinite;visibility:visible!important}@keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}</style>
-<link rel="preload" as="style" href="css/academie.css?v=20261108-quiz-progress-1">
+<link rel="preload" as="style" href="css/academie.css?v=20261108-quiz-progress-2">
   <title>InspecteurBot RDC — Académie IGT</title>
 
   <!-- PWA & Design System -->
-  <link rel="stylesheet" href="css/academie.css?v=20261108-quiz-progress-1">
+  <link rel="stylesheet" href="css/academie.css?v=20261108-quiz-progress-2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -17,7 +17,7 @@
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
-<script src="../../auth-gate.js?v=20261108-stable-31" defer></script>
+<script src="../../auth-gate.js?v=20261108-stable-32" defer></script>
 <style id="inspecteurbot-quiz-touch-scroll">
 /* Défilement natif vertical, à un seul doigt, identique à l'accueil InspecteurBot. */
 html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}
@@ -441,6 +441,12 @@ button,a,input,select,textarea{touch-action:manipulation!important}
                 <option value="dark">Fond Bleu Nuit (Sombre)</option>
               </select>
             </div>
+            <div class="glass-card" style="padding:1rem;border:1px solid var(--border-glass);">
+              <label style="font-weight:800;display:block;margin-bottom:.5rem;">❤️ Mes vies de formation</label>
+              <p id="settings-lives-count" style="margin:0 0 .75rem;color:var(--text-muted);">5 / 5 vies</p>
+              <button id="settings-refill-lives" class="btn-gold" style="width:100%;justify-content:center;" onclick="window.rewardEngine.refillLives(window.persistenceEngine.getProfile());window.interfaceEngine.updateLivesSettingsUI();window.interfaceEngine.switchView('view-formation');">🔄 Récupérer 5 vies</button>
+              <small style="display:block;margin-top:.6rem;color:var(--text-muted);line-height:1.5;">Une mauvaise réponse ou un temps écoulé retire une vie. Une bonne réponse ne retire aucune vie.</small>
+            </div>
 
             <div>
               <button class="btn-gold" style="width:100%; justify-content:center;" onclick="window.interfaceEngine.toggleProfileModal()">
@@ -486,14 +492,14 @@ button,a,input,select,textarea{touch-action:manipulation!important}
   </nav>
 
   <!-- JS Modules Sequence -->
-  <script src="js/persistence.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/niveau-system.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/reward-system.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/revision-engine.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/quiz-engine.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/mission-engine.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/examination-engine.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/certification.js?v=20261108-quiz-progress-1" defer></script>
-  <script src="js/interface.js?v=20261108-quiz-progress-1" defer></script>
+  <script src="js/persistence.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/niveau-system.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/reward-system.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/revision-engine.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/quiz-engine.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/mission-engine.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/examination-engine.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/certification.js?v=20261108-quiz-progress-2" defer></script>
+  <script src="js/interface.js?v=20261108-quiz-progress-2" defer></script>
 </body>
 </html>
