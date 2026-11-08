@@ -1,32 +1,43 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#082b4c"><title>Annuaire national IGT — InspecteurBot</title>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#082b4c">
+<title>Annuaire national IGT — InspecteurBot</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071b35;font-family:Arial,sans-serif}
-#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:white;background:radial-gradient(circle at 50% 35%,#123f70,#071b35 65%,#031126);font-weight:800}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b35;font-family:Arial,sans-serif}
+#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:white;background:radial-gradient(circle at 50% 35%,#123f70,#071b35 65%,#031126);font-weight:800;z-index:10}
 #spin{width:32px;height:32px;border:3px solid #ffffff40;border-top-color:#e6b63f;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}#hint{font-size:12px;font-weight:500;color:#d8e8f5}
-iframe{display:block;width:100%;height:100%;height:100dvh;border:0;background:#f5f8fb;touch-action:pan-y}
-</style></head><body><div id="load"><div id="spin"></div><div>InspecteurBot — Annuaire national IGT</div><div id="hint">Restauration du contenu officiel de l’annuaire…</div></div>
+@keyframes spin{to{transform:rotate(360deg)}}
+#hint{font-size:12px;font-weight:500;color:#d8e8f5;text-align:center;padding:0 18px}
+</style></head><body>
+<div id="load"><div id="spin"></div><div>InspecteurBot — Annuaire national IGT</div><div id="hint">Chargement du contenu officiel de l’annuaire…</div></div>
 <script>
 (async()=>{
- const names=Array.from({length:11},(_,i)=>'part-'+String(i+1).padStart(3,'0')+'.txt?v=20261108-v13-shared-session-scroll3');
+ const version='20261108-v13-content-loader-fix4';
+ const names=Array.from({length:11},(_,i)=>'part-'+String(i+1).padStart(3,'0')+'.txt?v='+version);
+ const hint=document.getElementById('hint');
  try{
-  const parts=await Promise.all(names.map(async name=>{const r=await fetch('./v13/'+name,{cache:'force-cache'});if(!r.ok)throw new Error('Chargement du contenu '+name+' impossible');return r.text()}));
+  const parts=await Promise.all(names.map(async name=>{
+   const response=await fetch('./v13/'+name,{cache:'no-store',credentials:'same-origin'});
+   if(!response.ok)throw new Error('Chargement de '+name.split('?')[0]+' impossible (HTTP '+response.status+').');
+   return response.text();
+  }));
   let page=parts.join('');
-  const marker='remainingSeconds=Number(data.expires_in_seconds)||0;';
-  const start=page.indexOf(marker);
-  if(start<0)throw new Error('Le contrôle de session IGT attendu est introuvable.');
-  const end=page.indexOf('return data;',start);
-  if(end<0)throw new Error('Fin du contrôle de session IGT introuvable.');
-  page=page.slice(0,start)+'remainingSeconds=Number.POSITIVE_INFINITY; clearTimeout(expiryTimer); // Session sans expiration locale; révocation serveur conservée.\n   '+page.slice(end);
-  page=page.replace(/const left=Number\(data\.expires_in_seconds\)\|\|0;\s*if\(left<=0\)throw new Error\('Votre session de 20 minutes est terminée\.'\);/,'// Session vérifiée côté serveur; aucune expiration locale de 20 minutes.');
+  if(!/<html[\s>]/i.test(page)||!/<body[\s>]/i.test(page)||!page.includes('igt-workspace')){
+   throw new Error('Le contenu de l’annuaire est incomplet ou mal assemblé.');
+  }
   page=page.replace(/<meta name="viewport"[^>]*>/i,'<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">');
   page=page.replace(/<title[^>]*>[\s\S]*?<\/title>/i,'<title>Annuaire national IGT — Version 13 restaurée | InspecteurBot</title>');
   const scroll='<style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important}.shell,.main{min-height:100%;min-width:0}</style>';
-  page=page.replace('</head>', '<base href="/InspecteurBot-2.0/igt/">\n'+scroll+'\n</head>');
-  // Remplace le document courant : l'application reste une page indépendante à /igt/index.html.
-  // Cela préserve l'origine, le stockage Supabase, les liens de récupération et les URL relatives.
+  if(!/<base\b/i.test(page))page=page.replace('</head>','<base href="./">\n'+scroll+'\n</head>');
+  else page=page.replace('</head>',scroll+'\n</head>');
   document.open();document.write(page);document.close();
- }catch(e){document.getElementById('hint').textContent=e.message||'Erreur de chargement. Rechargez la page.';document.getElementById('spin').style.display='none';}
+ }catch(error){
+  console.error('Chargement Annuaire IGT :',error);
+  hint.textContent=(error&&error.message)||'Erreur de chargement. Rechargez la page.';
+  document.getElementById('spin').style.display='none';
+ }
 })();
 </script></body></html>
