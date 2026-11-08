@@ -67,5 +67,10 @@
   else if(window.igtCurrentUser)init({user:window.igtCurrentUser,profile:window.igtCurrentProfile});
   else if(window.igtSupabase&&window.igtSupabase.auth)window.igtSupabase.auth.getSession().then(({data})=>{if(data&&data.session){window.igtCurrentUser=data.session.user;init({user:data.session.user,profile:window.igtCurrentProfile})}}).catch(()=>{});
  });
+ window.addEventListener('igt-profile-loaded',()=>{
+  const engine=window.persistenceEngine;
+  if(!userId||!engine||!engine.storageReady||engine.userId!==userId)return;
+  const profile=engine.getProfile();profile.settings=profile.settings||{};profile.settings.theme=current;engine.saveProfile(profile);
+ });
  window.InspecteurBotTheme={setTheme,getTheme:()=>current,init,initPublic};
 })();
