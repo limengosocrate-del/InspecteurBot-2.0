@@ -513,7 +513,7 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         // Enregistrement gracieux (ignore l'erreur si fichier en mode dev simple)
-        navigator.serviceWorker.register("service-worker.js?v=20261108-v64")
+        navigator.serviceWorker.register("service-worker.js?v=20261109-v65")
             .then(() => console.log("✅ Service Worker PWA InspecteurBot actif."))
             .catch(() => console.log("ℹ️ PWA en mode développement non persistant."));
     });
