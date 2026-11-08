@@ -2,6 +2,7 @@
 (function(){
  'use strict';
  const PREFIX='InspecteurBot_Global_Theme_v1_';
+ const PUBLIC_KEY='InspecteurBot_Global_Theme_Public_v1';
  let userId=null,current='light',ready=false;
  const normalize=value=>value==='dark'?'dark':'light';
  function updateControls(){
@@ -18,7 +19,7 @@
   if(current==='dark')body.classList.add('dark');
   document.documentElement.dataset.ibTheme=current;
   document.documentElement.style.colorScheme=current;
-  if(persist&&userId){try{localStorage.setItem(PREFIX+userId,current)}catch(_){}}
+  if(persist){try{if(userId)localStorage.setItem(PREFIX+userId,current);else if(body.dataset.publicTheme==='true')localStorage.setItem(PUBLIC_KEY,current)}catch(_){}}
   const engine=window.persistenceEngine;
   if(persist&&engine&&engine.storageReady&&engine.userId===userId){
    const profile=engine.getProfile();profile.settings=profile.settings||{};profile.settings.theme=current;engine.saveProfile(profile);
@@ -33,6 +34,11 @@
   const button=document.createElement('button');button.id='ib-global-theme-toggle';button.type='button';button.textContent=current==='dark'?'☀️':'🌙';button.title=current==='dark'?'Passer au thème clair':'Passer au thème sombre';button.setAttribute('aria-label',button.title);
   button.addEventListener('click',()=>setTheme(current==='dark'?'light':'dark',true));
   document.body.appendChild(button);
+ }
+ function initPublic(){
+  if(!document.body||document.body.dataset.publicTheme!=='true')return false;
+  userId=null;let saved=null;try{saved=localStorage.getItem(PUBLIC_KEY)}catch(_){}
+  setTheme(saved||'light',false);ready=true;ensureControl();updateControls();return true;
  }
  function init(detail){
   const user=detail&&detail.user||window.inspecteurBotAuthUser||window.igtCurrentUser;
@@ -56,9 +62,10 @@
   if(event.target&&event.target.id==='select-theme'){event.stopImmediatePropagation();setTheme(event.target.value,true);}
  },true);
  document.addEventListener('DOMContentLoaded',()=>{
+  if(document.body&&document.body.dataset.publicTheme==='true'){initPublic();return;}
   if(window.inspecteurBotAuthUser)init({user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile});
   else if(window.igtCurrentUser)init({user:window.igtCurrentUser,profile:window.igtCurrentProfile});
   else if(window.igtSupabase&&window.igtSupabase.auth)window.igtSupabase.auth.getSession().then(({data})=>{if(data&&data.session){window.igtCurrentUser=data.session.user;init({user:data.session.user,profile:window.igtCurrentProfile})}}).catch(()=>{});
  });
- window.InspecteurBotTheme={setTheme,getTheme:()=>current,init};
+ window.InspecteurBotTheme={setTheme,getTheme:()=>current,init,initPublic};
 })();
