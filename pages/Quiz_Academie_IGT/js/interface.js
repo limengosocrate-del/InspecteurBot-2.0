@@ -109,6 +109,8 @@ class InterfaceManager {
       this.renderStatistiquesDetail();
     } else if (viewId === 'view-settings') {
       this.updateLivesSettingsUI();
+    } else if (viewId === 'view-settings') {
+      this.updateLivesSettingsUI();
     } else if (viewId === 'view-dashboard') {
       this.updateDashboardUI();
       this.animateDashboardOpening();
@@ -330,30 +332,31 @@ class InterfaceManager {
     }
   }
 
+  updateLivesSettingsUI() {
+    const profile = window.persistenceEngine.getProfile();
+    const current = Math.max(0, Number(profile.vies ?? 5));
+    const maximum = Math.max(1, Number(profile.maxVies ?? 5));
+    const label = document.getElementById('settings-lives-count');
+    const button = document.getElementById('settings-refill-lives');
+    if (label) label.textContent = current + ' / ' + maximum + ' vies';
+    if (button) { button.disabled = current >= maximum; button.textContent = current >= maximum ? '❤️ Vos vies sont au maximum' : '🔄 Récupérer ' + maximum + ' vies'; }
+  }
+
   loadNextFormationQuestion() {
     const profile = window.persistenceEngine.getProfile();
     const container = document.getElementById('quiz-question-container');
-
     if (Number(profile.vies) <= 0) {
-      if (container) {
-        container.innerHTML = `
-          <div class="glass-card" style="text-align:center;padding:2.5rem 1.5rem;">
-            <div style="font-size:3.2rem;margin-bottom:1rem;">💔</div>
-            <h2>Vos 5 vies sont épuisées</h2>
-            <p style="color:var(--text-muted);margin:1rem 0;line-height:1.7;">Vous avez échoué cinq fois. Rendez-vous dans <strong>Paramètres</strong> pour récupérer vos vies. Votre progression reste enregistrée et les prochaines questions seront choisies automatiquement sans répétition avant la fin du cycle du niveau.</p>
-            <button class="btn-gold" onclick="window.interfaceEngine.switchView('view-settings')">⚙️ Ouvrir les paramètres</button>
-          </div>
-        `;
-      }
+      if (container) container.innerHTML = `
+        <div class="glass-card" style="text-align:center;padding:2.5rem 1.5rem;">
+          <div style="font-size:3.2rem;margin-bottom:1rem;">💔</div>
+          <h2>Vos 5 vies sont épuisées</h2>
+          <p style="color:var(--text-muted);margin:1rem 0;line-height:1.7;">Vous avez échoué cinq fois. Rendez-vous dans <strong>Paramètres</strong> pour récupérer vos vies. Votre progression reste enregistrée et les prochaines questions seront choisies automatiquement sans répétition avant la fin du cycle du niveau.</p>
+          <button class="btn-gold" onclick="window.interfaceEngine.switchView('view-settings')">⚙️ Ouvrir les paramètres</button>
+        </div>`;
       return;
     }
-
     const nextQ = window.revisionEngine.selectNextQuestion(this.questionBank, profile, profile.niveauActuel, this.lastQuestionId);
-    if (!nextQ) {
-      if (container) container.innerHTML = `<div class="glass-card">Aucune question de formation n'est disponible pour ce niveau. Vérifiez la banque de questions.</div>`;
-      return;
-    }
-
+    if (!nextQ) { if (container) container.innerHTML = `<div class="glass-card">Aucune question de formation n'est disponible pour ce niveau. Vérifiez la banque de questions.</div>`; return; }
     this.lastQuestionId = nextQ.id;
     window.quizEngine.loadQuestion(nextQ, container, () => this.loadNextFormationQuestion());
   }
