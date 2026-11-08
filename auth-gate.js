@@ -247,7 +247,15 @@ function setup(){
   else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')setTimeout(()=>validate(session),0)
  });
 }
+async function loadGlobalTheme(){
+ const authScript=Array.from(document.scripts).find(s=>/auth-gate\\.js(?:\\?|$)/.test(s.src));
+ const base=authScript?new URL('./',authScript.src):new URL('./',location.href);
+ if(!document.querySelector('link[data-ib-global-theme]')){const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('global-theme.css?v=20261108-theme-1',base).href;link.dataset.ibGlobalTheme='1';document.head.appendChild(link);}
+ if(window.InspecteurBotTheme)return;
+ await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=new URL('global-theme.js?v=20261108-theme-1',base).href;script.onload=resolve;script.onerror=()=>reject(new Error('Thèmes globaux indisponibles'));document.head.appendChild(script);});
+}
 async function start(){
+ try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
  try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  // La session reste active jusqu'à la déconnexion ou à sa révocation. Supabase renouvelle automatiquement les jetons.
