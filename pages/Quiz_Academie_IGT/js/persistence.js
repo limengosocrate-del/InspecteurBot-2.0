@@ -24,6 +24,7 @@ const DEFAULT_PROFILE = {
   },
   questions: {}, // qid -> { vues, bonnes, mauvaises, serie, maitrise, derniereVue, prochaineRevision }
   questionCycles: {}, // séquences anti-répétition par niveau
+  questionCycles: {}, // séquences anti-répétition par niveau
   statistiques: {
     vues: 0,
     bonnes: 0,
@@ -64,6 +65,7 @@ class PersistenceManager {
           statistiques: { ...DEFAULT_PROFILE.statistiques, ...(parsed.statistiques || {}) },
           settings: { ...DEFAULT_PROFILE.settings, ...(parsed.settings || {}) },
           questions: parsed.questions && typeof parsed.questions === 'object' ? parsed.questions : {},
+          questionCycles: parsed.questionCycles && typeof parsed.questionCycles === 'object' ? parsed.questionCycles : {},
           questionCycles: parsed.questionCycles && typeof parsed.questionCycles === 'object' ? parsed.questionCycles : {},
           badges: Array.isArray(parsed.badges) ? parsed.badges : [],
           certificats: Array.isArray(parsed.certificats) ? parsed.certificats : [],
