@@ -11,8 +11,7 @@ class RewardSystem {
   awardAnswer(profile, question, isCorrect) {
     if (!isCorrect) {
       // Deduct life
-      const penalty = question.perte_vie || 1;
-      profile.vies = Math.max(0, profile.vies - penalty);
+      profile.vies = Math.max(0, Number(profile.vies ?? profile.maxVies ?? 5) - 1);
       this.logAction(profile, "ÉCHEC", `Réponse incorrecte à ${question.id}. Vies restantes: ${profile.vies}`);
       return { xpGained: 0, rewardAmount: 0, livesLeft: profile.vies };
     }
