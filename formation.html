@@ -109,7 +109,7 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
     const url=await signedFile(r.file_path);
     byId('lesson-content').innerHTML='<div class="media-tools"><audio id="training-audio" class="player" controls preload="metadata" src="'+esc(url)+'"></audio><label for="audio-speed">Vitesse</label><select id="audio-speed" class="btn"><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="1.75">1,75×</option><option value="2">2×</option></select><button id="share-audio" class="btn primary" type="button">Partager sur WhatsApp</button></div><p class="muted">Écoutez directement ici. Vous pouvez ralentir ou accélérer la lecture.</p>';
     const audio=byId('training-audio');byId('audio-speed').addEventListener('change',e=>{audio.playbackRate=Number(e.target.value)||1;});
-    byId('share-audio').addEventListener('click',async()=>{const text=r.title+' — Écouter la formation : '+url;try{if(navigator.share)await navigator.share({title:r.title,text,url});else window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');}catch(err){if(err?.name!=='AbortError')window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');}});
+    byId('share-audio').addEventListener('click',()=>{const text=r.title+' — Écouter la formation : '+url;window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener');});
    }
    else if(r.kind==='pdf'){const url=await signedFile(r.file_path);await renderPdfBook(url,r.title);}
    else renderExercise(r);
