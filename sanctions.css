@@ -12,3 +12,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 html,body{height:auto!important;min-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;-webkit-overflow-scrolling:touch}
 
 .record-row{grid-template-columns:50px minmax(0,1fr) auto;gap:12px}.record-number{font-size:20px;font-weight:900}@media(max-width:520px){.record-number{width:48px;height:48px;min-width:48px;font-size:21px}.record-row{padding:13px 11px;gap:10px}}
+
+/* Lisibilité renforcée des références légales et amendes sur mobile */
+.record-row small{display:block!important;font-size:clamp(14px,3.7vw,17px)!important;line-height:1.55!important;font-weight:650!important;color:var(--muted)!important;overflow-wrap:anywhere!important;margin-top:7px!important}
+.record-row b{font-size:clamp(16px,4vw,19px)!important;line-height:1.4!important}
+.record-number{font-size:clamp(18px,4.5vw,22px)!important;font-weight:900!important}
