@@ -56,7 +56,7 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
   <div class="field"><label for="res-desc">Description / objectif pédagogique</label><textarea id="res-desc" maxlength="2000"></textarea></div>
   <div class="field" id="file-field"><label for="res-file">Fichier audio ou PDF (maximum 6 Mo)</label><input id="res-file" type="file" accept="audio/*,.pdf,application/pdf"><small class="muted">Taille maximale autorisée : 6 Mo par fichier.</small></div>
   <div class="field hidden" id="text-field"><label for="res-text">Contenu du cours / leçon</label><textarea id="res-text" maxlength="30000" placeholder="Rédigez ici le contenu pédagogique de la formation…"></textarea></div>
-  <div class="field hidden" id="exercise-field"><label for="res-exercise">Exercice (JSON) : questions, choix, bonne réponse et explication</label><textarea id="res-exercise" spellcheck="false" placeholder='{"questions":[{"question":"Question ?","options":["A","B","C"],"correctIndex":1,"explanation":"Explication"}]}'></textarea></div>
+  <div class="field hidden" id="exercise-field"><label>Questions de l’exercice</label><p class="muted">Saisissez chaque question et une réponse possible par ligne. Les participants pourront cocher plusieurs choix puis envoyer leur copie.</p><div id="exercise-builder"></div><button class="btn" id="add-exercise-question" type="button">＋ Ajouter une question</button><textarea id="res-exercise" class="hidden" spellcheck="false"></textarea></div>
   <label class="field" style="display:flex;align-items:center;gap:9px"><input id="res-published" type="checkbox" style="width:auto"> Publier immédiatement pour les utilisateurs</label>
   <button class="btn primary" type="submit"><i class="fa-solid fa-cloud-arrow-up"></i> Enregistrer la formation</button>
  </form>
@@ -169,13 +169,22 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
   const {error}=await sb.from('training_progress').upsert(payload,{onConflict:'resource_id,user_id'});
   if(error)say('lesson-status','Votre activité est affichée, mais sa sauvegarde a échoué. Réessayez après vérification de la connexion.');
  }
+ function addExerciseQuestion(question='',options=''){
+  const wrap=document.createElement('div');wrap.className='exercise-question builder-question';
+  wrap.innerHTML='<label>Intitulé de la question</label><input data-builder-question maxlength="700" placeholder="Écrivez la question…"><label>Choix de réponse (un choix par ligne)</label><textarea data-builder-options rows="4" placeholder="Réponse A&#10;Réponse B&#10;Réponse C"></textarea><button class="btn" type="button" data-remove-question>Retirer cette question</button>';
+  wrap.querySelector('[data-builder-question]').value=question;wrap.querySelector('[data-builder-options]').value=options;
+  wrap.querySelector('[data-remove-question]').addEventListener('click',()=>{wrap.remove();});
+  byId('exercise-builder').appendChild(wrap);
+ }
+ byId('add-exercise-question').addEventListener('click',()=>addExerciseQuestion());
+ addExerciseQuestion();
  byId('close-lesson').addEventListener('click',()=>byId('lesson-panel').classList.add('hidden'));
- byId('res-kind').addEventListener('change',()=>{const kind=byId('res-kind').value,ex=kind==='exercise',txt=kind==='text',file=!ex&&!txt;byId('exercise-field').classList.toggle('hidden',!ex);byId('text-field').classList.toggle('hidden',!txt);byId('file-field').classList.toggle('hidden',!file);});
+ byId('res-kind').addEventListener('change',()=>{const kind=byId('res-kind').value,ex=kind==='exercise',txt=kind==='text',file=!ex&&!txt;byId('exercise-field').classList.toggle('hidden',!ex);byId('text-field').classList.toggle('hidden',!txt);byId('file-field').classList.toggle('hidden',!file);if(ex&&!byId('exercise-builder').children.length)addExerciseQuestion();});
  byId('resource-form').addEventListener('submit',async e=>{
   e.preventDefault();if(!['admin','super_admin'].includes(role)){say('admin-status','Droits administrateur requis.');return;}
   const sb=client(),kind=byId('res-kind').value,title=byId('res-title').value.trim();let filePath=null,exercise={},uploadedPath=null;
   try{
-   if(kind==='exercise'){exercise=JSON.parse(byId('res-exercise').value);if(!Array.isArray(exercise.questions)||!exercise.questions.length)throw new Error('Ajoutez au moins une question valide.');}
+   if(kind==='exercise'){const built=[...byId('exercise-builder').querySelectorAll('.builder-question')].map(card=>({question:card.querySelector('[data-builder-question]').value.trim(),options:card.querySelector('[data-builder-options]').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean)})).filter(q=>q.question&&q.options.length>=2);if(!built.length)throw new Error('Ajoutez au moins une question avec deux choix de réponse ou plus.');exercise={questions:built};}
    else if(kind==='text'){exercise={content:byId('res-text').value.trim()};if(!exercise.content)throw new Error('Rédigez le contenu de la formation.');}
    else{const file=byId('res-file').files[0];if(!file)throw new Error('Choisissez un fichier audio ou PDF.');if(file.size>6*1024*1024)throw new Error('Le fichier dépasse la limite autorisée de 6 Mo.');if(kind==='pdf'&&file.type!=='application/pdf')throw new Error('Le fichier doit être un PDF.');if(kind==='audio'&&!file.type.startsWith('audio/'))throw new Error('Le fichier doit être un audio.');const id=crypto.randomUUID();filePath=id+'/'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const up=await sb.storage.from('formation-resources').upload(filePath,file,{upsert:false});if(up.error)throw up.error;uploadedPath=filePath;}
    const storedKind=kind==='text'?'exercise':kind;
