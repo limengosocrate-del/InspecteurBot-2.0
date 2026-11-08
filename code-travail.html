@@ -47,8 +47,7 @@
     <link rel="stylesheet" href="assets/css/search.css">
     <link rel="stylesheet" href="assets/css/categories.css">
     <link rel="stylesheet" href="assets/css/article.css">
-    <link rel="stylesheet" href="assets/css/assistant.css">
-    <link rel="stylesheet" href="assets/css/outils.css">
+        <link rel="stylesheet" href="assets/css/outils.css">
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/animations.css">
@@ -77,12 +76,12 @@ img,video,canvas{max-width:100%;height:auto}
          OPEN GRAPH & TWITTER
     =========================================== -->
     <meta property="og:title" content="InspecteurBot RDC | Code du Travail Intelligent">
-    <meta property="og:description" content="Bibliothèque juridique intelligente de l'Inspection Générale du Travail de la RDC avec Assistant IA RAG">
+    <meta property="og:description" content="Bibliothèque juridique intelligente de l’Inspection Générale du Travail de la RDC">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="InspecteurBot RDC">
-    <meta name="twitter:description" content="Assistant juridique IA pour les Inspecteurs et Travailleurs du Congo">
+    <meta name="twitter:description" content="Code du Travail de la République Démocratique du Congo">
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;letter-spacing:.2px;visibility:visible!important}html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc(50% - 16px);top:calc(50% + 16px);z-index:2147482998;width:28px;height:28px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-first-paint-spin .8s linear infinite;visibility:visible!important}@keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}</style>
@@ -122,7 +121,8 @@ body.dark-theme #livreHost,body.dark-theme #livreHost *{
 body.dark-theme input,body.dark-theme textarea{color:#000!important;background:#fff!important}
 body.dark-theme input::placeholder,body.dark-theme textarea::placeholder{color:#555!important}
 body.dark-theme .categories-section .category-card,body.dark-theme .categories-section .card,
-body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-theme .category-card,body.dark-theme #assistantIA .assistant-card,body.dark-theme #assistantIA .ai-result,body.dark-theme #assistantIA .assistant-input,body.dark-theme .search-section,body.dark-theme .search-box,body.dark-theme .article-card,body.dark-theme #livreHost .livre,body.dark-theme #livreHost .livre-page{background:#fff!important;color:#000!important}\nbody.dark-theme .suggestions button,body.dark-theme .assistant-actions button{color:#000!important}
+body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-theme .category-card,body.dark-theme #assistantIA .assistant-card,body.dark-theme #assistantIA .ai-result,body.dark-theme #assistantIA .assistant-input,body.dark-theme .search-section,body.dark-theme .search-box,body.dark-theme .article-card,body.dark-theme #livreHost .livre,body.dark-theme #livreHost .livre-page{background:#fff!important;color:#000!important}
+body.dark-theme .suggestions button,body.dark-theme .assistant-actions button{color:#000!important}
 #livreHost{margin-top:8px!important}
 </style>
 </head>
@@ -143,7 +143,7 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
             <h1>CODE DU TRAVAIL RDC</h1>
             <h2>République Démocratique du Congo</h2>
             <h3>Inspection Générale du Travail (IGT)</h3>
-            <p>⚡ Bibliothèque Juridique Intelligente & Assistant IA — Loi n° 16/010 ⚡</p>
+            <p>⚡ Bibliothèque Juridique Intelligente — Loi n° 16/010 ⚡</p>
         </div>
 
         <!-- Compatibilité des scripts historiques : données temporelles masquées. --><div hidden aria-hidden="true"><span id="clock"></span><span id="day"></span><span id="date"></span><span id="temperature"></span><span id="city"></span></div>
@@ -357,11 +357,6 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 <!-- Recherche vectorielle sémantique -->
 <script src="assets/js/vectorSearch.js"></script>
 
-<!-- Pipeline RAG (Retrieval-Augmented Generation) -->
-<script src="assets/js/rag.js"></script>
-
-<!-- Assistant IA InspecteurBot -->
-<script src="assets/js/ia.js"></script>
 
 <!-- Reconnaissance et synthèse vocale (2 voix : Masculine & Féminine) -->
 <script src="assets/js/speech.js"></script>
