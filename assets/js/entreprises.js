@@ -597,9 +597,15 @@ window.print();
 =========================================================*/
 
 function exporterPDF(){
- const section=document.querySelector(".table-section");if(!section||!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
- const w=window.open("","_blank");if(!w){notification("Autorisez les fenêtres contextuelles pour exporter.","warning");return;}
- w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Liste des entreprises IGT</title><style>body{font:12px Arial;padding:20px}h1{font-size:18px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px;text-align:left;overflow-wrap:anywhere}th{background:#e8eef2}</style></head><body><h1>Liste des entreprises — IGT RDC</h1>'+section.innerHTML+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+ const section=document.querySelector(".table-section");
+ const table=section?.querySelector("table");
+ if(!table||!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
+ const clone=table.cloneNode(true);
+ clone.querySelectorAll("button,input,select,textarea").forEach(el=>el.remove());
+ const w=window.open("","_blank");
+ if(!w){notification("Autorisez les fenêtres contextuelles pour exporter.","warning");return;}
+ w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Liste des entreprises IGT</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{font:10px Arial,sans-serif;color:#111;margin:0}header{text-align:center;border-bottom:2px solid #173b61;padding-bottom:10px;margin-bottom:14px}h1{font-size:18px;margin:4px 0;color:#173b61}p{margin:3px 0}table{width:100%;border-collapse:collapse;table-layout:auto}th,td{border:1px solid #687482;padding:5px;text-align:left;overflow-wrap:anywhere;vertical-align:top}th{background:#e8eef2;font-weight:bold}tr{break-inside:avoid}thead{display:table-header-group}</style></head><body><header><p>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · MINISTÈRE DE L’EMPLOI ET TRAVAIL</p><h1>LISTE DES ENTREPRISES — IGT RDC</h1><p>Registre des entreprises enregistrées · Édité le '+new Date().toLocaleDateString("fr-CD")+'</p></header>'+clone.outerHTML+'</body></html>');
+ w.document.close();w.focus();setTimeout(()=>w.print(),350);
 }
 
 /*=========================================================
