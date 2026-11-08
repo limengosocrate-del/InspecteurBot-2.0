@@ -18,11 +18,24 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
  const version='20261108-v13-static-directory-fix1';
  const names=Array.from({length:11},(_,i)=>'part-'+String(i+1).padStart(3,'0')+'.txt?v='+version);
  const hint=document.getElementById('hint');
+ const loader=document.getElementById('load');
+ const spin=document.getElementById('spin');
  try{
+  let completed=0;
   const parts=await Promise.all(names.map(async name=>{
-   const response=await fetch('./v13/'+name,{cache:'no-store',credentials:'same-origin'});
-   if(!response.ok)throw new Error('Chargement de '+name.split('?')[0]+' impossible (HTTP '+response.status+').');
-   return response.text();
+   const controller=new AbortController();
+   const timeout=setTimeout(()=>controller.abort(),90000);
+   try{
+    const response=await fetch('./v13/'+name,{cache:'force-cache',credentials:'same-origin',signal:controller.signal});
+    if(!response.ok)throw new Error('Chargement de '+name.split('?')[0]+' impossible (HTTP '+response.status+').');
+    const content=await response.text();
+    completed++;
+    hint.textContent='Chargement de l’annuaire : '+completed+' / '+names.length+' fichiers…';
+    return content;
+   }catch(fetchError){
+    if(fetchError&&fetchError.name==='AbortError')throw new Error('Le fichier '+name.split('?')[0]+' met trop de temps à répondre. Vérifiez votre connexion puis réessayez.');
+    throw fetchError;
+   }finally{clearTimeout(timeout);}
   }));
   let page=parts.join('');
   if(!/<html[\s>]/i.test(page)||!/<body[\s>]/i.test(page)||!page.includes('igt-workspace')){
@@ -46,7 +59,9 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
  }catch(error){
   console.error('Chargement Annuaire IGT :',error);
   hint.textContent=(error&&error.message)||'Erreur de chargement. Rechargez la page.';
-  document.getElementById('spin').style.display='none';
+  spin.style.display='none';
+  let retry=document.getElementById('igt-retry-load');
+  if(!retry){retry=document.createElement('button');retry.id='igt-retry-load';retry.type='button';retry.textContent='Réessayer le chargement';retry.style.cssText='padding:13px 20px;border:0;border-radius:10px;background:#e6b63f;color:#09243e;font-weight:800;font-size:15px';loader.appendChild(retry);retry.addEventListener('click',()=>location.reload());}
  }
 })();
 </script></body></html>
