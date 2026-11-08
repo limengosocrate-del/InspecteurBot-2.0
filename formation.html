@@ -34,7 +34,7 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
 </header>
 <section class="panel">
  <h2><i class="fa-solid fa-book-open"></i> Bibliothèque de formation</h2>
- <p class="muted">Les contenus publiés par l’administration sont accessibles à tous les comptes autorisés. Écoutez, lisez et téléchargez les supports audio et PDF. Votre progression reste privée.</p>
+ <p class="muted">Les contenus publiés par l’administration sont accessibles à tous les comptes autorisés. Écoutez les cours audio, lisez les PDF page par page et répondez aux exercices directement dans l’application. Vos activités restent privées.</p>
  <div id="resource-list" class="grid"><p class="muted">Chargement des formations…</p></div>
  <p id="user-status" class="status" role="status"></p>
 </section>
@@ -190,7 +190,7 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
    const storedKind=kind==='text'?'exercise':kind;
    const ins=await sb.from('training_resources').insert({title,description:byId('res-desc').value.trim(),kind:storedKind,file_path:filePath,exercise,published:byId('res-published').checked,created_by:user.id}).select().single();
    if(ins.error)throw ins.error;
-   byId('resource-form').reset();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
+   byId('resource-form').reset();byId('exercise-builder').innerHTML='';addExerciseQuestion();byId('res-kind').dispatchEvent(new Event('change'));say('admin-status','Formation enregistrée avec succès.');await loadResources();
   }catch(err){if(uploadedPath){try{await sb.storage.from('formation-resources').remove([uploadedPath]);}catch(cleanupError){console.warn('Nettoyage du fichier temporaire impossible',cleanupError);}}say('admin-status',err.message||'Erreur lors de l’enregistrement.');}
  });
  async function loadSubmissions(){
