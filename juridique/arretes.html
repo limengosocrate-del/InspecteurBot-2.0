@@ -1,51 +1,31 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Arrêtés ministériels</title>
-  <link rel="stylesheet" href="../fiche.css?v=41">
-
-<!-- InspecteurBot : authentification obligatoire Supabase -->
-<style id="inspecteurbot-auth-lock">
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}
-html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;letter-spacing:.2px;visibility:visible!important}
-html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc(50% - 16px);top:calc(50% + 16px);z-index:2147482998;width:28px;height:28px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-first-paint-spin .8s linear infinite;visibility:visible!important}
-@keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}
-html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arrêtés ministériels — AIM 006 et 127</title>
+<link rel="stylesheet" href="../fiche.css?v=41">
+<style>
+body{color:#172536}.page{max-width:1100px;margin:20px auto;padding:16px}.doc-head,.reader{background:#fff;border:1px solid #d8e0e8;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #102c4910}.doc-head h1{color:#173b61}.doc-head p{color:#526477}.doc-actions{display:flex;gap:10px;flex-wrap:wrap}.doc-actions a{display:inline-flex;padding:11px 15px;border-radius:8px;background:#173b61;color:white;text-decoration:none;font-weight:750}.doc-actions a.secondary{background:#e8eef4;color:#173b61}.reader iframe{width:100%;height:78vh;min-height:520px;border:0;border-radius:8px;background:#eef2f6}.note{font-size:12px;color:#5d6c7b}
 </style>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="../auth-gate.js?v=20261107-stable-29" defer></script>
-<style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head>
 <body>
-  <div class="background"></div>
-  <div class="page">
-    <a class="back-link" href="../index.html">← Tableau de bord</a>
-    <h1 style="color:var(--gold)">⚖️ Arrêtés ministériels</h1>
-    <div class="glass" style="margin-top:14px" id="list"></div>
-    <div class="glass" style="margin-top:14px">
-      <input id="q" placeholder="étrangers, hygiène, salaire…">
-      <button class="btn-gold" id="go" type="button" style="margin-top:8px">Recherche IA</button>
-      <pre id="out" style="margin-top:12px;white-space:pre-wrap"></pre>
-    </div>
-  </div>
-  <script src="../js/knowledge-base.js"></script>
-  <script src="../js/knowledge-base-ext.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/ai-engine.js"></script>
-  <script>
-    KnowledgeBaseExt.install();
-    list.innerHTML = KnowledgeBaseExt.listAll("arretes").map(a => `
-      <div class="glass" style="margin-bottom:10px">
-        <span class="card-code">${a.id}</span>
-        <h3 style="color:var(--gold);margin:8px 0;font-size:1rem">${a.titre}</h3>
-        <p>${a.resume}</p>
-      </div>`).join("");
-    go.onclick = () => {
-      KnowledgeBaseExt.install();
-      out.textContent = KnowledgeBase.search(q.value || "arrêté").answer + "\n\n" + InspecteurAI.ask(q.value).text;
-    };
-  </script>
+<main class="page">
+<a class="back-link" href="../fiche.html">← Retour aux fiches de contrôle</a>
+<header class="doc-head">
+<p>INSPECTION GÉNÉRALE DU TRAVAIL — RDC</p>
+<h1>AM — ARRÊTÉS MINISTÉRIELS</h1>
+<h2>AIM 006 ET 127 DU 03 OCTOBRE 2023 — TAUX METPS</h2>
+<p>Arrêté interministériel portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale.</p>
+<div class="doc-actions">
+<a href="https://www.scribd.com/document/825098949/AIM-006-ET-127-DU-03-OCT-2023-Taux-METPS" target="_blank" rel="noopener">📥 Ouvrir / télécharger le PDF</a>
+<a class="secondary" href="https://www.scribd.com/document/825098949/AIM-006-ET-127-DU-03-OCT-2023-Taux-METPS" target="_blank" rel="noopener">↗ Consulter sur le site source</a>
+</div>
+</header>
+<section class="reader">
+<h2>Consultation du document</h2>
+<iframe title="Lecteur du document AIM 006 et 127" src="https://www.scribd.com/embeds/825098949/content?start_page=1&view_mode=scroll" loading="lazy" allowfullscreen></iframe>
+<p class="note">Si le lecteur intégré ne s’affiche pas sur votre appareil, utilisez le bouton « Ouvrir / télécharger le PDF » pour consulter le document sur le site source.</p>
+</section>
+</main>
 </body>
 </html>
