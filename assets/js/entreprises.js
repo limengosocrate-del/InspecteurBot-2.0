@@ -439,83 +439,10 @@ notification("Entreprise supprimée.");
 =========================================================*/
 
 function afficherEntreprises(liste = entreprises){
-
-if(!tableau){
-return;
-}
-
-tableau.innerHTML="";
-
-if(liste.length===0){
-
-tableau.innerHTML=`
-
-<tr>
-
-<td colspan="6" style="text-align:center;padding:30px;">
-
-Aucune entreprise enregistrée.
-
-</td>
-
-</tr>
-
-`;
-
-return;
-
-}
-
-liste.forEach(function(entreprise,index){
-
-tableau.innerHTML+=`
-
-<tr>
-
-<td>${index+1}</td>
-
-<td>${entreprise.nom}</td>
-
-<td>${entreprise.province}</td>
-
-<td>${entreprise.secteur}</td>
-
-<td>
-
-<span class="badge">
-
-${entreprise.statut}
-
-</span>
-
-</td>
-
-<td>
-
-<button
-onclick="modifierEntreprise(${entreprise.id})"
-title="Modifier">
-
-<i class="fa-solid fa-pen"></i>
-
-</button>
-
-<button
-onclick="supprimerEntreprise(${entreprise.id})"
-title="Supprimer">
-
-<i class="fa-solid fa-trash"></i>
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
+ if(!tableau)return;tableau.innerHTML="";
+ if(!liste.length){tableau.innerHTML='<tr><td colspan="18" style="text-align:center;padding:24px">Aucune entreprise enregistrée.</td></tr>';return;}
+ const safe=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ liste.forEach((e,index)=>{const last=(e.entretiens||[]).slice(-1)[0]||{};const tr=document.createElement("tr");const vals=[index+1,e.nom,e.rccm,e.idnat,e.impot,e.cnss,e.directeur,e.travailleurs,e.telephone,e.email,e.province,e.ville,e.adresse,e.secteur,e.statut,e.observation,e.nomInspecteur||"",[last.date,last.objet,last.compteRendu].filter(Boolean).join(" — ")];tr.innerHTML=vals.map(v=>'<td>'+safe(v)+'</td>').join('')+'<td><button type="button" onclick="modifierEntreprise('+Number(e.id)+')" title="Modifier">✏️</button> <button type="button" onclick="supprimerEntreprise('+Number(e.id)+')" title="Supprimer">🗑️</button></td>';tableau.appendChild(tr);});
 }
 
 /*=========================================================
@@ -670,11 +597,9 @@ window.print();
 =========================================================*/
 
 function exporterPDF(){
-
-notification(
-"📄 Export PDF disponible dans la prochaine mise à jour."
-);
-
+ const section=document.querySelector(".table-section");if(!section||!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
+ const w=window.open("","_blank");if(!w){notification("Autorisez les fenêtres contextuelles pour exporter.","warning");return;}
+ w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Liste des entreprises IGT</title><style>body{font:12px Arial;padding:20px}h1{font-size:18px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #777;padding:5px;text-align:left;overflow-wrap:anywhere}th{background:#e8eef2}</style></head><body><h1>Liste des entreprises — IGT RDC</h1>'+section.innerHTML+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
 }
 
 /*=========================================================
@@ -682,11 +607,9 @@ notification(
 =========================================================*/
 
 function exporterExcel(){
-
-notification(
-"📊 Export Excel disponible dans la prochaine mise à jour."
-);
-
+ if(!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
+ const cols=[["Nom","nom"],["RCCM","rccm"],["ID NAT","idnat"],["Impôt","impot"],["CNSS","cnss"],["Directeur","directeur"],["Travailleurs","travailleurs"],["Téléphone","telephone"],["E-mail","email"],["Province","province"],["Ville","ville"],["Adresse","adresse"],["Secteur","secteur"],["Statut","statut"],["Observations","observation"],["Inspecteur","nomInspecteur"]];
+ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const rows=[cols.map(x=>q(x[0])).join(";"),...entreprises.map(e=>cols.map(x=>q(e[x[1]])).join(";"))];const blob=new Blob(["\\uFEFF"+rows.join("\\r\\n")],{type:"application/vnd.ms-excel;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Entreprises_IGT_RDC.xls";a.click();URL.revokeObjectURL(a.href);notification("Export Excel prêt.");
 }
 
 /*=========================================================
