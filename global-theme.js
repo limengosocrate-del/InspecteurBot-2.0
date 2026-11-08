@@ -37,14 +37,14 @@
  }
  function initPublic(){
   if(!document.body||document.body.dataset.publicTheme!=='true')return false;
-  userId=null;let saved=null;try{saved=localStorage.getItem(PUBLIC_KEY)}catch(_){}
+  userId=null;let saved=null;try{const marker=PUBLIC_KEY+'_white_first_v1';if(!localStorage.getItem(marker)){localStorage.setItem(marker,'1');localStorage.setItem(PUBLIC_KEY,'light');}saved=localStorage.getItem(PUBLIC_KEY)}catch(_){}
   setTheme(saved||'light',false);ready=true;ensureControl();updateControls();return true;
  }
  function init(detail){
   const user=detail&&detail.user||window.inspecteurBotAuthUser||window.igtCurrentUser;
   if(!user||!user.id||!document.body)return false;
   userId=user.id;
-  let saved=null;try{saved=localStorage.getItem(PREFIX+userId)}catch(_){}
+  let saved=null,firstWhiteVisit=false;try{const marker='InspecteurBot_Global_Theme_WhiteFirst_v1_'+userId;firstWhiteVisit=!localStorage.getItem(marker);if(firstWhiteVisit){localStorage.setItem(marker,'1');localStorage.setItem(PREFIX+userId,'light');}saved=localStorage.getItem(PREFIX+userId)}catch(_){}
   const engine=window.persistenceEngine;
   const profileTheme=detail&&detail.profile&&detail.profile.settings&&detail.profile.settings.theme||engine&&engine.storageReady&&engine.getProfile().settings&&engine.getProfile().settings.theme;
   setTheme(saved||profileTheme||'light',false);
