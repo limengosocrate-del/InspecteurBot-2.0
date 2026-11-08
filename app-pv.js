@@ -1959,7 +1959,6 @@
         </div>
         <div class="history-actions">
           <button class="btn tiny secondary" data-history-action="open" data-id="${r.id}" type="button">Modifier</button>
-          <button class="btn tiny warning" data-history-action="duplicate" data-id="${r.id}" type="button">Dupliquer</button>
           <button class="btn tiny ghost" data-history-action="print" data-id="${r.id}" type="button">Imprimer</button>
           <button class="btn tiny dark" data-history-action="archive" data-id="${r.id}" type="button">${f.status === 'archived' ? 'Restaurer' : 'Archiver'}</button>
           <button class="btn tiny danger" data-history-action="delete" data-id="${r.id}" type="button">Supprimer</button>
@@ -1975,7 +1974,6 @@
     if (!record) return;
     const action = btn.dataset.historyAction;
     if (action === 'open') { fillForm(deepClone(record)); switchView('create'); }
-    if (action === 'duplicate') { fillForm(deepClone(record)); duplicateCurrent(); switchView('create'); }
     if (action === 'print') { fillForm(deepClone(record)); switchView('create'); setTimeout(printDocument, 250); }
     if (action === 'archive') {
       record.fields.status = record.fields.status === 'archived' ? 'draft' : 'archived';
