@@ -942,11 +942,7 @@
 
     byId('btnResetForm').addEventListener('click', () => newRecord(true));
     byId('btnNewFromDashboard').addEventListener('click', () => { switchView('create'); newRecord(true); });
-    byId('btnSaveDraft').addEventListener('click', () => saveCurrent('draft'));
-    byId('btnValidate').addEventListener('click', validateCurrent);
-    byId('btnDuplicateCurrent').addEventListener('click', duplicateCurrent);
     byId('btnPrint').addEventListener('click', printDocument);
-    byId('btnPrintTop').addEventListener('click', printDocument);
     byId('btnReadPreview').addEventListener('click', readPreview);
     byId('btnReadSelection').addEventListener('click', readPreview);
     const dictationButton = byId('btnGlobalListen');
