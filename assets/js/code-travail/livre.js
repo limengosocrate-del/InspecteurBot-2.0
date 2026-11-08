@@ -57,14 +57,16 @@ window.LivreEngine = {
       <div class="livre-progress"><div id="livreProgressBar" class="livre-progress-bar" style="width:0%"></div></div>
 
       <div class="livre-controls">
-        <button id="livrePrev" class="livre-btn"><i class="fa-solid fa-chevron-left"></i> Page précédente</button>
+        <div class="livre-page-nav" style="display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;width:100%;">
+          <button id="livrePrev" class="livre-btn"><i class="fa-solid fa-chevron-left"></i> Page précédente</button>
+          <button id="livreNext" class="livre-btn">Page suivante <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
         <button id="livreAudio" class="livre-btn audio"><i class="fa-solid fa-volume-high"></i> Écouter</button>
         <div class="livre-goto">
           <label for="livreGotoInput">Aller à l'art.</label>
           <input type="number" id="livreGotoInput" min="1" max="334" placeholder="N°">
           <button id="livreGotoBtn" class="livre-btn" style="padding:8px 14px;"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
-        <button id="livreNext" class="livre-btn">Page suivante <i class="fa-solid fa-chevron-right"></i></button>
       </div>
     `;
   },
