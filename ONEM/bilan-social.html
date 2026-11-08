@@ -16,8 +16,23 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="../auth-gate.js?v=20261107-stable-29" defer></script>
+<script src="../auth-gate.js?v=20261108-stable-37" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
+<style id="onem-mobile-form-layout">
+.page{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:18px 0 40px}
+.page h1{font-size:clamp(23px,4vw,34px);line-height:1.2;margin:12px 0}
+.glass{width:100%;padding:clamp(16px,3vw,28px);border-radius:18px;overflow:hidden}
+.grid-2,.grid-3{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.field{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:7px!important;min-width:0!important;width:100%!important;margin:0!important}
+.field label{display:block!important;font-size:14px!important;line-height:1.4!important;font-weight:650!important;color:var(--text,#eef4f8)!important}
+.field input:not([type=checkbox]),.field select,.field textarea{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:46px!important;padding:11px 12px!important;border:1px solid rgba(150,180,200,.38)!important;border-radius:10px!important;background:#f8fbfd!important;color:#142536!important;font-size:16px!important;box-sizing:border-box!important}
+.field label input[type=checkbox]{width:20px;height:20px;vertical-align:middle;margin-right:8px}
+.form-actions{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(145px,1fr))!important;gap:10px!important;margin-top:22px!important}
+.form-actions button{min-height:48px!important;white-space:normal!important}
+.result-box{margin-top:18px!important;padding:18px!important;overflow-wrap:anywhere}
+#resultText{white-space:pre-wrap!important;overflow-wrap:anywhere!important;max-width:100%!important}
+@media(max-width:620px){.page{width:calc(100% - 24px);padding-top:12px}.grid-2,.grid-3{grid-template-columns:minmax(0,1fr)!important;gap:12px!important}.glass{padding:15px!important}.form-actions{grid-template-columns:1fr 1fr!important}.form-actions button{font-size:14px!important;padding:12px 8px!important}}
+</style>
 </head>
 <body>
   <div class="background"></div>
