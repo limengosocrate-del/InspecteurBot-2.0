@@ -91,7 +91,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
     .select('is_active').eq('id',currentUser.id).maybeSingle();
    if(profileError)throw profileError;
    if(!profile||profile.is_active!==true)throw new Error('Votre compte est suspendu. Veuillez contacter l’administrateur Pmiller pour obtenir l’autorisation de réactivation.');
-   const left=alreadyInitialized?Number.POSITIVE_INFINITY:(Number(data?.expires_in_seconds)||0);
+   const left=Number.POSITIVE_INFINITY; // Session maintenue jusqu’à déconnexion ou révocation serveur.
    if(left<=0)throw new Error('Votre session de 20 minutes est terminée.');
   }catch(err){
    console.warn('Vérification périodique de session ANI-IGT:',err);
