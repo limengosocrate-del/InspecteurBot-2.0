@@ -136,7 +136,7 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
     ==================================================-->
     <header class="top-header fade-in">
         <div class="logo-box">
-            <div style="font-size: 70px; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));">⚖️🇨🇩</div>
+            <div style="font-size: 70px; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));">⚖️</div>
         </div>
 
         <div class="title-box">
@@ -158,20 +158,7 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
     <!--=================================================
     PARTIE 3 : BARRE D'OUTILS DE L'INSPECTEUR
     ==================================================-->
-    <section class="toolbar fade-in">
-        <div class="toolbar-right">
-            <button id="btnMicro" class="tool-btn" title="Recherche vocale (Parlez votre article !)" aria-label="Recherche vocale">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-            <button id="btnLecture" class="tool-btn" title="Lecture audio par synthèse vocale" aria-label="Lecture vocale">
-                <i class="fa-solid fa-volume-high"></i>
-            </button>
-            <button id="btnPartager" class="tool-btn" title="Partager (WhatsApp / Web Share)" aria-label="Partager">
-                <i class="fa-solid fa-share-nodes"></i>
-            </button>
-        </div>
-    </section>
-
+    <div id="livreHeading" class="section-title" style="margin:12px 0 8px;"><h2>Lecture du Code — Mode Livre</h2><p>Tournez les pages, article par article, comme un véritable ouvrage juridique.</p></div>
     <div id="livreHost" class="livre-section"></div>
 
     <!--=================================================
@@ -199,10 +186,7 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
             <button id="btnRecherche" title="Rechercher" aria-label="Rechercher">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button id="btnRechercheVocale" title="Recherche vocale" aria-label="Recherche vocale">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-            <button id="btnEffacerRecherche" title="Effacer la recherche" aria-label="Effacer">
+<button id="btnEffacerRecherche" title="Effacer la recherche" aria-label="Effacer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -283,104 +267,11 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
     <!--=================================================
     INFORMATIONS DE CONSULTATION EN TEMPS RÉEL
     ==================================================-->
-    <section class="info-section fade-in">
-        <div class="info-card">
-            <h2><i class="fa-solid fa-circle-info"></i> Tableau de bord de la consultation</h2>
-            <div class="info-grid">
-                <div class="info-box">
-                    <h4>Article actuel</h4>
-                    <p id="infoArticle">Article 1</p>
-                </div>
-                <div class="info-box">
-                    <h4>Catégorie sélectionnée</h4>
-                    <p id="infoCategorie">Dispositions générales</p>
-                </div>
-                <div class="info-box">
-                    <h4>Dernière requête</h4>
-                    <p id="infoRecherche">Aucune</p>
-                </div>
-                <div class="info-box">
-                    <h4>Articles correspondants</h4>
-                    <p id="infoResultats">18</p>
-                </div>
-            </div>
-        </div>
-    </section>
+ion>
 
     <!--=================================================
     PARTIE 7 : ASSISTANT JURIDIQUE IA (RAG & REASONING)
     ==================================================-->
-    <section id="assistantIA" class="assistant-section fade-in">
-        <div class="assistant-card">
-            <div class="section-title">
-                <h2>
-                    <i class="fa-solid fa-robot"></i>
-                    InspecteurBot — Assistant Juridique IA (RAG)
-                </h2>
-                <p>
-                    Posez directement votre question sur le Code du Travail de la RDC.
-                </p>
-            </div>
-
-            <div class="assistant-input">
-                <textarea
-                    id="questionIA"
-                    rows="5"
-                    autocomplete="off"
-                    placeholder="Exemple : Quelles sont les obligations de l'employeur si un ouvrier se blesse avec une machine ? Ou : Puis-je être licencié pendant mon congé de maternité ?"></textarea>
-            </div>
-
-            <div class="assistant-actions">
-                <button id="btnQuestionIA" title="Lancer l'analyse juridique approfondie">
-                    <i class="fa-solid fa-paper-plane"></i> Analyser avec l'IA RAG
-                </button>
-                <button id="btnEffacerIA" title="Effacer et réinitialiser la question">
-                    <i class="fa-solid fa-trash"></i> Effacer
-                </button>
-                <button id="btnLectureIA" title="Lire à haute voix la réponse de l'IA">
-                    <i class="fa-solid fa-volume-high"></i> Lire la réponse
-                </button>
-                <button id="btnCopierIA" title="Copier la réponse IA dans le presse-papiers">
-                    <i class="fa-solid fa-copy"></i> Copier l'analyse
-                </button>
-            </div>
-
-            <div id="zoneIA" class="ai-result">
-                <h3>🤖 InspecteurBot IA — Diagnostic & Avis Juridique</h3>
-                <div id="reponseIA">Bonjour 👋
-
-Je suis <strong>InspecteurBot RDC</strong>, votre assistant juridique intelligent conçu pour les Inspecteurs du Travail, les employeurs et les travailleurs du Congo.
-
-Je suis capable de :
-• <strong>Expliquer un article</strong> en termes clairs et accessibles.
-• <strong>Répondre à vos questions juridiques</strong> en citant les articles exacts du Code.
-• <strong>Identifier les obligations impératives</strong> de l'employeur.
-• <strong>Protéger et énoncer les droits</strong> du travailleur.
-• <strong>Calculer les préavis et indemnités</strong> de licenciement.
-• <strong>Énoncer les sanctions pénales et amendes</strong> en cas d'infraction constatée par un Inspecteur.
-
-<em>Sélectionnez une question rapide ci-dessous ou écrivez votre propre question ci-dessus !</em></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- QUESTIONS RAPIDES IA -->
-    <section class="ia-tools fade-in">
-        <div class="section-title">
-            <h2><i class="fa-solid fa-bolt-lightning"></i> Questions fréquentes & Diagnostic rapide</h2>
-            <p>Cliquez sur une question pour lancer automatiquement l'analyse juridique dans l'IA.</p>
-        </div>
-        <div id="questionsRapides" class="suggestions">
-            <button data-question="Quelles sont les obligations légales fondamentales de l’employeur en RDC ?">👔 Obligations Employeur</button>
-            <button data-question="Quels sont les droits inaliénables du travailleur selon le Code ?">👷 Droits Travailleur</button>
-            <button data-question="Comment fonctionne la procédure légale de licenciement pour faute lourde ?">⚖️ Procédure Licenciement</button>
-            <button data-question="Comment calculer la durée du préavis en fonction de l'ancienneté ?">⏳ Calcul du Préavis</button>
-            <button data-question="Quelles sont les règles sur les 14 semaines de congé de maternité en RDC ?">🤰 Congé de Maternité</button>
-            <button data-question="Quels sont les pouvoirs de visite et d'amende des Inspecteurs du Travail ?">🕵️ Pouvoirs Inspecteur</button>
-            <button data-question="Quelles sont les peines de servitude pénale en cas de travail forcé ou d'exploitation des enfants ?">🚨 Sanctions Pénales</button>
-        </div>
-    </section>
-
     <!--=================================================
     PARTIE 8 : OUTILS DE L'INSPECTEUR DU TRAVAIL & STATS
     ==================================================-->
@@ -395,7 +286,7 @@ Je suis capable de :
     <footer class="footer fade-in">
         <div class="footer-content">
             <div class="footer-logo">
-                <div style="font-size: 60px; margin-bottom: 10px;">🇨🇩⚖️</div>
+                <div style="font-size: 60px; margin-bottom: 10px;">⚖️</div>
             </div>
 
             <h2>Inspection Générale du Travail (IGT)</h2>
@@ -407,13 +298,7 @@ Je suis capable de :
 
             <hr>
 
-            <div class="footer-links">
-                <a href="#top"><i class="fa-solid fa-house"></i> Accueil</a>
-                <a href="#assistantIA"><i class="fa-solid fa-robot"></i> Assistant IA</a>
-                <a href="#articleCard"><i class="fa-solid fa-book-open"></i> Articles</a>
-                <a href="javascript:alert('Bureau de Kinshasa : Inspection Générale du Travail, Ministère du Travail, Gombe, Kinshasa, RDC.')"><i class="fa-solid fa-location-dot"></i> Contact IGT</a>
-                <a href="javascript:alert('Mention légale : Tous droits réservés IGT RDC 2026. Code mis à jour Loi 16/010.')"><i class="fa-solid fa-scale-balanced"></i> Mentions légales</a>
-            </div>
+            <div class="footer-links"><a href="javascript:alert(&quot;Mention légale : Tous droits réservés IGT RDC 2026. Code mis à jour Loi 16/010.&quot;)"><i class="fa-solid fa-scale-balanced"></i> Mentions légales</a></div>
 
             <hr>
 
