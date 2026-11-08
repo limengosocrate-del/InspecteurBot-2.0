@@ -609,7 +609,7 @@ function exporterPDF(){
 function exporterExcel(){
  if(!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
  const cols=[["Nom","nom"],["RCCM","rccm"],["ID NAT","idnat"],["Impôt","impot"],["CNSS","cnss"],["Directeur","directeur"],["Travailleurs","travailleurs"],["Téléphone","telephone"],["E-mail","email"],["Province","province"],["Ville","ville"],["Adresse","adresse"],["Secteur","secteur"],["Statut","statut"],["Observations","observation"],["Inspecteur","nomInspecteur"]];
- const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const rows=[cols.map(x=>q(x[0])).join(";"),...entreprises.map(e=>cols.map(x=>q(e[x[1]])).join(";"))];const blob=new Blob(["\\uFEFF"+rows.join("\\r\\n")],{type:"application/vnd.ms-excel;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Entreprises_IGT_RDC.xls";a.click();URL.revokeObjectURL(a.href);notification("Export Excel prêt.");
+ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const rows=[cols.map(x=>q(x[0])).join(";"),...entreprises.map(e=>cols.map(x=>q(e[x[1]])).join(";"))];const blob=new Blob(["\uFEFF"+rows.join("\r\n")],{type:"application/vnd.ms-excel;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Entreprises_IGT_RDC.xls";a.click();URL.revokeObjectURL(a.href);notification("Export Excel prêt.");
 }
 
 /*=========================================================
