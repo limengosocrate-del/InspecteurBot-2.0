@@ -187,7 +187,7 @@ class QuizEngine {
       } else if (isCorrect) {
         explTitle.innerHTML = `<span style="color:var(--accent-green); font-size:1.05rem;">✅ BONNE RÉPONSE !</span> (+${q.recompense ? q.recompense.montant : 5000} CDF)`;
       } else {
-        explTitle.innerHTML = `<span style="color:var(--accent-red); font-size:1.05rem;">❌ MAUVAISE RÉPONSE</span> (-${q.perte_vie || 1} Vie)`;
+        explTitle.innerHTML = `<span style="color:var(--accent-red); font-size:1.05rem;">❌ MAUVAISE RÉPONSE</span> (-1 Vie)`;
       }
       explText.innerHTML = q.explication || "Explication d'ordre public conforme au Code du Travail de la RDC.";
     }
