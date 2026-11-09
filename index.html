@@ -480,7 +480,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 
     <!-- Ligne 1 -->
 
-   <a href="igt/index.html?v=20261109-v13-direct-open-fix7">
+   <a href="igt/index.html?v=20261109-v13-loader-clock-remove-fix8">
         <i class="fa fa-landmark"></i>
         <span>IGT RDC</span>
     </a>
@@ -512,14 +512,14 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
         <span>Décompte final</span>
     </a>
 
-    <a href="inspecteurs.html?v=20261109-report-pdf-fix3"><i class="fa fa-file-lines"></i><span>Rapport</span></a>
+    <a href="inspecteurs.html?v=20261109-report-pdf-a4-fix4"><i class="fa fa-file-lines"></i><span>Rapport</span></a>
 
-    <a href="entreprises.html?v=20261109-enterprise-pdf-fix3">
+    <a href="entreprises.html?v=20261109-enterprise-pdf-a4-fix5">
         <i class="fa fa-building"></i>
         <span>Entreprise</span>
     </a>
 
-    <a href="formation.html?v=20261109-formation-theme-fix3">
+    <a href="formation.html?v=20261109-formation-theme-fix4">
         <i class="fa fa-graduation-cap"></i>
         <span>Formation</span>
     </a>
@@ -640,7 +640,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 (()=>{
  const imgs=Array.from(document.querySelectorAll('#slider img'));
  if(imgs.length!==2)return;
- const frames=Array.from({length:57},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
+ const frames=Array.from({length:56},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
  let front=imgs.find(x=>x.classList.contains('active'))||imgs[0];
  let back=imgs.find(x=>x!==front);
  let index=Math.max(0,frames.indexOf(front.getAttribute('src')));
@@ -650,7 +650,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
   img.loading='eager';
   if(i===0)img.fetchPriority='high';
  });
- function schedule(){clearTimeout(timer);if(!document.hidden)timer=setTimeout(showNext,5000)}
+ function schedule(){clearTimeout(timer);if(!document.hidden)timer=setTimeout(showNext,3000)}
  function showNext(){
   if(document.hidden||loading){schedule();return}
   loading=true;
@@ -820,7 +820,7 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261109-v72',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261109-v73',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
