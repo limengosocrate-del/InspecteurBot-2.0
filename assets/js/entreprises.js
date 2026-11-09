@@ -599,7 +599,7 @@ window.print();
 function exporterPDF(){
  const section=document.querySelector(".table-section"),table=section?.querySelector("table");
  if(!Array.isArray(entreprises)||entreprises.length===0||!table){
-  notification("Aucune entreprise enregistrée. Veuillez compléter les champs obligatoires, puis enregistrer l’entreprise avant de télécharger le PDF.","warning");
+  notification("Aucune entreprise enregistrée. Veuillez compléter les champs obligatoires restants, puis enregistrer l’entreprise avant de télécharger le PDF.","warning");
   const firstRequired=document.querySelector("form input[required],form select[required],form textarea[required]");
   firstRequired?.focus();return;
  }
@@ -607,19 +607,20 @@ function exporterPDF(){
  const visibleRows=[...table.querySelectorAll("tbody tr")].filter(row=>getComputedStyle(row).display!=="none");
  if(!visibleRows.length){notification("Aucune entreprise visible dans la liste à exporter. Vérifiez les filtres.","warning");return;}
  const clone=table.cloneNode(true),body=clone.querySelector("tbody");
- if(body){body.replaceChildren(...visibleRows.map(row=>row.cloneNode(true)));}
+ if(body)body.replaceChildren(...visibleRows.map(row=>row.cloneNode(true)));
  clone.querySelectorAll("button,input,select,textarea").forEach(el=>el.remove());
  const date=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"long",year:"numeric"}).format(new Date());
  const wrapper=document.createElement("section");
- wrapper.style.cssText="position:fixed;left:-100000px;top:0;width:277mm;padding:8mm;background:#fff;color:#172334;font:8px/1.3 Arial,sans-serif;z-index:-1";
+ const exportTop=Math.max(document.documentElement.scrollHeight,window.scrollY+window.innerHeight)+24;
+ wrapper.style.cssText="position:absolute;left:0;top:"+exportTop+"px;width:277mm;padding:8mm;background:#fff;color:#172334;font:8px/1.3 Arial,sans-serif;z-index:0;pointer-events:none;box-sizing:border-box";
  wrapper.innerHTML='<header style="text-align:center;border-bottom:2px solid #173b61;padding-bottom:7px;margin-bottom:10px"><div style="font-size:9px;font-weight:700">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · MINISTÈRE DE L’EMPLOI ET DU TRAVAIL</div><h1 style="font-size:16px;color:#173b61;margin:5px 0">LISTE DES ENTREPRISES — INSPECTION GÉNÉRALE DU TRAVAIL</h1><p style="font-size:8px;margin:2px 0">Registre des entreprises enregistrées · '+date+' · '+visibleRows.length+' entreprise(s)</p></header>';
  const tableStyle=document.createElement("style");
  tableStyle.textContent="*{box-sizing:border-box}table{width:100%!important;min-width:0!important;border-collapse:collapse!important;table-layout:fixed!important;font-size:7px!important}th,td{border:1px solid #8795a5!important;padding:3px 4px!important;color:#172334!important;white-space:normal!important;overflow-wrap:anywhere!important;vertical-align:top!important}th{background:#e8eef5!important;color:#173b61!important;font-weight:700!important}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}footer{margin-top:10px;padding-top:6px;border-top:1px solid #cbd5e1;text-align:center;font-size:7px;color:#64748b}";
  wrapper.appendChild(tableStyle);wrapper.appendChild(clone);
  const footer=document.createElement("footer");footer.textContent="InspecteurBot RDC · Document administratif généré automatiquement";wrapper.appendChild(footer);
  document.body.appendChild(wrapper);
- const options={margin:0,filename:"liste_entreprises_igt.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollY:0,windowWidth:1100},jsPDF:{unit:"mm",format:"a4",orientation:"landscape",compress:true},pagebreak:{mode:["css","legacy"],avoid:["tr","thead"]}};
- html2pdf().set(options).from(wrapper).save().then(()=>notification("La liste des entreprises a été téléchargée au format PDF A4 paysage.","success")).catch(error=>{console.error("Export PDF entreprises :",error);notification("Impossible de générer le PDF. Réessayez après avoir rechargé la page.","error")}).finally(()=>wrapper.remove());
+ const options={margin:0,filename:"liste_entreprises_igt.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0,windowWidth:1400,windowHeight:Math.max(window.innerHeight,wrapper.scrollHeight+200)},jsPDF:{unit:"mm",format:"a4",orientation:"landscape",compress:true},pagebreak:{mode:["css","legacy"],avoid:["tr","thead"]}};
+ html2pdf().set(options).from(wrapper).save().then(()=>notification("La liste des entreprises affichées a été téléchargée au format PDF A4 paysage.","success")).catch(error=>{console.error("Export PDF entreprises :",error);notification("Impossible de générer le PDF. Réessayez après avoir rechargé la page.","error")}).finally(()=>wrapper.remove());
 }
 
 /*=========================================================
