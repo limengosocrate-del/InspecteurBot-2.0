@@ -398,8 +398,9 @@ footer img{
 html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-behavior:auto}
 .banner{position:relative;isolation:isolate;overflow:hidden;contain:layout paint;height:clamp(250px,42vw,430px);min-height:250px}
 .slider{position:absolute;inset:0;overflow:hidden}
-.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .42s ease;transform:none!important;backface-visibility:hidden;will-change:auto}
-.slider img.active{opacity:1}
+.slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:translateX(100%);transition:transform 1s cubic-bezier(.22,.61,.36,1),opacity 1s ease;backface-visibility:hidden;will-change:transform,opacity}
+.slider img.active{opacity:1;transform:translateX(0)}
+.slider img.leaving{opacity:0;transform:translateX(-100%)}
 .datetime-box{position:absolute!important;z-index:4!important;top:16px!important;right:20px!important;left:auto!important;bottom:auto!important;width:auto!important;max-width:48%;padding:0!important;margin:0!important;display:block!important;text-align:right!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fff!important}
 .datetime-top,.datetime-day,.datetime-date,.datetime-weather{display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:right!important;color:#fff!important}
 .datetime-top strong,#clock{display:block;font-size:24px!important;line-height:1.15!important;font-weight:700!important;letter-spacing:.2px!important;color:#fff!important;text-shadow:0 1px 5px #000b}
@@ -480,7 +481,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 
     <!-- Ligne 1 -->
 
-   <a href="igt/index.html?v=20261109-v13-direct-open-fix10">
+   <a href="igt/index.html?v=20261109-v13-direct-open-fix11">
         <i class="fa fa-landmark"></i>
         <span>IGT RDC</span>
     </a>
@@ -662,7 +663,12 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
    probe.onload=()=>{
     back.onload=null;back.onerror=null;
     back.src=target;
-    back.classList.add('active');front.classList.remove('active');
+    back.classList.remove('active','leaving');
+    void back.offsetWidth;
+    back.classList.add('active');
+    front.classList.remove('active');front.classList.add('leaving');
+    const leaving=front;
+    setTimeout(()=>leaving.classList.remove('leaving'),1000);
     const prev=front;front=back;back=prev;
     attempts=0;loading=false;schedule();
    };
