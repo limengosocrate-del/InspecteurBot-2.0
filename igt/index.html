@@ -54,6 +54,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   page=page.replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>','');
   const staticAdminShim='<script id="igt-annuaire-v3-registration-and-admin">(function(){window.loadDirectoryPhone=function(agent){var key=String(agent&&agent.matricule_transcrit||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/gi,"").toUpperCase();document.querySelectorAll("[data-igt-phone]").forEach(function(node){var current=String(node.getAttribute("data-igt-phone")||"").replace(/[^a-z0-9]/gi,"").toUpperCase();if(!key||current===key)node.textContent="Non renseigné";});};})();<'+'/script>';
   page=page.replace(/<script id="igt-annuaire-v3-registration-and-admin">[\s\S]*?<\/script>/i,staticAdminShim);
+  page=page.replace(/uploads\/IMG_20260719_195903\.jpg/g,'../images/logo-igt.png');
   page=page.replace('</head>',themeLink+themeScript+publicThemeStyle+'</head>');
   document.open();document.write(page);document.close();
  }catch(error){
