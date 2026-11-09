@@ -1385,7 +1385,24 @@
 
   function printDocument() {
     updatePreview();
-    setTimeout(() => window.print(), 180);
+    const area = byId('printArea');
+    const page = area && area.querySelector('.a4-page');
+    if (!page) {
+      toast('Aucun procès-verbal à imprimer. Complétez le formulaire puis actualisez l’aperçu.', 'error');
+      return;
+    }
+    const pageHeight = page.clientHeight || Math.round(297 * 96 / 25.4);
+    const contentHeight = Math.max(page.scrollHeight, pageHeight);
+    const fitScale = Math.min(1, pageHeight / contentHeight);
+    page.style.setProperty('--pv-print-scale', String(fitScale));
+    document.body.classList.add('pv-one-page-print');
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('pv-one-page-print');
+        page.style.removeProperty('--pv-print-scale');
+      }, 500);
+    }, 180);
   }
 
   function updateDocPanels() {
