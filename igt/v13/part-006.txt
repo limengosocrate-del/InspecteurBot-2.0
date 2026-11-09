@@ -98,9 +98,8 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
    clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;
    currentUser=null;currentProfile=null;
    await client.auth.signOut();
-   gate.hidden=false;toolsBox.hidden=true;userBox.hidden=true;
-   document.body.classList.add('igt-auth-pending');
-   setMessage(err.message||'Votre accès a été interrompu. Veuillez vous reconnecter.','#b42318');
+   location.replace('../index.html?from=igt&auth=expired');
+   return;
   }finally{sessionCheckBusy=false;}
  }
  function startSessionMonitoring(){
@@ -113,7 +112,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   if(passwordSetupMode||updatingPassword)return;
   if(!session){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;location.replace('../index.html?from=igt');return;}
   // Ignore les événements Supabase répétés pour un compte déjà initialisé.
-  if(currentUser?.id===session.user.id&&!gate.hidden)return;
+  if(currentUser?.id===session.user.id&&document.body.classList.contains('igt-session-ready'))return;
   try{
    const [,profileResult]=await Promise.all([
     startSession(session),
