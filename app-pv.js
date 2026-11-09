@@ -1385,7 +1385,25 @@
 
   function printDocument() {
     updatePreview();
-    setTimeout(() => window.print(), 180);
+    const area = byId('printArea');
+    const page = area && area.querySelector('.a4-page');
+    if (!page) { toast('Aucun PV prêt à imprimer.', 'error'); return; }
+    const previousZoom = page.style.zoom;
+    page.style.zoom = '1';
+    requestAnimationFrame(() => {
+      const pageHeight = page.scrollHeight;
+      const targetHeight = Math.round(297 * 96 / 25.4);
+      const fit = Math.min(1, targetHeight / Math.max(pageHeight, 1));
+      page.style.zoom = String(Math.max(0.45, fit));
+      document.body.classList.add('ib-pv-printing');
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          document.body.classList.remove('ib-pv-printing');
+          page.style.zoom = previousZoom;
+        }, 500);
+      }, 120);
+    });
   }
 
   function updateDocPanels() {
