@@ -48,11 +48,11 @@
     <link rel="stylesheet" href="assets/css/categories.css">
     <link rel="stylesheet" href="assets/css/article.css">
         <link rel="stylesheet" href="assets/css/outils.css">
-    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/footer.css?v=20261109-footer-fix1">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/livre.css">
-    <link rel="stylesheet" href="assets/css/igt-professional.css?v=20261107-3">
+    <link rel="stylesheet" href="assets/css/igt-professional.css?v=20261109-footer-fix1">
 <style id="igt-fixed-dark-theme">
 :root{color-scheme:dark;--ct-bg:#0b0f14;--ct-surface:#111820;--ct-text:#f5f7fa;--ct-muted:#b9c5d1;--ct-input:#18212b}
 body.dark-theme{background:var(--ct-bg)!important;color:var(--ct-text)!important;color-scheme:dark!important}
@@ -400,7 +400,7 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         // Enregistrement gracieux (ignore l'erreur si fichier en mode dev simple)
-        navigator.serviceWorker.register("service-worker.js?v=20261109-v67")
+        navigator.serviceWorker.register("service-worker.js?v=20261109-v69")
             .then(() => console.log("✅ Service Worker PWA InspecteurBot actif."))
             .catch(() => console.log("ℹ️ PWA en mode développement non persistant."));
     });
