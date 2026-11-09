@@ -1247,16 +1247,31 @@ function exportConversationPDF() {
   });
 }
 
-function exportIAOutputPDF() {
+async function exportIAOutputPDF() {
   const el = document.getElementById('iaOutputBody');
-  const opt = {
-    margin: [10, 10, 10, 10],
-    filename: `itct_ia_${STATE.currentIAOutput}_${State.currentMission ? 'mission' : 'conversation'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(el).save();
+  if (!el || !el.innerText.trim()) { showToast('Aucun rapport disponible pour l’export PDF.', 'info'); return; }
+  if (typeof html2pdf !== 'function' || !window.jspdf || !window.jspdf.jsPDF) {
+    showToast('Le moteur PDF n’est pas disponible. Rechargez la page puis réessayez.', 'error'); return;
+  }
+  const outputName = String(STATE.currentIAOutput || 'rapport').replace(/[^a-z0-9_-]/gi, '_');
+  const filename = `itct_ia_${outputName}_${STATE.currentMission ? 'mission' : 'conversation'}.pdf`;
+  try {
+    const canvas = await html2pdf().set({
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(el).toCanvas().get('canvas');
+    const Pdf = window.jspdf.jsPDF;
+    const pdf = new Pdf({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+    const pageWidth = 210, pageHeight = 297, margin = 8;
+    const fit = Math.min((pageWidth - margin * 2) / canvas.width, (pageHeight - margin * 2) / canvas.height);
+    const imageWidth = canvas.width * fit, imageHeight = canvas.height * fit;
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.94), 'JPEG', (pageWidth - imageWidth) / 2, margin, imageWidth, imageHeight, undefined, 'FAST');
+    pdf.save(filename);
+    showToast('Rapport exporté en PDF sur une seule page A4.', 'success');
+  } catch (error) {
+    console.error('Export PDF du rapport :', error);
+    showToast('Impossible de générer le PDF. Vérifiez le rapport puis réessayez.', 'error');
+  }
 }
 
 // ==========================================
