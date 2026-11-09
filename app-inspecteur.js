@@ -423,36 +423,15 @@ function printReport() {
 }
 
 function exportReportPDF() {
-  const el = document.getElementById('a4Paper');
-  if (!el) { showToast('Aucun rapport à exporter.', 'info'); return; }
-  if (typeof html2pdf !== 'function') {
-    showToast('Le module PDF est indisponible. Rechargez la page puis réessayez.', 'error');
-    return;
-  }
-  const opt = {
-    margin: 0,
-    filename: 'rapport_mission_igt.pdf',
-    image: { type: 'jpeg', quality: 0.96 },
-    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-    pagebreak: { mode: ['avoid-all'] }
-  };
-  html2pdf().set(opt).from(el).toCanvas().get('canvas').then(function(canvas) {
-    const JsPDF = window.jspdf && window.jspdf.jsPDF ? window.jspdf.jsPDF : window.jsPDF;
-    if (!JsPDF) throw new Error('Moteur jsPDF indisponible');
-    const pdf = new JsPDF('p', 'mm', 'a4');
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const ratio = Math.min((pageW - 8) / canvas.width, (pageH - 8) / canvas.height);
-    const imageW = canvas.width * ratio;
-    const imageH = canvas.height * ratio;
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.96), 'JPEG', (pageW - imageW) / 2, (pageH - imageH) / 2, imageW, imageH, undefined, 'FAST');
-    pdf.save('rapport_mission_igt.pdf');
-    showToast('Rapport exporté en PDF A4 sur une seule page.', 'success');
-  }).catch(function(error) {
-    console.error('Export PDF du rapport :', error);
-    showToast('Échec de l’export PDF. Vérifiez le contenu du rapport et réessayez.', 'error');
-  });
+  const el=document.getElementById('a4Paper');
+  if(!el||!STATE.currentMission){showToast('Aucun rapport prêt à être exporté. Générez d’abord le rapport et vérifiez son contenu.','info');return;}
+  if(typeof html2pdf!=='function'){showToast('Le module PDF est indisponible. Rechargez la page puis réessayez.','error');return;}
+  const generated=new Intl.DateTimeFormat('fr-FR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
+  let stamp=el.querySelector('.report-generated-at');
+  if(!stamp){stamp=document.createElement('p');stamp.className='report-generated-at';stamp.style.cssText='margin:8px 0 0;text-align:right;font:9px Arial,sans-serif;color:#555';el.querySelector('.report-header')?.appendChild(stamp);}
+  stamp.textContent='Document généré le '+generated;
+  const opt={margin:0,filename:'rapport_mission_igt.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0,windowWidth:el.scrollWidth},jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-footer','.report-body h2','tr']}};
+  html2pdf().set(opt).from(el).save().then(()=>showToast('Rapport exporté en PDF A4. Le contenu complet est conservé, avec des pages supplémentaires si nécessaire.','success')).catch(error=>{console.error('Export PDF du rapport :',error);showToast('Échec de l’export PDF. Vérifiez le contenu du rapport et réessayez.','error');});
 }
 
 function saveReportToArchive() {
