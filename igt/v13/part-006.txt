@@ -47,7 +47,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
    const sessionId=typeof jwt.session_id==='string'?jwt.session_id:null;
    if(!sessionId)return null;
    const cached=JSON.parse(sessionStorage.getItem('inspecteurbot_server_check_v1_'+session.user.id)||'null');
-   if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-Number(cached.validated_at)<120000)return cached;
+   if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-Number(cached.validated_at)<600000)return cached;
   }catch(_){}
   return null;
  }
@@ -103,9 +103,8 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   }finally{sessionCheckBusy=false;}
  }
  function startSessionMonitoring(){
-  clearInterval(sessionValidationTimer);
-  // Vérification serveur toutes les 30 secondes : équilibre entre sécurité et fluidité.
-  sessionValidationTimer=setInterval(()=>{if(document.visibilityState==='visible')validateActiveSession();},30000);
+  // La session principale InspecteurBot est déjà validée. Éviter une seconde vérification réseau périodique dans l'annuaire.
+  clearInterval(sessionValidationTimer);sessionValidationTimer=null;
  }
  async function heartbeat(){if(!currentUser)return;const {error}=await client.from('user_presence').upsert({user_id:currentUser.id,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)console.warn('Présence non actualisée',error);}
  async function showSessionInternal(session){
@@ -114,9 +113,11 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
   // Ignore les événements Supabase répétés pour un compte déjà initialisé.
   if(currentUser?.id===session.user.id&&document.body.classList.contains('igt-session-ready'))return;
   try{
-   const [,profileResult]=await Promise.all([
-    startSession(session),
-    client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
+   // La page d'accueil a déjà validé ce compte. Réutiliser son profil récent évite un second aller-retour Supabase.
+   const sharedSession=reuseInspecteurBotSession(session);
+   const [sessionResult,profileResult]=await Promise.all([
+    sharedSession?Promise.resolve({success:true,profile:sharedSession.profile,reused:true}):startSession(session),
+    sharedSession?Promise.resolve({data:sharedSession.profile,error:null}):client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
    ]);
    const {data,error}=profileResult;
    if(error||!data||data.is_active!==true){location.replace('../index.html?from=igt&auth=inactive');return;}
