@@ -124,6 +124,7 @@ function renderUsers(){
 }
 async function loadUsers(){if(!client)return; $('users-body').innerHTML='<tr><td colspan="8" class="empty">Chargement sécurisé des membres…</td></tr>';try{const r=await adminCall({action:'list'});users=r.users||[];renderUsers();updateStats();status('global-feedback',users.length+' comptes chargés.',true); }catch(e){$('users-body').innerHTML='<tr><td colspan="8" class="empty">'+esc(e.message)+'</td></tr>';status('global-feedback',e.message);}}
 $('refresh-online').addEventListener('click',loadUsers);
+$('online-members').addEventListener('click',e=>{const b=e.target.closest('[data-message-user]');if(!b)return;selected.clear();selected.add(b.dataset.messageUser);$('message-mode').value='selected';view('messages');status('message-feedback','Message destiné à '+b.dataset.name+'.',true);});
 $('member-search').addEventListener('input',renderUsers);$('search-members').addEventListener('click',renderUsers);$('reload-members').addEventListener('click',loadUsers);$('refresh-dashboard').addEventListener('click',loadUsers);
 $('select-visible').addEventListener('click',()=>{visibleUsers.filter(u=>u.role==='agent').forEach(u=>selected.add(u.id));renderUsers();});
 $('clear-selection').addEventListener('click',()=>{selected.clear();renderUsers();});
