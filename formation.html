@@ -24,6 +24,21 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
 <script src="auth-gate.js?v=20261108-forms-pro1" defer></script>
 
 <style>.written-course{white-space:normal;line-height:1.85;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px;color:var(--text);overflow-wrap:anywhere}.written-course br{display:block;margin-bottom:8px}</style><style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
+
+<style id="formation-theme-contrast">
+body.light-theme #user-status{color:#172b35!important;font-weight:600}
+body.dark-theme #user-status{color:#e5edf5!important;font-weight:600}
+#btn-theme-toggle{touch-action:manipulation;cursor:pointer}
+</style>
+<script id="formation-theme-fallback">
+(function(){
+ const button=document.getElementById('btn-theme-toggle'),label=document.getElementById('formationThemeLabel');
+ function paint(theme){document.body.classList.toggle('dark-theme',theme==='dark');document.body.classList.toggle('light-theme',theme!=='dark');document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;if(label)label.textContent=theme==='dark'?'☀️ Thème clair':'🌙 Thème sombre';}
+ button?.addEventListener('click',function(){const next=document.body.classList.contains('dark-theme')?'light':'dark';if(window.InspecteurBotTheme?.setTheme)window.InspecteurBotTheme.setTheme(next,true);else paint(next);});
+ document.addEventListener('inspecteurbot:themechange',event=>paint(event.detail?.theme==='dark'?'dark':'light'));
+ paint(document.body.classList.contains('dark-theme')?'dark':'light');
+})();
+</script>
 </head>
 <body class="light-theme">
 <div class="shell">
