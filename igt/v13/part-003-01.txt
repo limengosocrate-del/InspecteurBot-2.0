@@ -9,8 +9,8 @@ html{text-size-adjust:100%;-webkit-text-size-adjust:100%;}
 #igt-workspace,#igt-inbox{overscroll-behavior:contain;}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
 </style>
-<style id="igt-auth-no-flash">body.igt-auth-pending>*:not(#igt-auth-gate){visibility:hidden!important}</style>
-</head><body class="igt-auth-pending">
+<style id="igt-auth-no-flash">body.igt-auth-pending>*:not(#igt-auth-gate):not(#ib-igt-startup-splash){visibility:hidden!important}</style>
+</head><body>
 <div id="igt-auth-gate" hidden role="dialog" aria-modal="true" aria-labelledby="igt-auth-title">
  <form id="igt-auth-card">
   <div style="font-size:12px;letter-spacing:1.5px;font-weight:700;color:#b18a35">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</div>
