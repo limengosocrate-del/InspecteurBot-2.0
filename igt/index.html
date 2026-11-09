@@ -15,7 +15,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
 <div id="load"><div id="spin"></div><div>InspecteurBot — Annuaire national IGT</div><div id="hint">Chargement du contenu officiel de l’annuaire…</div></div>
 <script>
 (async()=>{
- const version='20261109-v13-restored-directory-fix4';
+ const version='20261109-v13-direct-open-fix5';
  const names=["part-001.txt","part-002.txt","part-003-01.txt","part-003-02.txt","part-003-03.txt","part-003-04.txt","part-003-05.txt","part-003-06.txt","part-003-07.txt","part-003-08.txt","part-003-09.txt","part-003-10.txt","part-004.txt","part-005.txt","part-006.txt","part-007.txt","part-008.txt","part-009.txt","part-010.txt","part-011.txt"].map(name=>name+'?v='+version);
  const hint=document.getElementById('hint');
  const loader=document.getElementById('load');
@@ -30,11 +30,12 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
     if(index>=names.length)return;
     const name=names[index];
     let lastError=null;
-    for(let attempt=1;attempt<=2;attempt++){
+    hint.textContent='Ouverture de l’annuaire national : '+(index+1)+' / '+names.length+'…';
+    for(let attempt=1;attempt<=3;attempt++){
      const controller=new AbortController();
-     const timeout=setTimeout(()=>controller.abort(),45000);
+     const timeout=setTimeout(()=>controller.abort(),90000);
      try{
-      const response=await fetch('./v13/'+name,{cache:'force-cache',credentials:'same-origin',signal:controller.signal});
+      const response=await fetch('./v13/'+name,{cache:'no-store',credentials:'same-origin',signal:controller.signal});
       if(!response.ok)throw new Error('Chargement de '+name.split('?')[0]+' impossible (HTTP '+response.status+').');
       parts[index]=await response.text();
       completed++;
@@ -43,7 +44,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
       break;
      }catch(fetchError){
       lastError=fetchError&&fetchError.name==='AbortError'?new Error('Le fichier '+name.split('?')[0]+' met trop de temps à répondre. Vérifiez votre connexion puis réessayez.'):fetchError;
-      if(attempt===1)await new Promise(resolve=>setTimeout(resolve,450));
+      if(attempt<3)await new Promise(resolve=>setTimeout(resolve,700*attempt));
      }finally{clearTimeout(timeout);}
     }
     if(lastError)throw lastError;
@@ -51,7 +52,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   };
   await Promise.all(Array.from({length:Math.min(5,names.length)},()=>loadWorker()));
   let page=parts.join('');
-  if(!/<html[\s>]/i.test(page)||!/<body[\s>]/i.test(page)||!page.includes('igt-workspace')){
+  if(!/<html[\s>]/i.test(page)||!/<body[\s>]/i.test(page)||!page.includes('igt-workspace')||!page.includes('const officialAgents=')){
    throw new Error('Le contenu de l’annuaire est incomplet ou mal assemblé.');
   }
   page=page.replace(/<meta name="viewport"[^>]*>/i,'<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">');
