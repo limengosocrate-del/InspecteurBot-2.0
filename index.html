@@ -456,7 +456,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 <!-- ================= DÉBUT DE LA PAGE ================= -->  
   
 <!-- SLIDER -->  
-<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo à Kinshasa"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-day" id="day">Chargement…</div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Kinshasa</span></div></div>  
+<section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo de votre région"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-day" id="day">Chargement…</div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Votre région</span></div></div>  
   
     <!-- Images du slider -->  
     <div class="slider" id="slider" aria-label="Diaporama de l'IGT">
@@ -650,7 +650,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
   img.loading='eager';
   if(i===0)img.fetchPriority='high';
  });
- function schedule(){clearTimeout(timer);if(!document.hidden)timer=setTimeout(showNext,6500)}
+ function schedule(){clearTimeout(timer);if(!document.hidden)timer=setTimeout(showNext,5000)}
  function showNext(){
   if(document.hidden||loading){schedule();return}
   loading=true;
@@ -729,16 +729,30 @@ setInterval(() => {
     /* Les alertes réelles sont gérées par Supabase et le centre de notifications. */
   
     /* ================= DATE ET HEURE ================= */
-function loadKinshasaWeather(){
- const weather=document.getElementById('weather');
- fetch('https://api.open-meteo.com/v1/forecast?latitude=-4.325&longitude=15.322&current=temperature_2m&timezone=Africa%2FKinshasa')
- .then(r=>{if(!r.ok)throw Error('Météo indisponible');return r.json()})
- .then(d=>{if(weather&&d.current)weather.textContent=Math.round(d.current.temperature_2m)+'°C'})
- .catch(()=>{if(weather)weather.textContent=''});
+async function loadRegionalWeather(){
+ const weather=document.getElementById('weather'),city=document.getElementById('city');
+ if(!weather||!city)return;
+ const showWeather=async(lat,lon,label)=>{
+  const url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&current=temperature_2m&timezone=auto';
+  const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw Error('Météo indisponible');
+  const data=await response.json();if(!data.current)throw Error('Température indisponible');
+  weather.textContent=Math.round(data.current.temperature_2m)+'°C';
+  city.textContent=label||data.timezone?.split('/').pop()?.replace(/_/g,' ')||'Votre région';
+ };
+ const fromIp=async()=>{
+  const response=await fetch('https://ipapi.co/json/',{cache:'no-store'});if(!response.ok)throw Error('Localisation réseau indisponible');
+  const data=await response.json();if(!Number.isFinite(data.latitude)||!Number.isFinite(data.longitude))throw Error('Coordonnées indisponibles');
+  await showWeather(data.latitude,data.longitude,data.city||data.region||data.country_name||'Votre région');
+ };
+ if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(async pos=>{
+   try{await showWeather(pos.coords.latitude,pos.coords.longitude,'Votre région')}catch(_){try{await fromIp()}catch(__){weather.textContent='';city.textContent='Météo indisponible'}}
+  },async()=>{try{await fromIp()}catch(_){weather.textContent='';city.textContent='Météo indisponible'}},{enableHighAccuracy:false,timeout:7000,maximumAge:1800000});
+ }else{try{await fromIp()}catch(_){weather.textContent='';city.textContent='Météo indisponible'}}
 }
 const scheduleWeatherLoad=()=>{
- if('requestIdleCallback' in window)requestIdleCallback(loadKinshasaWeather,{timeout:4000});
- else setTimeout(loadKinshasaWeather,1800);
+ if('requestIdleCallback' in window)requestIdleCallback(loadRegionalWeather,{timeout:4000});
+ else setTimeout(loadRegionalWeather,1800);
 };
 if(document.readyState==='complete')scheduleWeatherLoad();
 else window.addEventListener('load',scheduleWeatherLoad,{once:true});  
@@ -803,7 +817,7 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
 }
 </script>
 
-<script>(()=>{const s=document.getElementById('slider');if(!s)return;const a=[...s.querySelectorAll('img')];if(a.length<2)return;let n=-1;const show=()=>{let k=Math.floor(Math.random()*a.length);if(k===n)k=(k+1)%a.length;n=k;a.forEach((im,i)=>im.classList.toggle('active',i===n))};show();setInterval(show,5000)})();</script>
+
 </body>  
   
 </html>
