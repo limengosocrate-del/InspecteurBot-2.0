@@ -44,8 +44,8 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   page=page.replace(/<meta name="viewport"[^>]*>/i,'<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">');
   page=page.replace(/<title[^>]*>[\s\S]*?<\/title>/i,'<title>Annuaire national IGT — Version 13 restaurée | InspecteurBot</title>');
   const scroll='<style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important}.shell,.main{min-height:100%;min-width:0}</style>';
-  if(!/<base\b/i.test(page))page=page.replace('</head>','<base href="../">\n'+scroll+'\n</head>');
-  else page=page.replace(/<base\b[^>]*>/i,'<base href="../">').replace('</head>',scroll+'\n</head>');
+  if(!/<base\b/i.test(page))page=page.replace('</head>','<base href="./">\n'+scroll+'\n</head>');
+  else page=page.replace(/<base\b[^>]*>/i,'<base href="./">').replace('</head>',scroll+'\n</head>');
   const themeLink='<link rel="stylesheet" href="../global-theme.css?v=20261108-theme-5">';
   const themeScript='<script src="../global-theme.js?v=20261108-theme-5" defer>'+'<'+'/script>';
   const publicThemeStyle='<style id="igt-public-directory-mode">#igt-auth-gate,#igt-auth-user,#igt-agent-tools,#igt-open-admin,#igt-workspace,#igt-inbox,#igt-registration-panel{display:none!important}body.igt-auth-pending{overflow:auto!important}</style>';
