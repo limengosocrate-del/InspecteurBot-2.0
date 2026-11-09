@@ -599,13 +599,22 @@ window.print();
 function exporterPDF(){
  const section=document.querySelector(".table-section");
  const table=section?.querySelector("table");
- if(!table||!entreprises.length){notification("Aucune entreprise à exporter.","warning");return;}
+ if(!Array.isArray(entreprises)||entreprises.length===0||!table){
+  notification("Aucune entreprise enregistrée. Veuillez compléter les champs obligatoires, puis enregistrer l’entreprise avant de télécharger le PDF.","warning");
+  const firstRequired=document.querySelector("#entrepriseForm input[required],#entrepriseForm select[required],#entrepriseForm textarea[required]");
+  firstRequired?.focus();
+  return;
+ }
  const clone=table.cloneNode(true);
  clone.querySelectorAll("button,input,select,textarea").forEach(el=>el.remove());
+ const rows=[...clone.querySelectorAll("tbody tr")].filter(row=>getComputedStyle(row).display!=="none");
+ if(!rows.length){notification("Aucune ligne de la liste n’est disponible pour l’export PDF. Vérifiez les filtres.","warning");return;}
  const w=window.open("","_blank");
- if(!w){notification("Autorisez les fenêtres contextuelles pour exporter.","warning");return;}
- w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Liste des entreprises IGT</title><style>@page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}body{font:10px Arial,sans-serif;color:#111;margin:0}header{text-align:center;border-bottom:2px solid #173b61;padding-bottom:10px;margin-bottom:14px}h1{font-size:18px;margin:4px 0;color:#173b61}p{margin:3px 0}table{width:100%;border-collapse:collapse;table-layout:auto}th,td{border:1px solid #687482;padding:5px;text-align:left;overflow-wrap:anywhere;vertical-align:top}th{background:#e8eef2;font-weight:bold}tr{break-inside:avoid}thead{display:table-header-group}</style></head><body><header><p>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · MINISTÈRE DE L’EMPLOI ET TRAVAIL</p><h1>LISTE DES ENTREPRISES — IGT RDC</h1><p>Registre des entreprises enregistrées · Édité le '+new Date().toLocaleDateString("fr-CD")+'</p></header>'+clone.outerHTML+'</body></html>');
- w.document.close();w.focus();setTimeout(()=>w.print(),350);
+ if(!w){notification("Autorisez les fenêtres contextuelles pour créer le PDF.","warning");return;}
+ const date=new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"long",year:"numeric"}).format(new Date());
+ w.document.open();
+ w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Liste des entreprises IGT</title><style>@page{size:A4 landscape;margin:10mm}*{box-sizing:border-box}body{font:9px/1.35 Arial,sans-serif;color:#172334;margin:0}header{text-align:center;border-bottom:2px solid #173b61;padding:0 0 8px;margin:0 0 12px}header .institution{font-size:9px;font-weight:700;letter-spacing:.3px}h1{font-size:17px;margin:5px 0;color:#173b61}p{margin:3px 0}.summary{font-size:9px;color:#475569}table{width:100%;border-collapse:collapse;table-layout:fixed}th,td{border:1px solid #8b98a7;padding:4px 5px;text-align:left;overflow-wrap:anywhere;vertical-align:top}th{background:#e8eef5;color:#173b61;font-weight:700}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}tbody tr:nth-child(even){background:#f7f9fb}footer{margin-top:12px;padding-top:6px;border-top:1px solid #cbd5e1;text-align:center;font-size:8px;color:#64748b}@media screen{body{padding:12px;background:#eef2f6}.paper{max-width:277mm;margin:auto;background:#fff;padding:12mm;box-shadow:0 3px 18px #0002}}</style></head><body><main class="paper"><header><div class="institution">RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · MINISTÈRE DE L’EMPLOI ET DU TRAVAIL</div><h1>LISTE DES ENTREPRISES — INSPECTION GÉNÉRALE DU TRAVAIL</h1><p class="summary">Registre des entreprises enregistrées · '+date+' · '+rows.length+' ligne(s)</p></header>'+clone.outerHTML+'<footer>InspecteurBot RDC · Document administratif généré automatiquement</footer></main><script>window.addEventListener("load",()=>setTimeout(()=>window.print(),250));</script></body></html>');
+ w.document.close();w.focus();
 }
 
 /*=========================================================
