@@ -26,7 +26,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
  const adminButton=document.getElementById('igt-open-admin');
  const forgotButton=document.getElementById('igt-forgot-password');
  let passwordSetupMode=false, updatingPassword=false, expiryTimer=null, sessionValidationTimer=null, sessionStartPromise=null, sessionCheckBusy=false, showSessionPromise=null, currentUser=null, currentProfile=null, remainingSeconds=0;
- if(!window.supabase||!window.supabase.createClient){message.textContent='Service de connexion indisponible. Rechargez la page.';return;}
+ if(!window.supabase||!window.supabase.createClient){location.replace('../index.html?from=igt&auth=unavailable');return;}
  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  window.igtSupabase=client;
  function showLogin(){gate.removeAttribute('data-password-setup');passwordSetupMode=false;title.textContent='Annuaire numérique de l’inspection générale du Travail';intro.textContent='Retrouver un agent par son nom ou son numéro matricule.';confirmWrap.hidden=true;emailLabel.hidden=false;emailInput.hidden=false;emailInput.required=true;passwordLabel.textContent='Mot de passe';passwordInput.autocomplete='current-password';submit.textContent='Se connecter';forgotButton.hidden=false;}
