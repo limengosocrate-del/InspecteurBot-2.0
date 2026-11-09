@@ -32,11 +32,30 @@ body.dark-theme #user-status{color:#e5edf5!important;font-weight:600}
 </style>
 <script id="formation-theme-fallback">
 (function(){
- const button=document.getElementById('btn-theme-toggle'),label=document.getElementById('formationThemeLabel');
- function paint(theme){document.body.classList.toggle('dark-theme',theme==='dark');document.body.classList.toggle('light-theme',theme!=='dark');document.documentElement.dataset.theme=theme;document.documentElement.style.colorScheme=theme;if(label)label.textContent=theme==='dark'?'☀️ Thème clair':'🌙 Thème sombre';}
- button?.addEventListener('click',function(){const next=document.body.classList.contains('dark-theme')?'light':'dark';if(window.InspecteurBotTheme?.setTheme)window.InspecteurBotTheme.setTheme(next,true);else paint(next);});
- document.addEventListener('inspecteurbot:themechange',event=>paint(event.detail?.theme==='dark'?'dark':'light'));
- paint(document.body.classList.contains('dark-theme')?'dark':'light');
+ function init(){
+  const button=document.getElementById('btn-theme-toggle');
+  const label=document.getElementById('formationThemeLabel');
+  function paint(theme){
+   const dark=theme==='dark';
+   document.body.classList.toggle('dark-theme',dark);
+   document.body.classList.toggle('light-theme',!dark);
+   document.documentElement.dataset.theme=dark?'dark':'light';
+   document.documentElement.style.colorScheme=dark?'dark':'light';
+   if(label)label.textContent=dark?'☀️ Thème clair':'🌙 Thème sombre';
+  }
+  if(button&&!button.dataset.themeBound){
+   button.dataset.themeBound='true';
+   button.addEventListener('click',function(){
+    const next=document.body.classList.contains('dark-theme')?'light':'dark';
+    paint(next);
+    try{window.InspecteurBotTheme?.setTheme?.(next,true);}catch(error){console.warn('Préférence de thème non synchronisée',error);}
+   });
+  }
+  document.addEventListener('inspecteurbot:themechange',event=>paint(event.detail?.theme==='dark'?'dark':'light'));
+  paint(document.body.classList.contains('dark-theme')?'dark':'light');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+ else init();
 })();
 </script>
 </head>
