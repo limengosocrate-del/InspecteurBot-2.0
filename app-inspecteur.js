@@ -418,8 +418,25 @@ function renderReportPreview(data) {
 }
 
 function printReport() {
-  showToast('Impression du rapport lancée.', 'info');
-  window.print();
+  const paper = document.getElementById('a4Paper');
+  if (!paper) { showToast('Aucun rapport à imprimer.', 'info'); return; }
+  const previousZoom = paper.style.zoom;
+  paper.style.zoom = '1';
+  requestAnimationFrame(() => {
+    const targetHeight = Math.round(297 * 96 / 25.4);
+    const fit = Math.min(1, targetHeight / Math.max(paper.scrollHeight, 1));
+    paper.style.zoom = String(Math.max(0.42, fit));
+    document.body.classList.add('ib-report-printing');
+    const restore = () => {
+      document.body.classList.remove('ib-report-printing');
+      paper.style.zoom = previousZoom;
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore, { once: true });
+    showToast('Rapport préparé au format A4.', 'info');
+    window.print();
+    setTimeout(restore, 1800);
+  });
 }
 
 async function exportReportPDF() {
