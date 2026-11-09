@@ -737,7 +737,14 @@ async function loadRegionalWeather(){
   const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw Error('Météo indisponible');
   const data=await response.json();if(!data.current)throw Error('Température indisponible');
   weather.textContent=Math.round(data.current.temperature_2m)+'°C';
-  city.textContent=label||data.timezone?.split('/').pop()?.replace(/_/g,' ')||'Votre région';
+  let place=label||'';
+  if(!place){
+   try{
+    const reverse=await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+encodeURIComponent(lat)+'&longitude='+encodeURIComponent(lon)+'&localityLanguage=fr',{cache:'no-store'});
+    if(reverse.ok){const geo=await reverse.json();place=geo.city||geo.locality||geo.principalSubdivision||geo.countryName||'';}
+   }catch(_){}
+  }
+  city.textContent=place||data.timezone?.split('/').pop()?.replace(/_/g,' ')||'Votre région';
  };
  const fromIp=async()=>{
   const response=await fetch('https://ipapi.co/json/',{cache:'no-store'});if(!response.ok)throw Error('Localisation réseau indisponible');
@@ -746,7 +753,7 @@ async function loadRegionalWeather(){
  };
  if(navigator.geolocation){
   navigator.geolocation.getCurrentPosition(async pos=>{
-   try{await showWeather(pos.coords.latitude,pos.coords.longitude,'Votre région')}catch(_){try{await fromIp()}catch(__){weather.textContent='';city.textContent='Météo indisponible'}}
+   try{await showWeather(pos.coords.latitude,pos.coords.longitude)}catch(_){try{await fromIp()}catch(__){weather.textContent='';city.textContent='Météo indisponible'}}
   },async()=>{try{await fromIp()}catch(_){weather.textContent='';city.textContent='Météo indisponible'}},{enableHighAccuracy:false,timeout:7000,maximumAge:1800000});
  }else{try{await fromIp()}catch(_){weather.textContent='';city.textContent='Météo indisponible'}}
 }
