@@ -29,6 +29,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
     const response=await fetch('./v13/'+name,{cache:'no-store',credentials:'same-origin',signal:controller.signal});
     if(!response.ok)throw new Error('Chargement de '+name.split('?')[0]+' impossible (HTTP '+response.status+').');
     const content=await response.text();
+    if(!content.trim())throw new Error('Le fichier '+name.split('?')[0]+' est vide ou incomplet. Le portail IGT ne peut pas être assemblé.');
     completed++;
     hint.textContent='Chargement de l’annuaire : '+completed+' / '+names.length+' fichiers…';
     return content;
