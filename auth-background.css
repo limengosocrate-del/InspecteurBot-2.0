@@ -6,7 +6,7 @@
 #ib-auth-message{display:block;min-height:0;padding:0;border-radius:10px;line-height:1.45;font-weight:700;transition:all .18s ease}
 #ib-auth-message.ib-message-success{margin-top:14px;padding:13px 14px;background:#e8f7ef;border:1px solid #8bd4aa;color:#11643a!important;font-size:14px;box-shadow:0 4px 14px #14532d18}
 #ib-auth-message.ib-message-error{margin-top:14px;padding:12px 14px;background:#fff0f0;border:1px solid #efb2b2;color:#a32121!important;font-size:14px}
-#ib-auth-register-help{margin-top:16px;padding:13px 14px;border:1px solid #8ec5e5;border-left:4px solid #087eb5;border-radius:10px;background:rgba(232,246,255,.94);color:#123d60;font-size:13px;line-height:1.5;font-weight:600;text-align:left}
-#ib-auth-register-help strong{display:block;margin-bottom:4px;color:#07518a;font-size:13px}
+#ib-auth-register-help{margin-top:16px;padding:14px 15px;border:1px solid #111;border-left:5px solid #000;border-radius:10px;background:#fff!important;color:#000!important;font-size:14px;line-height:1.55;font-weight:700;text-align:left;box-shadow:0 3px 12px rgba(0,0,0,.16)}
+#ib-auth-register-help strong{display:block;margin-bottom:5px;color:#000!important;font-size:14px;font-weight:800}
 #ib-register-toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;width:min(520px,calc(100% - 28px));padding:15px 17px;border:1px solid #f0c36d;border-radius:13px;background:#fff8e8;color:#784b08;box-shadow:0 12px 34px #00152f45;font:700 14px/1.45 Arial,sans-serif;text-align:center;animation:ib-register-toast-in .18s ease-out}
 @keyframes ib-register-toast-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
