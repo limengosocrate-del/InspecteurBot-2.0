@@ -1,20 +1,10 @@
-           loc.innerHTML='';
-           const a=document.createElement('a');a.href=mapUrl;a.target='_blank';a.rel='noopener';
-           a.textContent=address+' · Voir sur Maps';a.title='Ouvrir cette adresse dans Google Maps';
-           a.style.color='inherit';a.style.textDecoration='underline';
-           loc.appendChild(a);
-         })
-         .catch(()=>{loc.innerHTML='';const a=document.createElement('a');a.href=mapUrl;a.target='_blank';a.rel='noopener';a.textContent='Adresse non disponible · Voir sur Maps';a.style.color='inherit';loc.appendChild(a);});
-     },err=>{
-       loc.textContent=err.code===1?'Localisation : autorisation refusée':'Localisation : indisponible';
-     },{enableHighAccuracy:false,timeout:12000,maximumAge:300000});
-   }
- }
-})();
-</script>
+
 
 
 <style id="igt-layout-refinement-v2">
+#igt-minimum-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.igt-live-clock{display:none!important}
+
 /* Institutional header: logo left, compact live information and menu at upper right. */
 .top.igt-masthead{
   height:150px!important;min-height:150px!important;
