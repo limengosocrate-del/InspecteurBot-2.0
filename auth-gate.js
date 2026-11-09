@@ -138,7 +138,7 @@ async function pollAdminMessages(){
   const key=adminMessageCursorKey();
   if(adminMessageCursor===null){
    let stored=null;try{stored=localStorage.getItem(key)}catch(_){}
-   if(stored!==null&&/^\\d+$/.test(stored))adminMessageCursor=Number(stored);
+   if(stored!==null&&/^\d+$/.test(stored))adminMessageCursor=Number(stored);
    else{
     const [latest,unread]=await Promise.all([
      client.from('messages').select('id').eq('sender_id',IB_ADMIN_ID).eq('recipient_id',user.id).order('id',{ascending:false}).limit(1),
@@ -167,7 +167,7 @@ function stopAdminMessageNotifications(){
  clearInterval(adminMessagePoll);adminMessagePoll=null;adminMessageCursor=null;hideAdminMessageToast();
 }
 async function expireSession(){
- clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();
+ clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();
  try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
