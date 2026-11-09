@@ -15,7 +15,7 @@ self.addEventListener('fetch',event=>{
  const url=new URL(request.url);
  if(url.origin!==self.location.origin)return;
  // The IGT directory is assembled from versioned text fragments. Never serve these from an old service-worker cache.
- if(/\\/igt\\/v13\\//.test(url.pathname)){
+ if(/\/igt\/v13\//.test(url.pathname)){
   event.respondWith(fetch(request,{cache:'no-store'}));
   return;
  }
