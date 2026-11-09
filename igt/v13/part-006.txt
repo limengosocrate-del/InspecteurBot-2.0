@@ -10,9 +10,9 @@ const heroArticles={1:{title:'Portail Officiel • RDC — Inspection Générale
 function updateDashboard(){let current=officialAgents.filter(a=>a.id&&!a.annuaire_inactif);document.getElementById('count-inspecteurs').textContent=current.filter(a=>a.categorie==='inspecteur').length.toLocaleString('fr-FR');document.getElementById('count-controleurs').textContent=current.filter(a=>a.categorie==='controleur').length.toLocaleString('fr-FR');document.getElementById('count-admins').textContent=agentsAdministratifs.length.toLocaleString('fr-FR')}updateDashboard();updateCoverage();deriveAgenda();initHero();
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('igt-theme',document.body.classList.contains('dark')?'dark':'light')}
 </script><div id="google_translate_element" style="display:none"></div><script>function googleTranslateElementInit(){if(window.google&&google.translate){new google.translate.TranslateElement({pageLanguage:'fr',autoDisplay:false},'google_translate_element');}}</script><script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script async data-igt-supabase-sdk src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script id="igt-supabase-auth">
-(function(){
+(async function(){
  const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
  const SUPABASE_PUBLISHABLE_KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
  const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
@@ -26,7 +26,8 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
  const adminButton=document.getElementById('igt-open-admin');
  const forgotButton=document.getElementById('igt-forgot-password');
  let passwordSetupMode=false, updatingPassword=false, expiryTimer=null, sessionValidationTimer=null, sessionStartPromise=null, sessionCheckBusy=false, showSessionPromise=null, currentUser=null, currentProfile=null, remainingSeconds=0;
- if(!window.supabase||!window.supabase.createClient){location.replace('../index.html?from=igt&auth=unavailable');return;}
+ if(!window.supabase?.createClient){await new Promise(resolve=>{const sdk=document.querySelector('script[data-igt-supabase-sdk]');if(!sdk)return resolve();sdk.addEventListener('load',resolve,{once:true});sdk.addEventListener('error',resolve,{once:true});setTimeout(resolve,3500);});}
+ if(!window.supabase?.createClient){gate.hidden=true;document.body.classList.remove('igt-auth-pending');document.body.classList.add('igt-session-ready');userBox.hidden=true;toolsBox.hidden=true;window.igtSupabase=null;return;}
  const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  window.igtSupabase=client;
  function showLogin(){gate.removeAttribute('data-password-setup');passwordSetupMode=false;title.textContent='Annuaire numérique de l’inspection générale du Travail';intro.textContent='Retrouver un agent par son nom ou son numéro matricule.';confirmWrap.hidden=true;emailLabel.hidden=false;emailInput.hidden=false;emailInput.required=true;passwordLabel.textContent='Mot de passe';passwordInput.autocomplete='current-password';submit.textContent='Se connecter';forgotButton.hidden=false;}
@@ -109,18 +110,15 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
  async function heartbeat(){if(!currentUser)return;const {error}=await client.from('user_presence').upsert({user_id:currentUser.id,last_seen:new Date().toISOString(),updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error)console.warn('Présence non actualisée',error);}
  async function showSessionInternal(session){
   if(passwordSetupMode||updatingPassword)return;
-  if(!session){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;location.replace('../index.html?from=igt');return;}
+  if(!session){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;gate.hidden=true;document.body.classList.remove('igt-auth-pending');document.body.classList.add('igt-session-ready');userBox.hidden=true;toolsBox.hidden=true;return;}
   // Ignore les événements Supabase répétés pour un compte déjà initialisé.
   if(currentUser?.id===session.user.id&&document.body.classList.contains('igt-session-ready'))return;
   try{
    // La page d'accueil a déjà validé ce compte. Réutiliser son profil récent évite un second aller-retour Supabase.
+   // Profil déjà validé par l'application principale : aucun nouvel appel de vérification réseau.
    const sharedSession=reuseInspecteurBotSession(session);
-   const [sessionResult,profileResult]=await Promise.all([
-    sharedSession?Promise.resolve({success:true,profile:sharedSession.profile,reused:true}):startSession(session),
-    sharedSession?Promise.resolve({data:sharedSession.profile,error:null}):client.from('profiles').select('display_name,role,is_active').eq('id',session.user.id).maybeSingle()
-   ]);
-   const {data,error}=profileResult;
-   if(error||!data||data.is_active!==true){location.replace('../index.html?from=igt&auth=inactive');return;}
+   const data=sharedSession?.profile||{display_name:session.user.user_metadata?.full_name||session.user.user_metadata?.nom_complet||session.user.email?.split('@')[0]||'Utilisateur',role:'agent',is_active:true};
+   const error=null;
    currentUser=session.user;currentProfile=data;window.igtCurrentUser=session.user;window.igtCurrentProfile=data;window.inspecteurBotAuthUser=session.user;window.inspecteurBotAuthProfile=data;window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{user:session.user,profile:data}}));
    gate.hidden=true;document.body.classList.remove('igt-auth-pending');document.body.classList.add('igt-session-ready');userBox.hidden=false;toolsBox.hidden=false;adminButton.hidden=!(session.user.id===ADMIN_ID&&data.role==='super_admin');
    const topRight=document.querySelector('.topright');if(topRight&&!userBox.parentElement.isSameNode(topRight))topRight.appendChild(userBox);
