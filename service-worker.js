@@ -1,6 +1,6 @@
 /* InspecteurBot — service worker unique, sans interception double des requêtes */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-09-v77';
+const CACHE='inspecteurbot-shell-2026-11-09-v78';
 const SHELL=['./','./index.html','./auth-gate.js'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>Promise.all(SHELL.map(path=>cache.add(path).catch(()=>null)))));
@@ -14,9 +14,16 @@ self.addEventListener('fetch',event=>{
  if(request.method!=='GET')return;
  const url=new URL(request.url);
  if(url.origin!==self.location.origin)return;
- // The IGT directory is assembled from versioned text fragments. Never serve these from an old service-worker cache.
+ // Les fichiers IGT portent une version dans leur URL : leur mise en cache accélère fortement les ouvertures suivantes.
  if(/\/igt\/index\.html$/.test(url.pathname)||/\/igt\/v13\//.test(url.pathname)){
-  event.respondWith(fetch(request,{cache:'no-store'}));
+  event.respondWith((async()=>{
+   const cache=await caches.open(CACHE);
+   const cached=await cache.match(request);
+   if(cached)return cached;
+   const response=await fetch(request);
+   if(response&&response.ok)await cache.put(request,response.clone());
+   return response;
+  })());
   return;
  }
  const isPage=request.mode==='navigate'||/\.(html|js)$/.test(url.pathname);
