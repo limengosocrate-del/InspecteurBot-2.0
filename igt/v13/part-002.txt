@@ -97,4 +97,3 @@ html,body{touch-action:pan-x pan-y}button,a,input,select,textarea{touch-action:m
 #igt-registration-form>p{font-size:14px!important;line-height:1.65!important;color:#34465a!important}
 #igt-auth-title{font-family:Georgia,"Times New Roman",serif!important;line-height:1.25!important}
 #igt-auth-card label,#igt-registration-form label{font-family:Inter,"Segoe UI",Arial,sans-serif!important;color:#193b59}
-#igt-minimum-loader{position:fixed;inset:0;z-index:2000000;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:linear-gradient(140deg,#071b35,#123d60 60%,#0b5680);color:#fff;font-family:Inter,"Segoe UI",Arial,sans-serif;transition:opacity .35s ease,visibility .35s ease}
