@@ -70,31 +70,5 @@
    document.addEventListener('click',e=>{if(!menu.contains(e.target)&&!toggle.contains(e.target)){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
    menu.addEventListener('click',e=>{if(e.target.closest('a')){menu.hidden=true;toggle.setAttribute('aria-expanded','false');}});
  }
- function updateClock(){
-   const now=new Date();
-   if($('igt-date'))$('igt-date').textContent=new Intl.DateTimeFormat('fr-FR',{weekday:'short',day:'2-digit',month:'long',year:'numeric'}).format(now);
-   if($('igt-time'))$('igt-time').textContent=new Intl.DateTimeFormat('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
- }
- updateClock();setInterval(updateClock,1000);
- function networkStatus(){
-   const el=$('igt-presence');if(!el)return;
-   const online=navigator.onLine;
-   el.classList.toggle('is-online',online);el.classList.toggle('is-offline',!online);
-   el.textContent=online?'● En ligne (connexion active)':'● Hors ligne';
- }
- networkStatus();window.addEventListener('online',networkStatus);window.addEventListener('offline',networkStatus);
- // Geolocation is requested through the browser's permission prompt; it is never silently bypassed.
- const loc=$('igt-location');
- if(loc){
-   if(!('geolocation' in navigator)){loc.textContent='Localisation : non disponible';}
-   else{
-     loc.textContent='Localisation : autorisation requise';
-     navigator.geolocation.getCurrentPosition(pos=>{
-       const lat=pos.coords.latitude,lon=pos.coords.longitude;
-       loc.textContent='Adresse : recherche en cours…';
-       loc.title='Adresse obtenue avec votre autorisation de localisation';
-       const mapUrl='https://www.google.com/maps?q='+encodeURIComponent(lat+','+lon);
-       fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+encodeURIComponent(lat)+'&lon='+encodeURIComponent(lon)+'&zoom=18&addressdetails=1&accept-language=fr')
-         .then(r=>{if(!r.ok) throw new Error('Géocodage indisponible');return r.json();})
-         .then(data=>{
-           const address=data.display_name || 'Adresse non disponible';
+})();
+</script>
