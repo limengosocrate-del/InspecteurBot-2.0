@@ -289,7 +289,7 @@ function setup(){
 async function loadGlobalTheme(){
  const authScript=Array.from(document.scripts).find(s=>s.src.includes('auth-gate.js'));
  const base=authScript?new URL('./',authScript.src):new URL('./',location.href);
- if(!document.querySelector('link[data-ib-auth-background]')){const authBg=document.createElement('link');authBg.rel='stylesheet';authBg.href=new URL('auth-background.css?v=20261109-auth-final-3',base).href;authBg.dataset.ibAuthBackground='1';document.head.appendChild(authBg);}
+ if(!document.querySelector('link[data-ib-auth-background]')){const authBg=document.createElement('link');authBg.rel='stylesheet';authBg.href=new URL('auth-background.css?v=20261109-auth-final-4',base).href;authBg.dataset.ibAuthBackground='1';document.head.appendChild(authBg);}
  if(!document.querySelector('link[data-ib-global-theme]')){const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('global-theme.css?v=20261108-theme-5',base).href;link.dataset.ibGlobalTheme='1';document.head.appendChild(link);}
  if(window.InspecteurBotTheme)return;
  await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=new URL('global-theme.js?v=20261108-theme-5',base).href;script.onload=resolve;script.onerror=()=>reject(new Error('Thèmes globaux indisponibles'));document.head.appendChild(script);});
