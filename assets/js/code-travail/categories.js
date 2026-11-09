@@ -65,16 +65,22 @@ window.CodeTravailCategories = {
         if (!grid) return;
 
         grid.innerHTML = "";
-        const articles = window.CodeTravailState.articles;
+        const state = window.CodeTravailState;
+        const articles = Array.isArray(state?.articles) ? state.articles : [];
+        const normalize = value => String(value || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
         
-        // Regrouper par catégorie
+        // Les effectifs sont calculés à partir des articles réellement chargés.
         const counts = {};
+        const labels = {};
         articles.forEach(art => {
-            const cat = art.categorie || "Autres dispositions";
-            counts[cat] = (counts[cat] || 0) + 1;
+            const label = String(art.categorie || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ");
+            const key = normalize(label);
+            counts[key] = (counts[key] || 0) + 1;
+            labels[key] = labels[key] || label;
         });
 
-        Object.keys(counts).forEach(cat => {
+        Object.keys(counts).forEach(key => {
+            const cat = labels[key];
             const meta = this.metadata[cat] || {
                 icon: "fa-folder-open",
                 desc: "Articles et dispositions légales de cette catégorie juridique."
@@ -86,7 +92,7 @@ window.CodeTravailCategories = {
                 <i class="fa-solid ${meta.icon}"></i>
                 <h3>${window.InspecteurUtils.escapeHtml(cat)}</h3>
                 <p>${window.InspecteurUtils.escapeHtml(meta.desc)}</p>
-                <span class="category-badge">${counts[cat]} article(s)</span>
+                <span class="category-badge">${counts[key]} article(s)</span>
             `;
 
             card.addEventListener("click", () => {
@@ -111,9 +117,14 @@ window.CodeTravailCategories = {
         window.CodeTravailState.currentCategory = cat;
 
         // Filtrer et afficher les résultats dans le moteur de recherche
-        const results = window.CodeTravailState.articles.filter(art => art.categorie === cat);
+        const normalize = value => String(value || "").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
+        const results = window.CodeTravailState.articles.filter(art => normalize(art.categorie) === normalize(cat));
+        window.CodeTravailState.searchResults = results;
         if (window.CodeTravailRecherche && window.CodeTravailRecherche.renderResults) {
-            window.CodeTravailRecherche.renderResults(results, "");
+            window.CodeTravailRecherche.renderResults(results, cat);
+        }
+        if (!results.length && window.InspecteurUtils) {
+            window.InspecteurUtils.showNotification("Aucun article n’est actuellement chargé dans cette catégorie.", "fa-triangle-exclamation");
         }
 
         // Mettre à jour l'info dans la section consultation

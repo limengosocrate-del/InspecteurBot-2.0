@@ -124,7 +124,13 @@ body.dark-theme .categories-section,body.dark-theme .categories-grid,body.dark-t
 body.dark-theme .suggestions button{color:#000!important}
 #livreHost{margin-top:8px!important}
 </style>
-</head>
+<style id="article-navigation-style">
+.article-navigation{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:22px 0 4px;padding-top:16px;border-top:1px solid rgba(128,145,160,.25)}
+.article-nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:11px 16px;border:1px solid #bd963b;border-radius:11px;background:linear-gradient(135deg,#173b61,#0b2948);color:#fff;font-weight:750;cursor:pointer}
+.article-nav-btn:disabled{opacity:.45;cursor:not-allowed}
+.article-nav-hint{color:var(--ct-muted,#718096);font-size:12px;text-align:center;flex:1}
+@media(max-width:600px){.article-navigation{display:grid;grid-template-columns:1fr 1fr}.article-nav-hint{grid-column:1/-1;grid-row:1}.article-nav-btn{width:100%;font-size:12px}}
+</style></head>
 
 <body class="light-theme">
 
@@ -157,7 +163,6 @@ body.dark-theme .suggestions button{color:#000!important}
     <!--=================================================
     PARTIE 3 : BARRE D'OUTILS DE L'INSPECTEUR
     ==================================================-->
-    <div id="livreHeading" class="section-title" style="margin:12px 0 8px;"><h2>Lecture du Code — Mode Livre</h2><p>Tournez les pages, article par article, comme un véritable ouvrage juridique.</p></div>
     <div id="livreHost" class="livre-section"></div>
 
     <!--=================================================
@@ -258,7 +263,11 @@ body.dark-theme .suggestions button{color:#000!important}
             <div id="sanctionArticle" class="article-sanction"></div>
 
             <div id="questionsIA" class="article-questions"></div>
-
+            <nav class="article-navigation" aria-label="Navigation entre les articles">
+                <button id="btnArticlePrecedent" type="button" class="article-nav-btn" disabled><i class="fa-solid fa-chevron-left"></i> Article précédent</button>
+                <span class="article-nav-hint">Parcourir les 334 articles du Code du travail</span>
+                <button id="btnArticleSuivant" type="button" class="article-nav-btn" disabled>Article suivant <i class="fa-solid fa-chevron-right"></i></button>
+            </nav>
 
         </article>
     </section>
