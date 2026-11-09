@@ -56,3 +56,39 @@
   padding:15px 16px!important;
   box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
 }
+
+
+/* CONTRASTE DEFINITIF — messages de connexion et d'inscription en noir */
+#ib-auth-message.ib-message-success,
+#ib-auth-message.ib-message-success *,
+#ib-auth-register-help,
+#ib-auth-register-help *{
+  color:#000!important;
+  -webkit-text-fill-color:#000!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+#ib-auth-message.ib-message-success,
+#ib-auth-register-help{
+  background:#fff!important;
+  border:2px solid #000!important;
+  border-left:6px solid #000!important;
+  font-weight:800!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+  padding:15px 16px!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+}
+#ib-auth-register-help{
+  display:block!important;
+  margin:18px 0 12px!important;
+  text-align:left!important;
+  border-radius:10px!important;
+}
+#ib-auth-register-help strong{
+  display:block!important;
+  margin:0 0 8px!important;
+  color:#000!important;
+  -webkit-text-fill-color:#000!important;
+  font-weight:900!important;
+}
