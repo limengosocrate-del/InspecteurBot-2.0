@@ -2,10 +2,37 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173b61">
 <title>Arrêtés ministériels — AIM 006 et 127</title>
 <link rel="stylesheet" href="../fiche.css?v=41">
 <style>
-body{color:#172536}.page{max-width:1100px;margin:20px auto;padding:16px}.doc-head,.reader{background:#fff;border:1px solid #d8e0e8;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 6px 20px #102c4910}.doc-head h1{color:#173b61}.doc-head p{color:#526477}.doc-actions{display:flex;gap:10px;flex-wrap:wrap}.doc-actions a{display:inline-flex;padding:11px 15px;border-radius:8px;background:#173b61;color:white;text-decoration:none;font-weight:750}.doc-actions a.secondary{background:#e8eef4;color:#173b61}.reader iframe{width:100%;height:78vh;min-height:520px;border:0;border-radius:8px;background:#eef2f6}.note{font-size:12px;color:#5d6c7b}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5f8;color:#172536;font:14px/1.55 Arial,sans-serif}
+.page{max-width:1100px;margin:20px auto;padding:16px}
+.doc-head,.reader{background:#fff;border:1px solid #d8e0e8;border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 6px 20px #102c4910}
+.doc-head h1{color:#173b61;margin:5px 0}.doc-head h2{color:#9b792d;font-size:17px}.doc-head p{color:#526477}
+.doc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.doc-actions button,.doc-actions a{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;border:0;border-radius:8px;background:#173b61;color:white;text-decoration:none;font-weight:750;cursor:pointer}
+.doc-actions a.secondary{background:#e8eef4;color:#173b61}
+.document-table-wrap{overflow-x:auto}
+.document-table{width:100%;border-collapse:collapse;font-size:12px}
+.document-table th{background:#173b61;color:#fff;text-align:left}
+.document-table th,.document-table td{padding:9px 10px;border:1px solid #d8e0e8;vertical-align:top}
+.document-table tr:nth-child(even){background:#f6f8fa}
+.document-table td:first-child{width:42px;text-align:center;font-weight:700}
+.document-table td:nth-child(3){width:130px;font-weight:700;white-space:nowrap}
+.note{font-size:12px;color:#5d6c7b;background:#fff8e7;border-left:3px solid #bd963b;padding:12px;border-radius:8px}
+@page{size:A4 portrait;margin:12mm}
+@media print{
+ body{background:#fff!important;color:#111!important;font-size:10pt}
+ .page{max-width:none;margin:0;padding:0}
+ .doc-head,.reader{box-shadow:none;border:0;border-radius:0;padding:0;margin:0 0 12px}
+ .doc-actions,.back-link,.note{display:none!important}
+ .document-table{font-size:8.5pt}
+ .document-table th{background:#e6eaf0!important;color:#111!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .document-table tr{break-inside:avoid}
+ .document-table thead{display:table-header-group}
+}
 </style>
 </head>
 <body>
@@ -16,16 +43,24 @@ body{color:#172536}.page{max-width:1100px;margin:20px auto;padding:16px}.doc-hea
 <h1>AM — ARRÊTÉS MINISTÉRIELS</h1>
 <h2>AIM 006 ET 127 DU 03 OCTOBRE 2023 — TAUX METPS</h2>
 <p>Arrêté interministériel portant fixation des taux des droits, taxes et redevances à percevoir à l’initiative du Ministère de l’Emploi, Travail et Prévoyance Sociale.</p>
-<div class="doc-actions">
-<a href="https://www.scribd.com/document/825098949/AIM-006-ET-127-DU-03-OCT-2023-Taux-METPS" target="_blank" rel="noopener">📥 Ouvrir / télécharger le PDF</a>
-<a class="secondary" href="https://www.scribd.com/document/825098949/AIM-006-ET-127-DU-03-OCT-2023-Taux-METPS" target="_blank" rel="noopener">↗ Consulter sur le site source</a>
-</div>
+<div class="doc-actions"><button type="button" id="printAim">📄 Imprimer / enregistrer en PDF A4</button></div>
 </header>
 <section class="reader">
-<h2>Consultation du document</h2>
-<iframe title="Lecteur du document AIM 006 et 127" src="https://www.scribd.com/embeds/825098949/content?start_page=1&view_mode=scroll" loading="lazy" allowfullscreen></iframe>
-<p class="note">Si le lecteur intégré ne s’affiche pas sur votre appareil, utilisez le bouton « Ouvrir / télécharger le PDF » pour consulter le document sur le site source.</p>
+<h2>Consultation du barème retranscrit</h2>
+<p class="note">Cette vue imprimable reprend les données de consultation intégrées à InspecteurBot. Elle constitue une retranscription structurée et ne remplace pas l’exemplaire officiel scanné de l’arrêté. Vérifiez le texte et les taux applicables avant toute décision.</p>
+<div class="document-table-wrap"><table class="document-table"><thead><tr><th>N°</th><th>Droit, taxe ou redevance</th><th>Taux</th><th>Précisions</th></tr></thead><tbody id="aimRows"><tr><td colspan="4">Chargement du barème…</td></tr></tbody></table></div>
 </section>
 </main>
+<script src="../aim-006-data.js"></script>
+<script>
+(function(){
+ const rows=document.getElementById('aimRows');
+ const data=window.IGT_AIM_DATA||[];
+ if(!data.length){rows.innerHTML='<tr><td colspan="4">Le barème n’a pas pu être chargé.</td></tr>';return;}
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ rows.innerHTML=data.map(item=>'<tr><td>'+esc(item.id)+'</td><td><strong>'+esc(item.sanction)+'</strong></td><td>'+esc(item.categorieA)+'</td><td>'+esc(item.details)+'</td></tr>').join('');
+ document.getElementById('printAim').addEventListener('click',()=>window.print());
+})();
+</script>
 </body>
 </html>
