@@ -422,17 +422,31 @@ function printReport() {
   window.print();
 }
 
-function exportReportPDF() {
+async function exportReportPDF() {
   const el = document.getElementById('a4Paper');
   if (!el) { showToast('Aucun rapport à exporter.', 'info'); return; }
-  const opt = {
-    margin: [8, 8, 8, 8],
-    filename: 'rapport_mission_igt.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 3, useCORS: true },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(el).save().then(() => showToast('PDF exporté : rapport_mission_igt.pdf', 'success'));
+  if (typeof html2canvas !== 'function' || !(window.jspdf && window.jspdf.jsPDF)) {
+    showToast('Le moteur PDF est indisponible. Vérifiez la connexion puis réessayez.', 'error');
+    return;
+  }
+  const previousZoom = el.style.zoom;
+  try {
+    el.style.zoom = '1';
+    const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+    const PDF = window.jspdf.jsPDF;
+    const pdf = new PDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+    const ratio = Math.min(210 / canvas.width, 297 / canvas.height);
+    const width = canvas.width * ratio;
+    const height = canvas.height * ratio;
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.94), 'JPEG', (210 - width) / 2, 0, width, height, undefined, 'FAST');
+    pdf.save('rapport_mission_igt.pdf');
+    showToast('PDF A4 (une seule page) téléchargé.', 'success');
+  } catch (error) {
+    console.error('Export PDF rapport :', error);
+    showToast('Échec de la génération PDF. Réessayez après actualisation.', 'error');
+  } finally {
+    el.style.zoom = previousZoom;
+  }
 }
 
 function saveReportToArchive() {
