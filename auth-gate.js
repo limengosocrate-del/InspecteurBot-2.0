@@ -232,7 +232,7 @@ async function serverCheck(session){
  throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
 async function validate(session){
- if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();gate();return}
+ if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();gate();return}
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
@@ -368,7 +368,7 @@ function setup(){
 
  client.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){recovery=true;gate('Choisissez un nouveau mot de passe.');wrap.hidden=false;email.parentElement.hidden=true;email.required=false;pw.autocomplete='new-password';forgot.hidden=true;submit.textContent='Enregistrer le mot de passe'}
-  else if(event==='SIGNED_OUT'){user=null;profile=null;gate()}
+  else if(event==='SIGNED_OUT'){user=null;profile=null;stopAdminMessageNotifications();gate()}
   else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')setTimeout(()=>validate(session),0)
  });
 }
