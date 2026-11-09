@@ -461,8 +461,8 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
   
     <!-- Images du slider -->  
     <div class="slider" id="slider" aria-label="Diaporama de l'IGT">
-        <img src="images/photos_igt/1.jpg" class="active" alt="" fetchpriority="high" decoding="async">
-        <img src="images/photos_igt/2.jpg" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="eager" fetchpriority="high">
+        <img src="images/photos_igt/1.jpg?v=20261109-2" class="active" alt="" fetchpriority="high" decoding="async">
+        <img src="images/photos_igt/2.jpg?v=20261109-2" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="eager" fetchpriority="high">
     </div>  
   
 </section>  
@@ -641,7 +641,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 (()=>{
  const imgs=Array.from(document.querySelectorAll('#slider img'));
  if(imgs.length!==2)return;
- const frames=Array.from({length:56},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg');
+ const frames=Array.from({length:56},(_,i)=>'images/photos_igt/'+(i+1)+'.jpg?v=20261109-2');
  let front=imgs.find(x=>x.classList.contains('active'))||imgs[0];
  let back=imgs.find(x=>x!==front);
  let index=Math.max(0,frames.indexOf(front.getAttribute('src')));
