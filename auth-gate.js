@@ -80,6 +80,92 @@ function startPresenceTracking(){
  presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},30000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
+
+// Notifications instantanées des messages envoyés par l'administration.
+// Le contrôle est global : il fonctionne quel que soit le menu actuellement ouvert.
+const IB_ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
+let adminMessagePoll=null,adminMessageCursor=null,adminMessageToastTimer=null,adminMessageBusy=false;
+function adminMessageCursorKey(){return user?.id?'inspecteurbot_admin_message_cursor_v1_'+user.id:null}
+function hideAdminMessageToast(){clearTimeout(adminMessageToastTimer);adminMessageToastTimer=null;document.getElementById('ib-admin-message-toast')?.remove()}
+function ensureAdminMessageToastStyle(){
+ if(document.getElementById('ib-admin-message-toast-style'))return;
+ const style=document.createElement('style');style.id='ib-admin-message-toast-style';
+ style.textContent=`#ib-admin-message-toast{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;width:min(460px,calc(100% - 24px));padding:16px;border:1px solid #d7e4ef;border-radius:16px;background:#fff;color:#173b5c;box-shadow:0 14px 42px #00152f40;font:14px/1.45 Arial,sans-serif;animation:ib-admin-toast-in .2s ease-out}#ib-admin-message-toast .ib-toast-title{display:flex;align-items:center;gap:9px;margin:0 0 7px;font-size:15px;font-weight:800;color:#073b70}#ib-admin-message-toast .ib-toast-title i{color:#0786b3}#ib-admin-message-toast .ib-toast-preview{margin:0 0 12px;color:#52677a;overflow-wrap:anywhere}#ib-admin-message-toast .ib-toast-actions{display:flex;gap:9px}#ib-admin-message-toast button{min-height:38px;padding:8px 14px;border:0;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}#ib-admin-message-toast .ib-toast-reply{background:#07518a;color:#fff;flex:1}#ib-admin-message-toast .ib-toast-ignore{background:#edf2f6;color:#36566e}#ib-admin-message-toast textarea{display:block;width:100%;min-height:76px;margin:10px 0;padding:10px;border:1px solid #cbd8e3;border-radius:9px;resize:vertical;font:14px/1.4 Arial,sans-serif;color:#18314d}#ib-admin-message-toast .ib-toast-send{width:100%;background:#138a65;color:#fff}#ib-admin-message-toast .ib-toast-status{min-height:17px;margin-top:7px;color:#b42318;font-size:12px}#ib-admin-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-admin-toast-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-admin-message-toast{animation:none}}`;
+ document.head.appendChild(style);
+}
+async function markAdminMessageRead(messageId){
+ if(!client||!user||!messageId)return;
+ const {error}=await client.from('messages').update({read_at:new Date().toISOString()}).eq('id',messageId).eq('recipient_id',user.id);
+ if(error)console.warn('Marquage du message administratif indisponible',error);
+}
+function showAdminMessageToast(message){
+ ensureAdminMessageToastStyle();hideAdminMessageToast();
+ const toast=document.createElement('section');toast.id='ib-admin-message-toast';toast.setAttribute('role','alert');toast.setAttribute('aria-live','assertive');
+ const title=document.createElement('div');title.className='ib-toast-title';
+ const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
+ const titleText=document.createElement('span');titleText.textContent='L’administration vous a envoyé un message';
+ title.append(icon,titleText);
+ const preview=document.createElement('p');preview.className='ib-toast-preview';preview.textContent=String(message.content||'Vous avez reçu un nouveau message.').slice(0,180);
+ const actions=document.createElement('div');actions.className='ib-toast-actions';
+ const reply=document.createElement('button');reply.type='button';reply.className='ib-toast-reply';reply.textContent='Répondre';
+ const ignore=document.createElement('button');ignore.type='button';ignore.className='ib-toast-ignore';ignore.textContent='Ignorer';
+ actions.append(reply,ignore);toast.append(title,preview,actions);document.body.appendChild(toast);
+ ignore.addEventListener('click',()=>{void markAdminMessageRead(message.id);hideAdminMessageToast();void refreshNotificationBadge()});
+ reply.addEventListener('click',()=>{
+  clearTimeout(adminMessageToastTimer);adminMessageToastTimer=null;
+  preview.textContent='Votre réponse sera envoyée directement à l’administration.';
+  const area=document.createElement('textarea');area.maxLength=3500;area.placeholder='Écrivez votre réponse…';area.setAttribute('aria-label','Votre réponse à l’administration');
+  const send=document.createElement('button');send.type='button';send.className='ib-toast-send';send.textContent='Envoyer la réponse';
+  const status=document.createElement('div');status.className='ib-toast-status';status.setAttribute('aria-live','polite');
+  actions.replaceChildren();toast.append(area,send,status);area.focus();
+  send.addEventListener('click',async()=>{
+   const content=area.value.trim();if(!content){status.textContent='Écrivez votre réponse avant de l’envoyer.';return}
+   send.disabled=true;status.style.color='#52677a';status.textContent='Envoi en cours…';
+   try{
+    const {error}=await client.from('messages').insert({sender_id:user.id,recipient_id:IB_ADMIN_ID,content});
+    if(error)throw error;
+    await markAdminMessageRead(message.id);status.style.color='#138a65';status.textContent='Votre réponse a été envoyée à l’administration.';
+    await refreshNotificationBadge();window.setTimeout(hideAdminMessageToast,900);
+   }catch(e){status.style.color='#b42318';status.textContent='Envoi impossible : '+(e.message||'réessayez.');send.disabled=false}
+  });
+ });
+ adminMessageToastTimer=window.setTimeout(hideAdminMessageToast,4000);
+}
+async function pollAdminMessages(){
+ if(adminMessageBusy||!client||!user||document.visibilityState==='hidden')return;
+ adminMessageBusy=true;
+ try{
+  const key=adminMessageCursorKey();
+  if(adminMessageCursor===null){
+   let stored=null;try{stored=localStorage.getItem(key)}catch(_){}
+   if(stored!==null&&/^\\d+$/.test(stored))adminMessageCursor=Number(stored);
+   else{
+    const [latest,unread]=await Promise.all([
+     client.from('messages').select('id').eq('sender_id',IB_ADMIN_ID).eq('recipient_id',user.id).order('id',{ascending:false}).limit(1),
+     client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('sender_id',IB_ADMIN_ID).eq('recipient_id',user.id).is('read_at',null).order('id',{ascending:false}).limit(1)
+    ]);
+    if(latest.error)throw latest.error;if(unread.error)throw unread.error;
+    adminMessageCursor=Number(latest.data?.[0]?.id||0);
+    if(unread.data?.[0])showAdminMessageToast(unread.data[0]);
+    try{localStorage.setItem(key,String(adminMessageCursor))}catch(_){}
+    return;
+   }
+  }
+  const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('sender_id',IB_ADMIN_ID).eq('recipient_id',user.id).gt('id',adminMessageCursor).order('id',{ascending:true}).limit(20);
+  if(error)throw error;
+  for(const message of data||[]){adminMessageCursor=Math.max(adminMessageCursor,Number(message.id));showAdminMessageToast(message)}
+  try{localStorage.setItem(key,String(adminMessageCursor))}catch(_){}
+ }catch(e){console.warn('Surveillance des messages administratifs indisponible',e)}
+ finally{adminMessageBusy=false}
+}
+function startAdminMessageNotifications(){
+ clearInterval(adminMessagePoll);adminMessageCursor=null;
+ void pollAdminMessages();
+ adminMessagePoll=setInterval(()=>void pollAdminMessages(),3000);
+}
+function stopAdminMessageNotifications(){
+ clearInterval(adminMessagePoll);adminMessagePoll=null;adminMessageCursor=null;hideAdminMessageToast();
+}
 async function expireSession(){
  clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();
  try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
@@ -155,7 +241,7 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;startPresenceTracking();
+  user=session.user;profile=data;startPresenceTracking();startAdminMessageNotifications();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
@@ -235,7 +321,7 @@ async function validate(session){
  }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden)void updatePresence()});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
