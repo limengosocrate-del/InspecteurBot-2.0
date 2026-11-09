@@ -445,7 +445,7 @@ function exportReportPDF() {
    margin:0,
    filename:'rapport_mission_igt.pdf',
    image:{type:'jpeg',quality:0.98},
-   html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:1200,windowHeight:Math.max(window.innerHeight,paper.scrollHeight+200),letterRendering:true},
+   html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:1200,windowHeight:Math.max(window.innerHeight,exportTop+paper.scrollHeight+200),letterRendering:true},
    jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},
    pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-footer','.report-body h2','tr']}
   };
