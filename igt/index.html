@@ -15,7 +15,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
 <div id="load"><div id="spin"></div><div>InspecteurBot — Annuaire national IGT</div><div id="hint">Chargement du contenu officiel de l’annuaire…</div></div>
 <script>
 (async()=>{
- const version='20261108-v13-static-directory-fix1';
+ const version='20261109-v13-workspace-visible-fix2';
  const names=Array.from({length:11},(_,i)=>'part-'+String(i+1).padStart(3,'0')+'.txt?v='+version);
  const hint=document.getElementById('hint');
  const loader=document.getElementById('load');
@@ -48,7 +48,7 @@ html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:#071b
   else page=page.replace('</head>',scroll+'\n</head>');
   const themeLink='<link rel="stylesheet" href="../global-theme.css?v=20261108-theme-5">';
   const themeScript='<script src="../global-theme.js?v=20261108-theme-5" defer>'+'<'+'/script>';
-  const publicThemeStyle='<style id="igt-public-directory-mode">#igt-auth-gate,#igt-auth-user,#igt-agent-tools,#igt-open-admin,#igt-workspace,#igt-inbox,#igt-registration-panel{display:none!important}body.igt-auth-pending{overflow:auto!important}</style>';
+  const publicThemeStyle='<style id="igt-public-directory-mode">#igt-auth-gate,#igt-auth-user,#igt-agent-tools,#igt-open-admin,#igt-inbox,#igt-registration-panel{display:none!important}#igt-workspace{display:block!important;visibility:visible!important;opacity:1!important}body.igt-auth-pending{overflow:auto!important}</style>';
   const staticAuth='<script id="igt-supabase-auth">(function(){document.body.classList.remove("igt-auth-pending");document.body.classList.add("igt-session-ready","light-theme");document.body.dataset.publicTheme="true";var gate=document.getElementById("igt-auth-gate");if(gate)gate.hidden=true;var userBox=document.getElementById("igt-auth-user");if(userBox)userBox.hidden=true;var tools=document.getElementById("igt-agent-tools");if(tools)tools.hidden=true;})();<'+'/script>';
   page=page.replace(/<script id="igt-supabase-auth">[\s\S]*?<\/script>/i,staticAuth);
   page=page.replace('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>','');
