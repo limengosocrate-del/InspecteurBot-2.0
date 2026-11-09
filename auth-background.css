@@ -36,3 +36,23 @@
   line-height:1.4!important;
   font-weight:900!important;
 }
+
+
+/* Confirmation de réinitialisation : lisibilité maximale, texte noir */
+#ib-auth-message.ib-message-success,
+#ib-auth-message.ib-message-success *{
+  color:#000!important;
+  -webkit-text-fill-color:#000!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+#ib-auth-message.ib-message-success{
+  background:#fff!important;
+  border:2px solid #000!important;
+  border-left:6px solid #000!important;
+  font-weight:800!important;
+  font-size:15px!important;
+  line-height:1.65!important;
+  padding:15px 16px!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+}
