@@ -424,21 +424,57 @@ function printReport() {
 
 function exportReportPDF() {
   const source=document.getElementById('a4Paper');
-  if(!source||!STATE.currentMission){showToast('Aucun rapport prêt à être exporté. Générez d’abord le rapport et vérifiez son contenu.','info');return;}
+  const data=STATE.currentMission;
+  if(!source||!data){showToast('Aucun rapport prêt à être exporté. Générez d’abord le rapport.','info');return;}
   if(typeof html2pdf!=='function'){showToast('Le module PDF est indisponible. Rechargez la page puis réessayez.','error');return;}
+
   const generated=new Intl.DateTimeFormat('fr-FR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
+  const fieldsToCheck=['order','group','role','direction','participants','objective','matter','companies','addresses','phone','observations','constats','recommandations','conclusion','difficiles'];
+  const hasUserContent=fieldsToCheck.some(key=>String(data[key]??'').trim().length>0)||Boolean(data.logoFile);
+
   const exportRoot=document.createElement('div');
   const exportTop=Math.max(document.documentElement.scrollHeight,window.scrollY+window.innerHeight)+24;
   exportRoot.style.cssText='position:absolute;left:0;top:'+exportTop+'px;width:210mm;background:#fff;color:#111;z-index:0;pointer-events:none;box-sizing:border-box';
   const paper=source.cloneNode(true);
   paper.id='a4PaperPdfExport';
-  paper.style.cssText+=';display:block!important;position:relative!important;width:210mm!important;min-width:210mm!important;max-width:210mm!important;min-height:297mm!important;height:auto!important;box-sizing:border-box!important;margin:0!important;padding:18mm 16mm!important;overflow:visible!important;background:#fff!important;color:#111!important;box-shadow:none!important;transform:none!important';
+  paper.style.cssText+=';display:block!important;position:relative!important;width:210mm!important;min-width:210mm!important;max-width:210mm!important;min-height:297mm!important;height:auto!important;max-height:none!important;box-sizing:border-box!important;margin:0!important;padding:14mm 15mm!important;overflow:visible!important;background:#fff!important;color:#111!important;box-shadow:none!important;transform:none!important;font-size:10pt!important;line-height:1.32!important';
+
+  if(!hasUserContent){
+   const meta=paper.querySelector('#previewMeta');
+   if(meta)meta.innerHTML='<div style="text-align:center;font:9pt/1.35 Arial,sans-serif;color:#172b42;margin-bottom:5mm"><strong>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO</strong><br><strong>MINISTÈRE DE L’EMPLOI ET DU TRAVAIL</strong><br><strong>INSPECTION GÉNÉRALE DU TRAVAIL</strong></div><div style="font:9pt/1.5 Arial,sans-serif">Ordre de service : ____________________ &nbsp; Groupe : __________ &nbsp; Fonction : ____________________<br>Participants : __________________________________________________________________</div>';
+   const body=paper.querySelector('#previewBody');
+   if(body)body.innerHTML='<h2>I. INTRODUCTION</h2><p>Objet de la mission : ______________________________________________________________</p><p>Matière à contrôler : ______________________________________________________________</p><h2>II. DÉROULEMENT DE LA MISSION</h2><p>Période : __________________________ &nbsp; Lieu : __________________________________</p><p>Résumé des opérations : __________________________________________________________</p><h2>III. ENTREPRISES VISITÉES</h2><table><thead><tr><th>N°</th><th>Raison sociale</th><th>Secteur d’activités</th><th>Constat</th><th>Observations</th></tr></thead><tbody><tr><td>1</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr></tbody></table><h2>IV. DIFFICULTÉS RENCONTRÉES</h2><p>________________________________________________________________________________</p><h2>V. CONSTATS EFFECTUÉS</h2><p>________________________________________________________________________________</p><h2>VI. IRRÉGULARITÉS RELEVÉES</h2><p>________________________________________________________________________________</p><h2>VII. RECOMMANDATIONS ET DÉCISIONS PROPOSÉES</h2><p>________________________________________________________________________________</p><h2>VIII. CONCLUSION</h2><p>________________________________________________________________________________</p>';
+   const qr=paper.querySelector('#previewCodeQR');if(qr)qr.remove();
+   const city=paper.querySelector('#previewCity');if(city)city.textContent='________________';
+   const sign=paper.querySelector('#previewSignName');if(sign)sign.textContent='________________________';
+   const role=paper.querySelector('#previewSignRole');if(role)role.textContent='Nom et qualité';
+   const phone=paper.querySelector('#previewSignPhone');if(phone)phone.textContent='Téléphone : __________________';
+  }
+
   const oldStamp=paper.querySelector('.report-generated-at');if(oldStamp)oldStamp.remove();
   const stamp=document.createElement('p');
   stamp.className='report-generated-at';
-  stamp.style.cssText='margin:8px 0 0;text-align:right;font:9px Arial,sans-serif;color:#555';
+  stamp.style.cssText='margin:5mm 0 0;text-align:right;font:8pt Arial,sans-serif;color:#555';
   stamp.textContent='Document généré le '+generated;
   paper.querySelector('.report-header')?.appendChild(stamp);
+
+  const header=paper.querySelector('.report-header');
+  if(header)header.style.cssText+=';margin-bottom:6mm!important;padding-bottom:4mm!important;break-inside:avoid;page-break-inside:avoid';
+  const title=paper.querySelector('.report-header h1');
+  if(title)title.style.cssText+=';font-size:15pt!important;line-height:1.2!important;margin:0 0 2mm!important';
+  const meta=paper.querySelector('.meta-line');
+  if(meta)meta.style.cssText+=';font:9pt/1.35 Arial,sans-serif!important;color:#222!important';
+  const body=paper.querySelector('.report-body');
+  if(body)body.style.cssText+=';font:10pt/1.32 Arial,sans-serif!important;overflow:visible!important';
+  paper.querySelectorAll('.report-body h2').forEach(el=>el.style.cssText+=';font:700 10.5pt/1.2 Arial,sans-serif!important;margin:4mm 0 1.5mm!important;padding-left:2mm!important;break-after:avoid;page-break-after:avoid');
+  paper.querySelectorAll('.report-body p,.report-body li').forEach(el=>el.style.cssText+=';font-size:9.5pt!important;line-height:1.3!important;margin:1.2mm 0!important;overflow-wrap:anywhere');
+  paper.querySelectorAll('.report-body ul,.report-body ol').forEach(el=>el.style.cssText+=';margin:1.5mm 0 2mm 5mm!important;padding-left:4mm!important');
+  paper.querySelectorAll('.report-body table').forEach(el=>el.style.cssText+=';width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;font:8pt/1.25 Arial,sans-serif!important;margin:2mm 0!important');
+  paper.querySelectorAll('.report-body th,.report-body td').forEach(el=>el.style.cssText+=';padding:1.5mm!important;border:1px solid #9aa7b5!important;overflow-wrap:anywhere!important;vertical-align:top!important');
+  paper.querySelectorAll('.report-body tr,.report-body img').forEach(el=>{el.style.breakInside='avoid';el.style.pageBreakInside='avoid';});
+  const footer=paper.querySelector('.report-footer');
+  if(footer)footer.style.cssText+=';margin-top:8mm!important;padding-top:4mm!important;font-size:9pt!important;break-inside:avoid;page-break-inside:avoid';
+
   exportRoot.appendChild(paper);
   document.body.appendChild(exportRoot);
   const opt={
@@ -447,10 +483,10 @@ function exportReportPDF() {
    image:{type:'jpeg',quality:0.98},
    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:1200,windowHeight:Math.max(window.innerHeight,exportTop+paper.scrollHeight+200),letterRendering:true},
    jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},
-   pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-footer','.report-body h2','tr']}
+   pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-body h2','.report-body tr','.report-body img','.report-footer']}
   };
   html2pdf().set(opt).from(paper).save()
-   .then(()=>showToast('Rapport exporté en PDF A4. Le document reprend l’aperçu complet, avec pagination automatique et date/heure locales.','success'))
+   .then(()=>showToast(hasUserContent?'Rapport exporté en PDF A4. La pagination s’adapte automatiquement au volume de contenu saisi.':'Modèle vierge du rapport exporté sur une page A4.','success'))
    .catch(error=>{console.error('Export PDF du rapport :',error);showToast('Échec de l’export PDF. Vérifiez le contenu du rapport et réessayez.','error');})
    .finally(()=>exportRoot.remove());
 }
