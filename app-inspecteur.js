@@ -423,15 +423,36 @@ function printReport() {
 }
 
 function exportReportPDF() {
-  const el=document.getElementById('a4Paper');
-  if(!el||!STATE.currentMission){showToast('Aucun rapport prêt à être exporté. Générez d’abord le rapport et vérifiez son contenu.','info');return;}
+  const source=document.getElementById('a4Paper');
+  if(!source||!STATE.currentMission){showToast('Aucun rapport prêt à être exporté. Générez d’abord le rapport et vérifiez son contenu.','info');return;}
   if(typeof html2pdf!=='function'){showToast('Le module PDF est indisponible. Rechargez la page puis réessayez.','error');return;}
   const generated=new Intl.DateTimeFormat('fr-FR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
-  let stamp=el.querySelector('.report-generated-at');
-  if(!stamp){stamp=document.createElement('p');stamp.className='report-generated-at';stamp.style.cssText='margin:8px 0 0;text-align:right;font:9px Arial,sans-serif;color:#555';el.querySelector('.report-header')?.appendChild(stamp);}
+  const exportRoot=document.createElement('div');
+  const exportTop=Math.max(document.documentElement.scrollHeight,window.scrollY+window.innerHeight)+24;
+  exportRoot.style.cssText='position:absolute;left:0;top:'+exportTop+'px;width:210mm;background:#fff;color:#111;z-index:0;pointer-events:none;box-sizing:border-box';
+  const paper=source.cloneNode(true);
+  paper.id='a4PaperPdfExport';
+  paper.style.cssText+=';display:block!important;position:relative!important;width:210mm!important;min-width:210mm!important;max-width:210mm!important;min-height:297mm!important;height:auto!important;box-sizing:border-box!important;margin:0!important;padding:18mm 16mm!important;overflow:visible!important;background:#fff!important;color:#111!important;box-shadow:none!important;transform:none!important';
+  const oldStamp=paper.querySelector('.report-generated-at');if(oldStamp)oldStamp.remove();
+  const stamp=document.createElement('p');
+  stamp.className='report-generated-at';
+  stamp.style.cssText='margin:8px 0 0;text-align:right;font:9px Arial,sans-serif;color:#555';
   stamp.textContent='Document généré le '+generated;
-  const opt={margin:0,filename:'rapport_mission_igt.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0,windowWidth:el.scrollWidth},jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-footer','.report-body h2','tr']}};
-  html2pdf().set(opt).from(el).save().then(()=>showToast('Rapport exporté en PDF A4. Le contenu complet est conservé, avec des pages supplémentaires si nécessaire.','success')).catch(error=>{console.error('Export PDF du rapport :',error);showToast('Échec de l’export PDF. Vérifiez le contenu du rapport et réessayez.','error');});
+  paper.querySelector('.report-header')?.appendChild(stamp);
+  exportRoot.appendChild(paper);
+  document.body.appendChild(exportRoot);
+  const opt={
+   margin:0,
+   filename:'rapport_mission_igt.pdf',
+   image:{type:'jpeg',quality:0.98},
+   html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:1200,windowHeight:Math.max(window.innerHeight,paper.scrollHeight+200),letterRendering:true},
+   jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},
+   pagebreak:{mode:['css','legacy'],avoid:['.report-header','.report-footer','.report-body h2','tr']}
+  };
+  html2pdf().set(opt).from(paper).save()
+   .then(()=>showToast('Rapport exporté en PDF A4. Le document reprend l’aperçu complet, avec pagination automatique et date/heure locales.','success'))
+   .catch(error=>{console.error('Export PDF du rapport :',error);showToast('Échec de l’export PDF. Vérifiez le contenu du rapport et réessayez.','error');})
+   .finally(()=>exportRoot.remove());
 }
 
 function saveReportToArchive() {
