@@ -162,6 +162,44 @@ async function validate(session){
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   if(isHome){
+   // Accueil personnalisé : une seule apparition par nouvelle session authentifiée.
+   try{
+    const sessionId=readSessionId(session.access_token)||'';
+    const welcomeKey='inspecteurbot_welcome_session_v1_'+session.user.id;
+    const previous=localStorage.getItem(welcomeKey)||'';
+    if(sessionId&&previous!==sessionId){
+     const now=new Date(),hour=now.getHours(),salutation=(hour>=5&&hour<18)?'Bonjour':'Bonsoir';
+     const displayName=String(data.display_name||session.user.user_metadata?.nom_complet||session.user.user_metadata?.full_name||session.user.email?.split('@')[0]||'Inspecteur').trim();
+     const firstName=displayName.split(/\s+/)[0]||'Inspecteur';
+     const choices=[
+      {label:'Annuaire IGT',href:'igt/index.html',note:'Retrouvez rapidement un agent'},
+      {label:'Code du Travail',href:'code-travail.html',note:'Consultez les textes juridiques'},
+      {label:'Fiche de contrôle',href:'fiche.html',note:'Préparez votre prochaine mission'},
+      {label:'Rapport',href:'inspecteurs.html',note:'Rédigez un rapport professionnel'},
+      {label:'Quiz Académie IGT',href:'pages/Quiz_Academie_IGT/index.html',note:'Renforcez vos connaissances'},
+      {label:'InspecteurBot IA',href:'ia/assistant.html',note:'Posez votre question à l’assistant'},
+      {label:'Application SMIG',href:'autres/smig.html',note:'Vérifiez les dispositions du SMIG'},
+      {label:'PV',href:'pv.html',note:'Préparez un procès-verbal'},
+      {label:'Décompte final',href:'autres/decompte-final.html',note:'Calculez les droits de fin de contrat'}
+     ];
+     let last='';try{last=localStorage.getItem('inspecteurbot_welcome_recommendation_v1_'+session.user.id)||''}catch(_){}
+     const available=choices.filter(item=>item.label!==last);
+     const selected=available[Math.floor(Math.random()*available.length)]||choices[0];
+     localStorage.setItem(welcomeKey,sessionId);
+     localStorage.setItem('inspecteurbot_welcome_recommendation_v1_'+session.user.id,selected.label);
+     if(!document.getElementById('ib-personal-welcome-style')){
+      const style=document.createElement('style');style.id='ib-personal-welcome-style';
+      style.textContent='#ib-personal-welcome{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483001;width:min(620px,calc(100% - 24px));padding:13px 16px;border:1px solid #f3d77a;border-radius:15px;background:linear-gradient(135deg,#08264b,#0c4777);color:#fff;box-shadow:0 12px 35px #00142d55;font:14px/1.4 Arial,sans-serif;opacity:0;animation:ib-welcome-in .25s ease forwards}#ib-personal-welcome strong{display:block;font-size:16px;color:#ffe08a;margin-bottom:3px}#ib-personal-welcome p{margin:0;color:#e5f1ff}#ib-personal-welcome a{display:inline-block;margin-top:7px;color:#ffe08a;font-weight:700;text-decoration:underline}#ib-personal-welcome.ib-out{opacity:0;transition:opacity .25s ease}@keyframes ib-welcome-in{to{opacity:1}}';
+      document.head.appendChild(style);
+     }
+     const banner=document.createElement('aside');banner.id='ib-personal-welcome';banner.setAttribute('role','status');banner.setAttribute('aria-live','polite');
+     const title=document.createElement('strong');title.textContent=salutation+' '+firstName+' 👋';
+     const detail=document.createElement('p');detail.textContent='Bienvenue sur InspecteurBot. '+selected.note+'.';
+     const link=document.createElement('a');link.href=selected.href;link.textContent='Découvrir : '+selected.label+' →';
+     banner.append(title,detail,link);document.body.appendChild(banner);
+     setTimeout(()=>{banner.classList.add('ib-out');setTimeout(()=>banner.remove(),280)},3000);
+    }
+   }catch(welcomeError){console.info('Accueil personnalisé indisponible',welcomeError)}
    let chip=byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
