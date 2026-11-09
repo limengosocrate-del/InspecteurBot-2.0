@@ -114,7 +114,7 @@ function showAdminMessageToast(message){
  reply.addEventListener('click',()=>{
   clearTimeout(adminMessageToastTimer);adminMessageToastTimer=null;
   preview.textContent='Votre réponse sera envoyée directement à l’administration.';
-  const area=document.createElement('textarea');area.maxLength=3500;area.placeholder='Écrivez votre réponse…';area.setAttribute('aria-label','Votre réponse à l’administration');
+  const area=document.createElement('textarea');area.maxLength=2500;area.placeholder='Écrivez votre réponse…';area.setAttribute('aria-label','Votre réponse à l’administration');
   const send=document.createElement('button');send.type='button';send.className='ib-toast-send';send.textContent='Envoyer la réponse';
   const status=document.createElement('div');status.className='ib-toast-status';status.setAttribute('aria-live','polite');
   actions.replaceChildren();toast.append(area,send,status);area.focus();
