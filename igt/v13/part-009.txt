@@ -2,9 +2,6 @@
 
 
 <style id="igt-layout-refinement-v2">
-#igt-minimum-loader{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-.igt-live-clock{display:none!important}
-
 /* Institutional header: logo left, compact live information and menu at upper right. */
 .top.igt-masthead{
   height:150px!important;min-height:150px!important;
