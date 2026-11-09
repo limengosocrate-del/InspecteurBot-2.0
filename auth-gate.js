@@ -77,7 +77,7 @@ async function updatePresence(){
 function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},30000);
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},120000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
@@ -161,7 +161,7 @@ async function pollAdminMessages(){
 function startAdminMessageNotifications(){
  clearInterval(adminMessagePoll);adminMessageCursor=null;
  void pollAdminMessages();
- adminMessagePoll=setInterval(()=>void pollAdminMessages(),3000);
+ adminMessagePoll=setInterval(()=>void pollAdminMessages(),20000);
 }
 function stopAdminMessageNotifications(){
  clearInterval(adminMessagePoll);adminMessagePoll=null;adminMessageCursor=null;hideAdminMessageToast();
@@ -209,7 +209,7 @@ function makeGate(){
 async function loadLib(){
  if(window.supabase?.createClient)return;
  if(!document.querySelector('link[data-ib-supabase-preconnect]')){const p=document.createElement('link');p.rel='preconnect';p.href='https://cdn.jsdelivr.net';p.crossOrigin='anonymous';p.dataset.ibSupabasePreconnect='1';document.head.appendChild(p)}
- await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Bibliothèque Supabase indisponible. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
+ await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Vous êtes déconnecté. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
 }
 async function serverCheck(session){
  const sessionId=readSessionId(session?.access_token);
@@ -315,7 +315,7 @@ async function validate(session){
     else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
    };
    refreshNotificationBadge();
-   if(!window.__ibNotificationRefreshTimer)window.__ibNotificationRefreshTimer=setInterval(refreshNotificationBadge,45000);
+   if(!window.__ibNotificationRefreshTimer)window.__ibNotificationRefreshTimer=setInterval(refreshNotificationBadge,120000);
    window.addEventListener('focus',refreshNotificationBadge);
   }
  }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
