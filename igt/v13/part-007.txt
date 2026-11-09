@@ -13,7 +13,7 @@
    // Les tâches secondaires ne doivent pas bloquer l'ouverture de l'espace.
    heartbeat().catch(err=>console.warn('Présence ANI-IGT:',err));
    if(window.igtRefreshInbox)Promise.resolve(window.igtRefreshInbox()).catch(err=>console.warn('Messages ANI-IGT:',err));
-  }catch(err){console.error('Contrôle session ANI-IGT',err);clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;location.replace('../index.html?from=igt&auth=retry');}
+  }catch(err){console.warn('Session facultative ANI-IGT indisponible : l’annuaire reste ouvert.',err);clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;gate.hidden=true;document.body.classList.remove('igt-auth-pending');document.body.classList.add('igt-session-ready');userBox.hidden=true;toolsBox.hidden=true;}
  }
  function showSession(session){
   if(showSessionPromise)return showSessionPromise;
@@ -37,7 +37,7 @@
  form.addEventListener('submit',async e=>{e.preventDefault();if(passwordSetupMode){await saveNewPassword();return;}submit.disabled=true;submit.textContent='Connexion…';setMessage('');try{const {error}=await client.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});if(error)throw error;/* showSession est déclenché une seule fois par SIGNED_IN. */}catch(error){setMessage('Connexion impossible. Vérifiez vos identifiants.');submit.disabled=false;submit.textContent='Se connecter';}});
  confirmInput.addEventListener('input',()=>{if(message.textContent)setMessage('');});
  if(urlIndicatesSetup())showPasswordSetup();
- client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'||(event==='SIGNED_IN'&&urlIndicatesSetup())){showPasswordSetup();return;}if(event==='SIGNED_OUT'&&!passwordSetupMode){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;location.replace('../index.html');return;}/* INITIAL_SESSION et SIGNED_IN sont les seuls événements qui initialisent l'espace. TOKEN_REFRESHED ne relance pas toute la procédure. */if(event==='SIGNED_IN'||event==='INITIAL_SESSION')setTimeout(()=>showSession(session),0);});
+ client.auth.onAuthStateChange((event,session)=>{if(event==='PASSWORD_RECOVERY'||(event==='SIGNED_IN'&&urlIndicatesSetup())){showPasswordSetup();return;}if(event==='SIGNED_OUT'&&!passwordSetupMode){clearTimeout(expiryTimer);clearInterval(sessionValidationTimer);sessionValidationTimer=null;currentUser=null;currentProfile=null;gate.hidden=true;userBox.hidden=true;toolsBox.hidden=true;document.body.classList.remove('igt-auth-pending');document.body.classList.add('igt-session-ready');return;}/* INITIAL_SESSION et SIGNED_IN sont les seuls événements qui initialisent l'espace. TOKEN_REFRESHED ne relance pas toute la procédure. */if(event==='SIGNED_IN'||event==='INITIAL_SESSION')setTimeout(()=>showSession(session),0);});
  // Supabase émet INITIAL_SESSION à l'abonnement : aucun second getSession() réseau n'est nécessaire.
  setInterval(()=>{if(currentUser&&document.visibilityState==='visible')heartbeat().catch(err=>console.warn('Présence ANI-IGT:',err));},60000);
  window.igtClient=client;window.igtAdminId=ADMIN_ID;
