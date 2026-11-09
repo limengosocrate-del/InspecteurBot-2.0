@@ -67,13 +67,13 @@ window.CodeTravailCategories = {
         grid.innerHTML = "";
         const state = window.CodeTravailState;
         const articles = Array.isArray(state?.articles) ? state.articles : [];
-        const normalize = value => String(value || "Autres dispositions").normalize("NFC").trim().replace(/\\s+/g, " ").toLocaleLowerCase("fr");
+        const normalize = value => String(value || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
         
         // Les effectifs sont calculés à partir des articles réellement chargés.
         const counts = {};
         const labels = {};
         articles.forEach(art => {
-            const label = String(art.categorie || "Autres dispositions").normalize("NFC").trim().replace(/\\s+/g, " ");
+            const label = String(art.categorie || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ");
             const key = normalize(label);
             counts[key] = (counts[key] || 0) + 1;
             labels[key] = labels[key] || label;
@@ -117,7 +117,7 @@ window.CodeTravailCategories = {
         window.CodeTravailState.currentCategory = cat;
 
         // Filtrer et afficher les résultats dans le moteur de recherche
-        const normalize = value => String(value || "").normalize("NFC").trim().replace(/\\s+/g, " ").toLocaleLowerCase("fr");
+        const normalize = value => String(value || "").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
         const results = window.CodeTravailState.articles.filter(art => normalize(art.categorie) === normalize(cat));
         window.CodeTravailState.searchResults = results;
         if (window.CodeTravailRecherche && window.CodeTravailRecherche.renderResults) {
