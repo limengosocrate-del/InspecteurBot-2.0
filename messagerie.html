@@ -118,7 +118,7 @@ function withTimeout(promise,ms,label){
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
 const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:5000}});
-let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,heartbeatTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
+let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
@@ -126,19 +126,14 @@ function initials(s){return s||'Agent'}
 let realtimePresenceReady=false;
 let onlineUserIds=new Set();
 function online(p){return !!p?.id&&(realtimePresenceReady?onlineUserIds.has(p.id):!!p?.is_online)}
-function applyRealtimePresence(){
- if(!presenceChannel)return;
- const state=presenceChannel.presenceState()||{};
- const next=new Set();
- Object.entries(state).forEach(([key,entries])=>{
-  const rows=Array.isArray(entries)?entries:[];
-  rows.forEach(entry=>{const id=entry?.user_id||key;if(id)next.add(id)});
- });
- onlineUserIds=next;
- realtimePresenceReady=true;
- people=people.map(p=>({...p,is_online:onlineUserIds.has(p.id)}));
- renderPresenceUI();
+function applyRealtimePresence(ids){
+ const shared=ids instanceof Set?ids:(Array.isArray(ids)?new Set(ids):window.__ibOnlineUserIds);
+ if(shared instanceof Set){
+  onlineUserIds=new Set([...shared].map(String));realtimePresenceReady=true;
+  people=people.map(p=>({...p,is_online:onlineUserIds.has(p.id)}));renderPresenceUI();
+ }
 }
+window.addEventListener('inspecteurbot:presence-updated',event=>applyRealtimePresence(event.detail?.userIds||[]));
 function renderPresenceUI(){
  renderStories();
  document.querySelectorAll('.person[data-person]').forEach(button=>{
@@ -169,14 +164,13 @@ async function init(){
  const {data:profile,error:pe}=profileResult;
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
  myProfile=profile;
+ applyRealtimePresence(window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:[]);
  // Ne pas bloquer l'ouverture de l'écran sur les requêtes de listes.
  // Les trois panneaux se chargent indépendamment et en parallèle.
  void refreshAll();
  if(new URLSearchParams(location.search).get('view')==='presence'){
   setTimeout(()=>{$('onlineStories').scrollIntoView({behavior:'smooth',block:'start'});$('peopleNav').classList.add('active')},250);
  }
- void heartbeat();
- heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')void heartbeat()},120000);
  refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshAll()},180000);
  // Les photos de profil sont synchronisées depuis public.profiles. Actualiser l'annuaire
  // régulièrement et écouter les changements en temps réel pour les afficher sans délai.
@@ -186,41 +180,18 @@ async function init(){
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},()=>refreshInbox())
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>{updateReadReceipt(payload.new);refreshInbox()})
  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setNotice('Connexion temps réel interrompue. Reconnexion automatique…');else if(status==='SUBSCRIBED')setNotice('')});
- // Un canal Presence partagé signale immédiatement les connexions et départs.
- // La clé utilisateur regroupe les onglets d'un même agent sans créer de faux doublons.
- presenceChannel=client.channel('ib-presence-global',{config:{presence:{key:me.id}}})
-  .on('presence',{event:'sync'},()=>applyRealtimePresence())
-  .on('presence',{event:'join'},()=>applyRealtimePresence())
-  .on('presence',{event:'leave'},()=>applyRealtimePresence())
-  .subscribe(async status=>{
-   if(status==='SUBSCRIBED'){
-    try{
-     await presenceChannel.track({user_id:me.id,display_name:myProfile?.display_name||'Agent',online_at:new Date().toISOString()});
-     applyRealtimePresence();
-    }catch(error){console.warn('Activation de la présence temps réel impossible:',error)}
-   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
-    realtimePresenceReady=false;
-    console.warn('Canal de présence interrompu:',status);
-   }
-  });
  profileChannel=client.channel('ib-profile-photos-'+me.id)
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{
   const changedId=payload.new?.id;
   if(changedId&&changedId!==me.id){void refreshDirectoryOnly()}
  }).subscribe();
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){void heartbeat();void refreshAll()}});
- window.addEventListener('pagehide',()=>{clearInterval(heartbeatTimer);clearInterval(refreshTimer);if(presenceChannel)client.removeChannel(presenceChannel);if(profileChannel)client.removeChannel(profileChannel);clearInterval(directoryRefreshTimer)});
-}
-async function heartbeat(){
- if(!me||document.visibilityState==='hidden')return;
- const now=new Date().toISOString();
- const {error}=await client.from('user_presence').upsert({user_id:me.id,last_seen:now,updated_at:now},{onConflict:'user_id'});
- if(error)console.warn('Présence non actualisée',error);
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshAll()});
+ window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);if(profileChannel)client.removeChannel(profileChannel);clearInterval(directoryRefreshTimer)});
 }
 async function loadPeople(term='',onlyOnline=false){
  const {data,error}=await withTimeout(client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline}),12000,'annuaire des agents');
  if(error)throw error;
- return (data||[]).filter(p=>p.id!==me.id);
+ return (data||[]).filter(p=>p.id!==me.id).map(p=>({...p,is_online:window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds.has(p.id):p.is_online}));
 }
 let refreshAllRunning=false,refreshAllPending=false;
 async function refreshAll(){
@@ -281,7 +252,8 @@ async function refreshGroups(){
 
 function renderStories(){
  const list=people.filter(online);
- $('onlineCount').textContent=list.length>99?'99+':String(list.length);
+ const exactCount=realtimePresenceReady?Math.max(0,onlineUserIds.size-(onlineUserIds.has(me?.id)?1:0)):list.length;
+ $('onlineCount').textContent=String(exactCount);
  $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
 }
 async function refreshInbox(){
