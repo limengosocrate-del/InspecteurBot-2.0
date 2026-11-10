@@ -106,7 +106,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-results" id="groupMemberResults"><div class="online-empty">Saisissez au moins 2 caractères pour rechercher.</div></div>
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -116,6 +116,7 @@ function withTimeout(promise,ms,label){
  let timer;
  return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Délai dépassé : '+label)),ms)})]).finally(()=>clearTimeout(timer));
 }
+if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
 const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,searchTimer=null,heartbeatTimer=null,refreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
