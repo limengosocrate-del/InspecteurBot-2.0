@@ -19,8 +19,9 @@ a{color:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{paddi
 input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;background:#061a35;color:#fff;padding:12px;font:inherit;font-size:13px;outline:none}textarea{min-height:105px;resize:vertical}label{display:block;font-size:12px;color:#d5e3f5;font-weight:700;margin:10px 0 6px}.resource{padding:11px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff15;margin:8px 0}.resource b{font-size:13px}.resource p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.suggestion{padding:12px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff18;margin:8px 0}.suggestion h4{margin:0 0 5px;font-size:13px}.suggestion p{font-size:12px;line-height:1.5;color:#d4e1f2;white-space:pre-wrap}.pill{font-size:10px;padding:4px 8px;border-radius:20px;background:#ffffff14;color:#dceaff}.admin-box{border:1px dashed #d8b94d;padding:14px;border-radius:14px;margin-top:14px}.hidden{display:none!important}.footer{text-align:center;color:#829bb9;font-size:11px;margin-top:24px}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.hero{padding:19px}.panel{padding:15px}.top{align-items:flex-start}.back{white-space:nowrap}.wrap{width:calc(100% - 20px)}}
 </style>
-<style id="inspecteurbot-touch-scroll">
-html,body{
+<style id="inspecteurbot-touch-scroll-v2">
+/* Le document HTML porte le défilement, comme le menu d'accueil InspecteurBot. */
+html{
  height:auto!important;
  min-height:100%!important;
  overflow-x:hidden!important;
@@ -30,8 +31,29 @@ html,body{
  overscroll-behavior-y:auto!important;
  scroll-behavior:auto!important;
 }
-body{position:relative!important;min-height:100vh!important}
-@media(max-width:760px){body{min-height:100dvh!important}}
+body{
+ display:block!important;
+ position:relative!important;
+ width:100%!important;
+ height:auto!important;
+ min-height:100vh!important;
+ margin:0!important;
+ overflow-x:hidden!important;
+ overflow-y:visible!important;
+ touch-action:pan-y!important;
+ -webkit-overflow-scrolling:touch!important;
+ overscroll-behavior-y:auto!important;
+}
+.wrap,.grid,.panel,.hero{
+ touch-action:pan-y!important;
+}
+button,a,input,select,textarea{
+ touch-action:manipulation;
+}
+@media(max-width:760px){
+ html,body{min-height:100dvh!important}
+ body{height:auto!important;overflow-y:visible!important}
+}
 </style>
 </head>
 <body>
