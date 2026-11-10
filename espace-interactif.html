@@ -187,7 +187,7 @@ async function loadResources(){
 async function loadMySuggestions(){
  var r=await client.from('ib_agent_suggestions').select('id,title,description,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);
  if(r.error)throw r.error;
- $('my-suggestions').innerHTML=(r.data||[]).length?r.data.map(function(x){return '<article class="suggestion"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><p>'+esc(x.description)+'</p>'+(x.admin_note?'<p><b>Réponse :</b> '+esc(x.admin_note)+'</p>':'')+'<div class="meta">'+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div></article>'}).join(''):'<p class="sub">Vous n'avez pas encore envoyé de proposition.</p>';
+ $('my-suggestions').innerHTML=(r.data||[]).length?r.data.map(function(x){return '<article class="suggestion"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><p>'+esc(x.description)+'</p>'+(x.admin_note?'<p><b>Réponse :</b> '+esc(x.admin_note)+'</p>':'')+'<div class="meta">'+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div></article>'}).join(''):'<p class="sub">Aucune proposition n’est encore enregistrée sur votre compte.</p>';
 }
 function statusLabel(s){return ({received:'Reçue',reviewing:'En étude',accepted:'Retenue',rejected:'Non retenue'})[s]||s}
 async function loadAdminSuggestions(){
