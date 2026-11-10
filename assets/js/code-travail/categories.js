@@ -1,148 +1,102 @@
 /**
- * categories.js
- * Rendu et filtrage par domaines juridiques / catégories du Code du Travail
+ * Domaines juridiques autonomes du Code du Travail.
+ * Chaque domaine correspond au titre légal de la base, puis expose
+ * ses articles regroupés et consultables individuellement.
  */
-
 window.CodeTravailCategories = {
-    // Liste des catégories officielles avec icônes et descriptions
-    metadata: {
-        "Dispositions générales": {
-            icon: "fa-scale-balanced",
-            desc: "Champ d'application, définitions fondamentales et droit fondamental au travail en RDC."
-        },
-        "Protection des enfants": {
-            icon: "fa-child-reaching",
-            desc: "Interdiction absolue des pires formes de travail des enfants et protection des mineurs."
-        },
-        "Contrat de travail": {
-            icon: "fa-file-signature",
-            desc: "Conclusion, forme, preuve, période d'essai, exécution et suspension du contrat de travail."
-        },
-        "Résiliation et Licenciement": {
-            icon: "fa-user-xmark",
-            desc: "Règles de préavis, motifs valables, indemnités de rupture et licenciement pour faute lourde."
-        },
-        "Salaire et Avantages": {
-            icon: "fa-money-bill-trend-up",
-            desc: "Détermination du salaire, SMIG, égalité de rémunération, périodicité et bulletin de paie."
-        },
-        "Durée du travail": {
-            icon: "fa-clock",
-            desc: "Semaine légale de 45 heures, heures supplémentaires, travail de nuit et majorations."
-        },
-        "Congés et Repos": {
-            icon: "fa-umbrella-beach",
-            desc: "Congé annuel payé, jours fériés légaux, repos hebdomadaire et pécule de vacances."
-        },
-        "Protection de la femme et de la maternité": {
-            icon: "fa-person-breastfeeding",
-            desc: "Congé de maternité de 14 semaines, protection de l'emploi et heures d'allaitement."
-        },
-        "Sécurité et santé au travail": {
-            icon: "fa-user-shield",
-            desc: "Obligations d'hygiène, équipements de protection (EPI), médecine du travail et accidents."
-        },
-        "Syndicats et Représentation": {
-            icon: "fa-users-between-lines",
-            desc: "Liberté syndicale, élections des délégués syndicaux et protection spéciale contre le licenciement."
-        },
-        "Inspection du Travail": {
-            icon: "fa-user-tie",
-            desc: "Missions, pouvoirs de visite, contrôles et procès-verbaux des Inspecteurs du Travail."
-        },
-        "Différends et Conflits": {
-            icon: "fa-gavel",
-            desc: "Conciliation préalable obligatoire devant l'Inspecteur, Tribunal du Travail et grève licite."
-        },
-        "Sanctions et Pénalités": {
-            icon: "fa-triangle-exclamation",
-            desc: "Amendes pénales et administratives, servitude pénale, récidive et dispositions transitoires."
-        }
-    },
+  metadata: {
+    "Dispositions générales": {icon:"fa-scale-balanced",desc:"Champ d’application et principes généraux."},
+    "Formation professionnelle": {icon:"fa-graduation-cap",desc:"Formation et qualification professionnelles."},
+    "Contrat d'apprentissage": {icon:"fa-user-graduate",desc:"Apprentissage et formation en entreprise."},
+    "Placement et emploi": {icon:"fa-briefcase",desc:"Placement, accès à l’emploi et recrutement."},
+    "Contrat de travail": {icon:"fa-file-signature",desc:"Conclusion, exécution, suspension et rupture du contrat."},
+    "Contrats particuliers": {icon:"fa-users-gear",desc:"Régimes de contrats particuliers."},
+    "Durée du travail": {icon:"fa-clock",desc:"Durée du travail, repos et congés."},
+    "Salaire et Avantages": {icon:"fa-money-bill-trend-up",desc:"Rémunération et avantages liés au travail."},
+    "Sécurité et santé au travail": {icon:"fa-user-shield",desc:"Hygiène, sécurité et prévention des risques."},
+    "Santé et services médicaux": {icon:"fa-briefcase-medical",desc:"Services médicaux et suivi de santé au travail."},
+    "Inspection du Travail": {icon:"fa-user-tie",desc:"Organisation et missions de l’Inspection du Travail."},
+    "Syndicats et Représentation": {icon:"fa-people-group",desc:"Organisations professionnelles et liberté syndicale."},
+    "Représentation des travailleurs": {icon:"fa-users",desc:"Représentation des travailleurs dans l’entreprise."},
+    "Différends et Conflits": {icon:"fa-gavel",desc:"Règlement des différends individuels et collectifs."},
+    "Sécurité sociale": {icon:"fa-shield-heart",desc:"Protection et prestations de sécurité sociale."},
+    "Sanctions et Pénalités": {icon:"fa-triangle-exclamation",desc:"Infractions, pénalités et dispositions finales."}
+  },
 
-    render: function() {
-        const grid = document.getElementById("categoriesGrid");
-        if (!grid) return;
+  render: function() {
+    const grid=document.getElementById("categoriesGrid");
+    const articles=window.CodeTravailState?.articles||[];
+    if(!grid) return;
+    grid.innerHTML="";
+    const groups=new Map();
+    articles.forEach((art,index)=>{
+      const key=art.titreSection||art.categorie||"Autres dispositions";
+      if(!groups.has(key)) groups.set(key,{title:key,category:art.categorie||"Dispositions générales",articles:[],firstIndex:index,icon:art.icon});
+      groups.get(key).articles.push({...art,__index:index});
+    });
+    [...groups.values()].sort((a,b)=>a.firstIndex-b.firstIndex).forEach((group,i)=>{
+      const meta=this.metadata[group.category]||{icon:group.icon||"fa-folder-open",desc:"Articles et dispositions de ce titre du Code du Travail."};
+      const card=document.createElement("button");
+      card.type="button";
+      card.className="category-card domain-card";
+      card.setAttribute("aria-expanded","false");
+      card.innerHTML=`
+        <span class="domain-card-top"><i class="fa-solid ${meta.icon}"></i><span class="domain-count">${group.articles.length} articles</span></span>
+        <h3>${window.InspecteurUtils.escapeHtml(group.title)}</h3>
+        <p>${window.InspecteurUtils.escapeHtml(meta.desc)}</p>
+        <span class="domain-open-label">Ouvrir ce domaine <i class="fa-solid fa-arrow-right"></i></span>`;
+      card.addEventListener("click",()=>this.openDomain(group.title,card));
+      grid.appendChild(card);
+    });
+  },
 
-        grid.innerHTML = "";
-        const state = window.CodeTravailState;
-        const articles = Array.isArray(state?.articles) ? state.articles : [];
-        const normalize = value => String(value || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
-        
-        // Les effectifs sont calculés à partir des articles réellement chargés.
-        const counts = {};
-        const labels = {};
-        articles.forEach(art => {
-            const label = String(art.categorie || "Autres dispositions").normalize("NFC").trim().replace(/\s+/g, " ");
-            const key = normalize(label);
-            counts[key] = (counts[key] || 0) + 1;
-            labels[key] = labels[key] || label;
+  openDomain: function(title,card) {
+    const panel=document.getElementById("domainArticlesPanel");
+    const articles=window.CodeTravailState?.articles||[];
+    const group=articles.map((art,index)=>({...art,__index:index})).filter(art=>(art.titreSection||art.categorie||"Autres dispositions")===title);
+    if(!panel||!group.length) return;
+    document.querySelectorAll(".domain-card").forEach(el=>{el.classList.remove("active");el.setAttribute("aria-expanded","false");});
+    card?.classList.add("active");
+    card?.setAttribute("aria-expanded","true");
+    const grouped=new Map();
+    group.forEach(art=>{
+      const key=art.categorie||"Articles généraux";
+      if(!grouped.has(key)) grouped.set(key,[]);
+      grouped.get(key).push(art);
+    });
+    panel.hidden=false;
+    panel.innerHTML="";
+    const head=document.createElement("div");
+    head.className="domain-panel-head";
+    const info=document.createElement("div");
+    info.innerHTML=`<span class="domain-eyebrow">DOSSIER JURIDIQUE • ${group.length} ARTICLES</span><h3>${window.InspecteurUtils.escapeHtml(title)}</h3><p>Choisissez un article pour ouvrir son contenu et ses dispositions.</p>`;
+    const close=document.createElement("button");
+    close.type="button";close.className="domain-close";close.innerHTML='<i class="fa-solid fa-xmark"></i> Fermer';
+    close.addEventListener("click",()=>{panel.hidden=true;card?.classList.remove("active");card?.setAttribute("aria-expanded","false");});
+    head.append(info,close);panel.appendChild(head);
+    grouped.forEach((items,label)=>{
+      const block=document.createElement("section");block.className="domain-subgroup";
+      const subhead=document.createElement("h4");
+      subhead.innerHTML=`<span>${window.InspecteurUtils.escapeHtml(label)}</span><small>${items.length} article(s)</small>`;
+      const list=document.createElement("div");list.className="domain-article-list";
+      items.forEach(art=>{
+        const btn=document.createElement("button");btn.type="button";btn.className="domain-article-row";
+        btn.innerHTML=`<span class="domain-article-number">Art. ${art.numero}</span><span class="domain-article-title">${window.InspecteurUtils.escapeHtml(art.titre||"Disposition légale")}</span><i class="fa-solid fa-chevron-right"></i>`;
+        btn.addEventListener("click",()=>{
+          window.CodeTravailState.currentCategory=label;
+          window.CodeTravailState.searchResults=items;
+          window.CodeTravailConsultation?.showArticle(art.__index);
+          document.getElementById("articleCard")?.scrollIntoView({behavior:"smooth",block:"start"});
         });
+        list.appendChild(btn);
+      });
+      block.append(subhead,list);panel.appendChild(block);
+    });
+    panel.scrollIntoView({behavior:"smooth",block:"start"});
+  },
 
-        Object.keys(counts).forEach(key => {
-            const cat = labels[key];
-            const meta = this.metadata[cat] || {
-                icon: "fa-folder-open",
-                desc: "Articles et dispositions légales de cette catégorie juridique."
-            };
-
-            const card = document.createElement("div");
-            card.className = "category-card fade-in";
-            card.innerHTML = `
-                <i class="fa-solid ${meta.icon}"></i>
-                <h3>${window.InspecteurUtils.escapeHtml(cat)}</h3>
-                <p>${window.InspecteurUtils.escapeHtml(meta.desc)}</p>
-                <span class="category-badge">${counts[key]} article(s)</span>
-            `;
-
-            card.addEventListener("click", () => {
-                this.selectCategory(cat);
-            });
-
-            grid.appendChild(card);
-        });
-    },
-
-    selectCategory: function(cat) {
-        // Mettre en évidence la catégorie dans la grille
-        const cards = document.querySelectorAll(".category-card");
-        cards.forEach(c => {
-            if (c.querySelector("h3") && c.querySelector("h3").textContent === cat) {
-                c.classList.add("active");
-            } else {
-                c.classList.remove("active");
-            }
-        });
-
-        window.CodeTravailState.currentCategory = cat;
-
-        // Filtrer et afficher les résultats dans le moteur de recherche
-        const normalize = value => String(value || "").normalize("NFC").trim().replace(/\s+/g, " ").toLocaleLowerCase("fr");
-        const results = window.CodeTravailState.articles.filter(art => normalize(art.categorie) === normalize(cat));
-        window.CodeTravailState.searchResults = results;
-        if (window.CodeTravailRecherche && window.CodeTravailRecherche.renderResults) {
-            window.CodeTravailRecherche.renderResults(results, cat);
-        }
-        if (!results.length && window.InspecteurUtils) {
-            window.InspecteurUtils.showNotification("Aucun article n’est actuellement chargé dans cette catégorie.", "fa-triangle-exclamation");
-        }
-
-        // Mettre à jour l'info dans la section consultation
-        const infoCat = document.getElementById("infoCategorie");
-        const infoResultats = document.getElementById("infoResultats");
-        if (infoCat) infoCat.textContent = cat;
-        if (infoResultats) infoResultats.textContent = `${results.length} article(s)`;
-
-        // Afficher directement le premier article de cette catégorie
-        if (results.length > 0 && window.CodeTravailConsultation) {
-            const idx = window.CodeTravailState.articles.indexOf(results[0]);
-            window.CodeTravailConsultation.showArticle(idx);
-            const cardEl = document.getElementById("articleCard");
-            if (cardEl) cardEl.scrollIntoView({ behavior: "smooth" });
-        }
-
-        if (window.InspecteurUtils) {
-            window.InspecteurUtils.showNotification(`Catégorie sélectionnée : ${cat}`, "fa-folder-open");
-        }
-    }
+  selectCategory: function(cat) {
+    const match=(window.CodeTravailState?.articles||[]).find(a=>a.categorie===cat);
+    if(match) this.openDomain(match.titreSection||cat,document.querySelector(".domain-card"));
+  }
 };
