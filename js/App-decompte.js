@@ -1304,7 +1304,7 @@ $('#pvQualiteAgent').textContent =
       margin: [8, 8, 8, 8],
       filename: filename || (state.numero || 'decompte') + '.pdf',
       image: { type: 'jpeg', quality: 0.88 },
-      html2canvas: { scale: 1.5, useCORS: true, logging: false }
+      html2canvas: { scale: 1.5, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
