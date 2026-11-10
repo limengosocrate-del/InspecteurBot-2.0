@@ -173,6 +173,56 @@ async function expireSession(){
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
 }
+let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false;
+async function refreshHeaderBadges(){
+ if(headerBadgeBusy||!client||!user)return;
+ const presence=document.querySelector('#ib-header-presence .ib-header-count');
+ const messages=document.querySelector('#ib-header-messages .ib-header-count');
+ const notifications=document.querySelector('#ib-notification-link .ib-notification-count');
+ if(!presence&&!messages&&!notifications)return;
+ headerBadgeBusy=true;
+ try{
+  const tasks=await Promise.allSettled([
+   client.rpc('get_agent_directory',{search_text:'',online_only:true}),
+   client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null),
+   client.from('announcements').select('id,created_by').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(200),
+   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(500),
+   client.from('training_resources').select('id,created_by').eq('published',true).limit(200)
+  ]);
+  const val=i=>tasks[i].status==='fulfilled'?tasks[i].value:null;
+  if(presence){const r=val(0);if(r&&!r.error){const n=Array.isArray(r.data)?r.data.filter(p=>p.id!==user.id).length:0;presence.textContent=n>99?'99+':String(n);presence.hidden=n===0;presence.parentElement.title=n+' agent(s) en ligne';}}
+  if(messages){const r=val(1);if(r&&!r.error){const n=r.count||0;messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',n+' message(s) non lu(s)');}}
+  if(notifications){
+   const a=val(2),rr=val(3),tr=val(4);
+   if(a&&!a.error&&rr&&!rr.error&&tr&&!tr.error){
+    const readAnnouncements=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
+    const unreadAnnouncements=(a.data||[]).filter(x=>x.created_by!==user.id&&!readAnnouncements.has(String(x.id))).length;
+    let readTraining=[];try{readTraining=JSON.parse(localStorage.getItem('inspecteurbot_training_reads_v1_'+user.id)||'[]')}catch(_){}
+    const readTrainingSet=new Set(readTraining.map(String));
+    const unreadTraining=(tr.data||[]).filter(x=>x.created_by!==user.id&&!readTrainingSet.has(String(x.id))).length;
+    const n=unreadAnnouncements+unreadTraining;
+    notifications.textContent=n>99?'99+':String(n);notifications.hidden=n===0;
+    notifications.parentElement.setAttribute('aria-label',n+' annonce(s) ou formation(s) non lue(s)');
+    notifications.parentElement.title=unreadAnnouncements+' annonce(s) et '+unreadTraining+' formation(s) non lue(s)';
+   }
+  }
+ }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
+ finally{headerBadgeBusy=false}
+}
+function startHeaderBadgeTracking(){
+ clearInterval(headerBadgeTimer);void refreshHeaderBadges();
+ headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()},20000);
+ if(headerBadgeChannel){try{client.removeChannel(headerBadgeChannel)}catch(_){}}
+ try{
+  headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
+   .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'user_presence'},()=>void refreshHeaderBadges())
+   .subscribe();
+ }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()});
+}
 async function refreshNotificationBadge(){return refreshHeaderBadges();}
 function msg(t,ok){const n=byId('auth-message');if(!n)return;n.textContent=t||'';n.classList.remove('ib-message-success','ib-message-error');n.style.cssText='';if(!t)return;n.classList.add(ok?'ib-message-success':'ib-message-error');if(ok){n.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;color:#000!important;-webkit-text-fill-color:#000!important;background:#fff!important;border:2px solid #000!important;border-left:6px solid #000!important;border-radius:10px!important;padding:14px 16px!important;margin:14px 0!important;font-size:15px!important;font-weight:800!important;line-height:1.65!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;box-shadow:0 4px 16px rgba(0,0,0,.18)!important'}else{n.style.cssText='display:block!important;color:#b42318!important;font-weight:700!important'}}
 function showDuplicateAccountToast(){const old=document.getElementById('ib-register-toast');if(old)old.remove();const toast=document.createElement('div');toast.id='ib-register-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');toast.textContent='Vous avez déjà un compte InspecteurBot / Annuaire numérique IGT. Veuillez vous connecter avec votre adresse e-mail et votre mot de passe habituels.';document.body.appendChild(toast);window.setTimeout(()=>{if(toast.isConnected)toast.remove()},3000)}
