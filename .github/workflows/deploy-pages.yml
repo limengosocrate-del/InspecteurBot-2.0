@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
+  group: optimized-github-pages
   cancel-in-progress: true
 
 jobs:
@@ -33,14 +33,6 @@ jobs:
           sudo apt-get install -y imagemagick
           mkdir -p "$RUNNER_TEMP/pages-site"
           tar --exclude='.git' --exclude='.github' --exclude='node_modules' -cf - . | tar -xf - -C "$RUNNER_TEMP/pages-site"
-          while IFS= read -r -d '' image; do
-            optimized="${image}.optimized"
-            if magick "$image" -strip -resize '1920x1920>' -quality 82 "$optimized"; then
-              mv "$optimized" "$image"
-            else
-              rm -f "$optimized"
-              echo "::warning::Image JPEG conservée sans modification car elle est illisible par ImageMagick: $image"
-            fi
           for extension in jpg jpeg; do
             while IFS= read -r -d '' image; do
               optimized="${image}.optimized"
