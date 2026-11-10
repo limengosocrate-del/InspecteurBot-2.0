@@ -19,8 +19,8 @@ button,input{font:inherit}button{cursor:pointer}
 .head{display:flex;align-items:center;gap:14px;padding:17px 16px 12px}.back{color:white;text-decoration:none;font-size:23px}.head h1{font-size:29px;margin:0;font-weight:750;flex:1}.search-toggle{background:none;border:0;color:#eee;font-size:23px}
 .searchbox{padding:0 16px 12px;display:none}.searchbox.show{display:block}.searchbox input{width:100%;background:#393a40;border:1px solid #4a4b52;color:white;border-radius:25px;padding:13px 16px;outline:none}
 .section-label{padding:8px 16px;color:#bfc3cc;font-size:13px;font-weight:700}
-.stories{display:flex;gap:15px;overflow-x:auto;padding:4px 15px 15px;scrollbar-width:none}.stories::-webkit-scrollbar{display:none}
-.story{flex:0 0 76px;text-align:center;border:0;background:none;color:white;padding:0;min-width:76px}.avatar-wrap{width:68px;height:68px;margin:0 auto 7px;position:relative}.avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#45464d;border:2px solid #777}.story.online .avatar{border:3px solid #1684ff;padding:2px}.dot{position:absolute;width:15px;height:15px;border-radius:50%;background:var(--green);border:2px solid var(--bg);right:0;bottom:1px}.story-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.stories{display:flex;gap:15px;overflow-x:auto;padding:4px 15px 15px;scrollbar-width:none;min-height:116px;align-items:flex-start}.stories::-webkit-scrollbar{display:none}
+.story{flex:0 0 82px;text-align:center;border:0;background:none;color:white;padding:0;min-width:76px}.avatar-wrap{width:72px;height:72px;margin:0 auto 7px;position:relative}.avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#45464d;border:2px solid #777}.story.online .avatar{border:3px solid #1684ff;padding:2px}.dot{position:absolute;width:15px;height:15px;border-radius:50%;background:var(--green);border:2px solid var(--bg);right:0;bottom:1px}.story-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
 .online-empty{color:var(--muted);font-size:13px;padding:8px 16px 15px}
 .inbox{padding:0 10px 90px}.person{width:100%;display:flex;align-items:center;gap:13px;text-align:left;background:none;border:0;color:var(--text);padding:11px 8px;border-radius:13px}.person:active,.person:hover{background:#303136}.person .avatar-wrap{width:58px;height:58px;flex:0 0 58px;margin:0}.person .avatar{border:0}.person-info{min-width:0;flex:1}.person-name{font-size:16px;font-weight:750;display:flex;align-items:center;gap:7px}.preview{font-size:13px;color:#c5c8cf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}.unread{background:var(--red);color:white;border-radius:50%;min-width:20px;height:20px;display:inline-grid;place-items:center;font-size:11px;font-weight:800;padding:0 5px}.empty{padding:35px 20px;text-align:center;color:var(--muted)}
 .fab{position:fixed;right:max(20px,calc((100vw - 850px)/2 + 22px));bottom:26px;width:66px;height:66px;border:0;border-radius:50%;background:var(--blue);color:white;font-size:27px;box-shadow:0 5px 18px #0006}
@@ -38,10 +38,10 @@ button,input{font:inherit}button{cursor:pointer}
 </nav>
 <div class="notice" id="notice"></div>
 <main class="wrap">
-<header class="head"><a class="back" href="index.html" aria-label="Retour"><i class="fa-solid fa-chevron-left"></i></a><h1>Messages</h1><button class="search-toggle" id="searchToggle" aria-label="Rechercher un agent"><i class="fa-solid fa-magnifying-glass"></i></button></header>
-<div class="searchbox" id="searchBox"><input id="searchInput" type="search" placeholder="Rechercher un agent par son nom…" autocomplete="off"></div>
 <div class="section-label">Agents en ligne</div>
 <div class="stories" id="onlineStories"><div class="online-empty">Chargement des agents…</div></div>
+<header class="head"><a class="back" href="index.html" aria-label="Retour"><i class="fa-solid fa-chevron-left"></i></a><h1>Messages</h1><button class="search-toggle" id="searchToggle" aria-label="Rechercher un agent"><i class="fa-solid fa-magnifying-glass"></i></button></header>
+<div class="searchbox" id="searchBox"><input id="searchInput" type="search" placeholder="Rechercher un agent par son nom…" autocomplete="off"></div>
 <div class="section-label">Conversations</div>
 <section class="inbox" id="inbox"><div class="empty">Chargement de vos conversations…</div></section>
 </main>
@@ -49,7 +49,7 @@ button,input{font:inherit}button{cursor:pointer}
 <section class="chat" id="chat" aria-label="Conversation">
 <header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><div class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></div><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
 <div class="chatbody" id="chatBody"><div class="empty">Ouvrez une conversation</div></div>
-<form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="2500" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
+<form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="10000" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
 </section>
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -143,7 +143,7 @@ function onIncoming(m){if(active?.id===m.sender_id){appendMessage(m)}else toast(
 async function sendMessage(e){
  e.preventDefault();if(!active)return;
  const input=$('messageInput'),content=input.value.trim();if(!content)return;
- if(content.length>2500){toast('Message trop long (2 500 caractères maximum).');return}
+ if(content.length>10000){toast('Message trop long (10 000 caractères maximum).');return}
  $('sendButton').disabled=true;
  const {data,error}=await client.from('messages').insert({sender_id:me.id,recipient_id:active.id,content}).select('id,sender_id,recipient_id,content,read_at,created_at').single();
  $('sendButton').disabled=false;
