@@ -201,7 +201,8 @@ async function refreshGroups(){
  if(ge){console.warn(ge);return}
  $('groupList').innerHTML=(groups||[]).map(g=>'<div class="group-chip"><img src="'+esc(g.avatar_url||avatar(null))+'" alt=""><strong>'+esc(g.name)+'</strong></div>').join('');
 }
-\nfunction renderStories(){
+
+function renderStories(){
  const list=people.filter(online);
  $('onlineCount').textContent=list.length>99?'99+':String(list.length);
  $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
@@ -347,7 +348,8 @@ $('groupCreateForm').addEventListener('submit',async e=>{
  }catch(err){console.error('Création groupe',err);toast(err.message||'Impossible de créer le groupe.')}
  finally{submit.disabled=false;submit.textContent='Créer le groupe'}
 });
-\n$('chatAvatarButton').addEventListener('click',()=>{const src=$('chatAvatar').src;if(src){$('profilePhotoLarge').src=src;$('profilePhotoViewer').classList.add('show')}});
+
+$('chatAvatarButton').addEventListener('click',()=>{const src=$('chatAvatar').src;if(src){$('profilePhotoLarge').src=src;$('profilePhotoViewer').classList.add('show')}});
 $('closeProfilePhoto').addEventListener('click',()=>$('profilePhotoViewer').classList.remove('show'));
 $('profilePhotoViewer').addEventListener('click',e=>{if(e.target===$('profilePhotoViewer'))$('profilePhotoViewer').classList.remove('show')});
 $('searchToggle').addEventListener('click',()=>{$('searchBox').classList.toggle('show');if($('searchBox').classList.contains('show'))$('searchInput').focus()});
