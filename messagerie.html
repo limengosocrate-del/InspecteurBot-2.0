@@ -127,20 +127,22 @@ async function init(){
  const {data:profile,error:pe}=await client.from('profiles').select('id,display_name,avatar_url,is_active').eq('id',me.id).maybeSingle();
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
  myProfile=profile;
- await refreshAll();
+ // Ne pas bloquer l'ouverture de l'écran sur les requêtes de listes.
+ // Les trois panneaux se chargent indépendamment et en parallèle.
+ void refreshAll();
  if(new URLSearchParams(location.search).get('view')==='presence'){
   setTimeout(()=>{$('onlineStories').scrollIntoView({behavior:'smooth',block:'start'});$('peopleNav').classList.add('active')},250);
  }
- await heartbeat();
- heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')heartbeat()},30000);
- refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')refreshAll()},60000);
+ void heartbeat();
+ heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')void heartbeat()},60000);
+ refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshAll()},120000);
  messageChannel=client.channel('ib-messages-'+me.id)
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+me.id},payload=>onIncoming(payload.new))
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},()=>refreshInbox())
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>{updateReadReceipt(payload.new);refreshInbox()})
  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setNotice('Connexion temps réel interrompue. Reconnexion automatique…');else if(status==='SUBSCRIBED')setNotice('')});
  presenceChannel=client.channel('ib-presence-'+me.id).on('postgres_changes',{event:'*',schema:'public',table:'user_presence'},payload=>{const changedId=payload.new?.user_id||payload.old?.user_id;if(changedId&&changedId!==me.id)refreshPresenceAndReceipts()}).subscribe();
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){heartbeat();refreshAll()}});
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){void heartbeat();void refreshAll()}});
  window.addEventListener('pagehide',()=>{clearInterval(heartbeatTimer);clearInterval(refreshTimer);if(presenceChannel)client.removeChannel(presenceChannel)});
 }
 async function heartbeat(){
@@ -151,14 +153,32 @@ async function heartbeat(){
 }
 async function loadPeople(term='',onlyOnline=false){
  const {data,error}=await client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline});
- if(error){console.error(error);toast('Impossible de charger les agents.');return []}
+ if(error){console.error('Annuaire agents:',error);return []}
  return (data||[]).filter(p=>p.id!==me.id);
 }
-async function refreshAll(){people=await loadPeople();renderStories();await refreshInbox();await refreshGroups();if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}}
+let refreshAllRunning=false,refreshAllPending=false;
+async function refreshAll(){
+ if(!me)return;
+ if(refreshAllRunning){refreshAllPending=true;return}
+ refreshAllRunning=true;
+ try{
+  const [directoryResult]=await Promise.allSettled([
+   loadPeople()
+  ]);
+  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories()}
+  else{$('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>'}
+  // Les conversations et les groupes ne dépendent pas de l'annuaire.
+  await Promise.allSettled([refreshInbox(),refreshGroups()]);
+  if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
+ }finally{
+  refreshAllRunning=false;
+  if(refreshAllPending){refreshAllPending=false;void refreshAll()}
+ }
+}
 
 async function refreshGroups(){
  const {data:membership,error}=await client.from('chat_group_members').select('group_id').eq('user_id',me.id);
- if(error){console.warn('Groupes indisponibles',error);$('groupList').innerHTML='<span class="online-empty">Groupes indisponibles.</span>';return}
+ if(error){console.warn('Groupes indisponibles',error);$('groupList').innerHTML='<span class="online-empty">Groupes momentanément indisponibles.</span>';return}
  const ids=[...new Set((membership||[]).map(x=>x.group_id))];
  if(!ids.length){$('groupList').innerHTML='<span class="online-empty">Aucun groupe créé pour le moment.</span>';return}
  const {data:groups,error:ge}=await client.from('chat_groups').select('id,name,avatar_url').in('id',ids).order('created_at',{ascending:false});
@@ -172,7 +192,7 @@ async function refreshGroups(){
 }
 async function refreshInbox(){
  if(!me)return;
- const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).limit(500);
+ const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).limit(200);
  if(error){$('inbox').innerHTML='<div class="empty">Messagerie momentanément indisponible.</div>';console.error(error);return}
  const latest=new Map(),unread=new Map();
  for(const m of data||[]){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;if(!latest.has(other))latest.set(other,m);if(m.recipient_id===me.id&&!m.read_at)unread.set(other,(unread.get(other)||0)+1)}
