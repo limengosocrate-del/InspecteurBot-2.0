@@ -25,6 +25,20 @@
   
     <style>  
   
+
+/* Barre sociale des agents connectés */
+#ib-home-online{width:100%;padding:12px 12px 10px;background:linear-gradient(180deg,#03183d,#041c5c);overflow:hidden}
+#ib-home-online .ib-online-title{display:flex;align-items:center;justify-content:space-between;color:#fff;font-size:13px;font-weight:700;margin:0 4px 10px}
+#ib-home-online .ib-online-title small{color:#b9c9e8;font-weight:500}
+#ib-home-online .ib-online-list{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 8px}
+#ib-home-online .ib-online-list::-webkit-scrollbar{display:none}
+#ib-home-online .ib-online-person{flex:0 0 70px;border:0;background:none;color:#fff;text-align:center;padding:0;text-decoration:none}
+#ib-home-online .ib-online-photo{width:62px;height:62px;border-radius:50%;object-fit:cover;border:3px solid #1684ff;padding:2px;background:#17294b;position:relative}
+#ib-home-online .ib-online-photo-wrap{position:relative;width:62px;height:62px;margin:auto auto 6px}
+#ib-home-online .ib-online-dot{position:absolute;width:15px;height:15px;border-radius:50%;background:#31c45b;border:2px solid #041c5c;right:-1px;bottom:0}
+#ib-home-online .ib-online-name{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ib-home-online .ib-online-empty{font-size:12px;color:#c5d1e7;padding:10px 4px}
+
 /* ================= GLOBAL ================= */  
 *{  
     margin:0;  
@@ -456,6 +470,13 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 
 <!-- ================= DÉBUT DE LA PAGE ================= -->  
   
+
+<!-- Présence en ligne des agents — barre sociale -->
+<section id="ib-home-online" aria-label="Agents actuellement en ligne">
+ <div class="ib-online-title"><span><i class="fa-solid fa-circle" style="color:#31c45b;font-size:9px"></i> Agents en ligne</span><small id="ib-home-online-count">Actualisation…</small></div>
+ <div class="ib-online-list" id="ib-home-online-list"><div class="ib-online-empty">Chargement des agents connectés…</div></div>
+</section>
+
 <!-- SLIDER -->  
 <section class="banner"><div class="datetime-box" id="datetimeBox" aria-label="Heure, date et météo de votre région"><div class="datetime-top"><strong id="clock">--:--</strong></div><div class="datetime-day" id="day">Chargement…</div><div class="datetime-date"><span id="date">Chargement…</span></div><div class="datetime-weather"><strong id="weather">--°C</strong><span id="city">Votre région</span></div></div>  
   
@@ -835,6 +856,18 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
 }
 </script>
 
+
+
+<script id="ib-home-online-script">
+(()=>{'use strict';
+const root=document.getElementById('ib-home-online-list');if(!root||!window.supabase?.createClient)return;
+const sb=window.supabase.createClient('https://icymfsvbuandgvrhwmaw.supabase.co','sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fallback='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
+async function refresh(){try{const {data:{session}}=await sb.auth.getSession();if(!session){root.innerHTML='<div class="ib-online-empty">Connectez-vous pour voir les agents.</div>';return}const {data,error}=await sb.rpc('get_agent_directory',{search_text:'',online_only:true});if(error)throw error;const people=(data||[]).filter(p=>p.id!==session.user.id);document.getElementById('ib-home-online-count').textContent=people.length+' connecté(s)';root.innerHTML=people.length?people.map(p=>'<a class="ib-online-person" href="messagerie.html?v=20261110-social-messenger" aria-label="Envoyer un message à '+esc(p.display_name)+'"><span class="ib-online-photo-wrap"><img class="ib-online-photo" loading="lazy" src="'+esc(p.avatar_url||fallback)+'" alt=""><i class="ib-online-dot"></i></span><span class="ib-online-name">'+esc(p.display_name||'Agent IGT')+'</span></a>').join(''):'<div class="ib-online-empty">Aucun autre agent en ligne pour le moment.</div>';}catch(e){console.warn('Présence agents indisponible',e);root.innerHTML='<div class="ib-online-empty">Liste des agents momentanément indisponible.</div>';}}
+refresh();setInterval(()=>{if(document.visibilityState==='visible')refresh()},45000);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
+})();
+</script>
 
 </body>  
   
