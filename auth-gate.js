@@ -110,9 +110,12 @@ async function showIncomingMessageToast(message){
  ensureIncomingMessageToastStyle();hideIncomingMessageToast();
  let senderName='Un membre d’InspecteurBot';
  try{
-  const {data}=await client.from('profiles').select('display_name').eq('id',message.sender_id).maybeSingle();
-  if(data?.display_name)senderName=String(data.display_name).trim();
- }catch(e){console.info('Nom de l’expéditeur non disponible',e)}
+  // profiles est volontairement privé : utiliser le RPC sécurisé déjà prévu pour l’annuaire actif.
+  const {data,error}=await client.rpc('get_agent_directory',{search_text:'',online_only:false});
+  if(error)throw error;
+  const sender=(Array.isArray(data)?data:[]).find(agent=>String(agent.id)===String(message.sender_id));
+  if(sender?.display_name)senderName=String(sender.display_name).trim();
+ }catch(e){console.warn('Nom de l’expéditeur non récupéré via l’annuaire sécurisé',e)}
  const toast=document.createElement('section');toast.id='ib-incoming-message-toast';toast.setAttribute('role','alert');toast.setAttribute('aria-live','assertive');
  const title=document.createElement('div');title.className='ib-incoming-title';
  const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
@@ -150,19 +153,17 @@ async function pollIncomingMessages(){
  try{
   const key=incomingMessageCursorKey();
   if(incomingMessageCursor===null){
-   let stored=null;try{stored=localStorage.getItem(key)}catch(_){}
-   if(stored!==null&&/^\\d+$/.test(stored))incomingMessageCursor=Number(stored);
-   else{
-    const [latest,unread]=await Promise.all([
-     client.from('messages').select('id').eq('recipient_id',user.id).order('id',{ascending:false}).limit(1),
-     client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('recipient_id',user.id).neq('sender_id',user.id).is('read_at',null).order('id',{ascending:false}).limit(1)
-    ]);
-    if(latest.error)throw latest.error;if(unread.error)throw unread.error;
-    incomingMessageCursor=Number(latest.data?.[0]?.id||0);
-    if(unread.data?.[0])await showIncomingMessageToast(unread.data[0]);
-    try{localStorage.setItem(key,String(incomingMessageCursor))}catch(_){}
-    return;
-   }
+   let stored=0;try{const value=localStorage.getItem(key);if(value&&/^\\d+$/.test(value))stored=Number(value)}catch(_){}
+   // À CHAQUE authentification, rechercher d’abord un message non lu, sans dépendre du curseur local.
+   const [latest,unread]=await Promise.all([
+    client.from('messages').select('id').eq('recipient_id',user.id).order('id',{ascending:false}).limit(1),
+    client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('recipient_id',user.id).neq('sender_id',user.id).is('read_at',null).order('id',{ascending:false}).limit(1)
+   ]);
+   if(latest.error)throw latest.error;if(unread.error)throw unread.error;
+   incomingMessageCursor=Math.max(stored,Number(latest.data?.[0]?.id||0));
+   if(unread.data?.[0])await showIncomingMessageToast(unread.data[0]);
+   try{localStorage.setItem(key,String(incomingMessageCursor))}catch(_){}
+   return;
   }
   const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('recipient_id',user.id).neq('sender_id',user.id).gt('id',incomingMessageCursor).order('id',{ascending:true}).limit(30);
   if(error)throw error;
