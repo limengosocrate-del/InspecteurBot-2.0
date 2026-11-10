@@ -43,6 +43,16 @@ jobs:
                 rm -f "$optimized"
                 echo "::warning::Image JPEG conservée sans modification car elle est illisible par ImageMagick: $image"
               fi
+
+              # Variante WebP servie automatiquement par le service worker.
+              # Le JPEG original reste disponible comme solution de secours.
+              webp="${image%.*}.webp"
+              if magick "$image" -strip -resize '1600x1600>' -quality 78 "$webp"; then
+                echo "Variante WebP créée : $webp"
+              else
+                rm -f "$webp"
+                echo "::warning::Variante WebP non créée, JPEG conservé : $image"
+              fi
             done < <(find "$RUNNER_TEMP/pages-site" -type f -iname "*.$extension" -print0)
           done
           touch "$RUNNER_TEMP/pages-site/.nojekyll"
