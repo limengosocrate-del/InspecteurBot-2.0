@@ -173,25 +173,7 @@ async function expireSession(){
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
 }
-async function refreshNotificationBadge(){
- const link=document.getElementById('ib-notification-link');if(!link||!client||!user)return;
- const badge=link.querySelector('.ib-notification-count');
- try{const cached=JSON.parse(localStorage.getItem('inspecteurbot_notifications_cache_v2_'+user.id)||'null');if(cached){const anns=cached.announcements||[],msgs=cached.messages||[];const seen=new Set((JSON.parse(localStorage.getItem('inspecteurbot_announcement_reads_'+user.id)||'[]')).map(String));const count=anns.filter(x=>x.created_by!==user.id&&!seen.has(String(x.id))).length+msgs.filter(x=>x.recipient_id===user.id&&!x.read_at).length;badge.textContent=count>99?'99+':String(count);badge.hidden=count===0}}
- catch(_){}
- try{
-  const [ar,rr,mr]=await Promise.all([
-   client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(100),
-   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(100),
-   client.from('messages').select('id').eq('recipient_id',user.id).is('read_at',null).limit(100)
-  ]);
-  if(ar.error)throw ar.error;if(rr.error)throw rr.error;if(mr.error)throw mr.error;
-  const seen=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
-  const count=(ar.data||[]).filter(x=>x.created_by!==user.id&&!seen.has(String(x.id))).length+(mr.data||[]).length;
-  badge.textContent=count>99?'99+':String(count);badge.hidden=count===0;
-  link.setAttribute('aria-label',count?('Notifications, '+count+' non lue(s)'):'Notifications');
-  link.title=count?count+' notification(s) non lue(s)':'Aucune nouvelle notification';
- }catch(e){console.warn('Compteur de notifications indisponible',e);badge.hidden=true;link.setAttribute('aria-label','Notifications')}
-}
+async function refreshNotificationBadge(){return refreshHeaderBadges();}
 function msg(t,ok){const n=byId('auth-message');if(!n)return;n.textContent=t||'';n.classList.remove('ib-message-success','ib-message-error');n.style.cssText='';if(!t)return;n.classList.add(ok?'ib-message-success':'ib-message-error');if(ok){n.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;color:#000!important;-webkit-text-fill-color:#000!important;background:#fff!important;border:2px solid #000!important;border-left:6px solid #000!important;border-radius:10px!important;padding:14px 16px!important;margin:14px 0!important;font-size:15px!important;font-weight:800!important;line-height:1.65!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;box-shadow:0 4px 16px rgba(0,0,0,.18)!important'}else{n.style.cssText='display:block!important;color:#b42318!important;font-weight:700!important'}}
 function showDuplicateAccountToast(){const old=document.getElementById('ib-register-toast');if(old)old.remove();const toast=document.createElement('div');toast.id='ib-register-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');toast.textContent='Vous avez déjà un compte InspecteurBot / Annuaire numérique IGT. Veuillez vous connecter avec votre adresse e-mail et votre mot de passe habituels.';document.body.appendChild(toast);window.setTimeout(()=>{if(toast.isConnected)toast.remove()},3000)}
 function gate(t,mode){
@@ -293,6 +275,7 @@ async function validate(session){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
     appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-social-messenger" aria-label="Messages"><i class="fa-brands fa-facebook-messenger"></i></a><a id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
+    setTimeout(()=>void refreshHeaderBadges(),0);
     chip=document.createElement('div');chip.id='ib-auth-chip';
     chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html#mes-informations"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
     appHeader.querySelector('#ib-auth-slot').appendChild(chip);
