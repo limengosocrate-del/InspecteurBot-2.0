@@ -1,6 +1,6 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-10-v103';
+const CACHE='inspecteurbot-shell-2026-11-10-v104';
 const SHELL=['./','./index.html','./auth-gate.js','./messagerie.html?v=20261110-profile-photos-v4'];
 
 self.addEventListener('install',event=>{
