@@ -169,7 +169,7 @@ function hideIncomingMessageToast(){clearTimeout(incomingMessageToastTimer);inco
 function ensureIncomingMessageToastStyle(){
  if(document.getElementById('ib-incoming-message-toast-style'))return;
  const style=document.createElement('style');style.id='ib-incoming-message-toast-style';
- style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;box-sizing:border-box;width:min(350px,calc(100% - 24px));padding:12px 14px;border:1px solid #e3eaf0;border-radius:14px;background:#fff;color:#173b5c;box-shadow:0 7px 22px #00152f25;font:13px/1.4 Arial,sans-serif;animation:ib-incoming-toast-in .16s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:7px;margin:0 0 6px;font-size:13px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 9px;color:#52677a;overflow-wrap:anywhere;font-size:13px}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:7px}#ib-incoming-message-toast button{min-height:32px;padding:7px 11px;border:0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:64px;margin:8px 0;padding:8px;border:1px solid #cbd8e3;border-radius:8px;resize:vertical;font:13px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:15px;margin-top:6px;color:#b42318;font-size:11px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}` ;
+ style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;box-sizing:border-box;width:min(370px,calc(100% - 24px));padding:12px 14px;border:1px solid #e3eaf0;border-radius:14px;background:#fff;color:#173b5c;box-shadow:0 7px 22px #00152f25;font:13px/1.4 Arial,sans-serif;animation:ib-incoming-toast-in .16s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:10px;margin:0 0 8px;font-size:13px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-avatar{display:grid;place-items:center;overflow:hidden;width:46px;height:46px;flex:0 0 46px;border-radius:50%;background:#e6f1f8;color:#07518a;font-size:17px;font-weight:800}#ib-incoming-message-toast .ib-incoming-avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}#ib-incoming-message-toast .ib-incoming-heading{min-width:0;overflow-wrap:anywhere}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 9px;color:#52677a;overflow-wrap:anywhere;font-size:13px}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:7px}#ib-incoming-message-toast button{min-height:32px;padding:7px 11px;border:0;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:64px;margin:8px 0;padding:8px;border:1px solid #cbd8e3;border-radius:8px;resize:vertical;font:13px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:15px;margin-top:6px;color:#b42318;font-size:11px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}` ;
  document.head.appendChild(style);
 }
 async function markIncomingMessageRead(messageId){
@@ -182,19 +182,23 @@ async function showIncomingMessageToast(message){
  // Enregistrer avant tout affichage : un rechargement ou un événement Realtime répété ne doit pas réafficher ce message.
  rememberIncomingMessageNotification(message.id);
  ensureIncomingMessageToastStyle();hideIncomingMessageToast();
- let senderName='Un membre d’InspecteurBot';
+ let senderName='Un membre d’InspecteurBot',senderAvatarUrl='';
  try{
-  // profiles est volontairement privé : utiliser le RPC sécurisé déjà prévu pour l’annuaire actif.
+  // Le RPC sécurisé fournit le nom et la photo publique du profil actif.
   const {data,error}=await client.rpc('get_agent_directory',{search_text:'',online_only:false});
   if(error)throw error;
   const sender=(Array.isArray(data)?data:[]).find(agent=>String(agent.id)===String(message.sender_id));
   if(sender?.display_name)senderName=String(sender.display_name).trim();
- }catch(e){console.warn('Nom de l’expéditeur non récupéré via l’annuaire sécurisé',e)}
+  if(typeof sender?.avatar_url==='string')senderAvatarUrl=sender.avatar_url;
+ }catch(e){console.warn('Profil de l’expéditeur non récupéré via l’annuaire sécurisé',e)}
  const toast=document.createElement('section');toast.dataset.messageId=String(message.id);toast.id='ib-incoming-message-toast';toast.setAttribute('role','alert');toast.setAttribute('aria-live','assertive');
  const title=document.createElement('div');title.className='ib-incoming-title';
- const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
+ const avatar=document.createElement('span');avatar.className='ib-incoming-avatar';avatar.setAttribute('aria-hidden','true');
+ if(senderAvatarUrl){const avatarImage=document.createElement('img');avatarImage.src=senderAvatarUrl;avatarImage.alt='';avatarImage.loading='eager';avatarImage.onerror=()=>{avatarImage.remove();avatar.textContent=(senderName.trim().charAt(0)||'A').toUpperCase()};avatar.appendChild(avatarImage)}else{avatar.textContent=(senderName.trim().charAt(0)||'A').toUpperCase()}
+ const heading=document.createElement('span');heading.className='ib-incoming-heading';
  const titleText=document.createElement('span');titleText.textContent=senderName+' vous a envoyé un message';
- title.append(icon,titleText);
+ const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
+ heading.append(titleText,document.createTextNode(' '),icon);title.append(avatar,heading);
  const preview=document.createElement('p');preview.className='ib-incoming-preview';preview.textContent=String(message.content||'Vous avez reçu un nouveau message.').slice(0,180);
  const actions=document.createElement('div');actions.className='ib-incoming-actions';
  const reply=document.createElement('button');reply.type='button';reply.className='ib-incoming-reply';reply.textContent='Répondre';
