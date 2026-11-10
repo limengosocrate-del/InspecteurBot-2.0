@@ -1546,7 +1546,7 @@ $('#pvQualiteAgent').textContent =
     $('#defaultInspecteur').value = s.defaultInspecteur || '';
     $('#defaultGrade').value = s.defaultGrade || '';
     $('#autoCalc').checked = s.autoCalc !== false;
-    $('#smigDisplay').textContent = formatNumber(s.smigJour, 0) + ' FC/j';
+    $('#smigDisplay').textContent = formatNumber(getSmigApplicable(new Date()), 0) + ' FC/j';
     if (s.defaultInspecteur && !$('#inspecteurNom').value) $('#inspecteurNom').value = s.defaultInspecteur;
     if (s.defaultGrade && !$('#inspecteurGrade').value) $('#inspecteurGrade').value = s.defaultGrade;
   }
@@ -1563,7 +1563,7 @@ $('#pvQualiteAgent').textContent =
       autoCalc: $('#autoCalc').checked
     };
     saveStore(store);
-    $('#smigDisplay').textContent = formatNumber(store.settings.smigJour, 0) + ' FC/j';
+    $('#smigDisplay').textContent = formatNumber(getSmigApplicable(new Date()), 0) + ' FC/j';
     toast('Paramètres enregistrés', 'success');
   }
 
