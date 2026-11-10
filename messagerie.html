@@ -152,7 +152,7 @@ async function sendMessage(e){
 }
 async function search(term){
  if(!term.trim()){people=await loadPeople();renderStories();await refreshInbox();return}
- const results=await loadPeople(term,false);
+ const results=await loadPeople(term,false);people=results;
  $('onlineStories').innerHTML=results.length?results.map(p=>'<button class="story '+(online(p)?'online':'')+'" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt="">'+(online(p)?'<i class="dot"></i>':'')+'</span><span class="story-name">'+esc(p.display_name)+'</span></button>').join(''):'<div class="online-empty">Aucun agent trouvé.</div>';
 }
 $('searchToggle').addEventListener('click',()=>{$('searchBox').classList.toggle('show');if($('searchBox').classList.contains('show'))$('searchInput').focus()});
