@@ -30,7 +30,7 @@ self.addEventListener('fetch',event=>{
         if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
         return fresh;
       }catch(error){
-        const cached=await cache.match(request);
+        const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
         if(cached)return cached;
         throw error;
       }
@@ -66,15 +66,17 @@ self.addEventListener('fetch',event=>{
         if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
         return fresh;
       }catch(error){
-        const cached=await cache.match(request,{ignoreSearch:true});
+        const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
         if(cached)return cached;
         throw error;
       }
     }
 
     // Ressources statiques : cache d'abord, y compris si seul le paramètre de version change.
-    const cached=await cache.match(request,{ignoreSearch:true});
+    const cached=await cache.match(request);
     if(cached)return cached;
+    const cachedFallback=await cache.match(request,{ignoreSearch:true});
+    if(cachedFallback&&self.navigator?.onLine===false)return cachedFallback;
 
     // Préfère WebP aux JPEG si la variante existe sur le serveur.
     if(/\.(jpe?g)$/i.test(url.pathname)){
@@ -89,8 +91,13 @@ self.addEventListener('fetch',event=>{
       }catch(_){}
     }
 
-    const response=await fetch(request);
-    if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
-    return response;
+    try{
+      const response=await fetch(request);
+      if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
+      return response;
+    }catch(error){
+      if(cachedFallback)return cachedFallback;
+      throw error;
+    }
   })());
 });
