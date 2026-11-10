@@ -2,30 +2,6 @@
    APP.JS — Contrôleur principal FINAL (LOTS 1+2+3+4)
    ================================================================== */
 
-// ==================== HORLOGE ====================
-function updateClock() {
-  const now = new Date();
-  const t = document.getElementById("currentTime");
-  const d = document.getElementById("currentDate");
-  if (t) t.textContent = now.toLocaleTimeString("fr-FR");
-  if (d) d.textContent = now.toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
-}
-setInterval(updateClock, 1000); updateClock();
-
-// ==================== MÉTÉO (simplifié) ====================
-async function loadWeather() {
-  const el = document.getElementById("weather");
-  if (!el) return;
-  try {
-    const p = await new Promise((res, rej) => 
-      navigator.geolocation.getCurrentPosition(res, rej, {timeout:5000}));
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${p.coords.latitude}&longitude=${p.coords.longitude}&current_weather=true`);
-    const d = await r.json();
-    el.textContent = `${Math.round(d.current_weather.temperature)}°C`;
-  } catch { el.textContent = "N/A"; }
-}
-loadWeather();
-
 // ==================== RECHERCHE GLOBALE ====================
 const searchInput = document.getElementById("searchInput");
 if (searchInput) {
