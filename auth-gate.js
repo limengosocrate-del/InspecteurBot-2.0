@@ -77,7 +77,7 @@ async function updatePresence(){
 function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},120000);
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},45000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
