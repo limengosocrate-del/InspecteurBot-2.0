@@ -25,14 +25,39 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
 @media(max-width:800px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}#map{height:300px}}
 @media(max-width:480px){.wrap{padding:0 9px 25px;margin:10px auto}.panel{padding:13px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.intro{padding:14px}.stats{gap:7px}.stat{padding:10px}.stat strong{font-size:18px}.brand img{width:46px;height:46px}.actions button,.actions .btn{flex:1 1 auto}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+:root{--bg:#eef3f7;--card:#fff;--ink:#172b40;--muted:#647589;--line:#dce4eb;--blue:#1d527d;--field:#fff;--soft:#f4f7fa;--shadow:0 12px 34px #18324b10}
+html[data-theme="dark"]{color-scheme:dark;--bg:#0c1724;--card:#142437;--ink:#e6edf5;--muted:#a3b3c4;--line:#2b4055;--blue:#9bc6e8;--field:#102033;--soft:#1b3045;--shadow:0 12px 34px #0003}
+body{background:var(--bg);color:var(--ink)}
+header{position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 10%,#3d779c 0,transparent 34%),linear-gradient(120deg,#071c31 0%,#12385b 55%,#1e5a7d 100%);isolation:isolate}
+header:before{content:"";position:absolute;inset:-30% -8% -70% 55%;z-index:-1;border:1px solid #ffffff24;border-radius:50%;box-shadow:0 0 0 28px #ffffff0a,0 0 0 58px #ffffff08,0 0 0 92px #ffffff06;transform:rotate(-18deg)}
+header:after{content:"";position:absolute;right:8%;bottom:-38px;width:190px;height:105px;opacity:.22;background:repeating-linear-gradient(135deg,transparent 0 13px,#d8e8f4 14px 15px);clip-path:polygon(0 40%,100% 0,85% 100%,12% 88%)}
+header .brand,header .head-actions{position:relative;z-index:1}
+header .brand h1{letter-spacing:1.2px;text-shadow:0 2px 12px #001a33}
+.head-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.theme-switch{background:#ffffff16!important;border:1px solid #ffffff55!important;color:#fff!important;backdrop-filter:blur(8px);padding:10px 13px}
+.intro,.panel,.stat{background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
+.intro h2,.panel h3,.mission-item strong{color:var(--ink)}
+.stat strong{color:var(--blue)}label{color:var(--muted)}
+input,select,textarea{background:var(--field);color:var(--ink);border-color:var(--line)}
+.position div,.checkpoint,.empty{background:var(--soft);color:var(--ink)}
+.btn.light,button.light{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.mission-item{border-color:var(--line)}
+.hint,.mission-item small,footer{color:var(--muted)}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:30px;font-size:11px;font-weight:800;background:#fff1df;color:#8a641c}
+.sync-pill.ok{background:#e5f6ee;color:#13764e}
+html[data-theme="dark"] .sync-pill{background:#49371d;color:#f4cf83}
+html[data-theme="dark"] .sync-pill.ok{background:#143d32;color:#8be0b8}
+#map{filter:saturate(.88)}
+@media(max-width:520px){header{padding-top:14px;padding-bottom:14px}.head-actions{width:100%}.head-actions>*{flex:1}.theme-switch{justify-content:center}}
 </style>
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;background:#071b34;color:#fff;font:800 36px Arial,sans-serif;visibility:visible!important}</style>
-<script src="../auth-gate.js?v=20261110-sync-offline-v1" defer></script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("ib_mission_theme_v1")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script><script src="../auth-gate.js?v=20261110-sync-offline-v1" defer></script>
 </head>
 <body>
-<header><div class="brand"><img src="../assets/images/logo-igt.png" alt="Logo IGT"><div><h1>MISSION DE TERRAIN</h1><p>Assistant opérationnel des Inspecteurs du Travail · RDC</p></div></div><a class="btn light" href="../index.html"><i class="fa fa-arrow-left"></i> Retour à l'accueil</a></header>
+<header><div class="brand"><img src="../assets/images/logo-igt.png" alt="Logo IGT"><div><h1>MISSION DE TERRAIN</h1><p>Assistant opérationnel des Inspecteurs du Travail · RDC</p></div></div><div class="head-actions"><button class="theme-switch" id="themeToggle" type="button" aria-label="Changer le thème"><i class="fa fa-moon"></i> Thème sombre</button><a class="btn light" href="../index.html"><i class="fa fa-arrow-left"></i> Retour à l'accueil</a></div></header>
 <main class="wrap">
-<section class="intro"><div><h2>Préparer, conduire et suivre une mission</h2><p>Un dossier par mission, avec déplacement GPS, étapes et constatations de terrain.</p></div><span class="net" id="networkState">● En ligne</span></section>
+<section class="intro"><div><h2>Préparer, conduire et suivre une mission</h2><p>Un dossier par mission, avec déplacement GPS, étapes et constatations de terrain.</p></div><div class="head-actions"><span class="net" id="networkState">● En ligne</span><span class="sync-pill" id="supabaseSyncState"><i class="fa fa-cloud"></i> Connexion sécurisée…</span></div></section>
 <section class="stats">
 <div class="stat"><small>Dossiers enregistrés</small><strong id="countAll">0</strong></div><div class="stat"><small>En cours</small><strong id="countActive">0</strong></div><div class="stat"><small>Distance suivie</small><strong id="distanceTotal">0 km</strong></div><div class="stat"><small>Précision GPS</small><strong id="gpsAccuracy">--</strong></div>
 </section>
