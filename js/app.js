@@ -70,11 +70,21 @@ if (btnUpdate) btnUpdate.addEventListener("click", () => {
 
 // Bouton Thème
 const btnTheme = document.getElementById("btnTheme");
+function applyTheme(theme) {
+  const light = theme === "light";
+  document.body.classList.toggle("light-theme", light);
+  if (btnTheme) {
+    btnTheme.textContent = light ? "🌙 Thème sombre" : "☀️ Thème blanc";
+    btnTheme.setAttribute("aria-pressed", String(light));
+    btnTheme.setAttribute("aria-label", light ? "Activer le thème sombre" : "Activer le thème blanc");
+  }
+}
+applyTheme(localStorage.getItem("igt_theme") || "dark");
 if (btnTheme) btnTheme.addEventListener("click", () => {
-  document.body.classList.toggle("light-theme");
-  localStorage.setItem("igt_theme", document.body.classList.contains("light-theme") ? "light" : "dark");
+  const next = document.body.classList.contains("light-theme") ? "dark" : "light";
+  localStorage.setItem("igt_theme", next);
+  applyTheme(next);
 });
-if (localStorage.getItem("igt_theme") === "light") document.body.classList.add("light-theme");
 
 // ==================== SÉLECTEUR LANGUE ====================
 const TRANSLATIONS = {
