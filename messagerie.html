@@ -112,6 +112,10 @@ body.conversation-open .fab{display:none!important}
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const SUPABASE_KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 const $=id=>document.getElementById(id);
+function withTimeout(promise,ms,label){
+ let timer;
+ return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Délai dépassé : '+label)),ms)})]).finally(()=>clearTimeout(timer));
+}
 const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,searchTimer=null,heartbeatTimer=null,refreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -121,10 +125,16 @@ function initials(s){return s||'Agent'}
 function online(p){return !!p?.is_online}
 function setNotice(s){$('notice').textContent=s;$('notice').classList.toggle('show',!!s)}
 async function init(){
- const {data:{session},error}=await client.auth.getSession();
+ let authResult;
+ try{authResult=await withTimeout(client.auth.getSession(),12000,'authentification')}
+ catch(error){setNotice('Connexion trop lente. Vérifiez votre réseau puis actualisez la messagerie.');$('onlineStories').innerHTML='<div class="online-empty">Connexion au service indisponible. Réessayez.</div>';$('groupList').innerHTML='<span class="online-empty">Groupes indisponibles pour le moment.</span>';$('inbox').innerHTML='<div class="empty">Conversations indisponibles. Vérifiez votre connexion.</div>';return}
+ const {data:{session},error}=authResult;
  if(error||!session){location.replace('index.html?from=messages');return}
  me=session.user;
- const {data:profile,error:pe}=await client.from('profiles').select('id,display_name,avatar_url,is_active').eq('id',me.id).maybeSingle();
+ let profileResult;
+ try{profileResult=await withTimeout(client.from('profiles').select('id,display_name,avatar_url,is_active').eq('id',me.id).maybeSingle(),12000,'profil')}
+ catch(error){setNotice('Chargement du profil trop lent. Vérifiez votre connexion puis actualisez.');return}
+ const {data:profile,error:pe}=profileResult;
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
  myProfile=profile;
  // Ne pas bloquer l'ouverture de l'écran sur les requêtes de listes.
@@ -152,8 +162,8 @@ async function heartbeat(){
  if(error)console.warn('Présence non actualisée',error);
 }
 async function loadPeople(term='',onlyOnline=false){
- const {data,error}=await client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline});
- if(error){console.error('Annuaire agents:',error);return []}
+ const {data,error}=await withTimeout(client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline}),12000,'annuaire des agents');
+ if(error)throw error;
  return (data||[]).filter(p=>p.id!==me.id);
 }
 let refreshAllRunning=false,refreshAllPending=false;
@@ -179,11 +189,14 @@ async function refreshAll(){
 }
 
 async function refreshGroups(){
- const {data:membership,error}=await client.from('chat_group_members').select('group_id').eq('user_id',me.id);
+ let membershipResult;
+ try{membershipResult=await withTimeout(client.from('chat_group_members').select('group_id').eq('user_id',me.id),12000,'groupes')}
+ catch(error){$('groupList').innerHTML='<span class="online-empty">Le chargement des groupes prend trop de temps. Réessayez.</span>';console.warn(error);return}
+ const {data:membership,error}=membershipResult;
  if(error){console.warn('Groupes indisponibles',error);$('groupList').innerHTML='<span class="online-empty">Groupes momentanément indisponibles.</span>';return}
  const ids=[...new Set((membership||[]).map(x=>x.group_id))];
  if(!ids.length){$('groupList').innerHTML='<span class="online-empty">Aucun groupe créé pour le moment.</span>';return}
- const {data:groups,error:ge}=await client.from('chat_groups').select('id,name,avatar_url').in('id',ids).order('created_at',{ascending:false});
+ let groupsResult;try{groupsResult=await withTimeout(client.from('chat_groups').select('id,name,avatar_url').in('id',ids).order('created_at',{ascending:false}),12000,'liste des groupes')}catch(error){$('groupList').innerHTML='<span class="online-empty">Impossible de charger les groupes pour le moment.</span>';console.warn(error);return}const {data:groups,error:ge}=groupsResult;
  if(ge){console.warn(ge);return}
  $('groupList').innerHTML=(groups||[]).map(g=>'<div class="group-chip"><img src="'+esc(g.avatar_url||avatar(null))+'" alt=""><strong>'+esc(g.name)+'</strong></div>').join('');
 }
@@ -194,7 +207,10 @@ async function refreshGroups(){
 }
 async function refreshInbox(){
  if(!me)return;
- const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).limit(200);
+ let result;
+ try{result=await withTimeout(client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).limit(100),12000,'conversations')}
+ catch(error){$('inbox').innerHTML='<div class="empty">Le chargement des conversations prend trop de temps. Vérifiez votre connexion puis réessayez.</div>';console.warn(error);return}
+ const {data,error}=result;
  if(error){$('inbox').innerHTML='<div class="empty">Messagerie momentanément indisponible.</div>';console.error(error);return}
  const latest=new Map(),unread=new Map();
  for(const m of data||[]){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;if(!latest.has(other))latest.set(other,m);if(m.recipient_id===me.id&&!m.read_at)unread.set(other,(unread.get(other)||0)+1)}
