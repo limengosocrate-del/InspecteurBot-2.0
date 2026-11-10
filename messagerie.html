@@ -145,11 +145,11 @@ async function init(){
   setTimeout(()=>{$('onlineStories').scrollIntoView({behavior:'smooth',block:'start'});$('peopleNav').classList.add('active')},250);
  }
  void heartbeat();
- heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')void heartbeat()},60000);
- refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshAll()},120000);
+ heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')void heartbeat()},120000);
+ refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshAll()},180000);
  // Les photos de profil sont synchronisées depuis public.profiles. Actualiser l'annuaire
  // régulièrement et écouter les changements en temps réel pour les afficher sans délai.
- directoryRefreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshDirectoryOnly()},60000);
+ directoryRefreshTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshDirectoryOnly()},180000);
  messageChannel=client.channel('ib-messages-'+me.id)
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+me.id},payload=>onIncoming(payload.new))
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},()=>refreshInbox())
@@ -188,7 +188,7 @@ async function refreshAll(){
    refreshInbox().catch(error=>{console.warn('Conversations:',error)}),
    refreshGroups().catch(error=>{console.warn('Groupes:',error)})
   ]);
-  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories();await refreshInbox()}
+  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories()}
   else{$('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>'}
   if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
  }finally{
@@ -203,7 +203,6 @@ async function refreshDirectoryOnly(){
   const updated=await loadPeople();
   people=updated;
   renderStories();
-  await refreshInbox();
   if(active){
    const current=people.find(p=>p.id===active.id);
    if(current){active=current;updateChatHeader(current)}
