@@ -3430,3 +3430,6 @@ body.light-theme .footer{border-top:1px solid #d5deea!important}
 body.light-theme .footer-bottom{border-top:1px solid #d5deea!important}
 body.light-theme .theme-toggle{background:#0d47a1!important;color:#fff!important;border-color:#0d47a1!important}
 @media(max-width:600px){.theme-toggle{margin:12px 0 0;align-self:flex-start}body.light-theme .header{align-items:flex-start}}
+
+/* Contraste uniforme : tous les textes sont noirs en thème blanc */
+body.light-theme,body.light-theme *{color:#111!important;text-shadow:none!important}
