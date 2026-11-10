@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-  <link rel="stylesheet" href="css/../decompte-final.css" />
+  <link rel="stylesheet" href="decompte-final.css?v=20261110-decompte-redesign-v1" />
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 
@@ -52,7 +52,8 @@
         <span class="badge-num" id="displayNumero">DF-2026-000001</span>
       </div>
       <div class="topbar-right">
-        <a class="btn-ghost btn-sm" href="../fiche.html" aria-label="Retour au tableau de bord des fiches">← Retour</a>
+        <a class="btn-ghost btn-sm" href="../index.html" aria-label="Retour au menu principal de l’application"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+        <a class="icon-btn btn-home" href="../index.html" aria-label="Accueil" title="Accueil"><i class="fa-solid fa-house"></i></a>
         <button class="icon-btn" id="btnTheme" title="Thème"><i class="fa-solid fa-moon"></i></button>
         <button class="icon-btn" id="btnFavorites" title="Favoris"><i class="fa-solid fa-star"></i></button>
         <button class="icon-btn" id="btnHistory" title="Historique"><i class="fa-solid fa-clock-rotate-left"></i></button>
@@ -68,7 +69,7 @@
           <button class="nav-item" data-view="preview"><i class="fa-solid fa-file-lines"></i><span>Aperçu DF</span></button>
           <button class="nav-item" data-view="pv"><i class="fa-solid fa-gavel"></i><span>Procès-Verbal</span></button>
           <button class="nav-item" data-view="charts"><i class="fa-solid fa-chart-pie"></i><span>Graphiques</span></button>
-          <button class="nav-item" data-view="ai"><i class="fa-solid fa-robot"></i><span>Assistant IA</span></button>
+          <button class="nav-item" data-view="ai"><i class="fa-solid fa-robot"></i><span>AssistantBot</span></button>
           <button class="nav-item" data-view="legal"><i class="fa-solid fa-scale-balanced"></i><span>Réf. Juridiques</span></button>
           <button class="nav-item" data-view="checklist"><i class="fa-solid fa-list-check"></i><span>Checklist</span></button>
           <button class="nav-item" data-view="archive"><i class="fa-solid fa-box-archive"></i><span>Archives</span></button>
@@ -78,7 +79,7 @@
           <div class="smig-chip" id="smigChip">
             <i class="fa-solid fa-shield-halved"></i>
             <div>
-              <small>SMIG 2025</small>
+              <small>SMIG ACTUEL · 2026</small>
               <strong id="smigDisplay">21 500 FC/j</strong>
             </div>
           </div>
@@ -820,7 +821,7 @@
         <section class="view" id="view-ai">
           <div class="page-head">
             <div>
-              <h2><i class="fa-solid fa-robot gold"></i> Assistant IA</h2>
+              <h2><i class="fa-solid fa-robot gold"></i> AssistantBot</h2>
               <p>Vérifications automatiques : SMIG, préavis, ancienneté, erreurs juridiques.</p>
             </div>
             <div class="head-actions">
@@ -968,7 +969,7 @@
     </div>
   </div>
 
-  <script src="../js/App-decompte.js" defer></script>
+  <script src="../js/App-decompte.js?v=20261110-smig-current-21500" defer></script>
   
 </body>
 </html>
