@@ -1,7 +1,7 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-10-v121';
-const SHELL=['./','./index.html','./espace-interactif.html','./auth-gate.js','./messagerie.html?v=20261110-presence-realtime-v10','./autres/decompte-final.html?v=20261110-decompte-redesign-v2','./pv.html?v=20261110-pv-redesign-v2'];
+const CACHE='inspecteurbot-shell-2026-11-10-v122';
+const SHELL=['./','./index.html','./espace-interactif.html','./auth-gate.js?v=20261110-presence-realtime-v2','./messagerie.html?v=20261110-presence-realtime-v10','./autres/decompte-final.html?v=20261110-decompte-redesign-v2','./pv.html?v=20261110-pv-redesign-v2'];
 
 self.addEventListener('install',event=>{
   // Réutilise le cache existant : aucune suppression des caches ou données du navigateur.
@@ -25,6 +25,13 @@ self.addEventListener('fetch',event=>{
   const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
+    // Toutes les pages, même celles avec une ancienne URL versionnée, reçoivent
+    // la même version du garde d'accès et du canal Presence global.
+    if(/\\/auth-gate\\.js$/i.test(url.pathname)){
+      const latestAuthGate=new URL('./auth-gate.js?v=20261110-presence-realtime-v2',self.registration.scope).href;
+      const latestCached=await cache.match(latestAuthGate);
+      if(latestCached)return latestCached;
+    }
     if(isHtml){
       try{
         const response=await fetch(new Request(request,{cache:'no-store'}));
