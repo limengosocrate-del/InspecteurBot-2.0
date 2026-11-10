@@ -32,6 +32,7 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splas
 .ib-header-action .ib-header-count{position:absolute;top:0;right:-2px;display:grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border:2px solid #fff;border-radius:30px;background:#dc2638;color:#fff;font:700 10px Arial,sans-serif}
 #ib-header-presence{color:#16834b}
 #ib-header-messages{color:#0866ff}
+.menu-index a[href*="messagerie.html"]{position:relative;overflow:visible}.menu-index a[href*="messagerie.html"] .ib-menu-message-count{position:absolute;top:5px;right:7px;display:grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border:2px solid #fff;border-radius:30px;background:#dc2638;color:#fff;font:700 10px Arial,sans-serif;line-height:1}.menu-index a[href*="messagerie.html"] .ib-menu-message-count[hidden]{display:none!important}
 @media(max-width:520px){.ib-header-action{flex-basis:38px;height:40px;font-size:24px}.ib-header-action .ib-header-count{min-width:17px;height:17px;font-size:9px}}
 
 #ib-app-header .ib-brand-copy{font-size:clamp(18px,3vw,25px);line-height:1.15;font-weight:800;letter-spacing:-.4px}#ib-app-header .ib-brand-copy small{display:block;margin-top:4px;color:#0754a0;font-size:clamp(11px,2vw,15px);font-style:italic;letter-spacing:0;font-weight:500}#ib-app-header .ib-header-actions{display:flex;align-items:center;gap:14px;order:3;margin-left:auto}#ib-auth-chip{position:relative;z-index:1201;flex:0 0 auto;max-width:76px}#ib-auth-account{width:76px;height:76px;justify-content:center;padding:0;border:0;border-radius:50%;box-shadow:none;background:#0799bd}#ib-auth-account .ib-avatar{width:68px;height:68px;flex-basis:68px;background:#0799bd;font-size:27px}#ib-auth-account .ib-account-label,#ib-auth-account>i:last-child{display:none}#ib-auth-menu{left:0;right:auto;top:calc(100% + 10px)}#ib-notification-link{position:relative;display:grid;place-items:center;width:42px;height:46px;color:#073b70;text-decoration:none;font-size:28px}#ib-notification-link .ib-notification-count[hidden]{display:none!important}#ib-notification-link .ib-notification-count{position:absolute;top:0;right:-1px;display:grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:50px;background:#dc2638;color:#fff;font:700 11px Arial,sans-serif;border:2px solid #fff}#ib-header-menu{width:46px;height:46px;border:0;border-radius:0;background:transparent;color:#073b70;font-size:30px}
@@ -126,7 +127,7 @@ async function showIncomingMessageToast(message){
  const reply=document.createElement('button');reply.type='button';reply.className='ib-incoming-reply';reply.textContent='Répondre';
  const ignore=document.createElement('button');ignore.type='button';ignore.className='ib-incoming-ignore';ignore.textContent='Ignorer';
  actions.append(reply,ignore);toast.append(title,preview,actions);document.body.appendChild(toast);
- ignore.addEventListener('click',async()=>{try{await markIncomingMessageRead(message.id);hideIncomingMessageToast();await refreshNotificationBadge()}catch(e){console.warn('Impossible de marquer le message comme lu',e)}});
+ ignore.addEventListener('click',()=>{hideIncomingMessageToast();void refreshNotificationBadge();});
  reply.addEventListener('click',()=>{
   clearTimeout(incomingMessageToastTimer);incomingMessageToastTimer=null;
   preview.textContent='Votre réponse sera envoyée directement à '+senderName+'.';
@@ -199,6 +200,9 @@ async function refreshHeaderBadges(){
  if(headerBadgeBusy||!client||!user)return;
  const presence=document.querySelector('#ib-header-presence .ib-header-count');
  const messages=document.querySelector('#ib-header-messages .ib-header-count');
+ const menuMessages=document.querySelector('.menu-index a[href*="messagerie.html"]');
+ let menuMessageCount=menuMessages?.querySelector('.ib-menu-message-count');
+ if(menuMessages&&!menuMessageCount){menuMessageCount=document.createElement('span');menuMessageCount.className='ib-menu-message-count';menuMessageCount.hidden=true;menuMessageCount.setAttribute('aria-hidden','true');menuMessages.appendChild(menuMessageCount);}
  const notifications=document.querySelector('#ib-notification-link .ib-notification-count');
  if(!presence&&!messages&&!notifications)return;
  headerBadgeBusy=true;
@@ -212,7 +216,7 @@ async function refreshHeaderBadges(){
   ]);
   const val=i=>tasks[i].status==='fulfilled'?tasks[i].value:null;
   if(presence){const r=val(0);if(r&&!r.error){const n=Array.isArray(r.data)?r.data.filter(p=>p.id!==user.id).length:0;presence.textContent=n>99?'99+':String(n);presence.hidden=n===0;presence.parentElement.title=n+' agent(s) en ligne';}}
-  if(messages){const r=val(1);if(r&&!r.error){const n=r.count||0;messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',n+' message(s) non lu(s)');}}
+  if(messages||menuMessageCount){const r=val(1);if(r&&!r.error){const n=r.count||0;const label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
   if(notifications){
    const a=val(2),rr=val(3),tr=val(4);
    if(a&&!a.error&&rr&&!rr.error&&tr&&!tr.error){
