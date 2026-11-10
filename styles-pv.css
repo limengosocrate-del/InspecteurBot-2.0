@@ -160,3 +160,49 @@ html[data-theme="dark"] .logo-slot{background:#e9edef!important}html[data-theme=
  body.pv-one-page-print #printArea .a4-page:last-child{page-break-after:avoid!important;break-after:avoid!important}
  body.pv-one-page-print #printArea .secure-foot{bottom:6mm!important}
 }
+
+/* Refonte visuelle InspecteurBot — module Procès-Verbaux. Les formulaires, rubriques et archives restent inchangés. */
+:root{--primary:#0b4e91;--primary-2:#1976d2;--secondary:#087f72;--radius:20px;--shadow:0 18px 48px rgba(8,39,77,.12)}
+body{background:radial-gradient(circle at 8% 0%,rgba(25,118,210,.13),transparent 30rem),linear-gradient(145deg,#f8fbff 0%,#edf3fa 54%,#e3edf7 100%)}
+.app-shell{width:min(1720px,100%);padding:clamp(10px,1.7vw,24px)}
+.topbar{border:1px solid #dce7f2;border-radius:22px;padding:clamp(.8rem,1.4vw,1.25rem);box-shadow:0 12px 34px rgba(9,47,88,.10)}
+.brand-emblem{border:3px solid #fff;box-shadow:0 8px 24px rgba(9,47,88,.18)}
+.brand-block h1{color:#10365e;letter-spacing:-.025em}
+.top-actions{justify-content:flex-end}
+.pv-home-link{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;white-space:nowrap}
+.pv-home-link span{font-size:1.25rem;line-height:1}
+.main-nav{position:sticky;top:0;z-index:18;padding:.55rem;margin:.9rem 0 1.2rem;border:1px solid rgba(206,222,238,.8);border-radius:18px;background:rgba(242,247,252,.88);backdrop-filter:blur(14px);box-shadow:0 8px 22px rgba(15,34,58,.06)}
+.main-nav .nav-item{border-color:#d9e5f1;background:#fff;box-shadow:0 3px 10px rgba(15,34,58,.04);transition:background .18s,border-color .18s,transform .18s}
+.main-nav .nav-item:hover{transform:translateY(-1px);border-color:#9fc4e7}
+.main-nav .nav-item.active{background:linear-gradient(135deg,#0b4e91,#1976d2);box-shadow:0 7px 18px rgba(11,78,145,.2)}
+.section-heading{padding:1rem 1.1rem;border:1px solid #dce7f2;border-radius:18px;background:rgba(255,255,255,.72);box-shadow:0 8px 22px rgba(15,34,58,.04)}
+.section-heading .eyebrow{color:#0b64ae}
+.panel,.stat-card,.legal-card,.history-card,.signature-card{border-radius:20px;box-shadow:0 10px 28px rgba(15,34,58,.065)}
+.panel{border-color:#dce6f0}
+.stat-card{border-color:#dce6f0;min-height:124px}
+.stat-card strong{letter-spacing:-.035em}
+.panel-title{padding-bottom:.65rem;border-bottom:1px solid #e8eef5}
+.btn{border-radius:12px}
+.btn.primary{background:linear-gradient(135deg,#0b4e91,#1976d2)}
+.btn.secondary{background:linear-gradient(135deg,#087f72,#0aa58f)}
+input,textarea,select{border-color:#d4e0ec}
+input:focus,textarea:focus,select:focus{border-color:#3687ce;box-shadow:0 0 0 4px rgba(25,118,210,.12)}
+.empty-state{border-color:#bfd0e1;background:#f7fbff}
+@media(max-width:860px){
+ .app-shell{padding:.55rem}
+ .topbar{position:relative;top:auto;align-items:flex-start;flex-direction:column}
+ .top-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .top-actions>*{min-width:0}
+ .top-actions .btn,.pv-home-link{width:100%;min-height:42px}
+ .main-nav{position:relative;top:auto;border-radius:14px}
+ .section-heading{padding:.85rem}
+}
+@media(max-width:520px){
+ .top-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+ .top-actions .btn,.pv-home-link{font-size:.78rem;padding:.65rem .5rem}
+ .brand-block{gap:.7rem}
+ .brand-block h1{font-size:1.12rem}
+ .subtitle{font-size:.8rem;line-height:1.35}
+ .main-nav{gap:.4rem}
+ .main-nav .nav-item{font-size:.78rem;padding:.65rem .78rem}
+}
