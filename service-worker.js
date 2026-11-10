@@ -1,6 +1,6 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-10-v122';
+const CACHE='inspecteurbot-shell-2026-11-10-v123';
 const SHELL=['./','./index.html','./espace-interactif.html','./auth-gate.js?v=20261110-presence-realtime-v2','./messagerie.html?v=20261110-presence-realtime-v10','./autres/decompte-final.html?v=20261110-decompte-redesign-v2','./pv.html?v=20261110-pv-redesign-v2'];
 
 self.addEventListener('install',event=>{
