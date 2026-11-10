@@ -41,7 +41,17 @@ jobs:
               rm -f "$optimized"
               echo "::warning::Image JPEG conservée sans modification car elle est illisible par ImageMagick: $image"
             fi
-          done < <(find "$RUNNER_TEMP/pages-site" -type f \\( -iname '*.jpg' -o -iname '*.jpeg' \\) -print0)
+          for extension in jpg jpeg; do
+            while IFS= read -r -d '' image; do
+              optimized="${image}.optimized"
+              if magick "$image" -strip -resize '1920x1920>' -quality 82 "$optimized"; then
+                mv "$optimized" "$image"
+              else
+                rm -f "$optimized"
+                echo "::warning::Image JPEG conservée sans modification car elle est illisible par ImageMagick: $image"
+              fi
+            done < <(find "$RUNNER_TEMP/pages-site" -type f -iname "*.$extension" -print0)
+          done
           touch "$RUNNER_TEMP/pages-site/.nojekyll"
           echo "Taille du site optimisé :"
           du -sh "$RUNNER_TEMP/pages-site"
