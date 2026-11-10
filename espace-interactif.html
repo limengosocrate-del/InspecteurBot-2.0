@@ -55,6 +55,38 @@ button,a,input,select,textarea{
  body{height:auto!important;overflow-y:visible!important}
 }
 </style>
+<style id="inspecteurbot-interactive-light-theme">
+body.light-theme{
+ --bg:#f3f6f8!important;--panel:#ffffff!important;--panel2:#ffffff!important;
+ --line:#d8e1e8!important;--gold:#805900!important;--cyan:#006b80!important;
+ --text:#17212b!important;--muted:#465461!important;
+ background:#f3f6f8!important;color:#111820!important;color-scheme:light!important;
+}
+body.light-theme .hero{background:linear-gradient(125deg,#e4edf3,#f8fafb 75%)!important;border-color:#d4e0e8!important;color:#111820!important;box-shadow:0 10px 28px rgba(20,45,60,.10)!important}
+body.light-theme .hero h2,body.light-theme .hero p,body.light-theme .brand h1,body.light-theme .brand p{color:#111820!important;text-shadow:none!important}
+body.light-theme .hero p{color:#344451!important}
+body.light-theme .hero-tags .tag{background:#fff!important;border-color:#d5dfe6!important;color:#253642!important}
+body.light-theme .panel{background:#fff!important;border-color:#d8e1e8!important;color:#111820!important;box-shadow:0 5px 18px rgba(20,45,60,.07)!important}
+body.light-theme .panel h3,body.light-theme .panel h4,body.light-theme .rank-name,body.light-theme .question strong,body.light-theme .award b,body.light-theme .resource b,body.light-theme .suggestion h4{color:#111820!important}
+body.light-theme .sub,body.light-theme .status,body.light-theme .meta,body.light-theme .footer,body.light-theme .panel label{color:#465461!important}
+body.light-theme .rank,body.light-theme .question,body.light-theme .option,body.light-theme .award,body.light-theme .resource,body.light-theme .suggestion,body.light-theme .news{background:#f6f8fa!important;border-color:#dce4ea!important;color:#111820!important}
+body.light-theme .news p,body.light-theme .question .explain{color:#263642!important}
+body.light-theme .question .explain{background:#eaf1f5!important}
+body.light-theme .rank-num{background:#e7edf2!important;color:#765300!important}
+body.light-theme .rank-points,body.light-theme .panel-icon{color:#805900!important}
+body.light-theme .award small{color:#465461!important}
+body.light-theme .award.locked{opacity:.62;filter:grayscale(.35)}
+body.light-theme .btn.secondary{background:#edf2f5!important;color:#17212b!important;border-color:#d2dce4!important}
+body.light-theme input,body.light-theme select,body.light-theme textarea{background:#fff!important;color:#111820!important;border-color:#cbd6df!important}
+body.light-theme input::placeholder,body.light-theme textarea::placeholder{color:#667784!important}
+body.light-theme .option input{accent-color:#805900!important}
+body.light-theme .result{background:#e8f5ee!important;border-color:#b8dfca!important;color:#172b22!important}
+body.light-theme .result b{color:#126342!important}
+body.light-theme .pill{background:#edf2f5!important;color:#344451!important}
+body.light-theme .admin-box{border-color:#c8a64b!important}
+body.light-theme .back{background:#fff!important;border-color:#d4dfe6!important;color:#17212b!important}
+body.light-theme #hub-connection-status{color:#344451!important}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -70,6 +102,14 @@ button,a,input,select,textarea{
 </section>
 
 <div class="grid">
+ <section class="panel" id="leaderboard-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-ranking-star panel-icon"></i> Classement des agents</h3><button class="btn secondary" id="refresh-ranking">Actualiser</button></div>
+  <p class="sub">Classement fondé sur les points obtenus dans les défis InspecteurBot.</p>
+  <div class="rank-list" id="leaderboard"><p class="sub">Chargement du classement…</p></div>
+  <div class="status" id="leaderboard-self" aria-live="polite"></div>
+  <div class="status" id="ranking-status" aria-live="polite"></div>
+ </section>
+
  <section class="panel" id="daily-panel">
   <div class="panel-head"><h3><i class="fa-solid fa-sun panel-icon"></i> Défi du jour</h3><span class="pill" id="daily-date">Aujourd'hui</span></div>
   <p class="sub">Une question courte pour entretenir vos connaissances professionnelles. Une seule tentative par jour.</p>
@@ -80,13 +120,6 @@ button,a,input,select,textarea{
   <div class="panel-head"><h3><i class="fa-solid fa-trophy panel-icon"></i> Challenge hebdomadaire</h3><span class="pill" id="weekly-date">Cette semaine</span></div>
   <p class="sub">Cinq questions pour mesurer votre maîtrise des notions essentielles.</p>
   <div id="weekly-content"><p class="sub">Préparation du challenge…</p></div>
- </section>
-
- <section class="panel" id="leaderboard-panel">
-  <div class="panel-head"><h3><i class="fa-solid fa-ranking-star panel-icon"></i> Classement des agents</h3><button class="btn secondary" id="refresh-ranking">Actualiser</button></div>
-  <p class="sub">Classement fondé sur les points obtenus dans les défis InspecteurBot.</p>
-  <div class="rank-list" id="leaderboard"><p class="sub">Chargement du classement…</p></div>
-  <div class="status" id="ranking-status"></div>
  </section>
 
  <section class="panel" id="rewards-panel">
@@ -132,7 +165,7 @@ button,a,input,select,textarea{
 <script>
 (function(){
 'use strict';
-var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],leaderboardRows=[],bootedUserId=null;
+var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],leaderboardRows=[],myLeaderboardRow=null,myLeaderboardRank=0,leaderboardChannel=null,leaderboardRefreshTimer=null,bootedUserId=null;
 var $=function(id){return document.getElementById(id)};
 var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
@@ -186,25 +219,49 @@ async function submitChallenge(type,key,items,form){
   form.querySelectorAll('.question').forEach(function(card){card.classList.remove('done')});
  }
 }
+async function loadLeaderboardData(){
+ var r=await client.from('ib_challenge_leaderboard').select('user_id,display_name,total_points,challenge_count').order('total_points',{ascending:false}).order('challenge_count',{ascending:false}).limit(1000);
+ if(r.error)throw r.error;
+ var all=r.data||[];
+ leaderboardRows=all.slice(0,10);
+ myLeaderboardRank=all.findIndex(function(x){return x.user_id===user.id})+1;
+ myLeaderboardRow=myLeaderboardRank>0?all[myLeaderboardRank-1]:null;
+}
 async function loadAttempts(){
  var fields='id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at';
- var results=await Promise.all([
-  client.from('ib_challenge_attempts').select(fields).eq('user_id',user.id).order('created_at',{ascending:false}).limit(100),
-  client.from('ib_challenge_leaderboard').select('user_id,display_name,total_points,challenge_count').order('total_points',{ascending:false}).limit(10)
- ]);
- if(results[0].error)throw results[0].error;if(results[1].error)throw results[1].error;
- attempts=results[0].data||[];leaderboardRows=results[1].data||[];
+ var r=await client.from('ib_challenge_attempts').select(fields).eq('user_id',user.id).order('created_at',{ascending:false}).limit(100);
+ if(r.error)throw r.error;
+ attempts=r.data||[];
+ await loadLeaderboardData();
+}
+function subscribeLeaderboardRealtime(){
+ if(!client||!user||typeof client.channel!=='function')return;
+ if(leaderboardChannel){try{client.removeChannel(leaderboardChannel)}catch(_){}leaderboardChannel=null}
+ leaderboardChannel=client.channel('ib-leaderboard-live-'+user.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'ib_challenge_attempts'},function(){
+   clearTimeout(leaderboardRefreshTimer);
+   leaderboardRefreshTimer=setTimeout(async function(){
+    try{await loadLeaderboardData();renderAwards();renderLeaderboard()}
+    catch(e){showStatus('ranking-status','Mise à jour du classement indisponible : '+e.message)}
+   },300);
+  })
+  .subscribe(function(status){
+   if(status==='SUBSCRIBED')showStatus('ranking-status','Classement synchronisé en temps réel.',true);
+   else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')showStatus('ranking-status','Connexion temps réel interrompue. Utilisez Actualiser pour vérifier le classement.');
+  });
 }
 function renderAwards(){
- var mine=attempts.filter(function(a){return a.user_id===user.id}),total=mine.reduce(function(s,a){return s+Number(a.points||0)},0);
+ var total=Number(myLeaderboardRow&&myLeaderboardRow.total_points||0);
  $('my-points').textContent=total+' points';
- var levels=[{p:10,e:'🌱',n:'Premier pas'},{p:50,e:'📘',n:'Apprenant actif'},{p:100,e:'⭐',n:'Agent assidu'},{p:250,e:'🏅',n:'Expert en progression'},{p:500,e:'🏆',n:'Champion IGT'}];
- $('my-awards').innerHTML=levels.map(function(x){var got=total>=x.p;return '<div class="award '+(got?'':'locked')+'"><div class="emoji">'+x.e+'</div><b>'+x.n+'</b><small>'+x.p+' points · '+(got?'Obtenu':'À débloquer')+'</small></div>'}).join('');
+ var levels=[{p:60,e:'🌱',n:'Premier pas'},{p:100,e:'📘',n:'Apprenant actif'},{p:150,e:'⭐',n:'Agent assidu'},{p:300,e:'🏅',n:'Expert en progression'},{p:500,e:'🏆',n:'Champion IGT'}];
+ $('my-awards').innerHTML=levels.map(function(x){var got=total>=x.p;return '<div class="award '+(got?'':'locked')+'"><div class="emoji">'+x.e+'</div><b>'+x.n+'</b><small>'+x.p+' points · '+(got?'Débloqué':'À débloquer')+'</small></div>'}).join('');
 }
 function renderLeaderboard(){
  var rows=leaderboardRows||[];
- if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra après les premières participations.</p>';return}
- $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:#9eb4ce;font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>'}).join('');
+ if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra dès que les agents auront validé leurs premiers défis.</p>';$('leaderboard-self').textContent='Votre position sera calculée automatiquement dès votre première participation.';return}
+ $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:var(--muted);font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>'}).join('');
+ if(myLeaderboardRow){$('leaderboard-self').textContent='Votre position : #'+myLeaderboardRank+' · '+Number(myLeaderboardRow.total_points||0)+' points.'}
+ else $('leaderboard-self').textContent='Votre position apparaîtra après votre première participation.';
 }
 async function loadResources(){
  try{var r=await client.from('training_resources').select('id,title,description,kind,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3);if(r.error)throw r.error;
@@ -235,7 +292,7 @@ async function boot(detail){
  if(!client||!user||!user.id){$('hub-connection-status').textContent='Connexion requise pour utiliser les fonctionnalités interactives.';return}
  if(bootedUserId===user.id)return;bootedUserId=user.id;$('hub-connection-status').textContent='Session sécurisée active · Chargement de vos données…';
  try{if(!profile){var p=await client.from('profiles').select('display_name,role').eq('id',user.id).maybeSingle();profile=p.data||{}}
- await loadQuestions();await Promise.all([loadResources(),loadMySuggestions(),refreshAll()]);if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
+ await loadQuestions();await Promise.all([loadResources(),loadMySuggestions(),refreshAll()]);subscribeLeaderboardRealtime();if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
  }catch(e){console.error(e);bootedUserId=null;$('hub-connection-status').textContent='Certaines données ne sont pas disponibles. Utilisez Actualiser pour réessayer.';showStatus('suggestion-status','Chargement incomplet : '+e.message)}
 }
 async function sendSuggestion(){
