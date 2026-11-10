@@ -29,17 +29,17 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
 <main>
-<div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et échanges avec l’administration</p></div></div>
-<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="messages" type="button">Messages</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
-<section class="panel" id="writePanel"><h2 id="writeTitle"><i class="fa-regular fa-paper-plane"></i> Écrire à l’administrateur</h2><form id="messageForm"><textarea id="messageContent" maxlength="4000" required placeholder="Écrivez votre message à l’administrateur…"></textarea><button class="primary" id="sendMessage" type="submit">Envoyer le message</button><div class="notice" id="messageStatus" aria-live="polite"></div></form></section>
+<div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et formations publiées par l’administration</p></div></div>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
+
 <section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" maxlength="5000" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
 </main>
 <script>
 (function(){
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
-let client,user,profile,isAdmin=false,announcements=[],messages=[],names={},tab='all',started=false;
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v2_';
+let client,user,profile,isAdmin=false,announcements=[],training=[],tab='all',started=false;
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v3_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -50,50 +50,46 @@ async function load(){
  const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('La connexion est lente. Appuyez sur Actualiser pour réessayer.')),10000)});
  try{
   const requests=Promise.all([
-   client.from('announcements').select('id,title,body,created_by,created_at').or('target_user_id.is.null,target_user_id.eq.'+user.id).order('created_at',{ascending:false}).limit(50),
-   client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+user.id+',recipient_id.eq.'+user.id).order('created_at',{ascending:false}).limit(100)
+   client.from('announcements').select('id,title,body,created_by,created_at').or('target_user_id.is.null,target_user_id.eq.'+user.id).order('created_at',{ascending:false}).limit(100),
+   client.from('training_resources').select('id,title,description,created_by,created_at,published').eq('published',true).order('created_at',{ascending:false}).limit(100)
   ]);
-  const [a,m]=await Promise.race([requests,timeout]);
-  if(a.error)throw a.error;if(m.error)throw m.error;
-  announcements=a.data||[];messages=m.data||[];
-  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,messages,savedAt:Date.now()}))}catch(_){}
-  const ids=announcements.map(x=>x.id);
-  let reads=[];
+  const [a,t]=await Promise.race([requests,timeout]);
+  if(a.error)throw a.error;if(t.error)throw t.error;
+  announcements=(a.data||[]).filter(x=>x.created_by!==user.id);
+  training=(t.data||[]).filter(x=>x.created_by!==user.id);
+  const ids=announcements.map(x=>x.id);let reads=[];
   if(ids.length){const {data,error}=await client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).in('announcement_id',ids);if(error)throw error;reads=data||[]}
   const readIds=new Set(reads.map(x=>String(x.announcement_id)));
-  try{localStorage.setItem('inspecteurbot_announcement_reads_'+user.id,JSON.stringify([...readIds]))}catch(_){}
-  const unread=announcements.filter(x=>x.created_by!==user.id&&!readIds.has(String(x.id)));
-  if(unread.length){const {error}=await client.from('announcement_reads').upsert(unread.map(x=>({announcement_id:x.id,user_id:user.id})),{onConflict:'announcement_id,user_id',ignoreDuplicates:true});if(error)console.warn(error)}
-  const incoming=messages.filter(x=>x.recipient_id===user.id&&!x.read_at);
-  if(incoming.length){const stamp=new Date().toISOString(),messageIds=incoming.map(x=>x.id);const {error}=await client.from('messages').update({read_at:stamp}).in('id',messageIds);if(error)console.warn(error);messages=messages.map(x=>messageIds.includes(x.id)?{...x,read_at:stamp}:x)}
-  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,messages,savedAt:Date.now()}))}catch(_){}
-  if(isAdmin){const userIds=[...new Set(messages.flatMap(x=>[x.sender_id,x.recipient_id]).filter(x=>x&&x!==user.id))];if(userIds.length){const {data,error}=await client.from('profiles').select('id,display_name').in('id',userIds).limit(100);if(!error)(data||[]).forEach(x=>names[x.id]=x.display_name||'Utilisateur')}}
+  const unread=announcements.filter(x=>!readIds.has(String(x.id)));
+  if(unread.length){const {error}=await client.from('announcement_reads').upsert(unread.map(x=>({announcement_id:x.id,user_id:user.id})),{onConflict:'announcement_id,user_id',ignoreDuplicates:true});if(error)console.warn('Marquage des annonces consultées indisponible',error)}
+  try{localStorage.setItem('inspecteurbot_announcement_reads_'+user.id,JSON.stringify([...new Set([...readIds,...unread.map(x=>String(x.id))])]));localStorage.setItem('inspecteurbot_training_reads_v1_'+user.id,JSON.stringify([...new Set([...JSON.parse(localStorage.getItem('inspecteurbot_training_reads_v1_'+user.id)||'[]').map(String),...training.map(x=>String(x.id))])]));localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,training,savedAt:Date.now()}))}catch(_){}
   render();
  }finally{clearTimeout(timer)}
 }
 function render(){
- const ann=announcements.filter(x=>x.created_by!==user.id).map(x=>({kind:'announcement',date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
- const msgs=messages.map(x=>({kind:'message',date:x.created_at,title:isAdmin?(x.sender_id===user.id?'Vous':'De : '+(names[x.sender_id]||'Utilisateur')):(x.sender_id===user.id?'Vous':'Administrateur IGT'),body:x.content,meta:isAdmin?(x.recipient_id===user.id?'Message reçu':'Message envoyé'):(x.sender_id===user.id?'Message envoyé':'Message reçu'),sender:x.sender_id}));
- let items=ann.concat(msgs).sort((x,y)=>new Date(y.date)-new Date(x.date));
- if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');if(tab==='messages')items=items.filter(x=>x.kind==='message');
- $('notificationList').innerHTML=items.length?items.map(x=>'<article class="item"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-regular fa-envelope"></i> ')+esc(x.title)+'</div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(isAdmin&&x.kind==='message'&&x.sender!==user.id?'<button type="button" class="primary reply" data-id="'+esc(x.sender)+'" style="margin-top:10px">Répondre</button>':'')+'</article>').join(''):empty(tab==='messages'?'Aucun message pour le moment.':'Aucune annonce ou notification.');
- document.querySelectorAll('.reply').forEach(b=>b.addEventListener('click',()=>{$('recipient').value=b.dataset.id;$('messageContent').focus()}));
+ const ann=announcements.map(x=>({kind:'announcement',date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
+ const courses=training.map(x=>({kind:'training',date:x.created_at,title:x.title,body:x.description||'Une nouvelle formation est disponible.',meta:'Formation publiée'}));
+ let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
+ if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
+ if(tab==='training')items=items.filter(x=>x.kind==='training');
+ $('notificationList').innerHTML=items.length?items.map(x=>'<article class="item"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+'</div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='training'?'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Consulter la formation</a>':'')+'</article>').join(''):empty(tab==='training'?'Aucune formation publiée.':'Aucune annonce ou formation pour le moment.');
 }
 function init(d){
  if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=profile.role==='super_admin';
- if(isAdmin){$('writeTitle').innerHTML='<i class="fa-regular fa-paper-plane"></i> Répondre à un utilisateur';$('messageForm').insertAdjacentHTML('afterbegin','<select id="recipient" required><option value="">Choisir un destinataire…</option></select>');$('messageContent').placeholder='Rédigez votre réponse…';$('sendMessage').textContent='Envoyer la réponse';$('adminPanel').hidden=false;
-  client.from('profiles').select('id,display_name').neq('id',user.id).order('display_name').limit(500).then(({data,error})=>{if(!error&&data)data.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.display_name||'Utilisateur';$('recipient').appendChild(o)})});
- }
+ if(isAdmin)$('adminPanel').hidden=false;
  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));
- $('messageForm').addEventListener('submit',async e=>{e.preventDefault();const content=$('messageContent').value.trim(),recipient=isAdmin?$('recipient').value:ADMIN_ID;if(!content||!recipient){status('messageStatus','Choisissez un destinataire et saisissez un message.',false);return}
-  const b=$('sendMessage');b.disabled=true;status('messageStatus','Envoi en cours…',true);
-  try{const {error}=await client.from('messages').insert({sender_id:user.id,recipient_id:recipient,content});if(error)throw error;$('messageContent').value='';status('messageStatus',isAdmin?'Réponse envoyée.':'Votre message a été transmis à l’administrateur.',true);await load()}catch(e){status('messageStatus',e.message||'Envoi impossible.',false)}finally{b.disabled=false}
+ if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{
+  e.preventDefault();const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim();if(!title||!body)return;
+  const b=$('publishAnnouncement');b.disabled=true;status('announcementStatus','Publication en cours…',true);
+  try{const {error}=await client.from('announcements').insert({title,body,created_by:user.id,target_user_id:null});if(error)throw error;$('announcementTitle').value='';$('announcementBody').value='';status('announcementStatus','Annonce publiée avec succès.',true);await load()}
+  catch(e){status('announcementStatus',e.message||'Publication impossible.',false)}finally{b.disabled=false}
  });
- if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{e.preventDefault();const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim();if(!title||!body)return;const b=$('publishAnnouncement');b.disabled=true;status('announcementStatus','Publication en cours…',true);
-  try{const {error}=await client.from('announcements').insert({title,body,created_by:user.id,target_user_id:null});if(error)throw error;$('announcementTitle').value='';$('announcementBody').value='';status('announcementStatus','Annonce publiée avec succès.',true);await load()}catch(e){status('announcementStatus',e.message||'Publication impossible.',false)}finally{b.disabled=false}
- });
- try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){announcements=Array.isArray(cached.announcements)?cached.announcements:[];messages=Array.isArray(cached.messages)?cached.messages:[];render()}}catch(_){}
- load().catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!messages.length)$('notificationList').innerHTML=empty('Aucune notification enregistrée sur cet appareil.')});
+ try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){announcements=Array.isArray(cached.announcements)?cached.announcements:[];training=Array.isArray(cached.training)?cached.training:[];render()}}catch(_){}
+ load().catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!training.length)$('notificationList').innerHTML=empty('Aucune annonce ou formation enregistrée sur cet appareil.')});
+ client.channel('ib-announcements-center-'+user.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>load().catch(console.warn))
+  .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>load().catch(console.warn))
+  .subscribe();
 }
 document.addEventListener('inspecteurbot:authenticated',e=>init(e.detail));
 function existing(){if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser&&window.inspecteurBotAuthProfile)init({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile})}
