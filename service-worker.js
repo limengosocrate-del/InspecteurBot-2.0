@@ -22,7 +22,7 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
 
-  const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
+  const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
     if(isHtml){
