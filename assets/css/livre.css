@@ -334,3 +334,40 @@ body.dark-theme .legal-article-text{color:#e2eaf2}
 body.dark-theme .legal-back-btn,body.dark-theme .legal-secondary-btn{background:#20364d;border-color:#354a60;color:#e2eaf2}
 body.dark-theme .legal-sanction{background:#382321;color:#ffd8d2}
 @media(max-width:640px){.legal-detail-view{width:calc(100% - 18px);margin:9px auto;padding:13px;border-radius:14px}.legal-detail-header{flex-direction:column;gap:12px}.legal-result-list{grid-template-columns:1fr}.legal-result-card{min-height:64px}.legal-article-text{font-size:15px;line-height:1.8}}
+
+
+/* LECTURE CONFORTABLE — page entière visible sans ascenseur interne */
+#livreHost{width:100%;max-width:none;margin:26px 0;padding:clamp(12px,2.5vw,28px)}
+#livreHost .livre-wrapper{width:100%;max-width:1280px;margin:0 auto;perspective:none}
+#livreHost .livre{
+  width:100%;box-sizing:border-box;min-height:0;height:auto;
+  padding:clamp(28px,4vw,56px) clamp(22px,5vw,72px);
+  overflow:visible;border-radius:14px 22px 22px 14px;
+}
+#livreHost .livre-page{width:100%;min-height:0}
+#livreHost .livre-contenu{
+  max-height:none!important;height:auto!important;overflow:visible!important;
+  overflow-y:visible!important;overflow-x:visible!important;
+  padding-right:0!important;margin-bottom:12px;
+  font-size:clamp(18px,1.55vw,21px)!important;
+  line-height:1.85!important;text-align:left;
+  scrollbar-width:none!important;-ms-overflow-style:none!important;
+}
+#livreHost .livre-contenu::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+#livreHost .livre-article-titre{font-size:clamp(24px,2.2vw,30px)!important;line-height:1.4}
+#livreHost .livre-titre-section{font-size:15px;line-height:1.6}
+#livreHost .livre-numero{font-size:clamp(36px,3vw,44px)}
+#livreHost .livre-sanction{font-size:16px;line-height:1.75}
+#livreHost .livre-pagination{position:relative;left:auto;bottom:auto;width:100%;margin:22px 0 0;padding-top:12px;border-top:1px solid rgba(140,120,80,.22)}
+#livreHost .livre-progress{max-width:1280px}
+@media(max-width:768px){
+  #livreHost{padding:10px}
+  #livreHost .livre{padding:26px 20px 30px 32px;min-height:0}
+  #livreHost .livre-contenu{font-size:18px!important;line-height:1.8!important}
+  #livreHost .livre-article-titre{font-size:23px!important}
+  #livreHost .livre-sanction{font-size:15px}
+}
+@media(max-width:420px){
+  #livreHost .livre{padding:22px 15px 26px 26px}
+  #livreHost .livre-contenu{font-size:17px!important;line-height:1.75!important}
+}
