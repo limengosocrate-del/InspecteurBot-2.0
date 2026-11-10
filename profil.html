@@ -176,14 +176,44 @@ $('editProfile').addEventListener('submit',e=>{
  fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)data.professional[key]=el.value.trim()});
  if(save()){show();$('saveMessage').textContent='Enregistré sur cet appareil.';$('saveMessage').style.color='#138a65'}
 });
-$('avatarFile').addEventListener('change',e=>{
+async function syncAvatarToSupabase(dataUrl){
+ const sb=window.inspecteurBotAuthClient;
+ if(!sb)throw new Error('Connexion sécurisée indisponible. Rechargez la page.');
+ const match=String(dataUrl).match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);
+ if(!match)throw new Error('Format de photo non reconnu.');
+ const type=match[1],raw=atob(match[2]),bytes=new Uint8Array(raw.length);
+ for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+ const ext=type==='image/jpeg'?'jpg':type.split('/')[1];
+ const {data:{user},error:userError}=await sb.auth.getUser();
+ if(userError||!user)throw new Error('Session expirée. Reconnectez-vous.');
+ const path=user.id+'/avatar.'+ext;
+ const {error:uploadError}=await sb.storage.from('profile-photos').upload(path,new Blob([bytes],{type}),{upsert:true,contentType:type,cacheControl:'3600'});
+ if(uploadError)throw uploadError;
+ const {data:publicData}=sb.storage.from('profile-photos').getPublicUrl(path);
+ const publicUrl=publicData.publicUrl+'?v='+Date.now();
+ const {error:updateError}=await sb.from('profiles').update({avatar_url:publicUrl,updated_at:new Date().toISOString()}).eq('id',user.id);
+ if(updateError)throw updateError;
+ data.avatar=publicUrl;
+ if(!save())throw new Error('Photo envoyée, mais sauvegarde locale impossible.');
+ show();
+ if(typeof window.inspecteurBotSetAvatar==='function')window.inspecteurBotSetAvatar(publicUrl);
+ return publicUrl;
+}
+$('avatarFile').addEventListener('change',async e=>{
  const f=e.target.files?.[0];if(!f)return;
  if(!/^image\/(jpeg|png|webp)$/.test(f.type)){ $('avatarMessage').textContent='Format accepté : JPG, PNG ou WEBP.';return}
  if(f.size>2*1024*1024){$('avatarMessage').textContent='La photo doit faire 2 Mo maximum.';return}
- const reader=new FileReader();
- reader.onload=()=>{data.avatar=reader.result;if(save()){show();if(typeof window.inspecteurBotSetAvatar==='function')window.inspecteurBotSetAvatar(data.avatar);$('avatarMessage').textContent='Profil mis à jour avec succès.';$('avatarMessage').style.color='#138a65';}};
- reader.onerror=()=>$('avatarMessage').textContent='Lecture de la photo impossible.';
- reader.readAsDataURL(f);e.target.value='';
+ $('avatarMessage').textContent='Synchronisation sécurisée de votre photo…';$('avatarMessage').style.color='#075a96';
+ try{
+  const reader=new FileReader();
+  const dataUrl=await new Promise((resolve,reject)=>{reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Lecture de la photo impossible.'));reader.readAsDataURL(f)});
+  data.avatar=dataUrl;
+  if(!save())throw new Error('Espace local insuffisant pour préparer la photo.');
+  await syncAvatarToSupabase(dataUrl);
+  $('avatarMessage').textContent='Photo synchronisée : elle est maintenant visible par les autres agents.';
+  $('avatarMessage').style.color='#138a65';
+ }catch(err){console.error('Synchronisation photo de profil',err);$('avatarMessage').textContent='Échec de synchronisation : '+(err.message||'réessayez');$('avatarMessage').style.color='#b42318'}
+ e.target.value='';
 });
 /* Documents personnels : IndexedDB, sans service distant. */
 const DB='inspecteurbot_personal_documents_local_v1';
