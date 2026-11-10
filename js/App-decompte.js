@@ -1260,11 +1260,46 @@ $('#pvQualiteAgent').textContent =
     const el = $('#' + elementId);
     if (!el) return;
     if (typeof html2pdf === 'undefined') {
-      toast('Module PDF non chargé — utilisez Imprimer > PDF', 'error');
-      window.print();
+      toast('Module PDF non chargé — réessayez après le chargement.', 'error');
       return;
     }
-    toast('Génération du PDF…');
+    toast('Mise en page A4 et génération du PDF…');
+    if (state.lastResult) {
+      if (elementId === 'decompteSheet') renderPreview(state.lastResult);
+      if (elementId === 'pvSheet') renderPV(state.lastResult);
+    }
+
+    // Le Décompte final est rasterisé puis placé intégralement sur UNE page A4.
+    // Contrairement à une pagination automatique, cette méthode conserve tous
+    // les éléments (tableaux, retenues, observations et signature) sur la même page.
+    if (elementId === 'decompteSheet') {
+      html2pdf()
+        .set({ filename: filename || (state.numero || 'decompte') + '.pdf',
+          image: { type: 'jpeg', quality: 0.97 },
+          html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' } })
+        .from(el).toCanvas().get('canvas').then((canvas) => {
+          const JsPDF = window.jspdf && window.jspdf.jsPDF
+            ? window.jspdf.jsPDF
+            : window.jsPDF;
+          if (!JsPDF) throw new Error('Bibliothèque jsPDF indisponible');
+          const pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+          const pageWidth = 210, pageHeight = 297, margin = 5;
+          const fit = Math.min((pageWidth - margin * 2) / canvas.width,
+                              (pageHeight - margin * 2) / canvas.height);
+          const width = canvas.width * fit, height = canvas.height * fit;
+          const x = (pageWidth - width) / 2, y = (pageHeight - height) / 2;
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', x, y, width, height, undefined, 'FAST');
+          pdf.save(filename || (state.numero || 'decompte') + '.pdf');
+        })
+        .then(() => toast('PDF A4 téléchargé sur une seule page.', 'success'))
+        .catch((error) => {
+          console.error('Erreur export PDF Décompte final:', error);
+          toast('Erreur lors de la génération du PDF. Réessayez.', 'error');
+        });
+      return;
+    }
+
+    // Le PV conserve son export A4 habituel, inchangé.
     const opt = {
       margin: [8, 8, 8, 8],
       filename: filename || (state.numero || 'decompte') + '.pdf',
@@ -1273,11 +1308,6 @@ $('#pvQualiteAgent').textContent =
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
-    // ensure preview is rendered
-    if (state.lastResult) {
-      if (elementId === 'decompteSheet') renderPreview(state.lastResult);
-      if (elementId === 'pvSheet') renderPV(state.lastResult);
-    }
     html2pdf().set(opt).from(el).save().then(() => {
       toast('PDF téléchargé', 'success');
     }).catch(() => {
