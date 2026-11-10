@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071b3d">
+<title>Espace interactif IGT | InspecteurBot</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
+<script src="auth-gate.js?v=20261110-espace-interactif-v1" defer></script>
+<style>
+:root{color-scheme:dark;--bg:#06152f;--panel:#0b2448;--panel2:#102d56;--line:#24466e;--gold:#ffd65a;--cyan:#51d7ef;--text:#f4f8ff;--muted:#b8c9df;--green:#53d69a;--red:#ff8888}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+body{background:radial-gradient(ellipse at 50% -15%,#17477d 0,transparent 55%),var(--bg);padding-bottom:35px}
+a{color:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{padding:20px 0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:12px}.brand-icon{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#f6d96b,#bb8a18);display:grid;place-items:center;color:#10264a;font-size:22px}.brand h1{font-size:clamp(19px,4vw,26px);margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}.back{padding:10px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none;font-weight:700;font-size:13px;background:#ffffff0b}
+.hero{padding:24px;border:1px solid #ffffff1b;border-radius:22px;background:linear-gradient(125deg,#0c3470,#0b2448 70%);box-shadow:0 12px 35px #0003}.hero h2{margin:0 0 8px;font-size:clamp(22px,5vw,32px)}.hero p{margin:0;color:#d5e5f8;line-height:1.6;max-width:760px}.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.tag{font-size:11px;padding:7px 10px;border-radius:30px;background:#ffffff14;border:1px solid #ffffff1c;color:#e9f4ff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.panel{background:linear-gradient(155deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}.panel.wide{grid-column:1/-1}.panel h3{margin:0 0 7px;font-size:18px}.sub{margin:0 0 15px;color:var(--muted);font-size:13px;line-height:1.5}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-icon{color:var(--gold);font-size:21px}.btn{border:0;border-radius:11px;background:var(--gold);color:#10264a;padding:11px 15px;font-weight:800;cursor:pointer;min-height:42px}.btn.secondary{background:#ffffff12;color:#fff;border:1px solid #ffffff26}.btn:disabled{opacity:.5;cursor:not-allowed}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px}.feed{display:grid;gap:10px}.news{padding:12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff15}.news h4{margin:0 0 5px;font-size:14px}.news p{margin:0;color:#d4e1f2;font-size:13px;line-height:1.5;white-space:pre-wrap}.meta{font-size:10px;color:#a9bfd9;margin-bottom:6px}.question{padding:14px;border-radius:13px;background:#ffffff09;border:1px solid #ffffff1b;margin:10px 0}.question strong{display:block;line-height:1.5;margin-bottom:10px;font-size:14px}.option{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border-radius:9px;background:#ffffff08;margin:6px 0;font-size:13px;line-height:1.4;cursor:pointer}.option input{margin-top:2px;accent-color:#ffd65a}.question .explain{display:none;margin-top:10px;padding:10px;border-radius:9px;background:#143c5e;color:#dcecff;font-size:12px;line-height:1.5}.question.done .explain{display:block}.result{padding:13px;border-radius:12px;background:#164b45;border:1px solid #2b806e;margin-top:12px}.result b{color:#9ef0ce}.rank-list{display:grid;gap:8px}.rank{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;padding:10px;border-radius:11px;background:#ffffff09}.rank-num{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#ffffff12;color:var(--gold);font-weight:900}.rank-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}.rank-points{font-size:12px;color:var(--gold);font-weight:800}.badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.award{padding:12px 8px;text-align:center;border:1px solid #ffffff1a;border-radius:12px;background:#ffffff08}.award .emoji{font-size:25px}.award b{display:block;font-size:12px;margin:5px 0}.award small{font-size:10px;color:var(--muted)}.award.locked{opacity:.42;filter:grayscale(1)}
+input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;background:#061a35;color:#fff;padding:12px;font:inherit;font-size:13px;outline:none}textarea{min-height:105px;resize:vertical}label{display:block;font-size:12px;color:#d5e3f5;font-weight:700;margin:10px 0 6px}.resource{padding:11px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff15;margin:8px 0}.resource b{font-size:13px}.resource p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.suggestion{padding:12px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff18;margin:8px 0}.suggestion h4{margin:0 0 5px;font-size:13px}.suggestion p{font-size:12px;line-height:1.5;color:#d4e1f2;white-space:pre-wrap}.pill{font-size:10px;padding:4px 8px;border-radius:20px;background:#ffffff14;color:#dceaff}.admin-box{border:1px dashed #d8b94d;padding:14px;border-radius:14px;margin-top:14px}.hidden{display:none!important}.footer{text-align:center;color:#829bb9;font-size:11px;margin-top:24px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.hero{padding:19px}.panel{padding:15px}.top{align-items:flex-start}.back{white-space:nowrap}.wrap{width:calc(100% - 20px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+ <div class="brand"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div><div><h1>InspecteurBot · Espace interactif</h1><p>Apprendre, relever des défis et contribuer à l'amélioration de l'IGT</p></div></div>
+ <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a>
+</header>
+<section class="hero">
+ <h2>Bienvenue dans votre espace de progression 🇨🇩</h2>
+ <p>Retrouvez les annonces officielles, testez vos connaissances, suivez votre progression et proposez des améliorations. Les points et distinctions sont pédagogiques et n'ont aucune valeur financière ou administrative.</p>
+ <div class="hero-tags"><span class="tag">Défi quotidien</span><span class="tag">Challenge hebdomadaire</span><span class="tag">Classement</span><span class="tag">Récompenses virtuelles</span></div>
+</section>
+
+<div class="grid">
+ <section class="panel wide" id="news-panel">
+  <div class="panel-head"><div><h3><i class="fa-solid fa-newspaper panel-icon"></i> Actualités et annonces IGT</h3><p class="sub">Informations publiées par l'administration et communiqués disponibles.</p></div><button class="btn secondary" id="refresh-news">Actualiser</button></div>
+  <div class="feed" id="news-feed"><p class="sub">Chargement des actualités…</p></div>
+  <div class="row" style="margin-top:12px"><a class="btn secondary" href="communiques.html" style="text-decoration:none">Tous les communiqués officiels</a></div>
+  <div class="status" id="news-status" aria-live="polite"></div>
+ </section>
+
+ <section class="panel" id="daily-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-sun panel-icon"></i> Défi du jour</h3><span class="pill" id="daily-date">Aujourd'hui</span></div>
+  <p class="sub">Une question courte pour entretenir vos connaissances professionnelles. Une seule tentative par jour.</p>
+  <div id="daily-content"><p class="sub">Préparation du défi…</p></div>
+ </section>
+
+ <section class="panel" id="weekly-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-trophy panel-icon"></i> Challenge hebdomadaire</h3><span class="pill" id="weekly-date">Cette semaine</span></div>
+  <p class="sub">Cinq questions pour mesurer votre maîtrise des notions essentielles.</p>
+  <div id="weekly-content"><p class="sub">Préparation du challenge…</p></div>
+ </section>
+
+ <section class="panel" id="leaderboard-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-ranking-star panel-icon"></i> Classement des agents</h3><button class="btn secondary" id="refresh-ranking">Actualiser</button></div>
+  <p class="sub">Classement fondé sur les points obtenus dans les défis InspecteurBot.</p>
+  <div class="rank-list" id="leaderboard"><p class="sub">Chargement du classement…</p></div>
+  <div class="status" id="ranking-status"></div>
+ </section>
+
+ <section class="panel" id="rewards-panel">
+  <h3><i class="fa-solid fa-medal panel-icon"></i> Mes récompenses</h3>
+  <p class="sub">Des distinctions virtuelles attribuées selon votre participation aux défis.</p>
+  <div class="result"><b id="my-points">0 point</b><div style="font-size:11px;color:#cce8e0;margin-top:4px">Votre progression dans les défis</div></div>
+  <div class="badge-grid" id="my-awards" style="margin-top:10px"></div>
+  <p class="status">Les distinctions ne constituent ni une prime, ni un grade, ni une certification officielle.</p>
+ </section>
+
+ <section class="panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-book-open panel-icon"></i> Bibliothèque professionnelle</h3></div>
+  <p class="sub">Guides, documents, cours et exercices mis à disposition par l'administration.</p>
+  <div id="resource-preview"><p class="sub">Chargement des ressources…</p></div>
+  <a class="btn secondary" href="formation.html" style="display:inline-block;text-decoration:none;margin-top:8px">Ouvrir la bibliothèque</a>
+ </section>
+
+ <section class="panel">
+  <h3><i class="fa-solid fa-graduation-cap panel-icon"></i> Académie IGT</h3>
+  <p class="sub">Accédez aux cours, révisions, examens, badges et certificats pédagogiques.</p>
+  <a class="btn" href="pages/Quiz_Academie_IGT/index.html" style="display:inline-block;text-decoration:none">Accéder à l'Académie</a>
+  <div class="resource" style="margin-top:12px"><b>Cas pratiques d'inspection</b><p>Résolvez des scénarios professionnels et entraînez-vous à prendre les bonnes décisions.</p><a href="pages/Quiz_Academie_IGT/index.html" style="color:var(--gold);font-size:12px;display:inline-block;margin-top:7px">Ouvrir les missions pratiques →</a></div>
+ </section>
+
+ <section class="panel wide" id="suggestion-panel">
+  <h3><i class="fa-solid fa-lightbulb panel-icon"></i> Boîte à idées</h3>
+  <p class="sub">Votre proposition peut contribuer à rendre InspecteurBot plus utile. Les suggestions sont visibles par vous et par les administrateurs autorisés.</p>
+  <form id="suggestion-form">
+   <label for="suggestion-category">Catégorie</label>
+   <select id="suggestion-category" required><option value="fonctionnalite">Nouvelle fonctionnalité</option><option value="amelioration">Amélioration</option><option value="contenu">Contenu ou documentation</option><option value="autre">Autre</option></select>
+   <label for="suggestion-title">Titre de la proposition</label><input id="suggestion-title" maxlength="120" minlength="4" required placeholder="Ex. Ajouter un guide de procédure">
+   <label for="suggestion-description">Description</label><textarea id="suggestion-description" maxlength="1500" minlength="10" required placeholder="Expliquez votre idée et son utilité…"></textarea>
+   <div class="row" style="margin-top:12px"><button class="btn" type="submit" id="send-suggestion">Envoyer ma proposition</button></div>
+   <div class="status" id="suggestion-status" aria-live="polite"></div>
+  </form>
+  <div style="margin-top:18px"><h3 style="font-size:15px">Mes propositions</h3><div id="my-suggestions"><p class="sub">Chargement…</p></div></div>
+  <div class="admin-box hidden" id="admin-suggestions-box"><h3><i class="fa-solid fa-shield-halved"></i> Modération des propositions</h3><p class="sub">Zone réservée aux administrateurs autorisés.</p><div id="admin-suggestions"><p class="sub">Chargement…</p></div></div>
+ </section>
+</div>
+<footer class="footer">InspecteurBot RDC · Plateforme numérique de l'Inspection Générale du Travail · © 2026</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],dailyTimer=null;
+var $=function(id){return document.getElementById(id)};
+var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
+function weekStart(date){var d=new Date(date+'T12:00:00+01:00');var day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function orderedQuestions(seed,count){var list=questions.slice().filter(function(q){return q&&q.question&&Array.isArray(q.choix)&&q.choix.length>=2&&typeof q.bonne==='number'});list.sort(function(a,b){return hash(seed+'-'+a.id)-hash(seed+'-'+b.id)});return list.slice(0,count)}
+function showStatus(id,msg,ok){var el=$(id);if(el){el.textContent=msg||'';el.style.color=ok?'#8de6bd':'#ffb1a7'}}
+function isAdmin(){return !!(profile&&['admin','super_admin'].includes(profile.role))}
+function normalizeCorrect(q){return Number(q.bonne)}
+function getAttempt(type,key){return attempts.find(function(a){return a.challenge_type===type&&a.challenge_key===key})}
+async function loadQuestions(){
+ try{var r=await fetch('question_bank.json',{cache:'force-cache'});if(!r.ok)throw new Error('Banque de questions indisponible');var data=await r.json();questions=Array.isArray(data)?data:(Array.isArray(data.questions)?data.questions:[]);if(!questions.length)throw new Error('Aucune question exploitable');}
+ catch(e){console.warn(e);showStatus('daily-content','La banque de questions est momentanément indisponible. Réessayez avec une connexion internet.');}
+}
+function renderQuestionSet(type,items,container,key){
+ if(!items.length){container.innerHTML='<p class="sub">Aucune question disponible pour ce défi.</p>';return}
+ var old=getAttempt(type,key);
+ if(old){container.innerHTML='<div class="result"><b>Défi déjà effectué</b><p style="margin:7px 0 0;font-size:13px">Résultat : '+esc(old.score)+'% · '+esc(old.points)+' points obtenus.</p></div>';return}
+ var title=type==='daily'?'Question du jour':'Questions du challenge';
+ var html='<form class="challenge-form" data-type="'+type+'"><div class="meta">'+title+' · '+items.length+' question(s)</div>';
+ items.forEach(function(q,i){
+  html+='<div class="question" data-qid="'+esc(q.id)+'"><strong>'+ (i+1)+'. '+esc(q.question)+'</strong>';
+  q.choix.forEach(function(choice,j){html+='<label class="option"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+esc(choice)+'</span></label>'});
+  html+='<div class="explain"><b>Bonne réponse :</b> '+esc(q.choix[normalizeCorrect(q)]||'')+'<br>'+esc(q.explication||q.explanation||'Relisez la référence pédagogique associée à cette question.')+'</div></div>';
+ });
+ html+='<div class="row"><button class="btn" type="submit">Valider mes réponses</button><span class="status" data-countdown></span></div><div class="status" data-result></div></form>';
+ container.innerHTML=html;
+ var form=container.querySelector('form');
+ form.addEventListener('submit',function(e){e.preventDefault();submitChallenge(type,key,items,form)});
+ if(type==='daily'){
+  var left=30,display=form.querySelector('[data-countdown]');display.textContent='Temps : 30 s';
+  clearInterval(dailyTimer);dailyTimer=setInterval(function(){left--;if(display)display.textContent='Temps : '+left+' s';if(left<=0){clearInterval(dailyTimer);form.requestSubmit()}},1000);
+ }
+}
+async function submitChallenge(type,key,items,form){
+ var btn=form.querySelector('button[type=submit]');if(btn.disabled)return;btn.disabled=true;clearInterval(dailyTimer);
+ var answers={},correct=0;
+ items.forEach(function(q,i){var selected=form.querySelector('input[name="q'+i+'"]:checked');var val=selected?Number(selected.value):-1;answers[String(q.id)]=val;if(val===normalizeCorrect(q))correct++;});
+ var score=Math.round(correct/items.length*100),points=correct*10+(correct===items.length?10:0);
+ form.querySelectorAll('.question').forEach(function(card){card.classList.add('done')});
+ var result=form.querySelector('[data-result]');
+ result.textContent='Résultat : '+correct+'/'+items.length+' · '+score+'% · '+points+' points. Enregistrement…';
+ try{
+  var date=type==='daily'?localDate():weekStart(localDate());
+  var payload={challenge_date:date,challenge_type:type,challenge_key:key,score:score,points:points,answers:answers};
+  var ins=await client.from('ib_challenge_attempts').insert(payload);
+  if(ins.error){if(ins.error.code==='23505')throw new Error('Ce défi a déjà été validé sur votre compte.');throw ins.error}
+  result.textContent='Bravo ! '+correct+'/'+items.length+' bonne(s) réponse(s), '+points+' points enregistrés.';
+  result.style.color='#9ef0ce';await refreshAll();
+ }catch(e){result.textContent='Résultat calculé : '+score+'%. Enregistrement impossible : '+(e.message||'vérifiez la connexion.');result.style.color='#ffb1a7';btn.disabled=false}
+}
+async function loadAttempts(){
+ var r=await client.from('ib_challenge_attempts').select('id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at').limit(1000);
+ if(r.error)throw r.error;attempts=r.data||[];
+}
+function renderAwards(){
+ var mine=attempts.filter(function(a){return a.user_id===user.id}),total=mine.reduce(function(s,a){return s+Number(a.points||0)},0);
+ $('my-points').textContent=total+' points';
+ var levels=[{p:10,e:'🌱',n:'Premier pas'},{p:50,e:'📘',n:'Apprenant actif'},{p:100,e:'⭐',n:'Agent assidu'},{p:250,e:'🏅',n:'Expert en progression'},{p:500,e:'🏆',n:'Champion IGT'}];
+ $('my-awards').innerHTML=levels.map(function(x){var got=total>=x.p;return '<div class="award '+(got?'':'locked')+'"><div class="emoji">'+x.e+'</div><b>'+x.n+'</b><small>'+x.p+' points · '+(got?'Obtenu':'À débloquer')+'</small></div>'}).join('');
+}
+function renderLeaderboard(){
+ var map={};attempts.forEach(function(a){var id=a.user_id;if(!id)return;if(!map[id])map[id]={name:a.display_name||'Agent IGT',points:0,count:0};map[id].points+=Number(a.points||0);map[id].count++});
+ var rows=Object.keys(map).map(function(id){return {id:id,name:map[id].name,points:map[id].points,count:map[id].count}}).sort(function(a,b){return b.points-a.points||a.name.localeCompare(b.name,'fr')}).slice(0,10);
+ if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra après les premières participations.</p>';return}
+ $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.name)+(r.id===user.id?' · Vous':'')+'<small style="display:block;color:#9eb4ce;font-weight:400;margin-top:3px">'+r.count+' défi(s) validé(s)</small></span><span class="rank-points">'+r.points+' pts</span></div>'}).join('');
+}
+async function loadNews(){
+ $('news-feed').innerHTML='<p class="sub">Chargement…</p>';var items=[];
+ try{var r=await client.from('announcements').select('id,title,body,created_at,target_user_id').order('created_at',{ascending:false}).limit(8);if(r.error)throw r.error;(r.data||[]).forEach(function(x){items.push({title:x.title,body:x.body,date:x.created_at,kind:'Annonce IGT'})})}
+ catch(e){showStatus('news-status','Les annonces en ligne ne sont pas accessibles pour le moment. '+e.message)}
+ try{var res=await fetch('assets/data/communiques.json',{cache:'force-cache'});if(res.ok){var d=await res.json();(d.communiques||[]).slice(0,6).forEach(function(x){items.push({title:x.titre,body:x.description||x.texte||'',date:x.datePublication,kind:'Communiqué officiel'});})}}
+ catch(e){console.warn('Communiqués hors ligne',e)}
+ items.sort(function(a,b){return (Date.parse(b.date)||0)-(Date.parse(a.date)||0)});
+ $('news-feed').innerHTML=items.length?items.slice(0,10).map(function(x){return '<article class="news"><div class="meta">'+esc(x.kind)+' · '+esc(x.date||'Date non précisée')+'</div><h4>'+esc(x.title||'Information IGT')+'</h4><p>'+esc(x.body||'Consultez le communiqué pour plus de détails.')+'</p></article>'}).join(''):'<p class="sub">Aucune actualité disponible pour le moment. Consultez les communiqués officiels.</p>';
+}
+async function loadResources(){
+ try{var r=await client.from('training_resources').select('id,title,description,kind,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3);if(r.error)throw r.error;
+ $('resource-preview').innerHTML=(r.data||[]).length?(r.data||[]).map(function(x){return '<article class="resource"><b>'+esc(x.title)+'</b><p>'+esc(x.description||'Ressource pédagogique')+' · '+esc(x.kind==='pdf'?'PDF':x.kind==='audio'?'Audio':'Exercice')+'</p></article>'}).join(''):'<p class="sub">Aucune ressource publiée actuellement.</p>'}
+ catch(e){$('resource-preview').innerHTML='<p class="sub">La bibliothèque est momentanément indisponible. '+esc(e.message)+'</p>'}
+}
+async function loadMySuggestions(){
+ var r=await client.from('ib_agent_suggestions').select('id,title,description,status,created_at,admin_note').eq('user_id',user.id).order('created_at',{ascending:false}).limit(20);
+ if(r.error)throw r.error;
+ $('my-suggestions').innerHTML=(r.data||[]).length?r.data.map(function(x){return '<article class="suggestion"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><p>'+esc(x.description)+'</p>'+(x.admin_note?'<p><b>Réponse :</b> '+esc(x.admin_note)+'</p>':'')+'<div class="meta">'+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div></article>'}).join(''):'<p class="sub">Vous n'avez pas encore envoyé de proposition.</p>';
+}
+function statusLabel(s){return ({received:'Reçue',reviewing:'En étude',accepted:'Retenue',rejected:'Non retenue'})[s]||s}
+async function loadAdminSuggestions(){
+ if(!isAdmin())return;$('admin-suggestions-box').classList.remove('hidden');
+ var r=await client.from('ib_agent_suggestions').select('id,title,description,status,display_name,created_at,admin_note').order('created_at',{ascending:false}).limit(60);
+ if(r.error){$('admin-suggestions').textContent='Chargement impossible : '+r.error.message;return}
+ $('admin-suggestions').innerHTML=(r.data||[]).map(function(x){return '<article class="suggestion" data-suggestion="'+esc(x.id)+'"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><div class="meta">'+esc(x.display_name)+' · '+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div><p>'+esc(x.description)+'</p><label>Décision</label><select data-status><option value="received" '+(x.status==='received'?'selected':'')+'>Reçue</option><option value="reviewing" '+(x.status==='reviewing'?'selected':'')+'>En étude</option><option value="accepted" '+(x.status==='accepted'?'selected':'')+'>Retenue</option><option value="rejected" '+(x.status==='rejected'?'selected':'')+'>Non retenue</option></select><label>Note administrative</label><textarea data-note maxlength="1000">'+esc(x.admin_note||'')+'</textarea><button class="btn" data-save style="margin-top:8px">Enregistrer la décision</button><div class="status" data-feedback></div></article>'}).join('')||'<p class="sub">Aucune proposition reçue.</p>';
+}
+async function refreshAll(){
+ try{await loadAttempts();renderAwards();renderLeaderboard();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
+ renderQuestionSet('daily',orderedQuestions(dailyKey,1),$('daily-content'),dailyKey);
+ renderQuestionSet('weekly',orderedQuestions(weeklyKey,5),$('weekly-content'),weeklyKey);
+ }catch(e){showStatus('ranking-status','Progression indisponible : '+e.message)}
+}
+async function boot(detail){
+ client=(detail&&detail.client)||window.inspecteurBotAuthClient;user=(detail&&detail.user)||window.inspecteurBotAuthUser;profile=(detail&&detail.profile)||window.inspecteurBotAuthProfile;
+ if(!client||!user||!user.id)return;
+ try{if(!profile){var p=await client.from('profiles').select('display_name,role').eq('id',user.id).maybeSingle();profile=p.data||{}}
+ await loadQuestions();await Promise.all([loadNews(),loadResources(),loadMySuggestions(),refreshAll()]);if(isAdmin())await loadAdminSuggestions();
+ }catch(e){console.error(e);showStatus('suggestion-status','Chargement incomplet : '+e.message)}
+}
+$('suggestion-form').addEventListener('submit',async function(e){
+ e.preventDefault();if(!client||!user)return;var btn=$('send-suggestion');btn.disabled=true;
+ try{var r=await client.from('ib_agent_suggestions').insert({category:$('suggestion-category').value,title:$('suggestion-title').value.trim(),description:$('suggestion-description').value.trim()});if(r.error)throw r.error;$('suggestion-form').reset();showStatus('suggestion-status','Votre proposition a été transmise à l’administration.',true);await loadMySuggestions();if(isAdmin())await loadAdminSuggestions()}
+ catch(err){showStatus('suggestion-status','Envoi impossible : '+err.message)}finally{btn.disabled=false}
+});
+$('refresh-news').addEventListener('click',loadNews);$('refresh-ranking').addEventListener('click',refreshAll);
+$('admin-suggestions').addEventListener('click',async function(e){
+ var btn=e.target.closest('[data-save]');if(!btn)return;var card=btn.closest('[data-suggestion]');btn.disabled=true;
+ try{var r=await client.from('ib_agent_suggestions').update({status:card.querySelector('[data-status]').value,admin_note:card.querySelector('[data-note]').value.trim()||null,reviewed_by:user.id,reviewed_at:new Date().toISOString()}).eq('id',card.dataset.suggestion);if(r.error)throw r.error;card.querySelector('[data-feedback]').textContent='Décision enregistrée.';await loadAdminSuggestions();await loadMySuggestions()}
+ catch(err){card.querySelector('[data-feedback]').textContent='Erreur : '+err.message;btn.disabled=false}
+});
+window.addEventListener('inspecteurbot:authenticated',function(e){void boot(e.detail||{})});
+if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser){void boot({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile})}
+})();
+</script>
+</body>
+</html>
