@@ -47,6 +47,7 @@
     <link rel="stylesheet" href="assets/css/search.css">
     <link rel="stylesheet" href="assets/css/categories.css">
     <link rel="stylesheet" href="assets/css/article.css">
+    <link rel="stylesheet" href="assets/css/livre.css?v=20261110-reader-audio-v1">
         <link rel="stylesheet" href="assets/css/outils.css">
     <link rel="stylesheet" href="assets/css/footer.css?v=20261109-footer-fix1">
     <link rel="stylesheet" href="assets/css/responsive.css">
@@ -255,6 +256,7 @@ button,a,input,select,textarea{touch-action:manipulation}
         </div>
 
         <div id="categoriesGrid" class="categories-grid"></div>
+        <section id="domainArticlesPanel" class="domain-articles-panel" hidden aria-live="polite"></section>
     </section>
 
     <!--=================================================
@@ -309,6 +311,9 @@ button,a,input,select,textarea{touch-action:manipulation}
 
     <!-- STATISTIQUES EN TEMPS RÉEL -->
 
+
+    <!-- Lecteur de livre audio restauré en bas de la page -->
+    <section id="livreHost" class="livre-section" aria-label="Lecteur audio du Code du Travail"></section>
 
     <!--=================================================
     PARTIE 9 : PIED DE PAGE (FOOTER)
@@ -377,10 +382,13 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 <script src="assets/js/code-travail/index.js"></script>
 <script src="assets/js/code-travail/navigation.js"></script>
 <script src="assets/js/code-travail/recherche.js"></script>
-<script src="assets/js/code-travail/categories.js"></script>
+<script src="assets/js/code-travail/categories.js?v=20261110-domaines-autonomes-v1"></script>
 <script src="assets/js/code-travail/consultation.js"></script>
 
-<!-- MODE LIVRE (tourner les pages article par article) -->
+<!-- MODE LIVRE AUDIO — lecteur restauré en bas de page -->
+<script src="assets/js/code-travail/livre.js?v=20261110-reader-audio-v1"></script>
+
+<!-- Ancien MODE LIVRE (tourner les pages article par article) -->
 
 <!-- =================================================
      SERVICE WORKER & INTÉGRATION PWA
