@@ -784,3 +784,14 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
  .btn-home{width:40px;height:40px}
  .main{padding:10px}
 }
+
+
+/* SMIG actuel clairement prioritaire dans les paramètres, sans supprimer le palier historique. */
+.smig-current-field{padding:16px;border:1px solid rgba(5,150,105,.28);border-radius:14px;background:linear-gradient(135deg,#effcf6,#f7fffb)}
+.smig-current-field label{color:#075e43;font-weight:800}
+.smig-current-field input{font-size:1.08rem;font-weight:800;border-color:#79c9a8;background:#fff}
+.smig-current-note{display:block;margin-top:7px;color:#08744f;font-size:.82rem;font-weight:700}
+.smig-current-note i{margin-right:5px}
+.smig-history-field{padding:12px;border:1px dashed #cbd5e1;border-radius:12px;background:rgba(241,245,249,.55)}
+.smig-history-field small{display:block;margin-top:6px;color:#64748b;font-size:.78rem}
+@media(prefers-color-scheme:dark){body.dark-theme .smig-current-field{background:#102b25;border-color:#24694f}body.dark-theme .smig-current-field label,body.dark-theme .smig-current-note{color:#a8f0ce}body.dark-theme .smig-history-field{background:#202a35;border-color:#536273}}

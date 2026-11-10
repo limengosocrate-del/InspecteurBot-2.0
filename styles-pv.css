@@ -206,3 +206,9 @@ input:focus,textarea:focus,select:focus{border-color:#3687ce;box-shadow:0 0 0 4p
  .main-nav{gap:.4rem}
  .main-nav .nav-item{font-size:.78rem;padding:.65rem .78rem}
 }
+
+
+/* Ajustements finaux responsive : actions accessibles et navigation lisible sur petits écrans. */
+.pv-home-link{min-height:42px;padding:.7rem 1rem;border:1px solid #cbdced;border-radius:12px;background:#fff;color:#0b4e91;font-weight:800}
+.pv-home-link:focus-visible,.main-nav .nav-item:focus-visible,.btn:focus-visible{outline:3px solid rgba(25,118,210,.35);outline-offset:2px}
+@media(max-width:520px){.app-shell{padding:.45rem}.topbar{gap:.65rem}.brand-block{align-items:center}.top-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}.top-actions>*{min-width:0}.main-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}.main-nav .nav-item{flex:0 0 auto;white-space:nowrap}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
