@@ -133,7 +133,7 @@ async function init(){
  me=session.user;
  let profileResult;
  try{profileResult=await withTimeout(client.from('profiles').select('id,display_name,avatar_url,is_active').eq('id',me.id).maybeSingle(),12000,'profil')}
- catch(error){setNotice('Chargement du profil trop lent. Vérifiez votre connexion puis actualisez.');return}
+ catch(error){setNotice('Chargement du profil trop lent. Vérifiez votre connexion puis actualisez.');$('onlineStories').innerHTML='<div class="online-empty">Profil indisponible. Réessayez après vérification du réseau.</div>';$('groupList').innerHTML='<span class="online-empty">Groupes indisponibles pour le moment.</span>';$('inbox').innerHTML='<div class="empty">Conversations indisponibles. Vérifiez votre connexion.</div>';return}
  const {data:profile,error:pe}=profileResult;
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
  myProfile=profile;
