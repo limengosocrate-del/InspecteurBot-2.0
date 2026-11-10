@@ -46,6 +46,12 @@ body.conversation-open .fab{display:none!important}
 .composer .send{display:grid!important;visibility:visible!important;opacity:1!important;place-items:center!important;flex:0 0 48px!important;width:48px!important;min-width:48px!important;max-width:48px!important;height:48px!important;min-height:48px!important;margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;background:#0866ff!important;color:#fff!important;font-size:19px!important;line-height:1!important;align-self:flex-end!important}
 .composer .send:disabled{opacity:.55!important}
 @media(max-width:420px){.chatbody{padding:14px 11px 18px}.bubblemsg{max-width:86%!important;font-size:16px!important}.composer{gap:7px!important;padding-left:9px!important;padding-right:9px!important}}
+
+.avatar-open{border:0;background:none;padding:0;cursor:zoom-in;border-radius:50%;display:block}
+#profilePhotoViewer{position:fixed;inset:0;z-index:250;background:#000e;display:none;align-items:center;justify-content:center;padding:24px}
+#profilePhotoViewer.show{display:flex}
+#profilePhotoViewer img{max-width:min(92vw,560px);max-height:82dvh;object-fit:contain;border-radius:18px;box-shadow:0 15px 50px #0009}
+#profilePhotoViewer button{position:absolute;top:18px;right:18px;width:44px;height:44px;border:0;border-radius:50%;background:#333;color:#fff;font-size:22px}
 </style>
 </head>
 <body>
@@ -66,11 +72,11 @@ body.conversation-open .fab{display:none!important}
 </main>
 <button class="fab" id="newMessage" aria-label="Nouveau message"><i class="fa-solid fa-plus"></i></button>
 <section class="chat" id="chat" aria-label="Conversation">
-<header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><div class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></div><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
+<header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><button class="avatar-open" id="chatAvatarButton" type="button" aria-label="Afficher la photo de profil"><span class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></span></button><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
 <div class="chatbody" id="chatBody"><div class="empty">Ouvrez une conversation</div></div>
 <form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="10000" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
 </section>
-<div class="toast" id="toast" role="status"></div>
+<div id="profilePhotoViewer" role="dialog" aria-modal="true" aria-label="Photo de profil"><button type="button" id="closeProfilePhoto" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button><img id="profilePhotoLarge" alt="Photo de profil"></div><div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (()=>{'use strict';
@@ -136,7 +142,7 @@ async function refreshInbox(){
  const total=[...unread.values()].reduce((a,b)=>a+b,0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
  $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
 }
-function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
+function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
 async function openChat(person){
  active=person;updateChatHeader(person);document.body.classList.add('conversation-open');$('chat').classList.add('open');$('messageInput').focus();
  await loadConversation();
@@ -226,6 +232,10 @@ async function search(term){
  const results=await loadPeople(term,false);people=results;
  $('onlineStories').innerHTML=results.length?results.map(p=>'<button class="story '+(online(p)?'online':'')+'" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt="">'+(online(p)?'<i class="dot"></i>':'')+'</span><span class="story-name">'+esc(p.display_name)+'</span></button>').join(''):'<div class="online-empty">Aucun agent trouvé.</div>';
 }
+
+$('chatAvatarButton').addEventListener('click',()=>{const src=$('chatAvatar').src;if(src){$('profilePhotoLarge').src=src;$('profilePhotoViewer').classList.add('show')}});
+$('closeProfilePhoto').addEventListener('click',()=>$('profilePhotoViewer').classList.remove('show'));
+$('profilePhotoViewer').addEventListener('click',e=>{if(e.target===$('profilePhotoViewer'))$('profilePhotoViewer').classList.remove('show')});
 $('searchToggle').addEventListener('click',()=>{$('searchBox').classList.toggle('show');if($('searchBox').classList.contains('show'))$('searchInput').focus()});
 $('newMessage').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').focus()});
 $('searchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(e.target.value),250)});
