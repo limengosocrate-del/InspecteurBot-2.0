@@ -229,6 +229,7 @@ async function documents(){
 }
 fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+'</small><input id="edit_'+key+'" maxlength="180" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').querySelector('.wide').before(wrap)});
 show();
+if(typeof data.avatar==='string'&&data.avatar.startsWith('data:image/')){syncAvatarToSupabase(data.avatar).then(()=>{$('avatarMessage').textContent='Votre ancienne photo a été synchronisée pour tous les agents.';$('avatarMessage').style.color='#138a65'}).catch(err=>{console.warn('Migration de la photo locale vers Supabase',err);$('avatarMessage').textContent='Ouvrez « Modifier ma photo » pour relancer la synchronisation.';$('avatarMessage').style.color='#b42318'});}
 documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
 
 }
