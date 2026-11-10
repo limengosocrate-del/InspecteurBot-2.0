@@ -176,7 +176,7 @@ function stopAdminMessageNotifications(){
  clearInterval(adminMessagePoll);adminMessagePoll=null;adminMessageCursor=null;hideAdminMessageToast();
 }
 async function expireSession(){
- clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();
+ clearTimeout(expiry);expiry=null;sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();stopHeaderBadgeTracking();
  try{if(client)await client.auth.signOut({scope:'local'})}catch(_){}
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
@@ -232,6 +232,10 @@ function startHeaderBadgeTracking(){
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()});
 }
 async function refreshNotificationBadge(){return refreshHeaderBadges();}
+function stopHeaderBadgeTracking(){
+ clearInterval(headerBadgeTimer);headerBadgeTimer=null;
+ if(headerBadgeChannel){try{client?.removeChannel(headerBadgeChannel)}catch(_){}headerBadgeChannel=null;}
+}
 function msg(t,ok){const n=byId('auth-message');if(!n)return;n.textContent=t||'';n.classList.remove('ib-message-success','ib-message-error');n.style.cssText='';if(!t)return;n.classList.add(ok?'ib-message-success':'ib-message-error');if(ok){n.style.cssText='display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;color:#000!important;-webkit-text-fill-color:#000!important;background:#fff!important;border:2px solid #000!important;border-left:6px solid #000!important;border-radius:10px!important;padding:14px 16px!important;margin:14px 0!important;font-size:15px!important;font-weight:800!important;line-height:1.65!important;text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;box-shadow:0 4px 16px rgba(0,0,0,.18)!important'}else{n.style.cssText='display:block!important;color:#b42318!important;font-weight:700!important'}}
 function showDuplicateAccountToast(){const old=document.getElementById('ib-register-toast');if(old)old.remove();const toast=document.createElement('div');toast.id='ib-register-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');toast.textContent='Vous avez déjà un compte InspecteurBot / Annuaire numérique IGT. Veuillez vous connecter avec votre adresse e-mail et votre mot de passe habituels.';document.body.appendChild(toast);window.setTimeout(()=>{if(toast.isConnected)toast.remove()},3000)}
 function gate(t,mode){
@@ -273,7 +277,7 @@ async function serverCheck(session){
  throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
 async function validate(session){
- if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();gate();return}
+ if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
@@ -282,7 +286,7 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;startPresenceTracking();startAdminMessageNotifications();
+  user=session.user;profile=data;startPresenceTracking();startAdminMessageNotifications();startHeaderBadgeTracking();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
@@ -410,7 +414,7 @@ function setup(){
 
  client.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){recovery=true;gate('Choisissez un nouveau mot de passe.');wrap.hidden=false;email.parentElement.hidden=true;email.required=false;pw.autocomplete='new-password';forgot.hidden=true;submit.textContent='Enregistrer le mot de passe'}
-  else if(event==='SIGNED_OUT'){user=null;profile=null;stopAdminMessageNotifications();gate()}
+  else if(event==='SIGNED_OUT'){user=null;profile=null;stopAdminMessageNotifications();stopHeaderBadgeTracking();gate()}
   else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')setTimeout(()=>validate(session),0)
  });
 }
