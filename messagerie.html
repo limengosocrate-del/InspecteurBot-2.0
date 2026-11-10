@@ -214,9 +214,12 @@ async function refreshInbox(){
  if(error){$('inbox').innerHTML='<div class="empty">Messagerie momentanément indisponible.</div>';console.error(error);return}
  const latest=new Map(),unread=new Map();
  for(const m of data||[]){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;if(!latest.has(other))latest.set(other,m);if(m.recipient_id===me.id&&!m.read_at)unread.set(other,(unread.get(other)||0)+1)}
- const ids=[...latest.keys()];
- const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent IGT',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((a,b)=>new Date(b.message.created_at)-new Date(a.message.created_at));
- const total=[...unread.values()].reduce((a,b)=>a+b,0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
+ // N'afficher que les conversations dont le correspondant possède un profil
+ // actif dans InspecteurBot (public.profiles lié à auth.users).
+ const eligibleIds=new Set(people.map(p=>p.id));
+ const ids=[...latest.keys()].filter(id=>eligibleIds.has(id));
+ const mapped=ids.map(id=>({person:people.find(p=>p.id===id),message:latest.get(id),unread:unread.get(id)||0})).sort((a,b)=>new Date(b.message.created_at)-new Date(a.message.created_at));
+ const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
  $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
