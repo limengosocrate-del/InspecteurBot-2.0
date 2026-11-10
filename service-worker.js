@@ -1,7 +1,7 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-09-v82';
-const SHELL=['./','./index.html','./auth-gate.js'];
+const CACHE='inspecteurbot-shell-2026-11-10-v83';
+const SHELL=['./','./index.html','./auth-gate.js','./messagerie.html?v=20261110-cachefix-3'];
 
 self.addEventListener('install',event=>{
   // Réutilise le cache existant : aucune suppression des caches ou données du navigateur.
@@ -27,7 +27,8 @@ self.addEventListener('fetch',event=>{
     try{
       // Priorité au réseau pour les pages et les ressources applicatives :
       // les publications GitHub Pages sont ainsi récupérées dès la prochaine requête.
-      const response=await fetch(request);
+      const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
+      const response=await fetch(isHtml?new Request(request,{cache:'no-store'}):request);
       if(response&&response.ok){
         await cache.put(request,response.clone()).catch(()=>{});
       }
