@@ -93,6 +93,9 @@ async function init(){
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
  myProfile=profile;
  await refreshAll();
+ if(new URLSearchParams(location.search).get('view')==='presence'){
+  setTimeout(()=>{$('onlineStories').scrollIntoView({behavior:'smooth',block:'start'});$('peopleNav').classList.add('active')},250);
+ }
  await heartbeat();
  heartbeatTimer=setInterval(()=>{if(document.visibilityState==='visible')heartbeat()},30000);
  refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')refreshAll()},60000);
