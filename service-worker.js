@@ -1,4 +1,4 @@
-/* InspecteurBot — cache économe en données, sans toucher aux données utilisateur */
+/* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
 const CACHE='inspecteurbot-data-v3';
 const SHELL=['./','./index.html'];
@@ -11,23 +11,42 @@ self.addEventListener('install',event=>{
 });
 
 self.addEventListener('activate',event=>{
-  // Les anciens caches et toutes les données utilisateur restent intacts.
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async()=>{
+    const names=await caches.keys();
+    await Promise.all(names.filter(name=>name.startsWith('inspecteurbot-data-')&&name!==CACHE).map(name=>caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET'||request.headers.has('range'))return;
   const url=new URL(request.url);
-  // Le client Supabase est aussi mis en cache pour permettre l'ouverture
-  // de l'interface déjà visitée lorsque le réseau est indisponible.
-  if(url.hostname==='cdn.jsdelivr.net'&&url.pathname.includes('/npm/@supabase/supabase-js@')){\n    event.respondWith((async()=>{const cache=await caches.open(CACHE);try{const fresh=await fetch(request);if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});return fresh}catch(error){const cached=await cache.match(request);if(cached)return cached;throw error}})());\n    return;\n  }\n  if(url.origin!==self.location.origin)return;
 
-  const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
+  // Conserve localement le client Supabase pour permettre son chargement hors connexion
+  // après une première visite avec Internet.
+  if(url.hostname==='cdn.jsdelivr.net'&&url.pathname.includes('/npm/@supabase/supabase-js@')){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      try{
+        const fresh=await fetch(request);
+        if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
+        return fresh;
+      }catch(error){
+        const cached=await cache.match(request);
+        if(cached)return cached;
+        throw error;
+      }
+    })());
+    return;
+  }
+
+  if(url.origin!==self.location.origin)return;
+  const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
 
-    // Les pages HTML restent à jour : réseau d'abord, cache seulement en cas de panne.
+    // Pages HTML : toujours tenter la version récente, puis utiliser la copie locale.
     if(isHtml){
       try{
         const response=await fetch(request);
@@ -36,27 +55,34 @@ self.addEventListener('fetch',event=>{
       }catch(error){
         const cached=await cache.match(request,{ignoreSearch:true});
         if(cached)return cached;
-        if(request.mode==='navigate')return (await cache.match(request,{ignoreSearch:true}))||(await cache.match('./index.html',{ignoreSearch:true}))||Response.error();
+        if(request.mode==='navigate'){
+          return (await cache.match('./index.html',{ignoreSearch:true}))||Response.error();
+        }
         throw error;
       }
     }
 
-    // Le garde d'authentification reste réseau-d'abord pour récupérer les corrections,
-    // avec une copie locale de secours en cas de coupure.
-    if(/\\/auth-gate\\.js$/i.test(url.pathname)){
-      try{const fresh=await fetch(request);if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});return fresh}
-      catch(error){const cachedAuth=await cache.match(request,{ignoreSearch:true});if(cachedAuth)return cachedAuth;throw error}
+    // Authentification : version récente en priorité, copie locale en secours.
+    if(/\/auth-gate\.js$/i.test(url.pathname)){
+      try{
+        const fresh=await fetch(request);
+        if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
+        return fresh;
+      }catch(error){
+        const cached=await cache.match(request,{ignoreSearch:true});
+        if(cached)return cached;
+        throw error;
+      }
     }
 
-    // Ressources statiques et images : cache d'abord, aucun téléchargement répété
-    // tant que le fichier est déjà présent dans le cache local.
+    // Ressources statiques : cache d'abord, y compris si seul le paramètre de version change.
     const cached=await cache.match(request,{ignoreSearch:true});
     if(cached)return cached;
 
-    // Favorise WebP pour les images JPEG si une variante existe sur le serveur.
-    if(/\\.(jpe?g)$/i.test(url.pathname)){
+    // Préfère WebP aux JPEG si la variante existe sur le serveur.
+    if(/\.(jpe?g)$/i.test(url.pathname)){
       const webpUrl=new URL(url.href);
-      webpUrl.pathname=webpUrl.pathname.replace(/\\.(jpe?g)$/i,'.webp');
+      webpUrl.pathname=webpUrl.pathname.replace(/\.(jpe?g)$/i,'.webp');
       try{
         const webpResponse=await fetch(new Request(webpUrl.href,{method:'GET',credentials:request.credentials,mode:'same-origin'}));
         if(webpResponse&&webpResponse.ok){
