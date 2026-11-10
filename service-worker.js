@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données, sans toucher aux données utilisateur */
 'use strict';
-const CACHE='inspecteurbot-data-v2';
+const CACHE='inspecteurbot-data-v3';
 const SHELL=['./','./index.html'];
 
 self.addEventListener('install',event=>{
@@ -19,7 +19,9 @@ self.addEventListener('fetch',event=>{
   const request=event.request;
   if(request.method!=='GET'||request.headers.has('range'))return;
   const url=new URL(request.url);
-  if(url.origin!==self.location.origin)return;
+  // Le client Supabase est aussi mis en cache pour permettre l'ouverture
+  // de l'interface déjà visitée lorsque le réseau est indisponible.
+  if(url.hostname==='cdn.jsdelivr.net'&&url.pathname.includes('/npm/@supabase/supabase-js@')){\n    event.respondWith((async()=>{const cache=await caches.open(CACHE);try{const fresh=await fetch(request);if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});return fresh}catch(error){const cached=await cache.match(request);if(cached)return cached;throw error}})());\n    return;\n  }\n  if(url.origin!==self.location.origin)return;
 
   const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
@@ -32,16 +34,23 @@ self.addEventListener('fetch',event=>{
         if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
         return response;
       }catch(error){
-        const cached=await cache.match(request);
+        const cached=await cache.match(request,{ignoreSearch:true});
         if(cached)return cached;
-        if(request.mode==='navigate')return (await cache.match('./index.html'))||Response.error();
+        if(request.mode==='navigate')return (await cache.match(request,{ignoreSearch:true}))||(await cache.match('./index.html',{ignoreSearch:true}))||Response.error();
         throw error;
       }
     }
 
+    // Le garde d'authentification reste réseau-d'abord pour récupérer les corrections,
+    // avec une copie locale de secours en cas de coupure.
+    if(/\\/auth-gate\\.js$/i.test(url.pathname)){
+      try{const fresh=await fetch(request);if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});return fresh}
+      catch(error){const cachedAuth=await cache.match(request,{ignoreSearch:true});if(cachedAuth)return cachedAuth;throw error}
+    }
+
     // Ressources statiques et images : cache d'abord, aucun téléchargement répété
     // tant que le fichier est déjà présent dans le cache local.
-    const cached=await cache.match(request);
+    const cached=await cache.match(request,{ignoreSearch:true});
     if(cached)return cached;
 
     // Favorise WebP pour les images JPEG si une variante existe sur le serveur.
