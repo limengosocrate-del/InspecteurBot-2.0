@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v3';
+const CACHE='inspecteurbot-data-v2';
 const SHELL=['./','./index.html'];
 
 self.addEventListener('install',event=>{
@@ -11,11 +11,8 @@ self.addEventListener('install',event=>{
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil((async()=>{
-    const names=await caches.keys();
-    await Promise.all(names.filter(name=>name.startsWith('inspecteurbot-data-')&&name!==CACHE).map(name=>caches.delete(name)));
-    await self.clients.claim();
-  })());
+  // Conserve les ressources déjà mises en cache par les versions précédentes.
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch',event=>{
