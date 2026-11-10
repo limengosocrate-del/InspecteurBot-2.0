@@ -619,7 +619,7 @@ function exporterPDF(){
  wrapper.appendChild(tableStyle);wrapper.appendChild(clone);
  const footer=document.createElement("footer");footer.textContent="InspecteurBot RDC · Document administratif généré automatiquement";wrapper.appendChild(footer);
  document.body.appendChild(wrapper);
- const options={margin:0,filename:"liste_entreprises_igt.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0,windowWidth:1400,windowHeight:Math.max(window.innerHeight,exportTop+wrapper.scrollHeight+200)},jsPDF:{unit:"mm",format:"a4",orientation:"landscape",compress:true},pagebreak:{mode:["css","legacy"],avoid:["tr","thead"]}};
+ const options={margin:0,filename:"liste_entreprises_igt.pdf",image:{type:"jpeg",quality:0.88},html2canvas:{scale:1.5,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0,windowWidth:1400,windowHeight:Math.max(window.innerHeight,exportTop+wrapper.scrollHeight+200)},jsPDF:{unit:"mm",format:"a4",orientation:"landscape",compress:true},pagebreak:{mode:["css","legacy"],avoid:["tr","thead"]}};
  html2pdf().set(options).from(wrapper).save().then(()=>notification("La liste des entreprises affichées a été téléchargée au format PDF A4 paysage.","success")).catch(error=>{console.error("Export PDF entreprises :",error);notification("Impossible de générer le PDF. Réessayez après avoir rechargé la page.","error")}).finally(()=>wrapper.remove());
 }
 
