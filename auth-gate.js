@@ -317,7 +317,7 @@ async function syncLocalProfilePhotoOnLogin(accountId){
  }catch(error){console.warn('Synchronisation automatique de la photo au démarrage:',error);return null}
 }
 async function validate(session){
- if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();stopHeaderBadgeTracking();gate();return}
+ if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
@@ -347,7 +347,8 @@ async function validate(session){
    });
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   if(isHome){
-   // Le message de personnalisation à la connexion a été supprimé.\n   let chip=byId('auth-chip');
+   // Le message de personnalisation à la connexion a été supprimé.
+   let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
     appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="/InspecteurBot-2.0/messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-messenger-speed-v2" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
@@ -379,10 +380,10 @@ async function validate(session){
    if(!window.__ibNotificationRefreshTimer)window.__ibNotificationRefreshTimer=setInterval(refreshNotificationBadge,120000);
    window.addEventListener('focus',refreshNotificationBadge);
   }
- }catch(e){console.warn('Authentification InspecteurBot',e);if(e.authTransient){gate(e.message||'Vérification momentanément indisponible. Réessayez.','retry');return}await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Connexion requise.')}
+ }catch(e){console.error('Authentification InspecteurBot : erreur de validation ou d’interface',e);if(e.authFatal){await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Accès refusé.')}else{gate(e.message||'Une erreur temporaire empêche le chargement. Votre session est conservée : réessayez.','retry');return}}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden)void updatePresence()});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
@@ -429,7 +430,7 @@ function setup(){
 
  client.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){recovery=true;gate('Choisissez un nouveau mot de passe.');wrap.hidden=false;email.parentElement.hidden=true;email.required=false;pw.autocomplete='new-password';forgot.hidden=true;submit.textContent='Enregistrer le mot de passe'}
-  else if(event==='SIGNED_OUT'){user=null;profile=null;stopAdminMessageNotifications();stopHeaderBadgeTracking();gate()}
+  else if(event==='SIGNED_OUT'){user=null;profile=null;stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate()}
   else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')setTimeout(()=>validate(session),0)
  });
 }
