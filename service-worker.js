@@ -1,7 +1,7 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-10-v93';
-const SHELL=['./','./index.html','./auth-gate.js','./messagerie.html?v=20261110-messenger-speed-v1'];
+const CACHE='inspecteurbot-shell-2026-11-10-v94';
+const SHELL=['./','./index.html','./auth-gate.js','./messagerie.html?v=20261110-messenger-speed-v2'];
 
 self.addEventListener('install',event=>{
   // Réutilise le cache existant : aucune suppression des caches ou données du navigateur.
