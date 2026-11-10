@@ -94,11 +94,15 @@ function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 // Notifications globales des messages privés : actives sur tous les menus de l'application.
 let incomingMessagePoll=null,incomingMessageCursor=null,incomingMessageToastTimer=null,incomingMessageBusy=false,incomingMessageChannel=null;
 function incomingMessageCursorKey(){return user?.id?'inspecteurbot_incoming_message_cursor_v2_'+user.id:null}
+function ignoredIncomingMessagesKey(){return user?.id?'inspecteurbot_ignored_incoming_messages_v1_'+user.id:null}
+function getIgnoredIncomingMessages(){try{const raw=localStorage.getItem(ignoredIncomingMessagesKey());const ids=JSON.parse(raw||'[]');return new Set(Array.isArray(ids)?ids.map(String):[])}catch(_){return new Set()}}
+function ignoreIncomingMessage(messageId){if(!messageId)return;const ids=getIgnoredIncomingMessages();ids.add(String(messageId));try{localStorage.setItem(ignoredIncomingMessagesKey(),JSON.stringify([...ids].slice(-300)))}catch(e){console.warn('Mémorisation locale du message ignoré impossible',e)}}
+function isIncomingMessageIgnored(messageId){return getIgnoredIncomingMessages().has(String(messageId))}
 function hideIncomingMessageToast(){clearTimeout(incomingMessageToastTimer);incomingMessageToastTimer=null;document.getElementById('ib-incoming-message-toast')?.remove()}
 function ensureIncomingMessageToastStyle(){
  if(document.getElementById('ib-incoming-message-toast-style'))return;
  const style=document.createElement('style');style.id='ib-incoming-message-toast-style';
- style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;width:min(460px,calc(100% - 24px));padding:16px;border:1px solid rgba(215,228,239,.85);border-radius:16px;background:rgba(255,255,255,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#173b5c;box-shadow:0 12px 34px #00152f24;font:14px/1.45 Arial,sans-serif;animation:ib-incoming-toast-in .2s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:9px;margin:0 0 7px;font-size:15px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 12px;color:#52677a;overflow-wrap:anywhere}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:9px}#ib-incoming-message-toast button{min-height:38px;padding:8px 14px;border:0;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:76px;margin:10px 0;padding:10px;border:1px solid #cbd8e3;border-radius:9px;resize:vertical;font:14px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:17px;margin-top:7px;color:#b42318;font-size:12px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}`;
+ style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;box-sizing:border-box;width:min(320px,calc(100% - 28px));padding:10px 12px;border:1px solid #e3eaf0;border-radius:12px;background:#fff;color:#173b5c;box-shadow:0 5px 18px #00152f20;font:12px/1.35 Arial,sans-serif;animation:ib-incoming-toast-in .16s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:7px;margin:0 0 5px;font-size:12px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 8px;color:#52677a;overflow-wrap:anywhere;font-size:12px}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:7px}#ib-incoming-message-toast button{min-height:30px;padding:6px 10px;border:0;border-radius:7px;font-weight:700;font-size:11px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:64px;margin:8px 0;padding:8px;border:1px solid #cbd8e3;border-radius:8px;resize:vertical;font:13px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:15px;margin-top:6px;color:#b42318;font-size:11px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}` ;
  document.head.appendChild(style);
 }
 async function markIncomingMessageRead(messageId){
@@ -107,7 +111,7 @@ async function markIncomingMessageRead(messageId){
  if(error)throw error;
 }
 async function showIncomingMessageToast(message){
- if(!message||!user||message.sender_id===user.id)return;
+ if(!message||!user||message.sender_id===user.id||isIncomingMessageIgnored(message.id))return;
  ensureIncomingMessageToastStyle();hideIncomingMessageToast();
  let senderName='Un membre d’InspecteurBot';
  try{
@@ -127,7 +131,7 @@ async function showIncomingMessageToast(message){
  const reply=document.createElement('button');reply.type='button';reply.className='ib-incoming-reply';reply.textContent='Répondre';
  const ignore=document.createElement('button');ignore.type='button';ignore.className='ib-incoming-ignore';ignore.textContent='Ignorer';
  actions.append(reply,ignore);toast.append(title,preview,actions);document.body.appendChild(toast);
- ignore.addEventListener('click',()=>{hideIncomingMessageToast();void refreshNotificationBadge();});
+ ignore.addEventListener('click',()=>{ignoreIncomingMessage(message.id);hideIncomingMessageToast();void refreshNotificationBadge();});
  reply.addEventListener('click',()=>{
   clearTimeout(incomingMessageToastTimer);incomingMessageToastTimer=null;
   preview.textContent='Votre réponse sera envoyée directement à '+senderName+'.';
@@ -146,7 +150,7 @@ async function showIncomingMessageToast(message){
    }catch(e){status.style.color='#b42318';status.textContent='Envoi impossible : '+(e.message||'réessayez.');send.disabled=false}
   });
  });
- incomingMessageToastTimer=window.setTimeout(hideIncomingMessageToast,7000);
+ incomingMessageToastTimer=window.setTimeout(hideIncomingMessageToast,2000);
 }
 async function pollIncomingMessages(){
  if(incomingMessageBusy||!client||!user||document.visibilityState==='hidden')return;
@@ -162,7 +166,7 @@ async function pollIncomingMessages(){
    ]);
    if(latest.error)throw latest.error;if(unread.error)throw unread.error;
    incomingMessageCursor=Math.max(stored,Number(latest.data?.[0]?.id||0));
-   if(unread.data?.[0])await showIncomingMessageToast(unread.data[0]);
+   if(unread.data?.[0]&&!isIncomingMessageIgnored(unread.data[0].id))await showIncomingMessageToast(unread.data[0]);
    try{localStorage.setItem(key,String(incomingMessageCursor))}catch(_){}
    return;
   }
