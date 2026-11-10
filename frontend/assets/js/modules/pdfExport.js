@@ -9,8 +9,8 @@ export async function exporterPDF(elementId, nomFichier) {
   const options = {
     margin: 0,
     filename: (nomFichier || 'PV') + '.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+    image: { type: 'jpeg', quality: 0.88 },
+    html2canvas: { scale: 2, useCORS: true, letterRendering: true }
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     pagebreak: { mode: ['avoid-all', 'css'] }
   };
