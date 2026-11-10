@@ -1,6 +1,6 @@
 /* InspecteurBot — synchronisation automatique sans effacement des données locales */
 'use strict';
-const CACHE='inspecteurbot-shell-2026-11-10-v104';
+const CACHE='inspecteurbot-shell-2026-11-10-v105';
 const SHELL=['./','./index.html','./auth-gate.js','./messagerie.html?v=20261110-profile-photos-v4'];
 
 self.addEventListener('install',event=>{
@@ -22,25 +22,31 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
 
+  const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
-    try{
-      // Priorité au réseau pour les pages et les ressources applicatives :
-      // les publications GitHub Pages sont ainsi récupérées dès la prochaine requête.
-      const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
-      const response=await fetch(isHtml?new Request(request,{cache:'no-store'}):request);
-      if(response&&response.ok){
-        await cache.put(request,response.clone()).catch(()=>{});
+    if(isHtml){
+      try{
+        const response=await fetch(new Request(request,{cache:'no-store'}));
+        if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
+        return response;
+      }catch(error){
+        const cached=await cache.match(request);
+        if(cached)return cached;
+        if(request.mode==='navigate')return (await cache.match('./index.html'))||Response.error();
+        throw error;
       }
-      return response;
-    }catch(error){
-      // Hors connexion : conserver le fonctionnement avec les ressources déjà en cache.
-      const cached=await cache.match(request);
-      if(cached)return cached;
-      if(request.mode==='navigate'){
-        return (await cache.match('./index.html'))||Response.error();
-      }
-      throw error;
     }
+
+    // Ressources statiques : réponse locale immédiate, mise à jour réseau en arrière-plan.
+    const cached=await cache.match(request);
+    const refresh=fetch(request).then(response=>{
+      if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});
+      return response;
+    }).catch(()=>null);
+    if(cached){event.waitUntil(refresh);return cached;}
+    const fresh=await refresh;
+    if(fresh)return fresh;
+    throw new Error('Ressource indisponible hors connexion');
   })());
 });
