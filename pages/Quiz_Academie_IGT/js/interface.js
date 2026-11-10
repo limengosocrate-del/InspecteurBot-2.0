@@ -31,6 +31,8 @@ class InterfaceManager {
     this.setupEventListeners();
     this.applyTheme(window.persistenceEngine.getProfile().settings.theme || 'light');
     this.updateDashboardUI();
+    const requestedView = new URLSearchParams(window.location.search).get('view');
+    if (requestedView === 'missions') this.switchView('view-missions');
   }
 
   runSplashScreen() {
