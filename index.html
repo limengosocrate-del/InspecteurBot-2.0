@@ -464,7 +464,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
     <!-- Images du slider -->  
     <div class="slider" id="slider" aria-label="Diaporama de l'IGT">
         <img src="images/photos_igt/1.jpg?v=20261109-2" class="active" alt="" fetchpriority="high" decoding="async">
-        <img src="images/photos_igt/2.jpg?v=20261109-2" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="eager" fetchpriority="high">
+        <img src="images/photos_igt/2.jpg?v=20261109-2" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="lazy" fetchpriority="low">
     </div>  
   
 </section>  
@@ -836,9 +836,9 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 </script>  
   
 <script>
-/* Mise en cache locale de l'application pour accélérer les ouvertures suivantes. */
+/* Enregistrement léger : une vérification de mise à jour à l'ouverture, sans polling toutes les 5 minutes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261110-data-saver-v2',{scope:'./'}).then(reg=>{reg.update().catch(()=>{});setInterval(()=>reg.update().catch(()=>{}),300000);}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261110-data-saver-v3',{scope:'./'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
