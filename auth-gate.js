@@ -5,7 +5,7 @@ if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
 html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;visibility:visible!important;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
@@ -90,6 +90,42 @@ function startPresenceTracking(){
  presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},120000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
+
+// Canal Supabase Presence partagé par tous les menus et toutes les pages.
+function publishRealtimePresence(){
+ if(!realtimePresenceChannel)return;
+ const state=realtimePresenceChannel.presenceState()||{};
+ const ids=new Set();
+ Object.entries(state).forEach(([key,entries])=>(Array.isArray(entries)?entries:[]).forEach(entry=>{
+  const id=entry?.user_id||key;if(id)ids.add(String(id));
+ }));
+ window.__ibOnlineUserIds=ids;
+ const count=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));
+ const badge=document.querySelector('#ib-header-presence .ib-header-count');
+ if(badge){badge.textContent=String(count);badge.hidden=false;badge.parentElement.title=count+' agent(s) en ligne';badge.parentElement.setAttribute('aria-label',count+' agent(s) en ligne');}
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count}}));
+}
+function stopRealtimePresence(){
+ const channel=realtimePresenceChannel;realtimePresenceChannel=null;
+ window.__ibOnlineUserIds=new Set();
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0}}));
+ if(channel&&client){try{void channel.untrack()}catch(_){}try{void client.removeChannel(channel)}catch(_){}}
+}
+function startRealtimePresence(){
+ if(!client||!user)return;
+ if(realtimePresenceChannel){try{void client.removeChannel(realtimePresenceChannel)}catch(_){}}
+ const channel=client.channel('ib-presence-global',{config:{presence:{key:user.id}}});
+ realtimePresenceChannel=channel;
+ channel.on('presence',{event:'sync'},publishRealtimePresence)
+  .on('presence',{event:'join'},publishRealtimePresence)
+  .on('presence',{event:'leave'},publishRealtimePresence)
+  .subscribe(async status=>{
+   if(status==='SUBSCRIBED'){
+    try{await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',online_at:new Date().toISOString()});publishRealtimePresence();}
+    catch(error){console.warn('Activation de la présence globale impossible:',error)}
+   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){console.warn('Canal de présence globale interrompu; reconnexion Realtime en cours:',status)}
+  });
+}
 
 // Notifications globales des messages privés : actives sur tous les menus de l'application.
 let incomingMessagePoll=null,incomingMessageCursor=null,incomingMessageToastTimer=null,incomingMessageBusy=false,incomingMessageChannel=null;
@@ -221,17 +257,16 @@ async function refreshHeaderBadges(){
  headerBadgeBusy=true;
  try{
   const tasks=await Promise.allSettled([
-   client.rpc('get_agent_directory',{search_text:'',online_only:true}),
    client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null),
    client.from('announcements').select('id,created_by').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(200),
    client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(500),
    client.from('training_resources').select('id,created_by').eq('published',true).limit(200)
   ]);
   const val=i=>tasks[i].status==='fulfilled'?tasks[i].value:null;
-  if(presence){const r=val(0);if(r&&!r.error){const n=Array.isArray(r.data)?r.data.filter(p=>p.id!==user.id).length:0;presence.textContent=n>99?'99+':String(n);presence.hidden=n===0;presence.parentElement.title=n+' agent(s) en ligne';}}
-  if(messages||menuMessageCount){const r=val(1);if(r&&!r.error){const n=r.count||0;const label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
+  if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false;presence.parentElement.title=n+' agent(s) en ligne';presence.parentElement.setAttribute('aria-label',n+' agent(s) en ligne');}
+  if(messages||menuMessageCount){const r=val(0);if(r&&!r.error){const n=r.count||0;const label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
   if(notifications){
-   const a=val(2),rr=val(3),tr=val(4);
+   const a=val(1),rr=val(2),tr=val(3);
    if(a&&!a.error&&rr&&!rr.error&&tr&&!tr.error){
     const readAnnouncements=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
     const unreadAnnouncements=(a.data||[]).filter(x=>x.created_by!==user.id&&!readAnnouncements.has(String(x.id))).length;
@@ -256,8 +291,7 @@ function startHeaderBadgeTracking(){
    .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'user_presence'},()=>void refreshHeaderBadges())
-   .subscribe();
+      .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()});
 }
@@ -334,7 +368,7 @@ async function syncLocalProfilePhotoOnLogin(accountId){
  }catch(error){console.warn('Synchronisation automatique de la photo au démarrage:',error);return null}
 }
 async function validate(session){
- if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate();return}
+ if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
@@ -343,7 +377,7 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;startPresenceTracking();startIncomingMessageNotifications();startHeaderBadgeTracking();
+  user=session.user;profile=data;startPresenceTracking();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
@@ -400,7 +434,7 @@ async function validate(session){
  }catch(e){console.error('Authentification InspecteurBot : erreur de validation ou d’interface',e);if(e.authFatal){await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Accès refusé.')}else{gate(e.message||'Une erreur temporaire empêche le chargement. Votre session est conservée : réessayez.','retry');return}}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden)void updatePresence()});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
