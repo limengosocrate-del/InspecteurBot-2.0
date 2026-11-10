@@ -108,7 +108,7 @@ var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,f
 function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
 function weekStart(date){var d=new Date(date+'T12:00:00Z');var day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0')}
 function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
-function orderedQuestions(seed,count){var list=questions.slice().filter(function(q){return q&&q.question&&Array.isArray(q.choix)&&q.choix.length>=2&&typeof q.bonne==='number'});list.sort(function(a,b){return hash(seed+'-'+a.id)-hash(seed+'-'+b.id)});return list.slice(0,count)}
+async function fetchChallengeQuestions(type,key){var r=await client.rpc('get_ib_challenge_question_ids',{p_challenge_type:type,p_challenge_key:key});if(r.error)throw r.error;var byId={};questions.forEach(function(q){byId[String(q.id)]=q});var list=(r.data||[]).map(function(id){return byId[String(id)]}).filter(Boolean);var expected=type==='daily'?1:5;if(list.length!==expected)throw new Error('La banque locale ne correspond pas aux questions du défi. Actualisez l’application.');return list}
 function showStatus(id,msg,ok){var el=$(id);if(el){el.textContent=msg||'';el.style.color=ok?'#8de6bd':'#ffb1a7'}}
 function isAdmin(){return !!(profile&&['admin','super_admin'].includes(profile.role))}
 function normalizeCorrect(q){return Number(q.bonne)}
@@ -144,8 +144,9 @@ async function submitChallenge(type,key,items,form){
  try{
   var date=type==='daily'?localDate():weekStart(localDate());
   var payload={challenge_date:date,challenge_type:type,challenge_key:key,score:score,points:points,answers:answers};
-  var ins=await client.from('ib_challenge_attempts').insert(payload);
-  if(ins.error){if(ins.error.code==='23505')throw new Error('Ce défi a déjà été validé sur votre compte.');throw ins.error}
+  var ins=await client.rpc('submit_ib_challenge',{p_challenge_type:type,p_challenge_key:key,p_answers:answers});
+  if(ins.error)throw ins.error;
+  var saved=ins.data||{};score=Number(saved.score??score);points=Number(saved.points??points);correct=Number(saved.correct??correct);
   result.textContent='Bravo ! '+correct+'/'+items.length+' bonne(s) réponse(s), '+points+' points enregistrés.';
   result.style.color='#9ef0ce';await refreshAll();
  }catch(e){result.textContent='Résultat calculé : '+score+'%. Enregistrement impossible : '+(e.message||'vérifiez la connexion.');result.style.color='#ffb1a7';btn.disabled=false}
@@ -198,9 +199,10 @@ async function loadAdminSuggestions(){
 }
 async function refreshAll(){
  try{await loadAttempts();renderAwards();renderLeaderboard();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
- renderQuestionSet('daily',orderedQuestions(dailyKey,1),$('daily-content'),dailyKey);
- renderQuestionSet('weekly',orderedQuestions(weeklyKey,5),$('weekly-content'),weeklyKey);
- }catch(e){showStatus('ranking-status','Progression indisponible : '+e.message)}
+ var sets=await Promise.all([fetchChallengeQuestions('daily',dailyKey),fetchChallengeQuestions('weekly',weeklyKey)]);
+ renderQuestionSet('daily',sets[0],$('daily-content'),dailyKey);
+ renderQuestionSet('weekly',sets[1],$('weekly-content'),weeklyKey);
+ }catch(e){showStatus('ranking-status','Progression indisponible : '+e.message);$('daily-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>';$('weekly-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>'}
 }
 async function boot(detail){
  client=(detail&&detail.client)||window.inspecteurBotAuthClient;user=(detail&&detail.user)||window.inspecteurBotAuthUser;profile=(detail&&detail.profile)||window.inspecteurBotAuthProfile;
