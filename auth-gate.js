@@ -276,6 +276,33 @@ async function serverCheck(session){
  }
  throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
 }
+async function syncLocalProfilePhotoOnLogin(accountId){
+ try{
+  if(!accountId||!client)return null;
+  const key='inspecteurbot_local_profile_v1_'+accountId;
+  let localProfile;
+  try{localProfile=JSON.parse(localStorage.getItem(key)||'null')}catch(_){return null}
+  const photo=localProfile?.avatar;
+  // Seules les photos réellement présentes dans le profil local sont envoyées.
+  // Aucun profil, document, cache ou autre donnée locale n'est effacé.
+  if(typeof photo!=='string'||!/^data:image\/(?:jpeg|png|webp);base64,/.test(photo))return null;
+  const match=photo.match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);
+  if(!match)return null;
+  const type=match[1],raw=atob(match[2]);
+  if(raw.length>2*1024*1024)return null;
+  const bytes=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+  const ext=type==='image/jpeg'?'jpg':type.split('/')[1];
+  const path=accountId+'/avatar.'+ext;
+  const {error:uploadError}=await client.storage.from('profile-photos').upload(path,new Blob([bytes],{type}),{upsert:true,contentType:type,cacheControl:'3600'});
+  if(uploadError)throw uploadError;
+  const {data:publicData}=client.storage.from('profile-photos').getPublicUrl(path);
+  const url=publicData.publicUrl+'?v='+Date.now();
+  const {error:updateError}=await client.from('profiles').update({avatar_url:url,updated_at:new Date().toISOString()}).eq('id',accountId);
+  if(updateError)throw updateError;
+  return url;
+ }catch(error){console.warn('Synchronisation automatique de la photo au démarrage:',error);return null}
+}
 async function validate(session){
  if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopAdminMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
@@ -292,6 +319,19 @@ async function validate(session){
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
+   // À chaque authentification, synchroniser en arrière-plan la photo locale
+   // du compte vers Supabase, sans recharger la page ni toucher aux données locales.
+   void syncLocalProfilePhotoOnLogin(user.id).then(url=>{
+    if(!url)return;
+    data.avatar_url=url;
+    profile.avatar_url=url;
+    window.inspecteurBotAuthProfile=profile;
+    const img=document.querySelector('#ib-auth-chip .ib-avatar-image');
+    const icon=document.querySelector('#ib-auth-chip .ib-avatar i');
+    if(img){img.src=url;img.hidden=false;if(icon)icon.hidden=true}
+    if(typeof window.inspecteurBotSetAvatar==='function')window.inspecteurBotSetAvatar(url);
+    window.dispatchEvent(new CustomEvent('inspecteurbot:avatar-updated',{detail:{userId:user.id,avatarUrl:url}}));
+   });
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   if(isHome){
    // Accueil personnalisé : une seule apparition par nouvelle session authentifiée.
