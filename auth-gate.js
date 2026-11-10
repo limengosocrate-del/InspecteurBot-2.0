@@ -323,7 +323,7 @@ async function validate(session){
    let chip=byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-social-messenger" aria-label="Messages"><i class="fa-brands fa-facebook-messenger"></i></a><a id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-messenger-inbox-v2" aria-label="Messages"><i class="fa-brands fa-facebook-messenger"></i></a><a id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
     setTimeout(()=>void refreshHeaderBadges(),0);
     chip=document.createElement('div');chip.id='ib-auth-chip';
