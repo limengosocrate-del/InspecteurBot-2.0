@@ -96,13 +96,13 @@ let incomingMessagePoll=null,incomingMessageCursor=null,incomingMessageToastTime
 function incomingMessageCursorKey(){return user?.id?'inspecteurbot_incoming_message_cursor_v2_'+user.id:null}
 function ignoredIncomingMessagesKey(){return user?.id?'inspecteurbot_ignored_incoming_messages_v1_'+user.id:null}
 function getIgnoredIncomingMessages(){try{const raw=localStorage.getItem(ignoredIncomingMessagesKey());const ids=JSON.parse(raw||'[]');return new Set(Array.isArray(ids)?ids.map(String):[])}catch(_){return new Set()}}
-function ignoreIncomingMessage(messageId){if(!messageId)return;const ids=getIgnoredIncomingMessages();ids.add(String(messageId));try{localStorage.setItem(ignoredIncomingMessagesKey(),JSON.stringify([...ids].slice(-300)))}catch(e){console.warn('Mémorisation locale du message ignoré impossible',e)}}
+function ignoreIncomingMessage(messageId){if(!messageId||!user)return;const ids=getIgnoredIncomingMessages();ids.add(String(messageId));try{localStorage.setItem(ignoredIncomingMessagesKey(),JSON.stringify([...ids].slice(-300)))}catch(e){console.warn('Mémorisation locale du message ignoré impossible',e)};void markIncomingMessageRead(messageId).then(()=>refreshHeaderBadges()).catch(e=>console.warn('Marquage du message ignoré comme lu impossible',e))}
 function isIncomingMessageIgnored(messageId){return getIgnoredIncomingMessages().has(String(messageId))}
 function hideIncomingMessageToast(){clearTimeout(incomingMessageToastTimer);incomingMessageToastTimer=null;document.getElementById('ib-incoming-message-toast')?.remove()}
 function ensureIncomingMessageToastStyle(){
  if(document.getElementById('ib-incoming-message-toast-style'))return;
  const style=document.createElement('style');style.id='ib-incoming-message-toast-style';
- style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;box-sizing:border-box;width:min(320px,calc(100% - 28px));padding:10px 12px;border:1px solid #e3eaf0;border-radius:12px;background:#fff;color:#173b5c;box-shadow:0 5px 18px #00152f20;font:12px/1.35 Arial,sans-serif;animation:ib-incoming-toast-in .16s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:7px;margin:0 0 5px;font-size:12px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 8px;color:#52677a;overflow-wrap:anywhere;font-size:12px}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:7px}#ib-incoming-message-toast button{min-height:30px;padding:6px 10px;border:0;border-radius:7px;font-weight:700;font-size:11px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:64px;margin:8px 0;padding:8px;border:1px solid #cbd8e3;border-radius:8px;resize:vertical;font:13px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:15px;margin-top:6px;color:#b42318;font-size:11px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}` ;
+ style.textContent=`#ib-incoming-message-toast{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;box-sizing:border-box;width:min(280px,calc(100% - 32px));padding:8px 10px;border:1px solid #e3eaf0;border-radius:12px;background:#fff;color:#173b5c;box-shadow:0 5px 18px #00152f20;font:12px/1.35 Arial,sans-serif;animation:ib-incoming-toast-in .16s ease-out}#ib-incoming-message-toast .ib-incoming-title{display:flex;align-items:center;gap:7px;margin:0 0 4px;font-size:11px;font-weight:800;color:#073b70}#ib-incoming-message-toast .ib-incoming-title i{color:#0786b3}#ib-incoming-message-toast .ib-incoming-preview{margin:0 0 6px;color:#52677a;overflow-wrap:anywhere;font-size:11px}#ib-incoming-message-toast .ib-incoming-actions{display:flex;gap:7px}#ib-incoming-message-toast button{min-height:27px;padding:5px 9px;border:0;border-radius:7px;font-weight:700;font-size:10px;cursor:pointer}#ib-incoming-message-toast .ib-incoming-reply{background:#07518a;color:#fff;flex:1}#ib-incoming-message-toast .ib-incoming-ignore{background:#edf2f6;color:#36566e}#ib-incoming-message-toast textarea{display:block;box-sizing:border-box;width:100%;min-height:64px;margin:8px 0;padding:8px;border:1px solid #cbd8e3;border-radius:8px;resize:vertical;font:13px/1.4 Arial,sans-serif;color:#18314d}#ib-incoming-message-toast .ib-incoming-send{width:100%;background:#138a65;color:#fff}#ib-incoming-message-toast .ib-incoming-status{min-height:15px;margin-top:6px;color:#b42318;font-size:11px}#ib-incoming-message-toast button:disabled{opacity:.6;cursor:wait}@keyframes ib-incoming-toast-in{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}@media(prefers-reduced-motion:reduce){#ib-incoming-message-toast{animation:none}}` ;
  document.head.appendChild(style);
 }
 async function markIncomingMessageRead(messageId){
@@ -121,7 +121,7 @@ async function showIncomingMessageToast(message){
   const sender=(Array.isArray(data)?data:[]).find(agent=>String(agent.id)===String(message.sender_id));
   if(sender?.display_name)senderName=String(sender.display_name).trim();
  }catch(e){console.warn('Nom de l’expéditeur non récupéré via l’annuaire sécurisé',e)}
- const toast=document.createElement('section');toast.id='ib-incoming-message-toast';toast.setAttribute('role','alert');toast.setAttribute('aria-live','assertive');
+ const toast=document.createElement('section');toast.dataset.messageId=String(message.id);toast.id='ib-incoming-message-toast';toast.setAttribute('role','alert');toast.setAttribute('aria-live','assertive');
  const title=document.createElement('div');title.className='ib-incoming-title';
  const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
  const titleText=document.createElement('span');titleText.textContent=senderName+' vous a envoyé un message';
@@ -170,7 +170,7 @@ async function pollIncomingMessages(){
    try{localStorage.setItem(key,String(incomingMessageCursor))}catch(_){}
    return;
   }
-  const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at').eq('recipient_id',user.id).neq('sender_id',user.id).gt('id',incomingMessageCursor).order('id',{ascending:true}).limit(30);
+  const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at,read_at').eq('recipient_id',user.id).neq('sender_id',user.id).is('read_at',null).gt('id',incomingMessageCursor).order('id',{ascending:true}).limit(30);
   if(error)throw error;
   for(const message of data||[]){incomingMessageCursor=Math.max(incomingMessageCursor,Number(message.id));await showIncomingMessageToast(message)}
   try{localStorage.setItem(key,String(incomingMessageCursor))}catch(_){}
@@ -185,6 +185,7 @@ function startIncomingMessageNotifications(){
  try{
   incomingMessageChannel=client.channel('ib-incoming-global-'+user.id)
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void pollIncomingMessages())
+   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},payload=>{const updated=payload?.new;if(updated?.read_at){const toast=document.getElementById('ib-incoming-message-toast');if(toast?.dataset.messageId===String(updated.id))hideIncomingMessageToast();void refreshHeaderBadges()}})
    .subscribe();
  }catch(e){console.warn('Canal de notifications des messages indisponible',e)}
 }
