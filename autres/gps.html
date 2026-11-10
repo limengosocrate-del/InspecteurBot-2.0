@@ -52,13 +52,20 @@ html[data-theme="dark"] .sync-pill.ok{background:#143d32;color:#8be0b8}
 @media(max-width:520px){header{padding-top:14px;padding-bottom:14px}.head-actions{width:100%}.head-actions>*{flex:1}.theme-switch{justify-content:center}}
 
 /* Défilement tactile vertical prioritaire sur téléphone */
-html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;position:static!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important;scroll-behavior:auto!important}
+html{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{height:auto!important;min-height:100vh!important;min-height:100dvh!important;max-height:none!important;overflow-x:hidden!important;overflow-y:visible!important;position:static!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important}main.wrap,.wrap,.layout,.layout>div,.layout>aside{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;touch-action:pan-y!important}
 body{min-height:100vh!important;min-height:100dvh!important}
 main.wrap,.layout,.layout>div,.layout>aside{min-height:0!important;overflow:visible!important;touch-action:pan-y!important}
 .panel,.intro,.stats,.mission-item,.list{touch-action:pan-y!important}
 button,a,input,select,textarea{touch-action:manipulation}
 #map{touch-action:pan-y pinch-zoom!important}
 @media(max-width:800px){.layout{display:flex!important;flex-direction:column!important}.layout>div,.layout>aside{width:100%!important;min-width:0!important}.wrap{padding-bottom:48px!important}}
+
+/* Correctif renforcé du défilement tactile de la page Mission sur Terrain */
+html,body{overflow-x:hidden!important;overscroll-behavior-y:auto!important;touch-action:pan-y!important}
+body{display:block!important;height:auto!important;max-height:none!important;overflow-y:visible!important;position:static!important}
+main.wrap{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+.layout,.layout>div,.layout>aside{height:auto!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+@media(max-width:800px){body{overflow-y:visible!important}.wrap{height:auto!important;overflow:visible!important}.panel{overflow:visible!important;max-height:none!important}}
 </style>
 <style id="inspecteurbot-auth-lock">html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;background:#071b34;color:#fff;font:800 36px Arial,sans-serif;visibility:visible!important}</style>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("ib_mission_theme_v1")||"light"}catch(e){document.documentElement.dataset.theme="light"}</script><script src="../auth-gate.js?v=20261110-sync-offline-v1" defer></script>
