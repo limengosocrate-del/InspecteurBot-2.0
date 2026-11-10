@@ -102,11 +102,11 @@ input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;bac
 <script>
 (function(){
 'use strict';
-var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],dailyTimer=null;
+var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],leaderboardRows=[];
 var $=function(id){return document.getElementById(id)};
 var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
-function weekStart(date){var d=new Date(date+'T12:00:00+01:00');var day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function weekStart(date){var d=new Date(date+'T12:00:00Z');var day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0')}
 function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
 function orderedQuestions(seed,count){var list=questions.slice().filter(function(q){return q&&q.question&&Array.isArray(q.choix)&&q.choix.length>=2&&typeof q.bonne==='number'});list.sort(function(a,b){return hash(seed+'-'+a.id)-hash(seed+'-'+b.id)});return list.slice(0,count)}
 function showStatus(id,msg,ok){var el=$(id);if(el){el.textContent=msg||'';el.style.color=ok?'#8de6bd':'#ffb1a7'}}
@@ -132,17 +132,13 @@ function renderQuestionSet(type,items,container,key){
  container.innerHTML=html;
  var form=container.querySelector('form');
  form.addEventListener('submit',function(e){e.preventDefault();submitChallenge(type,key,items,form)});
- if(type==='daily'){
-  var left=30,display=form.querySelector('[data-countdown]');display.textContent='Temps : 30 s';
-  clearInterval(dailyTimer);dailyTimer=setInterval(function(){left--;if(display)display.textContent='Temps : '+left+' s';if(left<=0){clearInterval(dailyTimer);form.requestSubmit()}},1000);
  }
-}
 async function submitChallenge(type,key,items,form){
- var btn=form.querySelector('button[type=submit]');if(btn.disabled)return;btn.disabled=true;clearInterval(dailyTimer);
+ var btn=form.querySelector('button[type=submit]');if(btn.disabled)return;btn.disabled=true;
  var answers={},correct=0;
  items.forEach(function(q,i){var selected=form.querySelector('input[name="q'+i+'"]:checked');var val=selected?Number(selected.value):-1;answers[String(q.id)]=val;if(val===normalizeCorrect(q))correct++;});
  var score=Math.round(correct/items.length*100),points=correct*10+(correct===items.length?10:0);
- form.querySelectorAll('.question').forEach(function(card){card.classList.add('done')});
+ form.querySelectorAll('.question').forEach(function(card){card.classList.add('done')});form.querySelectorAll('input[type=radio]').forEach(function(input){input.disabled=true});
  var result=form.querySelector('[data-result]');
  result.textContent='Résultat : '+correct+'/'+items.length+' · '+score+'% · '+points+' points. Enregistrement…';
  try{
@@ -155,8 +151,13 @@ async function submitChallenge(type,key,items,form){
  }catch(e){result.textContent='Résultat calculé : '+score+'%. Enregistrement impossible : '+(e.message||'vérifiez la connexion.');result.style.color='#ffb1a7';btn.disabled=false}
 }
 async function loadAttempts(){
- var r=await client.from('ib_challenge_attempts').select('id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at').limit(1000);
- if(r.error)throw r.error;attempts=r.data||[];
+ var fields='id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at';
+ var results=await Promise.all([
+  client.from('ib_challenge_attempts').select(fields).eq('user_id',user.id).order('created_at',{ascending:false}).limit(100),
+  client.from('ib_challenge_leaderboard').select('user_id,display_name,total_points,challenge_count').order('total_points',{ascending:false}).limit(10)
+ ]);
+ if(results[0].error)throw results[0].error;if(results[1].error)throw results[1].error;
+ attempts=results[0].data||[];leaderboardRows=results[1].data||[];
 }
 function renderAwards(){
  var mine=attempts.filter(function(a){return a.user_id===user.id}),total=mine.reduce(function(s,a){return s+Number(a.points||0)},0);
@@ -165,10 +166,9 @@ function renderAwards(){
  $('my-awards').innerHTML=levels.map(function(x){var got=total>=x.p;return '<div class="award '+(got?'':'locked')+'"><div class="emoji">'+x.e+'</div><b>'+x.n+'</b><small>'+x.p+' points · '+(got?'Obtenu':'À débloquer')+'</small></div>'}).join('');
 }
 function renderLeaderboard(){
- var map={};attempts.forEach(function(a){var id=a.user_id;if(!id)return;if(!map[id])map[id]={name:a.display_name||'Agent IGT',points:0,count:0};map[id].points+=Number(a.points||0);map[id].count++});
- var rows=Object.keys(map).map(function(id){return {id:id,name:map[id].name,points:map[id].points,count:map[id].count}}).sort(function(a,b){return b.points-a.points||a.name.localeCompare(b.name,'fr')}).slice(0,10);
+ var rows=leaderboardRows||[];
  if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra après les premières participations.</p>';return}
- $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.name)+(r.id===user.id?' · Vous':'')+'<small style="display:block;color:#9eb4ce;font-weight:400;margin-top:3px">'+r.count+' défi(s) validé(s)</small></span><span class="rank-points">'+r.points+' pts</span></div>'}).join('');
+ $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:#9eb4ce;font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>'}).join('');
 }
 async function loadNews(){
  $('news-feed').innerHTML='<p class="sub">Chargement…</p>';var items=[];
