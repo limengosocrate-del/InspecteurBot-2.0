@@ -162,13 +162,15 @@ async function refreshAll(){
  if(refreshAllRunning){refreshAllPending=true;return}
  refreshAllRunning=true;
  try{
-  const [directoryResult]=await Promise.allSettled([
-   loadPeople()
+  // Annuaire, conversations et groupes démarrent simultanément :
+  // un service lent ne bloque plus les deux autres panneaux.
+  const [directoryResult]=await Promise.all([
+   loadPeople().then(value=>({status:'fulfilled',value})).catch(error=>({status:'rejected',reason:error})),
+   refreshInbox().catch(error=>{console.warn('Conversations:',error)}),
+   refreshGroups().catch(error=>{console.warn('Groupes:',error)})
   ]);
-  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories()}
+  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories();await refreshInbox()}
   else{$('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>'}
-  // Les conversations et les groupes ne dépendent pas de l'annuaire.
-  await Promise.allSettled([refreshInbox(),refreshGroups()]);
   if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
  }finally{
   refreshAllRunning=false;
