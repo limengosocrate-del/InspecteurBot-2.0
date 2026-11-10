@@ -33,7 +33,7 @@ jobs:
           sudo apt-get install -y imagemagick
           mkdir -p "$RUNNER_TEMP/pages-site"
           tar --exclude='.git' --exclude='.github' --exclude='node_modules' -cf - . | tar -xf - -C "$RUNNER_TEMP/pages-site"
-          find "$RUNNER_TEMP/pages-site" -type f \\( -iname '*.jpg' -o -iname '*.jpeg' \\) -print0 |
+          find "$RUNNER_TEMP/pages-site" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) -print0 |
             xargs -0 -r -n 1 -P 2 magick mogrify -strip -resize '1920x1920>' -quality 82
           touch "$RUNNER_TEMP/pages-site/.nojekyll"
           echo "Taille du site optimisé :"
