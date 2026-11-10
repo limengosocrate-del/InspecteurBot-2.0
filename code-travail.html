@@ -205,6 +205,38 @@ body.dark-theme .legal-primary-btn{background:#0e2f4b!important;border:1px solid
 @media(max-width:650px){body{font-size:16px!important}.article-content,.legal-article-text{font-size:17px!important;line-height:1.9!important}.category-card h3{font-size:15px!important}.category-card p{font-size:13px!important}.legal-result-card strong{font-size:16px!important}}
 </style>
 
+<style id="code-travail-lagoon-theme-v1">
+/* Thème Lagoon de l’Académie IGT — adapté au Code du Travail */
+:root{--ct-bg:#b9d0d8;--ct-paper:rgba(220,232,235,.97);--ct-ink:#172b35;--ct-muted:#526a72;--ct-border:rgba(21,48,58,.18);--ct-navy:#063b4c;--ct-blue:#087f8c;--ct-gold:#c88700;--ct-shadow:0 12px 30px rgba(45,72,80,.16)}
+body.light-theme{background-color:#b9d0d8!important;background-image:radial-gradient(circle at 8% 10%,rgba(34,197,201,.16),transparent 42%),radial-gradient(circle at 90% 15%,rgba(242,183,5,.10),transparent 38%),radial-gradient(circle at 80% 90%,rgba(21,155,120,.08),transparent 42%)!important;color:#172b35!important;color-scheme:light!important}
+body.light-theme .search-section,body.light-theme .categories-section,body.light-theme .article-section,body.light-theme .article-card,body.light-theme .legal-detail-view{background:rgba(220,232,235,.97)!important;border-color:rgba(21,48,58,.18)!important;color:#172b35!important}
+body.light-theme .category-card,body.light-theme .result-item,body.light-theme .legal-result-card,body.light-theme .legal-article-view{background:rgba(232,238,238,.98)!important;border-color:rgba(21,48,58,.18)!important;color:#172b35!important}
+body.light-theme .top-header{background:linear-gradient(125deg,#063b4c,#07566a 58%,#087f8c)!important;border:1px solid rgba(255,255,255,.16)!important}
+body.light-theme .top-header h1,body.light-theme .top-header h2,body.light-theme .top-header h3,body.light-theme .top-header p{color:#f1f8f7!important}
+body.light-theme .search-header h2,body.light-theme .section-title h2,body.light-theme .category-card h3,body.light-theme .article-title,body.light-theme .legal-detail-heading h2{color:#063b4c!important}
+body.light-theme .search-header p,body.light-theme .section-title p,body.light-theme .category-card p,body.light-theme .legal-detail-heading p{color:#526a72!important}
+body.light-theme .search-box input{background:#e8eeee!important;color:#172b35!important;border-color:#91aeb5!important}
+body.light-theme .suggestions button{background:#d3e1e4!important;color:#173b48!important;border-color:#a8c0c5!important}
+body.dark-theme{--ct-bg:#0b141a;--ct-paper:rgba(20,30,37,.97);--ct-ink:#f1f5f3;--ct-muted:#9aaeb1;--ct-border:rgba(255,255,255,.12);background-color:#0b141a!important;background-image:radial-gradient(circle at 8% 10%,rgba(34,197,201,.13),transparent 42%),radial-gradient(circle at 90% 15%,rgba(242,183,5,.08),transparent 38%)!important;color:#f1f5f3!important}
+body.dark-theme .search-section,body.dark-theme .categories-section,body.dark-theme .article-section,body.dark-theme .article-card,body.dark-theme .legal-detail-view{background:rgba(20,30,37,.97)!important;border-color:rgba(255,255,255,.12)!important;color:#f1f5f3!important}
+body.dark-theme .category-card,body.dark-theme .result-item,body.dark-theme .legal-result-card,body.dark-theme .legal-article-view{background:rgba(27,39,47,.96)!important;border-color:rgba(255,255,255,.14)!important;color:#f1f5f3!important}
+body.dark-theme .top-header{background:linear-gradient(125deg,#063b4c,#07566a 58%,#087f8c)!important}
+body.dark-theme .search-header h2,body.dark-theme .section-title h2,body.dark-theme .category-card h3,body.dark-theme .article-title,body.dark-theme .legal-detail-heading h2{color:#f1f5f3!important}
+body.dark-theme .search-header p,body.dark-theme .section-title p,body.dark-theme .category-card p,body.dark-theme .legal-detail-heading p{color:#b8cbca!important}
+body.dark-theme .search-box input{background:#10252d!important;color:#f1f5f3!important;border-color:#31535b!important}
+body.dark-theme .suggestions button{background:#203640!important;color:#e8f3f1!important;border-color:#3a5960!important}
+.legal-detail-view{background:var(--ct-paper)!important;color:var(--ct-ink)!important;border:1px solid var(--ct-border)!important;border-radius:18px!important;padding:clamp(14px,3vw,24px)!important;box-shadow:var(--ct-shadow)!important}
+.legal-guide-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(8,127,140,.14);color:var(--ct-blue);font-weight:800;margin:0 0 14px}
+.legal-guide-section{padding:15px 16px;margin:10px 0;border:1px solid var(--ct-border);border-left:4px solid var(--ct-blue);border-radius:13px;background:rgba(8,127,140,.045)}
+.legal-guide-section h3{color:var(--ct-navy)!important;font-size:17px;margin:0 0 7px}
+.legal-guide-section p{color:var(--ct-ink)!important;font-size:15px;line-height:1.75;margin:0;white-space:pre-line}
+body.dark-theme .legal-guide-section h3{color:#5de2df!important}body.dark-theme .legal-guide-section p{color:#e1eceb!important}
+.legal-guide-note{padding:12px 14px;border-radius:11px;background:rgba(242,183,5,.12);border:1px solid rgba(200,135,0,.3);color:var(--ct-ink)!important;font-size:12px;line-height:1.6;margin-top:14px}
+.ct-home-float{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:99990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:88px;max-width:130px;padding:10px 9px 9px;border:2px solid #f2b705;border-radius:18px;background:linear-gradient(145deg,#063b4c,#087f8c);color:#fff;box-shadow:0 8px 26px rgba(3,25,35,.35);cursor:pointer;touch-action:manipulation}
+.ct-home-icon{font-size:34px;line-height:1.1}.ct-home-label{font-size:10px;line-height:1.25;text-align:center;font-weight:800;color:#fff!important}
+.ct-home-float:focus-visible{outline:3px solid #f2b705;outline-offset:3px}.ct-home-float:active{transform:scale(.96)}
+@media(max-width:480px){.ct-home-float{right:10px;bottom:calc(12px + env(safe-area-inset-bottom));min-width:80px;max-width:112px;padding:8px 7px}.ct-home-icon{font-size:31px}.ct-home-label{font-size:9px}}
+</style>
 </head>
 
 <body class="light-theme">
@@ -271,22 +303,14 @@ body.dark-theme .legal-primary-btn{background:#0e2f4b!important;border:1px solid
         </div>
 
         <div id="suggestionsRapides" class="suggestions">
-            <button data-search="Contrat de travail">📄 Contrat CDI/CDD</button>
-            <button data-search="Salaire">💰 SMIG & Salaire</button>
-            <button data-search="Congé annuel">🏖️ Congés payés (12j)</button>
-            <button data-search="Licenciement">⚖️ Licenciement & Préavis</button>
-            <button data-search="Durée du travail">⏰ 45h / Semaine</button>
-            <button data-search="Inspection du Travail">👷 Pouvoirs Inspection</button>
-            <button data-search="Sécurité au travail">🦺 EPI & Sécurité</button>
+            <button data-guide="contrat">📄 Contrat CDI / CDD</button>
+            <button data-guide="salaire">💰 SMIG & Salaire</button>
+            <button data-guide="conges">🏖️ Congés annuels payés</button>
+            <button data-guide="licenciement">⚖️ Licenciement & Préavis</button>
+            <button data-guide="duree">⏰ Durée du travail — 45 h</button>
+            <button data-guide="inspection">👷 Pouvoirs de l’Inspection</button>
+            <button data-guide="epi">🦺 EPI & Sécurité</button>
             <button data-search="Sanctions">🚨 Sanctions & Amendes</button>
-            <button data-article="1">📌 Article 1</button>
-            <button data-article="10">📌 Article 10</button>
-            <button data-article="54">📌 Article 54</button>
-            <button data-article="86">📌 Article 86</button>
-            <button data-article="119">📌 Article 119</button>
-            <button data-article="130">📌 Article 130</button>
-            <button data-article="187">📌 Article 187</button>
-            <button data-article="334">📌 Article 334</button>
         </div>
 
         <div id="resultatsRecherche" class="search-results"></div>
@@ -302,7 +326,7 @@ body.dark-theme .legal-primary-btn{background:#0e2f4b!important;border:1px solid
                 Domaines Juridiques du Code du Travail
             </h2>
             <p>
-                Explorez l'intégralité des 334 articles classés par chapitres et titres légaux officiels.
+                Explorez les domaines du Code, les articles disponibles et les guides pratiques pour mieux comprendre vos droits et obligations.
             </p>
         </div>
 
