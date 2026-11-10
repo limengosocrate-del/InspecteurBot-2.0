@@ -87,7 +87,7 @@ async function updatePresence(){
 function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},45000);
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},120000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
@@ -189,7 +189,7 @@ function startIncomingMessageNotifications(){
  clearInterval(incomingMessagePoll);incomingMessageCursor=null;
  if(incomingMessageChannel){try{client?.removeChannel(incomingMessageChannel)}catch(_){}incomingMessageChannel=null}
  void pollIncomingMessages();
- incomingMessagePoll=setInterval(()=>void pollIncomingMessages(),8000);
+ incomingMessagePoll=setInterval(()=>{if(document.visibilityState==='visible')void pollIncomingMessages()},60000);
  try{
   incomingMessageChannel=client.channel('ib-incoming-global-'+user.id)
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void pollIncomingMessages())
@@ -249,7 +249,7 @@ async function refreshHeaderBadges(){
 }
 function startHeaderBadgeTracking(){
  clearInterval(headerBadgeTimer);void refreshHeaderBadges();
- headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()},20000);
+ headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()},60000);
  if(headerBadgeChannel){try{client.removeChannel(headerBadgeChannel)}catch(_){}}
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
