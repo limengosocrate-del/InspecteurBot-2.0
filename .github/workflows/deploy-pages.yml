@@ -33,8 +33,15 @@ jobs:
           sudo apt-get install -y imagemagick
           mkdir -p "$RUNNER_TEMP/pages-site"
           tar --exclude='.git' --exclude='.github' --exclude='node_modules' -cf - . | tar -xf - -C "$RUNNER_TEMP/pages-site"
-          find "$RUNNER_TEMP/pages-site" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) -print0 |
-            xargs -0 -r -n 1 -P 2 magick mogrify -strip -resize '1920x1920>' -quality 82
+          while IFS= read -r -d '' image; do
+            optimized="${image}.optimized"
+            if magick "$image" -strip -resize '1920x1920>' -quality 82 "$optimized"; then
+              mv "$optimized" "$image"
+            else
+              rm -f "$optimized"
+              echo "::warning::Image JPEG conservée sans modification car elle est illisible par ImageMagick: $image"
+            fi
+          done < <(find "$RUNNER_TEMP/pages-site" -type f \\( -iname '*.jpg' -o -iname '*.jpeg' \\) -print0)
           touch "$RUNNER_TEMP/pages-site/.nojekyll"
           echo "Taille du site optimisé :"
           du -sh "$RUNNER_TEMP/pages-site"
