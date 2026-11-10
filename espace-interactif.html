@@ -34,13 +34,6 @@ input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;bac
 </section>
 
 <div class="grid">
- <section class="panel wide" id="news-panel">
-  <div class="panel-head"><div><h3><i class="fa-solid fa-newspaper panel-icon"></i> Actualités et annonces IGT</h3><p class="sub">Informations publiées par l'administration et communiqués disponibles.</p></div><button class="btn secondary" id="refresh-news">Actualiser</button></div>
-  <div class="feed" id="news-feed"><p class="sub">Chargement des actualités…</p></div>
-  <div class="row" style="margin-top:12px"><a class="btn secondary" href="communiques.html" style="text-decoration:none">Tous les communiqués officiels</a></div>
-  <div class="status" id="news-status" aria-live="polite"></div>
- </section>
-
  <section class="panel" id="daily-panel">
   <div class="panel-head"><h3><i class="fa-solid fa-sun panel-icon"></i> Défi du jour</h3><span class="pill" id="daily-date">Aujourd'hui</span></div>
   <p class="sub">Une question courte pour entretenir vos connaissances professionnelles. Une seule tentative par jour.</p>
@@ -177,15 +170,6 @@ function renderLeaderboard(){
  if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra après les premières participations.</p>';return}
  $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:#9eb4ce;font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>'}).join('');
 }
-async function loadNews(){
- $('news-feed').innerHTML='<p class="sub">Chargement…</p>';var items=[];
- try{var r=await client.from('announcements').select('id,title,body,created_at,target_user_id').order('created_at',{ascending:false}).limit(8);if(r.error)throw r.error;(r.data||[]).forEach(function(x){items.push({title:x.title,body:x.body,date:x.created_at,kind:'Annonce IGT'})})}
- catch(e){showStatus('news-status','Les annonces en ligne ne sont pas accessibles pour le moment. '+e.message)}
- try{var res=await fetch('assets/data/communiques.json',{cache:'force-cache'});if(res.ok){var d=await res.json();(d.communiques||[]).slice(0,6).forEach(function(x){items.push({title:x.titre,body:x.description||x.texte||'',date:x.datePublication,kind:'Communiqué officiel'});})}}
- catch(e){console.warn('Communiqués hors ligne',e)}
- items.sort(function(a,b){return (Date.parse(b.date)||0)-(Date.parse(a.date)||0)});
- $('news-feed').innerHTML=items.length?items.slice(0,10).map(function(x){return '<article class="news"><div class="meta">'+esc(x.kind)+' · '+esc(x.date||'Date non précisée')+'</div><h4>'+esc(x.title||'Information IGT')+'</h4><p>'+esc(x.body||'Consultez le communiqué pour plus de détails.')+'</p></article>'}).join(''):'<p class="sub">Aucune actualité disponible pour le moment. Consultez les communiqués officiels.</p>';
-}
 async function loadResources(){
  try{var r=await client.from('training_resources').select('id,title,description,kind,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3);if(r.error)throw r.error;
  $('resource-preview').innerHTML=(r.data||[]).length?(r.data||[]).map(function(x){return '<article class="resource"><b>'+esc(x.title)+'</b><p>'+esc(x.description||'Ressource pédagogique')+' · '+esc(x.kind==='pdf'?'PDF':x.kind==='audio'?'Audio':'Exercice')+'</p></article>'}).join(''):'<p class="sub">Aucune ressource publiée actuellement.</p>'}
@@ -215,7 +199,7 @@ async function boot(detail){
  if(!client||!user||!user.id){$('hub-connection-status').textContent='Connexion requise pour utiliser les fonctionnalités interactives.';return}
  if(bootedUserId===user.id)return;bootedUserId=user.id;$('hub-connection-status').textContent='Session sécurisée active · Chargement de vos données…';
  try{if(!profile){var p=await client.from('profiles').select('display_name,role').eq('id',user.id).maybeSingle();profile=p.data||{}}
- await loadQuestions();await Promise.all([loadNews(),loadResources(),loadMySuggestions(),refreshAll()]);if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
+ await loadQuestions();await Promise.all([loadResources(),loadMySuggestions(),refreshAll()]);if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
  }catch(e){console.error(e);bootedUserId=null;$('hub-connection-status').textContent='Certaines données ne sont pas disponibles. Utilisez Actualiser pour réessayer.';showStatus('suggestion-status','Chargement incomplet : '+e.message)}
 }
 async function sendSuggestion(){
@@ -244,13 +228,7 @@ async function saveAdminSuggestion(btn){
 }
 async function runButtonAction(btn){
  if(btn.disabled)return;
- if(btn.id==='refresh-news'){
-  if(!client||!user){showStatus('news-status','Votre session n’est pas prête.');return}
-  btn.disabled=true;btn.textContent='Actualisation…';
-  try{await loadNews();showStatus('news-status','Actualités actualisées.',true)}
-  catch(err){showStatus('news-status','Actualisation impossible : '+err.message)}
-  finally{btn.disabled=false;btn.textContent='Actualiser'}
- }else if(btn.id==='refresh-ranking'){
+ if(btn.id==='refresh-ranking'){
   if(!client||!user){showStatus('ranking-status','Votre session n’est pas prête.');return}
   btn.disabled=true;btn.textContent='Actualisation…';
   try{await refreshAll();showStatus('ranking-status','Classement et progression actualisés.',true)}
@@ -260,7 +238,7 @@ async function runButtonAction(btn){
 }
 document.addEventListener('click',function(e){
  var btn=e.target.closest&&e.target.closest('button');
- if(btn&&(btn.id==='refresh-news'||btn.id==='refresh-ranking'||btn.hasAttribute('data-save'))){e.preventDefault();void runButtonAction(btn)}
+ if(btn&&(btn.id==='refresh-ranking'||btn.hasAttribute('data-save'))){e.preventDefault();void runButtonAction(btn)}
 },true);
 document.addEventListener('submit',function(e){
  var form=e.target;
