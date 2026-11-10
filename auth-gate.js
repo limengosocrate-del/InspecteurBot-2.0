@@ -70,6 +70,33 @@ if(!document.getElementById('ib-startup-splash')){
 }
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
+function setupNetworkStatus(){
+ if(document.getElementById('ib-network-status'))return;
+ const style=document.createElement('style');style.id='ib-network-status-style';
+ style.textContent='#ib-network-status{position:fixed;left:50%;top:max(8px,env(safe-area-inset-top));transform:translate(-50%,-150%);z-index:2147483646;width:min(520px,calc(100% - 24px));box-sizing:border-box;padding:10px 14px;border-radius:12px;background:#8a3414;color:#fff;text-align:center;font:700 13px/1.4 Arial,sans-serif;box-shadow:0 5px 18px #0003;transition:transform .2s ease;pointer-events:none}#ib-network-status.visible{transform:translate(-50%,0)}#ib-network-status.online{background:#176b45}';
+ document.head.appendChild(style);
+ const bar=document.createElement('div');bar.id='ib-network-status';bar.setAttribute('role','status');bar.setAttribute('aria-live','polite');document.body.appendChild(bar);
+ const showOffline=()=>{bar.textContent='Mode hors connexion — les pages déjà mises en cache restent accessibles. Les données seront actualisées au retour d’Internet.';bar.className='visible'};
+ const showOnline=()=>{bar.textContent='Connexion rétablie — actualisation des données en cours…';bar.className='visible online';window.setTimeout(()=>{if(navigator.onLine!==false)bar.className=''},3500)};
+ if(navigator.onLine===false)showOffline();
+ window.addEventListener('offline',showOffline);
+ window.addEventListener('online',()=>{
+  showOnline();
+  if(!client||!user)return;
+  // Supabase gère déjà les reconnexions WebSocket ; on renouvelle proprement
+  // les abonnements de l'application pour ne pas dépendre d'un ancien canal.
+  window.setTimeout(()=>{
+   if(!client||!user||navigator.onLine===false)return;
+   void updatePresence();
+   startRealtimePresence();
+   startIncomingMessageNotifications();
+   startHeaderBadgeTracking();
+   void pollIncomingMessages();
+   void refreshHeaderBadges();
+  },500);
+ });
+}
+
 function armSessionExpiry(payload){
  clearTimeout(expiry);expiry=null;
  // Pas de durée de session personnalisée : déconnexion ou révocation uniquement.
@@ -79,7 +106,7 @@ function readSessionId(token){
  try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
 }
 async function updatePresence(){
- if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline)return;
+ if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false)return;
  const now=new Date().toISOString();
  const {error}=await client.from('user_presence').upsert({user_id:user.id,last_seen:now,updated_at:now},{onConflict:'user_id'});
  if(error)console.warn('Mise à jour de présence indisponible',error);
@@ -87,7 +114,7 @@ async function updatePresence(){
 function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible')void updatePresence()},120000);
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void updatePresence()},120000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
@@ -195,7 +222,7 @@ async function showIncomingMessageToast(message){
  incomingMessageToastTimer=window.setTimeout(hideIncomingMessageToast,4000);
 }
 async function pollIncomingMessages(){
- if(incomingMessageBusy||!client||!user||document.visibilityState==='hidden')return;
+ if(incomingMessageBusy||!client||!user||document.visibilityState==='hidden'||navigator.onLine===false)return;
  incomingMessageBusy=true;
  try{
   const key=incomingMessageCursorKey();
@@ -225,7 +252,7 @@ function startIncomingMessageNotifications(){
  clearInterval(incomingMessagePoll);incomingMessageCursor=null;
  if(incomingMessageChannel){try{client?.removeChannel(incomingMessageChannel)}catch(_){}incomingMessageChannel=null}
  void pollIncomingMessages();
- incomingMessagePoll=setInterval(()=>{if(document.visibilityState==='visible')void pollIncomingMessages()},60000);
+ incomingMessagePoll=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void pollIncomingMessages()},60000);
  try{
   incomingMessageChannel=client.channel('ib-incoming-global-'+user.id)
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void pollIncomingMessages())
@@ -246,7 +273,7 @@ async function expireSession(){
 }
 let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false;
 async function refreshHeaderBadges(){
- if(headerBadgeBusy||!client||!user)return;
+ if(headerBadgeBusy||!client||!user||navigator.onLine===false)return;
  const presence=document.querySelector('#ib-header-presence .ib-header-count');
  const messages=document.querySelector('#ib-header-messages .ib-header-count');
  const menuMessages=document.querySelector('.menu-index a[href*="messagerie.html"]');
@@ -284,7 +311,7 @@ async function refreshHeaderBadges(){
 }
 function startHeaderBadgeTracking(){
  clearInterval(headerBadgeTimer);void refreshHeaderBadges();
- headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()},60000);
+ headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void refreshHeaderBadges()},60000);
  if(headerBadgeChannel){try{client.removeChannel(headerBadgeChannel)}catch(_){}}
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
@@ -494,6 +521,7 @@ async function loadGlobalTheme(){
  await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=new URL('global-theme.js?v=20261108-theme-5',base).href;script.onload=resolve;script.onerror=()=>reject(new Error('Thèmes globaux indisponibles'));document.head.appendChild(script);});
 }
 async function start(){
+ setupNetworkStatus();
  try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
  try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
