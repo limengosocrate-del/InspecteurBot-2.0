@@ -371,3 +371,28 @@ body.dark-theme .legal-sanction{background:#382321;color:#ffd8d2}
   #livreHost .livre{padding:22px 15px 26px 26px}
   #livreHost .livre-contenu{font-size:17px!important;line-height:1.75!important}
 }
+
+
+/* ACCESSIBILITÉ — livre agrandi, texte intégral visible sans barre de défilement interne */
+#livreHost .livre-wrapper{width:100%;max-width:1180px;margin:0 auto}
+#livreHost .livre{width:100%;min-height:620px;height:auto;box-sizing:border-box;padding:56px 72px 64px 82px}
+#livreHost .livre-page{width:100%;height:auto;min-height:0}
+#livreHost .livre-contenu{max-height:none!important;height:auto!important;overflow:visible!important;overflow-y:visible!important;padding-right:0!important;font-size:clamp(18px,1.35vw,21px)!important;line-height:1.85!important;text-align:left!important;overflow-wrap:anywhere}
+#livreHost .livre-article-titre{font-size:clamp(25px,2.2vw,31px)!important;line-height:1.4!important}
+#livreHost .livre-numero{font-size:clamp(30px,2.8vw,38px)!important}
+#livreHost .livre-titre-section{font-size:15px!important;line-height:1.6!important}
+#livreHost .livre-sanction{font-size:17px!important;line-height:1.75!important}
+#livreHost .livre-contenu::-webkit-scrollbar{display:none!important;width:0!important}
+#livreHost .livre-contenu{scrollbar-width:none!important;-ms-overflow-style:none!important}
+@media(max-width:768px){
+ #livreHost .livre-wrapper{max-width:100%}
+ #livreHost .livre{min-height:0;padding:36px 22px 54px 38px}
+ #livreHost .livre-contenu{font-size:18px!important;line-height:1.8!important}
+ #livreHost .livre-article-titre{font-size:23px!important}
+ #livreHost .livre-numero{font-size:30px!important}
+ #livreHost .livre-sanction{font-size:16px!important}
+}
+@media(max-width:420px){
+ #livreHost .livre{padding:30px 16px 50px 30px}
+ #livreHost .livre-contenu{font-size:17px!important;line-height:1.75!important}
+}
