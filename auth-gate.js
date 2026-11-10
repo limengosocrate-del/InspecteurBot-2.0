@@ -320,7 +320,7 @@ function startHeaderBadgeTracking(){
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshHeaderBadges()});
+ if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void refreshHeaderBadges()})}
 }
 async function refreshNotificationBadge(){return refreshHeaderBadges();}
 function stopHeaderBadgeTracking(){
