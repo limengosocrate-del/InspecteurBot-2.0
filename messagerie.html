@@ -123,7 +123,38 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
 function initials(s){return s||'Agent'}
-function online(p){return !!p?.is_online}
+let realtimePresenceReady=false;
+let onlineUserIds=new Set();
+function online(p){return !!p?.id&&(realtimePresenceReady?onlineUserIds.has(p.id):!!p?.is_online)}
+function applyRealtimePresence(){
+ if(!presenceChannel)return;
+ const state=presenceChannel.presenceState()||{};
+ const next=new Set();
+ Object.entries(state).forEach(([key,entries])=>{
+  const rows=Array.isArray(entries)?entries:[];
+  rows.forEach(entry=>{const id=entry?.user_id||key;if(id)next.add(id)});
+ });
+ onlineUserIds=next;
+ realtimePresenceReady=true;
+ people=people.map(p=>({...p,is_online:onlineUserIds.has(p.id)}));
+ renderPresenceUI();
+}
+function renderPresenceUI(){
+ renderStories();
+ document.querySelectorAll('.person[data-person]').forEach(button=>{
+  const isOnline=onlineUserIds.has(button.dataset.person);
+  const wrap=button.querySelector('.avatar-wrap');
+  if(!wrap)return;
+  let dot=wrap.querySelector('.dot');
+  if(isOnline&&!dot){dot=document.createElement('i');dot.className='dot';wrap.append(dot)}
+  else if(!isOnline&&dot)dot.remove();
+ });
+ if(active){
+  const current=people.find(p=>p.id===active.id);
+  if(current){active=current;updateChatHeader(current)}
+ }
+ refreshMessageReceipts();
+}
 function setNotice(s){$('notice').textContent=s;$('notice').classList.toggle('show',!!s)}
 async function init(){
  let authResult;
@@ -155,7 +186,23 @@ async function init(){
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},()=>refreshInbox())
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>{updateReadReceipt(payload.new);refreshInbox()})
  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setNotice('Connexion temps réel interrompue. Reconnexion automatique…');else if(status==='SUBSCRIBED')setNotice('')});
- presenceChannel=client.channel('ib-presence-'+me.id).on('postgres_changes',{event:'*',schema:'public',table:'user_presence'},payload=>{const changedId=payload.new?.user_id||payload.old?.user_id;if(changedId&&changedId!==me.id)refreshPresenceAndReceipts()}).subscribe();
+ // Un canal Presence partagé signale immédiatement les connexions et départs.
+ // La clé utilisateur regroupe les onglets d'un même agent sans créer de faux doublons.
+ presenceChannel=client.channel('ib-presence-global',{config:{presence:{key:me.id}}})
+  .on('presence',{event:'sync'},()=>applyRealtimePresence())
+  .on('presence',{event:'join'},()=>applyRealtimePresence())
+  .on('presence',{event:'leave'},()=>applyRealtimePresence())
+  .subscribe(async status=>{
+   if(status==='SUBSCRIBED'){
+    try{
+     await presenceChannel.track({user_id:me.id,display_name:myProfile?.display_name||'Agent',online_at:new Date().toISOString()});
+     applyRealtimePresence();
+    }catch(error){console.warn('Activation de la présence temps réel impossible:',error)}
+   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+    realtimePresenceReady=false;
+    console.warn('Canal de présence interrompu:',status);
+   }
+  });
  profileChannel=client.channel('ib-profile-photos-'+me.id)
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{
   const changedId=payload.new?.id;
@@ -270,9 +317,8 @@ async function loadConversation(){
  scrollChat();
 }
 async function refreshPresenceAndReceipts(){
- people=await loadPeople();renderStories();
- if(active){const current=people.find(p=>p.id===active.id);if(current){active=current;updateChatHeader(current)}}
- refreshMessageReceipts();
+ if(realtimePresenceReady){applyRealtimePresence();return}
+ try{people=await loadPeople();renderPresenceUI()}catch(error){console.warn('Actualisation de la présence:',error)}
 }
 function setReceiptState(receipt,recipientId,isRead){
  if(!receipt)return;
