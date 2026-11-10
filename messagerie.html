@@ -228,16 +228,25 @@ async function refreshAll(){
  if(refreshAllRunning){refreshAllPending=true;return}
  refreshAllRunning=true;
  try{
-  // Annuaire, conversations et groupes démarrent simultanément :
-  // un service lent ne bloque plus les deux autres panneaux.
-  const [directoryResult]=await Promise.all([
-   loadPeople().then(value=>({status:'fulfilled',value})).catch(error=>({status:'rejected',reason:error})),
-   refreshInbox().catch(error=>{console.warn('Conversations:',error)}),
-   refreshGroups().catch(error=>{console.warn('Groupes:',error)})
-  ]);
-  if(directoryResult.status==='fulfilled'){people=directoryResult.value;renderStories()}
-  else{$('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>'}
-  if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
+  // Charger d'abord l'annuaire : refreshInbox en a besoin pour associer
+  // chaque conversation à son correspondant. L'ancien lancement parallèle
+  // affichait à tort une liste vide avant la fin de l'annuaire.
+  const directoryResult=await loadPeople().then(value=>({status:'fulfilled',value})).catch(error=>({status:'rejected',reason:error}));
+  if(directoryResult.status==='fulfilled'){
+   people=directoryResult.value;
+   renderStories();
+   if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
+   // Les conversations et les groupes sont ensuite chargés simultanément.
+   await Promise.all([
+    refreshInbox().catch(error=>{console.warn('Conversations:',error)}),
+    refreshGroups().catch(error=>{console.warn('Groupes:',error)})
+   ]);
+  }else{
+   $('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>';
+   $('inbox').innerHTML='<div class="empty">Impossible de charger les conversations pour le moment. Vérifiez votre connexion puis réessayez.</div>';
+   console.warn('Annuaire des agents indisponible :',directoryResult.reason);
+   await refreshGroups().catch(error=>console.warn('Groupes:',error));
+  }
  }finally{
   refreshAllRunning=false;
   if(refreshAllPending){refreshAllPending=false;void refreshAll()}
