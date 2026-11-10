@@ -117,7 +117,7 @@ function withTimeout(promise,ms,label){
  return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Délai dépassé : '+label)),ms)})]).finally(()=>clearTimeout(timer));
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
-const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:5000}});
 let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,heartbeatTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
