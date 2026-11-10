@@ -27,7 +27,7 @@ self.addEventListener('fetch',event=>{
     const cache=await caches.open(CACHE);
     // Toutes les pages, même celles avec une ancienne URL versionnée, reçoivent
     // la même version du garde d'accès et du canal Presence global.
-    if(/\\/auth-gate\\.js$/i.test(url.pathname)){
+    if(url.pathname.endsWith('/auth-gate.js')){
       const latestAuthGate=new URL('./auth-gate.js?v=20261110-presence-realtime-v2',self.registration.scope).href;
       const latestCached=await cache.match(latestAuthGate);
       if(latestCached)return latestCached;
