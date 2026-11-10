@@ -10,7 +10,7 @@
     <meta name="description" content="Bibliothèque juridique intelligente et futuriste de l'Inspection Générale du Travail de la République Démocratique du Congo (InspecteurBot RDC)">
     <meta name="keywords" content="Code du Travail RDC, Inspection Générale du Travail, InspecteurBot, Droit du Travail, IA, Articles, Loi 16/010, SMIG, Congo, Kinshasa">
     <meta name="author" content="Inspecteur Limengo (Pmiller) & IGT RDC">
-    <meta name="theme-color" content="#041c5c">
+    <meta name="theme-color" content="#18334b">
     <meta name="color-scheme" content="dark">
     <meta name="apple-mobile-web-app-title" content="InspecteurBot RDC">
     <meta name="format-detection" content="telephone=no">
@@ -154,7 +154,58 @@ button,a,input,select,textarea{touch-action:manipulation}
 .article-nav-btn:disabled{opacity:.45;cursor:not-allowed}
 .article-nav-hint{color:var(--ct-muted,#718096);font-size:12px;text-align:center;flex:1}
 @media(max-width:600px){.article-navigation{display:grid;grid-template-columns:1fr 1fr}.article-nav-hint{grid-column:1/-1;grid-row:1}.article-nav-btn{width:100%;font-size:12px}}
-</style></head>
+</style>
+<style id="code-travail-accessibility-v3">
+:root{--ct-bg:#eaf1f7;--ct-paper:#fdfefe;--ct-ink:#172f45;--ct-muted:#435d73;--ct-navy:#123b5c;--ct-blue:#23658f;--ct-border:#c5d5e2;--ct-shadow:0 10px 28px rgba(15,54,82,.12)}
+body{font-size:17px!important;line-height:1.65!important;font-weight:500!important}
+.search-header h2,.section-title h2{font-size:clamp(21px,3vw,25px)!important;font-weight:800!important}
+.search-header p,.section-title p{font-size:15px!important;font-weight:600!important}
+.search-box input{font-size:17px!important;font-weight:600!important;min-height:54px!important}
+.suggestions button{font-size:14px!important;font-weight:700!important}
+.category-card h3{font-size:16px!important;font-weight:800!important;line-height:1.4!important}
+.category-card p{font-size:14px!important;font-weight:600!important;line-height:1.6!important}
+.domain-count,.domain-open-label{font-size:13px!important;font-weight:800!important}
+.article-title{font-size:clamp(23px,3.5vw,29px)!important;font-weight:850!important;line-height:1.35!important}
+.article-content{font-size:18px!important;font-weight:600!important;line-height:1.95!important;letter-spacing:.05px}
+.article-number,.article-category{font-size:13px!important;font-weight:850!important}
+.legal-detail-view{background:#edf4f9!important;border-color:#c3d7e6!important}
+.legal-detail-heading h2{font-size:clamp(23px,3.5vw,30px)!important;font-weight:850!important}
+.legal-detail-heading p{font-size:15px!important;font-weight:650!important}
+.legal-back-btn{font-size:15px!important;font-weight:850!important;padding:13px 17px!important;background:#dcebf5!important;color:#123b5c!important;border:1px solid #a8c6dc!important}
+.legal-result-card{padding:18px!important;background:#f8fbfd!important;border-color:#c7d9e6!important}
+.legal-result-card strong{font-size:17px!important;font-weight:800!important;line-height:1.5!important}
+.legal-result-card small{font-size:13px!important;font-weight:650!important}
+.legal-result-number,.legal-article-category{font-size:12px!important;font-weight:900!important}
+.legal-group h3{font-size:18px!important;font-weight:850!important}
+.legal-article-view h3{font-size:clamp(23px,3.5vw,30px)!important;font-weight:850!important}
+.legal-article-text{font-size:18px!important;font-weight:600!important;line-height:1.95!important}
+.legal-primary-btn,.legal-secondary-btn{font-size:15px!important;font-weight:850!important;min-height:48px!important}
+body.dark-theme{background:#18334b!important;color:#f2f7fb!important}
+body.dark-theme .search-section,body.dark-theme .categories-section,body.dark-theme .article-section,body.dark-theme .article-card{background:#244963!important;border-color:#426b86!important}
+body.dark-theme .search-header h2,body.dark-theme .section-title h2,body.dark-theme .category-card h3,body.dark-theme .article-title{color:#f4f8fc!important}
+body.dark-theme .search-header p,body.dark-theme .section-title p,body.dark-theme .category-card p{color:#d2e2ee!important}
+body.dark-theme .category-card{background:#2a536e!important;border-color:#4c7189!important}
+body.dark-theme .category-card.active{background:#356681!important;border-color:#8fc5e6!important}
+body.dark-theme .search-box input{background:#193b55!important;color:#fff!important;border-color:#5a8098!important}
+body.dark-theme .suggestions button{background:#315b76!important;color:#f1f7fb!important;border-color:#60839a!important}
+body.dark-theme .result-item{background:#2a536e!important;border-color:#52778f!important}
+body.dark-theme .result-item h4,body.dark-theme .result-item p,body.dark-theme .article-content{color:#f0f6fa!important}
+body.dark-theme .article-category{background:#3b6681!important;color:#e6f2fa!important}
+body.dark-theme .article-nav-hint{color:#d0e2ee!important}
+body.dark-theme .legal-detail-view{background:#244963!important;border-color:#527991!important}
+body.dark-theme .legal-detail-heading h2,body.dark-theme .legal-group h3,body.dark-theme .legal-article-view h3{color:#f4f8fc!important}
+body.dark-theme .legal-detail-heading p{color:#d1e2ed!important}
+body.dark-theme .legal-back-btn,body.dark-theme .legal-secondary-btn{background:#3b6681!important;color:#fff!important;border-color:#7097b0!important}
+body.dark-theme .legal-result-card{background:#2d5874!important;border-color:#527991!important;color:#f2f7fb!important}
+body.dark-theme .legal-result-card strong,body.dark-theme .legal-result-card small{color:#f2f7fb!important}
+body.dark-theme .legal-article-view{background:#2b536e!important;border-color:#527991!important}
+body.dark-theme .legal-article-text{color:#f2f7fb!important}
+body.dark-theme .legal-sanction{background:#573b3c!important;color:#fff0ed!important;border-color:#d78b82!important}
+body.dark-theme .legal-primary-btn{background:#0e2f4b!important;border:1px solid #79aaca!important;color:#fff!important}
+@media(max-width:650px){body{font-size:16px!important}.article-content,.legal-article-text{font-size:17px!important;line-height:1.9!important}.category-card h3{font-size:15px!important}.category-card p{font-size:13px!important}.legal-result-card strong{font-size:16px!important}}
+</style>
+
+</head>
 
 <body class="light-theme">
 
