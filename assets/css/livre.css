@@ -268,3 +268,40 @@ MODE LIVRE — LECTURE ARTICLE PAR ARTICLE (PAGE TURN)
     .livre-contenu { font-size: 15px; line-height: 1.9; max-height: 260px; }
     .livre-btn { padding: 11px 18px; font-size: 13px; }
 }
+
+
+/* Domaines juridiques autonomes et liste d'articles */
+.domain-card{width:100%;text-align:left;cursor:pointer;display:flex;flex-direction:column}
+.domain-card-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px}
+.domain-count{font-size:11px;font-weight:700;color:#72551e;background:#f5ecd9;padding:5px 8px;border-radius:20px;white-space:nowrap}
+.domain-open-label{margin-top:auto;padding-top:12px;color:#1d527d;font-size:12px;font-weight:700}
+.domain-articles-panel{margin:18px 0;padding:20px;border:1px solid #dce4ec;border-left:4px solid #b88a32;border-radius:16px;background:#fff;box-shadow:0 12px 32px rgba(16,45,73,.08);scroll-margin-top:16px}
+.domain-articles-panel[hidden]{display:none!important}
+.domain-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid #e5eaf0}
+.domain-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#99752c}
+.domain-panel-head h3{margin:5px 0;color:#102d49;font-size:20px}
+.domain-panel-head p{margin:0;color:#64758a;font-size:13px}
+.domain-close{flex:0 0 auto;border:1px solid #dce4ec;border-radius:9px;background:#f6f8fa;padding:9px 12px;color:#31465a;font-weight:700}
+.domain-subgroup{margin-top:18px}
+.domain-subgroup h4{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 9px;padding:0 0 8px;border-bottom:1px solid #e6ebf0;color:#183b5a;font-size:14px}
+.domain-subgroup h4 small{font-size:11px;color:#77879a;font-weight:600}
+.domain-article-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.domain-article-row{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;padding:11px;border:1px solid #e3e9ef;border-radius:10px;background:#fbfcfd;color:#25384b}
+.domain-article-row:hover{border-color:#b88a32;background:#fffaf0}
+.domain-article-number{flex:0 0 auto;color:#8b681f;font-size:11px;font-weight:800}
+.domain-article-title{flex:1;min-width:0;font-size:12px;line-height:1.4;font-weight:600}
+.domain-article-row>i{color:#8493a3;font-size:11px}
+body.dark-theme .domain-articles-panel{background:#142438;border-color:#2a4057}
+body.dark-theme .domain-panel-head h3,body.dark-theme .domain-subgroup h4{color:#e7edf4}
+body.dark-theme .domain-panel-head p{color:#aebdcb}
+body.dark-theme .domain-article-row{background:#192c41;border-color:#354a60;color:#e2eaf2}
+body.dark-theme .domain-close{background:#20364d;border-color:#354a60;color:#e2eaf2}
+body.dark-theme .domain-subgroup h4{border-color:#354a60}
+@media(max-width:640px){.domain-articles-panel{padding:13px}.domain-panel-head{flex-direction:column}.domain-close{align-self:flex-end}.domain-article-list{grid-template-columns:1fr}.domain-article-row{min-height:48px}}
+/* Lecteur livre restauré en pied de page */
+#livreHost{margin:30px 0 24px;padding:20px;border:1px solid var(--ct-border);border-radius:18px;background:var(--ct-paper);box-shadow:var(--ct-shadow)}
+#livreHost .section-title{text-align:left!important}
+#livreHost .section-title h2{color:var(--ct-navy)!important}
+#livreHost .livre{min-height:460px}
+#livreHost .livre-contenu{max-height:360px}
+@media(max-width:640px){#livreHost{padding:12px}#livreHost .livre{min-height:420px;padding:24px 17px 38px 28px}#livreHost .livre-contenu{max-height:300px}}
