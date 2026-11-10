@@ -31,9 +31,13 @@ button,input{font:inherit}button{cursor:pointer}
 .toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#393a40;color:white;padding:10px 15px;border-radius:20px;z-index:30;display:none;max-width:90%;font-size:13px}.toast.show{display:block}
 @media(min-width:700px){.chat{inset:5vh max(calc((100vw - 650px)/2),20px);border:1px solid #4b4d54;border-radius:18px;overflow:hidden}.fab{bottom:35px}}
 
-/* Fond de discussion Positano : image complète sans recadrage ni assombrissement, messages lisibles */
-.chat{height:100vh;height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:contain}
-.chatbody{position:relative;isolation:isolate;flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;background-color:#17191f;background-image:url('./assets/wallpaper-positano.jpg')!important;background-size:100% 100%!important;background-position:center center!important;background-repeat:no-repeat!important;background-attachment:scroll!important;padding:16px 13px 22px;overscroll-behavior:contain}
+/* Fenêtre privée plein écran : aucune liste de contacts derrière la discussion */
+body.conversation-open{overflow:hidden!important}
+body.conversation-open .topnav,
+body.conversation-open .wrap,
+body.conversation-open .fab{display:none!important}
+.chat{position:fixed!important;inset:0!important;width:100%!important;height:100vh!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:contain;z-index:100!important}
+.chatbody{position:relative;isolation:isolate;flex:1 1 0!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;background-color:#17191f!important;background-image:url('./assets/wallpaper-positano.jpg')!important;background-size:100% auto!important;background-position:center top!important;background-repeat:no-repeat!important;background-attachment:scroll!important;padding:16px 13px 22px;overscroll-behavior:contain!important}
 .bubblemsg{max-width:min(84%,560px)!important;padding:12px 15px!important;border-radius:18px!important;font-size:16px!important;line-height:1.5!important;letter-spacing:0!important;overflow-wrap:anywhere;word-break:break-word}
 .bubblemsg.mine{background:#0866ff;color:#fff}
 .msgmeta{font-size:11px!important;line-height:1.3!important;margin-top:5px!important}
@@ -129,7 +133,7 @@ async function refreshInbox(){
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
 async function openChat(person){
- active=person;updateChatHeader(person);$('chat').classList.add('open');$('messageInput').focus();
+ active=person;updateChatHeader(person);document.body.classList.add('conversation-open');$('chat').classList.add('open');$('messageInput').focus();
  await loadConversation();
  if(conversationChannel)client.removeChannel(conversationChannel);
  conversationChannel=client.channel('ib-chat-'+[me.id,person.id].sort().join('-'))
@@ -137,10 +141,16 @@ async function openChat(person){
  .subscribe();
 }
 async function loadConversation(){
- const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('and(sender_id.eq.'+me.id+',recipient_id.eq.'+active.id+'),and(sender_id.eq.'+active.id+',recipient_id.eq.'+me.id+')').order('created_at',{ascending:true}).limit(300);
- if(error){$('chatBody').innerHTML='<div class="empty">Impossible de charger cette conversation.</div>';return}
- $('chatBody').innerHTML='';(data||[]).forEach(appendMessage);
- const unread=(data||[]).filter(m=>m.recipient_id===me.id&&!m.read_at);
+ const personId=active.id;
+ const columns='id,sender_id,recipient_id,content,read_at,created_at';
+ const [sentResult,receivedResult]=await Promise.all([
+  client.from('messages').select(columns).eq('sender_id',me.id).eq('recipient_id',personId).order('created_at',{ascending:true}).limit(300),
+  client.from('messages').select(columns).eq('sender_id',personId).eq('recipient_id',me.id).order('created_at',{ascending:true}).limit(300)
+ ]);
+ if(sentResult.error||receivedResult.error){console.error(sentResult.error||receivedResult.error);$('chatBody').innerHTML='<div class="empty">Impossible de charger cette conversation.</div>';return}
+ const data=[...(sentResult.data||[]),...(receivedResult.data||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+ $('chatBody').innerHTML='';data.forEach(appendMessage);
+ const unread=data.filter(m=>m.recipient_id===me.id&&!m.read_at);
  if(unread.length){await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread.map(m=>m.id));await refreshInbox()}
  scrollChat();
 }
@@ -175,7 +185,7 @@ $('newMessage').addEventListener('click',()=>{$('searchBox').classList.add('show
 $('searchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(e.target.value),250)});
 $('onlineStories').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p)}});
 $('inbox').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p);else loadPeople().then(list=>{people=list;const found=list.find(x=>x.id===b.dataset.person);if(found)openChat(found)})}});
-$('closeChat').addEventListener('click',()=>{$('chat').classList.remove('open');active=null;if(conversationChannel){client.removeChannel(conversationChannel);conversationChannel=null}});
+$('closeChat').addEventListener('click',()=>{$('chat').classList.remove('open');document.body.classList.remove('conversation-open');active=null;if(conversationChannel){client.removeChannel(conversationChannel);conversationChannel=null}});
 $('composer').addEventListener('submit',sendMessage);
 $('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px'});
 $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
