@@ -21,7 +21,7 @@ body.light-theme{--bg:#b9d0d8;--panel:rgba(220,232,235,.96);--panel2:rgba(232,23
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
-<script src="auth-gate.js?v=20261110-header-badges-v3" defer></script>
+<script src="auth-gate.js?v=20261110-welcome-glass-v2" defer></script>
 
 <style>.written-course{white-space:normal;line-height:1.85;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:18px;color:var(--text);overflow-wrap:anywhere}.written-course br{display:block;margin-bottom:8px}</style><style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 
@@ -61,6 +61,28 @@ body.dark-theme #user-status{color:#e5edf5!important;font-weight:600}
 </head>
 <body class="light-theme">
 <div class="shell">
+<section id="ib-first-member-announcement" class="panel" hidden aria-labelledby="ib-announcement-title">
+ <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><i class="fa-solid fa-bullhorn" style="font-size:25px;color:var(--gold)"></i><div><span class="tag">MESSAGE OFFICIEL</span><h2 id="ib-announcement-title" style="margin:5px 0 0">Bienvenue sur InspecteurBot</h2></div></div>
+ <p class="muted">Chers agents, chers utilisateurs, bienvenue sur InspecteurBot, une plateforme numérique conçue pour accompagner la modernisation, la professionnalisation et l’amélioration du travail de l’Inspection.</p>
+ <h2 style="margin-top:16px">Notre objectif</h2><p class="muted">Faciliter le travail quotidien des agents, centraliser les outils utiles, favoriser la circulation de l’information et contribuer à une administration plus moderne, organisée, efficace et connectée. InspecteurBot ambitionne de devenir un espace numérique de travail, de formation, de communication et d’accompagnement professionnel.</p>
+ <h2 style="margin-top:16px">À quoi servent les menus ?</h2>
+ <ul class="muted" style="padding-left:22px;line-height:1.75">
+  <li><strong>Accueil :</strong> accéder aux informations et aux fonctionnalités principales.</li>
+  <li><strong>IGT RDC / Annuaire numérique :</strong> retrouver les informations professionnelles des agents et faciliter leur identification.</li>
+  <li><strong>Code du Travail :</strong> consulter les textes et références juridiques utiles.</li>
+  <li><strong>Fiches de contrôle, PV, Sanctions, Décompte final, Rapport et Entreprise :</strong> utiliser des outils numériques pour les missions de contrôle, la collecte des données et la préparation des documents professionnels.</li>
+  <li><strong>Formation :</strong> consulter les ressources pédagogiques et renforcer ses compétences.</li>
+  <li><strong>Quiz Académie IGT :</strong> tester et consolider ses connaissances.</li>
+  <li><strong>Messagerie :</strong> échanger avec les autres membres et recevoir les communications de l’administration.</li>
+  <li><strong>Profil / Utilisateur :</strong> gérer les informations personnelles du compte.</li>
+  <li><strong>InspecteurBot IA :</strong> obtenir une assistance pour les missions professionnelles.</li>
+  <li><strong>GPS :</strong> accéder aux outils de localisation utiles sur le terrain.</li>
+ </ul>
+ <h2 style="margin-top:16px">Les prochaines ambitions</h2><p class="muted">Les prochaines versions visent à enrichir la formation continue, améliorer les outils de contrôle et d’analyse, renforcer les notifications et la synchronisation en temps réel, optimiser l’utilisation sur téléphone et réduire la consommation des données Internet, tout en intégrant progressivement de nouvelles fonctionnalités intelligentes.</p>
+ <h2 style="margin-top:16px">Votre contribution est essentielle</h2><p class="muted">Vos questions, suggestions et idées permettront d’orienter les améliorations et de construire une plateforme réellement utile aux agents.</p>
+ <p style="margin-top:14px;line-height:1.7"><strong>InspecteurBot est développé par Inspecteur, qui en est également l’administrateur.</strong><br>Pour toute question, suggestion ou idée :<br><strong>PMiller :</strong> <a href="tel:+243827563163">+243 827 563 163</a><br><strong>E-mail :</strong> <a href="mailto:limengosocrate@gmail.com">limengosocrate@gmail.com</a></p>
+ <div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn primary" id="ib-announcement-close" type="button">J’ai lu le message</button></div>
+</section>
 <header class="top">
  <div class="brand"><i class="fa-solid fa-graduation-cap"></i><div><h1>Centre de formation IGT</h1><div class="sub">Cours audio · Documents PDF · Exercices pratiques</div></div></div>
  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="btn-theme-toggle" type="button" data-theme-toggle aria-label="Changer le thème"><span id="formationThemeLabel">🌙 Thème sombre</span></button><a class="btn" href="index.html"><i class="fa-solid fa-house"></i> Menu principal</a></div>
@@ -259,4 +281,25 @@ body.dark-theme #user-status{color:#e5edf5!important;font-weight:600}
 })();
 </script>
 <script>document.addEventListener("inspecteurbot:themechange",e=>{const l=document.getElementById("formationThemeLabel");if(l)l.textContent=e.detail.theme==="dark"?"☀️ Thème clair":"🌙 Thème sombre"});</script>
+<script id="ib-first-member-announcement-script">
+(function(){
+ const PREFIX='inspecteurbot_welcome_announcement_seen_v1_';
+ function init(){
+  const user=window.inspecteurBotAuthUser,panel=document.getElementById('ib-first-member-announcement');
+  if(!user||!panel)return;
+  const created=Date.parse(user.created_at||''),launched=Date.parse('2026-11-10T00:00:00Z');
+  if(!Number.isFinite(created)||created<launched)return;
+  const key=PREFIX+user.id;let seen=false;try{seen=localStorage.getItem(key)==='1'}catch(_){}
+  if(seen)return;
+  panel.hidden=false;
+  document.getElementById('ib-announcement-close')?.addEventListener('click',function(){
+   try{localStorage.setItem(key,'1')}catch(_){}
+   panel.hidden=true;
+  },{once:true});
+  if(new URLSearchParams(location.search).get('welcome')==='1')panel.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ document.addEventListener('inspecteurbot:authenticated',init);
+})();
+</script>
 </body></html>
