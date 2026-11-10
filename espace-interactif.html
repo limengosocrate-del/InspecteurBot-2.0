@@ -18,6 +18,7 @@ a{color:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{paddi
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.panel{background:linear-gradient(155deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:18px;min-width:0}.panel.wide{grid-column:1/-1}.panel h3{margin:0 0 7px;font-size:18px}.sub{margin:0 0 15px;color:var(--muted);font-size:13px;line-height:1.5}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.panel-icon{color:var(--gold);font-size:21px}.btn{border:0;border-radius:11px;background:var(--gold);color:#10264a;padding:11px 15px;font-weight:800;cursor:pointer;min-height:42px}.btn.secondary{background:#ffffff12;color:#fff;border:1px solid #ffffff26}.btn:disabled{opacity:.5;cursor:not-allowed}.btn,a,.option,input[type=radio]{pointer-events:auto;-webkit-tap-highlight-color:transparent}.btn{position:relative;z-index:1;touch-action:manipulation}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.status{font-size:12px;color:var(--muted);margin-top:10px;min-height:16px}.feed{display:grid;gap:10px}.news{padding:12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff15}.news h4{margin:0 0 5px;font-size:14px}.news p{margin:0;color:#d4e1f2;font-size:13px;line-height:1.5;white-space:pre-wrap}.meta{font-size:10px;color:#a9bfd9;margin-bottom:6px}.question{padding:14px;border-radius:13px;background:#ffffff09;border:1px solid #ffffff1b;margin:10px 0}.question strong{display:block;line-height:1.5;margin-bottom:10px;font-size:14px}.option{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border-radius:9px;background:#ffffff08;margin:6px 0;font-size:13px;line-height:1.4;cursor:pointer}.option input{margin-top:2px;accent-color:#ffd65a}.question .explain{display:none;margin-top:10px;padding:10px;border-radius:9px;background:#143c5e;color:#dcecff;font-size:12px;line-height:1.5}.question.done .explain{display:block}.result{padding:13px;border-radius:12px;background:#164b45;border:1px solid #2b806e;margin-top:12px}.result b{color:#9ef0ce}.rank-list{display:grid;gap:8px}.rank{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:9px;padding:10px;border-radius:11px;background:#ffffff09}.rank-num{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#ffffff12;color:var(--gold);font-weight:900}.rank-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}.rank-points{font-size:12px;color:var(--gold);font-weight:800}.badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.award{padding:12px 8px;text-align:center;border:1px solid #ffffff1a;border-radius:12px;background:#ffffff08}.award .emoji{font-size:25px}.award b{display:block;font-size:12px;margin:5px 0}.award small{font-size:10px;color:var(--muted)}.award.locked{opacity:.42;filter:grayscale(1)}
 input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;background:#061a35;color:#fff;padding:12px;font:inherit;font-size:13px;outline:none}textarea{min-height:105px;resize:vertical}label{display:block;font-size:12px;color:#d5e3f5;font-weight:700;margin:10px 0 6px}.resource{padding:11px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff15;margin:8px 0}.resource b{font-size:13px}.resource p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.suggestion{padding:12px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff18;margin:8px 0}.suggestion h4{margin:0 0 5px;font-size:13px}.suggestion p{font-size:12px;line-height:1.5;color:#d4e1f2;white-space:pre-wrap}.pill{font-size:10px;padding:4px 8px;border-radius:20px;background:#ffffff14;color:#dceaff}.admin-box{border:1px dashed #d8b94d;padding:14px;border-radius:14px;margin-top:14px}.hidden{display:none!important}.footer{text-align:center;color:#829bb9;font-size:11px;margin-top:24px}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.hero{padding:19px}.panel{padding:15px}.top{align-items:flex-start}.back{white-space:nowrap}.wrap{width:calc(100% - 20px)}}
+.top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:#ffffff0b;color:var(--text);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}.theme-toggle:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}body.light-theme .theme-toggle{background:#fff!important;border-color:#cbd6df!important;color:#17212b!important}body.light-theme .theme-toggle i{color:#805900!important}@media(max-width:480px){.top-actions{gap:5px}.theme-toggle{padding:8px 9px;font-size:11px}.back{padding:9px 10px;font-size:12px}.brand{gap:8px}.brand-icon{width:42px;height:42px}}
 </style>
 <style id="inspecteurbot-touch-scroll-v2">
 /* Le document HTML porte le défilement, comme le menu d'accueil InspecteurBot. */
@@ -92,7 +93,7 @@ body.light-theme #hub-connection-status{color:#344451!important}
 <div class="wrap">
 <header class="top">
  <div class="brand"><div class="brand-icon"><i class="fa-solid fa-bolt"></i></div><div><h1>InspecteurBot · Espace interactif</h1><p>Apprendre, relever des défis et contribuer à l'amélioration de l'IGT</p></div></div>
- <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a>
+ <div class="top-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Activer le thème clair" aria-pressed="false"><i class="fa-solid fa-sun" aria-hidden="true"></i><span>Thème clair</span></button><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a></div>
 </header>
 <section class="hero">
  <h2>Bienvenue dans votre espace de progression 🇨🇩</h2>
@@ -165,6 +166,24 @@ body.light-theme #hub-connection-status{color:#344451!important}
 <script>
 (function(){
 'use strict';
+var themeButton=document.getElementById('theme-toggle');
+var themeMeta=document.querySelector('meta[name="theme-color"]');
+var themeStorageKey='inspecteurbot-espace-theme-v1';
+function applyTheme(theme,save){
+ var light=theme==='light';
+ document.body.classList.toggle('light-theme',light);
+ if(themeMeta)themeMeta.setAttribute('content',light?'#f3f6f8':'#071b3d');
+ if(themeButton){
+  themeButton.setAttribute('aria-pressed',light?'true':'false');
+  themeButton.setAttribute('aria-label',light?'Activer le thème sombre':'Activer le thème clair');
+  themeButton.innerHTML=light?'<i class="fa-solid fa-moon" aria-hidden="true"></i><span>Thème sombre</span>':'<i class="fa-solid fa-sun" aria-hidden="true"></i><span>Thème clair</span>';
+ }
+ if(save){try{localStorage.setItem(themeStorageKey,light?'light':'dark')}catch(e){console.warn('Préférence de thème non enregistrée',e)}}
+}
+var savedTheme='dark';
+try{savedTheme=localStorage.getItem(themeStorageKey)==='light'?'light':'dark'}catch(e){}
+applyTheme(savedTheme,false);
+if(themeButton)themeButton.addEventListener('click',function(){applyTheme(document.body.classList.contains('light-theme')?'dark':'light',true)});
 var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],leaderboardRows=[],myLeaderboardRow=null,myLeaderboardRank=0,leaderboardChannel=null,leaderboardRefreshTimer=null,bootedUserId=null;
 var $=function(id){return document.getElementById(id)};
 var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
