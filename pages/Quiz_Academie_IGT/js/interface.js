@@ -36,6 +36,9 @@ class InterfaceManager {
     this.setupEventListeners();
     this.applyTheme(window.persistenceEngine.getProfile().settings.theme || 'light');
     this.updateDashboardUI();
+    this.loadChallengeLeaderboard();
+    const refreshLeaderboard = document.getElementById('igt-leaderboard-refresh');
+    if (refreshLeaderboard) refreshLeaderboard.addEventListener('click', () => this.loadChallengeLeaderboard());
     const requestedView = new URLSearchParams(window.location.search).get('view');
     if (requestedView === 'missions') this.switchView('view-missions');
   }
@@ -154,6 +157,66 @@ class InterfaceManager {
         }
         pctText.textContent = `${count} %`;
       }, 25);
+    }
+  }
+
+  async loadChallengeLeaderboard() {
+    const list = document.getElementById('igt-leaderboard-list');
+    const updated = document.getElementById('igt-leaderboard-updated');
+    const refresh = document.getElementById('igt-leaderboard-refresh');
+    if (!list) return;
+    const client = window.inspecteurBotAuthClient;
+    if (!client || typeof client.from !== 'function') {
+      list.innerHTML = '<p class="igt-leaderboard-empty">Connexion sécurisée indisponible. Réessayez après actualisation.</p>';
+      if (updated) updated.textContent = 'Données indisponibles';
+      return;
+    }
+    if (this.leaderboardLoading) return;
+    this.leaderboardLoading = true;
+    if (refresh) { refresh.disabled = true; refresh.textContent = 'Actualisation…'; }
+    list.innerHTML = '<div class="igt-leaderboard-loading"><span class="igt-rank-spinner"></span> Mise à jour du classement…</div>';
+    try {
+      const result = await client.from('ib_challenge_leaderboard')
+        .select('user_id,display_name,total_points,challenge_count')
+        .order('total_points', { ascending: false })
+        .order('challenge_count', { ascending: false })
+        .limit(20);
+      if (result.error) throw result.error;
+      const rows = Array.isArray(result.data) ? result.data : [];
+      if (!rows.length) {
+        list.innerHTML = '<p class="igt-leaderboard-empty">Le classement apparaîtra dès que les agents auront validé leurs premiers défis.</p>';
+      } else {
+        const currentUser = window.inspecteurBotAuthUser;
+        list.replaceChildren();
+        rows.forEach((agent, index) => {
+          const row = document.createElement('div');
+          row.className = 'igt-leaderboard-row' + (index < 3 ? ' is-top-three rank-' + (index + 1) : '');
+          const rank = document.createElement('span');
+          rank.className = 'igt-leaderboard-rank';
+          rank.textContent = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : String(index + 1).padStart(2, '0');
+          const identity = document.createElement('span');
+          identity.className = 'igt-leaderboard-identity';
+          const name = document.createElement('strong');
+          name.textContent = agent.display_name || 'Agent IGT';
+          if (currentUser && currentUser.id && agent.user_id === currentUser.id) name.textContent += ' · Vous';
+          const detail = document.createElement('small');
+          detail.textContent = Number(agent.challenge_count || 0) + ' défi(s) validé(s)';
+          identity.append(name, detail);
+          const points = document.createElement('span');
+          points.className = 'igt-leaderboard-points';
+          points.textContent = Number(agent.total_points || 0).toLocaleString('fr-FR') + ' pts';
+          row.append(rank, identity, points);
+          list.append(row);
+        });
+      }
+      if (updated) updated.textContent = 'Mis à jour à ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error('Classement des défis indisponible:', error);
+      list.innerHTML = '<p class="igt-leaderboard-empty">Impossible de charger le classement pour le moment. Vérifiez votre connexion puis appuyez sur Actualiser.</p>';
+      if (updated) updated.textContent = 'Actualisation nécessaire';
+    } finally {
+      this.leaderboardLoading = false;
+      if (refresh) { refresh.disabled = false; refresh.textContent = '↻ Actualiser'; }
     }
   }
 
