@@ -62,7 +62,7 @@
         }
         if (loadingEl) loadingEl.classList.add("hidden");
         if (window.InspecteurUtils) {
-          window.InspecteurUtils.showNotification("334 articles du Code du Travail chargés — mode hors ligne disponible.", "fa-database");
+          window.InspecteurUtils.showNotification("334 articles chargés. Texte de base 2002 ; modifications 2016 non consolidées.", "fa-database");
         }
       } catch (error) {
         console.error("[CodeTravail] Échec du chargement :", error);
