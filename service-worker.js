@@ -1,7 +1,7 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v4-office';
-const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v2','./office.js?v=20261111-office-local-v2','./office-templates.js?v=20261111-templates-v2'];
+const CACHE='inspecteurbot-data-v5-office';
+const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v3','./office.js?v=20261111-office-local-v3','./office-templates.js?v=20261111-templates-v2'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>
