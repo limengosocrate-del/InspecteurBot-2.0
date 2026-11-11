@@ -666,3 +666,10 @@ textarea.line-area {
     border-bottom: .35mm dotted #000;
   }
   }
+
+/* Métadonnées compactes — sans modifier la structure ni les champs du formulaire. */
+.meta-panel{gap:5px;padding:6px 8px;margin-bottom:5px;border-radius:8px;}
+.meta-panel label{font-size:10px;gap:2px;line-height:1.15;}
+.meta-panel input,.meta-panel select{height:24px;padding:1px 5px;border-radius:5px;font-size:11px;}
+@media(min-width:901px){.meta-panel{grid-template-columns:repeat(5,minmax(0,1fr));}}
+@media(max-width:900px){.meta-panel{gap:4px;padding:6px 8px;}}

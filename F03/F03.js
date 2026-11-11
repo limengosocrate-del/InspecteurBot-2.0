@@ -869,7 +869,7 @@ function renderEffectifBlock(kind, idx) {
   function renderToolbar(d) {
     return `
       <div class="screen-toolbar">
-        <strong>InspecteurBot IA RDC — ${esc(d.code)}</strong>
+        <strong>InspecteurBot — ${esc(d.code)}</strong>
         <button type="button" data-action="save">Enregistrer</button>
         <button type="button" data-action="load">Charger dernier</button>
         <button type="button" data-action="history">Historique par date</button>
@@ -1494,7 +1494,7 @@ ${ai}
         </style>
       </head>
       <body>
-        <h1>Rapport automatique - InspecteurBot IA RDC</h1>
+        <h1>Rapport automatique - InspecteurBot</h1>
         <pre>${esc(report)}</pre>
         <script>window.print();<\/script>
       </body>
