@@ -67,16 +67,14 @@ function setupAdvancedRibbon(){
 $('formulaInput').addEventListener('input',e=>{const[r,c]=cellCoords(activeCell);sheetData[r][c]=e.target.value;const input=$('sheetGrid').querySelector('[data-cell="'+activeCell+'"]');if(input)input.value=e.target.value;scheduleSave()});$('formulaInput').addEventListener('change',refreshSheetValues);$('printPdfBtn').addEventListener('click',()=>$('pdfFrame').contentWindow?.print());$('backupBtn').addEventListener('click',exportBackup);$('restoreBtn').addEventListener('click',()=>$('backupInput').click());$('backupInput').addEventListener('change',e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value=''});window.addEventListener('beforeunload',()=>{if(current){if(current.type==='writer')current.html=$('writerCanvas').innerHTML;if(current.type==='calc')current.sheet=sheetData;current.updatedAt=Date.now();void putDoc(current).catch(()=>{})}})}
 async 
 function enableOfficeTouchScrolling(){
- const scrollables=['#writerArea','.paper-stage','.sheet-scroll','.ribbon-tabs','.ribbon-tools','.office-shell','#editorPanel'];
+ const selectors=['#writerArea','.paper-stage','.sheet-scroll','.ribbon-tabs','.ribbon-tools','.office-shell','#editorPanel'];
  document.documentElement.style.touchAction='pan-x pan-y';
  document.body.style.touchAction='pan-x pan-y';
- document.querySelectorAll(scrollables.join(',')).forEach(el=>{el.style.touchAction='pan-x pan-y';el.style.webkitOverflowScrolling='touch';el.style.overscrollBehavior='contain'});
- const coarse=window.matchMedia&&window.matchMedia('(pointer:coarse)').matches;
- if(!coarse)return;
- let active=null;
- document.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;const target=e.target;if(target.closest('button,input,textarea,select,[contenteditable="true"],a')){active=null;return}const el=target.closest(scrollables.join(','))||document.scrollingElement;active={x:e.clientX,y:e.clientY,el};},{passive:true});
- document.addEventListener('pointermove',e=>{if(!active||e.pointerType!=='touch')return;const dx=active.x-e.clientX,dy=active.y-e.clientY;if(Math.abs(dx)+Math.abs(dy)<3)return;const el=active.el;if(el===document.scrollingElement){window.scrollBy(dx,dy)}else{if(el.scrollHeight>el.clientHeight)el.scrollTop+=dy;if(el.scrollWidth>el.clientWidth)el.scrollLeft+=dx}active.x=e.clientX;active.y=e.clientY;},{passive:true});
- document.addEventListener('pointerup',()=>{active=null},{passive:true});document.addEventListener('pointercancel',()=>{active=null},{passive:true});
+ document.querySelectorAll(selectors.join(',')).forEach(el=>{
+  el.style.touchAction='pan-x pan-y';
+  el.style.webkitOverflowScrolling='touch';
+  el.style.overscrollBehavior='contain';
+ });
 }
 
 async function init(){try{await openDb();accountId=accountLabel();if(navigator.storage?.persist){try{await navigator.storage.persist()}catch(_){}}showStorageState('Enregistrement local');bind();enableOfficeTouchScrolling();await renderDocs();$('ib-startup-splash')?.remove();document.documentElement.classList.add('office-ready')}catch(e){showStorageState('Stockage indisponible');$('documentsList').innerHTML='<div class="empty-state">Le stockage local de ce navigateur est indisponible. Activez le stockage du site et rechargez la page.</div>';$('ib-startup-splash')?.remove();toast('Initialisation du stockage local impossible.')}}
