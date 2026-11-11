@@ -244,6 +244,11 @@ body.dark-theme .legal-guide-section h3{color:#5de2df!important}body.dark-theme 
 body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#1b3b46);border-color:#31535b;color:#f1f5f3}.dark-theme .ct-library-copy strong,.dark-theme .ct-library-copy small{color:#e1eceb}
 @media(max-width:600px){.ct-library-launcher{padding:14px;gap:11px}.ct-library-icon{width:42px;height:42px;flex-basis:42px}.ct-library-copy strong{font-size:14px}.ct-library-copy small{font-size:12px}}
 </style>
+
+<style id="code-travail-library-menu-v2">
+.header-actions{display:flex!important;align-items:center;gap:8px!important}.ct-library-menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 12px;border:1px solid #d2e0e3;border-radius:10px;background:#f2f8f8;color:#075365;font-weight:800;font-size:12px;cursor:pointer}.ct-library-menu-btn i{font-size:15px}.ct-library-menu-btn:hover{background:#dcebed;border-color:#087f8c}body.dark-theme .ct-library-menu-btn{background:#203640;color:#e8f3f1;border-color:#3a5960}.legal-library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:14px}.legal-library-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:135px;padding:16px;border:1px solid var(--ct-border);border-radius:13px;background:var(--ct-paper);color:var(--ct-ink);text-align:left;cursor:pointer}.legal-library-card:hover{border-color:var(--ct-blue);transform:translateY(-1px)}.legal-library-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:rgba(8,127,140,.13);color:var(--ct-blue);font-size:18px}.legal-library-card strong{font-size:14px;color:var(--ct-navy)}.legal-library-card small{font-size:12px;line-height:1.5;color:var(--ct-muted)}body.dark-theme .legal-library-card strong{color:#e8f3f1}.legal-law-link{display:inline-flex;align-items:center;margin:6px 7px 0 0;padding:9px 12px;border:1px solid var(--ct-border);border-radius:9px;background:rgba(8,127,140,.08);color:var(--ct-blue);font-weight:800;cursor:pointer}.legal-law-link:hover{border-color:var(--ct-blue);background:rgba(8,127,140,.16)}body.dark-theme .legal-law-link{color:#8be4df}.legal-guide-section p{white-space:pre-line}
+@media(max-width:560px){.ct-library-menu-btn{padding:0 9px;min-height:40px}.ct-library-menu-btn span{display:none}.header-actions{gap:6px!important}.legal-library-grid{grid-template-columns:1fr}}
+</style>
 </head>
 
 <body class="light-theme">
@@ -268,6 +273,7 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
         <!-- Compatibilité des scripts historiques : données temporelles masquées. --><div hidden aria-hidden="true"><span id="clock"></span><span id="day"></span><span id="date"></span><span id="temperature"></span><span id="city"></span></div>
 
         <div class="header-actions">
+            <button id="openCodeLibrary" class="ct-library-menu-btn" type="button" aria-label="Ouvrir la Bibliothèque Code du travail"><i class="fa-solid fa-book-open"></i><span>Bibliothèque</span></button>
             <button id="themeToggle" class="theme-btn" title="Changer le thème Jour / Nuit" aria-label="Changer le thème">
                 <span id="themeIcon">🌙</span>
             </button>
@@ -275,11 +281,7 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
     </header>
 
 
-    <button id="openCodeLibrary" class="ct-library-launcher" type="button" aria-controls="codeLibrarySection" aria-expanded="false">
-        <span class="ct-library-icon" aria-hidden="true">📚</span>
-        <span class="ct-library-copy"><strong>Bibliothèque Code du travail</strong><small>Consulter les domaines juridiques, les articles et les guides pratiques</small></span>
-        <span class="ct-library-arrow" aria-hidden="true">→</span>
-    </button>
+
 
     <!--=================================================
     PARTIE 3 : BARRE D'OUTILS DE L'INSPECTEUR
@@ -324,7 +326,7 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
             <button data-guide="duree">⏰ Durée du travail — 45 h</button>
             <button data-guide="inspection">👷 Pouvoirs de l’Inspection</button>
             <button data-guide="epi">🦺 EPI & Sécurité</button>
-            <button data-search="Sanctions">🚨 Sanctions & Amendes</button>
+            <button data-guide="sanctions">🚨 Sanctions & Amendes</button>
         </div>
 
         <div id="resultatsRecherche" class="search-results"></div>
@@ -444,22 +446,7 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 <!-- Ancien MODE LIVRE (tourner les pages article par article) -->
 
 
-<script id="code-travail-library-navigation-v1">
-(function(){
-  function initLibraryOption(){
-    const openButton=document.getElementById('openCodeLibrary');
-    const library=document.getElementById('codeLibrarySection');
-    if(!openButton||!library||openButton.dataset.bound==='1')return;
-    openButton.dataset.bound='1';
-    openButton.addEventListener('click',function(){
-      library.hidden=false;
-      openButton.setAttribute('aria-expanded','true');
-      library.scrollIntoView({behavior:'smooth',block:'start'});
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLibraryOption,{once:true});else initLibraryOption();
-})();
-</script>
+
 
 <!-- =================================================
      SERVICE WORKER & INTÉGRATION PWA
