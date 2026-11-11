@@ -69,3 +69,37 @@ button,select,input,textarea{touch-action:manipulation}
  body[data-print-target="pdf"] #pdfArea{display:block!important;position:absolute;inset:0}
  body[data-print-target="pdf"] #pdfFrame{width:100%;height:95vh;border:0}
 }
+
+
+/* Correctif tactile prioritaire : défilement naturel au doigt sur mobile/tablette */
+html,body{height:auto!important;min-height:100%;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}
+body{position:relative!important;overscroll-behavior-y:auto!important}
+.office-shell,.workspace-panel,#editorPanel,#writerArea,#calcArea,.paper-stage,.calc-stage,.pdf-stage{touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain}
+#writerArea{display:block;max-height:72vh;overflow-y:auto!important;overflow-x:auto!important;min-height:50vh}
+.writer-paper{touch-action:pan-y!important;user-select:text;-webkit-user-select:text;overscroll-behavior:contain}
+#calcArea{max-width:100%;overflow:visible}
+.sheet-scroll{max-height:68vh;overflow:auto!important;touch-action:pan-x pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain}
+.office-apps,.ribbon-tabs,.ribbon-tools{touch-action:pan-x pan-y!important;-webkit-overflow-scrolling:touch!important}
+.ribbon-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+.ribbon-tools{max-width:100%;overflow-x:auto;overflow-y:visible;flex-wrap:nowrap;scrollbar-width:thin}
+.ribbon-group{flex:0 0 auto}
+.ribbon button,.ribbon select,.ribbon input,.app-tile,.primary-btn,.secondary-btn{min-height:36px;touch-action:manipulation}
+.ribbon-tab{min-height:42px;padding:10px 14px}
+.ribbon-tools[hidden]{display:none!important}
+#writerCanvas.show-grid{background-image:linear-gradient(#dce4ec 1px,transparent 1px),linear-gradient(90deg,#dce4ec 1px,transparent 1px);background-size:24px 24px}
+#writerArea.show-ruler:before{content:"0 cm       2 cm       4 cm       6 cm       8 cm       10 cm";display:block;position:sticky;top:0;z-index:2;background:#edf2f6;border-bottom:1px solid #cbd6e0;padding:7px 14px;color:#536579;font:11px Arial}
+#writerCanvas.track-changes{outline:2px dashed #c78b28;outline-offset:4px}
+.office-comment{margin:12px 0;padding:10px 12px;border-left:4px solid #d69b37;background:#fff8e8;color:#634d25;font-size:12px}
+.office-toc{padding:12px;border:1px solid #d5dee7;background:#f7f9fb}
+@media(max-width:720px){
+ html,body{height:auto!important;overflow-y:auto!important;touch-action:pan-y!important}
+ .office-shell{overflow:visible!important}
+ #editorPanel{overflow:visible!important}
+ #writerArea{max-height:68vh;min-height:55vh;overflow-y:auto!important;overflow-x:auto!important;touch-action:pan-y!important}
+ .writer-paper{min-height:850px;padding:36px 22px}
+ .ribbon{position:sticky;top:0;z-index:20;background:#f7f8fa}
+ .ribbon-tabs{padding:7px 0}
+ .ribbon-tools{flex-wrap:nowrap;overflow-x:auto}
+ .ribbon-group{flex:0 0 auto}
+ .sheet-scroll{max-height:65vh;overflow:auto!important}
+}
