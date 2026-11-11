@@ -79,7 +79,7 @@ function enableOfficeTouchScrolling(){
  document.addEventListener('pointerup',()=>{active=null},{passive:true});document.addEventListener('pointercancel',()=>{active=null},{passive:true});
 }
 
-function init(){try{await openDb();accountId=accountLabel();if(navigator.storage?.persist){try{await navigator.storage.persist()}catch(_){}}showStorageState('Enregistrement local');bind();enableOfficeTouchScrolling();await renderDocs();$('ib-startup-splash')?.remove();document.documentElement.classList.add('office-ready')}catch(e){showStorageState('Stockage indisponible');$('documentsList').innerHTML='<div class="empty-state">Le stockage local de ce navigateur est indisponible. Activez le stockage du site et rechargez la page.</div>';$('ib-startup-splash')?.remove();toast('Initialisation du stockage local impossible.')}}
+async function init(){try{await openDb();accountId=accountLabel();if(navigator.storage?.persist){try{await navigator.storage.persist()}catch(_){}}showStorageState('Enregistrement local');bind();enableOfficeTouchScrolling();await renderDocs();$('ib-startup-splash')?.remove();document.documentElement.classList.add('office-ready')}catch(e){showStorageState('Stockage indisponible');$('documentsList').innerHTML='<div class="empty-state">Le stockage local de ce navigateur est indisponible. Activez le stockage du site et rechargez la page.</div>';$('ib-startup-splash')?.remove();toast('Initialisation du stockage local impossible.')}}
 window.addEventListener('inspecteurbot:authenticated',event=>{const id=event.detail?.user?.id;if(id&&id!==accountId){accountId=String(id);if(db)renderDocs()}});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
