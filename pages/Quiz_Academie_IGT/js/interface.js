@@ -178,7 +178,7 @@ class InterfaceManager {
     list.innerHTML = '<div class="igt-leaderboard-loading"><span class="igt-rank-spinner"></span> Mise à jour du classement…</div>';
     try {
       const result = await client.from('ib_challenge_leaderboard')
-        .select('user_id,display_name,total_points,challenge_count')
+        .select('user_id,display_name,total_points,challenge_count,last_activity')
         .order('total_points', { ascending: false })
         .order('challenge_count', { ascending: false })
         .limit(20);
