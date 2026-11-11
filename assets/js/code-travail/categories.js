@@ -101,6 +101,12 @@ const grid=document.createElement("div");grid.className="legal-library-grid";
 const all=window.CodeTravailState?.articles||[];const groups=new Map();
 all.forEach((a,i)=>{const title=a.titreSection||a.categorie||"Autres dispositions";if(!groups.has(title))groups.set(title,{title,items:[],first:i,category:a.categorie||"Dispositions générales"});groups.get(title).items.push(a);});
 [...groups.values()].sort((a,b)=>a.first-b.first).forEach(g=>{const meta=window.CodeTravailCategories?.metadata?.[g.category]||{icon:"fa-folder-open",desc:"Articles du Code du travail"};const b=document.createElement("button");b.type="button";b.className="legal-library-card";const icon=document.createElement("span");icon.className="legal-library-icon";icon.innerHTML='<i class="fa-solid '+meta.icon+'"></i>';const title=document.createElement("strong");title.textContent=g.title;const desc=document.createElement("small");desc.textContent=g.items.length+" articles · "+(meta.desc||"Consulter ce domaine");b.append(icon,title,desc);b.addEventListener("click",()=>openDomain(g.title));grid.append(b);});
+// Raccourci direct vers le module Sanctions & Amendes, intégré à la bibliothèque.
+const sanctions=document.createElement("button");sanctions.type="button";sanctions.className="legal-library-card legal-library-sanctions";
+const sanctionsIcon=document.createElement("span");sanctionsIcon.className="legal-library-icon";sanctionsIcon.innerHTML='<i class="fa-solid fa-triangle-exclamation"></i>';
+const sanctionsTitle=document.createElement("strong");sanctionsTitle.textContent="Sanctions & Amendes";
+const sanctionsDesc=document.createElement("small");sanctionsDesc.textContent="Ouvrir le guide dédié aux infractions, pénalités et sanctions.";
+sanctions.append(sanctionsIcon,sanctionsTitle,sanctionsDesc);sanctions.addEventListener("click",()=>openGuide("sanctions"));grid.append(sanctions);
 el.append(grid);
 }
 function goHome(){state.history=[];state.currentView="home";state.parentView=null;state.activeArticle=null;state.activeGuide=null;state.title="";state.items=[];togglePage(false);if(!/code-travail\.html$/i.test(location.pathname)){location.href="./code-travail.html";return;}window.scrollTo({top:0,behavior:"smooth"});}
