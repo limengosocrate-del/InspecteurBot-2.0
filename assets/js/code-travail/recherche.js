@@ -135,14 +135,12 @@
       const results = ranked.map(item => item.article);
       window.CodeTravailState.searchResults = results;
       if (window.Statistiques?.increment) window.Statistiques.increment("recherche");
-      this.renderResults(results, value);
-
-      // Une référence unique ou un résultat nettement prioritaire ouvre directement
-      // sa page dans le lecteur Mode Livre. Les recherches ambiguës restent listées.
-      if (results.length && (numberMatch || results.length === 1 || ranked[0].score >= (ranked[1]?.score || 0) * 1.8)) {
-        this.openInBook(results[0], false);
+      if (window.LegalDetailView?.openResults) {
+        window.LegalDetailView.openResults(value, results);
+      } else {
+        this.renderResults(results, value);
+        if (host) host.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-      if (host) host.scrollIntoView({ behavior: "smooth", block: "nearest" });
     },
 
     openInBook(article, scroll = true) {
