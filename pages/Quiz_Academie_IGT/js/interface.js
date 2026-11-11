@@ -21,9 +21,14 @@ class InterfaceManager {
     this.runSplashScreen();
 
     try {
-      const resp = await fetch('data/question_bank.json');
-      this.questionBank = await resp.json();
-      console.log(`Loaded ${this.questionBank.length} questions into Académie engine.`);
+      const resp = await fetch('data/question_bank.json', { cache: 'no-store' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} lors du chargement de la banque de questions`);
+      const bank = await resp.json();
+      if (!Array.isArray(bank)) throw new Error("Le fichier question_bank.json ne contient pas une liste valide.");
+      // Les questions historiques n'ont pas toujours de champ « source ».
+      // Sans champ source, elles appartiennent à la banque de formation.
+      this.questionBank = bank.filter(q => q && q.id != null && Number(q.niveau) >= 1 && Number(q.niveau) <= 7 && q.question && Array.isArray(q.choix) && Array.isArray(q.bonne) && (!q.source || q.source === 'FORMATION'));
+      console.log(`Loaded ${this.questionBank.length} formation questions across levels.`, this.questionBank.reduce((acc,q)=>(acc[q.niveau]=(acc[q.niveau]||0)+1,acc),{}));
     } catch (err) {
       console.error("Failed to fetch data/question_bank.json:", err);
     }
@@ -357,8 +362,12 @@ class InterfaceManager {
         </div>`;
       return;
     }
+    if (!Array.isArray(this.questionBank) || !this.questionBank.length) {
+      if (container) container.innerHTML = `<div class="glass-card">La banque de questions n'a pas pu être chargée. Vérifiez votre connexion puis actualisez la page.</div>`;
+      return;
+    }
     const nextQ = window.revisionEngine.selectNextQuestion(this.questionBank, profile, profile.niveauActuel, this.lastQuestionId);
-    if (!nextQ) { if (container) container.innerHTML = `<div class="glass-card">Aucune question de formation n'est disponible pour ce niveau. Vérifiez la banque de questions.</div>`; return; }
+    if (!nextQ) { if (container) container.innerHTML = `<div class="glass-card">Aucune question n'est encore enregistrée pour le niveau ${profile.niveauActuel}. La banque contient ${this.questionBank.filter(q => Number(q.niveau) === Number(profile.niveauActuel)).length} question(s) pour ce niveau.</div>`; return; }
     this.lastQuestionId = nextQ.id;
     window.quizEngine.loadQuestion(nextQ, container, () => this.loadNextFormationQuestion());
   }
