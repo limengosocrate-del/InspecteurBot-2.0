@@ -234,6 +234,16 @@ body.dark-theme .suggestions button{background:#203640!important;color:#e8f3f1!i
 body.dark-theme .legal-guide-section h3{color:#5de2df!important}body.dark-theme .legal-guide-section p{color:#e1eceb!important}
 .legal-guide-note{padding:12px 14px;border-radius:11px;background:rgba(242,183,5,.12);border:1px solid rgba(200,135,0,.3);color:var(--ct-ink)!important;font-size:12px;line-height:1.6;margin-top:14px}
 </style>
+
+<style id="code-travail-library-option-v1">
+.ct-library-launcher{width:100%;display:flex;align-items:center;gap:15px;padding:18px 20px;margin:0 0 16px;border:1px solid #a9c3ce;border-radius:16px;background:linear-gradient(120deg,#e9f3f5,#f8fbfc);color:#123b4a;text-align:left;cursor:pointer;box-shadow:0 8px 22px rgba(12,56,72,.09)}
+.ct-library-launcher:hover{border-color:#087f8c;transform:translateY(-1px)}
+.ct-library-icon{width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;border-radius:13px;background:#0b5968;color:#fff;font-size:25px}
+.ct-library-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}.ct-library-copy strong{font-size:16px;font-weight:850;color:#063b4c}.ct-library-copy small{font-size:13px;line-height:1.45;color:#526a72}.ct-library-arrow{font-size:25px;font-weight:800;color:#087f8c}
+#codeLibrarySection[hidden]{display:none!important}
+body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#1b3b46);border-color:#31535b;color:#f1f5f3}.dark-theme .ct-library-copy strong,.dark-theme .ct-library-copy small{color:#e1eceb}
+@media(max-width:600px){.ct-library-launcher{padding:14px;gap:11px}.ct-library-icon{width:42px;height:42px;flex-basis:42px}.ct-library-copy strong{font-size:14px}.ct-library-copy small{font-size:12px}}
+</style>
 </head>
 
 <body class="light-theme">
@@ -263,6 +273,13 @@ body.dark-theme .legal-guide-section h3{color:#5de2df!important}body.dark-theme 
             </button>
         </div>
     </header>
+
+
+    <button id="openCodeLibrary" class="ct-library-launcher" type="button" aria-controls="codeLibrarySection" aria-expanded="false">
+        <span class="ct-library-icon" aria-hidden="true">📚</span>
+        <span class="ct-library-copy"><strong>Bibliothèque Code du travail</strong><small>Consulter les domaines juridiques, les articles et les guides pratiques</small></span>
+        <span class="ct-library-arrow" aria-hidden="true">→</span>
+    </button>
 
     <!--=================================================
     PARTIE 3 : BARRE D'OUTILS DE L'INSPECTEUR
@@ -316,14 +333,14 @@ body.dark-theme .legal-guide-section h3{color:#5de2df!important}body.dark-theme 
     <!--=================================================
     PARTIE 5 : CATÉGORIES DU CODE DU TRAVAIL
     ==================================================-->
-    <section class="categories-section fade-in">
+    <section id="codeLibrarySection" class="categories-section fade-in" hidden>
         <div class="section-title">
             <h2>
-                <i class="fa-solid fa-folder-tree"></i>
-                Domaines Juridiques du Code du Travail
+                <i class="fa-solid fa-book-open"></i>
+                Bibliothèque Code du travail
             </h2>
             <p>
-                Explorez les domaines du Code, les articles disponibles et les guides pratiques pour mieux comprendre vos droits et obligations.
+                Consultez les domaines juridiques, parcourez les articles disponibles et accédez aux guides pratiques pour mieux comprendre vos droits et obligations.
             </p>
         </div>
 
@@ -425,6 +442,24 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 <script src="assets/js/code-travail/livre.js?v=20261110-reader-audio-v1"></script>
 
 <!-- Ancien MODE LIVRE (tourner les pages article par article) -->
+
+
+<script id="code-travail-library-navigation-v1">
+(function(){
+  function initLibraryOption(){
+    const openButton=document.getElementById('openCodeLibrary');
+    const library=document.getElementById('codeLibrarySection');
+    if(!openButton||!library||openButton.dataset.bound==='1')return;
+    openButton.dataset.bound='1';
+    openButton.addEventListener('click',function(){
+      library.hidden=false;
+      openButton.setAttribute('aria-expanded','true');
+      library.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLibraryOption,{once:true});else initLibraryOption();
+})();
+</script>
 
 <!-- =================================================
      SERVICE WORKER & INTÉGRATION PWA
