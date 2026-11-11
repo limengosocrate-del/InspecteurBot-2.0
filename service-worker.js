@@ -38,6 +38,28 @@ self.addEventListener('fetch',event=>{
     return;
   }
 
+  // Bibliothèques bureautiques lourdes : chargement à la demande, puis cache local
+  // pour réutilisation hors connexion et réduction des téléchargements répétés.
+  if(url.hostname==='cdn.jsdelivr.net'&&(
+    url.pathname.includes('/npm/docx@')||
+    url.pathname.includes('/npm/xlsx@')||
+    url.pathname.includes('/npm/mammoth@')
+  )){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      const cached=await cache.match(request);
+      if(cached)return cached;
+      try{
+        const response=await fetch(request);
+        if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
+        return response;
+      }catch(error){
+        return cached||Response.error();
+      }
+    })());
+    return;
+  }
+
   if(url.origin!==self.location.origin)return;
   const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
   event.respondWith((async()=>{
