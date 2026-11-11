@@ -123,6 +123,7 @@ class InterfaceManager {
       this.updateLivesSettingsUI();
     } else if (viewId === 'view-dashboard') {
       this.updateDashboardUI();
+      this.loadChallengeLeaderboard();
       this.animateDashboardOpening();
     }
   }
