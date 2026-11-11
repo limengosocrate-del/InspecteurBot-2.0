@@ -107,7 +107,8 @@ function goHome(){state.history=[];state.currentView="home";state.parentView=nul
 function installHomeButton(){if(document.getElementById("ct-home-float"))return;const b=document.createElement("button");b.id="ct-home-float";b.type="button";b.className="ct-home-float";b.setAttribute("aria-label","Retour dans le Code du Travail");b.innerHTML='<span class="ct-home-icon" aria-hidden="true">🏠</span><span class="ct-home-label">Retour dans le Code du Travail</span>';b.addEventListener("click",goHome);document.body.append(b);}
 window.LegalDetailView={openLibrary,openDomain,openResults,openArticle,openGuide,back,goHome};
 // La bibliothèque est un écran de navigation dédié, accessible depuis l’en-tête.
-document.getElementById("suggestionsRapides")?.addEventListener("click",event=>{const btn=event.target.closest("[data-guide]");if(btn){event.preventDefault();openGuide(btn.dataset.guide);}});\ndocument.getElementById("openCodeLibrary")?.addEventListener("click",()=>openLibrary());
+document.getElementById("suggestionsRapides")?.addEventListener("click",event=>{const btn=event.target.closest("[data-guide]");if(btn){event.preventDefault();openGuide(btn.dataset.guide);}});
+document.getElementById("openCodeLibrary")?.addEventListener("click",()=>openLibrary());
 window.CodeTravailCategories={
 metadata:{
 "Dispositions générales":{icon:"fa-scale-balanced",desc:"Champ d’application et principes généraux."},
