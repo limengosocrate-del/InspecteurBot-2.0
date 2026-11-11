@@ -18,6 +18,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
 <script src="auth-gate.js?v=20261110-sync-offline-v1" defer></script>
 <script src="office.js?v=20261111-office-local-v1" defer></script>
+<script src="office-templates.js?v=20261111-templates-v1" defer></script>
 </head>
 <body>
 <div id="ib-startup-splash" role="status" aria-live="polite"><strong>InspecteurBot Office</strong><span>Préparation de votre espace de travail…</span></div>
@@ -41,6 +42,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
     <button class="app-tile active" data-app="home"><span class="app-icon home-icon">⌂</span><span>Accueil</span></button>
     <button class="app-tile" data-app="writer"><span class="app-icon writer-icon">W</span><span>Writer / Word</span><small>Documents</small></button>
     <button class="app-tile" data-app="calc"><span class="app-icon calc-icon">▦</span><span>Excel / Calc</span><small>Tableurs</small></button>
+    <button class="app-tile" data-app="templates"><span class="app-icon" style="background:#8b5cf6;color:#fff">IGT</span><span>Modèles IGT</span><small>PV, rapports, fiches…</small></button>
     <button class="app-tile" data-app="pdf"><span class="app-icon pdf-icon">PDF</span><span>PDF</span><small>Lecture & impression</small></button>
   </nav>
 
@@ -53,6 +55,16 @@ html.inspecteur-auth-ready body::before{display:none!important}
     </div>
     <div class="section-heading recent-heading"><h3>Tous mes documents</h3><label class="search-field">⌕ <input id="documentSearch" type="search" placeholder="Rechercher un document…"></label></div>
     <div id="documentsList" class="documents-list"><div class="empty-state">Chargement de vos documents locaux…</div></div>
+  </section>
+
+  <section id="templatesPanel" class="workspace-panel" hidden>
+    <div class="section-heading"><div><p class="eyebrow">OUTILS MÉTIERS</p><h2>Modèles professionnels modifiables</h2></div><span class="privacy-note">Les rubriques à compléter uniquement</span></div>
+    <p class="template-intro">Choisissez un document. Office prépare une trame de travail avec les champs modifiables, sans reproduire les menus ni les écrans complets de l’application.</p>
+    <div class="template-picker"><label for="templateType">Type de document</label><select id="templateType"><optgroup label="Fiches de contrôle"><option value="F01">F01 — Main-d’œuvre</option><option value="F02">F02 — Main-d’œuvre étrangère</option><option value="F03">F03 — Hygiène et santé</option><option value="F04">F04 — Sécurité BTP</option><option value="F05">F05 — Sécurité dans les mines</option><option value="F06">F06 — Entreprises à hauts risques</option><option value="F07">F07 — Protection sociale</option><option value="S01">S01 — Visite spéciale</option><option value="S02">S02 — Contre-enquête</option><option value="S03">S03 — Administration et finance</option><option value="S04">S04 — Fiche personnalisable</option><option value="S05">S05 — Fiche personnalisable</option><option value="S06">S06 — Fiche personnalisable</option><option value="S07">S07 — Fiche personnalisable</option></optgroup><optgroup label="Documents de rédaction"><option value="PV">Procès-verbal (PV)</option><option value="RAPPORT">Rapport professionnel</option><option value="DECOMPTE">Décompte final</option></optgroup><optgroup label="Classeur Excel"><option value="ENTREPRISE">Registre des entreprises — Excel</option></optgroup></select></div>
+    <div id="templateForm"><h3 id="templateFormTitle">F01 — Contrôle de la main-d’œuvre</h3><div id="templateFields"></div></div>
+    <div id="companyTemplateInfo" hidden class="company-template-info"><h3>Registre des entreprises — Excel / Calc</h3><p>Un classeur structuré pour saisir les informations d’identification, les coordonnées, le secteur, les effectifs, le statut et les observations de chaque entreprise. Les lignes sont prévues pour être complétées dans Excel.</p><ul><li>Identification légale et administrative</li><li>Localisation et secteur d’activité</li><li>Représentant et coordonnées</li><li>Effectifs et suivi des visites</li></ul></div>
+    <div class="template-actions"><button class="primary-btn" id="generateTemplateBtn">Créer dans Writer / Excel</button><button class="secondary-btn" id="resetTemplateBtn">Réinitialiser les champs</button></div>
+    <p class="template-disclaimer">Important : ces trames facilitent la préparation et la saisie. Elles ne remplacent pas les formulaires officiels validés, les calculs réglementaires ni la vérification juridique. Les S04 à S07 sont des espaces personnalisables et ne sont pas présentés comme des formulaires officiels.</p>
   </section>
 
   <section id="editorPanel" class="workspace-panel" hidden>
