@@ -6,3 +6,66 @@
 
 .template-intro{color:#63758a;font-size:13px;line-height:1.6;margin:12px 0 20px}.template-picker{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:15px;background:#f5f8fb;border:1px solid var(--line);border-radius:11px}.template-picker label{font-size:12px;font-weight:700;color:#30475c}.template-picker select{min-width:min(420px,100%);max-width:100%;padding:10px 12px;border:1px solid #cbd7e2;border-radius:8px;background:#fff;color:#24384c}.template-group{margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:11px;background:#fff}.template-group h3,#templateForm>h3,.company-template-info h3{margin:0 0 13px;color:#174f7c;font-size:15px}.template-field{display:flex;flex-direction:column;gap:6px;margin:10px 0}.template-field span{font-size:12px;font-weight:700;color:#42566b}.template-field textarea{width:100%;min-height:42px;padding:10px;border:1px solid #d5dee7;border-radius:7px;resize:vertical;font:13px Arial,sans-serif;color:#26394d}.template-field textarea:focus,.check-row input:focus,.check-row select:focus{outline:2px solid #9cc5e5;border-color:#1769aa}.checklist-grid{display:grid;gap:8px}.check-row{display:grid;grid-template-columns:minmax(180px,1.4fr) minmax(130px,.7fr) minmax(150px,1fr);gap:8px;align-items:center;padding:8px;border-bottom:1px solid #edf1f5;font-size:11px}.check-row select,.check-row input{width:100%;min-width:0;padding:8px;border:1px solid #d5dee7;border-radius:6px;background:#fff;font-size:11px}.template-help{font-size:11px;color:#6d7c8b;margin-bottom:10px}.template-actions{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}.company-template-info{margin-top:16px;padding:18px;border:1px solid #cfe2d5;border-radius:10px;background:#f5fbf6;color:#365b43;font-size:13px;line-height:1.6}.company-template-info ul{margin:8px 0 0;padding-left:20px}.template-disclaimer{padding:12px;border-left:4px solid #d5a53a;background:#fff9e9;color:#735b28;font-size:11px;line-height:1.6}
 @media(max-width:620px){.check-row{grid-template-columns:1fr}.template-picker{align-items:stretch;flex-direction:column}.template-picker select{width:100%}.template-group{padding:11px}}
+
+
+/* Interface Office : contraste doux, ruban multi-onglets et navigation tactile */
+:root{--bg:#e9edf2;--surface:#f7f8fa;--ink:#243244;--line:#d1d9e2;--muted:#657487}
+html,body{background:#e9edf2;color:#243244;overflow-x:hidden;overflow-y:auto;min-height:100%;touch-action:pan-y pan-x;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+body{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.office-topbar,.office-apps,.workspace-panel{background:#f7f8fa}
+.workspace-panel{border-color:#d3dbe4}
+.writer-paper{background:#fdfcf8;color:#202833}
+.paper-stage,.calc-stage,.pdf-stage{touch-action:pan-y pan-x;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.paper-stage{overflow-x:auto;overflow-y:visible}
+.sheet-scroll{overflow:auto;max-width:100%;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+.ribbon{display:block;padding:0 0 10px}
+.ribbon-tabs{display:flex;gap:4px;overflow-x:auto;padding:7px 0;border-bottom:1px solid var(--line);touch-action:pan-x}
+.ribbon-tab{border:0;border-radius:7px 7px 0 0;background:transparent;padding:9px 13px;color:#536579;font-size:12px;font-weight:700;white-space:nowrap}
+.ribbon-tab.active{background:#dce8f3;color:#164f7b;box-shadow:inset 0 -3px #1769aa}
+.ribbon-tools{display:flex;gap:9px;flex-wrap:wrap;padding:10px 0}
+.ribbon-tools[hidden]{display:none!important}
+.ribbon-group input[type=color]{width:32px;height:30px;padding:2px;border:1px solid var(--line);border-radius:5px;background:#f7f8fa}
+.ribbon-group select{max-width:150px}
+.ribbon-group label{display:flex;align-items:center;gap:7px;font-size:11px;color:#52657a}
+#writerArea.focus-mode{position:fixed;inset:0;z-index:10000;background:#e9edf2;padding:16px;overflow:auto}
+#writerArea.focus-mode .writer-paper{min-height:calc(100vh - 32px)}
+#writerCanvas img{max-width:100%;height:auto}
+button,select,input,textarea{touch-action:manipulation}
+@media(max-width:720px){
+ html,body{overflow-y:auto!important;touch-action:pan-y pan-x!important}
+ .office-shell{padding-bottom:18px}
+ .workspace-panel{min-height:55vh}
+ .ribbon-tabs{margin-right:-4px;padding-bottom:8px}
+ .ribbon-tools{flex-wrap:nowrap;overflow-x:auto;align-items:center;padding:10px 0;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+ .ribbon-group{flex:0 0 auto}
+ .paper-stage{overflow-x:auto;overflow-y:visible}
+ .writer-paper{width:100%;min-width:0}
+ .sheet-scroll{max-height:65vh}
+}
+@page{size:A4;margin:16mm}
+@media print{
+ html,body{background:#fff!important;overflow:visible!important}
+ body *{visibility:hidden!important}
+ body[data-print-target="writer"] #editorPanel,
+ body[data-print-target="writer"] #writerArea,
+ body[data-print-target="writer"] #writerCanvas,
+ body[data-print-target="writer"] #writerCanvas *{visibility:visible!important}
+ body[data-print-target="writer"] #editorPanel{position:absolute;inset:0;width:100%;margin:0;padding:0;border:0;box-shadow:none}
+ body[data-print-target="writer"] #writerArea{display:block!important;position:static;width:100%;padding:0;margin:0;overflow:visible;background:#fff}
+ body[data-print-target="writer"] #writerCanvas{width:100%;min-height:0;margin:0;padding:0;background:#fff;box-shadow:none;zoom:1}
+ body[data-print-target="calc"] #editorPanel,
+ body[data-print-target="calc"] #calcArea,
+ body[data-print-target="calc"] #calcArea *{visibility:visible!important}
+ body[data-print-target="calc"] #editorPanel{position:absolute;inset:0;width:100%;margin:0;padding:0;border:0;box-shadow:none}
+ body[data-print-target="calc"] #calcArea{display:block!important;overflow:visible}
+ body[data-print-target="calc"] .sheet-toolbar,
+ body[data-print-target="calc"] .sheet-hint{display:none!important}
+ body[data-print-target="calc"] .sheet-scroll{overflow:visible;max-height:none}
+ body[data-print-target="calc"] .sheet-grid{width:100%;font-size:8px;border-collapse:collapse}
+ body[data-print-target="calc"] .sheet-grid input{border:0;padding:2px;font-size:8px}
+ body[data-print-target="pdf"] #editorPanel,
+ body[data-print-target="pdf"] #pdfArea,
+ body[data-print-target="pdf"] #pdfFrame{visibility:visible!important}
+ body[data-print-target="pdf"] #pdfArea{display:block!important;position:absolute;inset:0}
+ body[data-print-target="pdf"] #pdfFrame{width:100%;height:95vh;border:0}
+}
