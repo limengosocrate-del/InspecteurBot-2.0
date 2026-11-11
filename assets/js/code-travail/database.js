@@ -1,7 +1,8 @@
 /**
  * Base locale du Code du travail RDC — InspecteurBot
- * 334 articles numérotés, transcription du texte de base (Loi n° 015/2002 du 16 octobre 2002).
- * Les modifications de la Loi n° 16/010 du 15 juillet 2016 ne sont pas consolidées dans les textes ci-dessous.
+ * 334 articles numérotés, base Loi n° 015/2002 du 16 octobre 2002.
+ * Consolidation ciblée issue de la Loi n° 16/010 du 15 juillet 2016 : articles 62, 119, 121 et 190 ; article 321 mis à jour selon la nouvelle rédaction de l’article 1er de cette loi.
+ * Les autres modifications de 2016 ne sont pas toutes intégrées : vérifier la mention de chaque article avant usage juridique.
  * Vérification juridique officielle requise avant tout usage contentieux.
  * Données structurées et disponibles hors ligne.
  */
@@ -368,7 +369,7 @@
   },
   {
     "numero": 62,
-    "texte": "Le contrat à durée indéterminée ne peut être résilié à l'initiative de l'employeur que pour un motif valable lié à l'aptitude ou à la conduite du travailleur sur les lieux de travail dans l'exercice de ses fonctions ou fondé sur les nécessités du fonctionnement de l'entreprise, de l'établissement ou du service.\n\nNe constituent pas des motifs valables de licenciement notamment :\n- l'affiliation syndicale, la non affiliation syndicale ou la participation à des activités syndicales en dehors des heures de travail ou, avec le consentement de l'employeur, durant les heures de travail ;\n- le fait de solliciter, d'exercer ou d'avoir exercé un mandat de représentation des travailleurs ;\n- le fait d'avoir déposé une plainte ou participé à des procédures engagées contre un employeur en raison de violations alléguées de la législation, ou présenté un recours devant les autorités administratives compétentes ;\n- la race, la couleur, le sexe, l'état matrimonial, les responsabilités familiales, la grossesse, l'accouchement et ses suites, la religion, l'opinion politique, l'ascendance nationale ou l'origine sociale, le groupe ethnique ;\n- l'absence du travail pendant le congé de maternité.\n\nToute résiliation à l'initiative de l'employeur d'un contrat à durée indéterminée, fondée sur les nécessités du fonctionnement de l'entreprise, de l'établissement ou du service, est soumise aux conditions qui seront définies par un arrêté du Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions."
+    "texte": "Le contrat à durée indéterminée ne peut être résilié à l’initiative de l’employeur que pour un motif valable lié à l’aptitude ou à la conduite du travailleur.\n\nLa résiliation se fonde sur :\n- Les actes perpétrés sur les lieux de travail par le travailleur dans l’exercice de ses fonctions ;\n- Les actes perpétrés en dehors mais ayant leur fondement ou leur origine sur les lieux de travail dans l’exercice de ses fonctions ;\n- Les nécessités du fonctionnement de l’entreprise, de l’établissement ou du service.\n\nNe constituent pas des motifs valables de licenciement notamment :\n- L’affiliation syndicale, la non affiliation syndicale ou la participation à des activités syndicales en dehors des heures de travail ou, avec le consentement de l’employeur, durant les heures de travail ;\n- Le fait de solliciter, d’exercer ou d’avoir exercé un mandat de représentation des travailleurs ;\n- Le fait d’avoir déposé une plainte ou participé à des procédures engagées contre un employeur en raison de violations alléguées de la législation, ou présenté un recours devant les autorités administratives compétentes ;\n- La race, la couleur, le sexe, l’état matrimonial, les responsabilités familiales, la grossesse, l’accouchement et ses suites, la religion, l’opinion politique, l’ascendance nationale ou l’origine sociale, le groupe ethnique, le statut sérologique au VIH avéré ou présumé ;\n- L’absence au travail pendant le congé de maternité.\n\nToute résiliation à l’initiative de l’employeur d’un contrat à durée indéterminée, fondée sur les nécessités du fonctionnement de l’entreprise, de l’établissement ou du service, est soumise aux conditions définies par un arrêté du Ministre ayant le travail et la prévoyance sociale dans ses attributions.\n\nLorsque l’employeur envisage un licenciement pour des motifs liés à l’aptitude ou à la conduite du travailleur, il est tenu, avant toute décision, de permettre à l’intéressé de se défendre contre les reproches formulés ou de s’expliquer sur les motifs avancés."
   },
   {
     "numero": 63,
@@ -596,7 +597,7 @@
   },
   {
     "numero": 119,
-    "texte": "Dans tous les établissements publics ou privés, même d'enseignement ou de bienfaisance, la durée légale du travail des employés ou ouvriers de l'un ou de l'autre sexe, quelle que soit la forme dans laquelle est exécuté le travail, ne peut excéder quarante-cinq heures par semaine et neuf heures par jour.\n\nElle doit se calculer à partir du moment où le travailleur se tient sur les lieux du travail à la disposition de l'employeur jusqu'au moment où les prestations cessent, conformément aux horaires arrêtés par l'employeur et reproduits au règlement d'entreprise.\n\nElle ne comprend pas le temps nécessaire au travailleur pour se rendre au lieu du travail ou pour en revenir, sauf si ce temps est inhérent au travail.\n\nLes heures effectuées au-delà de la durée légale du travail sont considérées comme heures supplémentaires et donnent droit à une majoration de salaire."
+    "texte": "Dans tous les établissements publics ou privés, même d’enseignement ou de bienfaisance, la durée légale du travail des employés ou ouvriers de l’un ou de l’autre sexe, quelle que soit la forme dans laquelle est exécuté le travail, ne peut excéder quarante-cinq heures par semaine et huit heures par jour.\n\nElle se calcule à partir du moment où le travailleur se tient sur les lieux du travail à la disposition de l’employeur jusqu’au moment où les prestations cessent, conformément aux horaires arrêtés par l’employeur et reproduits au règlement d’entreprise.\n\nElle ne comprend pas le temps nécessaire au travailleur pour se rendre au lieu du travail ou pour en revenir, sauf si ce temps est inhérent au travail.\n\nLes heures effectuées au-delà de la durée légale du travail sont considérées comme heures supplémentaires et donnent droit à une majoration de salaire."
   },
   {
     "numero": 120,
@@ -604,7 +605,7 @@
   },
   {
     "numero": 121,
-    "texte": "Tout travailleur doit jouir, au cours de chaque période de sept jours, d'un repos comprenant au minimum 48 heures consécutives.\n\nCe repos doit être accordé autant que possible, en même temps à tout le personnel. Il a lieu en principe le samedi et le dimanche.\n\nLe Ministre ayant le Travail et la Prévoyance Sociale dans ses attributions détermine par arrêté, pris après avis du Conseil National du Travail, les modalités d'application des alinéas précédents, notamment les professions pour lesquelles et les conditions dans lesquelles le repos pourra, exceptionnellement et pour des motifs nettement établis, soit être donné par roulement ou collectivement un autre jour que le samedi ou dimanche, soit être suspendu, soit être réparti sur une période plus longue que la semaine."
+    "texte": "Tout travailleur jouit, au cours de chaque période de sept jours, d’un repos comprenant au minimum vingt-quatre heures.\n\nCe repos est accordé autant que possible en même temps à tout le personnel. Il a lieu le dimanche. Toutefois, les conventions collectives peuvent prévoir les conditions particulières favorables.\n\nLe Ministre ayant le travail et la prévoyance sociale dans ses attributions détermine par arrêté, pris après avis du Conseil National du Travail, les modalités d’application des alinéas précédents, notamment en ce qui concerne les professions pour lesquelles et les conditions dans lesquelles le repos peut, exceptionnellement, et pour des motifs nettement établis, être donné par roulement ou collectivement un autre jour que le dimanche."
   },
   {
     "numero": 122,
@@ -880,7 +881,7 @@
   },
   {
     "numero": 190,
-    "texte": "Les tâches dévolues à l'Inspection générale du Travail sont assurées par des Inspecteurs assistés des Contrôleurs du Travail et du personnel nécessaire au bon fonctionnement des services.\n\nLe Président de la République fixe, en application du statut du personnel de carrière des services publics de l'Etat, les dispositions spéciales régissant les agents et cadres de l'Inspection Générale du Travail."
+    "texte": "Un Décret du Premier ministre délibéré en Conseil des ministres fixe l’organisation et le fonctionnement de l’Inspection Générale du Travail."
   },
   {
     "numero": 191,
@@ -1404,7 +1405,7 @@
   },
   {
     "numero": 321,
-    "texte": "Sont punis d'une amende qui ne dépasse pas 20.000 F.C. constants, les auteurs des infractions aux dispositions :\na) des articles 6 literas a), b), c) et d),\n8, 18, 19, 20, 21, 25, 26, 33 alinéa 2, 44, 47, 51, 55 alinéa 3, 56, 60, 64, 65, 66, 78, 79, 84, 89, 90, 98, 99, 100, 101, 103, 111, 112, 114, 116, 117, 118, 119, 121, 122, 125, 126, 129, 133, 136, 137 alinéa 2, 138, 140, 141, 142, 143, 144, 145, 146, 148 alinéa 1, 152, 154, 157, 167, 176, 178, 181, 212, 213, 215, 216, 217, 218, 221, 229, 234, 258, 265, 268 , 269 ;\nb) des décrets prévus aux articles 87 et\n123 ,\nc) des arrêtés pris en application des articles 35, 38, 47, 56, 58, 94, 103, 112, 120, 121, 123, 124, 128, 139, 156, 158, 169, 171, 177, 207, 219, 222, 236 et 255.\n\nEst passible de la même peine, toute personne invitée ou chargée de la représentation des parties à un litige\n\nindividuel ou à un conflit collectif devant l'Inspecteur ou le Contrôleur du Travail qui ne se sera pas rendue à la troisième invitation qui lui aura été remise moyennant accusé de réception. Dans ce cas, l'article 322 du présent Code n'est pas d'application."
+    "texte": "Sont punis d’une amende qui ne dépasse pas 20.000 Francs congolais constants, les auteurs des infractions aux dispositions :\n\n1) Des articles 6 points 1er à 4, 8, 18, 19, 20, 21, 25, 26, 33, alinéa 2, 40, 44, 47, 51, 55 alinéas 3, 56, 60, 64, 65, 66, 78, 79, 84, 89, 90, 98, 99, 100, 101, 103, 111, 112, 116, 119, 121, 122, 125, 128, 129, 133, 136, 137 alinéa 2, 138, 140, 141, 142, 143, 144, 145, 146, 148 alinéa 1, 152, 154, 157, 167, 176, 178, 181, 212, 213, 215, 216, 217, 218, 221, 229, 234, 258, 265, 268, 269 ;\n\n2) Des décrets prévus aux articles 87 et 123 ;\n\n3) Des arrêtés pris en application des articles 35, 38, 47, 56, 58, 94, 103, 112, 120, 121, 123, 124, 128, 139, 156, 158, 169, 171, 177, 207, 219, 222, 236 et 255.\n\nEst passible de la même peine, la partie à un litige individuel ou à un conflit de travail invitée devant l’inspecteur ou le contrôleur du travail, qui n’aura pas répondu à la troisième invitation qui lui aura été remise moyennant accusé de réception."
   },
   {
     "numero": 322,
@@ -1465,9 +1466,9 @@
   });
   window.CODE_TRAVAIL_DB = articles;
   window.CodeTravailDatabase = {
-    version: "2002-base-avec-avertissement-2016",
-    source: "Loi n° 015/2002 du 16 octobre 2002 — texte de base",
-    note: "Les modifications de la Loi n° 16/010 du 15 juillet 2016 ne sont pas consolidées dans cette transcription.",
+    version: "2002-base-consolidation-ciblee-2016-v2",
+    source: "Loi n° 015/2002 du 16 octobre 2002 et consolidations ciblées de la Loi n° 16/010 du 15 juillet 2016",
+    note: "Les articles 62, 119, 121, 190 et 321 ont été actualisés à partir de la Loi n° 16/010 du 15 juillet 2016. Les autres modifications de 2016 ne sont pas toutes intégrées.",
     total: articles.length,
     titres: TITRES,
     articles: articles,
