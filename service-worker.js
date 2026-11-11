@@ -1,7 +1,7 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v2';
-const SHELL=['./','./index.html'];
+const CACHE='inspecteurbot-data-v3-office';
+const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v1','./office.js?v=20261111-office-local-v1','./office-templates.js?v=20261111-templates-v1'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>
@@ -33,6 +33,28 @@ self.addEventListener('fetch',event=>{
         const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
         if(cached)return cached;
         throw error;
+      }
+    })());
+    return;
+  }
+
+  // Bibliothèques bureautiques lourdes : chargement à la demande, puis cache local
+  // pour réutilisation hors connexion et réduction des téléchargements répétés.
+  if(url.hostname==='cdn.jsdelivr.net'&&(
+    url.pathname.includes('/npm/docx@')||
+    url.pathname.includes('/npm/xlsx@')||
+    url.pathname.includes('/npm/mammoth@')
+  )){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      const cached=await cache.match(request);
+      if(cached)return cached;
+      try{
+        const response=await fetch(request);
+        if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
+        return response;
+      }catch(error){
+        return cached||Response.error();
       }
     })());
     return;

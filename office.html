@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173b65">
+<meta name="description" content="InspecteurBot Office — espace bureautique local et autonome">
+<title>InspecteurBot Office</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
+<link rel="stylesheet" href="office.css?v=20261111-office-local-v1">
+<style id="inspecteurbot-auth-lock">
+html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}
+html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;visibility:visible!important}
+html.inspecteur-auth-ready body::before{display:none!important}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
+<script src="auth-gate.js?v=20261110-sync-offline-v1" defer></script>
+<script src="office.js?v=20261111-office-local-v1" defer></script>
+<script src="office-templates.js?v=20261111-templates-v1" defer></script>
+</head>
+<body>
+<div id="ib-startup-splash" role="status" aria-live="polite"><strong>InspecteurBot Office</strong><span>Préparation de votre espace de travail…</span></div>
+<header class="office-topbar">
+  <a class="office-brand" href="index.html" aria-label="Retour à InspecteurBot">
+    <span class="brand-mark">O</span><span><strong>InspecteurBot Office</strong><small>Bureautique professionnelle</small></span>
+  </a>
+  <div class="top-actions">
+    <span class="local-status" id="storageStatus"><i></i> Enregistrement local</span>
+    <a class="top-icon" href="messagerie.html?v=20261110-profile-photos-v4" aria-label="Ouvrir les messages" title="Messages">✉</a>
+    <a class="top-icon" href="index.html" aria-label="Accueil" title="Accueil">⌂</a>
+  </div>
+</header>
+<main class="office-shell">
+  <section class="welcome-row">
+    <div><p class="eyebrow">ESPACE DE PRODUCTIVITÉ</p><h1>Votre bureau, partout avec vous.</h1><p class="welcome-copy">Créez, modifiez et retrouvez vos documents sur cet appareil, même sans connexion Internet après le premier chargement.</p></div>
+    <div class="welcome-actions"><button class="primary-btn" id="newDocumentBtn">＋ Nouveau document</button><button class="secondary-btn" id="importFileBtn">Importer un fichier</button><input id="fileInput" type="file" hidden accept=".docx,.xlsx,.xls,.csv,.txt,.html,.pdf,.json"></div>
+  </section>
+
+  <nav class="office-apps" aria-label="Applications Office">
+    <button class="app-tile active" data-app="home"><span class="app-icon home-icon">⌂</span><span>Accueil</span></button>
+    <button class="app-tile" data-app="writer"><span class="app-icon writer-icon">W</span><span>Writer / Word</span><small>Documents</small></button>
+    <button class="app-tile" data-app="calc"><span class="app-icon calc-icon">▦</span><span>Excel / Calc</span><small>Tableurs</small></button>
+    <button class="app-tile" data-app="templates"><span class="app-icon" style="background:#8b5cf6;color:#fff">IGT</span><span>Modèles IGT</span><small>PV, rapports, fiches…</small></button>
+    <button class="app-tile" data-app="pdf"><span class="app-icon pdf-icon">PDF</span><span>PDF</span><small>Lecture & impression</small></button>
+  </nav>
+
+  <section id="homePanel" class="workspace-panel">
+    <div class="section-heading"><div><p class="eyebrow">VOTRE ESPACE LOCAL</p><h2>Documents récents</h2></div><span class="privacy-note">🔒 Vos fichiers restent sur cet appareil</span></div>
+    <div class="quick-create-grid">
+      <button class="quick-create writer-quick" data-create="writer"><span>W</span><strong>Document Writer / Word</strong><small>Rédiger une lettre ou un rapport</small></button>
+      <button class="quick-create calc-quick" data-create="calc"><span>▦</span><strong>Classeur Excel / Calc</strong><small>Créer un tableau et des calculs</small></button>
+      <button class="quick-create pdf-quick" data-action="import-pdf"><span>PDF</span><strong>Ouvrir un PDF</strong><small>Consulter ou imprimer un fichier</small></button>
+    </div>
+    <div class="section-heading recent-heading"><h3>Tous mes documents</h3><label class="search-field">⌕ <input id="documentSearch" type="search" placeholder="Rechercher un document…"></label></div>
+    <div id="documentsList" class="documents-list"><div class="empty-state">Chargement de vos documents locaux…</div></div>
+  </section>
+
+  <section id="templatesPanel" class="workspace-panel" hidden>
+    <div class="section-heading"><div><p class="eyebrow">OUTILS MÉTIERS</p><h2>Modèles professionnels modifiables</h2></div><span class="privacy-note">Les rubriques à compléter uniquement</span></div>
+    <p class="template-intro">Choisissez un document. Office prépare une trame de travail avec les champs modifiables, sans reproduire les menus ni les écrans complets de l’application.</p>
+    <div class="template-picker"><label for="templateType">Type de document</label><select id="templateType"><optgroup label="Fiches de contrôle"><option value="F01">F01 — Main-d’œuvre</option><option value="F02">F02 — Main-d’œuvre étrangère</option><option value="F03">F03 — Hygiène et santé</option><option value="F04">F04 — Sécurité BTP</option><option value="F05">F05 — Sécurité dans les mines</option><option value="F06">F06 — Entreprises à hauts risques</option><option value="F07">F07 — Protection sociale</option><option value="S01">S01 — Visite spéciale</option><option value="S02">S02 — Contre-enquête</option><option value="S03">S03 — Administration et finance</option><option value="S04">S04 — Fiche personnalisable</option><option value="S05">S05 — Fiche personnalisable</option><option value="S06">S06 — Fiche personnalisable</option><option value="S07">S07 — Fiche personnalisable</option></optgroup><optgroup label="Documents de rédaction"><option value="PV">Procès-verbal (PV)</option><option value="RAPPORT">Rapport professionnel</option><option value="DECOMPTE">Décompte final</option></optgroup><optgroup label="Classeur Excel"><option value="ENTREPRISE">Registre des entreprises — Excel</option></optgroup></select></div>
+    <div id="templateForm"><h3 id="templateFormTitle">F01 — Contrôle de la main-d’œuvre</h3><div id="templateFields"></div></div>
+    <div id="companyTemplateInfo" hidden class="company-template-info"><h3>Registre des entreprises — Excel / Calc</h3><p>Un classeur structuré pour saisir les informations d’identification, les coordonnées, le secteur, les effectifs, le statut et les observations de chaque entreprise. Les lignes sont prévues pour être complétées dans Excel.</p><ul><li>Identification légale et administrative</li><li>Localisation et secteur d’activité</li><li>Représentant et coordonnées</li><li>Effectifs et suivi des visites</li></ul></div>
+    <div class="template-actions"><button class="primary-btn" id="generateTemplateBtn">Créer dans Writer / Excel</button><button class="secondary-btn" id="resetTemplateBtn">Réinitialiser les champs</button></div>
+    <p class="template-disclaimer">Important : ces trames facilitent la préparation et la saisie. Elles ne remplacent pas les formulaires officiels validés, les calculs réglementaires ni la vérification juridique. Les S04 à S07 sont des espaces personnalisables et ne sont pas présentés comme des formulaires officiels.</p>
+  </section>
+
+  <section id="editorPanel" class="workspace-panel" hidden>
+    <div class="editor-heading"><div class="editor-title"><button class="back-btn" id="backToFiles" aria-label="Retour aux documents">←</button><div><span class="eyebrow" id="editorType">DOCUMENT WRITER</span><input id="documentTitle" class="document-title" value="Document sans titre" aria-label="Nom du document"></div></div><div class="editor-actions"><span id="saveState" class="save-state">Enregistré localement</span><button class="secondary-btn small" id="downloadBtn">Télécharger</button><button class="primary-btn small" id="saveBtn">Enregistrer</button></div></div>
+    <div id="writerToolbar" class="ribbon" hidden>
+      <div class="ribbon-group"><button data-command="bold"><b>G</b></button><button data-command="italic"><i>I</i></button><button data-command="underline"><u>S</u></button><select id="fontSize" aria-label="Taille de police"><option value="3">12</option><option value="4" selected>14</option><option value="5">18</option><option value="6">24</option><option value="7">32</option></select><span class="ribbon-label">Police</span></div>
+      <div class="ribbon-group"><button data-command="justifyLeft" title="Aligner à gauche">☰</button><button data-command="justifyCenter" title="Centrer">≡</button><button data-command="justifyRight" title="Aligner à droite">☷</button><button data-command="insertUnorderedList" title="Liste à puces">• Liste</button><button data-command="insertOrderedList" title="Liste numérotée">1. Liste</button></div>
+      <div class="ribbon-group"><button id="insertHeading">Titre</button><button id="insertTable">Tableau</button><button id="insertDate">Date</button></div>
+    </div>
+    <div id="writerArea" class="paper-stage" hidden><article id="writerCanvas" class="writer-paper" contenteditable="true" spellcheck="true" aria-label="Zone de rédaction"><h1>Document sans titre</h1><p>Commencez à rédiger votre document ici…</p></article></div>
+    <div id="calcArea" class="calc-stage" hidden><div class="sheet-toolbar"><span id="cellAddress">A1</span><span class="fx-label">fx</span><input id="formulaInput" aria-label="Valeur ou formule de la cellule" placeholder="Valeur ou formule…"></div><div class="sheet-scroll"><table id="sheetGrid" class="sheet-grid" aria-label="Feuille de calcul"></table></div><div class="sheet-hint">Astuce : saisissez une formule commençant par =, par exemple =SUM(A1:A5) ou =A1+B1.</div></div>
+    <div id="pdfArea" class="pdf-stage" hidden><div class="pdf-toolbar"><span id="pdfFileName">Aperçu PDF</span><button class="secondary-btn small" id="printPdfBtn">Imprimer / Enregistrer en PDF</button></div><iframe id="pdfFrame" title="Aperçu du document PDF"></iframe></div>
+  </section>
+  <section class="storage-footer"><span>✓ Sauvegarde automatique sur cet appareil</span><span>•</span><span>Pas de synchronisation cloud automatique</span><button id="backupBtn" class="text-btn">Exporter une sauvegarde</button><button id="restoreBtn" class="text-btn">Restaurer une sauvegarde</button><input type="file" id="backupInput" accept=".json,application/json" hidden></section>
+</main>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="newDocDialog" class="office-dialog"><form method="dialog"><button class="dialog-close" aria-label="Fermer">×</button><p class="eyebrow">NOUVEAU FICHIER</p><h2>Que souhaitez-vous créer ?</h2><div class="dialog-options"><button value="writer" class="dialog-option" data-dialog-type="writer"><span class="writer-icon">W</span><strong>Document Writer</strong><small>Texte, rapports, lettres</small></button><button value="calc" class="dialog-option" data-dialog-type="calc"><span class="calc-icon">▦</span><strong>Classeur Calc</strong><small>Tableaux et calculs</small></button></div></form></dialog>
+</body>
+</html>
