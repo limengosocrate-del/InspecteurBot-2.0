@@ -78,7 +78,7 @@ class RevisionEngine {
   }
 
   selectNextQuestion(questionBank, profile, targetLevel = 1, lastQuestionId = null) {
-    const pool = (questionBank || []).filter(q => Number(q.niveau) === Number(targetLevel) && q.source === 'FORMATION');
+    const pool = (Array.isArray(questionBank) ? questionBank : []).filter(q => Number(q.niveau) === Number(targetLevel) && (!q.source || q.source === 'FORMATION'));
     if (!pool.length) return null;
     if (!profile.questions) profile.questions = {};
     if (!profile.questionCycles) profile.questionCycles = {};
