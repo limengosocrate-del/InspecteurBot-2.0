@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<link rel="stylesheet" href="office.css?v=20261111-office-local-v3">
+<link rel="stylesheet" href="office.css?v=20261111-office-local-v4">
 <style id="inspecteurbot-auth-lock">
 html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}
 html:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;visibility:visible!important}
@@ -17,8 +17,8 @@ html.inspecteur-auth-ready body::before{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
 <script src="auth-gate.js?v=20261110-sync-offline-v1" defer></script>
-<script src="office.js?v=20261111-office-local-v3" defer></script>
-<script src="office-templates.js?v=20261111-templates-v2" defer></script>
+<script src="office.js?v=20261111-office-local-v4" defer></script>
+<script src="office-templates.js?v=20261111-templates-v3" defer></script>
 </head>
 <body>
 <div id="ib-startup-splash" role="status" aria-live="polite"><strong>InspecteurBot Office</strong><span>Préparation de votre espace de travail…</span></div>
@@ -63,7 +63,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
     <div class="template-picker"><label for="templateType">Type de document</label><select id="templateType"><optgroup label="Fiches de contrôle"><option value="F01">F01 — Main-d’œuvre</option><option value="F02">F02 — Main-d’œuvre étrangère</option><option value="F03">F03 — Hygiène et santé</option><option value="F04">F04 — Sécurité BTP</option><option value="F05">F05 — Sécurité dans les mines</option><option value="F06">F06 — Entreprises à hauts risques</option><option value="F07">F07 — Protection sociale</option><option value="S01">S01 — Visite spéciale</option><option value="S02">S02 — Contre-enquête</option><option value="S03">S03 — Administration et finance</option><option value="S04">S04 — Fiche personnalisable</option><option value="S05">S05 — Fiche personnalisable</option><option value="S06">S06 — Fiche personnalisable</option><option value="S07">S07 — Fiche personnalisable</option></optgroup><optgroup label="Documents de rédaction"><option value="PV">Procès-verbal (PV)</option><option value="RAPPORT">Rapport professionnel</option><option value="DECOMPTE">Décompte final</option></optgroup><optgroup label="Classeur Excel"><option value="ENTREPRISE">Registre des entreprises — Excel</option></optgroup></select></div>
     <div id="templateForm"><h3 id="templateFormTitle">F01 — Contrôle de la main-d’œuvre</h3><div id="templateFields"></div></div>
     <div id="companyTemplateInfo" hidden class="company-template-info"><h3>Registre des entreprises — Excel / Calc</h3><p>Un classeur structuré pour saisir les informations d’identification, les coordonnées, le secteur, les effectifs, le statut et les observations de chaque entreprise. Les lignes sont prévues pour être complétées dans Excel.</p><ul><li>Identification légale et administrative</li><li>Localisation et secteur d’activité</li><li>Représentant et coordonnées</li><li>Effectifs et suivi des visites</li></ul></div>
-    <div class="template-actions"><button class="primary-btn" id="generateTemplateBtn">Créer dans Writer / Excel</button><button class="secondary-btn" id="resetTemplateBtn">Réinitialiser les champs</button></div>
+    <div class="template-actions"><button class="primary-btn" id="generateTemplateBtn">Exporter en PDF</button><button class="secondary-btn" id="resetTemplateBtn">Réinitialiser les champs</button></div><p class="template-export-help">Le document s’ouvre dans l’aperçu d’impression. Choisissez « Enregistrer au format PDF » pour télécharger le fichier.</p>
     <p class="template-disclaimer">Important : ces trames facilitent la préparation et la saisie. Elles ne remplacent pas les formulaires officiels validés, les calculs réglementaires ni la vérification juridique. Les S04 à S07 sont des espaces personnalisables et ne sont pas présentés comme des formulaires officiels.</p>
   </section>
 
@@ -84,7 +84,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
         <div class="ribbon-group"><select id="paragraphStyle" aria-label="Style"><option value="P">Normal</option><option value="H1">Titre 1</option><option value="H2">Titre 2</option><option value="H3">Titre 3</option><option value="BLOCKQUOTE">Citation</option></select><button id="clearFormat" type="button">Effacer format</button><input id="findText" placeholder="Rechercher…" aria-label="Rechercher"><button id="findNext" type="button">Suivant</button><input id="replaceText" placeholder="Remplacer par…" aria-label="Remplacer par"><button id="replaceOne" type="button">Remplacer</button><button id="replaceAll" type="button">Tout remplacer</button><button id="selectAllText" type="button">Tout sélectionner</button></div>
       </div>
       <div class="ribbon-tools" data-ribbon-panel="insert" hidden>
-        <div class="ribbon-group"><button id="insertCover" type="button">Page de garde</button><button id="insertPageBreak" type="button">Saut de page</button><button id="insertHeading" type="button">Titre</button><button id="insertTable" type="button">Tableau</button><button id="insertImage" type="button">Image</button><input id="imageInput" type="file" accept="image/*" hidden><button id="insertLink" type="button">Lien</button><button id="insertComment" type="button">Commentaire</button></div>
+        <div class="ribbon-group"><button id="insertCover" type="button">Page de garde</button><button id="insertPageBreak" type="button">Saut de page</button><button id="insertHeading" type="button">Titre</button><button id="insertTable" type="button">Tableau personnalisé</button><button id="insertImage" type="button">Image</button><input id="imageInput" type="file" accept="image/*" hidden><button id="insertLink" type="button">Lien</button><button id="insertComment" type="button">Commentaire</button></div>
         <div class="ribbon-group"><button id="insertHeader" type="button">En-tête</button><button id="insertFooter" type="button">Pied de page</button><button id="insertPageNumber" type="button">Numéro de page</button><button id="insertFootnote" type="button">Note de bas de page</button><button id="insertDate" type="button">Date</button><button id="insertSymbol" type="button">Symbole</button><button id="insertEquation" type="button">Équation</button><button id="insertTextBox" type="button">Zone de texte</button><button id="insertDropCap" type="button">Lettrine</button></div>
         <div class="ribbon-group"><button id="insertShape" type="button">Forme</button><button id="insertChart" type="button">Graphique</button><button id="insertVideo" type="button">Vidéo en ligne</button><button id="insertBookmark" type="button">Signet</button><button id="insertCrossRef" type="button">Renvoi</button></div>
       </div>
