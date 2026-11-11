@@ -67,7 +67,43 @@ function header(title,sub){const el=shell();el.innerHTML="";const top=document.c
 function openResults(title,items){remember();state.currentView="search";state.parentView=null;state.title=title;state.items=items;togglePage(true);const el=header(title,items.length+" résultat(s) trouvé(s)");const list=document.createElement("div");list.className="legal-result-list";items.forEach(a=>{const b=document.createElement("button");b.type="button";b.className="legal-result-card";const n=document.createElement("span");n.className="legal-result-number";n.textContent="ARTICLE "+a.numero;const t=document.createElement("strong");t.textContent=a.titre||"Disposition légale";const c=document.createElement("small");c.textContent=a.categorie||a.titreSection||"Code du Travail";b.append(n,t,c);b.addEventListener("click",()=>openArticle(a,"search"));list.append(b);});if(!items.length){const empty=document.createElement("p");empty.className="legal-empty";empty.textContent="Aucun article trouvé pour cette recherche. Essayez un autre terme.";list.append(empty);}el.append(list);}
 function openDomain(title){remember();const all=window.CodeTravailState?.articles||[];const items=all.map((a,i)=>({...a,__index:i})).filter(a=>(a.titreSection||a.categorie||"Autres dispositions")===title);if(!items.length)return;state.currentView="domain";state.parentView=null;state.title=title;state.items=items;togglePage(true);const el=header(title,items.length+" articles classés dans ce titre légal");const grouped=new Map();items.forEach(a=>{const k=a.categorie||"Articles généraux";if(!grouped.has(k))grouped.set(k,[]);grouped.get(k).push(a);});grouped.forEach((arr,label)=>{const section=document.createElement("section");section.className="legal-group";const h=document.createElement("h3");h.textContent=label+" · "+arr.length;const list=document.createElement("div");list.className="legal-result-list";arr.forEach(a=>{const b=document.createElement("button");b.type="button";b.className="legal-result-card";const n=document.createElement("span");n.className="legal-result-number";n.textContent="ARTICLE "+a.numero;const t=document.createElement("strong");t.textContent=a.titre||"Disposition légale";b.append(n,t);b.addEventListener("click",()=>openArticle(a,"domain"));list.append(b);});section.append(h,list);el.append(section);});}
 function openArticle(a,from){remember();state.activeArticle=a;state.parentView=from||state.currentView;state.currentView="article";if(state.parentView==="search"&&!state.items.length){state.title="Article sélectionné";state.items=[a];}togglePage(true);const el=header("Article "+a.numero,a.titre||a.categorie||"Code du Travail");const card=document.createElement("article");card.className="legal-article-view";const category=document.createElement("span");category.className="legal-article-category";category.textContent=a.titreSection||a.categorie||"Disposition légale";const h=document.createElement("h3");h.textContent=a.titre||("Article "+a.numero);const body=document.createElement("div");body.className="legal-article-text";body.textContent=a.contenu||"Contenu non disponible.";card.append(category,h,body);if(a.sanction){const s=document.createElement("aside");s.className="legal-sanction";const sh=document.createElement("strong");sh.textContent="Sanction / disposition associée";const sp=document.createElement("p");sp.textContent=a.sanction;s.append(sh,sp);card.append(s);}const actions=document.createElement("div");actions.className="legal-article-actions";const listen=document.createElement("button");listen.type="button";listen.className="legal-primary-btn";listen.innerHTML='<i class="fa-solid fa-volume-high"></i> Écouter cet article';listen.addEventListener("click",()=>{if(window.SpeechEngine?.speak)window.SpeechEngine.speak("Article "+a.numero+". "+(a.titre||"")+". "+(a.contenu||""));else alert("La lecture vocale n’est pas disponible sur cet appareil.");});const copy=document.createElement("button");copy.type="button";copy.className="legal-secondary-btn";copy.innerHTML='<i class="fa-regular fa-copy"></i> Copier';copy.addEventListener("click",()=>window.InspecteurUtils?.copyToClipboard("Article "+a.numero+" — "+a.titre+"\n\n"+a.contenu,"Article copié."));actions.append(listen,copy);card.append(actions);el.append(card);}
-function openGuide(key){
+function openSanctions65(){
+const rows=window.CODE_TRAVAIL_INFRACTIONS_65;
+if(!Array.isArray(rows)||rows.length!==65){console.error("Référentiel des 65 infractions indisponible.");return;}
+remember();state.currentView="guide";state.activeGuide="sanctions";state.title="65 infractions du Code du travail";togglePage(true);
+const el=header("65 infractions du Code du travail","Répertoire des infractions — montants en francs congolais (FC).");
+const wrap=document.createElement("div");wrap.className="legal-article-view ct65-wrap";
+const intro=document.createElement("div");intro.className="ct65-intro";intro.textContent="Répertoire repris du menu Sanctions & Infractions d’InspecteurBot. Les références et sanctions sont reproduites telles qu’enregistrées dans ce référentiel. Seules les indications en francs congolais (FC) sont conservées : aucune conversion en USD ni reprise du barème AIM.";
+const tools=document.createElement("div");tools.className="ct65-tools";
+const search=document.createElement("input");search.type="search";search.className="ct65-search";search.placeholder="Rechercher une infraction, un article ou une sanction…";search.setAttribute("aria-label","Rechercher parmi les 65 infractions");
+const filter=document.createElement("select");filter.className="ct65-filter";filter.setAttribute("aria-label","Filtrer par gravité");
+[["","Toutes les gravités"],["legere","Légère"],["moyenne","Moyenne"],["grave","Grave"],["tres_grave","Très grave"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;filter.append(o);});
+const count=document.createElement("div");count.className="ct65-count";
+const list=document.createElement("div");list.className="ct65-list";
+tools.append(search,filter,count);wrap.append(intro,tools,list);el.append(wrap);
+function render(){
+const q=search.value.trim().toLocaleLowerCase("fr");const level=filter.value;
+const found=rows.filter(x=>(!level||x.gravite===level)&&(!q||[x.libelle,x.articles,x.sanction,x.refSanction].join(" ").toLocaleLowerCase("fr").includes(q)));
+count.textContent=found.length+" / 65 infractions";
+list.replaceChildren();
+if(!found.length){const empty=document.createElement("div");empty.className="ct65-empty";empty.textContent="Aucune infraction ne correspond à votre recherche.";list.append(empty);return;}
+found.forEach(item=>{
+const b=document.createElement("button");b.type="button";b.className="ct65-item";b.setAttribute("aria-expanded","false");
+const num=document.createElement("span");num.className="ct65-num";num.textContent=String(item.id);
+const body=document.createElement("span");const title=document.createElement("span");title.className="ct65-title";title.textContent=item.libelle;
+const meta=document.createElement("span");meta.className="ct65-meta";meta.textContent=item.articles+" · "+(item.sanction||"Sanction à vérifier")+" · "+({legere:"légère",moyenne:"moyenne",grave:"grave",tres_grave:"très grave"}[item.gravite]||"gravité non précisée");
+body.append(title,meta);b.append(num,body);
+const detail=document.createElement("span");detail.className="ct65-detail";detail.hidden=true;
+const ref=document.createElement("span");ref.textContent="Référence de sanction : "+(item.refSanction||"non précisée");
+const sanction=document.createElement("span");sanction.textContent="Sanction indiquée : "+(item.sanction||"non précisée");
+detail.append(sanction,document.createElement("br"),ref);b.append(detail);
+b.addEventListener("click",()=>{detail.hidden=!detail.hidden;b.setAttribute("aria-expanded",String(!detail.hidden));});
+list.append(b);
+});
+}
+search.addEventListener("input",render);filter.addEventListener("change",render);render();
+}
+function openGuide(key){if(key==="sanctions"){openSanctions65();return;}
 const guide=GUIDES[key];if(!guide)return;
 remember();state.currentView="guide";state.activeGuide=key;state.title=guide.title;togglePage(true);
 const el=header(guide.title,guide.subtitle);
