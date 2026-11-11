@@ -65,7 +65,6 @@ function setupAdvancedRibbon(){
 }
 
 $('formulaInput').addEventListener('input',e=>{const[r,c]=cellCoords(activeCell);sheetData[r][c]=e.target.value;const input=$('sheetGrid').querySelector('[data-cell="'+activeCell+'"]');if(input)input.value=e.target.value;scheduleSave()});$('formulaInput').addEventListener('change',refreshSheetValues);$('printPdfBtn').addEventListener('click',()=>$('pdfFrame').contentWindow?.print());$('backupBtn').addEventListener('click',exportBackup);$('restoreBtn').addEventListener('click',()=>$('backupInput').click());$('backupInput').addEventListener('change',e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value=''});window.addEventListener('beforeunload',()=>{if(current){if(current.type==='writer')current.html=$('writerCanvas').innerHTML;if(current.type==='calc')current.sheet=sheetData;current.updatedAt=Date.now();void putDoc(current).catch(()=>{})}})}
-async 
 function enableOfficeTouchScrolling(){
  const selectors=['#writerArea','.paper-stage','.sheet-scroll','.ribbon-tabs','.ribbon-tools','.office-shell','#editorPanel'];
  document.documentElement.style.touchAction='pan-x pan-y';
