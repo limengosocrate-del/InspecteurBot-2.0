@@ -249,6 +249,21 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
 .header-actions{display:flex!important;align-items:center;gap:8px!important}.ct-library-menu-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:0 12px;border:1px solid #d2e0e3;border-radius:10px;background:#f2f8f8;color:#075365;font-weight:800;font-size:12px;cursor:pointer}.ct-library-menu-btn i{font-size:15px}.ct-library-menu-btn:hover{background:#dcebed;border-color:#087f8c}body.dark-theme .ct-library-menu-btn{background:#203640;color:#e8f3f1;border-color:#3a5960}.legal-library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:14px}.legal-library-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:135px;padding:16px;border:1px solid var(--ct-border);border-radius:13px;background:var(--ct-paper);color:var(--ct-ink);text-align:left;cursor:pointer}.legal-library-card:hover{border-color:var(--ct-blue);transform:translateY(-1px)}.legal-library-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:rgba(8,127,140,.13);color:var(--ct-blue);font-size:18px}.legal-library-card strong{font-size:14px;color:var(--ct-navy)}.legal-library-card small{font-size:12px;line-height:1.5;color:var(--ct-muted)}body.dark-theme .legal-library-card strong{color:#e8f3f1}.legal-law-link{display:inline-flex;align-items:center;margin:6px 7px 0 0;padding:9px 12px;border:1px solid var(--ct-border);border-radius:9px;background:rgba(8,127,140,.08);color:var(--ct-blue);font-weight:800;cursor:pointer}.legal-law-link:hover{border-color:var(--ct-blue);background:rgba(8,127,140,.16)}body.dark-theme .legal-law-link{color:#8be4df}.legal-guide-section p{white-space:pre-line}
 @media(max-width:560px){.ct-library-menu-btn{padding:0 9px;min-height:40px}.ct-library-menu-btn span{display:none}.header-actions{gap:6px!important}.legal-library-grid{grid-template-columns:1fr}}
 </style>
+
+<style id="code-library-header-polish-v2">
+.ct-library-menu-btn{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;min-width:76px!important;min-height:58px!important;padding:7px 10px!important;border:1px solid #d8c18a!important;border-radius:12px!important;background:#f7f2e6!important;color:#18334b!important;box-shadow:0 3px 10px rgba(16,45,73,.10)!important;font-weight:800!important;line-height:1.15!important}
+.ct-library-menu-btn i{font-size:25px!important;line-height:1!important;color:#9a7428!important}
+.ct-library-menu-btn span{display:block!important;font-size:11px!important;white-space:nowrap!important;color:#18334b!important}
+.ct-library-menu-btn:active{transform:scale(.97)}
+.legal-library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.legal-library-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:132px;padding:16px;border:1px solid var(--ct-border);border-radius:14px;background:#fbfcfd;color:var(--ct-ink);text-align:left;cursor:pointer}
+.legal-library-card:active{transform:scale(.99);border-color:var(--ct-gold)}
+.legal-library-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#f5ecd9;color:#8b671d;font-size:19px}
+.legal-library-card strong{font-size:15px;color:var(--ct-navy)}.legal-library-card small{font-size:12px;line-height:1.45;color:var(--ct-muted)}
+body.dark-theme .legal-library-card{background:#192c41;border-color:#354a60;color:#e2eaf2}body.dark-theme .legal-library-card strong{color:#e7edf4}body.dark-theme .legal-library-card small{color:#b7c6d4}body.dark-theme .ct-library-menu-btn{background:#f7f2e6!important;color:#18334b!important}
+@media(max-width:650px){.ct-library-menu-btn{min-width:70px!important;min-height:54px!important}.ct-library-menu-btn i{font-size:23px!important}.ct-library-menu-btn span{font-size:10px!important}}
+</style>
+
 </head>
 
 <body class="light-theme">
@@ -273,7 +288,7 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
         <!-- Compatibilité des scripts historiques : données temporelles masquées. --><div hidden aria-hidden="true"><span id="clock"></span><span id="day"></span><span id="date"></span><span id="temperature"></span><span id="city"></span></div>
 
         <div class="header-actions">
-            <button id="openCodeLibrary" class="ct-library-menu-btn" type="button" aria-label="Ouvrir la Bibliothèque Code du travail"><i class="fa-solid fa-book-open"></i><span>Bibliothèque</span></button>
+            <button id="openCodeLibrary" class="ct-library-menu-btn" type="button" aria-label="Ouvrir la Bibliothèque Code du travail"><i class="fa-solid fa-book-open"></i><span>Bibliothèque Code du travail</span></button>
             <button id="themeToggle" class="theme-btn" title="Changer le thème Jour / Nuit" aria-label="Changer le thème">
                 <span id="themeIcon">🌙</span>
             </button>
@@ -335,20 +350,7 @@ body.dark-theme .ct-library-launcher{background:linear-gradient(120deg,#142c36,#
     <!--=================================================
     PARTIE 5 : CATÉGORIES DU CODE DU TRAVAIL
     ==================================================-->
-    <section id="codeLibrarySection" class="categories-section fade-in" hidden>
-        <div class="section-title">
-            <h2>
-                <i class="fa-solid fa-book-open"></i>
-                Bibliothèque Code du travail
-            </h2>
-            <p>
-                Consultez les domaines juridiques, parcourez les articles disponibles et accédez aux guides pratiques pour mieux comprendre vos droits et obligations.
-            </p>
-        </div>
-
-        <div id="categoriesGrid" class="categories-grid"></div>
-        <section id="domainArticlesPanel" class="domain-articles-panel" hidden aria-live="polite"></section>
-    </section>
+    <!-- Ancienne section de bibliothèque supprimée : l’écran dédié est généré par LegalDetailView. -->
 
     <!-- La consultation détaillée est assurée par le lecteur unique « Lecture du Code — Mode Livre ». -->
 
@@ -437,7 +439,7 @@ PARTIE 10 : MODULES JAVASCRIPT PROFESSIONNELS
 <script src="assets/js/code-travail/index.js?v=20261111-loader-v3"></script>
 <script src="assets/js/code-travail/navigation.js"></script>
 <script src="assets/js/code-travail/recherche.js?v=20261111-menu-results-v4"></script>
-<script src="assets/js/code-travail/categories.js?v=20261111-library-screen-v6"></script>
+<script src="assets/js/code-travail/categories.js?v=20261111-library-screen-v7"></script>
 <script src="assets/js/code-travail/consultation.js"></script>
 
 <!-- MODE LIVRE AUDIO — lecteur restauré en bas de page -->
