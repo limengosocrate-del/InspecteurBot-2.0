@@ -124,9 +124,6 @@ const t1=document.createElement("p");t1.textContent="Article 61 bis : « Sans pr
 const t2=document.createElement("p");t2.textContent="Article 61 ter : « La résiliation du contrat est notifiée par écrit par la partie qui en prend l’initiative à l’autre partie. Lorsque la résiliation intervient à l’initiative de l’employeur, la lettre de notification en indique expressément le motif. À défaut de notification par écrit, tout acte d’une partie tendant à empêcher l’exécution de ses obligations par l’autre partie constitue une modification unilatérale d’un des éléments du contrat, équivalent à un acte de rupture. La partie qui s’en prévaut est tenue de le faire savoir, dans les huit jours, à l’autre partie, l’inspecteur du travail informé. »";
 extra.append(eh,t1,t2);card.append(extra);
 }
-if(key==="sanctions"){
-const note=document.createElement("p");note.className="legal-guide-note";note.textContent="Attention : l’article 321 mentionne une amende exprimée en francs congolais constants et renvoie à plusieurs dispositions et textes réglementaires. Ce résumé ne calcule pas une conversion actuelle et ne remplace pas la vérification du texte réglementaire applicable, de la qualification et de la procédure.";card.append(note);
-}
 const source=document.createElement("p");source.className="legal-guide-note";source.textContent="Source de référence : Loi n° 015/2002 du 16 octobre 2002, modifiée notamment par la Loi n° 16/010 du 15 juillet 2016 (Journal officiel, numéro spécial du 29 juillet 2016). Les résumés sont explicatifs ; le texte de chaque article reste la référence.";
 card.append(source);el.append(card);
 }
