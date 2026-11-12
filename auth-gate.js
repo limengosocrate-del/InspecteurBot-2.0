@@ -559,7 +559,7 @@ function setup(){
    }
    const {data:login,error:loginError}=await client.auth.signInWithPassword({email:payload.email,password});
    if(loginError)throw new Error('Compte créé. Connectez-vous depuis cet écran : '+loginError.message);
-   regPanel.hidden=true;regForm.reset();await validate(login.session);msg('Votre compte est créé et activé.',true);
+   regPanel.hidden=true;regForm.reset();await validate(login.session);if(data.verification_status==='reconnu'){msg('Votre compte est créé. Votre matricule et votre identité ont été reconnus dans le registre officiel ; votre grade et votre fonction sont validés automatiquement.',true)}else{msg('Votre compte est créé, mais votre identité n’a pas été reconnue automatiquement dans la base de données de l’application. Votre demande est transmise à l’administrateur pour vérification. Veuillez patienter ou contacter Pmiller.',true)}
   }catch(err){console.error('Inscription InspecteurBot',err);const detail=String(err&&err.message||'');if(/already registered|already exists|user already|email_exists|user_already_exists|déjà inscrit|déjà un compte|compte existe|duplicate key|unique constraint/i.test(detail)){regPanel.hidden=true;regMessage.textContent='';showDuplicateAccountToast()}else{regMessage.style.color='#b42318';regMessage.textContent=detail||'Impossible de créer le compte. Vérifiez les informations.'}}
   finally{regSubmit.disabled=false;regSubmit.textContent='Créer mon compte'}
  });
