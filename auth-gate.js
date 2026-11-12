@@ -503,6 +503,23 @@ function setup(){
    const {data,error}=await client.functions.invoke('igt-registration',{body:payload});
    if(error){let detail='';try{const response=error.context;if(response&&typeof response.clone==='function'){const body=await response.clone().json();detail=body?.message||body?.error||body?.details||''}}catch(_){}if(!detail&&data)detail=data.message||data.error||'';if(!detail)detail=String(error.message||'Le service de création de compte est momentanément indisponible.');throw new Error(detail)}
    if(!data?.success)throw new Error(data?.message||'Vos informations n’ont pas été validées dans le registre officiel.');
+   if(data.verification_status==='matricule_deja_utilise'){
+    const identity=data.identity_conflict||{};
+    const details=[
+     identity.nom_complet&&'Identité officielle : '+identity.nom_complet,
+     identity.matricule&&'Matricule : '+identity.matricule,
+     identity.grade&&'Grade : '+identity.grade,
+     identity.fonction&&'Fonction : '+identity.fonction,
+     identity.categorie&&'Catégorie : '+identity.categorie,
+     identity.direction&&'Direction : '+identity.direction,
+     identity.lieu_affectation&&'Lieu d’affectation : '+identity.lieu_affectation,
+     identity.province&&'Province : '+identity.province
+    ].filter(Boolean).join(' · ');
+    regPanel.hidden=true;
+    email.value=payload.email;
+    msg('COMPTE CRÉÉ — CERTIFICATION BLOQUÉE. Le nom et le numéro matricule sont déjà utilisés par une autre identité officielle. '+details+' Aucun téléphone ni aucune adresse ne sont communiqués. Veuillez contacter l’administrateur pour vérification avant toute certification.',true);
+    return;
+   }
    const {data:login,error:loginError}=await client.auth.signInWithPassword({email:payload.email,password});
    if(loginError)throw new Error('Compte créé. Connectez-vous depuis cet écran : '+loginError.message);
    regPanel.hidden=true;regForm.reset();await validate(login.session);msg('Votre compte est créé et activé.',true);
@@ -528,7 +545,7 @@ async function start(){
  setupNetworkStatus();
  try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
- try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
+ try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  // La session reste active jusqu'à la déconnexion ou à sa révocation. Supabase renouvelle automatiquement les jetons.
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
  window.inspecteurBotSignOut=signOut;
