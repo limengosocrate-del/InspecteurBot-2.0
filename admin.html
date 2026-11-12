@@ -77,6 +77,10 @@
   <div class="toolbar" style="margin-bottom:12px"><input id="certification-search" class="field search" type="search" placeholder="Filtrer les demandes par nom, matricule ou e-mail…"></div>
   <div class="table-wrap"><table style="min-width:1250px"><thead><tr><th>Compte / demande</th><th>Catégorie</th><th>Matricule saisi</th><th>Rechercher la fiche officielle</th><th>Fiche à rattacher</th><th>Motif (obligatoire si différence)</th><th>Décision</th></tr></thead><tbody id="certification-body"><tr><td colspan="7" class="empty">Chargement des demandes…</td></tr></tbody></table></div>
  </div>
+ <div class="panel">
+  <div class="panel-head"><div><h3>Comptes certifiés</h3><p class="sub">Comptes reliés à une fiche officielle et validés dans Supabase.</p></div><span class="pill on" id="certified-count">0 certifié</span></div>
+  <div class="table-wrap"><table style="min-width:1050px"><thead><tr><th>Agent certifié</th><th>Matricule</th><th>Catégorie</th><th>Téléphone privé</th><th>Adresse physique privée</th><th>Banques déclarées</th><th>Certifié le</th></tr></thead><tbody id="certified-body"><tr><td colspan="7" class="empty">Chargement…</td></tr></tbody></table></div>
+ </div>
 </section>
 <section class="view" id="view-payroll">
  <div class="panel">
@@ -177,17 +181,32 @@ async function loadCertification(){
  if(!client)return;
  $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Chargement sécurisé…</td></tr>';
  try{
-  const [req,agents]=await Promise.all([
+  const [req,agents,certified]=await Promise.all([
    client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
-   client.from('agents').select('id,nom_complet,matricule,categorie').order('nom_complet').limit(3000)
+   client.from('agents').select('id,nom_complet,matricule,categorie').order('nom_complet').limit(3000),
+   client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').eq('role','agent').eq('certification_status','certified').limit(3000)
   ]);
-  if(req.error)throw req.error;if(agents.error)throw agents.error;
+  if(req.error)throw req.error;if(agents.error)throw agents.error;if(certified.error)throw certified.error;
   certificationRequests=req.data||[];certificationAgents=agents.data||[];
   const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
   certificationProfiles=[];
   if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
-  renderCertification();
+  const certProfiles=certified.data||[];
+  const certAgentIds=[...new Set(certProfiles.map(x=>x.agent_id).filter(Boolean))];
+  let certAgentRows=[];
+  if(certAgentIds.length){const a=await client.from('agents').select('id,nom_complet,matricule,categorie').in('id',certAgentIds);if(a.error)throw a.error;certAgentRows=a.data||[];}
+  renderCertification();renderCertifiedAccounts(certProfiles,certAgentRows);
  }catch(e){$('certification-body').innerHTML='<tr><td colspan="7" class="empty">'+esc(e.message)+'</td></tr>';$('certification-count').textContent='Erreur';}
+}
+function renderCertifiedAccounts(profiles,agents){
+ const byId=new Map((agents||[]).map(a=>[a.id,a]));
+ $('certified-count').textContent=(profiles||[]).length+' certifié(s)';
+ $('certified-body').innerHTML=(profiles||[]).map(p=>{
+  const a=byId.get(p.agent_id)||{};
+  const banks=[['SB',p.banque_payeur_sb],['PP',p.banque_payeur_pp],['MF.IT/CT',p.banque_payeur_mf_it_ct]].filter(x=>x[1]).map(x=>x[0]+': '+x[1]).join(' · ')||'Non renseignées';
+  const photo=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" style="width:34px;height:34px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:7px">':'';
+  return '<tr><td>'+photo+'<b class="name">'+esc(p.display_name||a.nom_complet||'Agent')+'</b></td><td>'+esc(a.matricule||'—')+'</td><td>'+esc(categoryNames[a.categorie]||a.categorie||'—')+'</td><td>'+esc(p.telephone||'Non renseigné')+'</td><td style="white-space:normal;min-width:180px">'+esc(p.adresse_physique||'Non renseignée')+'</td><td style="white-space:normal;min-width:180px">'+esc(banks)+'</td><td>'+esc(p.certified_at?new Date(p.certified_at).toLocaleDateString('fr-FR'):'—')+'</td></tr>';
+ }).join('')||'<tr><td colspan="7" class="empty">Aucun compte certifié pour le moment.</td></tr>';
 }
 function renderCertification(){
  const q=normalizeSearch($('certification-search')?.value||'');
