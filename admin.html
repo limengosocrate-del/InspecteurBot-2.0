@@ -174,7 +174,20 @@ const categoryNames={inspecteur_travail:'Inspecteur du Travail',controleur_trava
 const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 function certificationOptions(q,category,selectedId=null){
  const n=normalizeSearch(q);
- const list=certificationAgents.filter(a=>(!category||a.categorie===category)&&(!n||normalizeSearch(a.nom_complet+' '+a.matricule).includes(n))).slice(0,25);
+ const digits=String(q||'').replace(/\\D/g,'');
+ let list=certificationAgents.filter(a=>{
+  if(category&&a.categorie!==category)return false;
+  if(!n&&!digits)return true;
+  const name=normalizeSearch(a.nom_complet);
+  const matriculeText=normalizeSearch(a.matricule);
+  const matriculeDigits=String(a.matricule||'').replace(/\\D/g,'');
+  return name.includes(n)||matriculeText.includes(n)||(digits&&matriculeDigits.includes(digits));
+ });
+ if(selectedId&&!list.some(a=>Number(a.id)===Number(selectedId))){
+  const selected=certificationAgents.find(a=>Number(a.id)===Number(selectedId)&&(!category||a.categorie===category));
+  if(selected)list.unshift(selected);
+ }
+ list=list.slice(0,25);
  return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'"'+(Number(a.id)===Number(selectedId)?' selected':'')+'>'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
 }
 async function fetchAllOfficialAgents(columns){
@@ -239,7 +252,14 @@ $('certification-body').addEventListener('input',e=>{
  const input=e.target.closest('[data-cert-search]');if(!input)return;
  const id=input.dataset.certSearch,row=certificationRequests.find(x=>String(x.id)===String(id));
  const select=$('certification-body').querySelector('[data-cert-agent="'+id+'"]');
- if(select)select.innerHTML=certificationOptions(input.value,row?.categorie);
+ if(select){
+  const digits=String(input.value||'').replace(/\\D/g,'');
+  const exact=certificationAgents.find(a=>(!row?.categorie||a.categorie===row.categorie)&&(
+   normalizeSearch(a.nom_complet)===normalizeSearch(input.value)||
+   (digits&&String(a.matricule||'').replace(/\\D/g,'')===digits)
+  ));
+  select.innerHTML=certificationOptions(input.value,row?.categorie,exact?.id);
+ }
 });
 $('certification-body').addEventListener('click',async e=>{
  const certify=e.target.closest('[data-certify]'),reject=e.target.closest('[data-reject]');
