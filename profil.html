@@ -43,7 +43,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 .wide{grid-column:1/-1}
 #editProfile .field{display:block}
 #saveProfile{border:0;border-radius:9px;padding:13px 19px;background:var(--navy);color:white;font-weight:700;font-size:14px;cursor:pointer}.field input{display:block;width:100%;margin-top:4px;padding:12px 13px;border:1px solid #cbd9e5;border-radius:9px;background:#fff;font-size:15px;min-height:46px}.field input:focus{outline:3px solid #d6edf9;border-color:#087eb5}
-#saveProfile:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.15)}
+#saveProfile:disabled,#saveProfile.is-locked{opacity:.55;cursor:not-allowed;filter:grayscale(.15)}#saveProfile.is-locked{box-shadow:none}
 #editProfile .field input{background:#f4f9fc;border:1px solid #c8dce9;color:#173653;box-shadow:inset 0 1px 2px #17365308;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
 #editProfile .field input::placeholder{color:#7890a4;opacity:1;font-weight:500}
 #editProfile .field input:hover{background:#f0f7fb;border-color:#a9c9dc}
@@ -250,8 +250,14 @@ function applyProfileCooldown(){
  const raw=profile?.next_profile_update_at;
  const deadline=raw?new Date(raw):null;
  const locked=!!deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now();
- button.disabled=locked;
- form.querySelectorAll('input,select,textarea').forEach(field=>{field.disabled=locked;});
+ const saving=!!window.__inspecteurBotProfileSaving;
+ // Le bouton reste cliquable visuellement comme inactif afin d’expliquer le délai
+ // lorsqu’un utilisateur tente une nouvelle soumission. Les champs restent verrouillés.
+ button.disabled=saving;
+ button.setAttribute('aria-disabled',locked||saving?'true':'false');
+ button.classList.toggle('is-locked',locked&&!saving);
+ button.title=locked&&!saving?'Nouvelle modification possible le '+deadline.toLocaleDateString('fr-FR'):'Enregistrer mes paramètres';
+ form.querySelectorAll('input,select,textarea').forEach(field=>{field.disabled=locked||saving;});
  if(notice){
   if(locked){
    const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
@@ -321,9 +327,18 @@ $('editProfile').addEventListener('change',captureFormDraft);
  window.addEventListener('pagehide',()=>{captureFormDraft()});
 $('editProfile').addEventListener('submit',async e=>{
  e.preventDefault();
- captureFormDraft();
  const button=$('saveProfile'),message=$('saveMessage'),sb=window.inspecteurBotAuthClient;
- if(!sb){message.textContent='Connexion Supabase indisponible. Rechargez la page.';message.style.color='#b42318';return}
+ const deadline=profile?.next_profile_update_at?new Date(profile.next_profile_update_at):null;
+ if(deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now()){
+  const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+  message.textContent='Modification temporairement bloquée. Vous pourrez enregistrer de nouveaux paramètres à partir du '+date+'.';
+  message.style.color='#b42318';
+  applyProfileCooldown();
+  return;
+ }
+ if(window.__inspecteurBotProfileSaving){message.textContent='Un enregistrement est déjà en cours. Veuillez patienter.';message.style.color='#075a96';return}
+ captureFormDraft();
+ if(!sb){message.textContent='La connexion est momentanément indisponible. Vérifiez votre connexion puis réessayez.';message.style.color='#b42318';return}
  const payload={
   display_name:$('edit_nom_complet').value.trim(),
   telephone:$('editPhone').value.trim(),
@@ -360,17 +375,42 @@ $('editProfile').addEventListener('submit',async e=>{
   data.professional=data.professional||{};
   fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)data.professional[key]=el.value.trim()});
   profile={...profile,...updated};
-  if(!save())throw new Error('Les données sont enregistrées sur Supabase, mais le cache local n’a pas pu être actualisé.');
+  if(!save())console.warn('Le profil est enregistré, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent='Paramètres enregistrés et synchronisés avec la base de données.';
+  show();message.textContent='Vos paramètres ont été enregistrés avec succès.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
   $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
  }catch(err){
-  console.error('Enregistrement Supabase du profil :',err);
-  message.textContent=err.message||'Enregistrement impossible. Réessayez.';
+  console.error('Enregistrement du profil :',err);
+  let serverMessage='';
+  try{
+   const context=err?.context;
+   if(context&&typeof context.clone==='function'){
+    const body=await context.clone().json();
+    serverMessage=String(body?.message||'');
+   }
+  }catch(_){/* Le serveur n’a pas retourné de détail lisible. */}
+  const raw=serverMessage||String(err?.message||'');
+  if(/Modification temporairement verrouillée|verrouill?ée.*90 jours/i.test(raw)||err?.status===409){
+   const d=profile?.next_profile_update_at?new Date(profile.next_profile_update_at):null;
+   const when=d&&Number.isFinite(d.getTime())?' à partir du '+d.toLocaleDateString('fr-FR'):' après expiration du délai fixé par l’administration';
+   message.textContent='Modification refusée : votre profil est encore protégé. Vous pourrez réessayer'+when+'.';
+  }else if(/duplicate key|unique constraint|already exists/i.test(raw)){
+   message.textContent='Enregistrement refusé : une de ces informations, notamment le matricule, est déjà utilisée. Vérifiez les données ou contactez l’administrateur.';
+  }else if(/JWT|session invalide|session requise|unauthorized/i.test(raw)){
+   message.textContent='Votre session a expiré. Reconnectez-vous puis réessayez.';
+  }else if(/row-level security|permission denied|not allowed/i.test(raw)){
+   message.textContent='Modification refusée : votre compte ne dispose pas de l’autorisation nécessaire pour modifier ces informations.';
+  }else if(/Failed to fetch|NetworkError|fetch failed/i.test(raw)){
+   message.textContent='Connexion interrompue. Vérifiez Internet puis réessayez. Aucun succès n’a été confirmé.';
+  }else if(raw&&raw!=='Edge Function returned a non-2xx status code'){
+   message.textContent=raw;
+  }else{
+   message.textContent='Enregistrement refusé. Vérifiez les champs obligatoires et réessayez. Si le problème persiste, contactez l’administrateur.';
+  }
   message.style.color='#b42318';
- }finally{applyProfileCooldown();window.__inspecteurBotProfileSaving=false}
+ }finally{window.__inspecteurBotProfileSaving=false;applyProfileCooldown()}
 });
 async function syncAvatarToSupabase(dataUrl){
  const sb=window.inspecteurBotAuthClient;
