@@ -18,10 +18,10 @@ html,body{margin:0;min-height:100%;background:#f4f7fb}
 <script>
 (async function(){
  if('serviceWorker' in navigator && location.protocol==='https:'){
-  navigator.serviceWorker.register('../service-worker.js?v=20261112-cache-v10-certified-directory',{scope:'../',updateViaCache:'none'}).then(reg=>reg.update()).catch(err=>console.info('Mise à jour du cache IGT indisponible',err));
+  navigator.serviceWorker.register('../service-worker.js?v=20261112-cache-v11-required-profile-photo',{scope:'../',updateViaCache:'none'}).then(reg=>reg.update()).catch(err=>console.info('Mise à jour du cache IGT indisponible',err));
  }
  const startupStarted=Date.now();
- const version='20261112-certified-directory-v7';
+ const version='20261112-certified-directory-v8-required-photo';
  const files=[
   'part-001.txt','part-002.txt',
   'part-003-01.txt','part-003-02.txt','part-003-03.txt','part-003-04.txt','part-003-05.txt',
