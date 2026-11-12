@@ -72,7 +72,7 @@
 
 <section class="view" id="view-certification">
  <div class="panel">
-  <div class="panel-head"><div><h3>Vérification et certification des agents</h3><p class="sub">Les identités non reconnues restent en attente jusqu’à la décision du super-administrateur.</p></div><div class="toolbar"><span class="pill off" id="certification-count">Chargement…</span><button class="btn light" id="refresh-certification"><i class="fa-solid fa-rotate"></i> Actualiser</button></div></div>
+  <div class="panel-head"><div><h3>Vérification et certification des agents</h3><p class="sub">Seules les nouvelles identités que le registre officiel ne reconnaît pas automatiquement sont présentées ici. Les anciens comptes doivent d’abord vérifier et enregistrer leurs informations dans « Paramètres du compte et certification du compte ».</p></div><div class="toolbar"><span class="pill off" id="certification-count">Chargement…</span><button class="btn light" id="refresh-certification"><i class="fa-solid fa-rotate"></i> Actualiser</button></div></div>
   <div class="notice">La certification automatique est réservée aux correspondances exactes du nom complet, du matricule et de la catégorie. Pour un compte super-administrateur, la validation exige aussi la concordance stricte du grade, de la fonction, de la direction, de l’affectation et de la province ; le rôle administrateur est conservé. Toute validation manuelle d’une fiche différente exige un motif écrit. Les coordonnées personnelles restent visibles uniquement dans cet espace administratif.</div>
   <div class="toolbar" style="margin-bottom:12px"><input id="certification-search" class="field search" type="search" placeholder="Filtrer les demandes par nom, matricule ou e-mail…"></div>
   <div class="table-wrap"><table style="min-width:1250px"><thead><tr><th>Compte / demande</th><th>Catégorie</th><th>Matricule saisi</th><th>Rechercher la fiche officielle</th><th>Fiche à rattacher</th><th>Motif (obligatoire si différence)</th><th>Décision</th></tr></thead><tbody id="certification-body"><tr><td colspan="7" class="empty">Chargement des demandes…</td></tr></tbody></table></div>
@@ -207,7 +207,7 @@ async function loadCertification(){
  $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Chargement sécurisé…</td></tr>';
  try{
   const [req,certified]=await Promise.all([
-   client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
+   client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').eq('verification_status','manual_required').order('created_at',{ascending:false}).limit(1000),
    client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').in('role',['agent','super_admin']).eq('certification_status','certified').limit(3000)
   ]);
   if(req.error)throw req.error;if(certified.error)throw certified.error;
