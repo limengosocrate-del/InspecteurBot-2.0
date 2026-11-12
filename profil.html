@@ -360,7 +360,7 @@ async function syncAvatarToSupabase(dataUrl){
 }
 /* Recadrage tactile et compression locale avant tout envoi vers Supabase. */
 const cropper=$('avatarCropper'),cropStage=$('avatarCropStage'),cropImage=$('avatarCropImage'),cropZoom=$('avatarCropZoom');
-let cropSource=null,cropBaseWidth=0,cropBaseHeight=0,cropOffsetX=0,cropOffsetY=0,cropScale=1,dragPoint=null;
+let cropSource=null,cropObjectUrl=null,cropBaseWidth=0,cropBaseHeight=0,cropOffsetX=0,cropOffsetY=0,cropScale=1,dragPoint=null;
 function cropDimensions(){const rect=cropStage.getBoundingClientRect();return {w:rect.width,h:rect.height}}
 function clampCropOffsets(){
  const {w,h}=cropDimensions(),rw=cropBaseWidth*cropScale,rh=cropBaseHeight*cropScale;
@@ -385,7 +385,7 @@ function openCropper(image){
 }
 function closeCropper(){
  cropper.classList.remove('open');cropper.setAttribute('aria-hidden','true');
- cropImage.removeAttribute('src');cropSource=null;
+ cropImage.removeAttribute('src');cropSource=null;if(cropObjectUrl){URL.revokeObjectURL(cropObjectUrl);cropObjectUrl=null;}
 }
 cropZoom.addEventListener('input',()=>{cropScale=Number(cropZoom.value);clampCropOffsets();renderCrop()});
 cropStage.addEventListener('pointerdown',e=>{if(!cropSource)return;dragPoint={x:e.clientX,y:e.clientY};cropStage.classList.add('dragging');cropStage.setPointerCapture(e.pointerId)});
@@ -433,9 +433,9 @@ $('avatarFile').addEventListener('change',async e=>{
  try{
   const url=URL.createObjectURL(f),img=new Image();
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('Impossible de lire cette image.'));img.src=url});
+  cropObjectUrl=url;
   openCropper(img);
-  img.onload=()=>URL.revokeObjectURL(url);
- }catch(err){$('avatarMessage').textContent=err.message||'Lecture de la photo impossible.';$('avatarMessage').style.color='#b42318'}
+ }catch(err){if(typeof url!=='undefined')URL.revokeObjectURL(url);$('avatarMessage').textContent=err.message||'Lecture de la photo impossible.';$('avatarMessage').style.color='#b42318'}
  e.target.value='';
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cropper.classList.contains('open'))closeCropper()});
