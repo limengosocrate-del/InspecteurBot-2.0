@@ -84,22 +84,22 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 #avatarLightboxClose:hover{background:#ffffff35}
 #avatarLightbox[aria-hidden="true"]{visibility:hidden}
 /* Recadrage manuel de l’avatar */
-#avatarCropper{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(3,14,29,.88);backdrop-filter:blur(5px)}
-#avatarCropper.open{display:flex}
-.crop-dialog{width:min(100%,430px);padding:20px;border-radius:18px;background:#fff;color:#173653;box-shadow:0 20px 65px #0006}
-.crop-dialog h3{margin:0 0 6px;color:#062b58;font-size:18px}
-.crop-dialog p{margin:0 0 15px;color:#647b91;font-size:12px;line-height:1.55}
-#avatarCropStage{position:relative;width:min( min(78vw,340px), 340px);height:min( min(78vw,340px), 340px);margin:0 auto 16px;overflow:hidden;border-radius:14px;background:repeating-conic-gradient(#e9eef3 0% 25%,#f7f9fb 0% 50%) 50%/20px 20px;touch-action:none;cursor:grab}
-#avatarCropStage.dragging{cursor:grabbing}
-#avatarCropImage{position:absolute;max-width:none;max-height:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
-.crop-zoom{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:8px 0 16px;font-size:12px;color:#526d84}
-.crop-zoom input{width:100%;accent-color:#087eb5}
-.crop-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap}
-.crop-actions button{border:0;border-radius:9px;padding:11px 15px;font:600 13px Poppins,Arial,sans-serif;cursor:pointer}
-#cancelAvatarCrop{background:#edf3f8;color:#24445f}
-#confirmAvatarCrop{background:#075a96;color:white}
-#confirmAvatarCrop:disabled{opacity:.55;cursor:wait}
-@media(max-width:420px){.crop-dialog{padding:16px}.crop-actions button{flex:1}}
+#avatarCropper{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,14,29,.9);backdrop-filter:blur(6px);overflow-y:auto}
+ #avatarCropper.open{display:flex}
+ .crop-dialog{width:min(100%,430px);max-height:calc(100dvh - 32px);overflow-y:auto;padding:22px;border:1px solid #e5edf4;border-radius:22px;background:#fff;color:#173653;box-shadow:0 22px 70px #0007}
+ .crop-dialog h3{margin:0 0 7px;color:#062b58;font-size:19px;font-weight:800}
+ .crop-dialog p{margin:0 0 17px;color:#647b91;font-size:12px;line-height:1.6}
+ #avatarCropStage{position:relative;width:min(78vw,340px);height:min(78vw,340px);aspect-ratio:1/1;margin:0 auto 18px;overflow:hidden;border-radius:50%;background:#eaf0f5;border:3px solid #fff;outline:1px solid #d7e2ec;box-shadow:0 5px 22px #0b31551c;touch-action:none;cursor:grab}
+ #avatarCropStage.dragging{cursor:grabbing}
+ #avatarCropImage{position:absolute;display:block;max-width:none!important;max-height:none!important;user-select:none;-webkit-user-drag:none;pointer-events:none}
+ .crop-zoom{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:8px 0 18px;font-size:12px;font-weight:700;color:#526d84}
+ .crop-zoom input{width:100%;accent-color:#087eb5;min-width:0}
+ .crop-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+ .crop-actions button{border:0;border-radius:11px;padding:12px 16px;font:700 13px Poppins,Arial,sans-serif;cursor:pointer;min-height:44px}
+ #cancelAvatarCrop{background:#edf3f8;color:#24445f}
+ #confirmAvatarCrop{background:linear-gradient(110deg,#075a96,#087eb5);color:white}
+ #confirmAvatarCrop:disabled{opacity:.55;cursor:wait}
+ @media(max-width:420px){.crop-dialog{padding:17px}.crop-actions button{flex:1}}
 
 </style>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
@@ -391,54 +391,25 @@ function renderCrop(){
  cropImage.style.left=((w-rw)/2+cropOffsetX)+'px';
  cropImage.style.top=((h-rh)/2+cropOffsetY)+'px';
 }
-function openCropper(image){
- cropSource=image;cropImage.src=image.src;
- const {w,h}=cropDimensions();
- const scale=Math.max(w/image.naturalWidth,h/image.naturalHeight);
- cropBaseWidth=image.naturalWidth*scale;cropBaseHeight=image.naturalHeight*scale;
- cropOffsetX=0;cropOffsetY=0;cropScale=1;cropZoom.value='1';
- renderCrop();cropper.classList.add('open');cropper.setAttribute('aria-hidden','false');
- $('confirmAvatarCrop').focus();
-}
-function closeCropper(){
- cropper.classList.remove('open');cropper.setAttribute('aria-hidden','true');
- cropImage.removeAttribute('src');cropSource=null;if(cropObjectUrl){URL.revokeObjectURL(cropObjectUrl);cropObjectUrl=null;}
-}
-cropZoom.addEventListener('input',()=>{cropScale=Number(cropZoom.value);clampCropOffsets();renderCrop()});
-cropStage.addEventListener('pointerdown',e=>{if(!cropSource)return;dragPoint={x:e.clientX,y:e.clientY};cropStage.classList.add('dragging');cropStage.setPointerCapture(e.pointerId)});
-cropStage.addEventListener('pointermove',e=>{if(!dragPoint)return;cropOffsetX+=e.clientX-dragPoint.x;cropOffsetY+=e.clientY-dragPoint.y;dragPoint={x:e.clientX,y:e.clientY};clampCropOffsets();renderCrop()});
-function endCropDrag(){dragPoint=null;cropStage.classList.remove('dragging')}
-cropStage.addEventListener('pointerup',endCropDrag);cropStage.addEventListener('pointercancel',endCropDrag);
-$('cancelAvatarCrop').addEventListener('click',closeCropper);
-$('confirmAvatarCrop').addEventListener('click',async()=>{
- if(!cropSource)return;
- const confirm=$('confirmAvatarCrop'),message=$('avatarMessage');
- confirm.disabled=true;confirm.textContent='Préparation…';
- try{
-  const {w,h}=cropDimensions(),rw=cropBaseWidth*cropScale,rh=cropBaseHeight*cropScale;
-  const left=(w-rw)/2+cropOffsetX,top=(h-rh)/2+cropOffsetY;
-  const sx=Math.max(0,Math.min(cropSource.naturalWidth,(-left)/(rw/cropSource.naturalWidth)));
-  const sy=Math.max(0,Math.min(cropSource.naturalHeight,(-top)/(rh/cropSource.naturalHeight)));
-  const sourceSide=Math.min(cropSource.naturalWidth-sx,cropSource.naturalHeight-sy,w/(rw/cropSource.naturalWidth));
-  let output=null;
-  for(const size of [512,448,384]){
-   const canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
-   const ctx=canvas.getContext('2d',{alpha:false});
-   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
-   ctx.drawImage(cropSource,sx,sy,sourceSide,sourceSide,0,0,size,size);
-   for(const quality of [.82,.74,.66]){
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
-    if(blob&&(!output||blob.size<output.size))output=blob;
-    if(blob&&blob.size<=220*1024)break;
-   }
-   if(output&&output.size<=220*1024)break;
+async function openCropper(image){
+  cropSource=image;
+  cropper.classList.add('open');
+  cropper.setAttribute('aria-hidden','false');
+  cropImage.src=image.src;
+  /* Mesurer uniquement après affichage : le recadreur masqué retournait 0 × 0. */
+  if(cropImage.decode){try{await cropImage.decode()}catch(_){/* vérification ci-dessous */}}
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  const {w,h}=cropDimensions();
+  if(!w||!h||!image.naturalWidth||!image.naturalHeight){
+   closeCropper();
+   throw new Error('Aperçu indisponible. Veuillez sélectionner à nouveau votre photo.');
   }
-  if(!output)throw new Error('La compression de la photo a échoué.');
-  const dataUrl=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Lecture de la photo compressée impossible.'));reader.readAsDataURL(output)});
-  closeCropper();message.textContent='Photo optimisée ('+Math.round(output.size/1024)+' Ko). Envoi sécurisé…';message.style.color='#075a96';
-  data.avatar=dataUrl;if(!save())throw new Error('Espace local insuffisant pour préparer la photo.');
-  await syncAvatarToSupabase(dataUrl);
-  message.textContent='Photo recadrée, compressée et synchronisée ('+Math.round(output.size/1024)+' Ko).';message.style.color='#138a65';
+  const scale=Math.max(w/image.naturalWidth,h/image.naturalHeight);
+  cropBaseWidth=image.naturalWidth*scale;cropBaseHeight=image.naturalHeight*scale;
+  cropOffsetX=0;cropOffsetY=0;cropScale=1;cropZoom.value='1';
+  cropZoom.min='1';cropZoom.max='3';cropZoom.step='.01';
+  renderCrop();
+  $('confirmAvatarCrop').focus();
  }catch(err){console.error('Traitement de la photo de profil',err);message.textContent='Échec : '+(err.message||'réessayez');message.style.color='#b42318'}
  finally{confirm.disabled=false;confirm.textContent='Valider et enregistrer'}
 });
