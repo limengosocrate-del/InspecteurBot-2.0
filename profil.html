@@ -321,7 +321,7 @@ $('editProfile').addEventListener('submit',async e=>{
  const requiredFields=[['Nom complet',payload.display_name],['Matricule',payload.matricule],['Grade',payload.grade],['Fonction',payload.fonction],['Direction / Antenne',payload.direction_antenne],['Lieu d’affectation',payload.lieu_affectation],['Province',payload.province],['Adresse physique',payload.adresse_physique],['Téléphone',payload.telephone]];
  const missing=requiredFields.filter(([,value])=>!value);
  if(missing.length){message.textContent='Veuillez compléter les champs obligatoires : '+missing.map(([label])=>label).join(', ')+'.';message.style.color='#b42318';return}
- button.disabled=true;message.textContent='Enregistrement sécurisé dans Supabase… Ne fermez pas cette page.';message.style.color='#075a96';
+ button.disabled=true;message.textContent='Enregistrement sécurisé dans la base de données… Ne fermez pas cette page.';message.style.color='#075a96';
  window.__inspecteurBotProfileSaving=true;
  try{
   const {data:response,error}=await sb.functions.invoke('igt-update-profile',{body:payload});
@@ -342,7 +342,7 @@ $('editProfile').addEventListener('submit',async e=>{
   profile={...profile,...updated};
   if(!save())throw new Error('Les données sont enregistrées sur Supabase, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent='Paramètres enregistrés et synchronisés avec Supabase.';
+  show();message.textContent='Paramètres enregistrés et synchronisés avec la base de données.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
   $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
