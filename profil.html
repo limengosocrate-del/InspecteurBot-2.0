@@ -247,7 +247,7 @@ function item(label,value){const empty=value===undefined||value===null||String(v
 function applyProfileCooldown(){
  const button=$('saveProfile'),form=$('editProfile'),notice=$('profileCooldownNotice');
  if(!button||!form)return;
- const raw=profile?.next_profile_update_at;
+ const raw=profile?.next_profile_update_at||(profile?.certification_status==='certified'&&profile?.certified_at?new Date(new Date(profile.certified_at).getTime()+90*86400000).toISOString():null);
  const deadline=raw?new Date(raw):null;
  const locked=!!deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now();
  const saving=!!window.__inspecteurBotProfileSaving;
@@ -272,7 +272,7 @@ function applyProfileCooldown(){
 function show(){
  const isCertified=profile?.certification_status==='certified';
  const certBanner=$('profileCertificationBanner');
- if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'<span class="certification-status-badge" aria-label="Compte certifié">✓ Ton compte est certifié</span>':'⏳ Votre compte est en attente de vérification.';}
+ if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'<span class="certification-status-badge" aria-label="Compte certifié">✓ Félicitations 🎉 Votre compte est bien certifié !</span><div style="margin-top:8px;font-size:13px;font-weight:600">Vos informations professionnelles ont été vérifiées. Vous pouvez consulter votre fiche dans l’annuaire numérique de l’IGT.</div>':'⏳ Votre compte est en attente de vérification.';}
  $('account').innerHTML=item('Nom complet',profile?.display_name||data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
@@ -328,7 +328,7 @@ $('editProfile').addEventListener('change',captureFormDraft);
 $('editProfile').addEventListener('submit',async e=>{
  e.preventDefault();
  const button=$('saveProfile'),message=$('saveMessage'),sb=window.inspecteurBotAuthClient;
- const deadline=profile?.next_profile_update_at?new Date(profile.next_profile_update_at):null;
+ const deadline=profile?.next_profile_update_at?new Date(profile.next_profile_update_at):(profile?.certification_status==='certified'&&profile?.certified_at?new Date(new Date(profile.certified_at).getTime()+90*86400000):null);
  if(deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now()){
   const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
   message.textContent='Modification temporairement bloquée. Vous pourrez enregistrer de nouveaux paramètres à partir du '+date+'.';
@@ -377,10 +377,10 @@ $('editProfile').addEventListener('submit',async e=>{
   profile={...profile,...updated};
   if(!save())console.warn('Le profil est enregistré, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent=response.auto_certified?'Vos paramètres sont enregistrés. Votre identité correspond au registre officiel : votre compte est certifié et votre fiche professionnelle est maintenant publiée dans l’annuaire IGT.':'Vos paramètres ont été enregistrés avec succès.';
+  show();message.textContent=updated.certification_status==='certified'?'Félicitations 🎉 Votre compte est bien certifié ! Vos informations professionnelles ont été vérifiées et votre fiche est disponible dans l’annuaire numérique de l’IGT.':'Vos paramètres ont été enregistrés. Votre compte reste en attente de vérification par l’administration.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
-  $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
+  $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. '+(updated.certification_status==='certified'?'Votre compte est certifié.':'Votre demande reste en attente de vérification.')+' La prochaine modification sera possible à partir du '+next+'.';
  }catch(err){
   console.error('Enregistrement du profil :',err);
   let serverMessage='';
