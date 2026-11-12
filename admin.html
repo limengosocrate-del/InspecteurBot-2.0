@@ -177,17 +177,27 @@ function certificationOptions(q,category){
  const list=certificationAgents.filter(a=>(!category||a.categorie===category)&&(!n||normalizeSearch(a.nom_complet+' '+a.matricule).includes(n))).slice(0,25);
  return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'">'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
 }
+async function fetchAllOfficialAgents(columns){
+ const all=[];let start=0,batch=1000;
+ while(true){
+  const {data,error}=await client.from('agents').select(columns).order('id').range(start,start+batch-1);
+  if(error)throw error;
+  const rows=data||[];all.push(...rows);
+  if(rows.length<batch)break;
+  start+=batch;
+ }
+ return all;
+}
 async function loadCertification(){
  if(!client)return;
  $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Chargement sécurisé…</td></tr>';
  try{
-  const [req,agents,certified]=await Promise.all([
+  const [req,certified]=await Promise.all([
    client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
-   client.from('agents').select('id,nom_complet,matricule,categorie').order('nom_complet').limit(3000),
    client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').eq('role','agent').eq('certification_status','certified').limit(3000)
   ]);
-  if(req.error)throw req.error;if(agents.error)throw agents.error;if(certified.error)throw certified.error;
-  certificationRequests=req.data||[];certificationAgents=agents.data||[];
+  if(req.error)throw req.error;if(certified.error)throw certified.error;
+  certificationRequests=req.data||[];certificationAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie');
   const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
   certificationProfiles=[];
   if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
@@ -256,7 +266,7 @@ $('certification-body').addEventListener('click',async e=>{
 async function loadPayroll(){
  if(!client)return;
  $('payroll-body').innerHTML='<tr><td colspan="6" class="empty">Chargement du registre officiel…</td></tr>';
- try{const {data,error}=await client.from('agents').select('id,nom_complet,matricule,categorie,receives_sb,receives_pp,receives_mf_it_ct').order('nom_complet').limit(3000);if(error)throw error;payrollAgents=data||[];renderPayroll();}
+ try{payrollAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie,receives_sb,receives_pp,receives_mf_it_ct');renderPayroll();}
  catch(e){$('payroll-body').innerHTML='<tr><td colspan="6" class="empty">'+esc(e.message)+'</td></tr>';}
 }
 function renderPayroll(){
