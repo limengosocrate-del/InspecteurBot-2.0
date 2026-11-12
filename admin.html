@@ -172,7 +172,8 @@ $('print-users').addEventListener('click',()=>window.print());
 
 let certificationRequests=[],certificationProfiles=[],certificationAgents=[],payrollAgents=[];
 const certificationActionsInFlight=new Set();
-let certificationRefreshPromise=null, certificationRealtimeReady=false, certificationFallbackTimer=null;
+let certificationRefreshPromise=null, certificationAgentsLoaded=false;
+let certificationReadiness=new Map();
 const categoryNames={inspecteur_travail:'Inspecteur du Travail',controleur_travail:'Contrôleur du Travail',agent_administratif:'Agent administratif'};
 const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const normalizeMatricule=s=>String(s||'').replace(/\D/g,'');
@@ -205,25 +206,42 @@ async function fetchAllOfficialAgents(columns){
  }
  return all;
 }
-async function loadCertification(){
+async function loadCertification(force=false){
  if(!client)return;
- $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Chargement sécurisé…</td></tr>';
- try{
-  const [req,certified]=await Promise.all([
-   client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
-   client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').in('role',['agent','super_admin']).eq('certification_status','certified').limit(3000)
-  ]);
-  if(req.error)throw req.error;if(certified.error)throw certified.error;
-  certificationRequests=req.data||[];certificationAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie');
-  const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
-  certificationProfiles=[];
-  if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
-  const certProfiles=certified.data||[];
-  const certAgentIds=[...new Set(certProfiles.map(x=>x.agent_id).filter(Boolean))];
-  let certAgentRows=[];
-  if(certAgentIds.length){const a=await client.from('agents').select('id,nom_complet,matricule,categorie').in('id',certAgentIds);if(a.error)throw a.error;certAgentRows=a.data||[];}
-  renderCertification();renderCertifiedAccounts(certProfiles,certAgentRows);
- }catch(e){$('certification-body').innerHTML='<tr><td colspan="7" class="empty">'+esc(e.message)+'</td></tr>';$('certification-count').textContent='Erreur';}
+ if(certificationRefreshPromise)return certificationRefreshPromise;
+ certificationRefreshPromise=(async()=>{
+  try{
+   const [req,certified,readinessResult]=await Promise.all([
+    client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
+    client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').in('role',['agent','super_admin']).eq('certification_status','certified').limit(3000),
+    client.rpc('admin_get_certification_readiness')
+   ]);
+   if(req.error)throw req.error;if(certified.error)throw certified.error;
+   if(readinessResult.error)throw readinessResult.error;
+   certificationRequests=req.data||[];
+   certificationReadiness=new Map((readinessResult.data||[]).map(x=>[String(x.request_id),x]));
+   const certifiedIds=new Set((certified.data||[]).map(p=>String(p.id)));
+   // Une demande dont le profil est déjà certifié ne doit plus apparaître dans la file.
+   const stale=certificationRequests.filter(x=>certifiedIds.has(String(x.user_id)));
+   if(stale.length){
+    certificationRequests=certificationRequests.filter(x=>!certifiedIds.has(String(x.user_id)));
+    renderCertification();
+   }
+   if(!certificationAgentsLoaded){certificationAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie');certificationAgentsLoaded=true;}
+   const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
+   certificationProfiles=[];
+   if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
+   const certProfiles=certified.data||[];
+   const certAgentIds=[...new Set(certProfiles.map(x=>x.agent_id).filter(Boolean))];
+   let certAgentRows=[];
+   if(certAgentIds.length){const a=await client.from('agents').select('id,nom_complet,matricule,categorie').in('id',certAgentIds);if(a.error)throw a.error;certAgentRows=a.data||[];}
+   renderCertification();renderCertifiedAccounts(certProfiles,certAgentRows);
+  }catch(e){
+   $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Erreur de chargement : '+esc(e.message)+' — utilisez Actualiser.</td></tr>';
+   $('certification-count').textContent='Erreur';
+  }
+ })();
+ try{return await certificationRefreshPromise;}finally{certificationRefreshPromise=null;}
 }
 function renderCertifiedAccounts(profiles,agents){
  const byId=new Map((agents||[]).map(a=>[a.id,a]));
@@ -248,9 +266,11 @@ function renderCertification(){
   const photo=p?.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Photo de profil" style="width:42px;height:42px;object-fit:cover;border-radius:50%;vertical-align:middle;margin:0 8px 6px 0">':'<span class="muted" style="display:block;color:#b42318;font-weight:700">Photo obligatoire manquante</span>';
   const person=photo+'<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
   const disabled=!r.user_id?'disabled':'';
-  const certifyDisabled=(!r.user_id||!p?.avatar_url||certificationActionsInFlight.has(String(id)))?'disabled':'';
+  const readiness=certificationReadiness.get(String(id));
+  const blockers=[];if(!p?.avatar_url)blockers.push('Photo manquante');if(readiness&&!readiness.has_passkey)blockers.push('Passkey manquante');
+  const certifyDisabled=(!r.user_id||!p?.avatar_url||(readiness&&!readiness.has_passkey)||certificationActionsInFlight.has(String(id)))?'disabled':'';
   const rejectDisabled=(!r.user_id||certificationActionsInFlight.has(String(id)))?'disabled':'';
-  return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+certifyDisabled+' title="'+(!p?.avatar_url?'Photo de profil obligatoire pour certifier':'Certifier ce compte')+'"><i class="fa-solid fa-shield-halved"></i> Certifier</button><button class="btn red" data-reject="'+id+'" '+rejectDisabled+'><i class="fa-solid fa-ban"></i> Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+'</td></tr>';
+  return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+certifyDisabled+' title="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'" aria-label="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'"><i class="fa-solid fa-shield-halved"></i> Certifier</button><button class="btn red" data-reject="'+id+'" '+rejectDisabled+'><i class="fa-solid fa-ban"></i> Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+(blockers.length?'<small style="display:block;color:#b42318;font-weight:600;margin-top:5px">'+esc(blockers.join(' · '))+'</small>':'')+'</td></tr>';
  }).join('');
 }
 $('certification-search').addEventListener('input',renderCertification);
@@ -300,7 +320,7 @@ $('certification-body').addEventListener('click',async e=>{
   // échoue ensuite pendant le rechargement des listes.
   certificationRequests=certificationRequests.filter(x=>String(x.id)!==String(id));
   renderCertification();
-  await Promise.allSettled([loadCertification(),loadUsers()]);
+  void loadCertification(true);
  }catch(err){
   const detail=String(err?.message||'');
   status('global-feedback',detail.includes('JWT')||detail.includes('session')
