@@ -136,9 +136,9 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <h2>⚙️ Paramètres du compte et la certification du compte</h2>
 <div id="profileCertificationBanner" class="certification-banner" role="status">Vérification du statut de certification…</div>
 <form id="editProfile" class="fields">
-<label class="field"><small>Nom d’utilisateur *</small><input id="editName" maxlength="150" required></label>
-<label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40"></label>
-<label class="field wide"><small>Adresse physique</small><input id="editAddress" maxlength="300" autocomplete="street-address"></label>
+ 
+<label class="field"><small>Téléphone *</small><input id="editPhone" type="tel" maxlength="40" autocomplete="tel" required></label>
+<label class="field wide"><small>Adresse physique *</small><input id="editAddress" maxlength="300" autocomplete="street-address" required></label>
 <label class="field"><small>Direction / Antenne</small><input id="editDirection" maxlength="180" placeholder="Votre direction ou antenne"></label>
 <label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
@@ -221,7 +221,7 @@ const DRAFT_KEY=KEY+'_pending_form';
 function readFormDraft(){try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');return d&&typeof d==='object'?d:null}catch(e){return null}}
 function captureFormDraft(){
  const draft={
-  username:$('editName').value,phone:$('editPhone').value,address:$('editAddress').value,
+  phone:$('editPhone').value,address:$('editAddress').value,
   direction:$('editDirection').value,bankSB:$('editBankSB').value,bankPP:$('editBankPP').value,bankMF:$('editBankMF').value,
   professional:{}
  };
@@ -230,6 +230,10 @@ function captureFormDraft(){
 }
 if(profile?.role)data.role=profile.role==='super_admin'?'Super-administrateur':profile.role==='admin'?'Administrateur':'Agent';
 data.username=profile?.display_name||data.username;
+data.professional=data.professional||{};
+data.professional.nom_complet=profile?.display_name??data.professional.nom_complet??data.username??'';
+data.professional.grade=profile?.grade??data.professional.grade??'';
+data.professional.fonction=profile?.fonction??data.professional.fonction??'';
 data.phone=profile?.telephone??data.phone;
 data.address=profile?.adresse_physique??data.address;
 data.direction_antenne=profile?.direction_antenne||'';
@@ -242,17 +246,17 @@ function show(){
  const isCertified=profile?.certification_status==='certified';
  const certBanner=$('profileCertificationBanner');
  if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'✓ Votre compte est certifié. Votre fiche et votre photo de profil sont publiées dans l’annuaire des agents.':'⏳ Votre compte est en attente de vérification.';}
- $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
+ $('account').innerHTML=item('Nom complet',profile?.display_name||data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
  const adminTools=$('admin-tools'),adminLinks=$('admin-links');if(adminTools&&adminLinks){const role=profile?.role||'agent';adminTools.hidden=!['admin','super_admin'].includes(role);adminLinks.innerHTML=role==='super_admin'?'<a class="admin-action-link" href="admin.html"><i class="fa-solid fa-gears"></i> Administration générale</a><a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':role==='admin'?'<a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':'';}
  const draft=readFormDraft();
- $('editName').value=draft?.username??(data.username||'');$('editPhone').value=draft?.phone??(data.phone||'');$('editAddress').value=draft?.address??(data.address||'');
+ $('editPhone').value=draft?.phone??(data.phone||'');$('editAddress').value=draft?.address??(data.address||'');
  $('editDirection').value=draft?.direction??(data.direction_antenne||'');
  $('editBankSB').value=draft?.bankSB??(data.banque_payeur_sb||'');
  $('editBankPP').value=draft?.bankPP??(data.banque_payeur_pp||'');
  $('editBankMF').value=draft?.bankMF??(data.banque_payeur_mf_it_ct||'');
- fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=draft?.professional?.[key]??data.professional?.[key]??''});
+ fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=key==='nom_complet'?(draft?.professional?.nom_complet??draft?.username??data.professional?.nom_complet??data.username??''):(draft?.professional?.[key]??data.professional?.[key]??'')});
  if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
  else{$('profileAvatar').hidden=true;$('profileAvatarFallback').hidden=false}
  if(draft){$('saveMessage').textContent='Brouillon récupéré : vos informations saisies avant l’actualisation sont conservées. Cliquez sur « Enregistrer mes paramètres » pour les synchroniser.';$('saveMessage').style.color='#075a96';}
@@ -299,23 +303,31 @@ $('editProfile').addEventListener('submit',async e=>{
  const button=$('saveProfile'),message=$('saveMessage'),sb=window.inspecteurBotAuthClient;
  if(!sb){message.textContent='Connexion Supabase indisponible. Rechargez la page.';message.style.color='#b42318';return}
  const payload={
-  display_name:$('editName').value.trim(),
+  display_name:$('edit_nom_complet').value.trim(),
   telephone:$('editPhone').value.trim(),
   adresse_physique:$('editAddress').value.trim(),
+  grade:$('edit_grade').value.trim(),
+  fonction:$('edit_fonction').value.trim(),
   direction_antenne:$('editDirection').value.trim(),
   banque_payeur_sb:$('editBankSB').value.trim(),
   banque_payeur_pp:$('editBankPP').value.trim(),
   banque_payeur_mf_it_ct:$('editBankMF').value.trim()
  };
- if(!payload.display_name){message.textContent='Le nom d’utilisateur est obligatoire.';message.style.color='#b42318';return}
+ const requiredFields=[['Nom complet',payload.display_name],['Téléphone',payload.telephone],['Adresse physique',payload.adresse_physique],['Grade',payload.grade],['Fonction',payload.fonction]];
+ const missing=requiredFields.filter(([,value])=>!value);
+ if(missing.length){message.textContent='Veuillez compléter les champs obligatoires : '+missing.map(([label])=>label).join(', ')+'.';message.style.color='#b42318';return}
  button.disabled=true;message.textContent='Enregistrement sécurisé dans Supabase… Ne fermez pas cette page.';message.style.color='#075a96';
  window.__inspecteurBotProfileSaving=true;
  try{
-  const {data:updated,error}=await sb.from('profiles').update(payload).eq('id',user.id)
-   .select('id,display_name,telephone,adresse_physique,direction_antenne,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certification_status,next_profile_update_at,profile_last_updated_at')
-   .single();
+  const {data:response,error}=await sb.functions.invoke('igt-update-profile',{body:payload});
   if(error)throw error;
+  if(!response?.success||!response.profile)throw new Error(response?.message||'Supabase n’a pas confirmé l’enregistrement.');
+  const updated=response.profile;
   data.username=updated.display_name||'';data.phone=updated.telephone||'';data.address=updated.adresse_physique||'';
+  data.professional=data.professional||{};
+  data.professional.nom_complet=updated.display_name||'';
+  data.professional.grade=updated.grade||'';
+  data.professional.fonction=updated.fonction||'';
   data.direction_antenne=updated.direction_antenne||'';
   data.banque_payeur_sb=updated.banque_payeur_sb||'';
   data.banque_payeur_pp=updated.banque_payeur_pp||'';
@@ -451,7 +463,7 @@ async function documents(){
  $('restoreDocs').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const p=JSON.parse(await f.text());if(p.format!=='InspecteurBot-local-documents-v1'||!Array.isArray(p.documents))throw Error('Fichier de sauvegarde invalide');for(const d of p.documents){const parts=d.data.split(','),mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/octet-stream',raw=atob(parts[1]),bytes=Uint8Array.from(raw,c=>c.charCodeAt(0)),blob=new Blob([bytes],{type:mime});await new Promise((res,rej)=>{const tx=db.transaction('docs','readwrite');tx.objectStore('docs').put({id:Date.now()+'_'+Math.random(),name:d.name,blob,addedAt:d.addedAt||Date.now()});tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}status.textContent='Sauvegarde restaurée.';await render()}catch(err){status.textContent='Restauration impossible : '+err.message}e.target.value=''});
  await render();
 }
-fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+'</small><input id="edit_'+key+'" maxlength="180" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').querySelector('.wide').before(wrap)});
+fields.forEach(([label,key])=>{const required=['nom_complet','grade','fonction'].includes(key);const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+(required?' *':'')+'</small><input id="edit_'+key+'" maxlength="180" '+(required?'required':'')+' style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').querySelector('.wide').before(wrap)});
 show();
 if(typeof data.avatar==='string'&&data.avatar.startsWith('data:image/')){syncAvatarToSupabase(data.avatar).then(()=>{$('avatarMessage').textContent='Votre ancienne photo a été synchronisée pour tous les agents.';$('avatarMessage').style.color='#138a65'}).catch(err=>{console.warn('Migration de la photo locale vers Supabase',err);$('avatarMessage').textContent='Ouvrez « Modifier ma photo » pour relancer la synchronisation.';$('avatarMessage').style.color='#b42318'});}
 documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
