@@ -229,11 +229,25 @@ $('status').hidden=true;$('profile').hidden=false;
 }
 
 const avatarLightbox=$('avatarLightbox'),avatarLightboxImage=$('avatarLightboxImage');
-function closeAvatarLightbox(){avatarLightbox.classList.remove('open');avatarLightbox.setAttribute('aria-hidden','true');avatarLightboxImage.removeAttribute('src');$('profileAvatar').focus?.();}
+let previousBodyOverflow='';
+function closeAvatarLightbox(){
+ if(!avatarLightbox.classList.contains('open'))return;
+ avatarLightbox.classList.remove('open');
+ avatarLightbox.setAttribute('aria-hidden','true');
+ avatarLightboxImage.removeAttribute('src');
+ document.body.style.overflow=previousBodyOverflow;
+ $('profileAvatar').focus();
+}
 function openAvatarLightbox(){
- const src=$('profileAvatar').currentSrc||$('profileAvatar').src;
- if(!src||$('profileAvatar').hidden)return;
- avatarLightboxImage.src=src;avatarLightbox.classList.add('open');avatarLightbox.setAttribute('aria-hidden','false');$('avatarLightboxClose').focus();
+ const avatar=$('profileAvatar');
+ const src=avatar.currentSrc||avatar.src;
+ if(!src||avatar.hidden)return;
+ previousBodyOverflow=document.body.style.overflow;
+ avatarLightboxImage.src=src;
+ avatarLightbox.classList.add('open');
+ avatarLightbox.setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';
+ $('avatarLightboxClose').focus();
 }
 $('profileAvatar').setAttribute('role','button');
 $('profileAvatar').setAttribute('tabindex','0');
