@@ -43,7 +43,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 .wide{grid-column:1/-1}
 #editProfile .field{display:block}
 #saveProfile{border:0;border-radius:9px;padding:13px 19px;background:var(--navy);color:white;font-weight:700;font-size:14px;cursor:pointer}.field input{display:block;width:100%;margin-top:4px;padding:12px 13px;border:1px solid #cbd9e5;border-radius:9px;background:#fff;font-size:15px;min-height:46px}.field input:focus{outline:3px solid #d6edf9;border-color:#087eb5}
-#saveProfile:disabled{opacity:.6;cursor:wait}
+#saveProfile:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.15)}
 #editProfile .field input{background:#f4f9fc;border:1px solid #c8dce9;color:#173653;box-shadow:inset 0 1px 2px #17365308;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}
 #editProfile .field input::placeholder{color:#7890a4;opacity:1;font-weight:500}
 #editProfile .field input:hover{background:#f0f7fb;border-color:#a9c9dc}
@@ -142,7 +142,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
-<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 3 mois. Les informations personnelles ne sont pas publiées dans l’annuaire.</p></div>
+<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="margin-left:10px;font-size:13px"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 3 mois. Les informations personnelles ne sont pas publiées dans l’annuaire.</p></div>
 </form>
 </section>
 <div class="grid" id="mes-informations">
@@ -244,6 +244,25 @@ data.banque_payeur_pp=profile?.banque_payeur_pp||'';
 data.banque_payeur_mf_it_ct=profile?.banque_payeur_mf_it_ct||'';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
 function item(label,value){const empty=value===undefined||value===null||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
+function applyProfileCooldown(){
+ const button=$('saveProfile'),form=$('editProfile'),notice=$('profileCooldownNotice');
+ if(!button||!form)return;
+ const raw=profile?.next_profile_update_at;
+ const deadline=raw?new Date(raw):null;
+ const locked=!!deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now();
+ button.disabled=locked;
+ form.querySelectorAll('input,select,textarea').forEach(field=>{field.disabled=locked;});
+ if(notice){
+  if(locked){
+   const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+   notice.textContent=(profile?.certification_status==='certified'?'Compte certifié : ':'Paramètres récemment enregistrés : ')+'la modification de vos paramètres est temporairement désactivée jusqu’au '+date+'.';
+  }else if(profile?.certification_status==='certified'){
+   notice.textContent='Compte certifié. Le délai de protection de 90 jours est terminé ; vous pouvez modifier vos paramètres.';
+  }else{
+   notice.textContent='Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations personnelles ne sont pas publiées dans l’annuaire.';
+  }
+ }
+}
 function show(){
  const isCertified=profile?.certification_status==='certified';
  const certBanner=$('profileCertificationBanner');
@@ -262,6 +281,7 @@ function show(){
  if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
  else{$('profileAvatar').hidden=true;$('profileAvatarFallback').hidden=false}
 
+applyProfileCooldown();
 $('status').hidden=true;$('profile').hidden=false;
 }
 
@@ -350,7 +370,7 @@ $('editProfile').addEventListener('submit',async e=>{
   console.error('Enregistrement Supabase du profil :',err);
   message.textContent=err.message||'Enregistrement impossible. Réessayez.';
   message.style.color='#b42318';
- }finally{button.disabled=false;window.__inspecteurBotProfileSaving=false}
+ }finally{applyProfileCooldown();window.__inspecteurBotProfileSaving=false}
 });
 async function syncAvatarToSupabase(dataUrl){
  const sb=window.inspecteurBotAuthClient;
