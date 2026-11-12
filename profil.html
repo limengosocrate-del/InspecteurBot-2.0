@@ -410,10 +410,54 @@ async function openCropper(image){
   cropZoom.min='1';cropZoom.max='3';cropZoom.step='.01';
   renderCrop();
   $('confirmAvatarCrop').focus();
- }catch(err){console.error('Traitement de la photo de profil',err);message.textContent='Échec : '+(err.message||'réessayez');message.style.color='#b42318'}
- finally{confirm.disabled=false;confirm.textContent='Valider et enregistrer'}
-});
-$('avatarFile').addEventListener('change',async e=>{
+ }
+ function closeCropper(){
+  cropper.classList.remove('open');cropper.setAttribute('aria-hidden','true');
+  cropImage.removeAttribute('src');cropSource=null;dragPoint=null;
+  if(cropObjectUrl){URL.revokeObjectURL(cropObjectUrl);cropObjectUrl=null;}
+ }
+ cropZoom.addEventListener('input',()=>{cropScale=Number(cropZoom.value);clampCropOffsets();renderCrop()});
+ cropStage.addEventListener('pointerdown',e=>{if(!cropSource)return;dragPoint={x:e.clientX,y:e.clientY};cropStage.classList.add('dragging');cropStage.setPointerCapture(e.pointerId)});
+ cropStage.addEventListener('pointermove',e=>{if(!dragPoint)return;cropOffsetX+=e.clientX-dragPoint.x;cropOffsetY+=e.clientY-dragPoint.y;dragPoint={x:e.clientX,y:e.clientY};clampCropOffsets();renderCrop()});
+ function endCropDrag(){dragPoint=null;cropStage.classList.remove('dragging')}
+ cropStage.addEventListener('pointerup',endCropDrag);cropStage.addEventListener('pointercancel',endCropDrag);
+ $('cancelAvatarCrop').addEventListener('click',closeCropper);
+ $('confirmAvatarCrop').addEventListener('click',async()=>{
+  if(!cropSource)return;
+  const confirm=$('confirmAvatarCrop'),message=$('avatarMessage');
+  confirm.disabled=true;confirm.textContent='Préparation…';
+  try{
+   const {w,h}=cropDimensions(),rw=cropBaseWidth*cropScale,rh=cropBaseHeight*cropScale;
+   const left=(w-rw)/2+cropOffsetX,top=(h-rh)/2+cropOffsetY;
+   const ratio=rw/cropSource.naturalWidth;
+   const sx=Math.max(0,Math.min(cropSource.naturalWidth,(-left)/ratio));
+   const sy=Math.max(0,Math.min(cropSource.naturalHeight,(-top)/ratio));
+   const sourceSide=Math.min(cropSource.naturalWidth-sx,cropSource.naturalHeight-sy,w/ratio);
+   let output=null;
+   for(const size of [512,448,384]){
+    const canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    if(!ctx)throw new Error('Le traitement de la photo n’est pas disponible sur cet appareil.');
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(cropSource,sx,sy,sourceSide,sourceSide,0,0,size,size);
+    for(const quality of [.82,.74,.66]){
+     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
+     if(blob&&(!output||blob.size<output.size))output=blob;
+     if(blob&&blob.size<=220*1024)break;
+    }
+    if(output&&output.size<=220*1024)break;
+   }
+   if(!output)throw new Error('La compression de la photo a échoué.');
+   const dataUrl=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Lecture de la photo compressée impossible.'));reader.readAsDataURL(output)});
+   closeCropper();message.textContent='Photo optimisée ('+Math.round(output.size/1024)+' Ko). Envoi sécurisé…';message.style.color='#075a96';
+   data.avatar=dataUrl;if(!save())throw new Error('Espace local insuffisant pour préparer la photo.');
+   await syncAvatarToSupabase(dataUrl);
+   message.textContent='Photo recadrée, compressée et synchronisée ('+Math.round(output.size/1024)+' Ko).';message.style.color='#138a65';
+  }catch(err){console.error('Traitement de la photo de profil',err);message.textContent='Échec : '+(err.message||'réessayez');message.style.color='#b42318'}
+  finally{confirm.disabled=false;confirm.textContent='Valider et enregistrer'}
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&cropper.classList.contains('open'))closeCropper()});
+ $('avatarFile').addEventListener('change',async e=>{
  const f=e.target.files?.[0];if(!f)return;
  if(!/^image\/(jpeg|png|webp)$/.test(f.type)){$('avatarMessage').textContent='Format accepté : JPG, PNG ou WEBP.';e.target.value='';return}
  if(f.size>12*1024*1024){$('avatarMessage').textContent='La photo originale ne doit pas dépasser 12 Mo.';e.target.value='';return}
