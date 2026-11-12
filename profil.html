@@ -108,6 +108,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40"></label>
 <label class="field wide"><small>Adresse physique (réservée à l’administration)</small><input id="editAddress" maxlength="300" autocomplete="street-address"></label>
 <label class="field"><small>Direction / Antenne</small><input id="editDirection" maxlength="180" placeholder="Votre direction ou antenne"></label>
+<p class="wide" style="margin:2px 0 4px;color:#526b86;font-size:13px;font-weight:600">Champs facultatifs : renseignez uniquement les primes qui vous concernent. Vous pouvez remplir une, deux ou les trois rubriques. Les champs laissés vides ne bloquent pas l’enregistrement.</p>
 <label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
@@ -179,7 +180,7 @@ function item(label,value){const empty=value===undefined||value===null||String(v
 function show(){
  const isCertified=profile?.certification_status==='certified';
  const certBanner=$('profileCertificationBanner');
- if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'✓ Votre compte est certifié. Votre fiche et votre photo de profil sont publiées dans l’annuaire des agents.':'⏳ Votre compte est en attente de vérification. La fiche apparaîtra dans l’annuaire après certification.';}
+ if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'✓ Votre compte est certifié. Votre fiche et votre photo de profil sont publiées dans l’annuaire des agents.':'⏳ Votre compte est en attente de vérification.';}
  $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
