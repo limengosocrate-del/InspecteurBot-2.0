@@ -194,7 +194,7 @@ async function loadCertification(){
  try{
   const [req,certified]=await Promise.all([
    client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
-   client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').eq('role','agent').eq('certification_status','certified').limit(3000)
+   client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,agent_id,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certified_at').in('role',['agent','super_admin']).eq('certification_status','certified').limit(3000)
   ]);
   if(req.error)throw req.error;if(certified.error)throw certified.error;
   certificationRequests=req.data||[];certificationAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie');
