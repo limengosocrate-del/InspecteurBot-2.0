@@ -53,6 +53,10 @@ html{text-size-adjust:100%;-webkit-text-size-adjust:100%;}
   <div id="igt-reg-message" role="status" aria-live="polite" style="margin-top:12px;min-height:22px;font-size:14px"></div>
   <button id="igt-reg-submit" type="submit" style="width:100%;margin-top:12px;padding:13px;border:0;border-radius:9px;background:#0d4772;color:#fff;font-weight:700;font-size:15px">Créer mon compte</button>
   <button id="igt-close-registration" type="button" style="width:100%;margin-top:9px;padding:11px;border:1px solid #ccd4df;border-radius:9px;background:#fff;color:#334155;font-weight:600">Retour à la connexion</button>
+  <div id="igt-existing-account-note" role="note" style="margin-top:10px;padding:10px 12px;border:1px solid #d9e5f0;border-radius:10px;background:#f4f8fc;color:#40566b;font-size:12px;line-height:1.45;text-align:left">
+   <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;color:#123d60;font-size:12.5px;font-weight:700"><span aria-hidden="true" style="font-size:15px">ℹ</span> Vous avez déjà un compte sur l’Annuaire numérique IGT ?</div>
+   <div>Ne créez pas un nouveau compte. Revenez à la page de connexion et utilisez la même adresse e-mail et le même mot de passe que ceux de votre compte existant.</div>
+  </div>
  </form>
 </div>
 <div id="igt-auth-user" hidden aria-label="Profil du compte"></div>
