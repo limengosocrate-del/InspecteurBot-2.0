@@ -267,8 +267,8 @@ function renderCertification(){
   const person=photo+'<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
   const disabled=!r.user_id?'disabled':'';
   const readiness=certificationReadiness.get(String(id));
-  const blockers=[];if(!p?.avatar_url)blockers.push('Photo manquante');if(readiness&&!readiness.has_passkey)blockers.push('Passkey manquante');
-  const certifyDisabled=(!r.user_id||!p?.avatar_url||(readiness&&!readiness.has_passkey)||certificationActionsInFlight.has(String(id)))?'disabled':'';
+  const blockers=[];if(!p?.avatar_url)blockers.push('Photo manquante');
+  const certifyDisabled=(!r.user_id||!p?.avatar_url||certificationActionsInFlight.has(String(id)))?'disabled':'';
   const rejectDisabled=(!r.user_id||certificationActionsInFlight.has(String(id)))?'disabled':'';
   return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+certifyDisabled+' title="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'" aria-label="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'"><i class="fa-solid fa-shield-halved"></i> Certifier</button><button class="btn red" data-reject="'+id+'" '+rejectDisabled+'><i class="fa-solid fa-ban"></i> Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+(blockers.length?'<small style="display:block;color:#b42318;font-weight:600;margin-top:5px">'+esc(blockers.join(' · '))+'</small>':'')+'</td></tr>';
  }).join('');
@@ -330,7 +330,7 @@ $('certification-body').addEventListener('click',async e=>{
  }finally{
   certificationActionsInFlight.delete(String(id));
   const stillThere=$('certification-body').querySelectorAll('[data-certify="'+id+'"],[data-reject="'+id+'"]');
-  stillThere.forEach((b,i)=>{const ready=certificationReadiness.get(String(id));b.disabled=b.hasAttribute('data-certify')?(!request.user_id||!certificationProfiles.find(p=>p.id===request.user_id)?.avatar_url||(ready&&!ready.has_passkey)):!request.user_id;b.removeAttribute('aria-busy');if(originalLabels[i])b.innerHTML=originalLabels[i];});
+  stillThere.forEach((b,i)=>{const ready=certificationReadiness.get(String(id));b.disabled=b.hasAttribute('data-certify')?(!request.user_id||!certificationProfiles.find(p=>p.id===request.user_id)?.avatar_url||false):!request.user_id;b.removeAttribute('aria-busy');if(originalLabels[i])b.innerHTML=originalLabels[i];});
  }
 });
 async function loadPayroll(){
