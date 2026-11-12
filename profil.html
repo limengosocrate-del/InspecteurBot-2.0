@@ -261,7 +261,7 @@ function applyProfileCooldown(){
  if(notice){
   if(locked){
    const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-   notice.textContent=(profile?.certification_status==='certified'?'Compte certifié : ':'Paramètres récemment enregistrés : ')+'la modification de vos paramètres est temporairement désactivée jusqu’au '+date+'.';
+   notice.textContent=(profile?.certification_status==='certified'?'Compte certifié : ':'Paramètres récemment enregistrés : ')+'vos paramètres sont verrouillés pendant 3 mois (90 jours), jusqu’au '+date+'.';
   }else if(profile?.certification_status==='certified'){
    notice.textContent='Compte certifié. Vos informations professionnelles sont visibles dans l’annuaire IGT. Le téléphone et l’adresse physique restent privés. Le délai de protection de 90 jours est terminé ; vous pouvez modifier vos paramètres.';
   }else{
@@ -331,7 +331,7 @@ $('editProfile').addEventListener('submit',async e=>{
  const deadline=profile?.next_profile_update_at?new Date(profile.next_profile_update_at):(profile?.certification_status==='certified'&&profile?.certified_at?new Date(new Date(profile.certified_at).getTime()+90*86400000):null);
  if(deadline&&Number.isFinite(deadline.getTime())&&deadline.getTime()>Date.now()){
   const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-  message.textContent='Modification temporairement bloquée. Vous pourrez enregistrer de nouveaux paramètres à partir du '+date+'.';
+  message.textContent='Enregistrement indisponible pendant 3 mois après la certification ou la dernière modification. Vous pourrez modifier vos paramètres à partir du '+date+'.';
   message.style.color='#b42318';
   applyProfileCooldown();
   return;
