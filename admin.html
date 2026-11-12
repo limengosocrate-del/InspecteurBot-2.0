@@ -214,7 +214,7 @@ async function loadCertification(){
   certificationRequests=req.data||[];certificationAgents=await fetchAllOfficialAgents('id,nom_complet,matricule,categorie');
   const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
   certificationProfiles=[];
-  if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
+  if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,avatar_url,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
   const certProfiles=certified.data||[];
   const certAgentIds=[...new Set(certProfiles.map(x=>x.agent_id).filter(Boolean))];
   let certAgentRows=[];
@@ -242,8 +242,10 @@ function renderCertification(){
   const q0=r.matricule||r.nom_complet||'';
   const exactAgent=certificationAgents.find(a=>a.categorie===r.categorie&&normalizeSearch(a.nom_complet)===normalizeSearch(r.nom_complet)&&normalizeMatricule(a.matricule)===normalizeMatricule(r.matricule));
   const options=certificationOptions(q0,r.categorie,exactAgent?.id);
-  const person='<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
+  const photo=p?.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Photo de profil" style="width:42px;height:42px;object-fit:cover;border-radius:50%;vertical-align:middle;margin:0 8px 6px 0">':'<span class="muted" style="display:block;color:#b42318;font-weight:700">Photo obligatoire manquante</span>';
+  const person=photo+'<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
   const disabled=!r.user_id?'disabled':'';
+  const certifyDisabled=(!r.user_id||!p?.avatar_url)?'disabled':'';
   return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+disabled+'>Certifier</button><button class="btn red" data-reject="'+id+'" '+disabled+'>Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+'</td></tr>';
  }).join('');
 }
