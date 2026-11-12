@@ -209,7 +209,11 @@ async function init(){
 async function loadPeople(term='',onlyOnline=false){
  const {data,error}=await withTimeout(client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline}),12000,'annuaire des agents');
  if(error)throw error;
- return (data||[]).filter(p=>p.id!==me.id).map(p=>({...p,is_online:window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds.has(p.id):p.is_online}));
+ const rows=(data||[]).filter(p=>p.id!==me.id).map(p=>({...p,is_online:window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds.has(p.id):p.is_online}));
+ // Précharge uniquement les 12 premières miniatures au repos pour accélérer l'affichage sans saturer les données mobiles.
+ const warm=()=>rows.slice(0,12).forEach(p=>{if(p.avatar_url){const img=new Image();img.decoding='async';img.src=p.avatar_url;}});
+ if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:1800});else setTimeout(warm,900);
+ return rows;
 }
 let refreshAllRunning=false,refreshAllPending=false;
 async function refreshAll(){
@@ -222,20 +226,17 @@ async function refreshAll(){
   // affichait à tort une liste vide avant la fin de l'annuaire.
   const directoryResult=await loadPeople().then(value=>({status:'fulfilled',value})).catch(error=>({status:'rejected',reason:error}));
   if(directoryResult.status==='fulfilled'){
-   people=directoryResult.value;
-   renderStories();
+   people=directoryResult.value;renderStories();
    if(active){const p=people.find(x=>x.id===active.id);if(p)updateChatHeader(p)}
-   // Les conversations et les groupes sont ensuite chargés simultanément.
-   await Promise.all([
-    refreshInbox().catch(error=>{console.warn('Conversations:',error)}),
-    refreshGroups().catch(error=>{console.warn('Groupes:',error)})
-   ]);
   }else{
    $('onlineStories').innerHTML='<div class="online-empty">Agents momentanément indisponibles. Réessayez.</div>';
-   $('inbox').innerHTML='<div class="empty">Impossible de charger les conversations pour le moment. Vérifiez votre connexion puis réessayez.</div>';
    console.warn('Annuaire des agents indisponible :',directoryResult.reason);
-   await refreshGroups().catch(error=>console.warn('Groupes:',error));
   }
+  // La boîte de réception reste indépendante : une panne de l'annuaire ne masque plus les messages.
+  await Promise.all([
+   refreshInbox().catch(error=>console.warn('Conversations:',error)),
+   refreshGroups().catch(error=>console.warn('Groupes:',error))
+  ]);
  }finally{
   refreshAllRunning=false;
   if(refreshAllPending){refreshAllPending=false;void refreshAll()}
@@ -272,7 +273,7 @@ function renderStories(){
  const list=people.filter(online);
  const exactCount=realtimePresenceReady?Math.max(0,onlineUserIds.size-(onlineUserIds.has(me?.id)?1:0)):list.length;
  $('onlineCount').textContent=String(exactCount);
- $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
+ $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
 }
 async function refreshInbox(){
  if(!me)return;
@@ -285,11 +286,10 @@ async function refreshInbox(){
  for(const m of data||[]){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;if(!latest.has(other))latest.set(other,m);if(m.recipient_id===me.id&&!m.read_at)unread.set(other,(unread.get(other)||0)+1)}
  // N'afficher que les conversations dont le correspondant possède un profil
  // actif dans InspecteurBot (public.profiles lié à auth.users).
- const eligibleIds=new Set(people.map(p=>p.id));
- const ids=[...latest.keys()].filter(id=>eligibleIds.has(id));
- const mapped=ids.map(id=>({person:people.find(p=>p.id===id),message:latest.get(id),unread:unread.get(id)||0})).sort((a,b)=>new Date(b.message.created_at)-new Date(a.message.created_at));
+ const ids=[...latest.keys()];
+ const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent InspecteurBot',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((a,b)=>new Date(b.message.created_at)-new Date(a.message.created_at));
  const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
- $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
+ $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
 async function openChat(person){
@@ -378,7 +378,7 @@ async function sendMessage(e){
 async function search(term){
  if(!term.trim()){people=await loadPeople();renderStories();await refreshInbox();return}
  const results=await loadPeople(term,false);people=results;
- $('onlineStories').innerHTML=results.length?results.map(p=>'<button class="story '+(online(p)?'online':'')+'" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" src="'+esc(avatar(p))+'" alt="">'+(online(p)?'<i class="dot"></i>':'')+'</span><span class="story-name">'+esc(p.display_name)+'</span></button>').join(''):'<div class="online-empty">Aucun agent trouvé.</div>';
+ $('onlineStories').innerHTML=results.length?results.map(p=>'<button class="story '+(online(p)?'online':'')+'" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(p))+'" alt="">'+(online(p)?'<i class="dot"></i>':'')+'</span><span class="story-name">'+esc(p.display_name)+'</span></button>').join(''):'<div class="online-empty">Aucun agent trouvé.</div>';
 }
 
 
