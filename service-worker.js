@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v8-office';
+const CACHE='inspecteurbot-data-v9-registration';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
@@ -11,8 +11,13 @@ self.addEventListener('install',event=>{
 });
 
 self.addEventListener('activate',event=>{
-  // Conserve les ressources déjà mises en cache par les versions précédentes.
-  event.waitUntil(self.clients.claim());
+  // Supprime les anciens caches de l’application afin que les prochaines connexions
+  // ne réutilisent pas les anciens fragments HTML/JS après une mise à jour.
+  event.waitUntil((async()=>{
+    const names=await caches.keys();
+    await Promise.all(names.filter(name=>name.startsWith('inspecteurbot-data-')&&name!==CACHE).map(name=>caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch',event=>{
