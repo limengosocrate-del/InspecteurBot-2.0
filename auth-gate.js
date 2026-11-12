@@ -3,6 +3,49 @@
 'use strict';
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
+
+const IB_APP_BUILD='20261112-live-update-v2';
+let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
+async function checkInspecteurBotUpdate(force=false){
+ if(ibUpdateCheckRunning||navigator.onLine===false)return false;
+ if(!force&&Date.now()-ibUpdateCheckAt<60000)return false;
+ ibUpdateCheckRunning=true;ibUpdateCheckAt=Date.now();
+ try{
+  const response=await fetch('./app-version.json?check='+Date.now(),{method:'GET',cache:'no-store',credentials:'same-origin',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
+  if(!response.ok)throw new Error('Version serveur indisponible');
+  const latest=await response.json();
+  if(!latest||typeof latest.build!=='string'||!latest.build)throw new Error('Version serveur invalide');
+  if(latest.build!==IB_APP_BUILD){
+   const guard='inspecteurbot_update_reload_'+latest.build;
+   if(sessionStorage.getItem(guard)==='1')return false;
+   sessionStorage.setItem(guard,'1');
+   try{
+    if('serviceWorker' in navigator){
+     const registrations=await navigator.serviceWorker.getRegistrations();
+     await Promise.all(registrations.map(reg=>reg.update().catch(()=>{})));
+    }
+    if('caches' in window){
+     const names=await caches.keys();
+     await Promise.all(names.filter(name=>name.startsWith('inspecteurbot-data-')).map(name=>caches.delete(name)));
+    }
+   }catch(cleanError){console.info('Nettoyage du cache différé',cleanError)}
+   location.replace(location.pathname+location.search+(location.search?'&':'?')+'ibrefresh='+encodeURIComponent(latest.build));
+   return true;
+  }
+  return false;
+ }catch(error){console.info('Contrôle de mise à jour indisponible, poursuite avec la version locale.',error);return false}
+ finally{ibUpdateCheckRunning=false}
+}
+function startLiveUpdateChecks(){
+ void checkInspecteurBotUpdate(true);
+ window.addEventListener('online',()=>void checkInspecteurBotUpdate(true));
+ window.addEventListener('focus',()=>void checkInspecteurBotUpdate(false));
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)void checkInspecteurBotUpdate(false)});
+ if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistration().then(reg=>reg?.update().catch(()=>{})).catch(()=>{});
+ }
+}
+
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,passkeyEnrollmentInProgress=false;
@@ -350,7 +393,7 @@ async function serverCheck(session){
  const sessionId=readSessionId(session?.access_token);
  const cacheKey=session?.user?.id?'inspecteurbot_server_check_v2_'+session.user.id:null;
  const forceFreshProfile=location.pathname.endsWith('/profil.html');
- if(!forceFreshProfile&&cacheKey&&sessionId){try{const cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(cached&&cached.session_id===sessionId&&cached.profile?.is_active===true&&Date.now()-cached.validated_at<600000){armSessionExpiry(cached);return {success:true,profile:cached.profile,cached:true}}}catch(_){}}
+ // Une nouvelle connexion doit toujours être vérifiée auprès du serveur ; aucun ancien profil local ne fait foi.
  for(let attempt=0;attempt<2;attempt++){
   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
   let payload=data||null;
@@ -395,6 +438,7 @@ async function syncLocalProfilePhotoOnLogin(accountId){
  }catch(error){console.warn('Synchronisation automatique de la photo au démarrage:',error);return null}
 }
 async function validate(session){
+ if(navigator.onLine!==false){const updated=await checkInspecteurBotUpdate(true);if(updated)return;}
  if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
  try{
@@ -609,6 +653,7 @@ async function loadGlobalTheme(){
 }
 async function start(){
  setupNetworkStatus();
+ startLiveUpdateChecks();
  try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
  try{await loadLib();client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
