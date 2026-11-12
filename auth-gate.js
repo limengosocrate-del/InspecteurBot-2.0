@@ -5,7 +5,7 @@ if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,passkeyEnrollmentInProgress=false;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
 html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n
@@ -344,7 +344,7 @@ function makeGate(){
 async function loadLib(){
  if(window.supabase?.createClient)return;
  if(!document.querySelector('link[data-ib-supabase-preconnect]')){const p=document.createElement('link');p.rel='preconnect';p.href='https://cdn.jsdelivr.net';p.crossOrigin='anonymous';p.dataset.ibSupabasePreconnect='1';document.head.appendChild(p)}
- await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Vous êtes déconnecté. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
+ await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js';s.async=true;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('Vous êtes déconnecté. Vérifiez votre connexion internet.'));document.head.appendChild(s)});
 }
 async function serverCheck(session){
  const sessionId=readSessionId(session?.access_token);
@@ -580,9 +580,15 @@ function setup(){
     msg('COMPTE CRÉÉ — CERTIFICATION BLOQUÉE. Le nom et le numéro matricule sont déjà utilisés par une autre identité officielle. '+details+' Aucun téléphone ni aucune adresse ne sont communiqués. Veuillez contacter l’administrateur pour vérification avant toute certification.',true);
     return;
    }
+   passkeyEnrollmentInProgress=true;
    const {data:login,error:loginError}=await client.auth.signInWithPassword({email:payload.email,password});
-   if(loginError)throw new Error('Compte créé. Connectez-vous depuis cet écran : '+loginError.message);
-   regPanel.hidden=true;regForm.reset();await validate(login.session);if(data.verification_status==='reconnu'){msg('Votre compte est créé. Votre matricule et votre identité ont été reconnus dans le registre officiel ; votre grade et votre fonction sont validés automatiquement.',true)}else{msg('Votre compte est créé, mais votre identité n’a pas été reconnue automatiquement dans la base de données de l’application. Votre demande est transmise à l’administrateur pour vérification. Veuillez patienter ou contacter Pmiller.',true)}
+   if(loginError){passkeyEnrollmentInProgress=false;throw new Error('Compte créé. Connectez-vous depuis cet écran pour terminer la configuration de votre Passkey : '+loginError.message);}
+   regMessage.style.color='#334155';regMessage.textContent='Compte créé. Configurez maintenant votre Passkey avec votre empreinte digitale, votre reconnaissance faciale ou le code de sécurité de votre appareil…';
+   const {data:passkeyData,error:passkeyError}=await client.auth.registerPasskey();
+   if(passkeyError||!passkeyData?.id){passkeyEnrollmentInProgress=false;await client.auth.signOut();throw new Error('Votre compte est créé, mais la Passkey est obligatoire. Activez le verrouillage biométrique ou le code de sécurité de votre appareil, puis reconnectez-vous pour réessayer. Détail : '+(passkeyError?.message||'enregistrement non confirmé'));}
+   passkeyEnrollmentInProgress=false;
+   regPanel.hidden=true;regForm.reset();await validate(login.session);
+   if(data.verification_status==='reconnu'){msg('Votre compte et votre Passkey sont créés. Votre identité a été reconnue dans le registre officiel ; votre grade et votre fonction seront certifiés après enregistrement de vos paramètres.',true)}else{msg('Votre compte et votre Passkey sont créés. Votre identité est transmise à l’administrateur pour vérification.',true)}
   }catch(err){console.error('Inscription InspecteurBot',err);const detail=String(err&&err.message||'');if(/already registered|already exists|user already|email_exists|user_already_exists|matricule_already_registered|matricule déjà utilisé|déjà inscrit|déjà un compte|compte existe|duplicate key|unique constraint/i.test(detail)){showDuplicateAccountToast()}else{regMessage.style.color='#b42318';regMessage.textContent=detail||'Impossible de créer le compte. Vérifiez les informations.'}}
   finally{regSubmit.disabled=false;regSubmit.textContent='Créer mon compte'}
  });
@@ -590,7 +596,7 @@ function setup(){
  client.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){recovery=true;const recoveryPanel=byId('auth-recovery-panel');if(recoveryPanel)recoveryPanel.hidden=true;form.hidden=false;forgot.hidden=true;gate('Choisissez un nouveau mot de passe.');wrap.hidden=false;email.parentElement.hidden=true;email.required=false;pw.autocomplete='new-password';forgot.hidden=true;submit.textContent='Enregistrer le mot de passe'}
   else if(event==='SIGNED_OUT'){user=null;profile=null;stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate()}
-  else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')setTimeout(()=>validate(session),0)
+  else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'){if(!passkeyEnrollmentInProgress)setTimeout(()=>validate(session),0)}
  });
 }
 async function loadGlobalTheme(){
