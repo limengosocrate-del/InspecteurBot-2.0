@@ -547,7 +547,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
         <span>Office</span>
     </a>
 
-    <a href="profil.html">
+    <a href="profil.html?v=20261112-profile-cert-lock-v1">
         <i class="fa fa-user-circle"></i>
         <span>Utilisateur</span>
     </a>
@@ -838,7 +838,7 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Enregistrement léger : une vérification de mise à jour à l'ouverture, sans polling toutes les 5 minutes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261112-cache-v10-certified-directory',{scope:'./',updateViaCache:'none'}).then(reg=>reg.update()).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261112-cache-v11-profile-cert-lock',{scope:'./',updateViaCache:'none'}).then(reg=>reg.update()).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
