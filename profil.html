@@ -29,7 +29,14 @@ section{min-width:0;background:white;border:1px solid var(--line);border-radius:
 section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10px;align-items:center}
 .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .field{min-width:0;padding:0 0 11px;border-bottom:1px solid #edf1f5}
-.field small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
+.field small{display:block;color:#062b58;font-size:13px;font-weight:800;margin-bottom:7px;letter-spacing:.1px}
+.field strong{color:#062b58;font-size:14px;font-weight:800}
+.certification-banner{margin:-4px 0 18px;padding:13px 16px;border-radius:12px;background:#edf5ff;border:1px solid #c7dcf5;color:#082f60;font-size:14px;font-weight:700;line-height:1.55}
+.certification-banner.certified{background:#eaf3ff;border-color:#b9d4f5;color:#073b82}
+.certification-banner.pending{background:#fff8e8;border-color:#f0dfae;color:#76591d}
+#editProfile .field small{font-size:14px;color:#062b58;font-weight:800}
+#editProfile .field input{font-size:16px;font-weight:600;color:#082f60}
+section h2{font-size:17px;font-weight:800;color:#062b58}
 .field strong{display:block;font-size:12px;font-weight:600;overflow-wrap:anywhere;line-height:1.55}
 .field input{font:inherit;color:var(--ink)}
 .missing{color:#a16a17!important;font-style:italic;font-weight:500!important}
@@ -94,7 +101,8 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 </div>
 </section>
 <section class="wide" id="parametres" style="margin-bottom:16px">
-<h2>⚙️ Paramètres du compte</h2>
+<h2>⚙️ Paramètres du compte et la certification du compte</h2>
+<div id="profileCertificationBanner" class="certification-banner" role="status">Vérification du statut de certification…</div>
 <form id="editProfile" class="fields">
 <label class="field"><small>Nom d’utilisateur *</small><input id="editName" maxlength="150" required></label>
 <label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40"></label>
@@ -169,7 +177,10 @@ data.banque_payeur_mf_it_ct=profile?.banque_payeur_mf_it_ct||'';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
 function item(label,value){const empty=value===undefined||value===null||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
 function show(){
- $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',profile?.certification_status==='certified'?'Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
+ const isCertified=profile?.certification_status==='certified';
+ const certBanner=$('profileCertificationBanner');
+ if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'✓ Votre compte est certifié. Votre fiche et votre photo de profil sont publiées dans l’annuaire des agents.':'⏳ Votre compte est en attente de vérification. La fiche apparaîtra dans l’annuaire après certification.';}
+ $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
  const adminTools=$('admin-tools'),adminLinks=$('admin-links');if(adminTools&&adminLinks){const role=profile?.role||'agent';adminTools.hidden=!['admin','super_admin'].includes(role);adminLinks.innerHTML=role==='super_admin'?'<a class="admin-action-link" href="admin.html"><i class="fa-solid fa-gears"></i> Administration générale</a><a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':role==='admin'?'<a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':'';}
