@@ -73,7 +73,7 @@
 <section class="view" id="view-certification">
  <div class="panel">
   <div class="panel-head"><div><h3>Vérification et certification des agents</h3><p class="sub">Les identités non reconnues restent en attente jusqu’à la décision du super-administrateur.</p></div><div class="toolbar"><span class="pill off" id="certification-count">Chargement…</span><button class="btn light" id="refresh-certification"><i class="fa-solid fa-rotate"></i> Actualiser</button></div></div>
-  <div class="notice">La certification automatique est réservée aux correspondances exactes du nom complet, du matricule et de la catégorie. Toute validation manuelle d’une fiche différente exige un motif écrit. Les coordonnées personnelles restent visibles uniquement dans cet espace administratif.</div>
+  <div class="notice">La certification automatique est réservée aux correspondances exactes du nom complet, du matricule et de la catégorie. Pour un compte super-administrateur, la validation exige aussi la concordance stricte du grade, de la fonction, de la direction, de l’affectation et de la province ; le rôle administrateur est conservé. Toute validation manuelle d’une fiche différente exige un motif écrit. Les coordonnées personnelles restent visibles uniquement dans cet espace administratif.</div>
   <div class="toolbar" style="margin-bottom:12px"><input id="certification-search" class="field search" type="search" placeholder="Filtrer les demandes par nom, matricule ou e-mail…"></div>
   <div class="table-wrap"><table style="min-width:1250px"><thead><tr><th>Compte / demande</th><th>Catégorie</th><th>Matricule saisi</th><th>Rechercher la fiche officielle</th><th>Fiche à rattacher</th><th>Motif (obligatoire si différence)</th><th>Décision</th></tr></thead><tbody id="certification-body"><tr><td colspan="7" class="empty">Chargement des demandes…</td></tr></tbody></table></div>
  </div>
@@ -172,10 +172,10 @@ $('print-users').addEventListener('click',()=>window.print());
 let certificationRequests=[],certificationProfiles=[],certificationAgents=[],payrollAgents=[];
 const categoryNames={inspecteur_travail:'Inspecteur du Travail',controleur_travail:'Contrôleur du Travail',agent_administratif:'Agent administratif'};
 const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
-function certificationOptions(q,category){
+function certificationOptions(q,category,selectedId=null){
  const n=normalizeSearch(q);
  const list=certificationAgents.filter(a=>(!category||a.categorie===category)&&(!n||normalizeSearch(a.nom_complet+' '+a.matricule).includes(n))).slice(0,25);
- return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'">'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
+ return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'"'+(Number(a.id)===Number(selectedId)?' selected':'')+'>'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
 }
 async function fetchAllOfficialAgents(columns){
  const all=[];let start=0,batch=1000;
@@ -226,7 +226,8 @@ function renderCertification(){
  $('certification-body').innerHTML=rows.map(r=>{
   const p=certificationProfiles.find(x=>x.id===r.user_id),id=r.id;
   const q0=r.matricule||r.nom_complet||'';
-  const options=certificationOptions(q0,r.categorie);
+  const exactAgent=certificationAgents.find(a=>a.categorie===r.categorie&&normalizeSearch(a.nom_complet)===normalizeSearch(r.nom_complet)&&normalizeSearch(a.matricule)===normalizeSearch(r.matricule));
+  const options=certificationOptions(q0,r.categorie,exactAgent?.id);
   const person='<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
   const disabled=!r.user_id?'disabled':'';
   return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+disabled+'>Certifier</button><button class="btn red" data-reject="'+id+'" '+disabled+'>Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+'</td></tr>';
