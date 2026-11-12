@@ -35,7 +35,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 .missing{color:#a16a17!important;font-style:italic;font-weight:500!important}
 .wide{grid-column:1/-1}
 #editProfile .field{display:block}
-#saveProfile{border:0;border-radius:9px;padding:12px 18px;background:var(--navy);color:white;font-weight:700;cursor:pointer}
+#saveProfile{border:0;border-radius:9px;padding:13px 19px;background:var(--navy);color:white;font-weight:700;font-size:14px;cursor:pointer}.field input{display:block;width:100%;margin-top:4px;padding:12px 13px;border:1px solid #cbd9e5;border-radius:9px;background:#fff;font-size:15px;min-height:46px}.field input:focus{outline:3px solid #d6edf9;border-color:#087eb5}
 #saveProfile:disabled{opacity:.6;cursor:wait}
 .avatar-editor{display:flex;align-items:center;gap:18px}.avatar-editor img,.avatar-fallback{width:104px;height:104px;flex:0 0 104px;border-radius:50%;object-fit:cover;border:3px solid #e5eef6}.avatar-fallback{display:grid;place-items:center;background:#eaf4fb;color:#0787b8;font-size:38px}.avatar-controls{display:grid;gap:10px}.avatar-controls p{font-size:12px;color:var(--muted);margin:0}.avatar-upload{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;padding:10px 14px;border-radius:9px;background:var(--navy);color:#fff;font-size:12px;font-weight:700;cursor:pointer}.avatar-upload[aria-disabled="true"]{opacity:.6;pointer-events:none}#avatarMessage{font-size:11px;color:var(--muted)}
 #documents{margin-top:16px}
@@ -96,10 +96,14 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 <section class="wide" id="parametres" style="margin-bottom:16px">
 <h2>⚙️ Paramètres du compte</h2>
 <form id="editProfile" class="fields">
-<label class="field"><small>Nom d’utilisateur *</small><input id="editName" maxlength="150" required style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
-<label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
-<label class="field wide"><small>Adresse physique</small><input id="editAddress" maxlength="300" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px"></label>
-<div class="wide"><button id="saveProfile" type="submit" style="border:0;border-radius:9px;padding:12px 18px;background:#075a96;color:white;font-weight:700">Enregistrer mes paramètres</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span></div>
+<label class="field"><small>Nom d’utilisateur *</small><input id="editName" maxlength="150" required></label>
+<label class="field"><small>Téléphone</small><input id="editPhone" maxlength="40"></label>
+<label class="field wide"><small>Adresse physique (réservée à l’administration)</small><input id="editAddress" maxlength="300" autocomplete="street-address"></label>
+<label class="field"><small>Direction / Antenne</small><input id="editDirection" maxlength="180" placeholder="Votre direction ou antenne"></label>
+<label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
+<label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
+<label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
+<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" style="margin-left:10px;font-size:13px"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 3 mois. Les informations personnelles ne sont pas publiées dans l’annuaire.</p></div>
 </form>
 </section>
 <div class="grid" id="mes-informations">
@@ -134,10 +138,9 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fields=[
  ['Nom complet','nom_complet'],['Matricule','matricule'],['Grade','grade'],
- ['Fonction','fonction'],['Catégorie','categorie'],['Direction','direction'],
+ ['Fonction','fonction'],['Direction / Antenne','direction_antenne'],
  ['Lieu d’affectation','lieu_affectation'],['Province','province'],
- ['Téléphone professionnel','telephone_pro'],['Statut professionnel','statut'],
- ['Numéro d’ordre','numero_ordre']
+ ['Téléphone professionnel','telephone_pro']
 ];
 function read(){
  try{
@@ -156,25 +159,68 @@ function read(){
 }
 let data=read();
 if(profile?.role)data.role=profile.role==='super_admin'?'Super-administrateur':profile.role==='admin'?'Administrateur':'Agent';
+data.username=profile?.display_name||data.username;
+data.phone=profile?.telephone??data.phone;
+data.address=profile?.adresse_physique??data.address;
+data.direction_antenne=profile?.direction_antenne||'';
+data.banque_payeur_sb=profile?.banque_payeur_sb||'';
+data.banque_payeur_pp=profile?.banque_payeur_pp||'';
+data.banque_payeur_mf_it_ct=profile?.banque_payeur_mf_it_ct||'';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){alert('Stockage local indisponible ou saturé. Libérez de l’espace sur cet appareil.');return false}}
 function item(label,value){const empty=value===undefined||value===null||String(value).trim()==='';return '<div class="field"><small>'+esc(label)+'</small><strong class="'+(empty?'missing':'')+'">'+(empty?'À compléter':esc(value))+'</strong></div>'}
 function show(){
- $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Mode de conservation','Stockage local de cet appareil');
+ $('account').innerHTML=item('Nom d’utilisateur',data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',profile?.certification_status==='certified'?'Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
  const adminTools=$('admin-tools'),adminLinks=$('admin-links');if(adminTools&&adminLinks){const role=profile?.role||'agent';adminTools.hidden=!['admin','super_admin'].includes(role);adminLinks.innerHTML=role==='super_admin'?'<a class="admin-action-link" href="admin.html"><i class="fa-solid fa-gears"></i> Administration générale</a><a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':role==='admin'?'<a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':'';}
  $('editName').value=data.username||'';$('editPhone').value=data.phone||'';$('editAddress').value=data.address||'';
+ $('editDirection').value=data.direction_antenne||'';
+ $('editBankSB').value=data.banque_payeur_sb||'';
+ $('editBankPP').value=data.banque_payeur_pp||'';
+ $('editBankMF').value=data.banque_payeur_mf_it_ct||'';
  fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)el.value=data.professional?.[key]||''});
  if(data.avatar){$('profileAvatar').src=data.avatar;$('profileAvatar').hidden=false;$('profileAvatarFallback').hidden=true}
  else{$('profileAvatar').hidden=true;$('profileAvatarFallback').hidden=false}
 $('status').hidden=true;$('profile').hidden=false;
 }
-$('editProfile').addEventListener('submit',e=>{
+$('editProfile').addEventListener('submit',async e=>{
  e.preventDefault();
- data.username=$('editName').value.trim();data.phone=$('editPhone').value.trim();data.address=$('editAddress').value.trim();
- data.professional=data.professional||{};
- fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)data.professional[key]=el.value.trim()});
- if(save()){show();$('saveMessage').textContent='Enregistré sur cet appareil.';$('saveMessage').style.color='#138a65'}
+ const button=$('saveProfile'),message=$('saveMessage'),sb=window.inspecteurBotAuthClient;
+ if(!sb){message.textContent='Connexion Supabase indisponible. Rechargez la page.';message.style.color='#b42318';return}
+ const payload={
+  display_name:$('editName').value.trim(),
+  telephone:$('editPhone').value.trim(),
+  adresse_physique:$('editAddress').value.trim(),
+  direction_antenne:$('editDirection').value.trim(),
+  banque_payeur_sb:$('editBankSB').value.trim(),
+  banque_payeur_pp:$('editBankPP').value.trim(),
+  banque_payeur_mf_it_ct:$('editBankMF').value.trim()
+ };
+ if(!payload.display_name){message.textContent='Le nom d’utilisateur est obligatoire.';message.style.color='#b42318';return}
+ button.disabled=true;message.textContent='Enregistrement sécurisé dans Supabase…';message.style.color='#075a96';
+ try{
+  const {data:updated,error}=await sb.from('profiles').update(payload).eq('id',user.id)
+   .select('id,display_name,telephone,adresse_physique,direction_antenne,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,certification_status,next_profile_update_at,profile_last_updated_at')
+   .single();
+  if(error)throw error;
+  data.username=updated.display_name||'';data.phone=updated.telephone||'';data.address=updated.adresse_physique||'';
+  data.direction_antenne=updated.direction_antenne||'';
+  data.banque_payeur_sb=updated.banque_payeur_sb||'';
+  data.banque_payeur_pp=updated.banque_payeur_pp||'';
+  data.banque_payeur_mf_it_ct=updated.banque_payeur_mf_it_ct||'';
+  data.professional=data.professional||{};
+  fields.forEach(([label,key])=>{const el=$('edit_'+key);if(el)data.professional[key]=el.value.trim()});
+  profile={...profile,...updated};
+  if(!save())throw new Error('Les données sont enregistrées sur Supabase, mais le cache local n’a pas pu être actualisé.');
+  show();message.textContent='Paramètres enregistrés et synchronisés avec Supabase.';
+  message.style.color='#138a65';
+  const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
+  $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
+ }catch(err){
+  console.error('Enregistrement Supabase du profil :',err);
+  message.textContent=err.message||'Enregistrement impossible. Réessayez.';
+  message.style.color='#b42318';
+ }finally{button.disabled=false}
 });
 async function syncAvatarToSupabase(dataUrl){
  const sb=window.inspecteurBotAuthClient;
