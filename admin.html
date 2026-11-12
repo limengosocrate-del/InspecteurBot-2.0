@@ -171,16 +171,17 @@ $('print-users').addEventListener('click',()=>window.print());
 
 let certificationRequests=[],certificationProfiles=[],certificationAgents=[],payrollAgents=[];
 const categoryNames={inspecteur_travail:'Inspecteur du Travail',controleur_travail:'Contrôleur du Travail',agent_administratif:'Agent administratif'};
-const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const normalizeMatricule=s=>String(s||'').replace(/\D/g,'');
 function certificationOptions(q,category,selectedId=null){
  const n=normalizeSearch(q);
- const digits=String(q||'').replace(/\\D/g,'');
+ const digits=normalizeMatricule(q);
  let list=certificationAgents.filter(a=>{
   if(category&&a.categorie!==category)return false;
   if(!n&&!digits)return true;
   const name=normalizeSearch(a.nom_complet);
   const matriculeText=normalizeSearch(a.matricule);
-  const matriculeDigits=String(a.matricule||'').replace(/\\D/g,'');
+  const matriculeDigits=normalizeMatricule(a.matricule);
   return name.includes(n)||matriculeText.includes(n)||(digits&&matriculeDigits.includes(digits));
  });
  if(selectedId&&!list.some(a=>Number(a.id)===Number(selectedId))){
@@ -239,7 +240,7 @@ function renderCertification(){
  $('certification-body').innerHTML=rows.map(r=>{
   const p=certificationProfiles.find(x=>x.id===r.user_id),id=r.id;
   const q0=r.matricule||r.nom_complet||'';
-  const exactAgent=certificationAgents.find(a=>a.categorie===r.categorie&&normalizeSearch(a.nom_complet)===normalizeSearch(r.nom_complet)&&normalizeSearch(a.matricule)===normalizeSearch(r.matricule));
+  const exactAgent=certificationAgents.find(a=>a.categorie===r.categorie&&normalizeSearch(a.nom_complet)===normalizeSearch(r.nom_complet)&&normalizeMatricule(a.matricule)===normalizeMatricule(r.matricule));
   const options=certificationOptions(q0,r.categorie,exactAgent?.id);
   const person='<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
   const disabled=!r.user_id?'disabled':'';
@@ -253,10 +254,10 @@ $('certification-body').addEventListener('input',e=>{
  const id=input.dataset.certSearch,row=certificationRequests.find(x=>String(x.id)===String(id));
  const select=$('certification-body').querySelector('[data-cert-agent="'+id+'"]');
  if(select){
-  const digits=String(input.value||'').replace(/\\D/g,'');
+  const digits=normalizeMatricule(input.value);
   const exact=certificationAgents.find(a=>(!row?.categorie||a.categorie===row.categorie)&&(
    normalizeSearch(a.nom_complet)===normalizeSearch(input.value)||
-   (digits&&String(a.matricule||'').replace(/\\D/g,'')===digits)
+   (digits&&normalizeMatricule(a.matricule)===digits)
   ));
   select.innerHTML=certificationOptions(input.value,row?.categorie,exact?.id);
  }
@@ -264,25 +265,33 @@ $('certification-body').addEventListener('input',e=>{
 $('certification-body').addEventListener('click',async e=>{
  const certify=e.target.closest('[data-certify]'),reject=e.target.closest('[data-reject]');
  if(!certify&&!reject)return;
- const id=(certify||reject).dataset.certify||(certify||reject).dataset.reject;
- const request=certificationRequests.find(x=>String(x.id)===String(id));if(!request?.user_id){status('global-feedback','Cette demande ne correspond à aucun compte utilisateur.');return;}
+ const actionButton=certify||reject;
+ const id=actionButton.dataset.certify||actionButton.dataset.reject;
+ const request=certificationRequests.find(x=>String(x.id)===String(id));
+ if(!request?.user_id){status('global-feedback','Cette demande ne correspond à aucun compte utilisateur.');return;}
  const note=$('certification-body').querySelector('[data-cert-note="'+id+'"]')?.value.trim()||'';
+ let args;
+ if(certify){
+  const agentId=Number($('certification-body').querySelector('[data-cert-agent="'+id+'"]')?.value||0);
+  if(!agentId){status('global-feedback','Aucune fiche officielle sélectionnée. Recherchez le matricule puis choisissez la fiche correspondante.');return;}
+  if(!confirm('Confirmer la certification de '+request.nom_complet+' ?'))return;
+  args={p_request_id:Number(id),p_agent_id:agentId,p_decision:'certify',p_note:note||null};
+ }else{
+  if(!confirm('Rejeter la demande de certification de '+request.nom_complet+' ?'))return;
+  args={p_request_id:Number(id),p_agent_id:null,p_decision:'reject',p_note:note||null};
+ }
+ const originalLabel=actionButton.textContent;
+ actionButton.disabled=true;actionButton.textContent='Traitement…';
  try{
-  let args;
-  if(certify){
-   const agentId=Number($('certification-body').querySelector('[data-cert-agent="'+id+'"]')?.value||0);
-   if(!agentId){status('global-feedback','Sélectionnez d’abord une fiche officielle.');return;}
-   if(!confirm('Confirmer la certification de '+request.nom_complet+' ?'))return;
-   args={p_request_id:Number(id),p_agent_id:agentId,p_decision:'certify',p_note:note||null};
-  }else{
-   if(!confirm('Rejeter la demande de certification de '+request.nom_complet+' ?'))return;
-   args={p_request_id:Number(id),p_agent_id:null,p_decision:'reject',p_note:note||null};
-  }
   const {data,error}=await client.rpc('admin_set_profile_certification',args);
   if(error)throw error;
+  if(!data||data.success!==true)throw new Error(data?.message||'Supabase n’a pas confirmé la décision.');
   status('global-feedback',certify?'Compte certifié et relié à sa fiche officielle.':'Demande rejetée.',true);
   await loadCertification();await loadUsers();
- }catch(err){status('global-feedback',err.message||'Décision impossible.');}
+ }catch(err){
+  status('global-feedback',err.message||'Décision impossible.');
+  actionButton.disabled=false;actionButton.textContent=originalLabel;
+ }
 });
 async function loadPayroll(){
  if(!client)return;
