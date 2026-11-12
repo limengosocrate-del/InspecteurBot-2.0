@@ -3,7 +3,7 @@
 'use strict';
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
-const URL='https://icymfsvbuandgvrhwmaw.supabase.co';
+const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null;
 const css=document.createElement('style');
@@ -519,8 +519,8 @@ function setup(){
    regPhoto.value='';regPhotoPreview.hidden=true;
    regMessage.style.color='#b42318';regMessage.textContent='Choisissez une photo JPG, PNG ou WEBP de 12 Mo maximum.';return;
   }
-  const previewUrl=URL.createObjectURL(file),img=regPhotoPreview.querySelector('img');
-  if(img.dataset.previewUrl)URL.revokeObjectURL(img.dataset.previewUrl);
+  const previewUrl=window.URL.createObjectURL(file),img=regPhotoPreview.querySelector('img');
+  if(img.dataset.previewUrl)window.URL.revokeObjectURL(img.dataset.previewUrl);
   img.dataset.previewUrl=previewUrl;img.src=previewUrl;regPhotoPreview.hidden=false;regMessage.textContent='';
  });
  async function prepareRegistrationPhoto(file){
@@ -602,7 +602,7 @@ async function start(){
  setupNetworkStatus();
  try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
  makeGate();gate('Préparation de votre espace sécurisé…','loading');
- try{await loadLib();client=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
+ try{await loadLib();client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
  // La session reste active jusqu'à la déconnexion ou à sa révocation. Supabase renouvelle automatiquement les jetons.
  document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
  window.inspecteurBotSignOut=signOut;
