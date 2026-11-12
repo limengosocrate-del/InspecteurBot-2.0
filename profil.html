@@ -377,7 +377,7 @@ $('editProfile').addEventListener('submit',async e=>{
   profile={...profile,...updated};
   if(!save())console.warn('Le profil est enregistré, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent=updated.certification_status==='certified'?'Félicitations 🎉 Votre compte est bien certifié ! Vos informations professionnelles ont été vérifiées et votre fiche est disponible dans l’annuaire numérique de l’IGT.':'Vos paramètres ont été enregistrés. Votre compte reste en attente de vérification par l’administration.';
+  show();message.textContent=updated.certification_status==='certified'?'Félicitations 🎉 Votre compte est certifié. Le grade et la fonction ont été synchronisés avec le registre officiel de l’IGT.':'Vos paramètres sont enregistrés. Le numéro matricule ou le nom n’a pas été reconnu automatiquement dans la base officielle. Votre demande est transmise à l’administrateur pour vérification. Vous pouvez également contacter Pmiller.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
   $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. '+(updated.certification_status==='certified'?'Votre compte est certifié.':'Votre demande reste en attente de vérification.')+' La prochaine modification sera possible à partir du '+next+'.';
