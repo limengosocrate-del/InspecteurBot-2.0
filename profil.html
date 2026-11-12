@@ -32,7 +32,7 @@ section h2{font-size:15px;margin:0 0 17px;color:var(--navy);display:flex;gap:10p
 .field small{display:block;color:#062b58;font-size:13px;font-weight:800;margin-bottom:7px;letter-spacing:.1px}
 .field strong{color:#062b58;font-size:14px;font-weight:800}
 .certification-banner{margin:-4px 0 18px;padding:13px 16px;border-radius:12px;background:#edf5ff;border:1px solid #c7dcf5;color:#082f60;font-size:14px;font-weight:700;line-height:1.55}
-.certification-banner.certified{background:#eaf3ff;border-color:#b9d4f5;color:#073b82}
+.certification-banner.certified{background:#eaf3ff;border-color:#b9d4f5;color:#073b82}.certification-status-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid #9fc5f5;border-radius:999px;background:#dbeafe;color:#0755a6;font-size:13px;font-weight:800;box-shadow:0 1px 2px #0b39751a}
 .certification-banner.pending{background:#fff8e8;border-color:#f0dfae;color:#76591d}
 #editProfile .field small{font-size:14px;color:#062b58;font-weight:800}
 #editProfile .field input{font-size:16px;font-weight:600;color:#082f60}
@@ -247,7 +247,7 @@ function item(label,value){const empty=value===undefined||value===null||String(v
 function show(){
  const isCertified=profile?.certification_status==='certified';
  const certBanner=$('profileCertificationBanner');
- if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'✓ Votre compte est certifié. Votre fiche et votre photo de profil sont publiées dans l’annuaire des agents.':'⏳ Votre compte est en attente de vérification.';}
+ if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'<span class="certification-status-badge" aria-label="Compte certifié">✓ Ton compte est certifié</span>':'⏳ Votre compte est en attente de vérification.';}
  $('account').innerHTML=item('Nom complet',profile?.display_name||data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
