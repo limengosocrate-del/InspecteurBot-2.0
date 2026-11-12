@@ -26,6 +26,8 @@
  <nav class="nav">
   <button class="active" data-view="dashboard"><i class="fa-solid fa-chart-pie"></i> Tableau de bord</button>
   <button data-view="members"><i class="fa-solid fa-users"></i> Annuaire des membres</button>
+  <button data-view="certification"><i class="fa-solid fa-id-card-clip"></i> Certification des comptes</button>
+  <button data-view="payroll"><i class="fa-solid fa-money-check-dollar"></i> Catégories de paiement</button>
   <button data-view="messages"><i class="fa-solid fa-envelope"></i> Messagerie</button>
   <button data-view="announcements"><i class="fa-solid fa-bullhorn"></i> Annonces officielles</button>
   <a class="nav-admin-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gestion des formations</a>
@@ -66,6 +68,23 @@
   <div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="select-all-check" aria-label="Tout sélectionner"></th><th>Nom et identité</th><th>E-mail</th><th>Téléphone</th><th>Adresse physique</th><th>Matricule / fonction</th><th>Province</th><th>Statut</th><th>Présence</th><th>Actions</th></tr></thead><tbody id="users-body"><tr><td colspan="10" class="empty">Chargement des comptes…</td></tr></tbody></table></div>
  </div>
 </section>
+
+<section class="view" id="view-certification">
+ <div class="panel">
+  <div class="panel-head"><div><h3>Vérification et certification des agents</h3><p class="sub">Les identités non reconnues restent en attente jusqu’à la décision du super-administrateur.</p></div><div class="toolbar"><span class="pill off" id="certification-count">Chargement…</span><button class="btn light" id="refresh-certification"><i class="fa-solid fa-rotate"></i> Actualiser</button></div></div>
+  <div class="notice">La certification automatique est réservée aux correspondances exactes du nom complet, du matricule et de la catégorie. Toute validation manuelle d’une fiche différente exige un motif écrit. Les coordonnées personnelles restent visibles uniquement dans cet espace administratif.</div>
+  <div class="toolbar" style="margin-bottom:12px"><input id="certification-search" class="field search" type="search" placeholder="Filtrer les demandes par nom, matricule ou e-mail…"></div>
+  <div class="table-wrap"><table style="min-width:1250px"><thead><tr><th>Compte / demande</th><th>Catégorie</th><th>Matricule saisi</th><th>Rechercher la fiche officielle</th><th>Fiche à rattacher</th><th>Motif (obligatoire si différence)</th><th>Décision</th></tr></thead><tbody id="certification-body"><tr><td colspan="7" class="empty">Chargement des demandes…</td></tr></tbody></table></div>
+ </div>
+</section>
+<section class="view" id="view-payroll">
+ <div class="panel">
+  <div class="panel-head"><div><h3>Catégories de paiement des agents</h3><p class="sub">Inspecteurs du Travail, Contrôleurs du Travail et agents administratifs du registre officiel.</p></div><div class="toolbar"><button class="btn light" id="refresh-payroll"><i class="fa-solid fa-rotate"></i> Actualiser</button></div></div>
+  <div class="notice">Les cases sont des indicateurs administratifs à confirmer à partir des états de paie officiels. Elles ne sont pas cochées automatiquement en l’absence de données de paiement vérifiées.</div>
+  <div class="toolbar" style="margin-bottom:12px"><input id="payroll-search" class="field search" type="search" placeholder="Rechercher un agent par nom ou matricule…"><select id="payroll-category" class="field"><option value="">Toutes les catégories</option><option value="inspecteur_travail">Inspecteurs du Travail</option><option value="controleur_travail">Contrôleurs du Travail</option><option value="agent_administratif">Agents administratifs</option></select><span class="muted" id="payroll-count"></span></div>
+  <div class="table-wrap"><table style="min-width:900px"><thead><tr><th>Agent</th><th>Matricule</th><th>Catégorie</th><th>SB — Salaire de base</th><th>PP — Prime permanente</th><th>Prime de MF.IT/CT</th></tr></thead><tbody id="payroll-body"><tr><td colspan="6" class="empty">Chargement du registre…</td></tr></tbody></table></div>
+ </div>
+</section>
 <section class="view" id="view-messages">
  <div class="grid2">
   <div class="panel"><div class="panel-head"><div><h3>Écrire aux membres</h3><p class="sub">Envoyer un message privé à tous ou aux membres sélectionnés dans l'annuaire.</p></div></div>
@@ -103,7 +122,7 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let client=null,currentUser=null,currentProfile=null,users=[],visibleUsers=[],selected=new Set(),booted=false;
 function status(id,msg,good=false){const el=$(id);if(el){el.textContent=msg;el.style.color=good?'#14845c':'#075b9b';}}
-function view(name){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===name));if(name==='messages')loadInbox();if(name==='announcements')loadAnnouncements();if(name==='history')loadLogs();}
+function view(name){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===name));if(name==='messages')loadInbox();if(name==='announcements')loadAnnouncements();if(name==='history')loadLogs();if(name==='certification')loadCertification();if(name==='payroll')loadPayroll();}
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.go)));
 $('mobile-menu').addEventListener('click',()=>$('sidebar').classList.toggle('mobile-open'));
@@ -144,6 +163,100 @@ $('suspend-all').addEventListener('click',async()=>{if(!confirm('Attention : sus
 $('reactivate-all').addEventListener('click',async()=>{if(!confirm('Réactiver tous les comptes agents suspendus ? Confirmer ?'))return;try{const r=await adminCall({action:'bulk_reactivate',confirm:true});status('access-feedback',r.message,true);await loadUsers();}catch(e){status('access-feedback',e.message);}});
 $('export-csv').addEventListener('click',()=>{const rows=[['Nom','E-mail','Téléphone','Adresse physique','Matricule','Fonction','Province','Statut','Présence'],...visibleUsers.map(u=>[u.display_name,u.email,u.telephone,u.adresse_physique,u.agents?.matricule,u.agents?.fonction,u.agents?.province,u.is_active?'Actif':'Suspendu',u.online?'En ligne':'Hors ligne'])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='InspecteurBot-membres.csv';a.click();URL.revokeObjectURL(url);});
 $('print-users').addEventListener('click',()=>window.print());
+
+let certificationRequests=[],certificationProfiles=[],certificationAgents=[],payrollAgents=[];
+const categoryNames={inspecteur_travail:'Inspecteur du Travail',controleur_travail:'Contrôleur du Travail',agent_administratif:'Agent administratif'};
+const normalizeSearch=s=>String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+function certificationOptions(q,category){
+ const n=normalizeSearch(q);
+ const list=certificationAgents.filter(a=>(!category||a.categorie===category)&&(!n||normalizeSearch(a.nom_complet+' '+a.matricule).includes(n))).slice(0,25);
+ return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'">'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
+}
+async function loadCertification(){
+ if(!client)return;
+ $('certification-body').innerHTML='<tr><td colspan="7" class="empty">Chargement sécurisé…</td></tr>';
+ try{
+  const [req,agents]=await Promise.all([
+   client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,verification_status,candidate_count,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(1000),
+   client.from('agents').select('id,nom_complet,matricule,categorie').order('nom_complet').limit(3000)
+  ]);
+  if(req.error)throw req.error;if(agents.error)throw agents.error;
+  certificationRequests=req.data||[];certificationAgents=agents.data||[];
+  const ids=[...new Set(certificationRequests.map(x=>x.user_id).filter(Boolean))];
+  certificationProfiles=[];
+  if(ids.length){const p=await client.from('profiles').select('id,display_name,telephone,adresse_physique,certification_status,certification_due_at').in('id',ids);if(p.error)throw p.error;certificationProfiles=p.data||[];}
+  renderCertification();
+ }catch(e){$('certification-body').innerHTML='<tr><td colspan="7" class="empty">'+esc(e.message)+'</td></tr>';$('certification-count').textContent='Erreur';}
+}
+function renderCertification(){
+ const q=normalizeSearch($('certification-search')?.value||'');
+ const rows=certificationRequests.filter(r=>normalizeSearch([r.nom_complet,r.matricule,r.email].join(' ')).includes(q));
+ $('certification-count').textContent=rows.length+' demande(s) en attente';
+ if(!rows.length){$('certification-body').innerHTML='<tr><td colspan="7" class="empty">Aucune demande en attente de certification.</td></tr>';return;}
+ $('certification-body').innerHTML=rows.map(r=>{
+  const p=certificationProfiles.find(x=>x.id===r.user_id),id=r.id;
+  const q0=r.matricule||r.nom_complet||'';
+  const options=certificationOptions(q0,r.categorie);
+  const person='<b class="name">'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small class="muted">'+(p?.telephone?'Tél. '+esc(p.telephone):'Téléphone non renseigné')+'</small><br><small class="muted">'+(p?.adresse_physique?'Adresse : '+esc(p.adresse_physique):'Adresse non renseignée')+'</small>';
+  const disabled=!r.user_id?'disabled':'';
+  return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Nom ou matricule"></td><td><select class="field" style="min-width:260px;max-width:300px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+disabled+'>Certifier</button><button class="btn red" data-reject="'+id+'" '+disabled+'>Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+'</td></tr>';
+ }).join('');
+}
+$('certification-search').addEventListener('input',renderCertification);
+$('refresh-certification').addEventListener('click',loadCertification);
+$('certification-body').addEventListener('input',e=>{
+ const input=e.target.closest('[data-cert-search]');if(!input)return;
+ const id=input.dataset.certSearch,row=certificationRequests.find(x=>String(x.id)===String(id));
+ const select=$('certification-body').querySelector('[data-cert-agent="'+id+'"]');
+ if(select)select.innerHTML=certificationOptions(input.value,row?.categorie);
+});
+$('certification-body').addEventListener('click',async e=>{
+ const certify=e.target.closest('[data-certify]'),reject=e.target.closest('[data-reject]');
+ if(!certify&&!reject)return;
+ const id=(certify||reject).dataset.certify||(certify||reject).dataset.reject;
+ const request=certificationRequests.find(x=>String(x.id)===String(id));if(!request?.user_id){status('global-feedback','Cette demande ne correspond à aucun compte utilisateur.');return;}
+ const note=$('certification-body').querySelector('[data-cert-note="'+id+'"]')?.value.trim()||'';
+ try{
+  let args;
+  if(certify){
+   const agentId=Number($('certification-body').querySelector('[data-cert-agent="'+id+'"]')?.value||0);
+   if(!agentId){status('global-feedback','Sélectionnez d’abord une fiche officielle.');return;}
+   if(!confirm('Confirmer la certification de '+request.nom_complet+' ?'))return;
+   args={p_request_id:Number(id),p_agent_id:agentId,p_decision:'certify',p_note:note||null};
+  }else{
+   if(!confirm('Rejeter la demande de certification de '+request.nom_complet+' ?'))return;
+   args={p_request_id:Number(id),p_agent_id:null,p_decision:'reject',p_note:note||null};
+  }
+  const {data,error}=await client.rpc('admin_set_profile_certification',args);
+  if(error)throw error;
+  status('global-feedback',certify?'Compte certifié et relié à sa fiche officielle.':'Demande rejetée.',true);
+  await loadCertification();await loadUsers();
+ }catch(err){status('global-feedback',err.message||'Décision impossible.');}
+});
+async function loadPayroll(){
+ if(!client)return;
+ $('payroll-body').innerHTML='<tr><td colspan="6" class="empty">Chargement du registre officiel…</td></tr>';
+ try{const {data,error}=await client.from('agents').select('id,nom_complet,matricule,categorie,receives_sb,receives_pp,receives_mf_it_ct').order('nom_complet').limit(3000);if(error)throw error;payrollAgents=data||[];renderPayroll();}
+ catch(e){$('payroll-body').innerHTML='<tr><td colspan="6" class="empty">'+esc(e.message)+'</td></tr>';}
+}
+function renderPayroll(){
+ const q=normalizeSearch($('payroll-search')?.value||''),cat=$('payroll-category')?.value||'';
+ const rows=payrollAgents.filter(a=>(!cat||a.categorie===cat)&&normalizeSearch(a.nom_complet+' '+a.matricule).includes(q));
+ $('payroll-count').textContent=rows.length.toLocaleString('fr-FR')+' agent(s)';
+ $('payroll-body').innerHTML=rows.map(a=>'<tr><td><b class="name">'+esc(a.nom_complet)+'</b></td><td>'+esc(a.matricule||'—')+'</td><td>'+esc(categoryNames[a.categorie]||a.categorie)+'</td>'+[['receives_sb','SB'],['receives_pp','PP'],['receives_mf_it_ct','MF.IT/CT']].map(([field,label])=>'<td style="text-align:center"><label style="display:inline-flex;align-items:center;gap:7px"><input type="checkbox" data-payroll-id="'+a.id+'" data-payroll-field="'+field+'" '+(a[field]?'checked':'')+' aria-label="'+label+' pour '+esc(a.nom_complet)+'"><span class="muted">'+(a[field]?'Oui':'Non')+'</span></label></td>').join('')+'</tr>').join('')||'<tr><td colspan="6" class="empty">Aucun agent correspondant.</td></tr>';
+}
+$('payroll-search').addEventListener('input',renderPayroll);
+$('payroll-category').addEventListener('change',renderPayroll);
+$('refresh-payroll').addEventListener('click',loadPayroll);
+$('payroll-body').addEventListener('change',async e=>{
+ const cb=e.target.closest('[data-payroll-id][data-payroll-field]');if(!cb)return;
+ const field=cb.dataset.payrollField;if(!['receives_sb','receives_pp','receives_mf_it_ct'].includes(field))return;
+ cb.disabled=true;
+ try{const {error}=await client.from('agents').update({[field]:cb.checked}).eq('id',Number(cb.dataset.payrollId));if(error)throw error;const row=payrollAgents.find(x=>x.id===Number(cb.dataset.payrollId));if(row)row[field]=cb.checked;renderPayroll();status('global-feedback','Indicateur de paiement mis à jour.',true);}
+ catch(err){cb.checked=!cb.checked;status('global-feedback',err.message||'Mise à jour impossible.');}
+ finally{cb.disabled=false;}
+});
+
 })();
 </script>
 <script src="auth-gate.js?v=20261109-admin-message-alert-v3"></script>
