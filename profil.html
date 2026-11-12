@@ -422,7 +422,7 @@ $('avatarFile').addEventListener('change',async e=>{
   const url=URL.createObjectURL(f),img=new Image();
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('Impossible de lire cette image.'));img.src=url});
   cropObjectUrl=url;
-  openCropper(img);
+  await openCropper(img);
  }catch(err){if(typeof url!=='undefined')URL.revokeObjectURL(url);$('avatarMessage').textContent=err.message||'Lecture de la photo impossible.';$('avatarMessage').style.color='#b42318'}
  e.target.value='';
 });
