@@ -142,7 +142,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
-<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="margin-left:10px;font-size:13px"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 3 mois. Les informations personnelles ne sont pas publiées dans l’annuaire.</p></div>
+<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="display:block;margin:10px 0 0;font-size:13px;line-height:1.55"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles sont affichées dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.</p></div>
 </form>
 </section>
 <div class="grid" id="mes-informations">
@@ -263,9 +263,9 @@ function applyProfileCooldown(){
    const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
    notice.textContent=(profile?.certification_status==='certified'?'Compte certifié : ':'Paramètres récemment enregistrés : ')+'la modification de vos paramètres est temporairement désactivée jusqu’au '+date+'.';
   }else if(profile?.certification_status==='certified'){
-   notice.textContent='Compte certifié. Le délai de protection de 90 jours est terminé ; vous pouvez modifier vos paramètres.';
+   notice.textContent='Compte certifié. Vos informations professionnelles sont visibles dans l’annuaire IGT. Le téléphone et l’adresse physique restent privés. Le délai de protection de 90 jours est terminé ; vous pouvez modifier vos paramètres.';
   }else{
-   notice.textContent='Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations personnelles ne sont pas publiées dans l’annuaire.';
+   notice.textContent='Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles apparaîtront dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.';
   }
  }
 }
@@ -361,7 +361,7 @@ $('editProfile').addEventListener('submit',async e=>{
  try{
   const {data:response,error}=await sb.functions.invoke('igt-update-profile',{body:payload});
   if(error)throw error;
-  if(!response?.success||!response.profile)throw new Error(response?.message||'Supabase n’a pas confirmé l’enregistrement.');
+  if(!response?.success||!response.profile)throw new Error(response?.message||'La base de données n’a pas confirmé l’enregistrement.');
   const updated=response.profile;
   data.username=updated.display_name||'';data.phone=updated.telephone||'';data.address=updated.adresse_physique||'';
   data.professional=data.professional||{};
@@ -377,7 +377,7 @@ $('editProfile').addEventListener('submit',async e=>{
   profile={...profile,...updated};
   if(!save())console.warn('Le profil est enregistré, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent='Vos paramètres ont été enregistrés avec succès.';
+  show();message.textContent=response.auto_certified?'Vos paramètres sont enregistrés. Votre identité correspond au registre officiel : votre compte est certifié et votre fiche professionnelle est maintenant publiée dans l’annuaire IGT.':'Vos paramètres ont été enregistrés avec succès.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
   $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
