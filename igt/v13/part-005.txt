@@ -66,6 +66,9 @@ async function refreshCertifiedDirectoryProfiles(){
   const {data,error}=await sb.from('igt_certified_directory')
    .select('matricule,avatar_url,banque_payeur_sb,banque_payeur_pp,banque_payeur_mf_it_ct,direction_antenne');
   if(error)throw error;
+  // Établir la connexion au stockage des photos avant que l'utilisateur lance une recherche.
+  const firstAvatar=(data||[]).find(p=>p.avatar_url)?.avatar_url;
+  if(firstAvatar){try{const origin=new URL(firstAvatar).origin;if(!document.querySelector('link[data-igt-photo-preconnect="'+origin+'"]')){const link=document.createElement('link');link.rel='preconnect';link.href=origin;link.crossOrigin='anonymous';link.dataset.igtPhotoPreconnect=origin;document.head.appendChild(link);}}catch(_){}}
   const next=Object.create(null);
   (data||[]).forEach(p=>{if(p.matricule)next[norm(p.matricule)]=p});
   const previous=window.igtCertifiedProfileByMatricule||Object.create(null);
