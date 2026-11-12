@@ -436,6 +436,26 @@ async function validate(session){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
     appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="/InspecteurBot-2.0/messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-messenger-speed-v2" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
+    // Résoudre les destinations depuis l'emplacement réel du script :
+    // fonctionne sur GitHub Pages avec sous-répertoire comme sur un domaine personnalisé.
+    const authScript=document.querySelector('script[src*="auth-gate.js"]');
+    const appBase=authScript?new URL('./',authScript.src):new URL('./',location.href);
+    const headerRoutes={
+     '#ib-header-messages':new URL('messagerie.html?v=20261112-header-navigation-v3',appBase).href,
+     '#ib-header-presence':new URL('messagerie.html?view=presence&v=20261112-header-navigation-v3',appBase).href,
+     '#ib-notification-link':new URL('notifications.html?v=20261112-header-navigation-v3',appBase).href
+    };
+    Object.entries(headerRoutes).forEach(([selector,destination])=>{
+     const link=appHeader.querySelector(selector);
+     if(!link)return;
+     link.href=destination;
+     link.style.pointerEvents='auto';
+     link.addEventListener('click',event=>{
+      if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      event.preventDefault();
+      window.location.assign(destination);
+     });
+    });
     setTimeout(()=>void refreshHeaderBadges(),0);
     chip=document.createElement('div');chip.id='ib-auth-chip';
     chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html#mes-informations"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
