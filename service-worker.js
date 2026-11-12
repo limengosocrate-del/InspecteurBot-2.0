@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v25-registration-recovery';
+const CACHE='inspecteurbot-data-v26-live-update-v2';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
@@ -62,6 +62,12 @@ self.addEventListener('fetch',event=>{
         return cached||Response.error();
       }
     })());
+    return;
+  }
+
+  // Le manifeste de version ne doit jamais être servi depuis un ancien cache.
+  if(url.origin===self.location.origin&&url.pathname.endsWith('/app-version.json')){
+    event.respondWith(fetch(new Request(request,{cache:'no-store',headers:{...Object.fromEntries(request.headers.entries()),'Cache-Control':'no-cache'}})));
     return;
   }
 
