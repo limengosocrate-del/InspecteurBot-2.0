@@ -8,7 +8,7 @@ const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n#ib-startup-splash{position:fixed;inset:0;z-index:2147482999;display:flex;visibility:visible!important;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font-family:Arial,sans-serif;opacity:1;transition:opacity .22s ease}\n#ib-startup-splash .ib-splash-title{font-size:clamp(32px,8vw,48px);font-weight:800;letter-spacing:.3px}\n#ib-startup-splash .ib-splash-subtitle{font-size:clamp(15px,4vw,19px);color:#d8eaff}\n#ib-startup-splash .ib-splash-spinner{width:30px;height:30px;margin-top:16px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-spin .8s linear infinite}\n#ib-startup-splash.ib-splash-hide{opacity:0;pointer-events:none}
+html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n
 #ib-auth-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background-image:linear-gradient(135deg,#061a30 0%,#0b2d4d 55%,#071b34 100%);background-size:cover;background-position:center;background-repeat:no-repeat;font-family:Arial,sans-serif;visibility:visible!important}
 #ib-auth-gate[hidden]{display:none!important}
 #ib-auth-card{box-sizing:border-box;width:min(430px,100%);padding:30px 26px;border-radius:18px;background:rgba(255,255,255,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.58);color:#18314d;box-shadow:0 20px 65px #00152f80}
@@ -63,13 +63,8 @@ html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splas
 @media(max-width:520px){#ib-auth-gate{padding:12px}#ib-auth-card{padding:20px!important;max-height:calc(100dvh - 24px)}#ib-auth-register-panel{padding:10px}#ib-auth-register-form{margin:8px auto;padding:18px}}
 `;
 document.head.appendChild(css);
-if(!document.getElementById('ib-startup-splash')){
- const splash=document.createElement('div');splash.id='ib-startup-splash';splash.setAttribute('role','status');splash.setAttribute('aria-live','polite');
- splash.innerHTML='<div class="ib-splash-title">InspecteurBot</div><div class="ib-splash-subtitle">Votre assistant numérique</div><div class="ib-splash-spinner" aria-hidden="true"></div>';
- document.body.appendChild(splash);
-}
 function byId(id){return document.getElementById('ib-'+id)}
-function hideSplash(){const splash=document.getElementById('ib-startup-splash');if(!splash)return;splash.classList.add('ib-splash-hide');setTimeout(()=>splash.remove(),260)}
+function hideSplash(){document.getElementById('ib-startup-splash')?.remove()}
 function setupNetworkStatus(){
  if(document.getElementById('ib-network-status'))return;
  const style=document.createElement('style');style.id='ib-network-status-style';
@@ -434,28 +429,10 @@ async function validate(session){
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="/InspecteurBot-2.0/messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="/InspecteurBot-2.0/messagerie.html?v=20261110-messenger-speed-v2" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="/InspecteurBot-2.0/notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261112-messenger-session-v1" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
-    // Résoudre les destinations depuis l'emplacement réel du script :
-    // fonctionne sur GitHub Pages avec sous-répertoire comme sur un domaine personnalisé.
-    const authScript=document.querySelector('script[src*="auth-gate.js"]');
-    const appBase=document.createElement('a');appBase.href=authScript?authScript.src:location.href;appBase.pathname=appBase.pathname.replace(/[^/]*$/,'');
-    const headerRoutes={
-     '#ib-header-messages':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'messagerie.html';a.search='?v=20261112-header-navigation-v3';return a.href;})(),
-     '#ib-header-presence':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'messagerie.html';a.search='?view=presence&v=20261112-header-navigation-v3';return a.href;})(),
-     '#ib-notification-link':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'notifications.html';a.search='?v=20261112-header-navigation-v3';return a.href;})()
-    };
-    Object.entries(headerRoutes).forEach(([selector,destination])=>{
-     const link=appHeader.querySelector(selector);
-     if(!link)return;
-     link.href=destination;
-     link.style.pointerEvents='auto';
-     link.addEventListener('click',event=>{
-      if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
-      event.preventDefault();
-      window.location.assign(destination);
-     });
-    });
+    // Liens relatifs directs : pas de redirection JavaScript ni de reconstruction d'URL.
+    // Le navigateur conserve la session de cet onglet entre les pages de même origine.
     setTimeout(()=>void refreshHeaderBadges(),0);
     chip=document.createElement('div');chip.id='ib-auth-chip';
     chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html#mes-informations"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
