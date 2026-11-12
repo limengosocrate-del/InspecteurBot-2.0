@@ -439,11 +439,11 @@ async function validate(session){
     // Résoudre les destinations depuis l'emplacement réel du script :
     // fonctionne sur GitHub Pages avec sous-répertoire comme sur un domaine personnalisé.
     const authScript=document.querySelector('script[src*="auth-gate.js"]');
-    const appBase=authScript?new URL('./',authScript.src):new URL('./',location.href);
+    const appBase=document.createElement('a');appBase.href=authScript?authScript.src:location.href;appBase.pathname=appBase.pathname.replace(/[^/]*$/,'');
     const headerRoutes={
-     '#ib-header-messages':new URL('messagerie.html?v=20261112-header-navigation-v3',appBase).href,
-     '#ib-header-presence':new URL('messagerie.html?view=presence&v=20261112-header-navigation-v3',appBase).href,
-     '#ib-notification-link':new URL('notifications.html?v=20261112-header-navigation-v3',appBase).href
+     '#ib-header-messages':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'messagerie.html';a.search='?v=20261112-header-navigation-v3';return a.href;})(),
+     '#ib-header-presence':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'messagerie.html';a.search='?view=presence&v=20261112-header-navigation-v3';return a.href;})(),
+     '#ib-notification-link':(()=>{const a=document.createElement('a');a.href=appBase.href;a.pathname=appBase.pathname+'notifications.html';a.search='?v=20261112-header-navigation-v3';return a.href;})()
     };
     Object.entries(headerRoutes).forEach(([selector,destination])=>{
      const link=appHeader.querySelector(selector);
@@ -592,11 +592,11 @@ function setup(){
 }
 async function loadGlobalTheme(){
  const authScript=Array.from(document.scripts).find(s=>s.src.includes('auth-gate.js'));
- const base=authScript?new URL('./',authScript.src):new URL('./',location.href);
- if(!document.querySelector('link[data-ib-auth-background]')){const authBg=document.createElement('link');authBg.rel='stylesheet';authBg.href=new URL('auth-background.css?v=20261109-auth-final-5',base).href;authBg.dataset.ibAuthBackground='1';document.head.appendChild(authBg);}
- if(!document.querySelector('link[data-ib-global-theme]')){const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('global-theme.css?v=20261108-theme-5',base).href;link.dataset.ibGlobalTheme='1';document.head.appendChild(link);}
+ const base=document.createElement('a');base.href=authScript?authScript.src:location.href;base.pathname=base.pathname.replace(/[^/]*$/,'');
+ if(!document.querySelector('link[data-ib-auth-background]')){const authBg=document.createElement('link');authBg.rel='stylesheet';authBg.href=(()=>{const a=document.createElement('a');a.href=base.href;a.pathname=base.pathname+'auth-background.css';a.search='?v=20261109-auth-final-5';return a.href;})();authBg.dataset.ibAuthBackground='1';document.head.appendChild(authBg);}
+ if(!document.querySelector('link[data-ib-global-theme]')){const link=document.createElement('link');link.rel='stylesheet';link.href=(()=>{const a=document.createElement('a');a.href=base.href;a.pathname=base.pathname+'global-theme.css';a.search='?v=20261108-theme-5';return a.href;})();link.dataset.ibGlobalTheme='1';document.head.appendChild(link);}
  if(window.InspecteurBotTheme)return;
- await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=new URL('global-theme.js?v=20261108-theme-5',base).href;script.onload=resolve;script.onerror=()=>reject(new Error('Thèmes globaux indisponibles'));document.head.appendChild(script);});
+ await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src=(()=>{const a=document.createElement('a');a.href=base.href;a.pathname=base.pathname+'global-theme.js';a.search='?v=20261108-theme-5';return a.href;})();script.onload=resolve;script.onerror=()=>reject(new Error('Thèmes globaux indisponibles'));document.head.appendChild(script);});
 }
 async function start(){
  setupNetworkStatus();
