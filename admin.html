@@ -190,7 +190,7 @@ function certificationOptions(q,category,selectedId=null){
   if(selected)list.unshift(selected);
  }
  list=list.slice(0,25);
- return '<option value="">— Choisir une fiche officielle —</option>'+list.map(a=>'<option value="'+a.id+'"'+(Number(a.id)===Number(selectedId)?' selected':'')+'>'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
+ return '<option value="">— Création automatique si identité absente —</option>'+list.map(a=>'<option value="'+a.id+'"'+(Number(a.id)===Number(selectedId)?' selected':'')+'>'+esc(a.nom_complet)+' · '+esc(a.matricule||'Sans matricule')+' · '+esc(categoryNames[a.categorie]||a.categorie)+'</option>').join('');
 }
 async function fetchAllOfficialAgents(columns){
  const all=[];let start=0,batch=1000;
@@ -276,9 +276,8 @@ $('certification-body').addEventListener('click',async e=>{
  let args;
  if(certify){
   const agentId=Number($('certification-body').querySelector('[data-cert-agent="'+id+'"]')?.value||0);
-  if(!agentId){status('global-feedback','Aucune fiche officielle sélectionnée. Recherchez le matricule puis choisissez la fiche correspondante.');return;}
-  if(!confirm('Confirmer la certification de '+request.nom_complet+' ?'))return;
-  args={p_request_id:Number(id),p_agent_id:agentId,p_decision:'certify',p_note:note||null};
+  if(!confirm(agentId?'Confirmer la certification de '+request.nom_complet+' ?':'Aucune fiche sélectionnée. Si le nom et le matricule sont absents du registre, une nouvelle fiche sera créée automatiquement. Confirmer la certification de '+request.nom_complet+' ?'))return;
+  args={p_request_id:Number(id),p_agent_id:agentId||null,p_decision:'certify',p_note:note||null};
  }else{
   if(!confirm('Rejeter la demande de certification de '+request.nom_complet+' ?'))return;
   args={p_request_id:Number(id),p_agent_id:null,p_decision:'reject',p_note:note||null};
