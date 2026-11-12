@@ -452,7 +452,7 @@ async function openCropper(image){
    closeCropper();message.textContent='Photo optimisée ('+Math.round(output.size/1024)+' Ko). Envoi sécurisé…';message.style.color='#075a96';
    data.avatar=dataUrl;if(!save())throw new Error('Espace local insuffisant pour préparer la photo.');
    await syncAvatarToSupabase(dataUrl);
-   message.textContent='Photo recadrée, compressée et synchronisée ('+Math.round(output.size/1024)+' Ko).';message.style.color='#138a65';
+   message.textContent='Votre photo de profil a été mise à jour avec succès.';message.style.color='#138a65';
   }catch(err){console.error('Traitement de la photo de profil',err);message.textContent='Échec : '+(err.message||'réessayez');message.style.color='#b42318'}
   finally{confirm.disabled=false;confirm.textContent='Valider et enregistrer'}
  });
