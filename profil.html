@@ -135,6 +135,12 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <section class="wide" id="parametres" style="margin-bottom:16px">
 <h2>⚙️ Paramètres du compte et la certification du compte</h2>
 <div id="profileCertificationBanner" class="certification-banner" role="status">Vérification du statut de certification…</div>
+<div id="ib-passkey-panel" style="margin:0 0 16px;padding:14px 16px;border:1px solid #cbdfee;border-radius:12px;background:#f2f8fc">
+ <strong style="display:block;color:#073b70;margin-bottom:6px">🔐 Sécurité biométrique — Passkey obligatoire pour la certification</strong>
+ <p id="ib-passkey-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Vérification de votre Passkey…</p>
+ <button id="ib-passkey-register" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Configurer ma Passkey</button>
+ <small style="display:block;margin-top:8px;color:#61768a">Utilisez l’empreinte digitale, la reconnaissance faciale, le code PIN de votre appareil ou un gestionnaire de Passkeys compatible.</small>
+</div>
 <form id="editProfile" class="fields">
  
 <label class="field wide"><small>Adresse physique *</small><input id="editAddress" maxlength="300" autocomplete="street-address" required></label>
@@ -184,7 +190,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
  <img id="avatarLightboxImage" alt="Photo de profil en taille agrandie">
 </div>
 
-<script src="auth-gate.js?v=20261112-registration-photo-crop-v1"></script>
+<script src="auth-gate.js?v=20261112-passkey-required-v1"></script>
 <script>
 /* InspecteurBot — profil, paramètres et fiche professionnelle en stockage local uniquement. */
 (function(){
@@ -194,6 +200,39 @@ function initProfileForAccount(user,profile){
  const KEY='inspecteurbot_local_profile_v1_'+user.id;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function setupPasskeyPanel(){
+ const panel=$('ib-passkey-panel'),status=$('ib-passkey-status'),button=$('ib-passkey-register');
+ if(!panel||!status||!button)return;
+ const auth=window.inspecteurBotAuthClient?.auth;
+ if(!auth){status.textContent='Service de sécurité indisponible. Rechargez la page.';button.disabled=true;return;}
+ const refresh=async()=>{
+  try{
+   const {data,error}=await auth.passkey.list();
+   if(error)throw error;
+   const items=Array.isArray(data)?data:[];
+   status.textContent=items.length
+    ?'Passkey active : '+items.length+' clé(s) de sécurité enregistrée(s). Votre compte pourra être certifié après validation de votre identité.'
+    :'Aucune Passkey enregistrée. Configurez-en une avant de demander la certification de votre compte.';
+   button.textContent=items.length?'Ajouter une autre Passkey':'Configurer ma Passkey';
+   button.disabled=false;
+  }catch(err){status.textContent='Impossible de vérifier la Passkey : '+(err?.message||'réessayez après avoir actualisé la page.');}
+ };
+ button.addEventListener('click',async()=>{
+  button.disabled=true;status.textContent='Préparation de la configuration sécurisée…';
+  try{
+   const {data,error}=await auth.registerPasskey();
+   if(error)throw error;
+   if(!data?.id)throw new Error('La Passkey n’a pas été confirmée par Supabase.');
+   status.textContent='Passkey enregistrée avec succès. Votre compte est maintenant prêt pour la vérification de certification.';
+   await refresh();
+  }catch(err){
+   status.textContent='Enregistrement non terminé : '+(err?.message||'opération annulée. Vérifiez le verrouillage biométrique ou le code PIN de votre appareil.');
+   button.disabled=false;
+  }
+ });
+ await refresh();
+}
+
 const fields=[
  ['Nom complet','nom_complet'],['Matricule','matricule'],['Grade','grade'],
  ['Fonction','fonction'],['Direction / Antenne','direction_antenne'],
@@ -545,6 +584,7 @@ async function documents(){
 }
 fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+' *</small><input id="edit_'+key+'" maxlength="180" required autocomplete="off" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').insertBefore(wrap,$('editAddress').parentElement)});
 show();
+setupPasskeyPanel().catch(error=>console.warn('Passkey profil',error));
 if(typeof data.avatar==='string'&&data.avatar.startsWith('data:image/')){syncAvatarToSupabase(data.avatar).then(()=>{$('avatarMessage').textContent='Votre ancienne photo a été synchronisée pour tous les agents.';$('avatarMessage').style.color='#138a65'}).catch(err=>{console.warn('Migration de la photo locale vers Supabase',err);$('avatarMessage').textContent='Ouvrez « Modifier ma photo » pour relancer la synchronisation.';$('avatarMessage').style.color='#b42318'});}
 documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
 
