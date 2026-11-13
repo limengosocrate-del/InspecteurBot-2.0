@@ -1,94 +1,262 @@
-/* Image et présentation communes aux écrans d’authentification Annuaire IGT / InspecteurBot */
-#ib-auth-gate{background-image:linear-gradient(135deg,rgba(3,25,52,.25),rgba(5,34,64,.32)),url("images/fond-connexion/fond-connexion.webp")!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;background-color:#0d3153!important}
-#ib-auth-card{background:rgba(255,255,255,.76)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.68)!important}
-#ib-auth-register-panel{background:rgba(3,25,52,.30)!important;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
-#ib-auth-register-form{background:rgba(255,255,255,.80)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-#ib-auth-message{display:block;min-height:0;padding:0;border-radius:10px;line-height:1.45;font-weight:700;transition:all .18s ease}
-#ib-auth-message.ib-message-success{margin-top:14px;padding:13px 14px;background:#e8f7ef;border:1px solid #8bd4aa;color:#11643a!important;font-size:14px;box-shadow:0 4px 14px #14532d18}
-#ib-auth-message.ib-message-error{margin-top:14px;padding:12px 14px;background:#fff0f0;border:1px solid #efb2b2;color:#a32121!important;font-size:14px}
-#ib-auth-register-help{margin-top:16px;padding:14px 15px;border:1px solid #111;border-left:5px solid #000;border-radius:10px;background:#fff!important;color:#000!important;font-size:14px;line-height:1.55;font-weight:700;text-align:left;box-shadow:0 3px 12px rgba(0,0,0,.16)}
-#ib-auth-register-help strong{display:block;margin-bottom:5px;color:#000!important;font-size:14px;font-weight:800}
-#ib-register-toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:2147483647;width:min(520px,calc(100% - 28px));padding:15px 17px;border:1px solid #f0c36d;border-radius:13px;background:#fff8e8;color:#784b08;box-shadow:0 12px 34px #00152f45;font:700 14px/1.45 Arial,sans-serif;text-align:center;animation:ib-register-toast-in .18s ease-out}
-@keyframes ib-register-toast-in{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
 
-/* Avis aux anciens membres : contraste renforcé et texte toujours lisible */
-#ib-auth-register-help{
-  display:block!important;
-  color:#000!important;
-  background:#fff!important;
-  border:2px solid #000!important;
-  border-left:6px solid #000!important;
-  padding:16px 17px!important;
-  margin:18px 0 12px!important;
-  font-size:15px!important;
-  line-height:1.65!important;
-  font-weight:700!important;
-  text-align:left!important;
-  opacity:1!important;
-  text-shadow:none!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.22)!important;
-}
-#ib-auth-register-help strong{
-  display:block!important;
-  margin:0 0 8px!important;
-  color:#000!important;
-  font-size:16px!important;
-  line-height:1.4!important;
-  font-weight:900!important;
+/* =========================================
+   INSPECTEURBOT — AUTHENTIFICATION PREMIUM
+   Design bleu cyan / Glassmorphism
+   ========================================= */
+
+:root {
+  --ib-cyan: #08b9ee;
+  --ib-blue: #078bd4;
+  --ib-deep: #0870b5;
+  --ib-white: #ffffff;
 }
 
+/* Fond général */
+#ib-auth-gate {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 18px !important;
+  overflow-y: auto !important;
 
-/* Confirmation de réinitialisation : lisibilité maximale, texte noir */
-#ib-auth-message.ib-message-success,
-#ib-auth-message.ib-message-success *{
-  color:#000!important;
-  -webkit-text-fill-color:#000!important;
-  opacity:1!important;
-  text-shadow:none!important;
-}
-#ib-auth-message.ib-message-success{
-  background:#fff!important;
-  border:2px solid #000!important;
-  border-left:6px solid #000!important;
-  font-weight:800!important;
-  font-size:15px!important;
-  line-height:1.65!important;
-  padding:15px 16px!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+  background:
+    radial-gradient(circle at 12% 8%,
+      rgba(255,255,255,.18) 0 13%,
+      transparent 13.2%),
+    radial-gradient(circle at 90% 92%,
+      rgba(255,255,255,.13) 0 15%,
+      transparent 15.2%),
+    linear-gradient(145deg,
+      #04b7ec 0%,
+      #08a9ed 45%,
+      #0786d5 100%) !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  font-family: 'Poppins', Arial, sans-serif !important;
 }
 
+/* Carte principale */
+#ib-auth-card {
+  position: relative !important;
+  width: min(520px, 100%) !important;
+  max-height: calc(100dvh - 32px) !important;
+  overflow-y: auto !important;
+  padding: 34px 30px 30px !important;
+  border-radius: 32px !important;
 
-/* CONTRASTE DEFINITIF — messages de connexion et d'inscription en noir */
-#ib-auth-message.ib-message-success,
-#ib-auth-message.ib-message-success *,
-#ib-auth-register-help,
-#ib-auth-register-help *{
-  color:#000!important;
-  -webkit-text-fill-color:#000!important;
-  opacity:1!important;
-  text-shadow:none!important;
+  background: rgba(255,255,255,.16) !important;
+  border: 1.5px solid rgba(255,255,255,.38) !important;
+
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+
+  box-shadow:
+    0 20px 60px rgba(0,55,110,.18),
+    inset 0 1px 1px rgba(255,255,255,.25) !important;
+
+  color: white !important;
 }
-#ib-auth-message.ib-message-success,
-#ib-auth-register-help{
-  background:#fff!important;
-  border:2px solid #000!important;
-  border-left:6px solid #000!important;
-  font-weight:800!important;
-  font-size:15px!important;
-  line-height:1.65!important;
-  padding:15px 16px!important;
-  box-shadow:0 4px 16px rgba(0,0,0,.18)!important;
+
+/* Logo InspecteurBot */
+#ib-auth-card::before {
+  content: "";
+  display: block;
+  width: 190px;
+  height: 145px;
+  margin: 0 auto 18px;
+
+  background-image: url("images/inspecteurbot-logo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
-#ib-auth-register-help{
-  display:block!important;
-  margin:18px 0 12px!important;
-  text-align:left!important;
-  border-radius:10px!important;
+
+/* Titre */
+#ib-auth-card h2 {
+  color: white !important;
+  text-align: center !important;
+  font-size: clamp(34px, 8vw, 48px) !important;
+  font-weight: 800 !important;
+  margin: 0 0 12px !important;
+  text-shadow: 0 2px 8px rgba(0,55,100,.15);
 }
-#ib-auth-register-help strong{
-  display:block!important;
-  margin:0 0 8px!important;
-  color:#000!important;
-  -webkit-text-fill-color:#000!important;
-  font-weight:900!important;
+
+/* Textes */
+#ib-auth-card p {
+  color: rgba(255,255,255,.95) !important;
+  text-align: center !important;
+  font-size: 16px !important;
+  line-height: 1.65 !important;
 }
+
+/* Formulaires */
+#ib-auth-card label {
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  margin-top: 17px !important;
+}
+
+#ib-auth-card input {
+  width: 100% !important;
+  min-height: 50px !important;
+  padding: 14px 16px !important;
+  border: 1px solid rgba(255,255,255,.7) !important;
+  border-radius: 15px !important;
+  background: rgba(255,255,255,.95) !important;
+  color: #12395b !important;
+  font-size: 15px !important;
+  outline: none !important;
+}
+
+#ib-auth-card input:focus {
+  border-color: white !important;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.2) !important;
+}
+
+/* Bouton connexion */
+#ib-auth-submit {
+  width: 100% !important;
+  min-height: 62px !important;
+  margin-top: 22px !important;
+  border: none !important;
+  border-radius: 18px !important;
+
+  background: white !important;
+  color: #0878bd !important;
+
+  font-size: 19px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+
+  box-shadow: 0 8px 24px rgba(0,70,130,.15) !important;
+}
+
+/* Bouton biométrique */
+#ib-auth-passkey-login {
+  width: 100% !important;
+  min-height: 54px !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,.2) !important;
+  border: 1px solid rgba(255,255,255,.65) !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+/* Mot de passe oublié */
+#ib-auth-forgot {
+  display: block !important;
+  margin: 17px auto !important;
+  color: white !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
+/* Création de compte */
+#ib-auth-register-open {
+  width: 100% !important;
+  min-height: 55px !important;
+  margin-top: 12px !important;
+  border-radius: 17px !important;
+  background: rgba(255,255,255,.2) !important;
+  border: 1px solid rgba(255,255,255,.7) !important;
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+
+/* Panneau inscription */
+#ib-auth-register-panel {
+  background: rgba(0,55,100,.55) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+#ib-auth-register-form {
+  width: min(500px, 100%) !important;
+  margin: 12px auto !important;
+  padding: 26px !important;
+  border-radius: 25px !important;
+  background: rgba(255,255,255,.96) !important;
+  color: #12395b !important;
+  box-shadow: 0 20px 55px rgba(0,0,0,.2) !important;
+}
+
+#ib-auth-register-form h2 {
+  color: #0878bd !important;
+}
+
+#ib-auth-register-form p {
+  color: #526b82 !important;
+}
+
+#ib-auth-register-form label {
+  color: #173e5d !important;
+  font-weight: 700 !important;
+}
+
+#ib-auth-register-form input,
+#ib-auth-register-form select {
+  width: 100% !important;
+  min-height: 48px !important;
+  padding: 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid #cbdce8 !important;
+  background: white !important;
+  color: #173e5d !important;
+}
+
+/* Boutons inscription */
+#ib-auth-register-submit {
+  background: linear-gradient(135deg,#08b9ee,#0878bd) !important;
+  color: white !important;
+  border-radius: 14px !important;
+  min-height: 54px !important;
+}
+
+#ib-auth-register-close {
+  border-radius: 14px !important;
+}
+
+/* Messages */
+#ib-auth-message,
+#ib-auth-register-message {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Chargement */
+#ib-auth-loading {
+  border-top-color: white !important;
+}
+
+/* Téléphones */
+@media (max-width: 520px) {
+  #ib-auth-gate {
+    padding: 12px !important;
+  }
+
+  #ib-auth-card {
+    padding: 25px 20px !important;
+    border-radius: 27px !important;
+  }
+
+  #ib-auth-card::before {
+    width: 165px;
+    height: 125px;
+    margin-bottom: 12px;
+  }
+
+  #ib-auth-card h2 {
+    font-size: 36px !important;
+  }
+
+  #ib-auth-register-form {
+    padding: 20px !important;
+    border-radius: 20px !important;
+  }
+  }
+  
