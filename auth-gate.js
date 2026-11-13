@@ -144,6 +144,16 @@ css.textContent += `
 #ib-auth-card>p:not(.ib-auth-welcome){font-size:11px!important;line-height:1.5;color:#fff!important}
 #ib-auth-card .ib-auth-footer{margin-top:13px!important}
 @media(max-width:520px){#ib-auth-card .ib-auth-logo{width:78px;height:78px}#ib-auth-card .ib-auth-brand{margin-bottom:18px!important}#ib-auth-card .ib-auth-choices{margin:22px 0 12px!important}#ib-auth-login-open{min-height:54px!important;font-size:16px!important}}
+/* Accueil épuré : un seul logo centré ; options sensibles uniquement après ouverture de Connexion */
+#ib-auth-card:not(.ib-login-mode) .ib-auth-brand{width:100%;display:flex!important;justify-content:center!important;align-items:center!important;margin:0 auto 24px!important}
+#ib-auth-card:not(.ib-login-mode) .ib-auth-logo{width:132px!important;height:132px!important;max-width:48vw!important;object-fit:contain!important;margin:0 auto!important}
+#ib-auth-card:not(.ib-login-mode) .ib-auth-brand-mark,
+#ib-auth-card:not(.ib-login-mode) .ib-auth-brand-name{display:none!important}
+#ib-auth-card:not(.ib-login-mode) #ib-auth-passkey-login,
+#ib-auth-card:not(.ib-login-mode) #ib-auth-forgot{display:none!important;visibility:hidden!important}
+#ib-auth-card #ib-auth-passkey-login[hidden],
+#ib-auth-card #ib-auth-forgot[hidden]{display:none!important}
+#ib-auth-card.ib-login-mode .ib-auth-logo{display:block!important;margin:0 auto!important}
 /* Deux écrans distincts : accueil puis formulaire de connexion */
 #ib-auth-card .ib-auth-logo{width:116px!important;height:116px!important;max-width:38vw!important}
 #ib-auth-card .ib-auth-brand-mark,#ib-auth-card .ib-auth-brand-name{display:none!important}
@@ -443,7 +453,7 @@ function gate(t,mode){
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
  g.hidden=false;g.dataset.loading=mode==='loading'?'true':'false';if(mode!=='loading')hideSplash();
  const loginOpen=byId('auth-login-open'),loginChosen=loginOpen?.dataset.open==='true';
- form.hidden=!loginChosen;forgot.hidden=!loginChosen;retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
+ form.hidden=!loginChosen;forgot.hidden=!loginChosen;byId('auth-passkey-login').hidden=!loginChosen;retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
  if(intro&&mode==='loading')intro.textContent='Préparation de votre espace sécurisé…';
  if(t&&mode!=='loading')msg(t,mode==='loading');
 }
