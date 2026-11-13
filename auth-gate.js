@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-recovery-panel-on-demand-v20';
+const IB_APP_BUILD='20261113-recovery-email-field-outline-v21';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -289,6 +289,19 @@ css.textContent += `
 #ib-auth-card #ib-auth-recovery-panel:not([hidden]){
  display:block!important;visibility:visible!important;opacity:1!important;
  pointer-events:auto!important;
+}
+`;
+/* Contour simple et visible du champ e-mail de récupération, sans ombre. */
+css.textContent += `
+#ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email{
+ border:2px solid #829bb3!important;
+ border-radius:9px!important;
+ outline:none!important;
+ box-shadow:none!important;
+}
+#ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email:focus{
+ border-color:#07518a!important;
+ box-shadow:0 0 0 2px rgba(7,81,138,.12)!important;
 }
 `;
 document.head.appendChild(css);
