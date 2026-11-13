@@ -24,10 +24,8 @@ async function checkInspecteurBotUpdate(force=false){
      const registrations=await navigator.serviceWorker.getRegistrations();
      await Promise.all(registrations.map(reg=>reg.update().catch(()=>{})));
     }
-    if('caches' in window){
-     const names=await caches.keys();
-     await Promise.all(names.filter(name=>name.startsWith('inspecteurbot-data-')).map(name=>caches.delete(name)));
-    }
+    // Ne pas effacer Cache Storage ici : le Service Worker migre les fichiers hors-ligne.
+   // localStorage et IndexedDB ne sont jamais supprimés lors d'une mise à jour.
    }catch(cleanError){console.info('Nettoyage du cache différé',cleanError)}
    location.replace(location.pathname+location.search+(location.search?'&':'?')+'ibrefresh='+encodeURIComponent(latest.build));
    return true;
