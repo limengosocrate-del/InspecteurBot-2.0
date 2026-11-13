@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-single-shared-logo-v13';
+const IB_APP_BUILD='20261113-welcome-button-footer-v14';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -147,6 +147,41 @@ css.textContent += `
 #ib-auth-card:not(.ib-login-mode) .ib-auth-brand:not(.ib-welcome-brand){display:none!important}
 #ib-auth-card.ib-login-mode .ib-auth-brand:not(.ib-login-brand){display:none!important}
 #ib-startup-splash{display:none!important;visibility:hidden!important;pointer-events:none!important}
+`;
+/* Accueil : bouton principal centré et footer neutre, sans bandeau bleu. */
+css.textContent += `
+#ib-auth-card:not(.ib-login-mode) .ib-auth-choices{
+ display:flex!important;justify-content:center!important;align-items:center!important;
+ width:100%!important;margin:24px auto 18px!important;padding:0!important;
+}
+#ib-auth-card:not(.ib-login-mode) #ib-auth-login-open{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;width:min(320px,100%)!important;min-width:0!important;
+ min-height:60px!important;margin:0 auto!important;padding:17px 28px!important;
+ border:0!important;border-radius:14px!important;
+ background:linear-gradient(135deg,#07518a 0%,#087eae 100%)!important;
+ color:#fff!important;font-size:19px!important;font-weight:800!important;
+ letter-spacing:.2px!important;line-height:1.25!important;
+ box-shadow:0 8px 20px rgba(7,81,138,.22)!important;
+}
+#ib-auth-card:not(.ib-login-mode) #ib-auth-login-open:focus-visible{
+ outline:3px solid #f0c84b!important;outline-offset:3px!important;
+}
+#ib-auth-card .ib-auth-footer{
+ display:block!important;width:100%!important;box-sizing:border-box!important;
+ margin:16px auto 0!important;padding:0!important;
+ background:transparent!important;background-image:none!important;
+ color:#64748b!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;text-align:center!important;
+ font-size:11px!important;font-weight:500!important;line-height:1.5!important;
+}
+#ib-auth-card .ib-auth-secure-note{
+ margin:12px 0 0!important;text-align:center!important;
+ color:#36566e!important;font-size:12px!important;font-weight:600!important;
+}
+#ib-auth-card:not(.ib-login-mode) .ib-auth-welcome,
+#ib-auth-card:not(.ib-login-mode) .ib-auth-secure-note,
+#ib-auth-card:not(.ib-login-mode) .ib-auth-footer{text-align:center!important}
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
