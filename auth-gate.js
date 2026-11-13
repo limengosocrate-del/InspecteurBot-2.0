@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-loading-logo-v22';
+const IB_APP_BUILD='20261113-loading-text-only-v23';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -302,16 +302,6 @@ css.textContent += `
 #ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email:focus{
  border-color:#07518a!important;
  box-shadow:0 0 0 2px rgba(7,81,138,.12)!important;
-}
-`;
-/* Logo de marque au-dessus du chargeur initial, sans remplacer le texte ni l'animation. */
-css.textContent += `
-html:not(.inspecteur-auth-ready) body::before{
- content:"InspecteurBot"!important;
- background-image:url("/InspecteurBot-2.0/images/inspecteurbot-logo.png")!important;
- background-repeat:no-repeat!important;
- background-position:center calc(50% - 64px)!important;
- background-size:clamp(88px,22vw,132px) auto!important;
 }
 `;
 document.head.appendChild(css);
