@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-recovery-opaque-contrast-v16';
+const IB_APP_BUILD='20261113-recovery-text-visible-v17';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -239,6 +239,45 @@ css.textContent += `
 #ib-auth-recovery-panel h3{font-weight:800!important}
 #ib-auth-recovery-panel p{font-weight:500!important}
 #ib-auth-recovery-panel label{font-weight:700!important}
+`;
+
+/* v17 : rendre les trois libellés réellement visibles sur les écrans mobiles.
+   On force aussi le remplissage WebKit, souvent utilisé par les navigateurs Android. */
+css.textContent += `
+#ib-auth-card #ib-auth-recovery-panel{
+ display:block!important;visibility:visible!important;overflow:visible!important;
+ height:auto!important;max-height:none!important;
+ background:#fff!important;color:#041c5c!important;
+}
+#ib-auth-card #ib-auth-recovery-panel h3,
+#ib-auth-card #ib-auth-recovery-panel p,
+#ib-auth-card #ib-auth-recovery-panel label{
+ display:block!important;visibility:visible!important;
+ position:relative!important;clip:auto!important;clip-path:none!important;
+ width:auto!important;height:auto!important;max-height:none!important;
+ overflow:visible!important;opacity:1!important;filter:none!important;
+ color:#041c5c!important;-webkit-text-fill-color:#041c5c!important;
+ text-shadow:none!important;
+}
+#ib-auth-card #ib-auth-recovery-panel h3{
+ margin:0 0 12px!important;font-size:21px!important;font-weight:900!important;
+ line-height:1.35!important;
+}
+#ib-auth-card #ib-auth-recovery-panel p{
+ margin:0 0 16px!important;font-size:16px!important;font-weight:700!important;
+ line-height:1.6!important;text-align:left!important;
+}
+#ib-auth-card #ib-auth-recovery-panel label{
+ margin:12px 0 8px!important;font-size:16px!important;font-weight:900!important;
+ line-height:1.4!important;
+}
+#ib-auth-card #ib-auth-recovery-panel input{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ -webkit-text-fill-color:#102a43!important;
+}
+#ib-auth-card #ib-auth-recovery-panel input::placeholder{
+ color:#52677a!important;-webkit-text-fill-color:#52677a!important;opacity:1!important;
+}
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
