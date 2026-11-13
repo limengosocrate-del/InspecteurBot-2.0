@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-welcome-button-footer-v14';
+const IB_APP_BUILD='20261113-recovery-text-navy-v15';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -182,6 +182,17 @@ css.textContent += `
 #ib-auth-card:not(.ib-login-mode) .ib-auth-welcome,
 #ib-auth-card:not(.ib-login-mode) .ib-auth-secure-note,
 #ib-auth-card:not(.ib-login-mode) .ib-auth-footer{text-align:center!important}
+`;
+/* Récupération du mot de passe : textes en bleu nuit profond. */
+css.textContent += `
+#ib-auth-recovery-panel h3,
+#ib-auth-recovery-panel p,
+#ib-auth-recovery-panel label{
+ color:#041c5c!important;
+}
+#ib-auth-recovery-panel h3{font-weight:800!important}
+#ib-auth-recovery-panel p{font-weight:500!important}
+#ib-auth-recovery-panel label{font-weight:700!important}
 `;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
