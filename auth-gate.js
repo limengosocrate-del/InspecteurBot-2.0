@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-recovery-text-visible-v17';
+const IB_APP_BUILD='20261113-recovery-panel-on-demand-v20';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -280,6 +280,17 @@ css.textContent += `
 }
 `;
 
+/* Le formulaire de récupération reste strictement masqué tant que l'utilisateur ne le demande pas. */
+css.textContent += `
+#ib-auth-card #ib-auth-recovery-panel[hidden]{
+ display:none!important;visibility:hidden!important;opacity:0!important;
+ pointer-events:none!important;
+}
+#ib-auth-card #ib-auth-recovery-panel:not([hidden]){
+ display:block!important;visibility:visible!important;opacity:1!important;
+ pointer-events:auto!important;
+}
+`;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){document.getElementById('ib-startup-splash')?.remove()}
@@ -766,9 +777,36 @@ function setup(){
   });
  }
  const recoveryPanel=byId('auth-recovery-panel'),recoveryEmail=byId('auth-recovery-email'),recoverySend=byId('auth-recovery-send'),recoveryBack=byId('auth-recovery-back'),recoveryMessage=byId('auth-recovery-message');
- forgot.addEventListener('click',()=>{recoveryEmail.value=email.value.trim();form.hidden=true;forgot.hidden=true;recoveryPanel.hidden=false;recoveryMessage.textContent='';recoveryEmail.focus()});
- recoveryBack.addEventListener('click',()=>{recoveryPanel.hidden=true;form.hidden=false;forgot.hidden=false;recoveryMessage.textContent=''});
- recoverySend.addEventListener('click',async()=>{const v=recoveryEmail.value.trim().toLowerCase();recoveryMessage.style.color='#b42318';if(!v||!recoveryEmail.checkValidity()){recoveryMessage.textContent='Veuillez saisir une adresse e-mail valide.';recoveryEmail.focus();return}recoverySend.disabled=true;recoverySend.textContent='Envoi en cours…';try{const {error}=await client.auth.resetPasswordForEmail(v,{redirectTo:location.href.split('#')[0]});if(error)throw error;recoveryMessage.style.color='#167044';recoveryMessage.textContent='Votre demande a bien été prise en compte. Si cette adresse est associée à un compte InspecteurBot, un e-mail contenant un lien sécurisé de réinitialisation vient de vous être envoyé. Consultez votre boîte de réception ainsi que vos courriers indésirables, puis cliquez sur « Réinitialiser mon mot de passe ».';recoverySend.textContent='E-mail envoyé';}catch(e){recoveryMessage.style.color='#b42318';recoveryMessage.textContent='Nous ne pouvons pas envoyer le lien pour le moment. Vérifiez votre connexion et réessayez.';recoverySend.disabled=false;recoverySend.textContent='Envoyer le lien de récupération'}});
+ let recoveryCloseTimer=null;
+ function closeRecoveryPanel(){
+  if(recoveryCloseTimer){clearTimeout(recoveryCloseTimer);recoveryCloseTimer=null}
+  recoveryPanel.hidden=true;form.hidden=false;forgot.hidden=false;recoveryMessage.textContent='';
+  recoverySend.disabled=false;recoverySend.textContent='Envoyer le lien de récupération';
+ }
+ forgot.addEventListener('click',()=>{
+  if(recoveryCloseTimer){clearTimeout(recoveryCloseTimer);recoveryCloseTimer=null}
+  recoveryEmail.value=email.value.trim();recoveryMessage.textContent='';
+  recoverySend.disabled=false;recoverySend.textContent='Envoyer le lien de récupération';
+  form.hidden=true;forgot.hidden=true;recoveryPanel.hidden=false;recoveryEmail.focus();
+ });
+ recoveryBack.addEventListener('click',closeRecoveryPanel);
+ recoverySend.addEventListener('click',async()=>{
+  const v=recoveryEmail.value.trim().toLowerCase();recoveryMessage.style.color='#b42318';
+  if(!v||!recoveryEmail.checkValidity()){recoveryMessage.textContent='Veuillez saisir une adresse e-mail valide.';recoveryEmail.focus();return}
+  recoverySend.disabled=true;recoverySend.textContent='Envoi en cours…';
+  try{
+   const {error}=await client.auth.resetPasswordForEmail(v,{redirectTo:location.href.split('#')[0]});
+   if(error)throw error;
+   recoveryMessage.style.color='#167044';
+   recoveryMessage.textContent='Votre demande a bien été prise en compte. Si cette adresse est associée à un compte InspecteurBot, un e-mail contenant un lien sécurisé de réinitialisation vient de vous être envoyé. Consultez votre boîte de réception ainsi que vos courriers indésirables, puis cliquez sur « Réinitialiser mon mot de passe ».';
+   recoverySend.textContent='E-mail envoyé';
+   recoveryCloseTimer=setTimeout(closeRecoveryPanel,7000);
+  }catch(e){
+   recoveryMessage.style.color='#b42318';
+   recoveryMessage.textContent='Nous ne pouvons pas envoyer le lien pour le moment. Vérifiez votre connexion et réessayez.';
+   recoverySend.disabled=false;recoverySend.textContent='Envoyer le lien de récupération';
+  }
+ });
 
  const regOpen=byId('auth-register-open'),regPanel=byId('auth-register-panel'),regForm=byId('auth-register-form'),regMessage=byId('auth-register-message'),regSubmit=byId('auth-register-submit');
  const regPhoto=byId('auth-register-photo'),regPhotoPreview=byId('auth-register-photo-preview');
