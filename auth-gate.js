@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-auth-welcome-v6';
+const IB_APP_BUILD='20261113-auth-welcome-v7';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -144,6 +144,31 @@ css.textContent += `
 #ib-auth-card>p:not(.ib-auth-welcome){font-size:11px!important;line-height:1.5;color:#fff!important}
 #ib-auth-card .ib-auth-footer{margin-top:13px!important}
 @media(max-width:520px){#ib-auth-card .ib-auth-logo{width:78px;height:78px}#ib-auth-card .ib-auth-brand{margin-bottom:18px!important}#ib-auth-card .ib-auth-choices{margin:22px 0 12px!important}#ib-auth-login-open{min-height:54px!important;font-size:16px!important}}
+/* Deux écrans distincts : accueil puis formulaire de connexion */
+#ib-auth-card .ib-auth-logo{width:116px!important;height:116px!important;max-width:38vw!important}
+#ib-auth-card .ib-auth-brand-mark,#ib-auth-card .ib-auth-brand-name{display:none!important}
+#ib-auth-card.ib-login-mode h2,
+#ib-auth-card.ib-login-mode .ib-auth-welcome,
+#ib-auth-card.ib-login-mode .ib-auth-choices{display:none!important}
+#ib-auth-card.ib-login-mode .ib-auth-brand{margin-bottom:20px!important}
+#ib-auth-card.ib-login-mode #ib-auth-form{display:block!important}
+#ib-auth-card.ib-login-mode #ib-auth-login-open{display:none!important}
+#ib-auth-card #ib-auth-passkey-login:not([hidden]),
+#ib-auth-card #ib-auth-register-open:not([hidden]){display:block!important}
+#ib-auth-card .ib-auth-footer{background:transparent!important;border:0!important;box-shadow:none!important;padding:12px 0 0!important}
+#ib-auth-card{font-size:16px!important}
+#ib-auth-card .ib-auth-welcome{font-size:17px!important}
+#ib-auth-card #ib-auth-form label{font-size:15px!important;line-height:1.45}
+#ib-auth-card #ib-auth-form input:not([type=checkbox]){font-size:16px!important}
+#ib-auth-card #ib-auth-passkey-enroll{width:19px!important;height:19px!important;flex:0 0 19px}
+#ib-auth-card #ib-auth-submit{font-size:17px!important;min-height:56px!important}
+#ib-auth-card #ib-auth-passkey-login,#ib-auth-card #ib-auth-register-open{font-size:15px!important;min-height:50px!important}
+#ib-auth-card #ib-auth-forgot{font-size:15px!important}
+#ib-auth-card>p:not(.ib-auth-welcome){font-size:13px!important;line-height:1.55}
+#ib-auth-card .ib-auth-secure-note{font-size:14px!important}
+#ib-auth-card .ib-auth-footer{font-size:13px!important}
+@media(max-width:520px){#ib-auth-card .ib-auth-logo{width:100px!important;height:100px!important}#ib-auth-card.ib-login-mode .ib-auth-brand{margin-bottom:16px!important}}
+
 
 `;
 
@@ -565,7 +590,7 @@ function installPasswordEye(id){
 function setup(){
  const form=byId('auth-form'),email=byId('auth-email'),pw=byId('auth-password'),confirm=byId('auth-confirm'),wrap=byId('auth-confirm-wrap'),submit=byId('auth-submit'),forgot=byId('auth-forgot');
  const loginOpen=byId('auth-login-open'),choiceBox=byId('auth-card')?.querySelector('.ib-auth-choices');
- loginOpen?.addEventListener('click',()=>{if(loginOpen)loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.removeAttribute('hidden');email?.focus()});
+ loginOpen?.addEventListener('click',()=>{const card=byId('auth-card');if(card)card.classList.add('ib-login-mode');if(loginOpen)loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.removeAttribute('hidden');email?.focus()});
  const retry=byId('auth-retry');
  ['auth-password','auth-confirm','auth-register-password','auth-register-password2'].forEach(installPasswordEye);
  retry.addEventListener('click',async()=>{retry.disabled=true;gate('Nouvelle vérification de votre session…','loading');try{const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate()}catch(e){gate(e.message||'Vérification impossible. Réessayez.','retry')}finally{retry.disabled=false}});
