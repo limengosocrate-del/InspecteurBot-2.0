@@ -279,6 +279,27 @@ css.textContent += `
  color:#52677a!important;-webkit-text-fill-color:#52677a!important;opacity:1!important;
 }
 `;
+
+/* v18 : champ e-mail de récupération bien délimité, avec relief et focus net. */
+css.textContent += `
+#ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email{
+ box-sizing:border-box!important;display:block!important;width:100%!important;
+ min-height:54px!important;padding:14px 16px!important;
+ border:2px solid #315b82!important;border-radius:12px!important;
+ background:#fff!important;color:#102a43!important;
+ font-size:17px!important;font-weight:600!important;letter-spacing:.2px!important;
+ box-shadow:0 4px 0 rgba(4,28,92,.10),0 7px 18px rgba(4,28,92,.18),inset 0 1px 3px rgba(4,28,92,.08)!important;
+ outline:none!important;opacity:1!important;
+}
+#ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email:focus{
+ border-color:#087eb5!important;
+ box-shadow:0 0 0 4px rgba(8,126,181,.18),0 7px 20px rgba(4,28,92,.22),inset 0 1px 3px rgba(4,28,92,.06)!important;
+}
+#ib-auth-card #ib-auth-recovery-panel input#ib-auth-recovery-email::placeholder{
+ color:#52677a!important;-webkit-text-fill-color:#52677a!important;
+ font-size:15px!important;font-weight:500!important;opacity:1!important;
+}
+`;
 document.head.appendChild(css);
 function byId(id){return document.getElementById('ib-'+id)}
 function hideSplash(){document.getElementById('ib-startup-splash')?.remove()}
