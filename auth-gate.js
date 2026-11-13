@@ -565,7 +565,7 @@ function installPasswordEye(id){
 function setup(){
  const form=byId('auth-form'),email=byId('auth-email'),pw=byId('auth-password'),confirm=byId('auth-confirm'),wrap=byId('auth-confirm-wrap'),submit=byId('auth-submit'),forgot=byId('auth-forgot');
  const loginOpen=byId('auth-login-open'),choiceBox=byId('auth-card')?.querySelector('.ib-auth-choices');
- loginOpen?.addEventListener('click',()=>{if(loginOpen)loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');email?.focus()});
+ loginOpen?.addEventListener('click',()=>{if(loginOpen)loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.removeAttribute('hidden');email?.focus()});
  const retry=byId('auth-retry');
  ['auth-password','auth-confirm','auth-register-password','auth-register-password2'].forEach(installPasswordEye);
  retry.addEventListener('click',async()=>{retry.disabled=true;gate('Nouvelle vérification de votre session…','loading');try{const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate()}catch(e){gate(e.message||'Vérification impossible. Réessayez.','retry')}finally{retry.disabled=false}});
