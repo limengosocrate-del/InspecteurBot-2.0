@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-recovery-text-navy-v15';
+const IB_APP_BUILD='20261113-recovery-opaque-contrast-v16';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -182,6 +182,52 @@ css.textContent += `
 #ib-auth-card:not(.ib-login-mode) .ib-auth-welcome,
 #ib-auth-card:not(.ib-login-mode) .ib-auth-secure-note,
 #ib-auth-card:not(.ib-login-mode) .ib-auth-footer{text-align:center!important}
+`;
+/* Récupération du mot de passe : panneau opaque et contraste renforcé.
+   Le fond semi-transparent laissait transparaître la carte située dessous. */
+css.textContent += `
+#ib-auth-recovery-panel{
+ background:#ffffff!important;
+ background-image:none!important;
+ opacity:1!important;
+ -webkit-backdrop-filter:none!important;
+ backdrop-filter:none!important;
+ border:2px solid #d4e2ef!important;
+ box-shadow:0 12px 30px rgba(4,28,92,.16)!important;
+}
+#ib-auth-recovery-panel h3{
+ color:#041c5c!important;
+ font-size:20px!important;
+ line-height:1.3!important;
+ font-weight:800!important;
+ opacity:1!important;
+}
+#ib-auth-recovery-panel p{
+ color:#173653!important;
+ font-size:15px!important;
+ line-height:1.65!important;
+ font-weight:600!important;
+ opacity:1!important;
+ text-align:left!important;
+}
+#ib-auth-recovery-panel label{
+ color:#041c5c!important;
+ font-size:15px!important;
+ line-height:1.4!important;
+ font-weight:800!important;
+ opacity:1!important;
+}
+#ib-auth-recovery-panel input{
+ display:block!important;
+ width:100%!important;
+ box-sizing:border-box!important;
+ min-height:48px!important;
+ background:#ffffff!important;
+ color:#102a43!important;
+ border:1.5px solid #829bb3!important;
+ opacity:1!important;
+}
+#ib-auth-recovery-panel input::placeholder{color:#66788a!important;opacity:1!important}
 `;
 /* Récupération du mot de passe : textes en bleu nuit profond. */
 css.textContent += `
