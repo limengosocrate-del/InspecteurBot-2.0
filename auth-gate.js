@@ -153,7 +153,7 @@ css.textContent += `
 #ib-auth-card:not(.ib-login-mode) #ib-auth-forgot{display:none!important;visibility:hidden!important}
 #ib-auth-card #ib-auth-passkey-login[hidden],
 #ib-auth-card #ib-auth-forgot[hidden]{display:none!important}
-#ib-auth-card.ib-login-mode .ib-auth-logo{display:block!important;margin:0 auto!important}
+#ib-auth-card.ib-login-mode .ib-auth-brand{display:none!important}
 /* Deux écrans distincts : accueil puis formulaire de connexion */
 #ib-auth-card .ib-auth-logo{width:116px!important;height:116px!important;max-width:38vw!important}
 #ib-auth-card .ib-auth-brand-mark,#ib-auth-card .ib-auth-brand-name{display:none!important}
