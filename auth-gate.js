@@ -574,7 +574,7 @@ function startHeaderBadgeTracking(){
    .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'*',schema:'public',table:'registration_requests'},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
