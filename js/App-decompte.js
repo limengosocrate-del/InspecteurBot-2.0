@@ -1075,7 +1075,7 @@ $('#pvQualiteAgent').textContent =
     try {
       const missing = validateFinalForm();
       if (missing.length) {
-        toast('Veuillez compléter les rubriques obligatoires : ' + missing.join(', ') + '.', 'error');
+        toast('Veuillez compléter les rubriques obligatoires : ' + missing.map(item => item.label).join(', ') + '.', 'error');
         const first = document.getElementById(missing[0].field);
         first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         first?.focus();
