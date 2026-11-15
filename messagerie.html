@@ -89,7 +89,7 @@ body.conversation-open .fab{display:none!important}
 <header class="head"><a class="back" href="index.html" aria-label="Retour"><i class="fa-solid fa-chevron-left"></i></a><h1>Messages</h1><button class="search-toggle" id="searchToggle" aria-label="Rechercher un agent"><i class="fa-solid fa-magnifying-glass"></i></button></header>
 <div class="searchbox" id="searchBox"><input id="searchInput" type="search" placeholder="Rechercher un agent par son nom…" autocomplete="off"></div>
 <div class="section-label">Conversations</div>
-<section class="inbox" id="inbox"><div class="empty">Chargement de vos conversations…</div></section>
+<section class="inbox" id="inbox"><div class="empty">Chargement de vos conversations…</div></section><section id="ib-admin-message-archive" hidden style="margin:22px 0;padding:16px;border:1px solid #d8e4ef;border-radius:14px;background:#fff"><h2 style="margin:0 0 12px;color:#123d63;font-size:17px">Historique général des messages</h2><p style="margin:0 0 12px;color:#64748b;font-size:13px">Consultation réservée au super-administrateur. Les conversations privées restent inchangées pour les autres comptes.</p><div id="ib-admin-message-list"><div class="empty">Chargement de l’historique…</div></div></section>
 </main>
 <button class="fab" id="newMessage" aria-label="Nouveau message"><i class="fa-solid fa-plus"></i></button>
 <section class="chat" id="chat" aria-label="Conversation">
@@ -230,7 +230,8 @@ async function refreshAll(){
   // La boîte de réception reste indépendante : une panne de l'annuaire ne masque plus les messages.
   await Promise.all([
    refreshInbox().catch(error=>console.warn('Conversations:',error)),
-   refreshGroups().catch(error=>console.warn('Groupes:',error))
+   refreshGroups().catch(error=>console.warn('Groupes:',error)),
+   (me?.id===IB_SUPER_ADMIN_ID?refreshAdminMessageArchive():Promise.resolve())
   ]);
  }finally{
   refreshAllRunning=false;
@@ -280,6 +281,17 @@ async function fetchAllMessageRows(queryFactory,label){
   offset+=pageSize;
  }
  return all;
+}
+const IB_SUPER_ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
+async function refreshAdminMessageArchive(){
+ const panel=$('ib-admin-message-archive'),list=$('ib-admin-message-list');
+ if(!panel||me?.id!==IB_SUPER_ADMIN_ID)return;
+ panel.hidden=false;
+ try{
+  const rows=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').order('created_at',{ascending:false}),'archive générale des messages');
+  const name=id=>id===me.id?(myProfile?.display_name||'Administrateur'):(people.find(p=>p.id===id)?.display_name||'Agent IGT');
+  list.innerHTML=rows.length?rows.map(row=>'<article style="padding:11px 0;border-top:1px solid #e7edf3"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:#64748b"><strong style="color:#16456c">'+esc(name(row.sender_id))+' → '+esc(name(row.recipient_id))+'</strong><time>'+esc(new Date(row.created_at).toLocaleString('fr-FR'))+'</time></div><div style="margin-top:6px;white-space:pre-wrap;overflow-wrap:anywhere;color:#243b53">'+esc(row.content)+'</div><div style="margin-top:4px;font-size:11px;color:#718096">'+(row.read_at?'Lu':'Non lu')+'</div></article>').join(''):'<div class="empty">Aucun message enregistré.</div>';
+ }catch(error){console.warn('Archive générale des messages:',error);list.innerHTML='<div class="empty">Impossible de charger l’historique général. Vérifiez les autorisations puis actualisez.</div>'}
 }
 async function refreshInbox(){
  if(!me)return;
