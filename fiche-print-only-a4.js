@@ -127,17 +127,15 @@
     wrap.style.setProperty("overflow", "visible", "important");
 
     /* Laisse le navigateur appliquer les règles @media print avant mesure. */
-    requestAnimationFrame(() => {
-      const pxPerMm = 96 / 25.4;
-      const maxW = 194 * pxPerMm;
-      const maxH = 281 * pxPerMm;
-      const w = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
-      const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, maxH);
-      const scale = Math.min(1, maxW / w, maxH / h);
-      sheet.style.setProperty("--ib-a4-scale", String(scale));
-      sheet.style.setProperty("transform", "scale(" + scale + ")", "important");
-      wrap.style.setProperty("height", (h * scale) + "px", "important");
-    });
+    const pxPerMm = 96 / 25.4;
+    const maxW = 194 * pxPerMm;
+    const maxH = 281 * pxPerMm;
+    const w = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
+    const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, maxH);
+    const scale = Math.min(1, maxW / w, maxH / h);
+    sheet.style.setProperty("--ib-a4-scale", String(scale));
+    sheet.style.setProperty("transform", "scale(" + scale + ")", "important");
+    wrap.style.setProperty("height", (h * scale) + "px", "important");
   }
 
   function restore() {
