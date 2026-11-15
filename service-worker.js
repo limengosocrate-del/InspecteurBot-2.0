@@ -4,9 +4,9 @@ const CACHE='inspecteurbot-data-v30-fast-startup-v6';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>
-    Promise.all(SHELL.map(path=>cache.add(path).catch(()=>null)))
-  ));
+  // Installation immédiate : ne bloque jamais l'activation sur le téléchargement
+  // de toutes les pages et ressources du shell.
+  event.waitUntil(caches.open(CACHE));
   self.skipWaiting();
 });
 
@@ -91,33 +91,25 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE);
 
-    // Pages HTML : toujours tenter la version récente, puis utiliser la copie locale.
+    // Pages HTML : servir immédiatement la copie locale, puis actualiser en arrière-plan.
     if(isHtml){
-      try{
-        const response=await fetch(request);
-        if(response&&response.ok)await cache.put(request,response.clone()).catch(()=>{});
+      const cached=(await cache.match(request,{ignoreSearch:true}))||
+        (request.mode==='navigate'?await cache.match('./index.html',{ignoreSearch:true}):null);
+      const refresh=fetch(request).then(response=>{
+        if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
         return response;
-      }catch(error){
-        const cached=await cache.match(request,{ignoreSearch:true});
-        if(cached)return cached;
-        if(request.mode==='navigate'){
-          return (await cache.match('./index.html',{ignoreSearch:true}))||Response.error();
-        }
-        throw error;
-      }
+      });
+      if(cached){event.waitUntil(refresh.catch(()=>{}));return cached;}
+      return await refresh;
     }
 
-    // Authentification : version récente en priorité, copie locale en secours.
+    // Authentification : servir la copie disponible sans attendre le réseau,
+    // puis récupérer silencieusement la dernière version.
     if(/\/auth-gate\.js$/i.test(url.pathname)){
-      try{
-        const fresh=await fetch(request);
-        if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
-        return fresh;
-      }catch(error){
-        const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
-        if(cached)return cached;
-        throw error;
-      }
+      const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
+      const refresh=fetch(request).then(response=>{if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);return response;});
+      if(cached){event.waitUntil(refresh.catch(()=>{}));return cached;}
+      return refresh;
     }
 
     // Ressources statiques : réseau d'abord pour recevoir chaque publication GitHub,
