@@ -51,7 +51,7 @@ async function load(force=false){
  loadInFlight=true;lastLoadAt=Date.now();
  const seq=++loadSequence;
  const list=$('notificationList');
- list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des annonces et formations…</div>';
+ if(!announcements.length&&!training.length&&!requests.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des annonces et formations…</div>';
  const run=async(label,query)=>{try{const r=await query;if(r.error)throw r.error;return {data:r.data||[],error:null}}catch(error){console.error('InspecteurBot '+label,error);return {data:[],error}}};
  const admin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  const [ann,course,req]=await Promise.all([
