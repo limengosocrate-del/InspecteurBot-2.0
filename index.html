@@ -416,6 +416,13 @@ html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scro
 @media(max-width:520px){.banner{height:340px;min-height:340px}.datetime-box{top:12px!important;right:13px!important;max-width:55%}.datetime-top strong,#clock{font-size:21px!important}.datetime-day{font-size:10px!important}.datetime-date,#date,.datetime-weather span,#city{font-size:9px!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+/* Accès limité avant certification : seul le menu Utilisateur reste visible. */
+body.ib-account-pending .menu-index a:not([href^="profil.html"]):not([onclick*="logout"]){display:none!important}
+body.ib-account-pending #assistant-intelligent,
+body.ib-account-pending #application-smig,
+body.ib-account-pending #onem-documents{display:none!important}
+body.ib-account-pending .menu-index{grid-template-columns:minmax(150px,220px);justify-content:center;min-height:112px}
+body.ib-account-pending .menu-index a[href^="profil.html"]{display:flex!important}
 /* Défilement tactile vertical fluide sur un seul doigt */
 html,body{height:auto!important;min-height:100%;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important}
 body{position:relative!important}
@@ -431,7 +438,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
-<script src="auth-gate.js?v=20261113-loading-logo-v22" defer></script>
+<script src="auth-gate.js?v=20261115-certification-access-v1" defer></script>
 
 <style id="ib-unified-shell">
 html{min-height:100%;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}

@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261113-loading-text-only-v23';
+const IB_APP_BUILD='20261115-certification-access-v1';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -541,10 +541,12 @@ async function refreshHeaderBadges(){
     let readTraining=[];try{readTraining=JSON.parse(localStorage.getItem('inspecteurbot_training_reads_v1_'+user.id)||'[]')}catch(_){}
     const readTrainingSet=new Set(readTraining.map(String));
     const unreadTraining=(tr.data||[]).filter(x=>x.created_by!==user.id&&!readTrainingSet.has(String(x.id))).length;
-    const n=unreadAnnouncements+unreadTraining;
+    const certificationUnread=profile?.certification_status==='certified'?0:1;
+    const n=unreadAnnouncements+unreadTraining+certificationUnread;
     notifications.textContent=n>99?'99+':String(n);notifications.hidden=n===0;
-    notifications.parentElement.setAttribute('aria-label',n+' annonce(s) ou formation(s) non lue(s)');
-    notifications.parentElement.title=unreadAnnouncements+' annonce(s) et '+unreadTraining+' formation(s) non lue(s)';
+    const certificationLabel=certificationUnread?' et 1 notification de certification à lire':'';
+    notifications.parentElement.setAttribute('aria-label',n+' notification(s) non lue(s)'+certificationLabel);
+    notifications.parentElement.title=unreadAnnouncements+' annonce(s), '+unreadTraining+' formation(s)'+certificationLabel;
    }
   }
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
@@ -665,6 +667,15 @@ async function validate(session){
   user=session.user;profile=data;startPresenceTracking();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
+  const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
+  const isCertified=data.certification_status==='certified';
+  const isSuperAdmin=data.role==='super_admin';
+  const leaf=path.split('/').filter(Boolean).pop()||'index.html';
+  const allowedBeforeCertification=isHome||leaf==='profil.html'||leaf==='notifications.html';
+  if(!isCertified&&!isSuperAdmin&&!allowedBeforeCertification){
+   const authScript=Array.from(document.scripts).find(s=>s.src.includes('auth-gate.js'));
+   location.replace(new URL('profil.html?certification=required',authScript?authScript.src:location.href).href);return;
+  }
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
@@ -681,8 +692,8 @@ async function validate(session){
     if(typeof window.inspecteurBotSetAvatar==='function')window.inspecteurBotSetAvatar(url);
     window.dispatchEvent(new CustomEvent('inspecteurbot:avatar-updated',{detail:{userId:user.id,avatarUrl:url}}));
    });
-  const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   if(isHome){
+   document.body.classList.toggle('ib-account-pending',!isCertified&&!isSuperAdmin);
    // Le message de personnalisation à la connexion a été supprimé.
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
