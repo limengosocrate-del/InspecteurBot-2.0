@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-notifications-facebook-read-v4';
+const IB_APP_BUILD='20261115-notifications-facebook-read-v5';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -579,8 +579,6 @@ function startHeaderBadgeTracking(){
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
  if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void refreshHeaderBadges()})}
