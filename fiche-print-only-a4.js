@@ -1,12 +1,11 @@
-/* Impression PDF A4 : réservé aux fiches F01–F07 et S01–S03.
-   Le style renforcé ne concerne que les titres principaux des fiches. */
+/* Impression PDF A4 : uniquement les fiches F01–F07 et S01–S03.
+   Les styles de couleur/typo s'appliquent uniquement au titre principal. */
 (() => {
   if (window.__ibPrintOnlyA4) return;
   window.__ibPrintOnlyA4 = true;
 
   const css = document.createElement("style");
-  css.textContent = `
-    /* Titre principal uniquement : rouge carmin, condensé, gras et centré. */
+  css.textContent = \`
     .official.header .header-title {
       color: #E3000F !important;
       -webkit-text-fill-color: #E3000F !important;
@@ -33,9 +32,9 @@
         overflow: hidden !important;
       }
       .screen-toolbar, .ai-drawer, .no-print { display: none !important; }
-
       .sheet-wrap {
         display: block !important;
+        position: relative !important;
         width: 202mm !important;
         height: 289mm !important;
         min-height: 0 !important;
@@ -87,7 +86,6 @@
         color: #111 !important;
         -webkit-text-fill-color: #111 !important;
       }
-      /* Le code de formulaire conserve sa mise en évidence déjà demandée. */
       .official.header .form-code {
         color: #c00000 !important;
         -webkit-text-fill-color: #c00000 !important;
@@ -105,7 +103,7 @@
         print-color-adjust: exact !important;
       }
     }
-  `;
+  \`;
   document.head.appendChild(css);
 
   let saved = null;
@@ -113,7 +111,6 @@
     const sheet = document.getElementById("officialSheet");
     const wrap = sheet && sheet.closest(".sheet-wrap");
     if (!sheet || !wrap) return;
-
     saved = {
       sheet: sheet.getAttribute("style"),
       wrap: wrap.getAttribute("style")
@@ -130,15 +127,15 @@
     wrap.style.setProperty("padding", "0", "important");
     wrap.style.setProperty("overflow", "hidden", "important");
 
-    /* Mise à l'échelle proportionnelle : toute la fiche tient dans une seule
-       page A4, sans couper le contenu ni déformer les proportions. */
+    /* Mesure du contenu complet puis réduction proportionnelle dans la zone A4.
+       Aucun étirement indépendant largeur/hauteur, donc pas de déformation. */
     const pxPerMm = 96 / 25.4;
     const maxW = 202 * pxPerMm;
     const maxH = 289 * pxPerMm;
     const rect = sheet.getBoundingClientRect();
     const width = Math.max(sheet.scrollWidth, rect.width, 1);
     const height = Math.max(sheet.scrollHeight, rect.height, 1);
-    const fit = Math.min(maxW / width, maxH / height);
+    const fit = Math.min(1, maxW / width, maxH / height);
     sheet.style.setProperty("--ib-a4-fit", String(fit));
     sheet.style.setProperty("transform", "scale(" + fit + ")", "important");
   }
@@ -156,6 +153,8 @@
   window.addEventListener("afterprint", restore);
   if (window.matchMedia) {
     const media = window.matchMedia("print");
-    if (media.addEventListener) media.addEventListener("change", e => { if (!e.matches) restore(); });
+    if (media.addEventListener) media.addEventListener("change", event => {
+      if (!event.matches) restore();
+    });
   }
 })();
