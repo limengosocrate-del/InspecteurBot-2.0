@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-fast-startup-v16';
+const IB_APP_BUILD='20261115-stable-auth-notifications-v22';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -27,12 +27,8 @@ async function checkInspecteurBotUpdate(force=false){
     // Ne pas effacer Cache Storage ici : le Service Worker migre les fichiers hors-ligne.
     // localStorage et IndexedDB ne sont jamais supprimés lors d'une mise à jour.
    }catch(cleanError){console.info('Mise à jour du cache différée',cleanError)}
-   // Si la mise à jour est déclenchée au retour d'Internet, imposer une nouvelle
-   // authentification aux comptes non certifiés avant le rechargement automatique.
-   if(user&&profile?.certification_status!=='certified'&&profile?.role!=='super_admin'){
-    try{await client?.auth.signOut({scope:'local'})}catch(authError){console.warn('Reconnexion requise après mise à jour',authError)}
-    user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
-   }
+   // Une mise à jour du code ne déconnecte jamais un compte actif.
+   // La validité reste contrôlée par Supabase et la fonction igt-session-start.
    location.replace(location.pathname+location.search+(location.search?'&':'?')+'ibrefresh='+encodeURIComponent(latest.build));
    return true;
   }
@@ -548,8 +544,8 @@ async function refreshHeaderBadges(){
   if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
   if(notifications){
    let total=0,hasData=false,details=[];
-   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(x.created_by!==user.id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
-   if(train&&!train.error&&trainRead&&!trainRead.error){const read=new Set((trainRead.data||[]).map(x=>String(x.resource_id)));const count=(train.data||[]).filter(x=>x.created_by!==user.id&&!read.has(String(x.id))).length;total+=count;details.push(count+' formation(s)');hasData=true}
+   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(!x.target_user_id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
+   if(train&&!train.error&&trainRead&&!trainRead.error){const read=new Set((trainRead.data||[]).map(x=>String(x.resource_id)));const count=(train.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' formation(s)');hasData=true}
    if(admin&&req&&!req.error&&reqRead&&!reqRead.error){const read=new Set((reqRead.data||[]).map(x=>String(x.request_id)));const count=(req.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' demande(s)');hasData=true}
    if(!admin&&profile?.certification_status!=='certified'){total++;details.push('certification requise');hasData=true}
    if(hasData){notifications.textContent=total>99?'99+':String(total);notifications.hidden=total===0;notifications.parentElement.title=details.join(' · ');notifications.parentElement.setAttribute('aria-label',total+' notification(s) non lue(s)')}
