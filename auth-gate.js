@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-certification-notifications-reconnect-v2';
+const IB_APP_BUILD='20261115-certification-notifications-live-v3';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -330,6 +330,7 @@ function setupNetworkStatus(){
   // Une seule déconnexion est effectuée par événement réel de reconnexion.
   window.setTimeout(async()=>{
    if(!client||!user||navigator.onLine===false)return;
+   try{const fresh=await client.from('profiles').select('*').eq('id',user.id).maybeSingle();if(fresh.data){profile=fresh.data;window.inspecteurBotAuthProfile=profile;}}catch(profileRefreshError){console.warn('Vérification du statut de certification différée',profileRefreshError)}
    if(profile?.certification_status!=='certified'&&profile?.role!=='super_admin'){
     const reconnectUser=user;
     stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();
@@ -555,10 +556,10 @@ async function refreshHeaderBadges(){
    const a=val(1),rr=val(2),tr=val(3);
    if(a&&!a.error&&rr&&!rr.error&&tr&&!tr.error){
     const readAnnouncements=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
-    const unreadAnnouncements=(a.data||[]).filter(x=>x.created_by!==user.id&&!readAnnouncements.has(String(x.id))).length;
+    const unreadAnnouncements=(a.data||[]).filter(x=>!readAnnouncements.has(String(x.id))).length;
     let readTraining=[];try{readTraining=JSON.parse(localStorage.getItem('inspecteurbot_training_reads_v1_'+user.id)||'[]')}catch(_){}
     const readTrainingSet=new Set(readTraining.map(String));
-    const unreadTraining=(tr.data||[]).filter(x=>x.created_by!==user.id&&!readTrainingSet.has(String(x.id))).length;
+    const unreadTraining=(tr.data||[]).filter(x=>!readTrainingSet.has(String(x.id))).length;
     const certificationUnread=profile?.certification_status==='certified'?0:1;
     const n=unreadAnnouncements+unreadTraining+certificationUnread;
     notifications.textContent=n>99?'99+':String(n);notifications.hidden=n===0;
@@ -697,6 +698,7 @@ async function validate(session){
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
+  try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));if(updated.certification_status==='certified'||updated.role==='super_admin'){document.body.classList.remove('ib-account-pending');if(location.pathname.endsWith('/profil.html')||location.pathname.endsWith('/notifications.html'))location.replace(new URL('index.html?certified=1',location.href).href);}}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
    // À chaque authentification, synchroniser en arrière-plan la photo locale
    // du compte vers Supabase, sans recharger la page ni toucher aux données locales.
    void syncLocalProfilePhotoOnLogin(user.id).then(url=>{
