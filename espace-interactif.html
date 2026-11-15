@@ -135,7 +135,7 @@ body.light-theme #hub-connection-status{color:#344451!important}
 
  <section class="panel practice-panel" id="practice-panel">
   <div class="panel-head"><h3><i class="fa-solid fa-gamepad panel-icon"></i> Ateliers interactifs de l’Inspection</h3><span class="pill">Entraînement libre</span></div>
-  <p class="sub">Entraînez-vous sur des situations professionnelles inspirées des missions de l’Inspection du Travail en RDC. Choisissez un jeu pour commencer.</p>
+  <p class="sub">Entraînement renouvelé chaque lundi : 3 questions par atelier, sans doublon entre les quatre jeux. Les questions déjà utilisées sont écartées jusqu’à ce que la banque ait été parcourue.</p>
   <div class="practice-modes">
    <button class="practice-mode" type="button" data-game="truefalse"><span>⚖️</span><b>Vrai ou faux</b><small>Tester les réflexes juridiques</small></button>
    <button class="practice-mode" type="button" data-game="trap"><span>🪤</span><b>Questions pièges</b><small>Repérer les erreurs de raisonnement</small></button>
@@ -233,19 +233,71 @@ function questionFormat(q){
  if(/DECISION/.test(t))return 'Prise de décision';
  return 'Question professionnelle';
 }
-function startPracticeGame(kind){
+
+function practiceStorageKey(){
+ return 'inspecteurbot-practice-v2-'+String(user&&user.id||'guest');
+}
+function readPracticeHistory(){
+ try{
+  var raw=localStorage.getItem(practiceStorageKey());
+  var data=raw?JSON.parse(raw):{};
+  return data&&typeof data==='object'?data:{};
+ }catch(e){return {}}
+}
+function writePracticeHistory(data){
+ try{localStorage.setItem(practiceStorageKey(),JSON.stringify(data));return true}catch(e){return false}
+}
+function shuffledCopy(list,seed){
+ var copy=list.slice(),state=hash(seed||'inspecteurbot');
+ function random(){state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296}
+ for(var i=copy.length-1;i>0;i--){var j=Math.floor(random()*(i+1));var tmp=copy[i];copy[i]=copy[j];copy[j]=tmp}
+ return copy;
+}
+function weeklyPracticePlan(){
+ var date=localDate(),monday=weekStart(date),history=readPracticeHistory();
+ if(history.week===monday&&history.plan&&history.plan.truefalse&&history.plan.trap&&history.plan.field&&history.plan.audit){
+  return {week:monday,plan:history.plan};
+ }
+ var valid=questions.filter(function(q){
+  return q&&q.id!=null&&Array.isArray(q.choix)&&q.choix.length>=2&&Number.isInteger(Number(q.bonne));
+ });
+ var used=Array.isArray(history.used)?history.used.map(String):[];
+ var available=valid.filter(function(q){return used.indexOf(String(q.id))===-1});
+ /* Réinitialiser le cycle uniquement lorsque toute la banque a été parcourue. */
+ if(available.length<12){used=[];available=valid.slice()}
+ var seed=String(user&&user.id||'guest')+'|'+monday;
+ var order=shuffledCopy(available,seed);
  var filters={
   truefalse:function(q){return String(q.type||'').toUpperCase()==='VRAI_FAUX'||(q.choix||[]).length===2},
   trap:function(q){return !!q.piege||/PIEGE/.test(String(q.type||'').toUpperCase())},
   field:function(q){return /CAS|SITUATION|MISSION|SIMULATION|ENQUETE/.test(String(q.type||'').toUpperCase())},
   audit:function(q){return /DOCUMENT|ANALYSE|CALCUL|DECISION/.test(String(q.type||'').toUpperCase())}
  };
+ var keys=['truefalse','trap','field','audit'],plan={},selected=[];
+ keys.forEach(function(key){
+  var candidates=order.filter(function(q){return selected.indexOf(String(q.id))===-1&&filters[key](q)});
+  var chosen=candidates.slice(0,3);
+  if(chosen.length<3){
+   order.forEach(function(q){if(chosen.length<3&&selected.indexOf(String(q.id))===-1&&chosen.indexOf(q)===-1)chosen.push(q)});
+  }
+  plan[key]=chosen;
+  chosen.forEach(function(q){selected.push(String(q.id))});
+ });
+ var newUsed=used.concat(selected);
+ writePracticeHistory({week:monday,plan:Object.fromEntries(keys.map(function(k){return [k,plan[k].map(function(q){return q.id})]})),used:newUsed});
+ return {week:monday,plan:plan};
+}
+function startPracticeGame(kind){
  var labels={truefalse:'Vrai ou faux',trap:'Questions pièges',field:'Mission terrain',audit:'Enquête documentaire'};
- var pool=questions.filter(filters[kind]||filters.field).filter(function(q){return Array.isArray(q.choix)&&q.choix.length>=2&&Number.isInteger(Number(q.bonne))});
- if(pool.length<3)pool=questions.filter(function(q){return Array.isArray(q.choix)&&q.choix.length>=2&&Number.isInteger(Number(q.bonne))});
- for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=pool[i];pool[i]=pool[j];pool[j]=tmp}
- practiceKind=kind;practiceQuestions=pool.slice(0,3);
- var html='<form id="practice-form" class="practice-form"><div class="meta">'+esc(labels[kind]||'Atelier professionnel')+' · Série de 3 questions</div>';
+ var weekly=weeklyPracticePlan();
+ var ids=weekly.plan[kind]||[];
+ practiceQuestions=ids.map(function(id){return questions.find(function(q){return String(q.id)===String(id)})}).filter(Boolean);
+ practiceKind=kind;
+ if(!practiceQuestions.length){
+  $('practice-content').innerHTML='<p class="sub">Aucune question disponible pour cet atelier cette semaine. La banque sera vérifiée lors du prochain chargement.</p>';
+  return;
+ }
+ var html='<form id="practice-form" class="practice-form"><div class="meta">'+esc(labels[kind]||'Atelier professionnel')+' · Semaine du '+esc(new Date(weekly.week+'T12:00:00').toLocaleDateString('fr-FR'))+' · '+practiceQuestions.length+' questions inédites</div>';
  practiceQuestions.forEach(function(q,i){
   html+='<div class="question" data-practice-q="'+i+'"><span class="question-kicker">'+esc(questionFormat(q))+(q.piege?' · Attention au piège':'')+'</span><strong>'+(i+1)+'. '+esc(q.question)+'</strong>';
   q.choix.forEach(function(choice,j){html+='<label class="option"><input type="radio" name="practice'+i+'" value="'+j+'"><span>'+esc(choice)+'</span></label>'});
@@ -254,6 +306,7 @@ function startPracticeGame(kind){
  html+='<div class="row"><button class="btn" type="submit">Corriger ma série</button></div><div class="status" data-practice-result></div></form>';
  $('practice-content').innerHTML=html;
 }
+
 function submitPracticeGame(form){
  var score=0,missing=false;
  practiceQuestions.forEach(function(q,i){
