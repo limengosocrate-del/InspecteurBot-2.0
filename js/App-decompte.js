@@ -1673,6 +1673,9 @@ $('#pvQualiteAgent').textContent =
     $('#fonction').value = '';
     $('#categorie').selectedIndex = 0;
     $('#motif').selectedIndex = 0;
+    $('#direction').selectedIndex = 0;
+    $('#devise').selectedIndex = 0;
+    $('#qualiteAgent').selectedIndex = 0;
     $('#retenueCNSS').checked = true; $('#retenueIPR').checked = true;
     $('#retenueONEM').checked = false; $('#retenueINPP').checked = false;
     $('#tauxCNSS').value = '5'; $('#tauxIPR').value = '10'; $('#tauxONEM').value = '0.2'; $('#tauxINPP').value = '1';
