@@ -56,7 +56,7 @@ async function load(force=false){
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req]=await Promise.all([
-   run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(150);q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q})()),
+   run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(150);q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q})()),
    run('formations',client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}).limit(100)),
    admin?run('demandes de certification',client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}).limit(250)):Promise.resolve({data:[],error:null})
   ]);
@@ -88,8 +88,8 @@ async function load(force=false){
  }
 }
 function render(){
- const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
- const courses=training.filter(x=>!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
+ const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&(x.created_by!==user?.id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
+ const courses=training.filter(x=>x.created_by!==user?.id&&!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
  let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
  if(tab==='training')items=items.filter(x=>x.kind==='training');
