@@ -642,14 +642,6 @@
       $('#pvObsBlock').classList.add('hidden');
     }
 
-    // Geo
-    if (state.geo) {
-      $('#pvGeoBlock').classList.remove('hidden');
-      $('#pvGeo').textContent = state.geo.label;
-    } else {
-      $('#pvGeoBlock').classList.add('hidden');
-    }
-
     $('#pvInspecteur').textContent = (inp.inspecteurNom || '—').toUpperCase();
     $('#pvGrade').textContent = inp.inspecteurGrade || '';
     const titreAgent = inp.qualiteAgent || "INSPECTEUR DU TRAVAIL";
@@ -752,7 +744,6 @@ $('#pvQualiteAgent').textContent =
 
       ${inp.observations ? `<h3>V. Observations</h3><p>${escapeHtml(inp.observations)}</p>` : ''}
 
-      ${state.geo ? `<p><em>Géolocalisation de l'inspection : ${escapeHtml(state.geo.label)}</em></p>` : ''}
 
       <p>Dont procès-verbal dressé les jour, mois et an que dessus pour servir et valoir ce que de droit.</p>
     `;
@@ -1044,160 +1035,242 @@ $('#pvQualiteAgent').textContent =
   }
 
   /* -------------------------------------------------------
-   *  ARCHIVE / FAVORITES / HISTORY
+   *  ARCHIVES SUPABASE / CORBEILLE 72 H
    * ----------------------------------------------------- */
-  function saveToArchive(favorite) {
-    if (!state.lastResult) {
-      toast('Calculez d\'abord le décompte.', 'error');
-      return;
-    }
-    const store = loadStore();
-    const entry = {
-      id: state.lastResult.numero,
-      savedAt: new Date().toISOString(),
-      favorite: !!favorite,
-      result: {
-        numero: state.lastResult.numero,
-        net: state.lastResult.net,
-        brut: state.lastResult.totalBrut,
-        devise: state.lastResult.devise,
-        nom: state.lastResult.inputs.nom,
-        fonction: state.lastResult.inputs.fonction,
-        entreprise: state.lastResult.inputs.entrepriseNom,
-        direction: state.lastResult.inputs.direction,
-        motif: state.lastResult.motif,
-        totalJours: state.lastResult.totalJours
-      },
-      snapshot: collectInputs(),
-      calc: {
-        preavisJours: state.lastResult.preavisJours,
-        congeCompJours: state.lastResult.congeCompJours,
-        totalJours: state.lastResult.totalJours,
-        montSalaire: state.lastResult.montSalaire,
-        montLogement: state.lastResult.montLogement,
-        montTransport: state.lastResult.montTransport,
-        totalBrut: state.lastResult.totalBrut,
-        totalRetenues: state.lastResult.totalRetenues,
-        net: state.lastResult.net,
-        retenues: state.lastResult.retenues
+  let remoteArchives = [];
+  let remoteTrash = [];
+  let activeArchiveEntry = null;
+
+  function archiveClient() {
+    const client = window.inspecteurBotAuthClient;
+    if (!client || !client.auth) throw new Error('Votre session InspecteurBot est indisponible. Reconnectez-vous.');
+    return client;
+  }
+
+  async function archiveOwner() {
+    const client = archiveClient();
+    const { data, error } = await client.auth.getUser();
+    if (error || !data?.user?.id) throw new Error('Session utilisateur introuvable. Reconnectez-vous.');
+    return data.user.id;
+  }
+
+  async function fetchRemoteArchives() {
+    const client = archiveClient();
+    const ownerId = await archiveOwner();
+    const { data, error } = await client.from('decompte_archives')
+      .select('id,owner_id,numero,nom,entreprise,payload,created_at,deleted_at')
+      .eq('owner_id', ownerId).is('deleted_at', null)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    remoteArchives = data || [];
+    const { data: trash, error: trashError } = await client.from('decompte_archives')
+      .select('id,owner_id,numero,nom,entreprise,payload,created_at,deleted_at')
+      .eq('owner_id', ownerId).not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false });
+    if (trashError) throw trashError;
+    remoteTrash = trash || [];
+  }
+
+  async function saveToArchive(favorite) {
+    try {
+      const missing = validateFinalForm();
+      if (missing.length) {
+        toast('Veuillez compléter les rubriques obligatoires : ' + missing.join(', ') + '.', 'error');
+        const first = document.getElementById(missing[0].field);
+        first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        first?.focus();
+        return false;
       }
-    };
-    // upsert
-    const idx = store.archives.findIndex(a => a.id === entry.id);
-    if (idx >= 0) store.archives[idx] = entry;
-    else store.archives.unshift(entry);
-    if (favorite) {
-      if (!store.favorites.includes(entry.id)) store.favorites.push(entry.id);
-      entry.favorite = true;
+      const store = loadStore();
+      const expected = `DF-${YEAR}-${String((store.counter || 0) + 1).padStart(6, '0')}`;
+      if (state.numero === expected) {
+        store.counter = (store.counter || 0) + 1;
+        saveStore(store);
+      }
+      const result = calculate();
+      if (!result) throw new Error('Le calcul du décompte n’a pas pu être effectué.');
+      const snapshot = collectInputs();
+      const ownerId = await archiveOwner();
+      const payload = {
+        version: 1,
+        result: JSON.parse(JSON.stringify(result)),
+        snapshot: JSON.parse(JSON.stringify(snapshot))
+      };
+      const row = {
+        owner_id: ownerId,
+        numero: result.numero,
+        nom: snapshot.nom.trim(),
+        entreprise: snapshot.entrepriseNom || null,
+        payload,
+        deleted_at: null
+      };
+      const { data, error } = await archiveClient().from('decompte_archives')
+        .upsert(row, { onConflict: 'owner_id,numero' })
+        .select('id,owner_id,numero,nom,entreprise,payload,created_at,deleted_at')
+        .single();
+      if (error) throw error;
+      remoteArchives = [data, ...remoteArchives.filter(x => x.numero !== data.numero)];
+      renderArchive();
+      state.lastResult = null;
+      newDocument(true);
+      toast('Décompte final enregistré avec succès dans vos archives. Le formulaire est prêt pour un nouveau dossier.', 'success');
+      return true;
+    } catch (error) {
+      console.error('Enregistrement du décompte dans Supabase :', error);
+      toast(error?.message || 'Impossible d’enregistrer le décompte. Vérifiez votre connexion puis réessayez.', 'error');
+      return false;
     }
-    saveStore(store);
-    toast(favorite ? 'Ajouté aux favoris & archives' : 'Décompte archivé avec succès', 'success');
-    renderArchive();
+  }
+
+  function validateFinalForm() {
+    const fields = [
+      ['nom', 'Nom et post-nom'],
+      ['fonction', 'Fonction'],
+      ['categorie', 'Catégorie professionnelle'],
+      ['dateEngagement', 'Date d’engagement'],
+      ['dateFin', 'Date de fin du contrat'],
+      ['motif', 'Motif de départ'],
+      ['salaireBase', 'Salaire de base'],
+      ['inspecteurNom', 'Nom de l’inspecteur ou du contrôleur'],
+      ['entrepriseNom', 'Nom de l’entreprise ou de l’employeur']
+    ];
+    return fields.filter(([id]) => {
+      const el = document.getElementById(id);
+      return !el || !String(el.value || '').trim();
+    }).map(([field, label]) => ({ field, label }));
   }
 
   function renderArchive(filter = '') {
-    const store = loadStore();
-    const q = (filter || '').toLowerCase();
-    let list = store.archives || [];
-    if (q) {
-      list = list.filter(a =>
-        (a.result.nom || '').toLowerCase().includes(q) ||
-        (a.id || '').toLowerCase().includes(q) ||
-        (a.result.entreprise || '').toLowerCase().includes(q)
-      );
-    }
     const el = $('#archiveList');
+    const q = String(filter || '').trim().toLocaleLowerCase('fr');
+    const list = remoteArchives.filter(a =>
+      !q || [a.nom, a.numero, a.entreprise].some(v => String(v || '').toLocaleLowerCase('fr').includes(q))
+    );
+    $('#trashCount').textContent = String(remoteTrash.length);
     if (!list.length) {
-      el.innerHTML = '<p class="muted center" style="padding:40px">Aucun décompte archivé pour le moment.</p>';
+      el.innerHTML = '<p class="muted center" style="padding:40px">Aucun décompte final enregistré dans vos archives.</p>';
       return;
     }
     el.innerHTML = list.map(a => {
-      const d = new Date(a.savedAt).toLocaleString('fr-FR');
-      const star = a.favorite || (store.favorites || []).includes(a.id)
-        ? '<i class="fa-solid fa-star fav-star"></i>' : '';
-      return `<div class="archive-item" data-id="${a.id}">
-        <div>
-          <h4>${star} ${a.result.nom || 'Sans nom'} <small style="color:var(--gray-500);font-weight:500">· ${a.id}</small></h4>
-          <div class="meta">
-            <span><i class="fa-solid fa-briefcase"></i> ${a.result.fonction || '—'}</span>
-            <span><i class="fa-solid fa-building"></i> ${a.result.entreprise || '—'}</span>
-            <span><i class="fa-solid fa-coins"></i> ${formatMoney(a.result.net, a.result.devise)}</span>
-            <span><i class="fa-solid fa-clock"></i> ${d}</span>
-          </div>
+      const d = new Date(a.created_at).toLocaleString('fr-FR');
+      const nom = escapeHtml(a.nom || 'Sans nom');
+      const numero = escapeHtml(a.numero || '');
+      const entreprise = escapeHtml(a.entreprise || '—');
+      const net = a.payload?.result?.net;
+      const devise = a.payload?.result?.devise || 'CDF';
+      return `<article class="archive-item" data-id="${escapeHtml(a.id)}">
+        <div><h4><i class="fa-solid fa-file-invoice"></i> Décompte final de ${nom} <small>· ${numero}</small></h4>
+          <div class="meta"><span><i class="fa-solid fa-building"></i> ${entreprise}</span>
+          <span><i class="fa-solid fa-coins"></i> ${formatMoney(net, devise)}</span>
+          <span><i class="fa-solid fa-calendar"></i> ${d}</span></div>
         </div>
         <div class="archive-actions">
-          <button class="icon-btn" data-load="${a.id}" title="Recharger"><i class="fa-solid fa-folder-open"></i></button>
-          <button class="icon-btn" data-fav="${a.id}" title="Favori"><i class="fa-solid fa-star"></i></button>
-          <button class="icon-btn" data-del="${a.id}" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+          <button class="btn-primary btn-sm" data-view-archive="${escapeHtml(a.id)}"><i class="fa-solid fa-eye"></i> Voir</button>
+          <button class="icon-btn" data-trash-archive="${escapeHtml(a.id)}" title="Déplacer vers la corbeille"><i class="fa-solid fa-trash-can"></i></button>
         </div>
-      </div>`;
+      </article>`;
     }).join('');
-
-    el.querySelectorAll('[data-load]').forEach(btn => btn.addEventListener('click', () => loadArchive(btn.dataset.load)));
-    el.querySelectorAll('[data-fav]').forEach(btn => btn.addEventListener('click', () => toggleFavorite(btn.dataset.fav)));
-    el.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => deleteArchive(btn.dataset.del)));
+    el.querySelectorAll('[data-view-archive]').forEach(btn => btn.addEventListener('click', () => openArchivedDocument(btn.dataset.viewArchive)));
+    el.querySelectorAll('[data-trash-archive]').forEach(btn => btn.addEventListener('click', () => moveArchiveToTrash(btn.dataset.trashArchive)));
   }
 
-  function loadArchive(id) {
-    const store = loadStore();
-    const entry = store.archives.find(a => a.id === id);
-    if (!entry) return;
-    const snap = entry.snapshot || {};
-    Object.keys(snap).forEach(k => {
-      if (k === 'photos' || k === 'signatureData' || k === 'geo' || k === 'numero') return;
-      const el = $('#' + k);
-      if (!el) return;
-      if (el.type === 'checkbox') el.checked = !!snap[k];
-      else el.value = snap[k] ?? '';
-    });
-    state.numero = snap.numero || entry.id;
+  async function refreshArchives() {
+    try {
+      await fetchRemoteArchives();
+      renderArchive($('#archiveSearch')?.value || '');
+      renderTrash();
+    } catch (error) {
+      console.error('Chargement des archives Supabase :', error);
+      $('#archiveList').innerHTML = '<p class="muted center" style="padding:30px">Impossible de charger les archives. Vérifiez votre connexion et actualisez la page.</p>';
+      toast('Les archives Supabase sont momentanément indisponibles.', 'error');
+    }
+  }
+
+  function normalizeArchivedResult(entry) {
+    const result = JSON.parse(JSON.stringify(entry.payload?.result || {}));
+    const snap = entry.payload?.snapshot || {};
+    result.inputs = snap;
+    result.dateEng = result.dateEng ? new Date(result.dateEng) : null;
+    result.dateFin = result.dateFin ? new Date(result.dateFin) : null;
+    if (result.anc) {
+      if (result.anc.dateDebut) result.anc.dateDebut = new Date(result.anc.dateDebut);
+      if (result.anc.dateFin) result.anc.dateFin = new Date(result.anc.dateFin);
+    }
     state.photos = snap.photos || { travailleur: null, entreprise: null };
     state.signatureData = snap.signatureData || null;
-    state.geo = snap.geo || null;
-    if (state.photos.travailleur) {
-      $('#photoTravailleurPreview').src = state.photos.travailleur;
-      $('#photoTravailleurPreview').classList.remove('hidden');
-    }
-    if (state.photos.entreprise) {
-      $('#photoEntreprisePreview').src = state.photos.entreprise;
-      $('#photoEntreprisePreview').classList.remove('hidden');
-    }
-    if (state.signatureData) {
-      // restore signature image on canvas
-      const canvas = $('#signaturePad');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); };
-      img.src = state.signatureData;
-    }
-    if (state.geo) $('#geoDisplay').value = state.geo.label;
-    $('#displayNumero').textContent = state.numero;
-    updateAnciennete();
-    updateDeviseAffixes();
-    calculate();
-    switchView('calculator');
-    toast('Décompte ' + id + ' rechargé', 'success');
+    state.geo = null;
+    state.numero = entry.numero;
+    return result;
   }
 
-  function toggleFavorite(id) {
-    const store = loadStore();
-    const i = store.favorites.indexOf(id);
-    if (i >= 0) store.favorites.splice(i, 1);
-    else store.favorites.push(id);
-    store.archives.forEach(a => { if (a.id === id) a.favorite = store.favorites.includes(id); });
-    saveStore(store);
-    renderArchive($('#archiveSearch').value);
-    toast('Favoris mis à jour', 'success');
+  function openArchivedDocument(id) {
+    const entry = remoteArchives.find(a => a.id === id);
+    if (!entry) return toast('Ce dossier est introuvable dans les archives.', 'error');
+    activeArchiveEntry = entry;
+    state.lastResult = normalizeArchivedResult(entry);
+    renderPreview(state.lastResult);
+    $('#displayNumero').textContent = entry.numero;
+    switchView('preview');
   }
 
-  function deleteArchive(id) {
-    if (!confirm('Supprimer ce décompte des archives ?')) return;
-    const store = loadStore();
-    store.archives = store.archives.filter(a => a.id !== id);
-    store.favorites = (store.favorites || []).filter(f => f !== id);
-    saveStore(store);
-    renderArchive($('#archiveSearch').value);
-    toast('Supprimé', 'success');
+  async function moveArchiveToTrash(id) {
+    if (!confirm('Déplacer ce décompte vers la corbeille ? Il pourra être restauré pendant 72 heures.')) return;
+    try {
+      const ownerId = await archiveOwner();
+      const { error } = await archiveClient().from('decompte_archives')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', id).eq('owner_id', ownerId).is('deleted_at', null);
+      if (error) throw error;
+      await fetchRemoteArchives();
+      renderArchive($('#archiveSearch')?.value || '');
+      renderTrash();
+      toast('Dossier déplacé dans la corbeille. Il sera conservé pendant 72 heures.', 'success');
+    } catch (error) {
+      console.error(error);
+      toast(error?.message || 'Impossible de déplacer ce dossier.', 'error');
+    }
+  }
+
+  function renderTrash() {
+    const el = $('#archiveTrashList');
+    if (!el) return;
+    if (!remoteTrash.length) {
+      el.innerHTML = '<p class="muted center" style="padding:30px">La corbeille est vide.</p>';
+      return;
+    }
+    el.innerHTML = remoteTrash.map(a => {
+      const deleted = new Date(a.deleted_at);
+      const remaining = Math.max(0, 72 - Math.floor((Date.now() - deleted.getTime()) / 3600000));
+      return `<article class="archive-item"><div><h4><i class="fa-solid fa-file-circle-xmark"></i> Décompte final de ${escapeHtml(a.nom || 'Sans nom')}</h4>
+      <div class="meta"><span>${escapeHtml(a.numero)}</span><span>Suppression définitive dans environ ${remaining} h</span></div></div>
+      <div class="archive-actions"><button class="btn-ghost btn-sm" data-restore-archive="${escapeHtml(a.id)}"><i class="fa-solid fa-rotate-left"></i> Restaurer</button>
+      <button class="icon-btn danger" data-delete-forever="${escapeHtml(a.id)}" title="Supprimer définitivement"><i class="fa-solid fa-trash"></i></button></div></article>`;
+    }).join('');
+    el.querySelectorAll('[data-restore-archive]').forEach(btn => btn.addEventListener('click', () => restoreArchive(btn.dataset.restoreArchive)));
+    el.querySelectorAll('[data-delete-forever]').forEach(btn => btn.addEventListener('click', () => permanentlyDeleteArchive(btn.dataset.deleteForever)));
+  }
+
+  async function restoreArchive(id) {
+    try {
+      const ownerId = await archiveOwner();
+      const { error } = await archiveClient().from('decompte_archives')
+        .update({ deleted_at: null }).eq('id', id).eq('owner_id', ownerId);
+      if (error) throw error;
+      await fetchRemoteArchives(); renderArchive($('#archiveSearch')?.value || ''); renderTrash();
+      toast('Le dossier a été restauré dans vos archives.', 'success');
+    } catch (error) { toast(error?.message || 'Restauration impossible.', 'error'); }
+  }
+
+  async function permanentlyDeleteArchive(id) {
+    if (!confirm('Supprimer définitivement ce dossier ? Cette action est irréversible.')) return;
+    try {
+      const ownerId = await archiveOwner();
+      const { error } = await archiveClient().from('decompte_archives')
+        .delete().eq('id', id).eq('owner_id', ownerId).not('deleted_at', 'is', null);
+      if (error) throw error;
+      await fetchRemoteArchives(); renderTrash();
+      toast('Dossier supprimé définitivement.', 'success');
+    } catch (error) { toast(error?.message || 'Suppression impossible.', 'error'); }
   }
 
   function showFavoritesModal() {
@@ -1368,9 +1441,7 @@ $('#pvQualiteAgent').textContent =
         'FAST'
       );
       pdf.save(filename || (state.numero || 'decompte') + '.pdf');
-      toast(elementId === 'decompteSheet'
-        ? 'Décompte final téléchargé en PDF A4, sur une seule page.'
-        : 'PDF téléchargé.', 'success');
+
     } catch (error) {
       console.error('Erreur téléchargement PDF :', error);
       toast(error && error.message
@@ -1478,37 +1549,6 @@ $('#pvQualiteAgent').textContent =
   }
 
   /* -------------------------------------------------------
-   *  GEOLOCATION
-   * ----------------------------------------------------- */
-  function captureGeo() {
-    if (!navigator.geolocation) {
-      toast('Géolocalisation non supportée', 'error');
-      return;
-    }
-    $('#btnGeo').disabled = true;
-    toast('Capture de la position…');
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude, accuracy } = pos.coords;
-        state.geo = {
-          lat: latitude,
-          lng: longitude,
-          accuracy,
-          label: `${latitude.toFixed(6)}, ${longitude.toFixed(6)} (±${Math.round(accuracy)} m)`
-        };
-        $('#geoDisplay').value = state.geo.label;
-        $('#btnGeo').disabled = false;
-        toast('Position capturée', 'success');
-      },
-      (err) => {
-        $('#btnGeo').disabled = false;
-        toast('Géo refusée ou indisponible : ' + err.message, 'error');
-      },
-      { enableHighAccuracy: true, timeout: 15000 }
-    );
-  }
-
-  /* -------------------------------------------------------
    *  PHOTOS
    * ----------------------------------------------------- */
   function bindPhoto(inputId, previewId, key) {
@@ -1537,7 +1577,7 @@ $('#pvQualiteAgent').textContent =
     $('#sidebar').classList.remove('open');
     if (name === 'charts' && state.lastResult) updateCharts(state.lastResult);
     if (name === 'ai' && state.lastResult) runAI(state.lastResult, true);
-    if (name === 'archive') renderArchive();
+    if (name === 'archive') void refreshArchives();
     if (name === 'preview' && state.lastResult) renderPreview(state.lastResult);
   }
 
@@ -1593,7 +1633,7 @@ $('#pvQualiteAgent').textContent =
     toast('Exemple chargé (modèle officiel)', 'success');
   }
 
-  function newDocument() {
+  function newDocument(silent = false) {
     if (state.lastResult && !confirm('Créer un nouveau décompte ? Les données non archivées seront perdues.')) return;
     state.numero = nextNumero();
     state.lastResult = null;
@@ -1601,9 +1641,11 @@ $('#pvQualiteAgent').textContent =
     state.signatureData = null;
     state.geo = null;
     state.checklist = {};
-    // reset form fields (keep settings-related)
+    // Réinitialiser les champs de saisie du dossier après validation et sauvegarde.
     ['nom', 'fonction', 'motifDetail', 'lieuPrestation', 'salaireBase', 'logement', 'transport',
-      'entrepriseNom', 'entrepriseAdresse', 'observations', 'autresRetenuesLibelle', 'geoDisplay'].forEach(id => {
+      'entrepriseNom', 'entrepriseAdresse', 'observations', 'autresRetenuesLibelle', 'inspecteurNom',
+      'inspecteurGrade', 'adresseBureau', 'lieuDocument', 'dateEngagement', 'dateFin', 'preavisManuel',
+      'congeAcquis', 'tauxCNSS', 'tauxIPR', 'tauxONEM', 'tauxINPP', 'autresRetenues', 'joursPrestes'].forEach(id => {
       const el = $('#' + id); if (el) el.value = '';
     });
     $('#joursPrestes').value = '0';
@@ -1625,9 +1667,20 @@ $('#pvQualiteAgent').textContent =
     $('#kpiRetenues').textContent = '0';
     $('#kpiNet').textContent = '0';
     $('#aiInline').innerHTML = '';
+    $('#photoTravailleur').value = '';
+    $('#photoEntreprise').value = '';
+    $('#dateDocument').value = new Date().toISOString().slice(0, 10);
+    $('#fonction').value = '';
+    $('#categorie').selectedIndex = 0;
+    $('#motif').selectedIndex = 0;
+    $('#retenueCNSS').checked = true; $('#retenueIPR').checked = true;
+    $('#retenueONEM').checked = false; $('#retenueINPP').checked = false;
+    $('#tauxCNSS').value = '5'; $('#tauxIPR').value = '10'; $('#tauxONEM').value = '0.2'; $('#tauxINPP').value = '1';
+    $('#logement').value = ''; $('#transport').value = ''; $('#autresRetenues').value = '0';
+    $('#joursOuvrables').selectedIndex = 0; $('#preavisMode').selectedIndex = 0;
     renderChecklist();
     switchView('calculator');
-    toast('Nouveau décompte ' + state.numero, 'success');
+    if (!silent) toast('Nouveau décompte ' + state.numero, 'success');
   }
 
   function loadSettingsUI() {
@@ -1761,18 +1814,18 @@ $('#pvQualiteAgent').textContent =
       if (!state.lastResult) calculate();
       switchView('preview');
     });
-    $('#btnSaveArchive').addEventListener('click', () => saveToArchive(false));
+    $('#btnSaveArchive').addEventListener('click', () => switchView('archive'));
     $('#btnExportPdf').addEventListener('click', () => {
       if (!state.lastResult) calculate();
       switchView('preview');
       setTimeout(() => downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf'), 300);
     });
     $('#btnDownloadPdf').addEventListener('click', async () => {
-      if (!state.lastResult) calculate();
-      await downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf');
+      if (!state.lastResult) { toast('Ouvrez ou calculez d’abord un décompte.', 'error'); return; }
+      const name = (state.lastResult.inputs?.nom || state.numero || 'decompte').replace(/[^a-z0-9_-]+/gi, '_');
+      await downloadPDF('decompteSheet', 'Decompte_final_' + name + '.pdf');
     });
     $('#btnRunAI').addEventListener('click', () => runAI(state.lastResult || calculate()));
-    $('#btnGeo').addEventListener('click', captureGeo);
     $('#btnSaveSettings').addEventListener('click', saveSettings);
     $('#btnFavorites').addEventListener('click', showFavoritesModal);
     $('#btnHistory').addEventListener('click', showHistoryModal);
@@ -1783,6 +1836,10 @@ $('#pvQualiteAgent').textContent =
 
     // Archive tools
     $('#archiveSearch').addEventListener('input', (e) => renderArchive(e.target.value));
+    $('#btnShowTrash').addEventListener('click', () => { $('#archiveTrashPanel').hidden = false; renderTrash(); });
+    $('#btnHideTrash').addEventListener('click', () => { $('#archiveTrashPanel').hidden = true; });
+    $('#btnBackArchive').addEventListener('click', () => switchView('archive'));
+    $('#btnGenerateFinal').addEventListener('click', () => saveToArchive(false));
     $('#btnExportAll').addEventListener('click', () => {
       const store = loadStore();
       const blob = new Blob([JSON.stringify(store.archives, null, 2)], { type: 'application/json' });
@@ -1792,15 +1849,7 @@ $('#pvQualiteAgent').textContent =
       a.click();
       toast('Export JSON téléchargé', 'success');
     });
-    $('#btnClearArchive').addEventListener('click', () => {
-      if (!confirm('Vider toutes les archives ?')) return;
-      const store = loadStore();
-      store.archives = [];
-      store.favorites = [];
-      saveStore(store);
-      renderArchive();
-      toast('Archives vidées', 'success');
-    });
+
 
     // Modal close
     $$('[data-close]').forEach(el => el.addEventListener('click', closeModal));
