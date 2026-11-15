@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-startup-notifications-v13';
+const IB_APP_BUILD='20261115-fast-startup-v14';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -41,13 +41,11 @@ async function checkInspecteurBotUpdate(force=false){
  finally{ibUpdateCheckRunning=false}
 }
 function startLiveUpdateChecks(){
- void checkInspecteurBotUpdate(true);
+ // Vérifier les mises à jour après l'affichage initial, sans concurrencer l'authentification.
+ window.setTimeout(()=>void checkInspecteurBotUpdate(true),2500);
  window.addEventListener('online',()=>void checkInspecteurBotUpdate(true));
  window.addEventListener('focus',()=>void checkInspecteurBotUpdate(false));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void checkInspecteurBotUpdate(false)});
- if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistration().then(reg=>reg?.update().catch(()=>{})).catch(()=>{});
- }
 }
 
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -582,6 +580,17 @@ function startHeaderBadgeTracking(){
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
  if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()})}
 }
+function startPostAuthServices(accountId){
+ const run=()=>{
+  if(!user||user.id!==accountId)return;
+  try{startPresenceTracking()}catch(e){console.warn('Présence différée',e)}
+  try{startRealtimePresence()}catch(e){console.warn('Présence temps réel différée',e)}
+  try{startIncomingMessageNotifications()}catch(e){console.warn('Notifications de messages différées',e)}
+  try{startHeaderBadgeTracking()}catch(e){console.warn('Compteurs différés',e)}
+ };
+ if(typeof requestIdleCallback==='function')requestIdleCallback(run,{timeout:1100});
+ else setTimeout(run,450);
+}
 async function refreshNotificationBadge(){return refreshHeaderBadges();}
 function stopHeaderBadgeTracking(){
  clearInterval(headerBadgeTimer);headerBadgeTimer=null;
@@ -671,7 +680,6 @@ async function syncLocalProfilePhotoOnLogin(accountId){
  }catch(error){console.warn('Synchronisation automatique de la photo au démarrage:',error);return null}
 }
 async function validate(session){
- if(navigator.onLine!==false){const updated=await checkInspecteurBotUpdate(true);if(updated)return;}
  if(!session){user=null;profile=null;clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate();return}
  if(busy)return;busy=true;
  try{
@@ -681,7 +689,7 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;startPresenceTracking();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
+  user=session.user;profile=data;startPostAuthServices(user.id);
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
