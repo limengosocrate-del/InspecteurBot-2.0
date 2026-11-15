@@ -572,12 +572,12 @@ function startHeaderBadgeTracking(){
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
    .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>void refreshHeaderBadges())
-   .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>scheduleHeaderBadgeRefresh())
+   .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
  if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()})}
@@ -720,7 +720,7 @@ async function validate(session){
     document.body.insertBefore(appHeader,document.body.firstChild);
     // Liens relatifs directs : pas de redirection JavaScript ni de reconstruction d'URL.
     // Le navigateur conserve la session de cet onglet entre les pages de même origine.
-    setTimeout(()=>void refreshHeaderBadges(),0);
+    setTimeout(()=>scheduleHeaderBadgeRefresh(),0);
     chip=document.createElement('div');chip.id='ib-auth-chip';
     chip.innerHTML='<button type="button" id="ib-auth-account" aria-label="Ouvrir le menu de votre profil" aria-expanded="false" aria-controls="ib-auth-menu"><span class="ib-avatar"><i class="fa-solid fa-user"></i><img class="ib-avatar-image" alt="" hidden></span><span class="ib-account-label"></span><i class="fa-solid fa-chevron-down"></i></button><div id="ib-auth-menu" hidden><a href="profil.html"><i class="fa-solid fa-user"></i> Mon profil</a><a href="profil.html#parametres"><i class="fa-solid fa-gear"></i> Paramètres</a><a href="profil.html#mes-informations"><i class="fa-solid fa-address-card"></i> Mes informations</a><button type="button" id="ib-auth-logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>';
     appHeader.querySelector('#ib-auth-slot').appendChild(chip);
