@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-session-scope-auth-v29';
+const IB_APP_BUILD='20261115-shared-auth-pending-notices-v30';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -731,10 +731,9 @@ async function validate(session){
   const isSuperAdmin=data.role==='super_admin';
   const leaf=path.split('/').filter(Boolean).pop()||'index.html';
   const allowedBeforeCertification=isHome||leaf==='profil.html'||leaf==='notifications.html';
-  if(!isCertified&&!isSuperAdmin&&!allowedBeforeCertification){
-   const authScript=Array.from(document.scripts).find(s=>s.src.includes('auth-gate.js'));
-   location.replace(new URL('profil.html?certification=required',authScript?authScript.src:location.href).href);return;
-  }
+  // Les comptes agents actifs non certifiés conservent l'accès aux menus.
+  // Le parcours de certification reste disponible depuis le profil et les notifications.
+
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile,session}}));
@@ -1039,7 +1038,7 @@ async function start(){
    // Une seule authentification pour toute la navigation entre les menus et
    // les actualisations de page. La session temporaire ne survit pas à la
    // fermeture de l'onglet/de la session de navigation.
-   ibAuthStorage=window.sessionStorage;
+   ibAuthStorage=window.localStorage;
    const migrationFlag='inspecteurbot-auth-tab-migration-v1';
    const legacyKeys=[IB_AUTH_STORAGE_KEY,'sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
    if(localStorage.getItem(migrationFlag)!=='done'){
