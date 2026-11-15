@@ -1256,63 +1256,130 @@ $('#pvQualiteAgent').textContent =
   /* -------------------------------------------------------
    *  PDF / PRINT / SHARE
    * ----------------------------------------------------- */
-  function downloadPDF(elementId, filename) {
+  async function downloadPDF(elementId, filename) {
     const el = $('#' + elementId);
-    if (!el) return;
+    if (!el) {
+      toast('Document du décompte introuvable.', 'error');
+      return;
+    }
     if (typeof html2pdf === 'undefined') {
-      toast('Module PDF non chargé — réessayez après le chargement.', 'error');
+      toast('Module PDF non chargé. Actualisez la page et réessayez.', 'error');
       return;
     }
-    toast('Mise en page A4 et génération du PDF…');
-    if (state.lastResult) {
-      if (elementId === 'decompteSheet') renderPreview(state.lastResult);
-      if (elementId === 'pvSheet') renderPV(state.lastResult);
-    }
 
-    // Le Décompte final est rasterisé puis placé intégralement sur UNE page A4.
-    // Contrairement à une pagination automatique, cette méthode conserve tous
-    // les éléments (tableaux, retenues, observations et signature) sur la même page.
-    if (elementId === 'decompteSheet') {
-      html2pdf()
-        .set({ filename: filename || (state.numero || 'decompte') + '.pdf',
-          image: { type: 'jpeg', quality: 0.97 },
-          html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' } })
-        .from(el).toCanvas().get('canvas').then((canvas) => {
-          const JsPDF = window.jspdf && window.jspdf.jsPDF
-            ? window.jspdf.jsPDF
-            : window.jsPDF;
-          if (!JsPDF) throw new Error('Bibliothèque jsPDF indisponible');
-          const pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-          const pageWidth = 210, pageHeight = 297, margin = 5;
-          const fit = Math.min((pageWidth - margin * 2) / canvas.width,
-                              (pageHeight - margin * 2) / canvas.height);
-          const width = canvas.width * fit, height = canvas.height * fit;
-          const x = (pageWidth - width) / 2, y = (pageHeight - height) / 2;
-          pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', x, y, width, height, undefined, 'FAST');
-          pdf.save(filename || (state.numero || 'decompte') + '.pdf');
-        })
-        .then(() => toast('PDF A4 téléchargé sur une seule page.', 'success'))
-        .catch((error) => {
-          console.error('Erreur export PDF Décompte final:', error);
-          toast('Erreur lors de la génération du PDF. Réessayez.', 'error');
+    try {
+      // Le document doit être réellement visible au moment de la capture.
+      // Une capture d'un aperçu situé dans une vue masquée produit une page blanche.
+      if (elementId === 'decompteSheet') {
+        if (!state.lastResult) {
+          const calculated = calculate();
+          if (!calculated) throw new Error('Veuillez d’abord calculer le décompte.');
+        }
+        switchView('preview');
+        renderPreview(state.lastResult);
+      } else if (state.lastResult && elementId === 'pvSheet') {
+        renderPV(state.lastResult);
+      }
+
+      toast('Préparation du document A4…');
+
+      // Attendre la mise à jour du navigateur, les polices et les images
+      // avant de lancer html2canvas.
+      await new Promise(resolve => requestAnimationFrame(() =>
+        requestAnimationFrame(resolve)));
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready.catch(() => {});
+      }
+      const images = Array.from(el.querySelectorAll('img'));
+      await Promise.all(images.map(img => {
+        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+        if (typeof img.decode === 'function') return img.decode().catch(() => {});
+        return new Promise(resolve => {
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
         });
-      return;
-    }
+      }));
 
-    // Le PV conserve son export A4 habituel, inchangé.
-    const opt = {
-      margin: [8, 8, 8, 8],
-      filename: filename || (state.numero || 'decompte') + '.pdf',
-      image: { type: 'jpeg', quality: 0.88 },
-      html2canvas: { scale: 1.5, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-    html2pdf().set(opt).from(el).save().then(() => {
-      toast('PDF téléchargé', 'success');
-    }).catch(() => {
-      toast('Erreur PDF — essayez Imprimer', 'error');
-    });
+      const rect = el.getBoundingClientRect();
+      if (!rect.width || !rect.height || getComputedStyle(el).display === 'none') {
+        throw new Error('L’aperçu du décompte n’est pas visible. Ouvrez à nouveau l’aperçu.');
+      }
+
+      const JsPDF = window.jspdf && window.jspdf.jsPDF
+        ? window.jspdf.jsPDF
+        : window.jsPDF;
+      if (!JsPDF) throw new Error('Bibliothèque PDF indisponible.');
+
+      // html2pdf capture l’élément visible tel qu’il apparaît dans l’aperçu.
+      const worker = html2pdf().set({
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          logging: false,
+          backgroundColor: '#ffffff',
+          scrollX: 0,
+          scrollY: 0
+        }
+      }).from(el).toCanvas();
+
+      const canvas = await worker.get('canvas');
+      if (!canvas || !canvas.width || !canvas.height) {
+        throw new Error('La capture du document est vide.');
+      }
+
+      // Détecter une capture entièrement blanche avant de télécharger le fichier.
+      const sample = document.createElement('canvas');
+      sample.width = Math.min(80, canvas.width);
+      sample.height = Math.min(80, canvas.height);
+      const sampleContext = sample.getContext('2d', { willReadFrequently: true });
+      sampleContext.drawImage(canvas, 0, 0, sample.width, sample.height);
+      const pixels = sampleContext.getImageData(0, 0, sample.width, sample.height).data;
+      let visiblePixels = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i] < 238 || pixels[i + 1] < 238 || pixels[i + 2] < 238) visiblePixels++;
+      }
+      if (!visiblePixels) throw new Error('La capture ne contient aucun contenu visible.');
+
+      const pdf = new JsPDF({
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      });
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 5;
+      const fit = Math.min(
+        (pageWidth - margin * 2) / canvas.width,
+        (pageHeight - margin * 2) / canvas.height
+      );
+      const width = canvas.width * fit;
+      const height = canvas.height * fit;
+      const x = (pageWidth - width) / 2;
+      const y = (pageHeight - height) / 2;
+
+      pdf.addImage(
+        canvas.toDataURL('image/jpeg', 0.98),
+        'JPEG',
+        x,
+        y,
+        width,
+        height,
+        undefined,
+        'FAST'
+      );
+      pdf.save(filename || (state.numero || 'decompte') + '.pdf');
+      toast(elementId === 'decompteSheet'
+        ? 'Décompte final téléchargé en PDF A4, sur une seule page.'
+        : 'PDF téléchargé.', 'success');
+    } catch (error) {
+      console.error('Erreur téléchargement PDF :', error);
+      toast(error && error.message
+        ? error.message
+        : 'Impossible de générer le PDF. Réessayez.', 'error');
+    }
   }
 
   function printSheet(viewName) {
@@ -1704,9 +1771,9 @@ $('#pvQualiteAgent').textContent =
       switchView('preview');
       setTimeout(() => downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf'), 300);
     });
-    $('#btnDownloadPdf').addEventListener('click', () => {
+    $('#btnDownloadPdf').addEventListener('click', async () => {
       if (!state.lastResult) calculate();
-      downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf');
+      await downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf');
     });
     $('#btnPrintPV').addEventListener('click', () => printSheet('pv'));
     $('#btnDownloadPV').addEventListener('click', () => downloadPDF('pvSheet', (state.numero || 'DF').replace('DF', 'PV') + '.pdf'));
