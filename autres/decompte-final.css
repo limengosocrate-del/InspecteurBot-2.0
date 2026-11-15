@@ -947,3 +947,34 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
  .df-photo-box img{width:21mm;height:21mm}
 }
 @media print{.df-info-heading{break-inside:avoid}}
+
+
+/* Réorganisation guidée du calculateur : trois étapes clairement hiérarchisées. */
+.form-section-card{overflow:hidden}
+.form-section-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.form-section-title{display:flex;align-items:center;gap:12px;min-width:0}
+.form-section-title h3{margin:0}
+.form-section-title small{display:block;margin-top:4px;color:#71839a;font-size:.78rem;font-weight:500}
+.form-step{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#e7f1fc,#d6e8fa);color:#0b4f96;font-weight:900;font-size:.85rem;box-shadow:inset 0 0 0 1px #c8ddf3}
+.igt-logo-upload-row{display:flex;align-items:center;gap:14px;margin:16px 18px 0;padding:14px;border:1px solid #dce8f4;border-radius:15px;background:linear-gradient(120deg,#f7faff,#eef5fc)}
+.igt-logo-upload-preview{width:68px;height:68px;flex:0 0 68px;display:grid;place-items:center;border-radius:13px;background:#fff;border:1px solid #e1e9f2;padding:7px}
+.igt-logo-upload-preview img{width:100%;height:100%;object-fit:contain}
+.igt-logo-upload-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.igt-logo-upload-copy strong{color:#153d67;font-size:.9rem}
+.igt-logo-upload-copy span{color:#6a7d93;font-size:.78rem;line-height:1.45}
+.igt-logo-upload-button{display:inline-flex;align-items:center;gap:7px;width:max-content;margin-top:5px;cursor:pointer}
+.igt-logo-reset{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;padding:0}
+#pvIgtLogo{object-fit:contain}
+@media(max-width:600px){
+ .form-section-title{gap:9px}
+ .form-step{width:32px;height:32px;flex-basis:32px;border-radius:10px}
+ .form-section-title small{font-size:.72rem}
+ .igt-logo-upload-row{margin:12px 12px 0;padding:11px;gap:10px}
+ .igt-logo-upload-preview{width:54px;height:54px;flex-basis:54px}
+ .igt-logo-upload-copy span{font-size:.72rem}
+ .igt-logo-upload-button{font-size:.78rem;padding:8px 10px}
+ .igt-logo-reset{width:34px;height:34px;flex-basis:34px}
+}
+@media print{
+ .igt-logo-upload-row{display:none!important}
+}
