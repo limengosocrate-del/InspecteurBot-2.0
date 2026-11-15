@@ -1,6 +1,6 @@
 {
-  "build": "20261115-fast-startup-v16",
+  "build": "20261115-stable-auth-notifications-v22",
   "release": "2026-11-15",
-  "forceRefresh": true,
-  "updated_at": "2026-11-15T20:30:00.000Z"
+  "forceRefresh": false,
+  "updated_at": "2026-11-15T20:50:00.000Z"
 }
