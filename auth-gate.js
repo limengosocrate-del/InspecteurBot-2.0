@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-session-messages-presence-v24';
+const IB_APP_BUILD='20261115-session-refresh-v25';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -638,21 +638,33 @@ async function loadLib(){
  });
 }
 async function serverCheck(session){
- const sessionId=readSessionId(session?.access_token),userId=session?.user?.id;
+ let sessionId=readSessionId(session?.access_token);
+ const userId=session?.user?.id;
  const forceFreshProfile=location.pathname.endsWith('/profil.html');
  let lastError=null;
- for(let attempt=0;attempt<2;attempt++){
+ for(let attempt=0;attempt<3;attempt++){
   try{
    const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
    let payload=data||null;
    if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
    if(!error&&payload?.success){
     if(userId&&payload.profile){try{localStorage.setItem('inspecteurbot_profile_cache_v2_'+userId,JSON.stringify({profile:payload.profile,savedAt:Date.now(),session_id:sessionId}))}catch(_){}}
-    armSessionExpiry(payload);return payload;
+    armSessionExpiry(payload);return {...payload,session};
    }
    const code=payload?.code||'';
-   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,180));continue}
-   const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
+   // Un JWT expiré ne signifie pas que la session est terminée : renouveler
+   // le refresh token avant de déclarer l'utilisateur déconnecté.
+   if((code==='INVALID_SESSION'||error?.context?.status===401)&&attempt<2){
+    const refreshed=await client.auth.refreshSession();
+    if(!refreshed.error&&refreshed.data?.session){
+     session=refreshed.data.session;sessionId=readSessionId(session.access_token);
+     continue;
+    }
+    lastError=refreshed.error||new Error('Renouvellement de session impossible.');
+    break;
+   }
+   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt<2){await new Promise(resolve=>setTimeout(resolve,180));continue}
+   const fatal=['LOGIN_REQUIRED','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
    const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
    err.authFatal=fatal;err.authTransient=!fatal;lastError=err;if(fatal)throw err;
   }catch(error){if(error?.authFatal)throw error;lastError=error}
@@ -665,7 +677,7 @@ async function serverCheck(session){
    if(cached?.profile?.id===userId&&cached.profile.is_active===true&&age>=0&&age<=24*60*60*1000){
     armSessionExpiry({cached:true});
     console.warn('Validation distante indisponible : restauration temporaire du profil déjà validé.');
-    return {success:true,cached:true,profile:cached.profile};
+    return {success:true,cached:true,profile:cached.profile,session};
    }
   }catch(_){}
  }
@@ -706,6 +718,7 @@ async function validate(session){
  try{
   const cacheKey='inspecteurbot_profile_cache_v2_'+session.user.id;
   const sessionResult=await serverCheck(session);
+  session=sessionResult?.session||session;
   const data=sessionResult?.profile;
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
@@ -745,7 +758,7 @@ async function validate(session){
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261112-messenger-session-v1" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261115-session-refresh-v25" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
     // Liens relatifs directs : pas de redirection JavaScript ni de reconstruction d'URL.
     // Le navigateur conserve la session de cet onglet entre les pages de même origine.
