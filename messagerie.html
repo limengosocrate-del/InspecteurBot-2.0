@@ -107,7 +107,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261115-shared-session-v23"></script>
+<script src="./auth-gate.js?v=20261115-session-messages-presence-v24"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -136,13 +136,10 @@ function applyRealtimePresence(ids){
 }
 window.addEventListener('inspecteurbot:presence-updated',event=>applyRealtimePresence(event.detail?.userIds||[]));
 function syncMessengerPresence(){
- if(!presenceChannel)return;
- const state=presenceChannel.presenceState()||{},ids=new Set();
- Object.entries(state).forEach(([key,entries])=>(Array.isArray(entries)?entries:[]).forEach(entry=>{const id=entry?.user_id||key;if(id)ids.add(String(id))}));
- window.__ibOnlineUserIds=ids;
+ const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();
  applyRealtimePresence(ids);
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count:Math.max(0,ids.size-(ids.has(me?.id)?1:0))}}));
 }
+function onSharedPresenceUpdate(event){applyRealtimePresence(event.detail?.userIds||window.__ibOnlineUserIds||[])}
 function renderPresenceUI(){
  renderStories();
  document.querySelectorAll('.person[data-person]').forEach(button=>{
@@ -176,16 +173,11 @@ async function init(authDetail={}){
  if(profile.certification_status!=='certified'){location.replace(new URL('profil.html?certification=required',location.href).href);return}
  myProfile=profile;
  applyRealtimePresence(window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:[]);
- presenceChannel=client.channel('ib-presence-global',{config:{presence:{key:me.id}}})
-  .on('presence',{event:'sync'},syncMessengerPresence)
-  .on('presence',{event:'join'},syncMessengerPresence)
-  .on('presence',{event:'leave'},syncMessengerPresence)
-  .subscribe(async status=>{
-   if(status==='SUBSCRIBED'){
-    try{await presenceChannel.track({user_id:me.id,display_name:myProfile?.display_name||'Agent',online_at:new Date().toISOString()});syncMessengerPresence();}
-    catch(error){console.warn('Activation de la présence messagerie impossible:',error)}
-   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Canal de présence messagerie interrompu; reconnexion automatique en cours:',status);
-  });
+ // Présence partagée : un seul canal global est géré par auth-gate.js.
+ const sharedPresence=window.__inspecteurBotPresenceChannel;
+ if(sharedPresence){presenceChannel=sharedPresence;syncMessengerPresence()}
+ else{presenceChannel=null;applyRealtimePresence(window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set())}
+ window.addEventListener('inspecteurbot:presence-updated',onSharedPresenceUpdate);
  // Ne pas bloquer l'ouverture de l'écran sur les requêtes de listes.
  // Les trois panneaux se chargent indépendamment et en parallèle.
  void refreshAll();
@@ -207,7 +199,7 @@ async function init(authDetail={}){
   if(changedId&&changedId!==me.id){void refreshDirectoryOnly()}
  }).subscribe();
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshAll()});
- window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);if(presenceChannel)client.removeChannel(presenceChannel);if(profileChannel)client.removeChannel(profileChannel);clearInterval(directoryRefreshTimer)});
+ window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);window.removeEventListener('inspecteurbot:presence-updated',onSharedPresenceUpdate);if(profileChannel)client.removeChannel(profileChannel);clearInterval(directoryRefreshTimer)});
 }
 async function loadPeople(term='',onlyOnline=false){
  const {data,error}=await withTimeout(client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline}),12000,'annuaire des agents');
@@ -278,45 +270,63 @@ function renderStories(){
  $('onlineCount').textContent=String(exactCount);
  $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
 }
+async function fetchAllMessageRows(queryFactory,label){
+ const all=[],pageSize=500;let offset=0;
+ while(true){
+  const result=await withTimeout(queryFactory().range(offset,offset+pageSize-1),15000,label);
+  if(result.error)throw result.error;
+  const rows=result.data||[];all.push(...rows);
+  if(rows.length<pageSize)break;
+  offset+=pageSize;
+ }
+ return all;
+}
 async function refreshInbox(){
  if(!me)return;
- let result;
- try{result=await withTimeout(client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).limit(100),12000,'conversations')}
- catch(error){$('inbox').innerHTML='<div class="empty">Le chargement des conversations prend trop de temps. Vérifiez votre connexion puis réessayez.</div>';console.warn(error);return}
- const {data,error}=result;
- if(error){$('inbox').innerHTML='<div class="empty">Messagerie momentanément indisponible.</div>';console.error(error);return}
+ let data;
+ try{data=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}),'historique des conversations')}
+ catch(error){$('inbox').innerHTML='<div class="empty">Le chargement des conversations prend trop de temps. Vérifiez votre connexion puis réessayez.</div>';console.warn('Historique messagerie:',error);return}
  const latest=new Map(),unread=new Map();
- for(const m of data||[]){const other=m.sender_id===me.id?m.recipient_id:m.sender_id;if(!latest.has(other))latest.set(other,m);if(m.recipient_id===me.id&&!m.read_at)unread.set(other,(unread.get(other)||0)+1)}
- // N'afficher que les conversations dont le correspondant possède un profil
- // actif dans InspecteurBot (public.profiles lié à auth.users).
+ for(const msg of data){const other=msg.sender_id===me.id?msg.recipient_id:msg.sender_id;if(!latest.has(other))latest.set(other,msg);if(msg.recipient_id===me.id&&!msg.read_at)unread.set(other,(unread.get(other)||0)+1)}
  const ids=[...latest.keys()];
- const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent InspecteurBot',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((a,b)=>new Date(b.message.created_at)-new Date(a.message.created_at));
+ const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent InspecteurBot',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((x,y)=>new Date(y.message.created_at)-new Date(x.message.created_at));
  const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
  $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
 async function openChat(person){
  active=person;updateChatHeader(person);document.body.classList.add('conversation-open');$('chat').classList.add('open');$('messageInput').focus();
+ if(conversationChannel)await client.removeChannel(conversationChannel);
+ const personId=person.id;
+ conversationChannel=client.channel('ib-chat-'+[me.id,personId].sort().join('-'))
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+personId},payload=>{if(payload.new.recipient_id===me.id)appendMessage(payload.new)})
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>updateReadReceipt(payload.new));
+ await new Promise(resolve=>{
+  let done=false;const finish=()=>{if(done)return;done=true;clearTimeout(timer);resolve()};
+  const timer=setTimeout(finish,2200);
+  conversationChannel.subscribe(status=>{if(status==='SUBSCRIBED'||status==='CHANNEL_ERROR'||status==='TIMED_OUT')finish()});
+ });
  await loadConversation();
- if(conversationChannel)client.removeChannel(conversationChannel);
- conversationChannel=client.channel('ib-chat-'+[me.id,person.id].sort().join('-'))
- .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+person.id},payload=>{if(payload.new.recipient_id===me.id)appendMessage(payload.new);})
- .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>updateReadReceipt(payload.new))
- .subscribe();
 }
 async function loadConversation(){
- const personId=active.id;
- const columns='id,sender_id,recipient_id,content,read_at,created_at';
- const [sentResult,receivedResult]=await Promise.all([
-  client.from('messages').select(columns).eq('sender_id',me.id).eq('recipient_id',personId).order('created_at',{ascending:true}).limit(300),
-  client.from('messages').select(columns).eq('sender_id',personId).eq('recipient_id',me.id).order('created_at',{ascending:true}).limit(300)
- ]);
- if(sentResult.error||receivedResult.error){console.error(sentResult.error||receivedResult.error);$('chatBody').innerHTML='<div class="empty">Impossible de charger cette conversation.</div>';return}
- const data=[...(sentResult.data||[]),...(receivedResult.data||[])].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
- $('chatBody').innerHTML='';data.forEach(appendMessage);
- const unread=data.filter(m=>m.recipient_id===me.id&&!m.read_at);
- if(unread.length){await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread.map(m=>m.id));await refreshInbox()}
- scrollChat();
+ const personId=active.id,columns='id,sender_id,recipient_id,content,read_at,created_at';
+ try{
+  const [sent,received]=await Promise.all([
+   fetchAllMessageRows(()=>client.from('messages').select(columns).eq('sender_id',me.id).eq('recipient_id',personId).order('created_at',{ascending:true}),'messages envoyés'),
+   fetchAllMessageRows(()=>client.from('messages').select(columns).eq('sender_id',personId).eq('recipient_id',me.id).order('created_at',{ascending:true}),'messages reçus')
+  ]);
+  if(active?.id!==personId)return;
+  const data=[...sent,...received].sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
+  $('chatBody').innerHTML='';data.forEach(appendMessage);
+  const unread=data.filter(msg=>msg.recipient_id===me.id&&!msg.read_at);
+  for(let i=0;i<unread.length;i+=200){
+   const batch=unread.slice(i,i+200).map(msg=>msg.id);
+   const {error}=await client.from('messages').update({read_at:new Date().toISOString()}).in('id',batch);
+   if(error)console.warn('Mise à jour des lectures:',error);
+  }
+  if(unread.length)await refreshInbox();
+  scrollChat();
+ }catch(error){console.error('Chargement historique complet:',error);$('chatBody').innerHTML='<div class="empty">Impossible de charger tout l’historique. Réessayez lorsque la connexion sera rétablie.</div>'}
 }
 async function refreshPresenceAndReceipts(){
  if(realtimePresenceReady){applyRealtimePresence();return}
