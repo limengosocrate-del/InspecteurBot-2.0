@@ -1704,10 +1704,10 @@ $('#pvQualiteAgent').textContent =
       switchView('preview');
       setTimeout(() => downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf'), 300);
     });
-    $('#btnDownloadPdf').addEventListener('click', () => downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf'));
-    $('#btnPrint').addEventListener('click', () => printSheet('preview'));
-    $('#btnShareWA').addEventListener('click', shareWhatsApp);
-    $('#btnEmail').addEventListener('click', shareEmail);
+    $('#btnDownloadPdf').addEventListener('click', () => {
+      if (!state.lastResult) calculate();
+      downloadPDF('decompteSheet', (state.numero || 'DF') + '.pdf');
+    });
     $('#btnPrintPV').addEventListener('click', () => printSheet('pv'));
     $('#btnDownloadPV').addEventListener('click', () => downloadPDF('pvSheet', (state.numero || 'DF').replace('DF', 'PV') + '.pdf'));
     $('#btnRunAI').addEventListener('click', () => runAI(state.lastResult || calculate()));
