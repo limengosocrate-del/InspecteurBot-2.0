@@ -6,6 +6,22 @@
 
   const css = document.createElement("style");
   css.textContent = `
+    /* Uniquement le titre principal de chaque fiche : même rendu à l'écran et à l'impression. */
+    .official.header .header-title {
+      color: #E3000F !important;
+      -webkit-text-fill-color: #E3000F !important;
+      font-family: "Arial Narrow", "Roboto Condensed", "Liberation Sans Narrow", Impact, Arial, sans-serif !important;
+      font-stretch: condensed !important;
+      font-size: 20pt !important;
+      font-weight: 900 !important;
+      line-height: 1.12 !important;
+      letter-spacing: -0.35px !important;
+      text-align: center !important;
+      text-transform: uppercase !important;
+      vertical-align: middle !important;
+      padding: 3mm 2mm !important;
+    }
+  css.textContent = `
     @page { size: A4 portrait; margin: 8mm; }
     @media print {
       html, body {
@@ -110,17 +126,6 @@
         -webkit-text-fill-color: #111 !important;
       }
       /* Titres officiels et codes : rouge, agrandis et centrés dans leurs cases. */
-      .official.header .header-title {
-        color: #c00000 !important;
-        -webkit-text-fill-color: #c00000 !important;
-        font-size: 15pt !important;
-        font-weight: 900 !important;
-        line-height: 1.2 !important;
-        text-align: center !important;
-        vertical-align: middle !important;
-        text-transform: uppercase !important;
-        padding: 3mm 2mm !important;
-      }
       .official.header .form-code {
         color: #c00000 !important;
         -webkit-text-fill-color: #c00000 !important;
