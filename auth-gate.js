@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-stable-auth-notifications-v22';
+const IB_APP_BUILD='20261115-shared-session-v23';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -709,7 +709,7 @@ async function validate(session){
   }
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
-  window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile}}));
+  window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile,session}}));
   try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));if(updated.certification_status==='certified'||updated.role==='super_admin'){document.body.classList.remove('ib-account-pending');if(location.pathname.endsWith('/profil.html')||location.pathname.endsWith('/notifications.html'))location.replace(new URL('index.html?certified=1',location.href).href);}}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
    // À chaque authentification, synchroniser en arrière-plan la photo locale
    // du compte vers Supabase, sans recharger la page ni toucher aux données locales.
@@ -1009,9 +1009,25 @@ async function start(){
   let ibAuthStorage;
   try{
    ibAuthStorage=window.localStorage;
-   if(!ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY)){
-    const legacySession=window.sessionStorage.getItem(IB_AUTH_STORAGE_KEY);
-    if(legacySession)ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,legacySession);
+   // Récupération transparente des sessions émises par les anciennes versions
+   // (clé dédiée, clé Supabase par défaut ou stockage de l'onglet courant).
+   const legacyKeys=['sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
+   const candidates=[];
+   for(const storage of [window.localStorage,window.sessionStorage]){
+    for(const key of [IB_AUTH_STORAGE_KEY,...legacyKeys]){
+     try{const raw=storage.getItem(key);if(!raw)continue;const parsed=JSON.parse(raw);const session=parsed?.currentSession||parsed;
+      if(session?.access_token&&session?.refresh_token)candidates.push({raw:JSON.stringify(session),expiresAt:Number(session.expires_at||0),source:key});
+     }catch(_){}
+    }
+   }
+   const currentRaw=ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY);
+   let currentExpiry=0;
+   try{const current=JSON.parse(currentRaw||'null');currentExpiry=Number((current?.currentSession||current)?.expires_at||0)}catch(_){}
+   candidates.sort((x,y)=>y.expiresAt-x.expiresAt);
+   const best=candidates[0];
+   if(best&&(!currentRaw||best.expiresAt>currentExpiry+30)){
+    ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
+    console.info('Session InspecteurBot restaurée depuis un ancien stockage:',best.source);
    }
   }catch(storageError){
    console.warn('Stockage persistant indisponible, session limitée à cet onglet.',storageError);
