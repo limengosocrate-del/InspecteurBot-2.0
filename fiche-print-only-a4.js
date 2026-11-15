@@ -65,7 +65,7 @@
       .sheet {
         width: 194mm !important;
         min-width: 194mm !important;
-        min-height: 281mm !important;
+        min-height: 0 !important;
         height: auto !important;
         margin: 0 !important;
         box-shadow: none !important;
@@ -79,33 +79,12 @@
         box-sizing: border-box !important;
       }
 
-      /* Répartit proprement les blocs sur la hauteur A4 disponible
-         lorsque le contenu est plus court, sans créer de page supplémentaire. */
       #inspectionForm {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        min-height: 281mm !important;
+        display: block !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        height: auto !important;
         box-sizing: border-box !important;
-      }
-      #inspectionForm > * {
-        flex-shrink: 0 !important;
-      }
-
-      /* Agrandit verticalement le tableau officiel pour occuper la page A4
-         du haut jusqu'en bas, sans étirer ni couper la largeur. */
-      #inspectionForm > .official,
-      #inspectionForm .official {
-        flex: 1 1 auto !important;
-        height: 100% !important;
-        min-height: 100% !important;
-      }
-      #inspectionForm .official {
-        table-layout: fixed !important;
-      }
-      #inspectionForm {
-        height: 281mm !important;
-        min-height: 281mm !important;
       }
       .official, .meta-panel, .qr-box {
         break-inside: avoid !important;
@@ -135,7 +114,7 @@
     };
 
     sheet.style.setProperty("width", "194mm", "important");
-    sheet.style.setProperty("min-height", "281mm", "important");
+    sheet.style.setProperty("min-height", "0", "important");
     sheet.style.setProperty("height", "auto", "important");
     sheet.style.setProperty("transform", "none", "important");
     wrap.style.setProperty("width", "194mm", "important");
@@ -147,15 +126,14 @@
     const maxW = 194 * pxPerMm;
     const maxH = 281 * pxPerMm;
     const w = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
-    const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, maxH);
-    /* Ajuste séparément la largeur et la hauteur : la fiche remplit la largeur A4
-       sans être réduite horizontalement à cause de sa hauteur. */
-    const scaleX = Math.min(1, maxW / w);
-    const scaleY = Math.min(1, maxH / h);
-    sheet.style.setProperty("--ib-a4-scale-x", String(scaleX));
-    sheet.style.setProperty("--ib-a4-scale-y", String(scaleY));
-    sheet.style.setProperty("transform", "scale(" + scaleX + ", " + scaleY + ")", "important");
-    wrap.style.setProperty("height", (h * scaleY) + "px", "important");
+    const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height);
+    /* Une seule mise à l'échelle proportionnelle : aucun étirement du tableau,
+       du logo IGT, des textes ou des cases. Le contenu conserve ses proportions. */
+    const scale = Math.min(1, maxW / w, maxH / h);
+    sheet.style.setProperty("--ib-a4-scale-x", String(scale));
+    sheet.style.setProperty("--ib-a4-scale-y", String(scale));
+    sheet.style.setProperty("transform", "scale(" + scale + ")", "important");
+    wrap.style.setProperty("height", (h * scale) + "px", "important");
   }
 
   function restore() {
