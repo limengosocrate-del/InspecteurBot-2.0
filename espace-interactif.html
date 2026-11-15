@@ -347,7 +347,7 @@ async function loadAttempts(){
  attempts=r.data||[];
  try{
   await loadLeaderboardData();
-  myTotalPoints=Number(myLeaderboardRow&&myLeaderboardRow.total_points||0);
+  myTotalPoints=Number(myLeaderboardRow&&myLeaderboardRow.total_points||attempts.reduce(function(sum,a){return sum+Number(a.points||0)},0));
  }catch(e){
   myTotalPoints=attempts.reduce(function(sum,a){return sum+Number(a.points||0)},0);
  }
