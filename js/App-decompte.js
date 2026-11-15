@@ -1744,7 +1744,7 @@ $('#pvQualiteAgent').textContent =
     stage.addEventListener('pointerup', stopDrag);
     stage.addEventListener('pointercancel', stopDrag);
     $('#btnApplyPhotoCrop').addEventListener('click', applyPhotoCrop);
-    $('[data-crop-cancel]').forEach(el => el.addEventListener('click', () => closePhotoCropper(true)));
+    $$('[data-crop-cancel]').forEach(el => el.addEventListener('click', () => closePhotoCropper(true)));
     window.addEventListener('resize', () => { if (photoCropState.image) drawCropPreview(); });
   }
 
