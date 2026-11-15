@@ -113,6 +113,14 @@ body.light-theme #hub-connection-status{color:#344451!important}
 </section>
 
 <div class="grid">
+ <section class="panel" id="leaderboard-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-ranking-star panel-icon"></i> Classement des agents</h3><button class="btn secondary" id="refresh-ranking" type="button">Actualiser</button></div>
+  <p class="sub">Classement des agents selon les points obtenus dans les défis InspecteurBot.</p>
+  <div class="rank-list" id="leaderboard"><p class="sub">Chargement du classement…</p></div>
+  <div class="status" id="leaderboard-self" aria-live="polite"></div>
+  <div class="status" id="ranking-status" aria-live="polite"></div>
+ </section>
+
  <section class="panel" id="daily-panel">
   <div class="panel-head"><h3><i class="fa-solid fa-sun panel-icon"></i> Défi du jour</h3><span class="pill" id="daily-date">Aujourd'hui</span></div>
   <p class="sub">Une question courte pour entretenir vos connaissances professionnelles. Une seule tentative par jour.</p>
@@ -199,7 +207,7 @@ var savedTheme='dark';
 try{savedTheme=localStorage.getItem(themeStorageKey)==='light'?'light':'dark'}catch(e){}
 applyTheme(savedTheme,false);
 if(themeButton)themeButton.addEventListener('click',function(){applyTheme(document.body.classList.contains('light-theme')?'dark':'light',true)});
-var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],myTotalPoints=0,practiceQuestions=[],practiceKind='',bootedUserId=null;
+var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],myTotalPoints=0,leaderboardRows=[],myLeaderboardRow=null,myLeaderboardRank=0,practiceQuestions=[],practiceKind='',bootedUserId=null;
 var $=function(id){return document.getElementById(id)};
 var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
@@ -321,14 +329,40 @@ async function loadAdminSuggestions(){
  $('admin-suggestions').innerHTML=(r.data||[]).map(function(x){return '<article class="suggestion" data-suggestion="'+esc(x.id)+'"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><div class="meta">'+esc(x.display_name)+' · '+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div><p>'+esc(x.description)+'</p><label>Décision</label><select data-status><option value="received" '+(x.status==='received'?'selected':'')+'>Reçue</option><option value="reviewing" '+(x.status==='reviewing'?'selected':'')+'>En étude</option><option value="accepted" '+(x.status==='accepted'?'selected':'')+'>Retenue</option><option value="rejected" '+(x.status==='rejected'?'selected':'')+'>Non retenue</option></select><label>Note administrative</label><textarea data-note maxlength="1000">'+esc(x.admin_note||'')+'</textarea><button class="btn" data-save style="margin-top:8px">Enregistrer la décision</button><div class="status" data-feedback></div></article>'}).join('')||'<p class="sub">Aucune proposition reçue.</p>';
 }
 
+async function loadLeaderboardData(){
+ var r=await client.from('ib_challenge_leaderboard').select('user_id,display_name,total_points,challenge_count').order('total_points',{ascending:false}).order('challenge_count',{ascending:false}).limit(1000);
+ if(r.error)throw r.error;
+ var all=(r.data||[]).filter(function(x){
+  var name=String(x.display_name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim().toLowerCase();
+  return name!=='jean pierre test';
+ });
+ leaderboardRows=all.slice(0,10);
+ myLeaderboardRank=all.findIndex(function(x){return x.user_id===user.id})+1;
+ myLeaderboardRow=myLeaderboardRank>0?all[myLeaderboardRank-1]:null;
+}
 async function loadAttempts(){
  var fields='id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at';
  var r=await client.from('ib_challenge_attempts').select(fields).eq('user_id',user.id).order('created_at',{ascending:false}).limit(100);
  if(r.error)throw r.error;
  attempts=r.data||[];
- /* Lire uniquement le total du compte connecté : aucun nom ni classement d'autres agents. */
- var summary=await client.from('ib_challenge_leaderboard').select('total_points').eq('user_id',user.id).maybeSingle();
- myTotalPoints=summary.error?attempts.reduce(function(sum,a){return sum+Number(a.points||0)},0):Number(summary.data&&summary.data.total_points||0);
+ try{
+  await loadLeaderboardData();
+  myTotalPoints=Number(myLeaderboardRow&&myLeaderboardRow.total_points||0);
+ }catch(e){
+  myTotalPoints=attempts.reduce(function(sum,a){return sum+Number(a.points||0)},0);
+ }
+}
+function renderLeaderboard(){
+ var rows=leaderboardRows||[];
+ if(!rows.length){
+  $('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra dès que les agents auront validé leurs premiers défis.</p>';
+  $('leaderboard-self').textContent='Votre progression personnelle reste disponible dans Mes récompenses.';
+  return;
+ }
+ $('leaderboard').innerHTML=rows.map(function(r,i){
+  return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:var(--muted);font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>';
+ }).join('');
+ $('leaderboard-self').textContent=myLeaderboardRow?'Votre position : #'+myLeaderboardRank+' · '+Number(myLeaderboardRow.total_points||0)+' points.':'Votre progression personnelle est consultable dans Mes récompenses.';
 }
 function renderAwards(){
  var total=Number(myTotalPoints||0);
@@ -338,7 +372,7 @@ function renderAwards(){
 }
 
 async function refreshAll(){
- try{await loadAttempts();renderAwards();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
+ try{await loadAttempts();renderAwards();renderLeaderboard();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
  var sets=await Promise.all([fetchChallengeQuestions('daily',dailyKey),fetchChallengeQuestions('weekly',weeklyKey)]);
  renderQuestionSet('daily',sets[0],$('daily-content'),dailyKey);
  renderQuestionSet('weekly',sets[1],$('weekly-content'),weeklyKey);
@@ -378,11 +412,16 @@ async function saveAdminSuggestion(btn){
 }
 async function runButtonAction(btn){
  if(btn.disabled)return;
- if(btn.hasAttribute('data-save'))await saveAdminSuggestion(btn);
+ if(btn.id==='refresh-ranking'){
+  btn.disabled=true;btn.textContent='Actualisation…';
+  try{await loadAttempts();renderAwards();renderLeaderboard();showStatus('ranking-status','Classement actualisé.',true)}
+  catch(err){showStatus('ranking-status','Actualisation impossible : '+err.message)}
+  finally{btn.disabled=false;btn.textContent='Actualiser'}
+ }else if(btn.hasAttribute('data-save'))await saveAdminSuggestion(btn);
 }
 document.addEventListener('click',function(e){
  var btn=e.target.closest&&e.target.closest('button');
- if(btn&&btn.hasAttribute('data-save')){e.preventDefault();void runButtonAction(btn);return}
+ if(btn&&(btn.id==='refresh-ranking'||btn.hasAttribute('data-save'))){e.preventDefault();void runButtonAction(btn);return}
  if(btn&&btn.hasAttribute('data-game')){e.preventDefault();startPracticeGame(btn.dataset.game);return}
  if(btn&&btn.hasAttribute('data-new-practice')){e.preventDefault();startPracticeGame(practiceKind);return}
 },true);
