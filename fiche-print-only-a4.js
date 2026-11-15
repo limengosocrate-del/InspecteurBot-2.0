@@ -1,4 +1,5 @@
-/* Impression uniquement : ne modifie jamais l'affichage à l'écran. */
+/* Impression PDF A4 : réservé aux fiches F01–F07 et S01–S03.
+   Aucun style d'écran ni aucune donnée du formulaire ne sont modifiés. */
 (() => {
   if (window.__ibPrintOnlyA4) return;
   window.__ibPrintOnlyA4 = true;
@@ -15,8 +16,6 @@
       }
       .screen-toolbar, .ai-drawer, .no-print { display: none !important; }
 
-      /* Le panneau de suivi est marqué no-print dans le HTML :
-         on le réaffiche explicitement pour conserver les 5 métadonnées. */
       .meta-panel.no-print {
         display: grid !important;
         grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
@@ -29,6 +28,7 @@
         border-radius: 7px !important;
         box-sizing: border-box !important;
         break-inside: avoid !important;
+        page-break-inside: avoid !important;
       }
       .meta-panel.no-print label {
         display: grid !important;
@@ -58,35 +58,50 @@
       .sheet-wrap {
         display: block !important;
         width: 194mm !important;
+        height: 281mm !important;
+        min-height: 281mm !important;
         padding: 0 !important;
         margin: 0 !important;
         overflow: visible !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
       }
       .sheet {
+        display: block !important;
         width: 194mm !important;
         min-width: 194mm !important;
         min-height: 0 !important;
         height: auto !important;
         margin: 0 !important;
+        padding: 0 !important;
         box-shadow: none !important;
         transform: scale(var(--ib-a4-scale-x, 1), var(--ib-a4-scale-y, 1)) !important;
         transform-origin: top left !important;
-        page-break-after: auto !important;
-        break-after: auto !important;
-        page-break-before: auto !important;
-        break-before: auto !important;
+        page-break-before: avoid !important;
+        page-break-after: avoid !important;
+        break-before: avoid !important;
+        break-after: avoid !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
         overflow: visible !important;
         box-sizing: border-box !important;
       }
-
       #inspectionForm {
         display: block !important;
         width: 100% !important;
         min-height: 0 !important;
         height: auto !important;
+        margin: 0 !important;
         box-sizing: border-box !important;
       }
-      .official, .meta-panel, .qr-box {
+      .official {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      .meta-panel, .qr-box {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
@@ -95,8 +110,8 @@
         -webkit-text-fill-color: #111 !important;
       }
       .official th, .official td, .section-title, .rate-box, .qr-box {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
     }
   `;
@@ -114,26 +129,31 @@
     };
 
     sheet.style.setProperty("width", "194mm", "important");
+    sheet.style.setProperty("min-width", "194mm", "important");
     sheet.style.setProperty("min-height", "0", "important");
     sheet.style.setProperty("height", "auto", "important");
     sheet.style.setProperty("transform", "none", "important");
     wrap.style.setProperty("width", "194mm", "important");
+    wrap.style.setProperty("height", "281mm", "important");
+    wrap.style.setProperty("min-height", "281mm", "important");
     wrap.style.setProperty("padding", "0", "important");
     wrap.style.setProperty("overflow", "visible", "important");
 
-    /* Laisse le navigateur appliquer les règles @media print avant mesure. */
+    /* La largeur est ajustée indépendamment de la hauteur : un contenu long
+       ne réduit donc plus toute la fiche et ne laisse pas de larges marges.
+       La hauteur est adaptée pour tenir sur une seule page A4. */
     const pxPerMm = 96 / 25.4;
     const maxW = 194 * pxPerMm;
     const maxH = 281 * pxPerMm;
-    const w = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
-    const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height);
-    /* Une seule mise à l'échelle proportionnelle : aucun étirement du tableau,
-       du logo IGT, des textes ou des cases. Le contenu conserve ses proportions. */
-    const scale = Math.min(1, maxW / w, maxH / h);
-    sheet.style.setProperty("--ib-a4-scale-x", String(scale));
-    sheet.style.setProperty("--ib-a4-scale-y", String(scale));
-    sheet.style.setProperty("transform", "scale(" + scale + ")", "important");
-    wrap.style.setProperty("height", (h * scale) + "px", "important");
+    const width = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
+    const height = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, 1);
+    const scaleX = Math.min(1, maxW / width);
+    const scaleY = maxH / height;
+
+    sheet.style.setProperty("--ib-a4-scale-x", String(scaleX));
+    sheet.style.setProperty("--ib-a4-scale-y", String(scaleY));
+    sheet.style.setProperty("transform", "scale(" + scaleX + ", " + scaleY + ")", "important");
+    wrap.style.setProperty("height", maxH + "px", "important");
   }
 
   function restore() {
