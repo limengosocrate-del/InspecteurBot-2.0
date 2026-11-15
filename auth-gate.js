@@ -524,7 +524,7 @@ async function expireSession(){
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
 }
-let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false;
+let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false,headerBadgeRefreshQueued=false;
 async function refreshHeaderBadges(){
  if(!client||!user||navigator.onLine===false)return;
  const presence=document.querySelector('#ib-header-presence .ib-header-count');
@@ -539,12 +539,12 @@ async function refreshHeaderBadges(){
   const admin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
   const [msg,ann,annRead,train,trainRead,req,reqRead]=await Promise.all([
    messages||menuMessageCount?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
-   notifications?client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(5000):Promise.resolve({data:[]}),
-   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(5000):Promise.resolve({data:[]}),
-   notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(1000):Promise.resolve({data:[]}),
-   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(5000):Promise.resolve({data:[]}),
-   notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(1000):Promise.resolve({data:[]}),
-   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
+   notifications?client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(120):Promise.resolve({data:[]}),
+   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]}),
+   notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(120):Promise.resolve({data:[]}),
+   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]}),
+   notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(100):Promise.resolve({data:[]}),
+   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]})
   ]);
   if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false}
   if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
@@ -559,13 +559,19 @@ async function refreshHeaderBadges(){
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
  finally{headerBadgeBusy=false}
 }
+function scheduleHeaderBadgeRefresh(){
+ if(headerBadgeRefreshQueued)return;headerBadgeRefreshQueued=true;
+ const run=()=>{headerBadgeRefreshQueued=false;void refreshHeaderBadges()};
+ if(typeof requestIdleCallback==='function')requestIdleCallback(run,{timeout:1800});else setTimeout(run,350);
+}
 function startHeaderBadgeTracking(){
- clearInterval(headerBadgeTimer);void refreshHeaderBadges();
- headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void refreshHeaderBadges()},60000);
+ clearInterval(headerBadgeTimer);
+ scheduleHeaderBadgeRefresh();
+ headerBadgeTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()},120000);
  if(headerBadgeChannel){try{client.removeChannel(headerBadgeChannel)}catch(_){}}
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
-   .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
@@ -574,7 +580,7 @@ function startHeaderBadgeTracking(){
    .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
- if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void refreshHeaderBadges()})}
+ if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()})}
 }
 async function refreshNotificationBadge(){return refreshHeaderBadges();}
 function stopHeaderBadgeTracking(){
@@ -737,9 +743,6 @@ async function validate(session){
     if(url){avatarImg.src=url;avatarImg.hidden=false;avatarIcon.hidden=true}
     else{avatarImg.hidden=true;avatarImg.removeAttribute('src');avatarIcon.hidden=false}
    };
-   refreshNotificationBadge();
-   if(!window.__ibNotificationRefreshTimer)window.__ibNotificationRefreshTimer=setInterval(refreshNotificationBadge,120000);
-   window.addEventListener('focus',refreshNotificationBadge);
   }
  }catch(e){console.error('Authentification InspecteurBot : erreur de validation ou d’interface',e);if(e.authFatal){stopRealtimePresence();await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Accès refusé.')}else{gate(e.message||'Une erreur temporaire empêche le chargement. Votre session est conservée : réessayez.','retry');return}}
  finally{busy=false}
