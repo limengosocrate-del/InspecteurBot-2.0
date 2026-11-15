@@ -1274,49 +1274,27 @@ $('#pvQualiteAgent').textContent =
   }
 
   function showFavoritesModal() {
-    const store = loadStore();
-    const favs = store.archives.filter(a => a.favorite || (store.favorites || []).includes(a.id));
     $('#modalTitle').textContent = '⭐ Favoris';
-    if (!favs.length) {
-      $('#modalBody').innerHTML = '<p class="muted">Aucun favori pour le moment. Archivez un décompte en favori depuis le panneau résultat.</p>';
-    } else {
-      $('#modalBody').innerHTML = favs.map(a => `
-        <div class="archive-item" style="margin-bottom:8px">
-          <div>
-            <h4>${a.result.nom} · ${a.id}</h4>
-            <div class="meta"><span>${formatMoney(a.result.net, a.result.devise)}</span></div>
-          </div>
-          <button class="btn-primary btn-sm" data-load-fav="${a.id}">Ouvrir</button>
-        </div>
-      `).join('');
-      $$('[data-load-fav]').forEach(b => b.addEventListener('click', () => {
-        closeModal(); loadArchive(b.dataset.loadFav);
-      }));
-    }
+    $('#modalBody').innerHTML = '<p class="muted">Les dossiers sont maintenant conservés dans vos archives Supabase. Ouvrez les archives pour consulter vos décomptes enregistrés.</p><button class="btn-primary btn-sm" id="btnOpenArchivesFromModal"><i class="fa-solid fa-box-archive"></i> Ouvrir les archives</button>';
+    $('#btnOpenArchivesFromModal').addEventListener('click', () => { closeModal(); switchView('archive'); });
     openModal();
   }
 
   function showHistoryModal() {
-    const store = loadStore();
-    const list = (store.archives || []).slice(0, 20);
     $('#modalTitle').textContent = '📚 Historique récent';
+    const list = remoteArchives.slice(0, 20);
     if (!list.length) {
-      $('#modalBody').innerHTML = '<p class="muted">Aucun historique.</p>';
+      $('#modalBody').innerHTML = '<p class="muted">Aucun décompte enregistré pour le moment.</p>';
     } else {
       $('#modalBody').innerHTML = list.map(a => `
         <div class="archive-item" style="margin-bottom:8px">
-          <div>
-            <h4>${a.result.nom || '—'} · ${a.id}</h4>
-            <div class="meta">
-              <span>${new Date(a.savedAt).toLocaleString('fr-FR')}</span>
-              <span>${formatMoney(a.result.net, a.result.devise)}</span>
-            </div>
-          </div>
-          <button class="btn-ghost btn-sm" data-load-hist="${a.id}">Ouvrir</button>
-        </div>
-      `).join('');
+          <div><h4>Décompte final de ${escapeHtml(a.nom || '—')} · ${escapeHtml(a.numero)}</h4>
+          <div class="meta"><span>${new Date(a.created_at).toLocaleString('fr-FR')}</span>
+          <span>${formatMoney(a.payload?.result?.net, a.payload?.result?.devise || 'CDF')}</span></div></div>
+          <button class="btn-ghost btn-sm" data-load-hist="${escapeHtml(a.id)}">Voir</button>
+        </div>`).join('');
       $$('[data-load-hist]').forEach(b => b.addEventListener('click', () => {
-        closeModal(); loadArchive(b.dataset.loadHist);
+        closeModal(); openArchivedDocument(b.dataset.loadHist);
       }));
     }
     openModal();
@@ -1840,14 +1818,17 @@ $('#pvQualiteAgent').textContent =
     $('#btnHideTrash').addEventListener('click', () => { $('#archiveTrashPanel').hidden = true; });
     $('#btnBackArchive').addEventListener('click', () => switchView('archive'));
     $('#btnGenerateFinal').addEventListener('click', () => saveToArchive(false));
-    $('#btnExportAll').addEventListener('click', () => {
-      const store = loadStore();
-      const blob = new Blob([JSON.stringify(store.archives, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `InspecteurBot_archives_${YEAR}.json`;
-      a.click();
-      toast('Export JSON téléchargé', 'success');
+    $('#btnExportAll').addEventListener('click', async () => {
+      try {
+        await fetchRemoteArchives();
+        const blob = new Blob([JSON.stringify(remoteArchives, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `InspecteurBot_archives_${YEAR}.json`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error) { toast(error?.message || 'Export des archives impossible.', 'error'); }
     });
 
 
