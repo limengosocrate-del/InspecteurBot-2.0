@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-notification-audio-session-v27';
+const IB_APP_BUILD='20261115-session-scope-auth-v29';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -1036,30 +1036,35 @@ async function start(){
   const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
   let ibAuthStorage;
   try{
-   ibAuthStorage=window.localStorage;
-   // Récupération transparente des sessions émises par les anciennes versions
-   // (clé dédiée, clé Supabase par défaut ou stockage de l'onglet courant).
-   const legacyKeys=['sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
-   const candidates=[];
-   for(const storage of [window.localStorage,window.sessionStorage]){
-    for(const key of [IB_AUTH_STORAGE_KEY,...legacyKeys]){
-     try{const raw=storage.getItem(key);if(!raw)continue;const parsed=JSON.parse(raw);const session=parsed?.currentSession||parsed;
-      if(session?.access_token&&session?.refresh_token)candidates.push({raw:JSON.stringify(session),expiresAt:Number(session.expires_at||0),source:key});
+   // Une seule authentification pour toute la navigation entre les menus et
+   // les actualisations de page. La session temporaire ne survit pas à la
+   // fermeture de l'onglet/de la session de navigation.
+   ibAuthStorage=window.sessionStorage;
+   const migrationFlag='inspecteurbot-auth-tab-migration-v1';
+   const legacyKeys=[IB_AUTH_STORAGE_KEY,'sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
+   if(localStorage.getItem(migrationFlag)!=='done'){
+    let best=null;
+    for(const key of legacyKeys){
+     try{
+      const raw=localStorage.getItem(key);if(!raw)continue;
+      const parsed=JSON.parse(raw);const session=parsed?.currentSession||parsed;
+      if(session?.access_token&&session?.refresh_token){
+       const candidate={raw:JSON.stringify(session),expiresAt:Number(session.expires_at||0)};
+       if(!best||candidate.expiresAt>best.expiresAt)best=candidate;
+      }
      }catch(_){}
     }
+    if(!ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY)&&best){
+     ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
+     console.info('Session active migrée une seule fois vers le stockage de navigation.');
+    }
+    localStorage.setItem(migrationFlag,'done');
    }
-   const currentRaw=ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY);
-   let currentExpiry=0;
-   try{const current=JSON.parse(currentRaw||'null');currentExpiry=Number((current?.currentSession||current)?.expires_at||0)}catch(_){}
-   candidates.sort((x,y)=>y.expiresAt-x.expiresAt);
-   const best=candidates[0];
-   if(best&&(!currentRaw||best.expiresAt>currentExpiry+30)){
-    ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
-    console.info('Session InspecteurBot restaurée depuis un ancien stockage:',best.source);
-   }
+   // Ne plus conserver de jeton de connexion permanent après cette migration.
+   for(const key of legacyKeys){try{localStorage.removeItem(key)}catch(_){}}
   }catch(storageError){
-   console.warn('Stockage persistant indisponible, session limitée à cet onglet.',storageError);
-   ibAuthStorage=window.sessionStorage;
+   console.warn('Stockage de session temporaire indisponible.',storageError);
+   ibAuthStorage=window.localStorage;
   }
   client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:ibAuthStorage,storageKey:IB_AUTH_STORAGE_KEY,autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});
   window.inspecteurBotAuthClient=client;
