@@ -903,3 +903,47 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
 .inspecteurbot-advice{border-left:4px solid var(--igt-blue-light);background:rgba(23,105,194,.055);padding:12px 14px;border-radius:10px}
 .inspecteurbot-advice strong{display:block;margin-bottom:5px;color:var(--igt-blue-deep)}
 .inspecteurbot-advice p{line-height:1.55}
+
+
+/* Formulaire : photo travailleur à gauche du titre Renseignements. */
+.worker-card-head{display:flex;align-items:center;justify-content:flex-start;gap:14px}
+.worker-card-head h3{margin:0}
+.worker-photo-slot{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.worker-photo-slot img{width:64px;height:64px;border-radius:14px;object-fit:cover}
+.worker-photo-slot .photo-upload{width:auto;min-width:64px;height:40px;padding:0 10px;display:flex;gap:7px;border-radius:10px}
+.worker-photo-slot .photo-upload span{font-size:.78rem;font-weight:700}
+.fonction-autre-field{margin-top:10px}
+.fonction-autre-field.hidden{display:none!important}
+
+/* Éditeur de cadrage photo tactile. */
+.photo-crop-modal{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:16px}
+.photo-crop-modal.hidden{display:none!important}
+.photo-crop-backdrop{position:absolute;inset:0;background:rgba(3,14,30,.76);backdrop-filter:blur(5px)}
+.photo-crop-panel{position:relative;width:min(460px,100%);background:#fff;color:#172b43;border-radius:20px;padding:18px;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.photo-crop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.photo-crop-head strong{display:block;font-size:1.05rem}
+.photo-crop-head small{display:block;color:#64748b;line-height:1.45;margin-top:4px}
+.photo-crop-stage{position:relative;width:min(100%,340px);aspect-ratio:1/1;margin:0 auto;overflow:hidden;border-radius:16px;background:#0c1726;touch-action:none;cursor:grab}
+.photo-crop-stage:active{cursor:grabbing}
+.photo-crop-stage:after{content:"";position:absolute;inset:0;border:2px solid rgba(255,255,255,.85);border-radius:16px;pointer-events:none}
+.photo-crop-stage img{position:absolute;display:block;max-width:none;max-height:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.photo-crop-controls{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:16px 0 18px}
+.photo-crop-controls label{font-size:.86rem;font-weight:700;color:#294765}
+.photo-crop-controls input{width:100%;accent-color:#1769c2}
+.photo-crop-controls span{font-size:.8rem;font-weight:800;color:#1769c2;min-width:48px;text-align:right}
+.photo-crop-actions{display:flex;justify-content:flex-end;gap:9px}
+.df-info-heading{display:flex;align-items:flex-start;gap:12px;margin:0 0 3mm}
+.df-info-heading .df-section-title{margin:2mm 0 0}
+.df-photos{justify-content:flex-start;align-items:flex-start;gap:8px;margin:0;flex:0 0 auto}
+.df-photo-box img{width:25mm;height:25mm;object-fit:cover;border-radius:3px}
+.df-photo-box span{font-size:7.5pt}
+@media(max-width:520px){
+ .worker-card-head{gap:10px}
+ .worker-photo-slot img{width:56px;height:56px}
+ .photo-crop-panel{padding:14px}
+ .photo-crop-stage{width:min(100%,300px)}
+ .photo-crop-actions>*{flex:1;justify-content:center;text-align:center}
+ .df-info-heading{gap:8px}
+ .df-photo-box img{width:21mm;height:21mm}
+}
+@media print{.df-info-heading{break-inside:avoid}}
