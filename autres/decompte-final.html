@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-  <link rel="stylesheet" href="decompte-final.css?v=20261115-decompte-archive-v1" />
+  <link rel="stylesheet" href="decompte-final.css?v=20261115-decompte-photo-function-v2" />
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 
@@ -161,15 +161,15 @@
                   </select>
                 </div>
                 <div class="field">
-                  <label for="inspecteurNom">Inspecteur / Contrôleur</label>
-                  <input type="text" id="inspecteurNom" class="input" placeholder="Nom complet de l'inspecteur" />
+                  <label for="qualiteAgent">Qualité de l'agent chargé du décompte</label>
+                  <select id="qualiteAgent" class="input">
+                    <option value="INSPECTEUR DU TRAVAIL" selected>Inspecteur du Travail</option>
+                    <option value="CONTRÔLEUR DU TRAVAIL">Contrôleur du Travail</option>
+                  </select>
                 </div>
                 <div class="field">
-               <label for="qualiteAgent">Qualité</label>
-              <select id="qualiteAgent" class="input">
-              <option value="INSPECTEUR DU TRAVAIL" selected>Inspecteur du Travail</option>
-              <option value="CONTRÔLEUR DU TRAVAIL">Contrôleur du Travail</option>
-               </select>
+                  <label for="inspecteurNom">Nom complet de l'agent</label>
+                  <input type="text" id="inspecteurNom" class="input" placeholder="Saisir le nom complet" />
                 </div>
                 <div class="field">
                   <label for="inspecteurGrade">Grade / Qualité</label>
@@ -188,15 +188,15 @@
 
             <!-- Card: Renseignements travailleur -->
             <article class="card">
-              <div class="card-head">
-                <h3><i class="fa-solid fa-user-tie"></i> Renseignements</h3>
-                <div class="photo-slot">
-                  <img id="photoTravailleurPreview" alt="" class="hidden" />
-                  <label class="photo-upload" for="photoTravailleur" title="Photo du travailleur">
-                    <i class="fa-solid fa-camera"></i>
+              <div class="card-head worker-card-head">
+                <div class="photo-slot worker-photo-slot">
+                  <img id="photoTravailleurPreview" alt="Photo du travailleur" class="hidden" />
+                  <label class="photo-upload" for="photoTravailleur" title="Ajouter ou ajuster la photo du travailleur">
+                    <i class="fa-solid fa-camera"></i><span>Photo</span>
                   </label>
                   <input type="file" id="photoTravailleur" accept="image/*" hidden />
                 </div>
+                <h3><i class="fa-solid fa-user-tie"></i> Renseignements</h3>
               </div>
               <div class="card-body form-grid">
                 <div class="field">
@@ -329,10 +329,20 @@
       <option>Artiste</option>
       <option>Agent d'entretien</option>
       <option>Employé polyvalent</option>
-      <option>Autre</option>
+      <option>Agent de production</option><option>Agent de nettoyage</option><option>Agent commercial</option>
+      <option>Agent de stock</option><option>Agent de laboratoire</option><option>Technicien de laboratoire</option>
+      <option>Technicien agricole</option><option>Technicien de surface</option><option>Opérateur de saisie</option>
+      <option>Opérateur de production</option><option>Distributeur</option><option>Représentant</option>
+      <option>Consultant</option><option>Stagiaire</option><option>Apprenti</option>
+      <option>Travailleur domestique</option><option>Bonne / Aide-ménagère</option><option>Sentinelle</option>
+      <option>Agent agricole</option><option>Autre</option>
     </optgroup>
 
   </select>
+  <div class="field fonction-autre-field hidden" id="fonctionAutreWrap">
+    <label for="fonctionAutre">Préciser la fonction</label>
+    <input type="text" id="fonctionAutre" class="input" placeholder="Saisir l'intitulé exact de la fonction" />
+  </div>
 </div>
                 <div class="field">
                   <label for="categorie">Catégorie professionnelle <span class="req">*</span></label>
@@ -624,19 +634,20 @@
 
               <h1 class="df-title">DÉCOMPTE FINAL ÉTABLI EN FAVEUR DE :</h1>
 
-              <div class="df-photos" id="dfPhotos">
-                <div class="df-photo-box hidden" id="dfPhotoTrav">
-                  <img id="dfImgTrav" alt="Travailleur" />
-                  <span>Travailleur</span>
-                </div>
-                <div class="df-photo-box hidden" id="dfPhotoEnt">
-                  <img id="dfImgEnt" alt="Entreprise" />
-                  <span>Entreprise</span>
-                </div>
-              </div>
-
               <section class="df-section">
-                <h2 class="df-section-title">Renseignements</h2>
+                <div class="df-info-heading">
+                  <div class="df-photos" id="dfPhotos">
+                    <div class="df-photo-box hidden" id="dfPhotoTrav">
+                      <img id="dfImgTrav" alt="Travailleur" />
+                      <span>Travailleur</span>
+                    </div>
+                    <div class="df-photo-box hidden" id="dfPhotoEnt">
+                      <img id="dfImgEnt" alt="Entreprise" />
+                      <span>Entreprise</span>
+                    </div>
+                  </div>
+                  <h2 class="df-section-title">Renseignements</h2>
+                </div>
                 <table class="df-table">
                   <tr><td class="lab">❖ Nom & Post-nom</td><td class="val" id="pvNom">—</td></tr>
                   <tr><td class="lab">❖ Fonction</td><td class="val" id="pvFonction">—</td></tr>
@@ -910,7 +921,16 @@
     </div>
 
     <!-- Toast -->
-    <div id="toast" class="toast" role="status"></div>
+    <div class="photo-crop-modal hidden" id="photoCropModal" role="dialog" aria-modal="true" aria-labelledby="photoCropTitle">
+    <div class="photo-crop-backdrop" data-crop-cancel></div>
+    <div class="photo-crop-panel">
+      <div class="photo-crop-head"><div><strong id="photoCropTitle">Ajuster la photo</strong><small>Déplacez l'image et ajustez le zoom pour cadrer le visage.</small></div><button type="button" class="icon-btn" data-crop-cancel aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="photo-crop-stage" id="photoCropStage"><img id="photoCropImage" alt="Aperçu du cadrage" draggable="false" /></div>
+      <div class="photo-crop-controls"><label for="photoCropZoom">Zoom</label><input type="range" id="photoCropZoom" min="1" max="3" step="0.01" value="1" /><span id="photoCropZoomValue">100 %</span></div>
+      <div class="photo-crop-actions"><button type="button" class="btn-ghost" data-crop-cancel>Annuler</button><button type="button" class="btn-primary" id="btnApplyPhotoCrop"><i class="fa-solid fa-check"></i> Valider la photo</button></div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
 
     <!-- Modal Favoris / Historique -->
     <div id="modal" class="modal hidden">
@@ -925,7 +945,7 @@
     </div>
   </div>
 
-  <script src="../js/App-decompte.js?v=20261115-decompte-navigation-advice-v1" defer></script>
+  <script src="../js/App-decompte.js?v=20261115-decompte-photo-function-v2" defer></script>
   
 </body>
 </html>
