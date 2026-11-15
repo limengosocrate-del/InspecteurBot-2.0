@@ -522,7 +522,7 @@ async function expireSession(){
  user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
  gate('Votre session a été interrompue. Veuillez vous reconnecter.');
 }
-let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false,headerBadgeRefreshQueued=false;
+let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false,headerBadgeRefreshQueued=false,headerBadgeRefreshPending=false;
 async function refreshHeaderBadges(){
  if(!client||!user||navigator.onLine===false)return;
  const presence=document.querySelector('#ib-header-presence .ib-header-count');
@@ -555,12 +555,12 @@ async function refreshHeaderBadges(){
    if(hasData){notifications.textContent=total>99?'99+':String(total);notifications.hidden=total===0;notifications.parentElement.title=details.join(' · ');notifications.parentElement.setAttribute('aria-label',total+' notification(s) non lue(s)')}
   }
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
- finally{headerBadgeBusy=false}
+ finally{headerBadgeBusy=false;if(headerBadgeRefreshPending){headerBadgeRefreshPending=false;scheduleHeaderBadgeRefresh()}}
 }
 function scheduleHeaderBadgeRefresh(){
  if(headerBadgeRefreshQueued)return;headerBadgeRefreshQueued=true;
- const run=()=>{headerBadgeRefreshQueued=false;void refreshHeaderBadges()};
- if(typeof requestIdleCallback==='function')requestIdleCallback(run,{timeout:1800});else setTimeout(run,350);
+ const run=()=>{headerBadgeRefreshQueued=false;if(headerBadgeBusy){headerBadgeRefreshPending=true;return}void refreshHeaderBadges()};
+ if(typeof requestIdleCallback==='function')requestIdleCallback(run,{timeout:900});else setTimeout(run,180);
 }
 function startHeaderBadgeTracking(){
  clearInterval(headerBadgeTimer);
