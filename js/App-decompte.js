@@ -133,6 +133,7 @@
     numero: null,
     lastResult: null,
     photos: { travailleur: null, entreprise: null },
+    logoIGT: null,
     signatureData: null,
     geo: null,
     charts: { retenues: null, salaire: null, jours: null },
@@ -516,6 +517,7 @@
       else data[id] = el.value;
     });
     data.photos = state.photos;
+    data.logoIGT = state.logoIGT;
     data.signatureData = state.signatureData;
     data.geo = state.geo;
     data.numero = state.numero;
@@ -598,6 +600,10 @@
     if (inp.motifDetail) motifTxt += ' — ' + inp.motifDetail;
     $('#pvMotif').textContent = motifTxt;
     $('#pvEntreprise').textContent = inp.entrepriseNom || '—';
+    $('#pvEntrepriseAdresse').textContent = inp.entrepriseAdresse || '—';
+    $('#pvLieuPrestation').textContent = inp.lieuPrestation || '—';
+    const logoPreview = $('#pvIgtLogo');
+    if (logoPreview && (inp.logoIGT || state.logoIGT)) logoPreview.src = inp.logoIGT || state.logoIGT;
     $('#pvSalaireBase').textContent = formatMoney(r.salaireBase, r.devise);
     $('#pvLogement').textContent = formatMoney(r.logement, r.devise);
     $('#pvTransport').textContent = formatMoney(r.transport, r.devise);
@@ -1258,6 +1264,11 @@ $('#pvQualiteAgent').textContent =
       if (result.anc.dateFin) result.anc.dateFin = new Date(result.anc.dateFin);
     }
     state.photos = snap.photos || { travailleur: null, entreprise: null };
+    state.logoIGT = snap.logoIGT || null;
+    const uploadLogo = $('#igtLogoUploadPreview');
+    const documentLogo = $('#pvIgtLogo');
+    if (uploadLogo) uploadLogo.src = state.logoIGT || 'assets/logo.svg';
+    if (documentLogo) documentLogo.src = state.logoIGT || 'assets/logo.svg';
     state.signatureData = snap.signatureData || null;
     state.geo = null;
     state.numero = entry.numero;
@@ -1615,6 +1626,43 @@ $('#pvQualiteAgent').textContent =
     });
   }
 
+  function bindIgtLogo() {
+    const input = $('#igtLogoFile');
+    const preview = $('#igtLogoUploadPreview');
+    const documentLogo = $('#pvIgtLogo');
+    input.addEventListener('change', event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
+      if (!allowed.includes(file.type)) {
+        toast('Format non pris en charge. Utilisez PNG, JPG, WEBP ou SVG.', 'error');
+        input.value = '';
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast('Le logo dépasse 5 Mo. Choisissez un fichier plus léger.', 'error');
+        input.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.logoIGT = String(reader.result || '');
+        preview.src = state.logoIGT;
+        documentLogo.src = state.logoIGT;
+        toast('Logo officiel ajouté à l’aperçu du document.', 'success');
+      };
+      reader.onerror = () => toast('Impossible de lire le fichier du logo.', 'error');
+      reader.readAsDataURL(file);
+    });
+    $('#btnResetIgtLogo').addEventListener('click', () => {
+      state.logoIGT = null;
+      preview.src = 'assets/logo.svg';
+      documentLogo.src = 'assets/logo.svg';
+      input.value = '';
+      toast('Logo par défaut rétabli.', 'success');
+    });
+  }
+
   /* -------------------------------------------------------
    *  PHOTOS
    * ----------------------------------------------------- */
@@ -1968,6 +2016,7 @@ $('#pvQualiteAgent').textContent =
     initSignature();
     bindPhoto('photoTravailleur', 'photoTravailleurPreview', 'travailleur');
     bindPhoto('photoEntreprise', 'photoEntreprisePreview', 'entreprise');
+    bindIgtLogo();
     bindLiveCalc();
     $('#fonction').addEventListener('change', updateFonctionAutre);
     updateFonctionAutre();
