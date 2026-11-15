@@ -69,7 +69,7 @@
         height: auto !important;
         margin: 0 !important;
         box-shadow: none !important;
-        transform: scale(var(--ib-a4-scale, 1)) !important;
+        transform: scale(var(--ib-a4-scale-x, 1), var(--ib-a4-scale-y, 1)) !important;
         transform-origin: top left !important;
         page-break-after: auto !important;
         break-after: auto !important;
@@ -132,10 +132,14 @@
     const maxH = 281 * pxPerMm;
     const w = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
     const h = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, maxH);
-    const scale = Math.min(1, maxW / w, maxH / h);
-    sheet.style.setProperty("--ib-a4-scale", String(scale));
-    sheet.style.setProperty("transform", "scale(" + scale + ")", "important");
-    wrap.style.setProperty("height", (h * scale) + "px", "important");
+    /* Ajuste séparément la largeur et la hauteur : la fiche remplit la largeur A4
+       sans être réduite horizontalement à cause de sa hauteur. */
+    const scaleX = Math.min(1, maxW / w);
+    const scaleY = Math.min(1, maxH / h);
+    sheet.style.setProperty("--ib-a4-scale-x", String(scaleX));
+    sheet.style.setProperty("--ib-a4-scale-y", String(scaleY));
+    sheet.style.setProperty("transform", "scale(" + scaleX + ", " + scaleY + ")", "important");
+    wrap.style.setProperty("height", (h * scaleY) + "px", "important");
   }
 
   function restore() {
