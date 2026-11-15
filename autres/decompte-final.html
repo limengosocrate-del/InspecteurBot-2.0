@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
   <link rel="stylesheet" href="decompte-final.css?v=20261110-decompte-redesign-v2" />
 
@@ -600,10 +601,10 @@
               <p>Document officiel au format A4 — prêt à imprimer ou exporter.</p>
             </div>
             <div class="head-actions">
-              <button class="btn-ghost" id="btnPrint"><i class="fa-solid fa-print"></i> Imprimer</button>
-              <button class="btn-secondary" id="btnShareWA"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-              <button class="btn-secondary" id="btnEmail"><i class="fa-solid fa-envelope"></i> Email</button>
-              <button class="btn-primary" id="btnDownloadPdf"><i class="fa-solid fa-download"></i> Télécharger PDF</button>
+              <button class="btn-primary" id="btnDownloadPdf" type="button">
+                <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
+                Télécharger en PDF
+              </button>
             </div>
           </div>
 
