@@ -24,7 +24,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261115-header-icons-v21" defer></script>
+<script src="auth-gate.js?v=20261115-stable-auth-notifications-v22" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v8_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v9_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -48,7 +48,7 @@ function empty(t){return '<div class="empty"><i class="fa-regular fa-bell-slash"
 async function load(force=false){
  if(!client||!user)return;
  if(loadInFlight){if(force)loadQueued=true;return;}
- if(!force&&Date.now()-lastLoadAt<1200)return;
+ if(!force&&Date.now()-lastLoadAt<700)return;
  loadInFlight=true;lastLoadAt=Date.now();
  const seq=++loadSequence,list=$('notificationList');
  if(!announcements.length&&!training.length&&!requests.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des notifications…</div>';
@@ -56,7 +56,7 @@ async function load(force=false){
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req]=await Promise.all([
-   run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(150);q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q})()),
+   run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(150);q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q})()),
    run('formations',client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}).limit(100)),
    admin?run('demandes de certification',client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}).limit(250)):Promise.resolve({data:[],error:null})
   ]);
@@ -88,8 +88,8 @@ async function load(force=false){
  }
 }
 function render(){
- const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&(x.created_by!==user?.id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
- const courses=training.filter(x=>x.created_by!==user?.id&&!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
+ const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
+ const courses=training.filter(x=>!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
  let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
  if(tab==='training')items=items.filter(x=>x.kind==='training');
@@ -100,7 +100,8 @@ function render(){
  if($('requestsTab')){$('requestsTab').hidden=!isAdmin;$('requestsUnread').textContent=String(unreadRequests.length);$('requestsUnread').hidden=unreadRequests.length===0;}
  const showAdminRequests=tab==='requests'||(tab==='all'&&isAdmin);
  const regularEmpty=empty(tab==='training'?'Aucune formation non lue.':tab==='announcements'?'Aucune annonce non lue.':'Aucune notification non lue.');
- $('notificationList').innerHTML=tab==='requests'?(reqCards||empty('Aucune demande de certification non lue.')):(certificationNotice+cards+(showAdminRequests?reqCards:'')+(!cards&&!(showAdminRequests&&reqCards)?regularEmpty:''));
+ const hasContent=Boolean(cards)||(showAdminRequests&&Boolean(reqCards));
+ $('notificationList').innerHTML=tab==='requests'?(reqCards||empty('Aucune demande de certification non lue.')):(certificationNotice+(hasContent?cards+(showAdminRequests?reqCards:''):regularEmpty));
 }
 async function markRead(kind,id){
  const set=kind==='announcement'?readAnnouncements:kind==='training'?readTraining:readRequests;
@@ -135,7 +136,7 @@ function init(d){
   .on('postgres_changes',{event:'*',schema:'public',table:'registration_requests'},refreshQuietly)
   .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
   .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Canal temps réel des notifications interrompu:',status)});
- const refresh=()=>{if(navigator.onLine!==false&&!document.hidden)setTimeout(()=>load().catch(e=>console.warn('Actualisation différée',e)),500)};
+ const refresh=()=>{if(navigator.onLine!==false&&!document.hidden)setTimeout(()=>load(true).catch(e=>console.warn('Actualisation différée',e)),250)};
  window.addEventListener('online',refresh);window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 }
 document.addEventListener('inspecteurbot:authenticated',e=>init(e.detail));
