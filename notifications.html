@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false,loadSequence=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v7_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v8_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -47,28 +47,36 @@ function status(id,t,ok){$(id).textContent=t;$(id).style.color=ok?'#138a65':'#b4
 function empty(t){return '<div class="empty"><i class="fa-regular fa-bell-slash"></i>'+esc(t)+'</div>'}
 async function load(){
  if(!client||!user)return;
- const requestId=++loadSequence;
- const safeQuery=async query=>{try{return await query}catch(error){return {data:null,error}}};
- const announcementQuery=(()=>{let q=client.from('announcements').select('id,title,body,created_by,target_user_id,created_at').order('created_at',{ascending:false}).limit(500);if(!isAdmin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q})();
- const trainingQuery=client.from('training_resources').select('id,title,description,kind,file_path,external_url,exercise,created_by,created_at,published').eq('published',true).order('created_at',{ascending:false}).limit(100);
- const requestQuery=isAdmin?client.from('registration_requests').select('id,nom_complet,matricule,email,categorie,statut,created_at,user_id').eq('statut','en_attente').order('created_at',{ascending:false}).limit(200):Promise.resolve({data:[],error:null});
- const [a,t,rr]=await Promise.all([safeQuery(announcementQuery),safeQuery(trainingQuery),safeQuery(requestQuery)]);
- if(requestId!==loadSequence)return;
+ const seq=++loadSequence;
+ const list=$('notificationList');
+ list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des annonces et formations…</div>';
+ const run=async(label,query)=>{try{const r=await query;if(r.error)throw r.error;return {data:r.data||[],error:null}}catch(error){console.error('InspecteurBot '+label,error);return {data:[],error}}};
+ const admin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
+ const [ann,course,req]=await Promise.all([
+  run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(1000);if(!admin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q})()),
+  run('formations',client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}).limit(250)),
+  admin?run('demandes',client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}).limit(250)):Promise.resolve({data:[],error:null})
+ ]);
+ if(seq!==loadSequence)return;
  const errors=[];
- if(a.error){errors.push('annonces');console.error('Chargement annonces:',a.error)}else announcements=a.data||[];
- if(t.error){errors.push('formations');console.error('Chargement formations:',t.error)}else training=t.data||[];
- if(isAdmin){if(rr.error){errors.push('demandes');console.error('Chargement demandes:',rr.error)}else requests=rr.data||[]}
+ if(!ann.error)announcements=ann.data;else errors.push('annonces');
+ if(!course.error)training=course.data;else errors.push('formations');
+ if(admin&&!req.error)requests=req.data;else if(admin&&req.error)errors.push('demandes');
  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,training,savedAt:Date.now()}))}catch(_){}
+ const readA=await run('lectures annonces',client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(5000));
+ const readT=await run('lectures formations',client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(5000));
+ const readR=admin?await run('lectures demandes',client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000)):{data:[],error:null};
+ if(seq!==loadSequence)return;
+ if(!readA.error){readAnnouncements.clear();readA.data.forEach(x=>readAnnouncements.add(String(x.announcement_id)))}
+ if(!readT.error){readTraining.clear();readT.data.forEach(x=>readTraining.add(String(x.resource_id)))}
+ if(admin&&!readR.error){readRequests.clear();readR.data.forEach(x=>readRequests.add(String(x.request_id)))}
  render();
- if(errors.length)$('notificationList').insertAdjacentHTML('afterbegin','<div class="item" role="status"><strong>Synchronisation partielle</strong><div class="item-body">Certaines rubriques ('+esc(errors.join(', '))+') ne sont pas accessibles. Les autres contenus restent affichés ; réessayez dans quelques instants.</div></div>');
- const readJobs=[safeQuery(client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(2000)),safeQuery(client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(2000))];
- if(isAdmin)readJobs.push(safeQuery(client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(2000)));
- const reads=await Promise.all(readJobs);
- if(requestId!==loadSequence)return;
- if(!reads[0].error){readAnnouncements.clear();(reads[0].data||[]).forEach(x=>readAnnouncements.add(String(x.announcement_id)))}
- if(!reads[1].error){readTraining.clear();(reads[1].data||[]).forEach(x=>readTraining.add(String(x.resource_id)))}
- if(isAdmin&&reads[2]&&!reads[2].error){readRequests.clear();(reads[2].data||[]).forEach(x=>readRequests.add(String(x.request_id)))}
- render();
+ if(errors.length){
+  const msg=document.createElement('div');msg.className='item';msg.setAttribute('role','status');
+  const strong=document.createElement('strong');strong.textContent='Synchronisation partielle';
+  const detail=document.createElement('div');detail.className='item-body';detail.textContent='Impossible de récupérer : '+errors.join(', ')+'. Les autres contenus sont affichés. Vérifiez la connexion puis actualisez.';
+  msg.append(strong,detail);list.prepend(msg);
+ }
 }
 function render(){
  const ann=announcements.map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle',read:readAnnouncements.has(String(x.id))}));
@@ -107,13 +115,13 @@ function init(d){
  });
  try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){announcements=Array.isArray(cached.announcements)?cached.announcements:[];training=Array.isArray(cached.training)?cached.training:[];render()}}catch(_){}
  load().catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!training.length)$('notificationList').innerHTML='<div class="item" role="alert"><strong>Impossible de synchroniser les rubriques.</strong><div class="item-body">'+esc(e.message||'Vérifiez votre connexion Internet puis réessayez.')+'</div><button type="button" class="primary" id="retryNotifications">Réessayer</button></div>';$('retryNotifications')?.addEventListener('click',()=>load().catch(console.warn))});
- client.channel('ib-announcements-center-'+user.id)
-  .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>load().catch(console.warn))
-  .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>load().catch(console.warn))
-  .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>{if(isAdmin)load().catch(console.warn)})
-  .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>load().catch(console.warn))
-  .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>load().catch(console.warn))
-  .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>load().catch(console.warn))
+ let refreshTimer=null;
+ const refreshQuietly=()=>{clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>load().catch(e=>console.warn('Actualisation notifications',e)),400)};
+ client.channel('ib-notification-center-rebuild-'+user.id)
+  .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},refreshQuietly)
+  .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},refreshQuietly)
+  .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
+  .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
   .subscribe();
  const refresh=()=>{if(navigator.onLine!==false)load().catch(e=>console.warn('Actualisation différée',e))};
  window.addEventListener('online',refresh);window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
