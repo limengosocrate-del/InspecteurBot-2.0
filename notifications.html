@@ -67,7 +67,7 @@ async function load(force=false){
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req]=await Promise.all([
-   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q},'annonces')),
+   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q},'annonces')),
    run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),
    admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null})
   ]);
