@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-  <link rel="stylesheet" href="decompte-final.css?v=20261110-decompte-redesign-v2" />
+  <link rel="stylesheet" href="decompte-final.css?v=20261115-decompte-archive-v1" />
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 
@@ -544,13 +544,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="field geo-field">
-                  <label><i class="fa-solid fa-map-location-dot"></i> Géolocalisation de l'inspection</label>
-                  <div class="geo-row">
-                    <input type="text" id="geoDisplay" class="input" readonly placeholder="Non capturée" />
-                    <button type="button" class="btn-secondary" id="btnGeo"><i class="fa-solid fa-crosshairs"></i> Capturer</button>
-                  </div>
-                </div>
               </div>
             </article>
           </div>
@@ -561,8 +554,9 @@
               <h3><i class="fa-solid fa-receipt"></i> Résultat du calcul</h3>
               <div class="head-actions">
                 <button class="btn-ghost btn-sm" id="btnToPreview"><i class="fa-solid fa-eye"></i> Aperçu</button>
-                <button class="btn-secondary btn-sm" id="btnSaveArchive"><i class="fa-solid fa-floppy-disk"></i> Archiver</button>
+                <button class="btn-primary btn-sm" id="btnGenerateFinal"><i class="fa-solid fa-file-circle-check"></i> Générer le décompte final</button>
                 <button class="btn-primary btn-sm" id="btnExportPdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                <button class="btn-secondary btn-sm" id="btnSaveArchive"><i class="fa-solid fa-box-archive"></i> Archiver</button>
               </div>
             </div>
             <div class="card-body">
@@ -600,6 +594,7 @@
               <p>Document officiel au format A4 — prêt à imprimer ou exporter.</p>
             </div>
             <div class="head-actions">
+              <button class="btn-ghost" id="btnBackArchive" type="button"><i class="fa-solid fa-arrow-left"></i> Retour aux archives</button>
               <button class="btn-primary" id="btnDownloadPdf" type="button">
                 <i class="fa-solid fa-file-pdf" aria-hidden="true"></i>
                 Télécharger en PDF
@@ -721,10 +716,6 @@
                 <p id="pvObservations"></p>
               </div>
 
-              <div class="df-geo hidden" id="pvGeoBlock">
-                <small>📍 Inspection localisée : <span id="pvGeo"></span></small>
-              </div>
-
               <footer class="df-footer">
                 <div class="df-sign-block">
                  <div class="df-sign-title" id="pvQualiteAgent">L'INSPECTEUR DU TRAVAIL</div>
@@ -841,10 +832,14 @@
             <div class="head-actions">
               <input type="search" id="archiveSearch" class="input" placeholder="Rechercher…" style="max-width:220px" />
               <button class="btn-ghost" id="btnExportAll"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
-              <button class="btn-ghost danger" id="btnClearArchive"><i class="fa-solid fa-trash"></i> Vider</button>
+              <button class="btn-ghost" id="btnShowTrash"><i class="fa-solid fa-trash-can"></i> Corbeille <span id="trashCount">0</span></button>
             </div>
           </div>
           <div class="archive-list" id="archiveList"></div>
+          <section id="archiveTrashPanel" class="archive-trash-panel" hidden>
+            <div class="page-head"><div><h3><i class="fa-solid fa-trash-can"></i> Corbeille</h3><p>Les dossiers supprimés sont conservés pendant 72 heures avant leur suppression définitive.</p></div><button class="btn-ghost" id="btnHideTrash">Fermer</button></div>
+            <div class="archive-list" id="archiveTrashList"></div>
+          </section>
         </section>
 
         <!-- ========== VIEW: SETTINGS ========== -->
@@ -927,7 +922,7 @@
     </div>
   </div>
 
-  <script src="../js/App-decompte.js?v=20261115-decompte-buttons-restored" defer></script>
+  <script src="../js/App-decompte.js?v=20261115-decompte-supabase-archive-v1" defer></script>
   
 </body>
 </html>
