@@ -336,7 +336,8 @@
 </div>
                 <div class="field">
                   <label for="categorie">Catégorie professionnelle <span class="req">*</span></label>
-                  <select id="categorie" class="input">
+                  <select id="categorie" class="input" required>
+                    <option value="">-- Sélectionner une catégorie --</option>
                     <option value="manoeuvre">I — Manœuvres (MO / ML)</option>
                     <option value="manoeuvre_specialise">II — Manœuvres spécialisés (MS)</option>
                     <option value="semi_qualifie">III — Agents semi-qualifiés (SQ)</option>
@@ -360,7 +361,8 @@
                 </div>
                 <div class="field">
                   <label for="motif">Motif de départ <span class="req">*</span></label>
-                  <select id="motif" class="input">
+                  <select id="motif" class="input" required>
+                    <option value="">-- Sélectionner un motif --</option>
                     <option value="licenciement">Licenciement</option>
                     <option value="demission">Démission volontaire</option>
                     <option value="fin_contrat">Fin de contrat à durée déterminée</option>
