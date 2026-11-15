@@ -1035,17 +1035,15 @@ async function start(){
   const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
   let ibAuthStorage;
   try{
-   // Une seule authentification pour toute la navigation entre les menus et
-   // les actualisations de page. La session temporaire ne survit pas à la
-   // fermeture de l'onglet/de la session de navigation.
+   // Le stockage partagé permet à tous les menus et onglets de réutiliser
+   // la même session Supabase jusqu'à une déconnexion explicite.
    ibAuthStorage=window.localStorage;
-   const migrationFlag='inspecteurbot-auth-tab-migration-v1';
    const legacyKeys=[IB_AUTH_STORAGE_KEY,'sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
-   if(localStorage.getItem(migrationFlag)!=='done'){
-    let best=null;
+   let best=null;
+   for(const storage of [window.localStorage,window.sessionStorage]){
     for(const key of legacyKeys){
      try{
-      const raw=localStorage.getItem(key);if(!raw)continue;
+      const raw=storage.getItem(key);if(!raw)continue;
       const parsed=JSON.parse(raw);const session=parsed?.currentSession||parsed;
       if(session?.access_token&&session?.refresh_token){
        const candidate={raw:JSON.stringify(session),expiresAt:Number(session.expires_at||0)};
@@ -1053,15 +1051,15 @@ async function start(){
       }
      }catch(_){}
     }
-    if(!ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY)&&best){
-     ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
-     console.info('Session active migrée une seule fois vers le stockage de navigation.');
-    }
-    localStorage.setItem(migrationFlag,'done');
    }
-   // Ne plus conserver de jeton de connexion permanent après cette migration.
-   for(const key of legacyKeys){try{localStorage.removeItem(key)}catch(_){}}
-  }catch(storageError){
+   const current=ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY);
+   if(best&&(!current||best.raw!==current)){
+    let currentExpiry=0;
+    try{const parsed=JSON.parse(current||'null');currentExpiry=Number((parsed?.currentSession||parsed)?.expires_at||0)}catch(_){}
+    if(!current||best.expiresAt>currentExpiry+30)ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
+   }
+   // Ne jamais effacer le jeton courant : les menus doivent le partager.
+    }catch(storageError){
    console.warn('Stockage de session temporaire indisponible.',storageError);
    ibAuthStorage=window.localStorage;
   }
