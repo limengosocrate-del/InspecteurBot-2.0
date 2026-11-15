@@ -25,8 +25,14 @@ async function checkInspecteurBotUpdate(force=false){
      await Promise.all(registrations.map(reg=>reg.update().catch(()=>{})));
     }
     // Ne pas effacer Cache Storage ici : le Service Worker migre les fichiers hors-ligne.
-   // localStorage et IndexedDB ne sont jamais supprimés lors d'une mise à jour.
-   }catch(cleanError){console.info('Nettoyage du cache différé',cleanError)}
+    // localStorage et IndexedDB ne sont jamais supprimés lors d'une mise à jour.
+   }catch(cleanError){console.info('Mise à jour du cache différée',cleanError)}
+   // Si la mise à jour est déclenchée au retour d'Internet, imposer une nouvelle
+   // authentification aux comptes non certifiés avant le rechargement automatique.
+   if(user&&profile?.certification_status!=='certified'&&profile?.role!=='super_admin'){
+    try{await client?.auth.signOut({scope:'local'})}catch(authError){console.warn('Reconnexion requise après mise à jour',authError)}
+    user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;
+   }
    location.replace(location.pathname+location.search+(location.search?'&':'?')+'ibrefresh='+encodeURIComponent(latest.build));
    return true;
   }
