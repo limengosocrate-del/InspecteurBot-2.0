@@ -416,6 +416,14 @@ html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scro
 @media(max-width:520px){.banner{height:340px;min-height:340px}.datetime-box{top:12px!important;right:13px!important;max-width:55%}.datetime-top strong,#clock{font-size:21px!important}.datetime-day{font-size:10px!important}.datetime-date,#date,.datetime-weather span,#city{font-size:9px!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+/* Alerte prioritaire de certification affichée sous le menu Utilisateur. */
+.ib-certification-banner{display:none;max-width:900px;margin:8px auto 22px;padding:18px 20px;border:2px solid #ffd45a;border-radius:16px;background:linear-gradient(135deg,#fff8df 0%,#ffedb5 100%);color:#4a3200;text-align:center;box-shadow:0 8px 24px #0003}
+.ib-certification-banner .ib-cert-icon{display:block;font-size:32px;line-height:1.2;margin-bottom:8px;color:#9a6500}
+.ib-certification-banner strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.25;font-weight:900;letter-spacing:.2px}
+.ib-certification-banner p{margin:9px 0 13px;font-size:clamp(14px,2.8vw,17px);line-height:1.5;font-weight:700}
+.ib-certification-banner a{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:11px 20px;border-radius:10px;background:#073b70;color:#fff;text-decoration:none;font-size:16px;font-weight:900;box-shadow:0 4px 12px #073b7040}
+body.ib-account-pending .ib-certification-banner{display:block}
+@media(max-width:520px){.ib-certification-banner{margin:8px 12px 18px;padding:16px 13px}.ib-certification-banner .ib-cert-icon{font-size:29px}.ib-certification-banner a{width:100%}}
 /* Accès limité avant certification : seul le menu Utilisateur reste visible. */
 body.ib-account-pending .menu-index a:not([href^="profil.html"]){display:none!important}
 body.ib-account-pending #assistant-intelligent,
@@ -593,7 +601,15 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 
   
     
-    </nav> 
+    </nav>
+
+<!-- Message obligatoire pour les comptes en attente de certification -->
+<section class="ib-certification-banner" role="alert" aria-live="polite">
+  <span class="ib-cert-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+  <strong>VOTRE COMPTE N’EST PAS ENCORE CERTIFIÉ</strong>
+  <p>Pour accéder à tous les menus et à l’ensemble des fonctionnalités d’InspecteurBot, veuillez compléter vos informations et demander la certification de votre compte dès maintenant.</p>
+  <a href="profil.html?certification=required"><i class="fa-solid fa-user-check"></i> CERTIFIER MON COMPTE</a>
+</section> 
   
 <!-- ================= ASSISTANT IA ================= -->
 
