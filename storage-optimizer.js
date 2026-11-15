@@ -27,11 +27,27 @@
   }catch(error){console.info('Optimisation image ignorée',error);return file;}
   finally{try{bitmap.close();}catch(_){}}
  }
+ async function optimizePdf(file){
+  if(file.type!=='application/pdf'||!window.PDFLib||typeof window.PDFLib.PDFDocument?.load!=='function')return file;
+  try{
+   const bytes=await file.arrayBuffer();
+   const source=new TextDecoder('latin1').decode(bytes);
+   // Keep signed, encrypted, interactive and attachment-bearing PDFs byte-for-byte unchanged.
+   const protectedMarkers=['/ByteRange','/Encrypt','/AcroForm','/XFA','/EmbeddedFiles','/Filespec','/Annots','/OpenAction','/JavaScript','/RichMedia','/3D','/Collection'];
+   if(protectedMarkers.some(marker=>source.includes(marker)))return file;
+   const original=await window.PDFLib.PDFDocument.load(bytes,{updateMetadata:false,throwOnInvalidObject:true});
+   const pageCount=original.getPageCount();
+   const saved=await original.save({useObjectStreams:true,addDefaultPage:false,objectsPerTick:100});
+   if(!saved||saved.byteLength>=file.size*0.98)return file;
+   const check=await window.PDFLib.PDFDocument.load(saved,{updateMetadata:false,throwOnInvalidObject:true});
+   if(check.getPageCount()!==pageCount)return file;
+   return new File([saved],file.name,{type:'application/pdf',lastModified:file.lastModified||Date.now()});
+  }catch(error){console.info('Optimisation PDF ignorée, fichier original conservé',error);return file;}
+ }
  async function prepare(file,options={}){
   if(!file)return file;
-  if(/^image\//.test(file.type))return optimizeImage(file,options);
-  // Les PDF, audio, archives et documents Office ne sont pas ré-encodés
-  // afin d'éviter toute altération de leur contenu ou de leur lisibilité.
+  if(/^image\\//.test(file.type))return optimizeImage(file,options);
+  if(file.type==='application/pdf')return optimizePdf(file);
   return file;
  }
  window.IBStorageOptimizer=Object.freeze({prepare,optimizeImage});
