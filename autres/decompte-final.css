@@ -893,3 +893,13 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
 .archive-trash-panel .page-head{margin-bottom:14px}
 .archive-actions .btn-sm{white-space:nowrap}
 @media(max-width:600px){.archive-item{grid-template-columns:1fr}.archive-actions{justify-content:flex-end;flex-wrap:wrap}.archive-trash-panel{padding:12px}}
+
+/* Navigation retour calculateur — boutons cohérents dans aperçu, PDF et archives. */
+#btnBackCalculatorPreview,#btnBackCalculatorArchive{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+@media(max-width:600px){
+ #view-preview .page-head .head-actions,#view-archive .page-head .head-actions{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+ #btnBackCalculatorPreview,#btnBackCalculatorArchive{justify-content:center}
+}
+.inspecteurbot-advice{border-left:4px solid var(--igt-blue-light);background:rgba(23,105,194,.055);padding:12px 14px;border-radius:10px}
+.inspecteurbot-advice strong{display:block;margin-bottom:5px;color:var(--igt-blue-deep)}
+.inspecteurbot-advice p{line-height:1.55}
