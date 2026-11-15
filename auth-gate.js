@@ -49,7 +49,7 @@ const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
 let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,passkeyEnrollmentInProgress=false;
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
-html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:hidden!important}\n
+html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate){visibility:hidden!important}\n#ib-auth-gate[data-loading="true"]{visibility:visible!important}\n#ib-auth-gate[data-loading="true"] #ib-auth-card{display:none!important}\n#ib-auth-gate[data-loading="true"]::after{content:"InspecteurBot";display:block;color:#fff;font:800 26px/1.2 Arial,sans-serif;letter-spacing:.4px;text-align:center;text-shadow:0 4px 18px #0008}\n
 #ib-auth-gate{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background-image:linear-gradient(135deg,#061a30 0%,#0b2d4d 55%,#071b34 100%);background-size:cover;background-position:center;background-repeat:no-repeat;font-family:Arial,sans-serif;visibility:visible!important}
 #ib-auth-gate[hidden]{display:none!important}
 #ib-auth-card{box-sizing:border-box;width:min(430px,100%);padding:30px 26px;border-radius:18px;background:rgba(255,255,255,.56);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,.58);color:#18314d;box-shadow:0 20px 65px #00152f80}
@@ -320,20 +320,10 @@ function setupNetworkStatus(){
  window.addEventListener('online',()=>{
   showOnline();
   if(!client||!user)return;
-  // Après une coupure réseau, les comptes non certifiés repassent par la connexion.
-  // Une seule déconnexion est effectuée par événement réel de reconnexion.
-  window.setTimeout(async()=>{
+  // La reconnexion Internet ne doit jamais déconnecter un agent actif,
+  // qu’il soit certifié ou en attente de certification. On restaure simplement les services.
+  window.setTimeout(()=>{
    if(!client||!user||navigator.onLine===false)return;
-   try{const fresh=await client.from('profiles').select('*').eq('id',user.id).maybeSingle();if(fresh.data){profile=fresh.data;window.inspecteurBotAuthProfile=profile;}}catch(profileRefreshError){console.warn('Vérification du statut de certification différée',profileRefreshError)}
-   if(profile?.certification_status!=='certified'&&profile?.role!=='super_admin'){
-    const reconnectUser=user;
-    stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();
-    try{await client.auth.signOut({scope:'local'})}catch(error){console.warn('Déconnexion de sécurité après reconnexion réseau',error)}
-    if(user?.id===reconnectUser.id){user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;}
-    gate('Connexion Internet rétablie. Pour poursuivre, veuillez vous reconnecter à votre compte. Pensez ensuite à compléter votre certification.');
-    return;
-   }
-   // Les comptes certifiés reprennent automatiquement leurs abonnements.
    void updatePresence();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
    void pollIncomingMessages();void refreshHeaderBadges();
   },500);
@@ -597,7 +587,7 @@ function showDuplicateAccountToast(){const panel=byId('auth-register-panel'),mes
 function gate(t,mode){
  document.documentElement.classList.remove('inspecteur-auth-ready');makeGate();
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
- g.hidden=false;g.dataset.loading=mode==='loading'?'true':'false';if(mode!=='loading')hideSplash();
+ g.hidden=false;g.dataset.loading=(mode==='loading'||mode==='boot')?'true':'false';if(mode!=='loading'&&mode!=='boot')hideSplash();
  const loginOpen=byId('auth-login-open'),loginChosen=loginOpen?.dataset.open==='true';
  form.hidden=!loginChosen;forgot.hidden=!loginChosen;byId('auth-passkey-login').hidden=!loginChosen;retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
  if(intro&&mode==='loading')intro.textContent='Préparation de votre espace sécurisé…';
