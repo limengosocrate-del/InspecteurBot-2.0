@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-certification-notifications-live-v3';
+const IB_APP_BUILD='20261115-notifications-facebook-read-v4';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -527,46 +527,41 @@ async function expireSession(){
 let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false;
 async function refreshHeaderBadges(){
  if(headerBadgeBusy||!client||!user||navigator.onLine===false)return;
- const presence=document.querySelector('#ib-header-presence .ib-header-count');
- const messages=document.querySelector('#ib-header-messages .ib-header-count');
+ const presence=document.querySelector('#ib-header-presence .ib-header-count'),messages=document.querySelector('#ib-header-messages .ib-header-count');
  const menuMessages=document.querySelector('.menu-index a[href*="messagerie.html"]');
  let menuMessageCount=menuMessages?.querySelector('.ib-menu-message-count');
  if(menuMessages&&!menuMessageCount){menuMessageCount=document.createElement('span');menuMessageCount.className='ib-menu-message-count';menuMessageCount.hidden=true;menuMessageCount.setAttribute('aria-hidden','true');menuMessages.appendChild(menuMessageCount);}
- const notifications=document.querySelector('#ib-notification-link .ib-notification-count');
- if(!presence&&!messages&&!notifications)return;
- // La notification de certification reste visible même si les autres requêtes échouent.
- const certificationUnread=profile?.certification_status==='certified'?0:1;
- if(notifications&&certificationUnread){
-  notifications.textContent='1';notifications.hidden=false;
-  notifications.parentElement.setAttribute('aria-label','1 notification non lue : certification du compte requise');
-  notifications.parentElement.title='Action requise : veuillez certifier votre compte';
- }
+ const notifications=document.querySelector('#ib-notification-link .ib-notification-count');if(!presence&&!messages&&!notifications)return;
  headerBadgeBusy=true;
  try{
+  const isAdmin=profile?.role==='super_admin';
   const tasks=await Promise.allSettled([
    client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null),
-   client.from('announcements').select('id,created_by').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(200),
-   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(500),
-   client.from('training_resources').select('id,created_by').eq('published',true).limit(200)
+   client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(10000),
+   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(10000),
+   client.from('training_resources').select('id,created_by').eq('published',true).limit(10000),
+   client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(10000),
+   isAdmin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(10000):Promise.resolve({data:[],error:null}),
+   isAdmin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(10000):Promise.resolve({data:[],error:null})
   ]);
   const val=i=>tasks[i].status==='fulfilled'?tasks[i].value:null;
   if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false;presence.parentElement.title=n+' agent(s) en ligne';presence.parentElement.setAttribute('aria-label',n+' agent(s) en ligne');}
-  if(messages||menuMessageCount){const r=val(0);if(r&&!r.error){const n=r.count||0;const label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
+  if(messages||menuMessageCount){const r=val(0);if(r&&!r.error){const n=r.count||0,label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
   if(notifications){
-   const a=val(1),rr=val(2),tr=val(3);
-   if(a&&!a.error&&rr&&!rr.error&&tr&&!tr.error){
-    const readAnnouncements=new Set((rr.data||[]).map(x=>String(x.announcement_id)));
-    const unreadAnnouncements=(a.data||[]).filter(x=>!readAnnouncements.has(String(x.id))).length;
-    let readTraining=[];try{readTraining=JSON.parse(localStorage.getItem('inspecteurbot_training_reads_v1_'+user.id)||'[]')}catch(_){}
-    const readTrainingSet=new Set(readTraining.map(String));
-    const unreadTraining=(tr.data||[]).filter(x=>!readTrainingSet.has(String(x.id))).length;
-    const certificationUnread=profile?.certification_status==='certified'?0:1;
-    const n=unreadAnnouncements+unreadTraining+certificationUnread;
-    notifications.textContent=n>99?'99+':String(n);notifications.hidden=n===0;
-    const certificationLabel=certificationUnread?' et 1 notification de certification à lire':'';
-    notifications.parentElement.setAttribute('aria-label',n+' notification(s) non lue(s)'+certificationLabel);
-    notifications.parentElement.title=unreadAnnouncements+' annonce(s), '+unreadTraining+' formation(s)'+certificationLabel;
-   }
+   const an=val(1),ar=val(2),tr=val(3),rr=val(4),rq=val(5),rqr=val(6);
+   if([an,ar,tr,rr,rq,rqr].every(x=>x&&!x.error)){
+    const readA=new Set((ar.data||[]).map(x=>String(x.announcement_id)));
+    const unreadA=(an.data||[]).filter(x=>(x.created_by!==user.id||x.target_user_id===user.id)&&!readA.has(String(x.id))).length;
+    const readT=new Set((rr.data||[]).map(x=>String(x.resource_id)));
+    const unreadT=(tr.data||[]).filter(x=>x.created_by!==user.id&&!readT.has(String(x.id))).length;
+    const readReq=new Set((rqr.data||[]).map(x=>String(x.request_id)));
+    const unreadReq=isAdmin?(rq.data||[]).filter(x=>!readReq.has(String(x.id))).length:0;
+    const certUnread=!isAdmin&&profile?.certification_status!=='certified'?1:0;
+    const count=unreadA+unreadT+unreadReq+certUnread;
+    notifications.textContent=count>99?'99+':String(count);notifications.hidden=count===0;
+    notifications.parentElement.setAttribute('aria-label',count+' notification(s) non lue(s)');
+    notifications.parentElement.title=(isAdmin?unreadReq+' demande(s) de certification, ':'')+unreadA+' annonce(s), '+unreadT+' formation(s)'+(certUnread?', certification requise':'');
+   }else console.warn('Compteur de notifications : synchronisation partielle');
   }
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
  finally{headerBadgeBusy=false}
@@ -578,6 +573,12 @@ function startHeaderBadgeTracking(){
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
    .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>void refreshHeaderBadges())
+   .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>void refreshHeaderBadges())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>void refreshHeaderBadges())
       .subscribe();
