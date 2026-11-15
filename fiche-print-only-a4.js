@@ -109,6 +109,30 @@
         color: #111 !important;
         -webkit-text-fill-color: #111 !important;
       }
+      /* Titres officiels et codes : rouge, agrandis et centrés dans leurs cases. */
+      .official.header .header-title {
+        color: #c00000 !important;
+        -webkit-text-fill-color: #c00000 !important;
+        font-size: 15pt !important;
+        font-weight: 900 !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        text-transform: uppercase !important;
+        padding: 3mm 2mm !important;
+      }
+      .official.header .form-code {
+        color: #c00000 !important;
+        -webkit-text-fill-color: #c00000 !important;
+        font-size: 22pt !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        text-align: center !important;
+      }
+      .official.header .header-code {
+        text-align: center !important;
+        vertical-align: middle !important;
+      }
       .official th, .official td, .section-title, .rate-box, .qr-box {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
