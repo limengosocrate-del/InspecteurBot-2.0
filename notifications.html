@@ -24,13 +24,13 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261115-certification-notifications-live-v3" defer></script>
+<script src="auth-gate.js?v=20261115-notifications-content-fix-v6" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
 <main>
 <div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et formations publiées par l’administration</p></div></div>
-<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="requests" type="button" id="requestsTab" hidden>Demandes de certification <span id="requestsUnread" class="tab-count"></span></button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="requests" type="button" id="requestsTab" hidden>Demandes de certification <span id="requestsUnread" class="tab-count"></span></button></div><div style="display:flex;justify-content:flex-end;margin:-2px 0 12px"><button type="button" class="primary" id="refreshNotificationCenter"><i class="fa-solid fa-rotate"></i> Actualiser</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
 
 <section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" maxlength="5000" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
 </main>
@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v3_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v4_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -52,7 +52,7 @@ async function load(){
   // Charger chaque rubrique indépendamment : une erreur de politique ou de réseau
   // sur les formations ne doit jamais masquer les annonces, et inversement.
   const [a,t,ar,tr,rr]=await Promise.race([Promise.all([
-   client.from('announcements').select('id,title,body,created_by,target_user_id,created_at').or('target_user_id.is.null,target_user_id.eq.'+user.id).order('created_at',{ascending:false}).limit(100),
+   (()=>{let q=client.from('announcements').select('id,title,body,created_by,target_user_id,created_at').order('created_at',{ascending:false}).limit(100);if(!isAdmin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q})(),
    client.from('training_resources').select('id,title,description,kind,file_path,external_url,exercise,created_by,created_at,published').eq('published',true).order('created_at',{ascending:false}).limit(100),
    client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(10000),
    client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(10000),
@@ -99,7 +99,7 @@ async function markRead(kind,id){
 function init(d){
  if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=profile.role==='super_admin';
  if(isAdmin){$('adminPanel').hidden=false;$('requestsTab').hidden=false;}
- document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));$('notificationList').addEventListener('click',async e=>{const b=e.target.closest('[data-mark-read]');if(!b)return;b.disabled=true;try{await markRead(b.dataset.markRead,b.dataset.id)}catch(err){console.error(err);b.disabled=false;alert('Impossible de confirmer la lecture. Vérifiez votre connexion puis réessayez.')}});
+ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));$('refreshNotificationCenter').addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Actualisation…';try{await load()}catch(err){console.error(err);alert('Actualisation impossible. Vérifiez votre connexion.')}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-rotate"></i> Actualiser'}});$('notificationList').addEventListener('click',async e=>{const b=e.target.closest('[data-mark-read]');if(!b)return;b.disabled=true;try{await markRead(b.dataset.markRead,b.dataset.id)}catch(err){console.error(err);b.disabled=false;alert('Impossible de confirmer la lecture. Vérifiez votre connexion puis réessayez.')}});
  if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{
   e.preventDefault();const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim();if(!title||!body)return;
   const b=$('publishAnnouncement');b.disabled=true;status('announcementStatus','Publication en cours…',true);
