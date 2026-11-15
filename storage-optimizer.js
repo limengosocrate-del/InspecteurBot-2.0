@@ -1,5 +1,5 @@
-/* InspecteurBot — optimisation sûre des fichiers avant envoi Supabase.
-   Les PDF et fichiers audio sont conservés à l'identique pour préserver leur contenu. */
+/* InspecteurBot — optimisation des images et des PDF compatibles avant envoi Supabase.
+   Les PDF signés, chiffrés ou interactifs sont conservés sans modification. */
 (function(){
  'use strict';
  if(window.IBStorageOptimizer)return;
@@ -28,7 +28,7 @@
   finally{try{bitmap.close();}catch(_){}}
  }
  async function optimizePdf(file){
-  if(file.type!=='application/pdf'||!window.PDFLib||typeof window.PDFLib.PDFDocument?.load!=='function')return file;
+  if(file.type!=='application/pdf'||!window.PDFLib||typeof window.PDFLib.PDFDocument.load!=='function')return file;
   try{
    const bytes=await file.arrayBuffer();
    const source=new TextDecoder('latin1').decode(bytes);
@@ -46,9 +46,9 @@
  }
  async function prepare(file,options={}){
   if(!file)return file;
-  if(/^image\\//.test(file.type))return optimizeImage(file,options);
+  if(file.type.startsWith('image/'))return optimizeImage(file,options);
   if(file.type==='application/pdf')return optimizePdf(file);
   return file;
  }
- window.IBStorageOptimizer=Object.freeze({prepare,optimizeImage});
+ window.IBStorageOptimizer=Object.freeze({prepare,optimizeImage,optimizePdf});
 })();
