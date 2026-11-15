@@ -19,6 +19,16 @@ a{color:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{paddi
 input,select,textarea{width:100%;border:1px solid #365579;border-radius:10px;background:#061a35;color:#fff;padding:12px;font:inherit;font-size:13px;outline:none}textarea{min-height:105px;resize:vertical}label{display:block;font-size:12px;color:#d5e3f5;font-weight:700;margin:10px 0 6px}.resource{padding:11px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff15;margin:8px 0}.resource b{font-size:13px}.resource p{margin:5px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.suggestion{padding:12px;border-radius:11px;background:#ffffff09;border:1px solid #ffffff18;margin:8px 0}.suggestion h4{margin:0 0 5px;font-size:13px}.suggestion p{font-size:12px;line-height:1.5;color:#d4e1f2;white-space:pre-wrap}.pill{font-size:10px;padding:4px 8px;border-radius:20px;background:#ffffff14;color:#dceaff}.admin-box{border:1px dashed #d8b94d;padding:14px;border-radius:14px;margin-top:14px}.hidden{display:none!important}.footer{text-align:center;color:#829bb9;font-size:11px;margin-top:24px}
 @media(max-width:700px){.grid{grid-template-columns:1fr}.panel.wide{grid-column:auto}.hero{padding:19px}.panel{padding:15px}.top{align-items:flex-start}.back{white-space:nowrap}.wrap{width:calc(100% - 20px)}}
 .top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:#ffffff0b;color:var(--text);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}.theme-toggle:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}body.light-theme .theme-toggle{background:#fff!important;border-color:#cbd6df!important;color:#17212b!important}body.light-theme .theme-toggle i{color:#805900!important}@media(max-width:480px){.top-actions{gap:5px}.theme-toggle{padding:8px 9px;font-size:11px}.back{padding:9px 10px;font-size:12px}.brand{gap:8px}.brand-icon{width:42px;height:42px}}
+
+/* Ateliers interactifs professionnels */
+.practice-modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.practice-mode{display:grid;gap:7px;align-content:start;text-align:left;min-height:116px;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);color:var(--text);cursor:pointer;touch-action:manipulation;transition:transform .16s,border-color .16s}
+.practice-mode:active{transform:scale(.98)}.practice-mode:hover,.practice-mode:focus-visible{border-color:var(--cyan);outline:none}
+.practice-mode>span{font-size:23px}.practice-mode b{font-size:13px}.practice-mode small{font-size:11px;line-height:1.4;color:var(--muted)}
+.practice-content{margin-top:12px}.practice-empty{display:grid;justify-items:center;gap:8px;padding:24px 12px;border:1px dashed var(--line);border-radius:15px;color:var(--muted);text-align:center}.practice-empty i{font-size:22px;color:var(--cyan)}.practice-empty b{color:var(--text)}
+.practice-form .question{margin:12px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.question-kicker{display:inline-flex;gap:6px;align-items:center;margin-bottom:8px;padding:4px 8px;border-radius:99px;background:#51d7ef18;color:var(--cyan);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}.question-reference{margin-top:9px;color:var(--muted);font-size:11px;line-height:1.5}.practice-result{margin-top:12px;padding:13px;border-radius:13px;background:#51d7ef12;border:1px solid #51d7ef45;line-height:1.55}.practice-result .good{color:var(--green)}.practice-result .bad{color:#ff9d9d}.practice-note{margin:12px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+@media(max-width:720px){.practice-modes{grid-template-columns:repeat(2,minmax(0,1fr))}.practice-mode{min-height:105px;padding:12px}}
+@media(prefers-reduced-motion:reduce){.practice-mode{transition:none}}
 </style>
 <style id="inspecteurbot-touch-scroll-v2">
 /* Le document HTML porte le défilement, comme le menu d'accueil InspecteurBot. */
@@ -98,19 +108,11 @@ body.light-theme #hub-connection-status{color:#344451!important}
 <section class="hero">
  <h2>Bienvenue dans votre espace de progression 🇨🇩</h2>
  <p>Retrouvez les annonces officielles, testez vos connaissances, suivez votre progression et proposez des améliorations. Les points et distinctions sont pédagogiques et n'ont aucune valeur financière ou administrative.</p>
- <div class="hero-tags"><span class="tag">Défi quotidien</span><span class="tag">Challenge hebdomadaire</span><span class="tag">Classement</span><span class="tag">Récompenses virtuelles</span></div>
+ <div class="hero-tags"><span class="tag">Défi quotidien</span><span class="tag">Challenge hebdomadaire</span><span class="tag">Ateliers pratiques</span><span class="tag">Récompenses virtuelles</span></div>
  <p id="hub-connection-status" role="status" aria-live="polite" style="margin:14px 0 0;color:#b9d5f3;font-size:12px">Vérification de votre accès sécurisé…</p>
 </section>
 
 <div class="grid">
- <section class="panel" id="leaderboard-panel">
-  <div class="panel-head"><h3><i class="fa-solid fa-ranking-star panel-icon"></i> Classement des agents</h3><button class="btn secondary" id="refresh-ranking">Actualiser</button></div>
-  <p class="sub">Classement fondé sur les points obtenus dans les défis InspecteurBot.</p>
-  <div class="rank-list" id="leaderboard"><p class="sub">Chargement du classement…</p></div>
-  <div class="status" id="leaderboard-self" aria-live="polite"></div>
-  <div class="status" id="ranking-status" aria-live="polite"></div>
- </section>
-
  <section class="panel" id="daily-panel">
   <div class="panel-head"><h3><i class="fa-solid fa-sun panel-icon"></i> Défi du jour</h3><span class="pill" id="daily-date">Aujourd'hui</span></div>
   <p class="sub">Une question courte pour entretenir vos connaissances professionnelles. Une seule tentative par jour.</p>
@@ -121,6 +123,19 @@ body.light-theme #hub-connection-status{color:#344451!important}
   <div class="panel-head"><h3><i class="fa-solid fa-trophy panel-icon"></i> Challenge hebdomadaire</h3><span class="pill" id="weekly-date">Cette semaine</span></div>
   <p class="sub">Cinq questions pour mesurer votre maîtrise des notions essentielles.</p>
   <div id="weekly-content"><p class="sub">Préparation du challenge…</p></div>
+ </section>
+
+ <section class="panel practice-panel" id="practice-panel">
+  <div class="panel-head"><h3><i class="fa-solid fa-gamepad panel-icon"></i> Ateliers interactifs de l’Inspection</h3><span class="pill">Entraînement libre</span></div>
+  <p class="sub">Entraînez-vous sur des situations professionnelles inspirées des missions de l’Inspection du Travail en RDC. Choisissez un jeu pour commencer.</p>
+  <div class="practice-modes">
+   <button class="practice-mode" type="button" data-game="truefalse"><span>⚖️</span><b>Vrai ou faux</b><small>Tester les réflexes juridiques</small></button>
+   <button class="practice-mode" type="button" data-game="trap"><span>🪤</span><b>Questions pièges</b><small>Repérer les erreurs de raisonnement</small></button>
+   <button class="practice-mode" type="button" data-game="field"><span>🕵️</span><b>Mission terrain</b><small>Analyser un cas concret</small></button>
+   <button class="practice-mode" type="button" data-game="audit"><span>📂</span><b>Enquête documentaire</b><small>Contrôler les faits et documents</small></button>
+  </div>
+  <div id="practice-content" class="practice-content"><div class="practice-empty"><i class="fa-solid fa-hand-pointer"></i><b>À vous de jouer</b><span>Sélectionnez un atelier pour lancer une série de trois questions.</span></div></div>
+  <p class="practice-note">Mode d’entraînement pédagogique : les résultats de ces ateliers ne modifient pas les points officiels des défis quotidiens et hebdomadaires.</p>
  </section>
 
  <section class="panel" id="rewards-panel">
@@ -184,7 +199,7 @@ var savedTheme='dark';
 try{savedTheme=localStorage.getItem(themeStorageKey)==='light'?'light':'dark'}catch(e){}
 applyTheme(savedTheme,false);
 if(themeButton)themeButton.addEventListener('click',function(){applyTheme(document.body.classList.contains('light-theme')?'dark':'light',true)});
-var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],leaderboardRows=[],myLeaderboardRow=null,myLeaderboardRank=0,leaderboardChannel=null,leaderboardRefreshTimer=null,bootedUserId=null;
+var client=null,user=null,profile=null,questions=[],dailyKey='',weeklyKey='',attempts=[],practiceQuestions=[],practiceKind='',bootedUserId=null;
 var $=function(id){return document.getElementById(id)};
 var esc=function(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 function localDate(){var p=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var o={};p.forEach(function(x){o[x.type]=x.value});return o.year+'-'+o.month+'-'+o.day}
@@ -199,6 +214,56 @@ async function loadQuestions(){
  try{var r=await fetch('question_bank.json',{cache:'force-cache'});if(!r.ok)throw new Error('Banque de questions indisponible');var data=await r.json();questions=Array.isArray(data)?data:(Array.isArray(data.questions)?data.questions:[]);if(!questions.length)throw new Error('Aucune question exploitable');}
  catch(e){console.warn(e);showStatus('daily-content','La banque de questions est momentanément indisponible. Réessayez avec une connexion internet.');}
 }
+
+function questionFormat(q){
+ var t=String(q.type||'QCM').toUpperCase();
+ if(t==='VRAI_FAUX'||(q.choix||[]).length===2)return 'Vrai / Faux';
+ if(/PIEGE/.test(t)||q.piege)return 'Question piège';
+ if(/CAS|SITUATION|MISSION|SIMULATION|ENQUETE/.test(t))return 'Cas pratique · terrain';
+ if(/DOCUMENT|ANALYSE/.test(t))return 'Analyse documentaire';
+ if(/CALCUL/.test(t))return 'Calcul professionnel';
+ if(/DECISION/.test(t))return 'Prise de décision';
+ return 'Question professionnelle';
+}
+function startPracticeGame(kind){
+ var filters={
+  truefalse:function(q){return String(q.type||'').toUpperCase()==='VRAI_FAUX'||(q.choix||[]).length===2},
+  trap:function(q){return !!q.piege||/PIEGE/.test(String(q.type||'').toUpperCase())},
+  field:function(q){return /CAS|SITUATION|MISSION|SIMULATION|ENQUETE/.test(String(q.type||'').toUpperCase())},
+  audit:function(q){return /DOCUMENT|ANALYSE|CALCUL|DECISION/.test(String(q.type||'').toUpperCase())}
+ };
+ var labels={truefalse:'Vrai ou faux',trap:'Questions pièges',field:'Mission terrain',audit:'Enquête documentaire'};
+ var pool=questions.filter(filters[kind]||filters.field).filter(function(q){return Array.isArray(q.choix)&&q.choix.length>=2&&Number.isInteger(Number(q.bonne))});
+ if(pool.length<3)pool=questions.filter(function(q){return Array.isArray(q.choix)&&q.choix.length>=2&&Number.isInteger(Number(q.bonne))});
+ for(var i=pool.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=pool[i];pool[i]=pool[j];pool[j]=tmp}
+ practiceKind=kind;practiceQuestions=pool.slice(0,3);
+ var html='<form id="practice-form" class="practice-form"><div class="meta">'+esc(labels[kind]||'Atelier professionnel')+' · Série de 3 questions</div>';
+ practiceQuestions.forEach(function(q,i){
+  html+='<div class="question" data-practice-q="'+i+'"><span class="question-kicker">'+esc(questionFormat(q))+(q.piege?' · Attention au piège':'')+'</span><strong>'+(i+1)+'. '+esc(q.question)+'</strong>';
+  q.choix.forEach(function(choice,j){html+='<label class="option"><input type="radio" name="practice'+i+'" value="'+j+'"><span>'+esc(choice)+'</span></label>'});
+  html+='<div class="question-reference">Thème : '+esc(q.categorie||q.module||'Inspection du Travail')+(q.article?' · Référence : '+esc(q.article):'')+'</div><div class="explain" data-explain><b>Correction :</b> '+esc(q.choix[Number(q.bonne)]||'')+'<br>'+esc(q.explication||'Analysez les faits et vérifiez le fondement applicable.')+'</div></div>';
+ });
+ html+='<div class="row"><button class="btn" type="submit">Corriger ma série</button></div><div class="status" data-practice-result></div></form>';
+ $('practice-content').innerHTML=html;
+}
+function submitPracticeGame(form){
+ var score=0,missing=false;
+ practiceQuestions.forEach(function(q,i){
+  var selected=form.querySelector('input[name="practice'+i+'"]:checked');
+  var card=form.querySelector('[data-practice-q="'+i+'"]');
+  var correct=selected&&Number(selected.value)===Number(q.bonne);
+  if(!selected)missing=true;
+  if(correct)score++;
+  card.querySelector('[data-explain]').style.display='block';
+  card.style.borderColor=correct?'var(--green)':'var(--red)';
+  card.querySelectorAll('input').forEach(function(input){input.disabled=true});
+ });
+ var result=form.querySelector('[data-practice-result]');
+ if(missing){result.textContent='Série corrigée : les questions sans réponse sont comptées comme incorrectes.'}
+ result.innerHTML='<div class="practice-result"><b>'+score+'/3 bonnes réponses</b><br>'+ (score===3?'Excellent travail. Votre raisonnement professionnel est solide.':score===2?'Bon résultat. Relisez les explications pour consolider vos acquis.':'Continuez à vous entraîner et vérifiez les références avant toute décision.')+'<br><button class="btn secondary" type="button" data-new-practice style="margin-top:10px">Nouvelle série</button></div>';
+ var submit=form.querySelector('button[type="submit"]');if(submit)submit.disabled=true;
+}
+
 function renderQuestionSet(type,items,container,key){
  if(!items.length){container.innerHTML='<p class="sub">Aucune question disponible pour ce défi.</p>';return}
  var old=getAttempt(type,key);
@@ -206,7 +271,7 @@ function renderQuestionSet(type,items,container,key){
  var title=type==='daily'?'Question du jour':'Questions du challenge';
  var html='<form class="challenge-form" data-type="'+type+'"><div class="meta">'+title+' · '+items.length+' question(s)</div>';
  items.forEach(function(q,i){
-  html+='<div class="question" data-qid="'+esc(q.id)+'"><strong>'+ (i+1)+'. '+esc(q.question)+'</strong>';
+  html+='<div class="question" data-qid="'+esc(q.id)+'"><span class="question-kicker">'+esc(questionFormat(q))+(q.piege?' · Attention au piège':'')+'</span><strong>'+ (i+1)+'. '+esc(q.question)+'</strong>';
   q.choix.forEach(function(choice,j){html+='<label class="option"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+esc(choice)+'</span></label>'});
   html+='<div class="explain"><b>Bonne réponse :</b> '+esc(q.choix[normalizeCorrect(q)]||'')+'<br>'+esc(q.explication||q.explanation||'Relisez la référence pédagogique associée à cette question.')+'</div></div>';
  });
@@ -238,50 +303,6 @@ async function submitChallenge(type,key,items,form){
   form.querySelectorAll('.question').forEach(function(card){card.classList.remove('done')});
  }
 }
-async function loadLeaderboardData(){
- var r=await client.from('ib_challenge_leaderboard').select('user_id,display_name,total_points,challenge_count').order('total_points',{ascending:false}).order('challenge_count',{ascending:false}).limit(1000);
- if(r.error)throw r.error;
- var all=r.data||[];
- leaderboardRows=all.slice(0,10);
- myLeaderboardRank=all.findIndex(function(x){return x.user_id===user.id})+1;
- myLeaderboardRow=myLeaderboardRank>0?all[myLeaderboardRank-1]:null;
-}
-async function loadAttempts(){
- var fields='id,user_id,display_name,challenge_date,challenge_type,challenge_key,score,points,created_at';
- var r=await client.from('ib_challenge_attempts').select(fields).eq('user_id',user.id).order('created_at',{ascending:false}).limit(100);
- if(r.error)throw r.error;
- attempts=r.data||[];
- await loadLeaderboardData();
-}
-function subscribeLeaderboardRealtime(){
- if(!client||!user||typeof client.channel!=='function')return;
- if(leaderboardChannel){try{client.removeChannel(leaderboardChannel)}catch(_){}leaderboardChannel=null}
- leaderboardChannel=client.channel('ib-leaderboard-live-'+user.id)
-  .on('postgres_changes',{event:'*',schema:'public',table:'ib_challenge_attempts'},function(){
-   clearTimeout(leaderboardRefreshTimer);
-   leaderboardRefreshTimer=setTimeout(async function(){
-    try{await loadLeaderboardData();renderAwards();renderLeaderboard()}
-    catch(e){showStatus('ranking-status','Mise à jour du classement indisponible : '+e.message)}
-   },300);
-  })
-  .subscribe(function(status){
-   if(status==='SUBSCRIBED')showStatus('ranking-status','Classement synchronisé en temps réel.',true);
-   else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')showStatus('ranking-status','Connexion temps réel interrompue. Utilisez Actualiser pour vérifier le classement.');
-  });
-}
-function renderAwards(){
- var total=Number(myLeaderboardRow&&myLeaderboardRow.total_points||0);
- $('my-points').textContent=total+' points';
- var levels=[{p:60,e:'🌱',n:'Premier pas'},{p:100,e:'📘',n:'Apprenant actif'},{p:150,e:'⭐',n:'Agent assidu'},{p:300,e:'🏅',n:'Expert en progression'},{p:500,e:'🏆',n:'Champion IGT'}];
- $('my-awards').innerHTML=levels.map(function(x){var got=total>=x.p;return '<div class="award '+(got?'':'locked')+'"><div class="emoji">'+x.e+'</div><b>'+x.n+'</b><small>'+x.p+' points · '+(got?'Débloqué':'À débloquer')+'</small></div>'}).join('');
-}
-function renderLeaderboard(){
- var rows=leaderboardRows||[];
- if(!rows.length){$('leaderboard').innerHTML='<p class="sub">Le classement apparaîtra dès que les agents auront validé leurs premiers défis.</p>';$('leaderboard-self').textContent='Votre position sera calculée automatiquement dès votre première participation.';return}
- $('leaderboard').innerHTML=rows.map(function(r,i){return '<div class="rank"><span class="rank-num">'+(i+1)+'</span><span class="rank-name">'+esc(r.display_name||'Agent IGT')+(r.user_id===user.id?' · Vous':'')+'<small style="display:block;color:var(--muted);font-weight:400;margin-top:3px">'+Number(r.challenge_count||0)+' défi(s) validé(s)</small></span><span class="rank-points">'+Number(r.total_points||0)+' pts</span></div>'}).join('');
- if(myLeaderboardRow){$('leaderboard-self').textContent='Votre position : #'+myLeaderboardRank+' · '+Number(myLeaderboardRow.total_points||0)+' points.'}
- else $('leaderboard-self').textContent='Votre position apparaîtra après votre première participation.';
-}
 async function loadResources(){
  try{var r=await client.from('training_resources').select('id,title,description,kind,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3);if(r.error)throw r.error;
  $('resource-preview').innerHTML=(r.data||[]).length?(r.data||[]).map(function(x){return '<article class="resource"><b>'+esc(x.title)+'</b><p>'+esc(x.description||'Ressource pédagogique')+' · '+esc(x.kind==='pdf'?'PDF':x.kind==='audio'?'Audio':'Exercice')+'</p></article>'}).join(''):'<p class="sub">Aucune ressource publiée actuellement.</p>'}
@@ -300,18 +321,18 @@ async function loadAdminSuggestions(){
  $('admin-suggestions').innerHTML=(r.data||[]).map(function(x){return '<article class="suggestion" data-suggestion="'+esc(x.id)+'"><div class="panel-head"><h4>'+esc(x.title)+'</h4><span class="pill">'+esc(statusLabel(x.status))+'</span></div><div class="meta">'+esc(x.display_name)+' · '+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</div><p>'+esc(x.description)+'</p><label>Décision</label><select data-status><option value="received" '+(x.status==='received'?'selected':'')+'>Reçue</option><option value="reviewing" '+(x.status==='reviewing'?'selected':'')+'>En étude</option><option value="accepted" '+(x.status==='accepted'?'selected':'')+'>Retenue</option><option value="rejected" '+(x.status==='rejected'?'selected':'')+'>Non retenue</option></select><label>Note administrative</label><textarea data-note maxlength="1000">'+esc(x.admin_note||'')+'</textarea><button class="btn" data-save style="margin-top:8px">Enregistrer la décision</button><div class="status" data-feedback></div></article>'}).join('')||'<p class="sub">Aucune proposition reçue.</p>';
 }
 async function refreshAll(){
- try{await loadAttempts();renderAwards();renderLeaderboard();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
+ try{await loadAttempts();renderAwards();var date=localDate();dailyKey='daily-'+date;weeklyKey='weekly-'+weekStart(date);$('daily-date').textContent=date;$('weekly-date').textContent='Semaine du '+weekStart(date);
  var sets=await Promise.all([fetchChallengeQuestions('daily',dailyKey),fetchChallengeQuestions('weekly',weeklyKey)]);
  renderQuestionSet('daily',sets[0],$('daily-content'),dailyKey);
  renderQuestionSet('weekly',sets[1],$('weekly-content'),weeklyKey);
- }catch(e){showStatus('ranking-status','Progression indisponible : '+e.message);$('daily-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>';$('weekly-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>'}
+ }catch(e){showStatus('hub-connection-status','Progression indisponible : '+e.message);$('daily-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>';$('weekly-content').innerHTML='<p class="sub">'+esc(e.message)+'</p>'}
 }
 async function boot(detail){
  client=(detail&&detail.client)||window.inspecteurBotAuthClient;user=(detail&&detail.user)||window.inspecteurBotAuthUser;profile=(detail&&detail.profile)||window.inspecteurBotAuthProfile;
  if(!client||!user||!user.id){$('hub-connection-status').textContent='Connexion requise pour utiliser les fonctionnalités interactives.';return}
  if(bootedUserId===user.id)return;bootedUserId=user.id;$('hub-connection-status').textContent='Session sécurisée active · Chargement de vos données…';
  try{if(!profile){var p=await client.from('profiles').select('display_name,role').eq('id',user.id).maybeSingle();profile=p.data||{}}
- await loadQuestions();await Promise.all([loadResources(),loadMySuggestions(),refreshAll()]);subscribeLeaderboardRealtime();if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
+ await loadQuestions();await Promise.all([loadResources(),loadMySuggestions(),refreshAll()]);if(isAdmin())await loadAdminSuggestions();$('hub-connection-status').textContent='Connecté · Toutes les fonctionnalités interactives sont prêtes.';
  }catch(e){console.error(e);bootedUserId=null;$('hub-connection-status').textContent='Certaines données ne sont pas disponibles. Utilisez Actualiser pour réessayer.';showStatus('suggestion-status','Chargement incomplet : '+e.message)}
 }
 async function sendSuggestion(){
@@ -340,21 +361,18 @@ async function saveAdminSuggestion(btn){
 }
 async function runButtonAction(btn){
  if(btn.disabled)return;
- if(btn.id==='refresh-ranking'){
-  if(!client||!user){showStatus('ranking-status','Votre session n’est pas prête.');return}
-  btn.disabled=true;btn.textContent='Actualisation…';
-  try{await refreshAll();showStatus('ranking-status','Classement et progression actualisés.',true)}
-  catch(err){showStatus('ranking-status','Actualisation impossible : '+err.message)}
-  finally{btn.disabled=false;btn.textContent='Actualiser'}
- }else if(btn.hasAttribute('data-save'))await saveAdminSuggestion(btn);
+ if(btn.hasAttribute('data-save'))await saveAdminSuggestion(btn);
 }
 document.addEventListener('click',function(e){
  var btn=e.target.closest&&e.target.closest('button');
- if(btn&&(btn.id==='refresh-ranking'||btn.hasAttribute('data-save'))){e.preventDefault();void runButtonAction(btn)}
+ if(btn&&btn.hasAttribute('data-save')){e.preventDefault();void runButtonAction(btn);return}
+ if(btn&&btn.hasAttribute('data-game')){e.preventDefault();startPracticeGame(btn.dataset.game);return}
+ if(btn&&btn.hasAttribute('data-new-practice')){e.preventDefault();startPracticeGame(practiceKind);return}
 },true);
 document.addEventListener('submit',function(e){
  var form=e.target;
  if(form&&form.classList&&form.classList.contains('challenge-form')){e.preventDefault();var type=form.dataset.type,key=type==='daily'?dailyKey:weeklyKey;var items=type==='daily'?questionsForRenderedForm(form):questionsForRenderedForm(form);void submitChallenge(type,key,items,form);return}
+ if(form&&form.id==='practice-form'){e.preventDefault();submitPracticeGame(form);return}
  if(form&&form.id==='suggestion-form'){e.preventDefault();void sendSuggestion()}
 },true);
 function questionsForRenderedForm(form){
