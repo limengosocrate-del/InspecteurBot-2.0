@@ -107,6 +107,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="./auth-gate.js?v=20261115-stable-auth-notifications-v22"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -117,15 +118,7 @@ function withTimeout(promise,ms,label){
  return Promise.race([Promise.resolve(promise),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Délai dépassé : '+label)),ms)})]).finally(()=>clearTimeout(timer));
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
-const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
-let messengerAuthStorage=window.localStorage;
-try{
- if(!messengerAuthStorage.getItem(IB_AUTH_STORAGE_KEY)){
-  const legacy=window.sessionStorage.getItem(IB_AUTH_STORAGE_KEY);
-  if(legacy)messengerAuthStorage.setItem(IB_AUTH_STORAGE_KEY,legacy);
- }
-}catch(storageError){console.warn('Stockage partagé indisponible, utilisation de la session de cet onglet.',storageError);messengerAuthStorage=window.sessionStorage;}
-const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,storage:messengerAuthStorage,storageKey:IB_AUTH_STORAGE_KEY,autoRefreshToken:true,detectSessionInUrl:true},realtime:{heartbeatIntervalMs:10000}});
+let client=window.inspecteurBotAuthClient||null;
 let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
@@ -438,7 +431,17 @@ $('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.st
 $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
 $('peopleNav').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').value='';$('searchInput').focus();search('')});
 $('refreshNav').addEventListener('click',()=>refreshAll());
-init().catch(err=>{console.error(err);setNotice('Impossible de démarrer la messagerie. Réessayez.')});
+let messengerStarted=false;
+async function startWithSharedAuth(detail){
+ if(messengerStarted)return;
+ const sharedClient=detail?.client||window.inspecteurBotAuthClient;
+ const sharedUser=detail?.user||window.inspecteurBotAuthUser;
+ if(!sharedClient||!sharedUser)return;
+ messengerStarted=true;client=sharedClient;
+ try{await init()}catch(err){messengerStarted=false;console.error(err);setNotice('Impossible de démarrer la messagerie. Vérifiez votre connexion puis réessayez.')}
+}
+window.addEventListener('inspecteurbot:authenticated',event=>{void startWithSharedAuth(event.detail)});
+if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser)void startWithSharedAuth({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser});
 })();
 </script>
 </body></html>
