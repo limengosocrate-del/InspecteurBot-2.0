@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-notifications-fast-content-v10';
+const IB_APP_BUILD='20261115-notification-center-rebuild-v12';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -1012,4 +1012,12 @@ async function start(){
  }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();
+})()
+/* Centre de notifications : bouton de cloche reconstruit */
+#ib-notification-link{position:relative;display:grid;place-items:center;width:44px;height:46px;flex:0 0 44px;border:1px solid #dbe8f2;border-radius:13px;background:#f3f8fc;color:#07518a;text-decoration:none;font-size:25px;transition:background .15s,border-color .15s}
+#ib-notification-link:hover{background:#e6f2fb;border-color:#9bc7e3}
+#ib-notification-link:focus-visible{outline:3px solid #0b9ac0;outline-offset:3px}
+#ib-notification-link .ib-notification-count{top:-5px;right:-5px;min-width:20px;height:20px;border:2px solid #fff;border-radius:20px;background:#dc2638;color:#fff;font:700 10px Arial,sans-serif}
+#ib-notification-link .ib-notification-count[hidden]{display:none!important}
+@media(max-width:520px){#ib-notification-link{width:38px;height:40px;flex-basis:38px;font-size:22px}}
+;
