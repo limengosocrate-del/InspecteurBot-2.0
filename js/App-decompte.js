@@ -867,12 +867,71 @@ $('#pvQualiteAgent').textContent =
       ? alerts.map(renderAIItem).join('')
       : '<div class="ai-item ok"><i class="fa-solid fa-shield-halved"></i><div><strong>Aucune alerte critique</strong><p>Le dossier semble régulier.</p></div></div>';
 
-    // Inline AI on calculator
+    // Conseil principal InspecteurBot : une recommandation prioritaire, claire et liée au calcul.
+    const primary = buildPrimaryRecommendation(r, alerts, recos);
     const inline = alerts.slice(0, 2).map(renderAIItem).join('') +
-      (recos[0] ? `<div class="ai-item info"><i class="fa-solid fa-robot"></i><div><strong>IA</strong><p>${recos[0]}</p></div></div>` : '');
+      `<div class="ai-item info inspecteurbot-advice"><i class="fa-solid fa-shield-halved"></i><div><strong>InspecteurBot — ${escapeHtml(primary.title)}</strong><p>${escapeHtml(primary.text)}</p></div></div>`;
     $('#aiInline').innerHTML = inline;
+    $('#aiReco').innerHTML = `<div class="ai-item info inspecteurbot-advice"><i class="fa-solid fa-shield-halved"></i><div><strong>Recommandation prioritaire InspecteurBot</strong><p>${escapeHtml(primary.text)}</p></div></div>` +
+      (recos.length ? recos.map(t => `<div class="ai-item info"><i class="fa-solid fa-lightbulb"></i><div><p>${escapeHtml(t)}</p></div></div>`).join('') : '');
 
-    if (!silent) toast('Analyse IA terminée — ' + alerts.length + ' alerte(s), ' + recos.length + ' recommandation(s).', 'success');
+    if (!silent) toast('Analyse InspecteurBot terminée. Consultez la recommandation prioritaire et les alertes avant validation.', 'success');
+  }
+
+  function buildPrimaryRecommendation(r, alerts, recos) {
+    // Priorité aux anomalies qui peuvent modifier le montant dû ou la régularité du dossier.
+    if (!r.smigOk) {
+      return {
+        title: 'Régulariser le salaire avant validation',
+        text: `Le salaire de base déclaré (${formatMoney(r.salaireBase, r.devise)}) est inférieur au SMIG estimé pour la catégorie sélectionnée (${formatNumber(r.smigMensuelCat, 0)} FC/mois). Vérifiez la catégorie, le salaire applicable et les pièces de paie, puis refaites le calcul avant toute signature.`
+      };
+    }
+    if ((r.motif === 'licenciement' || r.motif === 'incapacite') && r.preavisJours <= 0) {
+      return {
+        title: 'Vérifier l’indemnité de préavis',
+        text: 'Aucune indemnité de préavis n’apparaît dans ce calcul. Contrôlez la notification de rupture, la preuve d’un éventuel préavis effectué et le motif exact avant de valider le montant.'
+      };
+    }
+    if (r.anc.totalDays < 1) {
+      return {
+        title: 'Corriger les dates de service',
+        text: 'La durée de service calculée est nulle ou invalide. Vérifiez la date d’engagement et la date de fin du contrat sur les pièces justificatives, puis relancez le calcul.'
+      };
+    }
+    if (r.congeCompJours <= 0 && r.moisAnciennete >= 1) {
+      return {
+        title: 'Contrôler les congés non pris',
+        text: 'Aucun jour de congé compensatoire n’est retenu alors que l’ancienneté peut ouvrir ce droit. Comparez les congés acquis avec les congés réellement pris et corrigez le solde avant validation.'
+      };
+    }
+    if (r.logement < r.salaireBase * 0.29 && r.salaireBase > 0) {
+      return {
+        title: 'Vérifier l’indemnité de logement',
+        text: `Le logement saisi (${formatMoney(r.logement, r.devise)}) est inférieur au seuil indicatif de 30 % du salaire de base. Vérifiez le régime applicable et les justificatifs de l’employeur avant de confirmer le montant.`
+      };
+    }
+    if (r.transport <= 0) {
+      return {
+        title: 'Confirmer le transport applicable',
+        text: 'Aucun montant de transport n’est intégré. Vérifiez le barème ou l’édit provincial applicable au lieu de travail et ajoutez l’indemnité si elle est due.'
+      };
+    }
+    if (!state.signatureData) {
+      return {
+        title: 'Compléter la validation du document',
+        text: 'Le calcul est cohérent sur les contrôles effectués, mais aucune signature numérique n’est jointe. Vérifiez les pièces du dossier, faites confirmer les montants par les parties habilitées et apposez la signature avant remise.'
+      };
+    }
+    if (alerts.length) {
+      return {
+        title: 'Traiter les alertes avant signature',
+        text: `Le contrôle a relevé ${alerts.length} point(s) à examiner. Ouvrez la rubrique Alertes, vérifiez chaque élément avec le contrat et les fiches de paie, puis corrigez le dossier avant son approbation.`
+      };
+    }
+    return {
+      title: 'Effectuer le contrôle final avant remise',
+      text: 'Les vérifications automatiques principales ne signalent pas d’anomalie. Comparez néanmoins les dates, le salaire, les indemnités et les retenues avec les pièces justificatives, puis faites valider et signer le décompte par les personnes compétentes.'
+    };
   }
 
   function renderAIItem(item) {
@@ -1841,7 +1900,8 @@ $('#pvQualiteAgent').textContent =
     $('#archiveSearch').addEventListener('input', (e) => renderArchive(e.target.value));
     $('#btnShowTrash').addEventListener('click', () => { $('#archiveTrashPanel').hidden = false; renderTrash(); });
     $('#btnHideTrash').addEventListener('click', () => { $('#archiveTrashPanel').hidden = true; });
-    $('#btnBackArchive').addEventListener('click', () => switchView('archive'));
+    $('#btnBackCalculatorPreview').addEventListener('click', () => switchView('calculator'));
+    $('#btnBackCalculatorArchive').addEventListener('click', () => switchView('calculator'));
     $('#btnGenerateFinal').addEventListener('click', () => saveToArchive(false));
     $('#btnExportAll').addEventListener('click', async () => {
       try {
