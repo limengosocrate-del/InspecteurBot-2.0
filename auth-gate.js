@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-notifications-admin-content-v7';
+const IB_APP_BUILD='20261115-startup-nonblocking-v8';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -984,14 +984,32 @@ async function loadGlobalTheme(){
 }
 async function start(){
  setupNetworkStatus();
+ // Afficher immédiatement la porte d'accès : aucun thème externe ne doit bloquer l'application.
+ makeGate();
+ gate('Préparation de votre espace sécurisé…','loading');
  startLiveUpdateChecks();
- try{await loadGlobalTheme()}catch(themeError){console.warn('Thèmes globaux non chargés',themeError)}
- makeGate();gate('Préparation de votre espace sécurisé…','loading');
- try{await loadLib();client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});window.inspecteurBotAuthClient=client;setup();const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate();
- // La session reste active jusqu'à la déconnexion ou à sa révocation. Supabase renouvelle automatiquement les jetons.
- document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){e.preventDefault();e.stopImmediatePropagation();signOut()}},true);
- window.inspecteurBotSignOut=signOut;
- }catch(e){console.error(e);gate(e.message||'Service d’authentification indisponible.')}
+ // Le thème est facultatif : son téléchargement se fait en arrière-plan.
+ void loadGlobalTheme().catch(themeError=>console.warn('Thèmes globaux non chargés',themeError));
+ try{
+  await loadLib();
+  client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});
+  window.inspecteurBotAuthClient=client;
+  setup();
+  const {data,error}=await client.auth.getSession();
+  if(error)throw error;
+  if(data.session)await validate(data.session);else gate();
+  // La session reste active jusqu'à la déconnexion ou à sa révocation.
+  document.addEventListener('click',e=>{
+   const a=e.target.closest&&e.target.closest('a');
+   if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){
+    e.preventDefault();e.stopImmediatePropagation();signOut();
+   }
+  },true);
+  window.inspecteurBotSignOut=signOut;
+ }catch(e){
+  console.error('Démarrage InspecteurBot :',e);
+  gate(e.message||'Service d’authentification indisponible. Vérifiez votre connexion puis réessayez.');
+ }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
