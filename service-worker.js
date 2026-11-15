@@ -40,21 +40,16 @@ self.addEventListener('fetch',event=>{
   // Conserve localement le client Supabase pour permettre son chargement hors connexion
   // après une première visite avec Internet.
   if(url.hostname==='cdn.jsdelivr.net'&&url.pathname.includes('/npm/@supabase/supabase-js@')){
-    event.respondWith((async()=>{
-      const cache=await caches.open(CACHE);
+    const cachePromise=caches.open(CACHE);
+    const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
+      if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
+      return response;
+    }));
+    event.waitUntil(refresh.catch(()=>{}));
+    event.respondWith(cachePromise.then(async cache=>{
       const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
-      if(cached){
-        // Le SDK est versionné et immuable : servir la copie locale immédiatement.
-        // Une vérification réseau silencieuse actualise le cache sans bloquer l'ouverture.
-        event.waitUntil(fetch(request).then(response=>{
-          if(response&&response.ok)return cache.put(request,response.clone());
-        }).catch(()=>{}));
-        return cached;
-      }
-      const fresh=await fetch(request);
-      if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
-      return fresh;
-    })());
+      return cached||refresh;
+    }));
     return;
   }
 
@@ -87,30 +82,36 @@ self.addEventListener('fetch',event=>{
   }
 
   if(url.origin!==self.location.origin)return;
-  const isHtml=request.mode==='navigate'||/\.html$/i.test(url.pathname);
-  event.respondWith((async()=>{
-    const cache=await caches.open(CACHE);
-
-    // Pages HTML : servir immédiatement la copie locale, puis actualiser en arrière-plan.
-    if(isHtml){
+  const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
+  if(isHtml){
+    const cachePromise=caches.open(CACHE);
+    const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
+      if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
+      return response;
+    }));
+    event.waitUntil(refresh.catch(()=>{}));
+    event.respondWith(cachePromise.then(async cache=>{
       const cached=(await cache.match(request,{ignoreSearch:true}))||
         (request.mode==='navigate'?await cache.match('./index.html',{ignoreSearch:true}):null);
-      const refresh=fetch(request).then(response=>{
-        if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
-        return response;
-      });
-      if(cached){event.waitUntil(refresh.catch(()=>{}));return cached;}
-      return await refresh;
-    }
-
-    // Authentification : servir la copie disponible sans attendre le réseau,
-    // puis récupérer silencieusement la dernière version.
-    if(/\/auth-gate\.js$/i.test(url.pathname)){
+      return cached||refresh;
+    }));
+    return;
+  }
+  if(/\\/auth-gate\\.js$/i.test(url.pathname)){
+    const cachePromise=caches.open(CACHE);
+    const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
+      if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
+      return response;
+    }));
+    event.waitUntil(refresh.catch(()=>{}));
+    event.respondWith(cachePromise.then(async cache=>{
       const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
-      const refresh=fetch(request).then(response=>{if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);return response;});
-      if(cached){event.waitUntil(refresh.catch(()=>{}));return cached;}
-      return refresh;
-    }
+      return cached||refresh;
+    }));
+    return;
+  }
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
 
     // Ressources statiques : réseau d'abord pour recevoir chaque publication GitHub,
     // cache local en secours hors connexion. Les anciennes copies restent disponibles.
