@@ -1007,7 +1007,20 @@ async function start(){
  void loadGlobalTheme().catch(themeError=>console.warn('Thèmes globaux non chargés',themeError));
  try{
   await loadLib();
-  client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:window.sessionStorage,storageKey:'inspecteurbot-auth-session-v2',autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});
+  // Session partagée entre les pages et les onglets de l'application.
+  // Migration transparente de l'ancienne session sessionStorage vers localStorage.
+  const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
+  let ibAuthStorage=window.localStorage;
+  try{
+   if(!ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY)){
+    const legacySession=window.sessionStorage.getItem(IB_AUTH_STORAGE_KEY);
+    if(legacySession)ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,legacySession);
+   }
+  }catch(storageError){
+   console.warn('Stockage persistant indisponible, session limitée à cet onglet.',storageError);
+   ibAuthStorage=window.sessionStorage;
+  }
+  client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:ibAuthStorage,storageKey:IB_AUTH_STORAGE_KEY,autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});
   window.inspecteurBotAuthClient=client;
   setup();
   const {data,error}=await client.auth.getSession();
