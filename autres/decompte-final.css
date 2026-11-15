@@ -795,3 +795,80 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
 .smig-history-field{padding:12px;border:1px dashed #cbd5e1;border-radius:12px;background:rgba(241,245,249,.55)}
 .smig-history-field small{display:block;margin-top:6px;color:#64748b;font-size:.78rem}
 @media(prefers-color-scheme:dark){body.dark-theme .smig-current-field{background:#102b25;border-color:#24694f}body.dark-theme .smig-current-field label,body.dark-theme .smig-current-note{color:#a8f0ce}body.dark-theme .smig-history-field{background:#202a35;border-color:#536273}}
+
+
+/* Mise en page officielle du décompte final — A4 */
+.a4-sheet{
+  width:210mm;
+  min-height:297mm;
+  padding:10mm 12mm;
+  background:#fff;
+  color:#111;
+  font-family:"Times New Roman",Times,serif;
+  font-size:10.5pt;
+  line-height:1.22;
+  border-radius:0;
+}
+.df-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8mm;
+  width:100%;
+  margin:0 0 7mm;
+}
+.df-header-left{
+  flex:1 1 62%;
+  min-width:0;
+  text-align:left;
+}
+.df-header-right{
+  flex:0 0 34%;
+  min-width:0;
+  padding-top:1mm;
+  text-align:right;
+}
+.df-state{font-size:10.5pt;font-weight:700;}
+.df-ministry{font-size:9.5pt;font-weight:700;margin-top:1mm;}
+.df-logo{width:34px;height:34px;object-fit:contain;margin:2mm 0;}
+.df-igt{font-size:10pt;font-weight:700;letter-spacing:.15px;}
+.df-direction{font-size:10pt;font-weight:700;margin-top:1mm;}
+.df-address{font-size:9.5pt;text-decoration:none;}
+.df-lieu{font-size:10pt;}
+.df-numero{font-size:9.5pt;font-weight:700;margin-top:3mm;}
+.df-title{
+  text-align:center;
+  font-size:12pt;
+  font-weight:700;
+  margin:0 0 5mm;
+  letter-spacing:.15px;
+}
+.df-photos{margin:0 0 3mm;}
+.df-section{margin:0 0 3.5mm;}
+.df-section-title{
+  font-size:10.5pt;
+  margin:0 0 1.5mm;
+  font-weight:700;
+  text-decoration:underline;
+}
+.df-table{width:100%;border-collapse:collapse;table-layout:auto;}
+.df-table td{padding:1px 2px;vertical-align:top;font-size:9.7pt;line-height:1.18;}
+.df-table .lab{width:39%;white-space:normal;}
+.df-table .val{padding-left:3px;}
+.df-table .formula{font-size:9.3pt;}
+.df-table .amount{min-width:68px;font-size:9.3pt;}
+.df-total-jours{font-size:10pt;margin:2mm 0 1mm;}
+.df-brut,.df-deduction{font-size:10pt;margin-top:1.5mm;}
+.df-net{font-size:11pt;margin:3mm 0;padding:2mm 0;}
+.df-footer{margin-top:5mm;}
+.df-sign-title,.df-sign-name{font-size:9.5pt;}
+.df-sign-img{min-height:12mm;}
+.df-legal-ref{margin-top:3mm;padding-top:1.5mm;font-size:7pt;}
+@media(max-width:900px){
+  .a4-sheet{width:210mm;min-height:297mm;padding:10mm 12mm;}
+}
+@media print{
+  @page{size:A4 portrait;margin:0;}
+  .a4-wrapper{padding:0!important;margin:0!important;}
+  .a4-sheet{width:210mm!important;min-height:297mm!important;margin:0!important;padding:10mm 12mm!important;box-shadow:none!important;border:0!important;}
+}
