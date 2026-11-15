@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v30-20261115-session-refresh-v25';
+const CACHE='inspecteurbot-data-v30-20261115-live-auth-notifications-v26';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
@@ -84,30 +84,37 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==self.location.origin)return;
   const isHtml=request.mode==='navigate'||url.pathname.toLowerCase().endsWith('.html');
   if(isHtml){
-    const cachePromise=caches.open(CACHE);
-    const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
-      if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
-      return response;
-    }));
-    event.waitUntil(refresh.catch(()=>{}));
-    event.respondWith(cachePromise.then(async cache=>{
-      const cached=(await cache.match(request,{ignoreSearch:true}))||
-        (request.mode==='navigate'?await cache.match('./index.html',{ignoreSearch:true}):null);
-      return cached||refresh;
-    }));
+    // Réseau prioritaire : les anciennes pages migrées depuis un cache précédent
+    // ne doivent jamais masquer une nouvelle publication GitHub Pages.
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      try{
+        const fresh=await fetch(new Request(request,{cache:'no-store',credentials:'same-origin'}));
+        if(fresh&&fresh.ok){await cache.put(request,fresh.clone()).catch(()=>{});return fresh;}
+        throw new Error('Réponse GitHub Pages indisponible');
+      }catch(error){
+        const cached=(await cache.match(request,{ignoreSearch:true}))||
+          (request.mode==='navigate'?await cache.match('./index.html',{ignoreSearch:true}):null);
+        if(cached)return cached;
+        throw error;
+      }
+    })());
     return;
   }
   if(url.pathname.toLowerCase().endsWith('/auth-gate.js')){
-    const cachePromise=caches.open(CACHE);
-    const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
-      if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
-      return response;
-    }));
-    event.waitUntil(refresh.catch(()=>{}));
-    event.respondWith(cachePromise.then(async cache=>{
-      const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
-      return cached||refresh;
-    }));
+    // Authentification toujours à jour en ligne; cache seulement en secours hors connexion.
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      try{
+        const fresh=await fetch(new Request(request,{cache:'no-store'}));
+        if(fresh&&fresh.ok){await cache.put(request,fresh.clone()).catch(()=>{});return fresh;}
+        throw new Error('auth-gate.js indisponible');
+      }catch(error){
+        const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
+        if(cached)return cached;
+        throw error;
+      }
+    })());
     return;
   }
   event.respondWith((async()=>{
