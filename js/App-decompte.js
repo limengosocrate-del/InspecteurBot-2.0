@@ -500,7 +500,7 @@
   function collectInputs() {
     const ids = [
       'direction', 'adresseBureau', 'lieuDocument', 'dateDocument', 'devise',
-      'inspecteurNom', 'qualiteAgent', 'inspecteurGrade', 'entrepriseNom', 'entrepriseAdresse',
+      'inspecteurNom', 'qualiteAgent', 'inspecteurGrade', 'fonctionAutre', 'entrepriseNom', 'entrepriseAdresse',
       'nom', 'fonction', 'categorie', 'dateEngagement', 'dateFin', 'motif', 'motifDetail',
       'lieuPrestation', 'salaireBase', 'logement', 'transport', 'joursPrestes',
       'joursOuvrables', 'preavisMode', 'preavisManuel', 'congeAcquis',
@@ -589,7 +589,7 @@
     $('#pvNumero').textContent = 'N° ' + r.numero;
 
     $('#pvNom').textContent = (inp.nom || '—').toUpperCase();
-    $('#pvFonction').textContent = inp.fonction || '—';
+    $('#pvFonction').textContent = inp.fonction === 'Autre' ? (inp.fonctionAutre || 'Autre — à préciser') : (inp.fonction || '—');
     $('#pvCategorie').textContent = CATEGORIE_LABELS[r.categorie] || r.categorie;
     $('#pvDateEng').textContent = formatDateFR(r.dateEng);
     $('#pvDateFin').textContent = formatDateFR(r.dateFin);
@@ -688,7 +688,7 @@ $('#pvQualiteAgent').textContent =
     $('#pv2Inspecteur').textContent = (inp.inspecteurNom || '—').toUpperCase();
     $('#pv2Grade').textContent = inp.inspecteurGrade || '';
     $('#pv2QualiteAgent').textContent =
-    inp.qualiteAgent || "INSPECTEUR DU TRAVAIL";
+    inp.qualiteAgent === 'CONTRÔLEUR DU TRAVAIL' ? 'CONTRÔLEUR DU TRAVAIL' : 'INSPECTEUR DU TRAVAIL';
     if (state.signatureData) {
       $('#pv2Signature').src = state.signatureData;
       $('#pv2Signature').classList.remove('hidden');
@@ -1548,6 +1548,14 @@ $('#pvQualiteAgent').textContent =
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   }
 
+  function updateFonctionAutre() {
+    const isOther = $('#fonction').value === 'Autre';
+    const wrap = $('#fonctionAutreWrap');
+    wrap.classList.toggle('hidden', !isOther);
+    $('#fonctionAutre').required = isOther;
+    if (!isOther) $('#fonctionAutre').value = '';
+  }
+
   /* -------------------------------------------------------
    *  SIGNATURE PAD
    * ----------------------------------------------------- */
@@ -1614,15 +1622,126 @@ $('#pvQualiteAgent').textContent =
     $('#' + inputId).addEventListener('change', (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
+      if (!file.type || !file.type.startsWith('image/')) {
+        toast('Veuillez sélectionner un fichier image valide.', 'error');
+        e.target.value = '';
+        return;
+      }
+      if (file.size > 12 * 1024 * 1024) {
+        toast('La photo dépasse 12 Mo. Choisissez une image plus légère.', 'error');
+        e.target.value = '';
+        return;
+      }
       const reader = new FileReader();
-      reader.onload = () => {
-        state.photos[key] = reader.result;
-        const img = $('#' + previewId);
-        img.src = reader.result;
-        img.classList.remove('hidden');
-      };
+      reader.onload = () => openPhotoCropper(reader.result, previewId, key, e.target);
+      reader.onerror = () => toast('Impossible de lire cette image.', 'error');
       reader.readAsDataURL(file);
     });
+  }
+
+  const photoCropState = { image: null, previewId: null, key: null, input: null, zoom: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
+
+  function openPhotoCropper(src, previewId, key, input) {
+    const image = new Image();
+    image.onload = () => {
+      photoCropState.image = image;
+      photoCropState.previewId = previewId;
+      photoCropState.key = key;
+      photoCropState.input = input;
+      photoCropState.zoom = 1;
+      photoCropState.x = 0;
+      photoCropState.y = 0;
+      $('#photoCropImage').src = src;
+      $('#photoCropZoom').value = '1';
+      $('#photoCropZoomValue').textContent = '100 %';
+      $('#photoCropModal').classList.remove('hidden');
+      requestAnimationFrame(drawCropPreview);
+    };
+    image.onerror = () => toast('Cette image ne peut pas être ouverte.', 'error');
+    image.src = src;
+  }
+
+  function drawCropPreview() {
+    const stage = $('#photoCropStage');
+    const image = photoCropState.image;
+    if (!image) return;
+    const img = $('#photoCropImage');
+    const base = Math.max(stage.clientWidth / image.naturalWidth, stage.clientHeight / image.naturalHeight);
+    const scale = base * photoCropState.zoom;
+    const width = image.naturalWidth * scale;
+    const height = image.naturalHeight * scale;
+    img.style.width = width + 'px';
+    img.style.height = height + 'px';
+    img.style.maxWidth = 'none';
+    img.style.maxHeight = 'none';
+    img.style.left = ((stage.clientWidth - width) / 2 + photoCropState.x) + 'px';
+    img.style.top = ((stage.clientHeight - height) / 2 + photoCropState.y) + 'px';
+  }
+
+  function closePhotoCropper(clearInput = false) {
+    $('#photoCropModal').classList.add('hidden');
+    if (clearInput && photoCropState.input) photoCropState.input.value = '';
+    photoCropState.image = null;
+    photoCropState.input = null;
+  }
+
+  function applyPhotoCrop() {
+    const image = photoCropState.image;
+    if (!image) return;
+    const stage = $('#photoCropStage');
+    const size = 800;
+    const base = Math.max(stage.clientWidth / image.naturalWidth, stage.clientHeight / image.naturalHeight);
+    const scale = base * photoCropState.zoom;
+    const renderedW = image.naturalWidth * scale;
+    const renderedH = image.naturalHeight * scale;
+    const left = (stage.clientWidth - renderedW) / 2 + photoCropState.x;
+    const top = (stage.clientHeight - renderedH) / 2 + photoCropState.y;
+    const ratio = size / stage.clientWidth;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(image, left * ratio, top * ratio, renderedW * ratio, renderedH * ratio);
+    const cropped = canvas.toDataURL('image/jpeg', 0.9);
+    state.photos[photoCropState.key] = cropped;
+    const preview = $('#' + photoCropState.previewId);
+    preview.src = cropped;
+    preview.classList.remove('hidden');
+    closePhotoCropper();
+    toast('Photo cadrée et ajoutée au décompte.', 'success');
+  }
+
+  function initPhotoCropper() {
+    const stage = $('#photoCropStage');
+    const zoom = $('#photoCropZoom');
+    zoom.addEventListener('input', () => {
+      photoCropState.zoom = Number(zoom.value);
+      $('#photoCropZoomValue').textContent = Math.round(photoCropState.zoom * 100) + ' %';
+      drawCropPreview();
+    });
+    stage.addEventListener('pointerdown', e => {
+      if (!photoCropState.image) return;
+      photoCropState.dragging = true;
+      photoCropState.lastX = e.clientX;
+      photoCropState.lastY = e.clientY;
+      stage.setPointerCapture(e.pointerId);
+    });
+    stage.addEventListener('pointermove', e => {
+      if (!photoCropState.dragging) return;
+      photoCropState.x += e.clientX - photoCropState.lastX;
+      photoCropState.y += e.clientY - photoCropState.lastY;
+      photoCropState.lastX = e.clientX;
+      photoCropState.lastY = e.clientY;
+      drawCropPreview();
+    });
+    const stopDrag = () => { photoCropState.dragging = false; };
+    stage.addEventListener('pointerup', stopDrag);
+    stage.addEventListener('pointercancel', stopDrag);
+    $('#btnApplyPhotoCrop').addEventListener('click', applyPhotoCrop);
+    $('[data-crop-cancel]').forEach(el => el.addEventListener('click', () => closePhotoCropper(true)));
+    window.addEventListener('resize', () => { if (photoCropState.image) drawCropPreview(); });
   }
 
   /* -------------------------------------------------------
@@ -1659,6 +1778,7 @@ $('#pvQualiteAgent').textContent =
     // Exemple du modèle scanné (KONGO SPINCER) adapté
     $('#nom').value = 'KONGO SPINCER';
     $('#fonction').value = 'Chauffeur';
+    updateFonctionAutre();
     $('#categorie').value = 'manoeuvre';
     $('#dateEngagement').value = '2025-12-09';
     $('#dateFin').value = '2026-06-09';
@@ -1701,7 +1821,7 @@ $('#pvQualiteAgent').textContent =
     state.geo = null;
     state.checklist = {};
     // Réinitialiser les champs de saisie du dossier après validation et sauvegarde.
-    ['nom', 'fonction', 'motifDetail', 'lieuPrestation', 'salaireBase', 'logement', 'transport',
+    ['nom', 'fonction', 'fonctionAutre', 'motifDetail', 'lieuPrestation', 'salaireBase', 'logement', 'transport',
       'entrepriseNom', 'entrepriseAdresse', 'observations', 'autresRetenuesLibelle', 'inspecteurNom',
       'inspecteurGrade', 'adresseBureau', 'lieuDocument', 'dateEngagement', 'dateFin', 'preavisManuel',
       'congeAcquis', 'tauxCNSS', 'tauxIPR', 'tauxONEM', 'tauxINPP', 'autresRetenues', 'joursPrestes'].forEach(id => {
@@ -1844,6 +1964,9 @@ $('#pvQualiteAgent').textContent =
     bindPhoto('photoTravailleur', 'photoTravailleurPreview', 'travailleur');
     bindPhoto('photoEntreprise', 'photoEntreprisePreview', 'entreprise');
     bindLiveCalc();
+    $('#fonction').addEventListener('change', updateFonctionAutre);
+    updateFonctionAutre();
+    initPhotoCropper();
     updateDeviseAffixes();
 
     // Navigation
