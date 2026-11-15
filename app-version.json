@@ -1,5 +1,6 @@
 {
-  "build": "20261115-notifications-fast-content-v10",
+  "build": "20261115-notifications-stable-v11",
   "release": "2026-11-15",
-  "forceRefresh": true
+  "forceRefresh": true,
+  "updated_at": "2026-11-15T19:25:00+01:00"
 }
