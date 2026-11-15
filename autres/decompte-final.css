@@ -872,3 +872,24 @@ body{background:radial-gradient(ellipse at 12% 0%,rgba(23,105,194,.14),transpare
   .a4-wrapper{padding:0!important;margin:0!important;}
   .a4-sheet{width:210mm!important;min-height:297mm!important;margin:0!important;padding:10mm 12mm!important;box-shadow:none!important;border:0!important;}
 }
+
+
+/* Aperçu du décompte : même composition A4 que le PDF, adaptée aux petits écrans. */
+.a4-wrapper{width:100%;box-sizing:border-box;justify-content:center;overflow-x:auto;overscroll-behavior-x:contain}
+.a4-sheet{box-sizing:border-box;margin-inline:auto}
+@media(max-width:900px){
+ .a4-wrapper{padding:8px 0 24px;overflow-x:hidden}
+ .a4-sheet{width:100%;min-height:0;padding:7mm 6mm;font-size:9.2pt;overflow-wrap:anywhere}
+ .df-header{gap:4mm;margin-bottom:5mm}
+ .df-header-right{flex-basis:36%}
+ .df-table td{font-size:8.5pt;line-height:1.16;padding:1px}
+ .df-table .lab{width:34%}
+ .df-table .amount{min-width:0;font-size:8.3pt}
+ .df-section{margin-bottom:2.5mm}
+ .df-footer{margin-top:4mm}
+}
+.archive-trash-panel{margin-top:24px;padding:18px;border:1px solid #dce6f1;border-radius:18px;background:#f7faff}
+.archive-trash-panel[hidden]{display:none!important}
+.archive-trash-panel .page-head{margin-bottom:14px}
+.archive-actions .btn-sm{white-space:nowrap}
+@media(max-width:600px){.archive-item{grid-template-columns:1fr}.archive-actions{justify-content:flex-end;flex-wrap:wrap}.archive-trash-panel{padding:12px}}
