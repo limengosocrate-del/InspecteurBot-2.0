@@ -160,12 +160,13 @@ function renderPresenceUI(){
  refreshMessageReceipts();
 }
 function setNotice(s){$('notice').textContent=s;$('notice').classList.toggle('show',!!s)}
-async function init(){
- let authResult;
- try{authResult=await withTimeout(client.auth.getSession(),12000,'authentification')}
- catch(error){setNotice('Connexion trop lente. Vérifiez votre réseau puis actualisez la messagerie.');$('onlineStories').innerHTML='<div class="online-empty">Connexion au service indisponible. Réessayez.</div>';$('groupList').innerHTML='<span class="online-empty">Groupes indisponibles pour le moment.</span>';$('inbox').innerHTML='<div class="empty">Conversations indisponibles. Vérifiez votre connexion.</div>';return}
- const {data:{session},error}=authResult;
- if(error||!session){location.replace('index.html?from=messages');return}
+async function init(authDetail={}){
+ let session=authDetail?.session||null;
+ if(!session){
+  try{const authResult=await withTimeout(client.auth.getSession(),12000,'session partagée');session=authResult?.data?.session||null}
+  catch(error){setNotice('Impossible de restaurer la session active. Vérifiez votre connexion puis actualisez.');$('onlineStories').innerHTML='<div class="online-empty">Session momentanément indisponible.</div>';$('groupList').innerHTML='<span class="online-empty">Groupes momentanément indisponibles.</span>';$('inbox').innerHTML='<div class="empty">Réessayez sans vous déconnecter.</div>';return}
+ }
+ if(!session){setNotice('Aucune session active détectée. Revenez à l’accueil et actualisez une fois.');return}
  me=session.user;
  let profileResult;
  try{profileResult=await withTimeout(client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status').eq('id',me.id).maybeSingle(),12000,'profil')}
@@ -438,7 +439,7 @@ async function startWithSharedAuth(detail){
  const sharedUser=detail?.user||window.inspecteurBotAuthUser;
  if(!sharedClient||!sharedUser)return;
  messengerStarted=true;client=sharedClient;
- try{await init()}catch(err){messengerStarted=false;console.error(err);setNotice('Impossible de démarrer la messagerie. Vérifiez votre connexion puis réessayez.')}
+ try{await init(detail)}catch(err){messengerStarted=false;console.error(err);setNotice('Impossible de démarrer la messagerie. Vérifiez votre connexion puis réessayez.')}
 }
 window.addEventListener('inspecteurbot:authenticated',event=>{void startWithSharedAuth(event.detail)});
 if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser)void startWithSharedAuth({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser});
