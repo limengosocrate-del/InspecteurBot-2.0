@@ -24,7 +24,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261115-notifications-content-fix-v6" defer></script>
+<script src="auth-gate.js?v=20261115-notifications-admin-content-v7" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v4_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v5_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -51,12 +51,13 @@ async function load(){
  try{
   // Charger chaque rubrique indépendamment : une erreur de politique ou de réseau
   // sur les formations ne doit jamais masquer les annonces, et inversement.
+  const safeQuery=p=>Promise.resolve(p).then(r=>r).catch(error=>({data:[],error}));
   const [a,t,ar,tr,rr]=await Promise.race([Promise.all([
-   (()=>{let q=client.from('announcements').select('id,title,body,created_by,target_user_id,created_at').order('created_at',{ascending:false}).limit(100);if(!isAdmin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q})(),
-   client.from('training_resources').select('id,title,description,kind,file_path,external_url,exercise,created_by,created_at,published').eq('published',true).order('created_at',{ascending:false}).limit(100),
-   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(10000),
-   client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(10000),
-   isAdmin?client.from('registration_requests').select('id,nom_complet,matricule,email,categorie,statut,created_at,user_id').eq('statut','en_attente').order('created_at',{ascending:false}).limit(500):Promise.resolve({data:[],error:null})
+   safeQuery((()=>{let q=client.from('announcements').select('id,title,body,created_by,target_user_id,created_at').order('created_at',{ascending:false}).limit(100);if(!isAdmin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q})()),
+   safeQuery(client.from('training_resources').select('id,title,description,kind,file_path,external_url,exercise,created_by,created_at,published').eq('published',true).order('created_at',{ascending:false}).limit(100)),
+   safeQuery(client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(10000)),
+   safeQuery(client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(10000)),
+   isAdmin?safeQuery(client.from('registration_requests').select('id,nom_complet,matricule,email,categorie,statut,created_at,user_id').eq('statut','en_attente').order('created_at',{ascending:false}).limit(500)):Promise.resolve({data:[],error:null})
   ]),timeout]);
   let loadErrors=[];
   if(!a.error)announcements=(a.data||[]);else loadErrors.push('annonces');
@@ -83,7 +84,7 @@ function render(){
  const cards=items.map(x=>'<article class="item" data-read-state="'+(x.read?'read':'unread')+'" style="'+(x.read?'opacity:.78':'border-left:4px solid #087ca7')+'"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+(x.read?'':' <span style="color:#087ca7;font-size:11px">NOUVEAU</span>')+'</div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='training'?(x.url?'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>':'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+(x.read?'':'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button>')+'</article>').join('');
  const reqCards=requests.map(x=>{const id=String(x.id),read=readRequests.has(id);return '<article class="item" style="'+(read?'opacity:.78':'border-left:4px solid #c18a11')+'"><div class="item-head"><div class="item-title"><i class="fa-solid fa-user-shield"></i> '+esc(x.nom_complet||'Nouvelle demande de certification')+(read?'':' <span style="color:#b17a00;font-size:11px">NOUVELLE DEMANDE</span>')+'</div><time class="item-time">'+esc(date(x.created_at))+'</time></div><div class="item-body">Matricule : '+esc(x.matricule||'Non renseigné')+'\nE-mail : '+esc(x.email||'Non renseigné')+'\nCatégorie : '+esc(x.categorie||'Non renseignée')+'</div><div class="meta">Demande en attente de vérification</div><a class="primary" href="admin.html" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la vérification</a>'+(read?'':'<button type="button" class="primary" data-mark-read="request" data-id="'+esc(id)+'" style="display:block;margin-top:10px">Marquer comme lue</button>')+'</article>'}).join('');
  if($('requestsTab')){$('requestsTab').hidden=!isAdmin;$('requestsUnread').textContent=String(requests.filter(x=>!readRequests.has(String(x.id))).length);$('requestsUnread').hidden=!requests.some(x=>!readRequests.has(String(x.id)));}
- $('notificationList').innerHTML=(tab==='requests'?(reqCards||empty('Aucune demande de certification en attente.')):certificationNotice+(cards||empty(tab==='training'?'Aucune formation publiée.':tab==='announcements'?'Aucune annonce publiée.':'Aucune notification à afficher.')));
+ const showAdminRequests=tab==='requests'||(tab==='all'&&isAdmin);\n const regularEmpty=empty(tab==='training'?'Aucune formation publiée.':tab==='announcements'?'Aucune annonce publiée.':'Aucune notification à afficher.');\n $('notificationList').innerHTML=tab==='requests'?(reqCards||empty('Aucune demande de certification en attente.')):(certificationNotice+cards+(showAdminRequests?reqCards:'')+(!cards&&!(showAdminRequests&&reqCards)?regularEmpty:''));
 }
 async function markRead(kind,id){
  const set=kind==='announcement'?readAnnouncements:kind==='training'?readTraining:readRequests;
