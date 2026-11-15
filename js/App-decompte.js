@@ -1276,7 +1276,6 @@ $('#pvQualiteAgent').textContent =
         }
         switchView('preview');
         renderPreview(state.lastResult);
-      } 
       }
 
       toast('Préparation du document A4…');
