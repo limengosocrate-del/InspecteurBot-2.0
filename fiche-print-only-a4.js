@@ -1,8 +1,8 @@
 /* InspecteurBot — correctif impression PDF réservé aux fiches F01–F07 et S01–S03. */
 (function () {
   "use strict";
-  if (window.__ibPrintOnlyA4v13) return;
-  window.__ibPrintOnlyA4v13 = true;
+  if (window.__ibPrintOnlyA4v14) return;
+  window.__ibPrintOnlyA4v14 = true;
   var style = document.createElement("style");
   style.textContent = [
     "/* Titres principaux seulement : rouge carmin, condensé, gras, centrés. */",
@@ -22,7 +22,7 @@
     "  input,select,textarea { color:#111 !important; -webkit-text-fill-color:#111 !important; }",
     "  .official th,.official td,.section-title,.rate-box,.qr-box { -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }",
     "}",
-  ].join("\\n");
+  ].join("\n");
   document.head.appendChild(style);
   var saved = null;
   function preparePrint() {
