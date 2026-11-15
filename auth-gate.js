@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-certification-access-v1';
+const IB_APP_BUILD='20261115-certification-notifications-reconnect-v2';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -320,16 +320,21 @@ function setupNetworkStatus(){
  window.addEventListener('online',()=>{
   showOnline();
   if(!client||!user)return;
-  // Supabase gère déjà les reconnexions WebSocket ; on renouvelle proprement
-  // les abonnements de l'application pour ne pas dépendre d'un ancien canal.
-  window.setTimeout(()=>{
+  // Après une coupure réseau, les comptes non certifiés repassent par la connexion.
+  // Une seule déconnexion est effectuée par événement réel de reconnexion.
+  window.setTimeout(async()=>{
    if(!client||!user||navigator.onLine===false)return;
-   void updatePresence();
-   startRealtimePresence();
-   startIncomingMessageNotifications();
-   startHeaderBadgeTracking();
-   void pollIncomingMessages();
-   void refreshHeaderBadges();
+   if(profile?.certification_status!=='certified'&&profile?.role!=='super_admin'){
+    const reconnectUser=user;
+    stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();stopHeaderBadgeTracking();
+    try{await client.auth.signOut({scope:'local'})}catch(error){console.warn('Déconnexion de sécurité après reconnexion réseau',error)}
+    if(user?.id===reconnectUser.id){user=null;profile=null;window.inspecteurBotAuthUser=null;window.inspecteurBotAuthProfile=null;}
+    gate('Connexion Internet rétablie. Pour poursuivre, veuillez vous reconnecter à votre compte. Pensez ensuite à compléter votre certification.');
+    return;
+   }
+   // Les comptes certifiés reprennent automatiquement leurs abonnements.
+   void updatePresence();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
+   void pollIncomingMessages();void refreshHeaderBadges();
   },500);
  });
 }
@@ -522,6 +527,13 @@ async function refreshHeaderBadges(){
  if(menuMessages&&!menuMessageCount){menuMessageCount=document.createElement('span');menuMessageCount.className='ib-menu-message-count';menuMessageCount.hidden=true;menuMessageCount.setAttribute('aria-hidden','true');menuMessages.appendChild(menuMessageCount);}
  const notifications=document.querySelector('#ib-notification-link .ib-notification-count');
  if(!presence&&!messages&&!notifications)return;
+ // La notification de certification reste visible même si les autres requêtes échouent.
+ const certificationUnread=profile?.certification_status==='certified'?0:1;
+ if(notifications&&certificationUnread){
+  notifications.textContent='1';notifications.hidden=false;
+  notifications.parentElement.setAttribute('aria-label','1 notification non lue : certification du compte requise');
+  notifications.parentElement.title='Action requise : veuillez certifier votre compte';
+ }
  headerBadgeBusy=true;
  try{
   const tasks=await Promise.allSettled([
