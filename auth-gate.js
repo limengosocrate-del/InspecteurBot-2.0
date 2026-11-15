@@ -526,42 +526,35 @@ async function expireSession(){
 }
 let headerBadgeTimer=null,headerBadgeChannel=null,headerBadgeBusy=false;
 async function refreshHeaderBadges(){
- if(headerBadgeBusy||!client||!user||navigator.onLine===false)return;
- const presence=document.querySelector('#ib-header-presence .ib-header-count'),messages=document.querySelector('#ib-header-messages .ib-header-count');
+ if(!client||!user||navigator.onLine===false)return;
+ const presence=document.querySelector('#ib-header-presence .ib-header-count');
+ const messages=document.querySelector('#ib-header-messages .ib-header-count');
+ const notifications=document.querySelector('#ib-notification-link .ib-notification-count');
  const menuMessages=document.querySelector('.menu-index a[href*="messagerie.html"]');
  let menuMessageCount=menuMessages?.querySelector('.ib-menu-message-count');
- if(menuMessages&&!menuMessageCount){menuMessageCount=document.createElement('span');menuMessageCount.className='ib-menu-message-count';menuMessageCount.hidden=true;menuMessageCount.setAttribute('aria-hidden','true');menuMessages.appendChild(menuMessageCount);}
- const notifications=document.querySelector('#ib-notification-link .ib-notification-count');if(!presence&&!messages&&!notifications)return;
- headerBadgeBusy=true;
+ if(menuMessages&&!menuMessageCount){menuMessageCount=document.createElement('span');menuMessageCount.className='ib-menu-message-count';menuMessageCount.hidden=true;menuMessageCount.setAttribute('aria-hidden','true');menuMessages.appendChild(menuMessageCount)}
+ if(headerBadgeBusy)return;headerBadgeBusy=true;
+ const query=async q=>{try{const r=await q;if(r.error)throw r.error;return r.data||[]}catch(e){console.warn('Compteur de notification partiel',e);return null}};
  try{
-  const isAdmin=profile?.role==='super_admin';
-  const tasks=await Promise.allSettled([
-   client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null),
-   client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id).limit(10000),
-   client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(10000),
-   client.from('training_resources').select('id,created_by').eq('published',true).limit(10000),
-   client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(10000),
-   isAdmin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(10000):Promise.resolve({data:[],error:null}),
-   isAdmin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(10000):Promise.resolve({data:[],error:null})
+  const admin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
+  const [msg,ann,annRead,train,trainRead,req,reqRead]=await Promise.all([
+   messages||menuMessageCount?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
+   notifications?client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(5000):Promise.resolve({data:[]}),
+   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(5000):Promise.resolve({data:[]}),
+   notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(1000):Promise.resolve({data:[]}),
+   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(5000):Promise.resolve({data:[]}),
+   notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(1000):Promise.resolve({data:[]}),
+   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
   ]);
-  const val=i=>tasks[i].status==='fulfilled'?tasks[i].value:null;
-  if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false;presence.parentElement.title=n+' agent(s) en ligne';presence.parentElement.setAttribute('aria-label',n+' agent(s) en ligne');}
-  if(messages||menuMessageCount){const r=val(0);if(r&&!r.error){const n=r.count||0,label=n+' message(s) non lu(s)';if(messages){messages.textContent=n>99?'99+':String(n);messages.hidden=n===0;messages.parentElement.setAttribute('aria-label',label);messages.parentElement.title=label;}if(menuMessageCount){menuMessageCount.textContent=n>99?'99+':String(n);menuMessageCount.hidden=n===0;menuMessages.setAttribute('aria-label','Messages, '+label);}}}
+  if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false}
+  if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
   if(notifications){
-   const an=val(1),ar=val(2),tr=val(3),rr=val(4),rq=val(5),rqr=val(6);
-   if([an,ar,tr,rr,rq,rqr].every(x=>x&&!x.error)){
-    const readA=new Set((ar.data||[]).map(x=>String(x.announcement_id)));
-    const unreadA=(an.data||[]).filter(x=>(x.created_by!==user.id||x.target_user_id===user.id)&&!readA.has(String(x.id))).length;
-    const readT=new Set((rr.data||[]).map(x=>String(x.resource_id)));
-    const unreadT=(tr.data||[]).filter(x=>x.created_by!==user.id&&!readT.has(String(x.id))).length;
-    const readReq=new Set((rqr.data||[]).map(x=>String(x.request_id)));
-    const unreadReq=isAdmin?(rq.data||[]).filter(x=>!readReq.has(String(x.id))).length:0;
-    const certUnread=!isAdmin&&profile?.certification_status!=='certified'?1:0;
-    const count=unreadA+unreadT+unreadReq+certUnread;
-    notifications.textContent=count>99?'99+':String(count);notifications.hidden=count===0;
-    notifications.parentElement.setAttribute('aria-label',count+' notification(s) non lue(s)');
-    notifications.parentElement.title=(isAdmin?unreadReq+' demande(s) de certification, ':'')+unreadA+' annonce(s), '+unreadT+' formation(s)'+(certUnread?', certification requise':'');
-   }else console.warn('Compteur de notifications : synchronisation partielle');
+   let total=0,hasData=false,details=[];
+   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(x.created_by!==user.id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
+   if(train&&!train.error&&trainRead&&!trainRead.error){const read=new Set((trainRead.data||[]).map(x=>String(x.resource_id)));const count=(train.data||[]).filter(x=>x.created_by!==user.id&&!read.has(String(x.id))).length;total+=count;details.push(count+' formation(s)');hasData=true}
+   if(admin&&req&&!req.error&&reqRead&&!reqRead.error){const read=new Set((reqRead.data||[]).map(x=>String(x.request_id)));const count=(req.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' demande(s)');hasData=true}
+   if(!admin&&profile?.certification_status!=='certified'){total++;details.push('certification requise');hasData=true}
+   if(hasData){notifications.textContent=total>99?'99+':String(total);notifications.hidden=total===0;notifications.parentElement.title=details.join(' · ');notifications.parentElement.setAttribute('aria-label',total+' notification(s) non lue(s)')}
   }
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
  finally{headerBadgeBusy=false}
