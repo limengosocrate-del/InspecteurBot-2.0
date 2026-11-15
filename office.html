@@ -34,7 +34,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
 </header>
 <main class="office-shell">
   <section class="welcome-row">
-    <div><p class="eyebrow">ESPACE DE PRODUCTIVITÉ</p><h1>Votre bureau, partout avec vous.</h1><p class="welcome-copy">Créez, modifiez et retrouvez vos documents sur cet appareil, même sans connexion Internet après le premier chargement.</p></div>
+    <div><p class="eyebrow">ESPACE DE PRODUCTIVITÉ</p><h1>Votre bureau, partout avec vous.</h1><p class="welcome-copy">Créez, modifiez et organisez vos documents dans votre espace de productivité.</p></div>
     <div class="welcome-actions"><button class="primary-btn" id="newDocumentBtn">＋ Nouveau document</button><button class="secondary-btn" id="importFileBtn">Importer un fichier</button><input id="fileInput" type="file" hidden accept=".docx,.xlsx,.xls,.csv,.txt,.html,.pdf,.json"></div>
   </section>
 
@@ -47,7 +47,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
   </nav>
 
   <section id="homePanel" class="workspace-panel">
-    <div class="section-heading"><div><p class="eyebrow">VOTRE ESPACE LOCAL</p><h2>Documents récents</h2></div><span class="privacy-note">🔒 Vos fichiers restent sur cet appareil</span></div>
+    <div class="section-heading"><div><p class="eyebrow">VOTRE ESPACE DE PRODUCTIVITÉ</p><h2>Documents récents</h2></div></div>
     <div class="quick-create-grid">
       <button class="quick-create writer-quick" data-create="writer"><span>W</span><strong>Document Writer / Word</strong><small>Rédiger une lettre ou un rapport</small></button>
       <button class="quick-create calc-quick" data-create="calc"><span>▦</span><strong>Classeur Excel / Calc</strong><small>Créer un tableau et des calculs</small></button>
@@ -65,7 +65,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
   </section>
 
   <section id="editorPanel" class="workspace-panel" hidden>
-    <div class="editor-heading"><div class="editor-title"><button class="back-btn" id="backToFiles" aria-label="Retour aux documents">←</button><div><span class="eyebrow" id="editorType">DOCUMENT WRITER</span><input id="documentTitle" class="document-title" value="Document sans titre" aria-label="Nom du document"></div></div><div class="editor-actions"><span id="saveState" class="save-state">Enregistré localement</span><button class="secondary-btn small" id="exportPdfBtn" type="button">Exporter PDF</button><button class="secondary-btn small" id="downloadBtn">Télécharger</button><button class="primary-btn small" id="saveBtn" type="button">Enregistrer</button></div></div>
+    <div class="editor-heading"><div class="editor-title"><button class="back-btn" id="backToFiles" aria-label="Retour aux documents">←</button><div><span class="eyebrow" id="editorType">DOCUMENT WRITER</span><input id="documentTitle" class="document-title" value="Document sans titre" aria-label="Nom du document"></div></div><div class="editor-actions"><span id="saveState" class="save-state">Enregistré</span><button class="secondary-btn small" id="exportPdfBtn" type="button">Exporter PDF</button><button class="secondary-btn small" id="downloadBtn">Télécharger</button><button class="primary-btn small" id="saveBtn" type="button">Enregistrer</button></div></div>
     <div id="writerToolbar" class="ribbon" hidden>
       <div class="ribbon-tabs" role="tablist" aria-label="Ruban Office">
         <button type="button" class="ribbon-tab" data-ribbon-tab="file">Fichier</button><button type="button" class="ribbon-tab active" data-ribbon-tab="home">Accueil</button><button type="button" class="ribbon-tab" data-ribbon-tab="insert">Insertion</button><button type="button" class="ribbon-tab" data-ribbon-tab="design">Conception</button><button type="button" class="ribbon-tab" data-ribbon-tab="layout">Mise en page</button><button type="button" class="ribbon-tab" data-ribbon-tab="references">Références</button><button type="button" class="ribbon-tab" data-ribbon-tab="mailings">Publipostage</button><button type="button" class="ribbon-tab" data-ribbon-tab="review">Révision</button><button type="button" class="ribbon-tab" data-ribbon-tab="view">Affichage</button>
@@ -96,7 +96,7 @@ html.inspecteur-auth-ready body::before{display:none!important}
     <div id="calcArea" class="calc-stage" hidden><div class="sheet-toolbar"><span id="cellAddress">A1</span><span class="fx-label">fx</span><input id="formulaInput" aria-label="Valeur ou formule de la cellule" placeholder="Valeur ou formule…"></div><div class="sheet-scroll"><table id="sheetGrid" class="sheet-grid" aria-label="Feuille de calcul"></table></div><div class="sheet-hint">Astuce : saisissez une formule commençant par =, par exemple =SUM(A1:A5) ou =A1+B1.</div></div>
     <div id="pdfArea" class="pdf-stage" hidden><div class="pdf-toolbar"><span id="pdfFileName">Aperçu PDF</span><button class="secondary-btn small" id="printPdfBtn">Imprimer / Enregistrer en PDF</button></div><iframe id="pdfFrame" title="Aperçu du document PDF"></iframe></div>
   </section>
-  <section class="storage-footer"><span>✓ Sauvegarde automatique sur cet appareil</span><span>•</span><span>Pas de synchronisation cloud automatique</span><button id="backupBtn" class="text-btn">Exporter une sauvegarde</button><button id="restoreBtn" class="text-btn">Restaurer une sauvegarde</button><input type="file" id="backupInput" accept=".json,application/json" hidden></section>
+  <section class="storage-footer"><button id="backupBtn" class="text-btn">Exporter une sauvegarde</button><button id="restoreBtn" class="text-btn">Restaurer une sauvegarde</button><input type="file" id="backupInput" accept=".json,application/json" hidden></section>
 </main>
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="newDocDialog" class="office-dialog"><form method="dialog"><button class="dialog-close" aria-label="Fermer">×</button><p class="eyebrow">NOUVEAU FICHIER</p><h2>Que souhaitez-vous créer ?</h2><div class="dialog-options"><button value="writer" class="dialog-option" data-dialog-type="writer"><span class="writer-icon">W</span><strong>Document Writer</strong><small>Texte, rapports, lettres</small></button><button value="calc" class="dialog-option" data-dialog-type="calc"><span class="calc-icon">▦</span><strong>Classeur Calc</strong><small>Tableaux et calculs</small></button></div></form></dialog>
