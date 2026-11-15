@@ -1058,7 +1058,7 @@ $('#pvQualiteAgent').textContent =
     const client = archiveClient();
     const ownerId = await archiveOwner();
     const { data, error } = await client.from('decompte_archives')
-      .select('id,owner_id,numero,nom,entreprise,payload,created_at,deleted_at')
+      .select('id,owner_id,numero,nom,entreprise,payload,created_at,deleted_at,favorite')
       .eq('owner_id', ownerId).is('deleted_at', null)
       .order('created_at', { ascending: false });
     if (error) throw error;
@@ -1102,7 +1102,8 @@ $('#pvQualiteAgent').textContent =
         nom: snapshot.nom.trim(),
         entreprise: snapshot.entrepriseNom || null,
         payload,
-        deleted_at: null
+        deleted_at: null,
+        favorite: !!favorite
       };
       const { data, error } = await archiveClient().from('decompte_archives')
         .upsert(row, { onConflict: 'owner_id,numero' })
@@ -1171,6 +1172,7 @@ $('#pvQualiteAgent').textContent =
       </article>`;
     }).join('');
     el.querySelectorAll('[data-view-archive]').forEach(btn => btn.addEventListener('click', () => openArchivedDocument(btn.dataset.viewArchive)));
+    el.querySelectorAll('[data-fav-archive]').forEach(btn => btn.addEventListener('click', () => toggleRemoteFavorite(btn.dataset.favArchive)));
     el.querySelectorAll('[data-trash-archive]').forEach(btn => btn.addEventListener('click', () => moveArchiveToTrash(btn.dataset.trashArchive)));
   }
 
@@ -1273,31 +1275,51 @@ $('#pvQualiteAgent').textContent =
     } catch (error) { toast(error?.message || 'Suppression impossible.', 'error'); }
   }
 
-  function showFavoritesModal() {
+  async function showFavoritesModal() {
     $('#modalTitle').textContent = '⭐ Favoris';
-    $('#modalBody').innerHTML = '<p class="muted">Les dossiers sont maintenant conservés dans vos archives Supabase. Ouvrez les archives pour consulter vos décomptes enregistrés.</p><button class="btn-primary btn-sm" id="btnOpenArchivesFromModal"><i class="fa-solid fa-box-archive"></i> Ouvrir les archives</button>';
-    $('#btnOpenArchivesFromModal').addEventListener('click', () => { closeModal(); switchView('archive'); });
+    try {
+      await fetchRemoteArchives();
+      const list = remoteArchives.filter(a => a.favorite);
+      if (!list.length) $('#modalBody').innerHTML = '<p class="muted">Aucun décompte ajouté aux favoris.</p>';
+      else {
+        $('#modalBody').innerHTML = list.map(a => `
+          <div class="archive-item" style="margin-bottom:8px"><div><h4>Décompte final de ${escapeHtml(a.nom || '—')}</h4>
+          <div class="meta"><span>${escapeHtml(a.numero)}</span><span>${formatMoney(a.payload?.result?.net, a.payload?.result?.devise || 'CDF')}</span></div></div>
+          <button class="btn-primary btn-sm" data-load-fav="${escapeHtml(a.id)}">Voir</button></div>`).join('');
+        $('[data-load-fav]').forEach(b => b.addEventListener('click', () => { closeModal(); openArchivedDocument(b.dataset.loadFav); }));
+      }
+    } catch (error) { $('#modalBody').textContent = error?.message || 'Chargement des favoris impossible.'; }
     openModal();
   }
 
-  function showHistoryModal() {
+  async function showHistoryModal() {
     $('#modalTitle').textContent = '📚 Historique récent';
-    const list = remoteArchives.slice(0, 20);
-    if (!list.length) {
-      $('#modalBody').innerHTML = '<p class="muted">Aucun décompte enregistré pour le moment.</p>';
-    } else {
-      $('#modalBody').innerHTML = list.map(a => `
-        <div class="archive-item" style="margin-bottom:8px">
-          <div><h4>Décompte final de ${escapeHtml(a.nom || '—')} · ${escapeHtml(a.numero)}</h4>
-          <div class="meta"><span>${new Date(a.created_at).toLocaleString('fr-FR')}</span>
-          <span>${formatMoney(a.payload?.result?.net, a.payload?.result?.devise || 'CDF')}</span></div></div>
-          <button class="btn-ghost btn-sm" data-load-hist="${escapeHtml(a.id)}">Voir</button>
-        </div>`).join('');
-      $$('[data-load-hist]').forEach(b => b.addEventListener('click', () => {
-        closeModal(); openArchivedDocument(b.dataset.loadHist);
-      }));
-    }
+    try {
+      await fetchRemoteArchives();
+      const list = remoteArchives.slice(0, 20);
+      if (!list.length) $('#modalBody').innerHTML = '<p class="muted">Aucun décompte enregistré pour le moment.</p>';
+      else {
+        $('#modalBody').innerHTML = list.map(a => `
+          <div class="archive-item" style="margin-bottom:8px"><div><h4>Décompte final de ${escapeHtml(a.nom || '—')} · ${escapeHtml(a.numero)}</h4>
+          <div class="meta"><span>${new Date(a.created_at).toLocaleString('fr-FR')}</span><span>${formatMoney(a.payload?.result?.net, a.payload?.result?.devise || 'CDF')}</span></div></div>
+          <button class="btn-ghost btn-sm" data-load-hist="${escapeHtml(a.id)}">Voir</button></div>`).join('');
+        $('[data-load-hist]').forEach(b => b.addEventListener('click', () => { closeModal(); openArchivedDocument(b.dataset.loadHist); }));
+      }
+    } catch (error) { $('#modalBody').textContent = error?.message || 'Chargement de l’historique impossible.'; }
     openModal();
+  }
+
+  async function toggleRemoteFavorite(id) {
+    try {
+      const ownerId = await archiveOwner();
+      const entry = remoteArchives.find(a => a.id === id);
+      if (!entry) return;
+      const { error } = await archiveClient().from('decompte_archives')
+        .update({ favorite: !entry.favorite }).eq('id', id).eq('owner_id', ownerId);
+      if (error) throw error;
+      await fetchRemoteArchives(); renderArchive($('#archiveSearch')?.value || '');
+      toast(entry.favorite ? 'Décompte retiré des favoris.' : 'Décompte ajouté aux favoris.', 'success');
+    } catch (error) { toast(error?.message || 'Mise à jour des favoris impossible.', 'error'); }
   }
 
   function openModal() { $('#modal').classList.remove('hidden'); }
