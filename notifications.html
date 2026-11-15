@@ -24,7 +24,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261115-live-auth-notifications-v26" defer></script>
+<script src="auth-gate.js?v=20261115-notification-audio-session-v27" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
@@ -74,7 +74,19 @@ async function load(force=false){
   if(seq!==loadSequence)return;
   const errors=[];
   if(!ann.error)announcements=ann.data;else errors.push('annonces');
-  if(!course.error)training=course.data;else errors.push('formations');
+  if(!course.error){
+   training=await Promise.all(course.data.map(async item=>{
+    let notificationUrl=/^https?:\/\//i.test(item.external_url||'')?item.external_url:null;
+    if(!notificationUrl&&item.file_path){
+     try{
+      const signed=await client.storage.from('formation-resources').createSignedUrl(item.file_path,3600);
+      if(!signed.error&&signed.data?.signedUrl)notificationUrl=signed.data.signedUrl;
+      else console.warn('Lien sécurisé de formation indisponible:',signed.error);
+     }catch(storageError){console.warn('Lecture du fichier de formation indisponible:',storageError)}
+    }
+    return {...item,notification_url:notificationUrl};
+   }));
+  }else errors.push('formations');
   if(admin&&!req.error)requests=req.data;else if(admin&&req.error)errors.push('demandes de certification');
   const [readA,readT,readR]=await Promise.all([
    run('lectures annonces',fetchAllRows(()=>client.from('announcement_reads').select('announcement_id').eq('user_id',user.id),'lectures annonces')),
@@ -85,7 +97,7 @@ async function load(force=false){
   if(!readA.error){readAnnouncements.clear();readA.data.forEach(x=>readAnnouncements.add(String(x.announcement_id)))}else errors.push('lectures annonces');
   if(!readT.error){readTraining.clear();readT.data.forEach(x=>readTraining.add(String(x.resource_id)))}else errors.push('lectures formations');
   if(admin&&!readR.error){readRequests.clear();readR.data.forEach(x=>readRequests.add(String(x.request_id)))}else if(admin&&readR.error)errors.push('lectures demandes');
-  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,training,readAnnouncements:[...readAnnouncements],readTraining:[...readTraining],savedAt:Date.now()}))}catch(_){}
+  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,training:training.map(({notification_url,...item})=>item),readAnnouncements:[...readAnnouncements],readTraining:[...readTraining],savedAt:Date.now()}))}catch(_){}
   render();
   if(errors.length){
    const msg=document.createElement('div');msg.className='item';msg.setAttribute('role','status');
@@ -100,12 +112,12 @@ async function load(force=false){
 }
 function render(){
  const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
- const courses=training.filter(x=>!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
+ const courses=training.filter(x=>!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.notification_url||x.external_url||'')?(x.notification_url||x.external_url):null)}));
  let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
  if(tab==='training')items=items.filter(x=>x.kind==='training');
  const certificationNotice=!isAdmin&&profile?.certification_status!=='certified'?'<article class="item" role="alert" style="border:2px solid #d5a52b;background:#fff8e7"><div class="item-head"><div class="item-title" style="color:#754d00;font-size:16px"><i class="fa-solid fa-shield-halved"></i> CERTIFICATION OBLIGATOIRE</div><span class="item-time" style="color:#9a6500;font-weight:800">À traiter</span></div><div class="item-body" style="color:#654d1d;font-size:15px;font-weight:600">Votre compte n’est pas encore certifié. Vérifiez vos informations professionnelles, ajoutez votre photo si nécessaire et soumettez votre demande à l’administration. Cette notification reste visible jusqu’à la certification.</div><a class="primary" href="profil.html?certification=required#parametres" style="display:inline-block;margin-top:6px;text-decoration:none">ACCÉDER À LA CERTIFICATION</a></article>':'';
- const cards=items.map(x=>'<article class="item" data-read-state="unread" style="border-left:4px solid #087ca7"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:#087ca7;font-size:11px">NOUVEAU</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='training'?(x.url?'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>':'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button></article>').join('');
+ const cards=items.map(x=>'<article class="item" data-read-state="unread" style="border-left:4px solid #087ca7"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:#087ca7;font-size:11px">NOUVEAU</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='training'?(x.url?(x.kind==='audio'?'<audio controls preload="none" src="'+esc(x.url)+'" style="display:block;width:100%;max-width:520px;margin-top:12px"></audio><a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;text-decoration:none">Ouvrir le communiqué audio</a>':'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>'):'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button></article>').join('');
  const unreadRequests=requests.filter(x=>!readRequests.has(String(x.id)));
  const reqCards=unreadRequests.map(x=>{const id=String(x.id);return '<article class="item" style="border-left:4px solid #c18a11"><div class="item-head"><div class="item-title"><i class="fa-solid fa-user-shield"></i> '+esc(x.nom_complet||'Nouvelle demande de certification')+' <span style="color:#b17a00;font-size:11px">NOUVELLE DEMANDE</span></div><time class="item-time">'+esc(date(x.created_at))+'</time></div><div class="item-body">Matricule : '+esc(x.matricule||'Non renseigné')+'\nE-mail : '+esc(x.email||'Non renseigné')+'\nCatégorie : '+esc(x.categorie||'Non renseignée')+'</div><div class="meta">Demande en attente de vérification</div><a class="primary" href="admin.html" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la vérification</a><button type="button" class="primary" data-mark-read="request" data-id="'+esc(id)+'" style="display:block;margin-top:10px">Marquer comme lue</button></article>'}).join('');
  if($('requestsTab')){$('requestsTab').hidden=!isAdmin;$('requestsUnread').textContent=String(unreadRequests.length);$('requestsUnread').hidden=unreadRequests.length===0;}
