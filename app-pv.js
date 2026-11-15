@@ -1192,13 +1192,13 @@
     reader.onload = () => {
       const dataUrl = String(reader.result || '');
       if (!dataUrl.startsWith('data:image/')) { toast('Le fichier image n’a pas pu être lu.'); return; }
-      if (dataUrl.length > 2500000) { toast('Image trop volumineuse pour le stockage local (maximum conseillé : 1,8 Mo). Choisissez un logo compressé.'); return; }
+      if (dataUrl.length > 2500000) { toast('Image trop volumineuse. Choisissez un logo compressé.'); return; }
       setVal('logoIgtData', dataUrl);
       try {
         localStorage.setItem(LOGO_KEY, dataUrl);
         if (localStorage.getItem(LOGO_KEY) !== dataUrl) throw new Error('Logo non persisté');
       } catch (_) {
-        toast('Logo affiché, mais stockage local insuffisant. Réduisez la taille de l’image puis réessayez.');
+        toast('Logo affiché, mais enregistrement impossible. Réduisez la taille de l’image puis réessayez.');
       }
       refreshLogoIgtPreview();
       updatePreview();
