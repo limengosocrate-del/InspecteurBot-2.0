@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-fast-startup-v15';
+const IB_APP_BUILD='20261115-fast-startup-v16';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -1023,7 +1023,7 @@ async function start(){
   window.inspecteurBotSignOut=signOut;
  }catch(e){
   console.error('Démarrage InspecteurBot :',e);
-  gate(e.message||'Service d’authentification indisponible. Vérifiez votre connexion puis réessayez.');
+  gate(e.message||'Service d’authentification indisponible. Vérifiez votre connexion puis réessayez.','retry');
  }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
