@@ -152,9 +152,7 @@
     saved = null;
   }
 
-  window.addEventListener("beforeprint", () => {
-    requestAnimationFrame(() => requestAnimationFrame(prepare));
-  });
+  window.addEventListener("beforeprint", prepare);
   window.addEventListener("afterprint", restore);
   if (window.matchMedia) {
     const media = window.matchMedia("print");
