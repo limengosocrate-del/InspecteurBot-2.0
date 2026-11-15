@@ -53,7 +53,7 @@ async function load(force=false){
  const seq=++loadSequence,list=$('notificationList');
  if(!announcements.length&&!training.length&&!requests.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des notifications…</div>';
  const run=async(label,query)=>{try{const r=await query;if(r.error)throw r.error;return {data:r.data||[],error:null}}catch(error){console.error('InspecteurBot '+label,error);return {data:[],error}}};
- const admin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
+ const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req]=await Promise.all([
    run('annonces',(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false}).limit(150);q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q})()),
@@ -88,8 +88,8 @@ async function load(force=false){
  }
 }
 function render(){
- const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&(x.created_by!==user?.id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
- const courses=training.filter(x=>x.created_by!==user?.id&&!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
+ const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)&&!readAnnouncements.has(String(x.id))).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle'}));
+ const courses=training.filter(x=>!readTraining.has(String(x.id))).map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),url:(/^https?:\/\//i.test(x.external_url||'')?x.external_url:null)}));
  let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
  if(tab==='training')items=items.filter(x=>x.kind==='training');
@@ -114,7 +114,7 @@ async function markRead(kind,id){
 }
 
 function init(d){
- if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
+ if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  if(isAdmin){$('adminPanel').hidden=false;$('requestsTab').hidden=false;}
  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));$('refreshNotificationCenter').addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Actualisation…';try{await load(true)}catch(err){console.error(err);alert('Actualisation impossible. Vérifiez votre connexion.')}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-rotate"></i> Actualiser'}});$('notificationList').addEventListener('click',async e=>{const b=e.target.closest('[data-mark-read]');if(!b)return;b.disabled=true;try{await markRead(b.dataset.markRead,b.dataset.id)}catch(err){console.error(err);b.disabled=false;alert('Impossible de confirmer la lecture. Vérifiez votre connexion puis réessayez.')}});
  if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{
@@ -140,6 +140,6 @@ function init(d){
 }
 document.addEventListener('inspecteurbot:authenticated',e=>init(e.detail));
 function existing(){if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser&&window.inspecteurBotAuthProfile)init({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile})}
-existing();setTimeout(existing,500);setTimeout(existing,1500);
+existing();[250,750,1500,3000,5000,8000].forEach(delay=>setTimeout(existing,delay));
 })();
 </script></body></html>
