@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v10_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v11_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -67,7 +67,7 @@ async function load(force=false){
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req]=await Promise.all([
-   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q},'annonces')),
+   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});if(!admin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q},'annonces')),
    run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),
    admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null})
   ]);
@@ -111,7 +111,7 @@ async function load(force=false){
  }
 }
 function render(){
- const ann=announcements.filter(x=>(!x.target_user_id||x.target_user_id===user?.id)).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle',isRead:readAnnouncements.has(String(x.id))}));
+ const ann=announcements.filter(x=>isAdmin||!x.target_user_id||x.target_user_id===user?.id).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:x.target_user_id?'Annonce ciblée • '+(isAdmin?'compte destinataire : '+x.target_user_id:'personnelle'):'Annonce officielle',isRead:readAnnouncements.has(String(x.id))}));
  const courses=training.map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),isRead:readTraining.has(String(x.id)),url:(/^https?:\/\//i.test(x.notification_url||x.external_url||'')?(x.notification_url||x.external_url):null)}));
  let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
