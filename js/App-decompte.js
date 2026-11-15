@@ -1670,6 +1670,10 @@ $('#pvQualiteAgent').textContent =
     const scale = base * photoCropState.zoom;
     const width = image.naturalWidth * scale;
     const height = image.naturalHeight * scale;
+    const maxX = Math.max(0, (width - stage.clientWidth) / 2);
+    const maxY = Math.max(0, (height - stage.clientHeight) / 2);
+    photoCropState.x = Math.max(-maxX, Math.min(maxX, photoCropState.x));
+    photoCropState.y = Math.max(-maxY, Math.min(maxY, photoCropState.y));
     img.style.width = width + 'px';
     img.style.height = height + 'px';
     img.style.maxWidth = 'none';
@@ -1850,6 +1854,7 @@ $('#pvQualiteAgent').textContent =
     $('#photoEntreprise').value = '';
     $('#dateDocument').value = new Date().toISOString().slice(0, 10);
     $('#fonction').value = '';
+    updateFonctionAutre();
     $('#categorie').selectedIndex = 0;
     $('#motif').selectedIndex = 0;
     $('#direction').selectedIndex = 0;
@@ -1977,6 +1982,11 @@ $('#pvQualiteAgent').textContent =
 
     // Actions
     $('#btnCalculate').addEventListener('click', () => {
+      if ($('#fonction').value === 'Autre' && !$('#fonctionAutre').value.trim()) {
+        toast('Veuillez préciser la fonction sélectionnée « Autre ».', 'error');
+        $('#fonctionAutre').focus();
+        return;
+      }
       if (!$('#nom').value || !$('#salaireBase').value || !$('#dateEngagement').value || !$('#dateFin').value) {
         toast('Veuillez renseigner au minimum : Nom, Salaire, Dates', 'error');
         return;
