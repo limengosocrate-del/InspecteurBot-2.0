@@ -943,7 +943,6 @@
     byId('btnResetForm').addEventListener('click', () => newRecord(true));
     byId('btnNewFromDashboard').addEventListener('click', () => { switchView('create'); newRecord(true); });
     byId('btnPrint').addEventListener('click', printDocument);
-    byId('btnReadPreview').addEventListener('click', readPreview);
     byId('btnReadSelection').addEventListener('click', readPreview);
     const dictationButton = byId('btnGlobalListen');
     if (dictationButton) dictationButton.addEventListener('click', toggleDictation);
