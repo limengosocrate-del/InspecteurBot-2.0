@@ -91,6 +91,22 @@
       #inspectionForm > * {
         flex-shrink: 0 !important;
       }
+
+      /* Agrandit verticalement le tableau officiel pour occuper la page A4
+         du haut jusqu'en bas, sans étirer ni couper la largeur. */
+      #inspectionForm > .official,
+      #inspectionForm .official {
+        flex: 1 1 auto !important;
+        height: 100% !important;
+        min-height: 100% !important;
+      }
+      #inspectionForm .official {
+        table-layout: fixed !important;
+      }
+      #inspectionForm {
+        height: 281mm !important;
+        min-height: 281mm !important;
+      }
       .official, .meta-panel, .qr-box {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
