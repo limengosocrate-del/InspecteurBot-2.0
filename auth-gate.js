@@ -1010,8 +1010,9 @@ async function start(){
   // Session partagée entre les pages et les onglets de l'application.
   // Migration transparente de l'ancienne session sessionStorage vers localStorage.
   const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
-  let ibAuthStorage=window.localStorage;
+  let ibAuthStorage;
   try{
+   ibAuthStorage=window.localStorage;
    if(!ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY)){
     const legacySession=window.sessionStorage.getItem(IB_AUTH_STORAGE_KEY);
     if(legacySession)ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,legacySession);
