@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
-  <link rel="stylesheet" href="decompte-final.css?v=20261115-decompte-photo-function-v2" />
+  <link rel="stylesheet" href="decompte-final.css?v=20261115-decompte-form-reorganization-v3" />
 
 <!-- InspecteurBot : authentification obligatoire Supabase -->
 
@@ -102,10 +102,22 @@
 
           <div class="grid-2">
             <!-- Card: En-tête officiel -->
-            <article class="card glow-card col-span-2">
-              <div class="card-head">
-                <h3><i class="fa-solid fa-building-columns"></i> En-tête officiel IGT</h3>
+            <article class="card glow-card col-span-2 form-section-card">
+              <div class="card-head form-section-head">
+                <div class="form-section-title"><span class="form-step">01</span><div><h3><i class="fa-solid fa-building-columns"></i> En-tête officiel IGT</h3><small>Identification institutionnelle et agent chargé du décompte</small></div></div>
                 <span class="chip gold-chip">République Démocratique du Congo</span>
+              </div>
+              <div class="igt-logo-upload-row">
+                <div class="igt-logo-upload-preview">
+                  <img id="igtLogoUploadPreview" src="assets/logo.svg" alt="Logo IGT sélectionné" />
+                </div>
+                <div class="igt-logo-upload-copy">
+                  <strong>Logo officiel de l’IGT</strong>
+                  <span>Ajoutez le logo institutionnel : il sera automatiquement intégré à l’aperçu et au PDF.</span>
+                  <label class="btn-ghost igt-logo-upload-button" for="igtLogoFile"><i class="fa-solid fa-cloud-arrow-up"></i> Télécharger le logo</label>
+                  <input type="file" id="igtLogoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
+                </div>
+                <button type="button" class="btn-ghost igt-logo-reset" id="btnResetIgtLogo" title="Revenir au logo par défaut"><i class="fa-solid fa-rotate-left"></i></button>
               </div>
               <div class="card-body form-grid-3">
                 <div class="field">
@@ -150,17 +162,6 @@
                   <input type="text" id="lieuDocument" class="input" placeholder="Kinshasa" value="Kinshasa" />
                 </div>
                 <div class="field">
-                  <label for="dateDocument">Date du document</label>
-                  <input type="date" id="dateDocument" class="input" />
-                </div>
-                <div class="field">
-                  <label for="devise">Devise</label>
-                  <select id="devise" class="input">
-                    <option value="USD">Dollar américain ($US)</option>
-                    <option value="CDF" selected>Franc congolais (FC)</option>
-                  </select>
-                </div>
-                <div class="field">
                   <label for="qualiteAgent">Qualité de l'agent chargé du décompte</label>
                   <select id="qualiteAgent" class="input">
                     <option value="INSPECTEUR DU TRAVAIL" selected>Inspecteur du Travail</option>
@@ -183,12 +184,16 @@
                   <label for="entrepriseAdresse">Adresse entreprise</label>
                   <input type="text" id="entrepriseAdresse" class="input" placeholder="Adresse complète" />
                 </div>
+                <div class="field">
+                  <label for="dateDocument">Date du document</label>
+                  <input type="date" id="dateDocument" class="input" />
+                </div>
               </div>
             </article>
 
             <!-- Card: Renseignements travailleur -->
-            <article class="card">
-              <div class="card-head worker-card-head">
+            <article class="card form-section-card">
+              <div class="card-head worker-card-head form-section-head">
                 <div class="photo-slot worker-photo-slot">
                   <img id="photoTravailleurPreview" alt="Photo du travailleur" class="hidden" />
                   <label class="photo-upload" for="photoTravailleur" title="Ajouter ou ajuster la photo du travailleur">
@@ -196,7 +201,7 @@
                   </label>
                   <input type="file" id="photoTravailleur" accept="image/*" hidden />
                 </div>
-                <h3><i class="fa-solid fa-user-tie"></i> Renseignements</h3>
+                <div class="form-section-title"><span class="form-step">02</span><div><h3><i class="fa-solid fa-user-tie"></i> Renseignements</h3><small>Informations personnelles et professionnelles du travailleur</small></div></div>
               </div>
               <div class="card-body form-grid">
                 <div class="field">
@@ -395,9 +400,9 @@
             </article>
 
             <!-- Card: Éléments de calcul -->
-            <article class="card">
+            <article class="card form-section-card">
               <div class="card-head">
-                <h3><i class="fa-solid fa-coins"></i> Éléments de calcul</h3>
+                <div class="form-section-title"><span class="form-step">03</span><div><h3><i class="fa-solid fa-coins"></i> Éléments de calcul</h3><small>Devise, rémunération, préavis et congés</small></div></div>
                 <div class="photo-slot">
                   <img id="photoEntreprisePreview" alt="" class="hidden" />
                   <label class="photo-upload" for="photoEntreprise" title="Photo de l'entreprise">
@@ -407,6 +412,13 @@
                 </div>
               </div>
               <div class="card-body form-grid">
+                <div class="field">
+                  <label for="devise">Devise</label>
+                  <select id="devise" class="input">
+                    <option value="USD">Dollar américain ($US)</option>
+                    <option value="CDF" selected>Franc congolais (FC)</option>
+                  </select>
+                </div>
                 <div class="field">
                   <label for="salaireBase">Salaire de base (mensuel) <span class="req">*</span></label>
                   <div class="input-affix">
@@ -621,7 +633,7 @@
                 <div class="df-header-left">
                   <div class="df-state">République Démocratique du Congo</div>
                   <div class="df-ministry">MINISTÈRE DE L'EMPLOI,TRAVAIL</div>
-                  <img src="assets/logo.svg" alt="IGT" class="df-logo" />
+                  <img src="assets/logo.svg" alt="Logo officiel de l’IGT" class="df-logo" id="pvIgtLogo" />
                   <div class="df-igt">INSPECTION GÉNÉRALE DU TRAVAIL</div>
                   <div class="df-direction" id="pvDirection">Direction Provinciale de Kinshasa</div>
                   <div class="df-address" id="pvAdresse">15ème Rue N°1 LIMETE</div>
@@ -656,7 +668,9 @@
                   <tr><td class="lab">❖ Date de fin Contrat</td><td class="val" id="pvDateFin">—</td></tr>
                   <tr><td class="lab">❖ Ancienneté</td><td class="val" id="pvAnciennete">—</td></tr>
                   <tr><td class="lab">❖ Motif</td><td class="val" id="pvMotif">—</td></tr>
-                  <tr><td class="lab">❖ Entreprise</td><td class="val" id="pvEntreprise">—</td></tr>
+                  <tr><td class="lab">❖ Entreprise / Employeur</td><td class="val" id="pvEntreprise">—</td></tr>
+                  <tr><td class="lab">❖ Adresse entreprise</td><td class="val" id="pvEntrepriseAdresse">—</td></tr>
+                  <tr><td class="lab">❖ Lieu d'engagement / prestation</td><td class="val" id="pvLieuPrestation">—</td></tr>
                   <tr><td class="lab">❖ Salaire de Base</td><td class="val" id="pvSalaireBase">—</td></tr>
                   <tr><td class="lab">❖ Logement</td><td class="val" id="pvLogement">—</td></tr>
                   <tr><td class="lab">❖ Transport</td><td class="val" id="pvTransport">—</td></tr>
@@ -945,7 +959,7 @@
     </div>
   </div>
 
-  <script src="../js/App-decompte.js?v=20261115-decompte-photo-function-v2" defer></script>
+  <script src="../js/App-decompte.js?v=20261115-decompte-form-reorganization-v3" defer></script>
   
 </body>
 </html>
