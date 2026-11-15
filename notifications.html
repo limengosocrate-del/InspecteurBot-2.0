@@ -85,7 +85,7 @@ function init(d){
   catch(e){status('announcementStatus',e.message||'Publication impossible.',false)}finally{b.disabled=false}
  });
  try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){announcements=Array.isArray(cached.announcements)?cached.announcements:[];training=Array.isArray(cached.training)?cached.training:[];render()}}catch(_){}
- load().catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!training.length)$('notificationList').innerHTML=empty('Aucune annonce ou formation enregistrée sur cet appareil.')});
+ load().catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!training.length)$('notificationList').innerHTML=empty('Aucune annonce ou formation à afficher.')});
  client.channel('ib-announcements-center-'+user.id)
   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>load().catch(console.warn))
   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>load().catch(console.warn))

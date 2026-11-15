@@ -27,7 +27,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
     <div class="glass">
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
         <button class="btn-gold" id="newConventionBtn" type="button">＋ Nouvelle convention</button>
-        <span style="color:var(--muted);font-size:12px;align-self:center">Vos projets sont enregistrés uniquement sur cet appareil et dans votre compte.</span>
+        <span style="color:var(--muted);font-size:12px;align-self:center">Vos projets sont conservés dans votre espace.</span>
       </div>
       <form id="newConventionForm" hidden style="display:grid;gap:10px;margin:12px 0;padding:14px;border:1px solid var(--glass-border);border-radius:12px">
         <label>Intitulé de la convention<input id="ccTitle" required maxlength="160" placeholder="Ex. Convention collective de l'entreprise"></label>
@@ -106,7 +106,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
       const items=getCustomConventions();items.unshift(item);
       localStorage.setItem(conventionStorageKey,JSON.stringify(items));
       conventionForm.reset();conventionForm.hidden=true;renderCustomConventions();
-      alert("Projet de convention enregistré localement pour votre compte.");
+      alert("Projet de convention enregistré avec succès.");
     });
     document.addEventListener('DOMContentLoaded', initConventionStorage, {once:true});
     go.onclick = () => {

@@ -4326,7 +4326,7 @@ window.addEventListener(
 
     "Mode Hors Connexion",
 
-    "Les données seront enregistrées localement.",
+    "Les données seront enregistrées automatiquement.",
 
     "warning"
 
