@@ -82,7 +82,7 @@ self.addEventListener('fetch',event=>{
   }
 
   if(url.origin!==self.location.origin)return;
-  const isHtml=request.mode==='navigate'||/\\.html$/i.test(url.pathname);
+  const isHtml=request.mode==='navigate'||url.pathname.toLowerCase().endsWith('.html');
   if(isHtml){
     const cachePromise=caches.open(CACHE);
     const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
@@ -97,7 +97,7 @@ self.addEventListener('fetch',event=>{
     }));
     return;
   }
-  if(/\\/auth-gate\\.js$/i.test(url.pathname)){
+  if(url.pathname.toLowerCase().endsWith('/auth-gate.js')){
     const cachePromise=caches.open(CACHE);
     const refresh=cachePromise.then(cache=>fetch(request).then(response=>{
       if(response&&response.ok)return cache.put(request,response.clone()).then(()=>response);
