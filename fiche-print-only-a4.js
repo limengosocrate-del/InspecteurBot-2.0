@@ -1,7 +1,7 @@
 /* InspecteurBot — correctif impression PDF réservé aux fiches F01–F07 et S01–S03. */
 (function () {
   "use strict";
-  if (window.__ibPrintOnlyA4v14) return;
+  if (window.__ibPrintOnlyA4v15) return;
   window.__ibPrintOnlyA4v14 = true;
   var style = document.createElement("style");
   style.textContent = [
@@ -43,9 +43,12 @@
     var maxW = 202*pxPerMm, maxH = 289*pxPerMm;
     var width = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width, 1);
     var height = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, 1);
-    var fit = Math.min(1, maxW/width, maxH/height);
-    sheet.style.setProperty("--ib-print-fit", String(fit));
-    sheet.style.setProperty("transform","scale("+fit+")","important");
+    /* Calculs indépendants : la hauteur ne réduit jamais la largeur. */
+    var scaleX = Math.min(1, maxW / width);
+    var scaleY = Math.min(1, maxH / height);
+    sheet.style.setProperty("--ib-print-scale-x", String(scaleX));
+    sheet.style.setProperty("--ib-print-scale-y", String(scaleY));
+    sheet.style.setProperty("transform","scale("+scaleX+","+scaleY+")","important");
   }
   function restorePrint() {
     if (!saved) return;
