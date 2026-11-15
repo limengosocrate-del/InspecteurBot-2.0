@@ -284,8 +284,9 @@ function weeklyPracticePlan(){
   chosen.forEach(function(q){selected.push(String(q.id))});
  });
  var newUsed=used.concat(selected);
- writePracticeHistory({week:monday,plan:Object.fromEntries(keys.map(function(k){return [k,plan[k].map(function(q){return q.id})]})),used:newUsed});
- return {week:monday,plan:plan};
+ var storedPlan=Object.fromEntries(keys.map(function(k){return [k,plan[k].map(function(q){return q.id})]}));
+ writePracticeHistory({week:monday,plan:storedPlan,used:newUsed});
+ return {week:monday,plan:storedPlan};
 }
 function startPracticeGame(kind){
  var labels={truefalse:'Vrai ou faux',trap:'Questions pièges',field:'Mission terrain',audit:'Enquête documentaire'};
