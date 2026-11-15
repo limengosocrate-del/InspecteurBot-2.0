@@ -1,12 +1,12 @@
 /* Impression PDF A4 : réservé aux fiches F01–F07 et S01–S03.
-   Aucun style d'écran ni aucune donnée du formulaire ne sont modifiés. */
+   Le style renforcé ne concerne que les titres principaux des fiches. */
 (() => {
   if (window.__ibPrintOnlyA4) return;
   window.__ibPrintOnlyA4 = true;
 
   const css = document.createElement("style");
   css.textContent = `
-    /* Uniquement le titre principal de chaque fiche : même rendu à l'écran et à l'impression. */
+    /* Titre principal uniquement : rouge carmin, condensé, gras et centré. */
     .official.header .header-title {
       color: #E3000F !important;
       -webkit-text-fill-color: #E3000F !important;
@@ -21,82 +21,48 @@
       vertical-align: middle !important;
       padding: 3mm 2mm !important;
     }
-  css.textContent = `
-    @page { size: A4 portrait; margin: 8mm; }
+
+    @page { size: A4 portrait; margin: 4mm; }
     @media print {
       html, body {
-        width: 194mm !important;
+        width: 202mm !important;
+        height: 289mm !important;
         margin: 0 !important;
         padding: 0 !important;
         background: #fff !important;
+        overflow: hidden !important;
       }
       .screen-toolbar, .ai-drawer, .no-print { display: none !important; }
 
-      .meta-panel.no-print {
-        display: grid !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 5px !important;
-        padding: 6px 8px !important;
-        margin: 0 0 5px !important;
-        color: #fff !important;
-        background: #071b34 !important;
-        border: 1px solid rgba(243,196,65,.55) !important;
-        border-radius: 7px !important;
-        box-sizing: border-box !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
-      .meta-panel.no-print label {
-        display: grid !important;
-        min-width: 0 !important;
-        color: #fff !important;
-        font-size: 9px !important;
-        line-height: 1.15 !important;
-        gap: 2px !important;
-      }
-      .meta-panel.no-print input,
-      .meta-panel.no-print select {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-        height: 23px !important;
-        padding: 1px 4px !important;
-        border: 1px solid #8b9bad !important;
-        border-radius: 3px !important;
-        background: #fff !important;
-        color: #111 !important;
-        font-size: 9px !important;
-        box-sizing: border-box !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-      }
-
       .sheet-wrap {
         display: block !important;
-        width: 194mm !important;
-        height: 281mm !important;
-        min-height: 281mm !important;
+        width: 202mm !important;
+        height: 289mm !important;
+        min-height: 0 !important;
         padding: 0 !important;
         margin: 0 !important;
-        overflow: visible !important;
+        overflow: hidden !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+        box-sizing: border-box !important;
       }
       .sheet {
         display: block !important;
-        width: 194mm !important;
-        min-width: 194mm !important;
+        width: 202mm !important;
+        min-width: 202mm !important;
         min-height: 0 !important;
         height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
-        transform: scale(var(--ib-a4-scale-x, 1), var(--ib-a4-scale-y, 1)) !important;
+        transform: scale(var(--ib-a4-fit, 1)) !important;
         transform-origin: top left !important;
-        page-break-before: avoid !important;
-        page-break-after: avoid !important;
         break-before: avoid !important;
+        page-break-before: avoid !important;
         break-after: avoid !important;
+        page-break-after: avoid !important;
         break-inside: avoid !important;
         page-break-inside: avoid !important;
         overflow: visible !important;
@@ -117,15 +83,11 @@
         break-inside: avoid !important;
         page-break-inside: avoid !important;
       }
-      .meta-panel, .qr-box {
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-      }
       input, select, textarea {
         color: #111 !important;
         -webkit-text-fill-color: #111 !important;
       }
-      /* Titres officiels et codes : rouge, agrandis et centrés dans leurs cases. */
+      /* Le code de formulaire conserve sa mise en évidence déjà demandée. */
       .official.header .form-code {
         color: #c00000 !important;
         -webkit-text-fill-color: #c00000 !important;
@@ -157,32 +119,28 @@
       wrap: wrap.getAttribute("style")
     };
 
-    sheet.style.setProperty("width", "194mm", "important");
-    sheet.style.setProperty("min-width", "194mm", "important");
+    sheet.style.setProperty("width", "202mm", "important");
+    sheet.style.setProperty("min-width", "202mm", "important");
     sheet.style.setProperty("min-height", "0", "important");
     sheet.style.setProperty("height", "auto", "important");
     sheet.style.setProperty("transform", "none", "important");
-    wrap.style.setProperty("width", "194mm", "important");
-    wrap.style.setProperty("height", "281mm", "important");
-    wrap.style.setProperty("min-height", "281mm", "important");
+    wrap.style.setProperty("width", "202mm", "important");
+    wrap.style.setProperty("height", "289mm", "important");
+    wrap.style.setProperty("min-height", "0", "important");
     wrap.style.setProperty("padding", "0", "important");
-    wrap.style.setProperty("overflow", "visible", "important");
+    wrap.style.setProperty("overflow", "hidden", "important");
 
-    /* La largeur est ajustée indépendamment de la hauteur : un contenu long
-       ne réduit donc plus toute la fiche et ne laisse pas de larges marges.
-       La hauteur est adaptée pour tenir sur une seule page A4. */
+    /* Mise à l'échelle proportionnelle : toute la fiche tient dans une seule
+       page A4, sans couper le contenu ni déformer les proportions. */
     const pxPerMm = 96 / 25.4;
-    const maxW = 194 * pxPerMm;
-    const maxH = 281 * pxPerMm;
-    const width = Math.max(sheet.scrollWidth, sheet.getBoundingClientRect().width);
-    const height = Math.max(sheet.scrollHeight, sheet.getBoundingClientRect().height, 1);
-    const scaleX = Math.min(1, maxW / width);
-    const scaleY = maxH / height;
-
-    sheet.style.setProperty("--ib-a4-scale-x", String(scaleX));
-    sheet.style.setProperty("--ib-a4-scale-y", String(scaleY));
-    sheet.style.setProperty("transform", "scale(" + scaleX + ", " + scaleY + ")", "important");
-    wrap.style.setProperty("height", maxH + "px", "important");
+    const maxW = 202 * pxPerMm;
+    const maxH = 289 * pxPerMm;
+    const rect = sheet.getBoundingClientRect();
+    const width = Math.max(sheet.scrollWidth, rect.width, 1);
+    const height = Math.max(sheet.scrollHeight, rect.height, 1);
+    const fit = Math.min(maxW / width, maxH / height);
+    sheet.style.setProperty("--ib-a4-fit", String(fit));
+    sheet.style.setProperty("transform", "scale(" + fit + ")", "important");
   }
 
   function restore() {
@@ -194,6 +152,12 @@
     saved = null;
   }
 
-  window.addEventListener("beforeprint", prepare);
+  window.addEventListener("beforeprint", () => {
+    requestAnimationFrame(() => requestAnimationFrame(prepare));
+  });
   window.addEventListener("afterprint", restore);
+  if (window.matchMedia) {
+    const media = window.matchMedia("print");
+    if (media.addEventListener) media.addEventListener("change", e => { if (!e.matches) restore(); });
+  }
 })();
