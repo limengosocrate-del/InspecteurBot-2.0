@@ -1,5 +1,5 @@
 {
-  "build": "20261115-startup-nonblocking-v8",
+  "build": "20261115-notifications-fast-content-v9",
   "release": "2026-11-15",
   "forceRefresh": true
 }
