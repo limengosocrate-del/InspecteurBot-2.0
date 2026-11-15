@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261115-shared-session-v23';
+const IB_APP_BUILD='20261115-session-messages-presence-v24';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -376,7 +376,7 @@ function publishRealtimePresence(){
  window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count}}));
 }
 function stopRealtimePresence(){
- const channel=realtimePresenceChannel;realtimePresenceChannel=null;
+ const channel=realtimePresenceChannel;realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
  window.__ibOnlineUserIds=new Set();
  window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0}}));
  if(channel&&client){try{void channel.untrack()}catch(_){}try{void client.removeChannel(channel)}catch(_){}}
@@ -385,7 +385,7 @@ function startRealtimePresence(){
  if(!client||!user)return;
  if(realtimePresenceChannel){try{void client.removeChannel(realtimePresenceChannel)}catch(_){}}
  const channel=client.channel('ib-presence-global',{config:{presence:{key:user.id}}});
- realtimePresenceChannel=channel;
+ realtimePresenceChannel=channel;window.__inspecteurBotPresenceChannel=channel;
  channel.on('presence',{event:'sync'},publishRealtimePresence)
   .on('presence',{event:'join'},publishRealtimePresence)
   .on('presence',{event:'leave'},publishRealtimePresence)
@@ -638,25 +638,40 @@ async function loadLib(){
  });
 }
 async function serverCheck(session){
- const sessionId=readSessionId(session?.access_token);
- const cacheKey=session?.user?.id?'inspecteurbot_server_check_v2_'+session.user.id:null;
+ const sessionId=readSessionId(session?.access_token),userId=session?.user?.id;
  const forceFreshProfile=location.pathname.endsWith('/profil.html');
- // Une nouvelle connexion doit toujours être vérifiée auprès du serveur ; aucun ancien profil local ne fait foi.
+ let lastError=null;
  for(let attempt=0;attempt<2;attempt++){
-  const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
-  let payload=data||null;
-  if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
-  if(!error&&payload?.success){
-   if(cacheKey&&sessionId&&payload.profile){try{sessionStorage.setItem(cacheKey,JSON.stringify({session_id:sessionId,validated_at:Date.now(),profile:payload.profile}))}catch(_){}}
-   armSessionExpiry(payload);
-   return payload;
-  }
-  const code=payload?.code||'';
-  if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,150));continue}
-  const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
-  const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');err.authFatal=fatal;err.authTransient=!fatal;throw err;
+  try{
+   const {data,error}=await client.functions.invoke('igt-session-start',{body:{}});
+   let payload=data||null;
+   if(error&&error.context&&typeof error.context.clone==='function'){try{payload=await error.context.clone().json()}catch(_){}}
+   if(!error&&payload?.success){
+    if(userId&&payload.profile){try{localStorage.setItem('inspecteurbot_profile_cache_v2_'+userId,JSON.stringify({profile:payload.profile,savedAt:Date.now(),session_id:sessionId}))}catch(_){}}
+    armSessionExpiry(payload);return payload;
+   }
+   const code=payload?.code||'';
+   if(code==='SESSION_ALREADY_INITIALIZED'&&attempt===0){await new Promise(resolve=>setTimeout(resolve,180));continue}
+   const fatal=['LOGIN_REQUIRED','INVALID_SESSION','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
+   const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
+   err.authFatal=fatal;err.authTransient=!fatal;lastError=err;if(fatal)throw err;
+  }catch(error){if(error?.authFatal)throw error;lastError=error}
  }
- throw Object.assign(new Error('Vérification de sécurité momentanément indisponible.'),{authTransient:true});
+ // Une panne temporaire ne transforme pas une session locale déjà validée en écran de connexion.
+ if(userId&&!forceFreshProfile){
+  try{
+   const cached=JSON.parse(localStorage.getItem('inspecteurbot_profile_cache_v2_'+userId)||'null');
+   const age=Date.now()-Number(cached?.savedAt||0);
+   if(cached?.profile?.id===userId&&cached.profile.is_active===true&&age>=0&&age<=24*60*60*1000){
+    armSessionExpiry({cached:true});
+    console.warn('Validation distante indisponible : restauration temporaire du profil déjà validé.');
+    return {success:true,cached:true,profile:cached.profile};
+   }
+  }catch(_){}
+ }
+ const err=lastError||new Error('Vérification de sécurité momentanément indisponible.');
+ if(typeof err.authFatal!=='boolean'){err.authFatal=false;err.authTransient=true}
+ throw err;
 }
 async function syncLocalProfilePhotoOnLogin(accountId){
  try{
