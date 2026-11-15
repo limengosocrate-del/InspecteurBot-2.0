@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v28-startup-fast-v4';
+const CACHE='inspecteurbot-data-v29-fast-startup-v5';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
@@ -42,15 +42,18 @@ self.addEventListener('fetch',event=>{
   if(url.hostname==='cdn.jsdelivr.net'&&url.pathname.includes('/npm/@supabase/supabase-js@')){
     event.respondWith((async()=>{
       const cache=await caches.open(CACHE);
-      try{
-        const fresh=await fetch(request);
-        if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
-        return fresh;
-      }catch(error){
-        const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
-        if(cached)return cached;
-        throw error;
+      const cached=(await cache.match(request))||(await cache.match(request,{ignoreSearch:true}));
+      if(cached){
+        // Le SDK est versionné et immuable : servir la copie locale immédiatement.
+        // Une vérification réseau silencieuse actualise le cache sans bloquer l'ouverture.
+        event.waitUntil(fetch(request).then(response=>{
+          if(response&&response.ok)return cache.put(request,response.clone());
+        }).catch(()=>{}));
+        return cached;
       }
+      const fresh=await fetch(request);
+      if(fresh&&fresh.ok)await cache.put(request,fresh.clone()).catch(()=>{});
+      return fresh;
     })());
     return;
   }
