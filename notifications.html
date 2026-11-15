@@ -79,6 +79,7 @@ async function load(force=false){
   const detail=document.createElement('div');detail.className='item-body';detail.textContent='Impossible de récupérer : '+errors.join(', ')+'. Les autres contenus sont affichés. Vérifiez la connexion puis actualisez.';
   msg.append(strong,detail);list.prepend(msg);
  }
+ loadInFlight=false;
 }
 function render(){
  const ann=announcements.map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:'Annonce officielle',read:readAnnouncements.has(String(x.id))}));
