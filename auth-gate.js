@@ -1,6 +1,10 @@
 /* InspecteurBot — garde d'accès Supabase. Comptes existants uniquement. */
 (function () {
 'use strict';
+function appRootUrl(){
+ const authScript=Array.from(document.scripts).find(script=>/auth-gate\.js(?:\?|$)/i.test(script.src||""));
+ return authScript?new URL(".",authScript.src):new URL("./",location.href);
+}
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
@@ -599,9 +603,9 @@ function startSubscriptionMonitor(){
    const onProfile=location.pathname.endsWith('/profil.html');
    if(data.access_allowed===false){
     if(onProfile)document.body.classList.add('ib-subscription-required');
-    else location.replace(new URL('profil.html?abonnement=requis',location.href).href);
+    else location.replace(new URL('profil.html?abonnement=requis',appRootUrl()).href);
    }else if(onProfile&&document.body.classList.contains('ib-subscription-required')){
-    location.replace(new URL('index.html?abonnement=actif',location.href).href);
+    location.replace(new URL('index.html?abonnement=actif',appRootUrl()).href);
    }
   }catch(error){console.warn('Vérification périodique de l’abonnement indisponible.',error)}
  },60000);
@@ -772,7 +776,7 @@ async function validate(session){
   const isProfilePage=path.endsWith('/profil.html');
   document.body.classList.toggle('ib-subscription-required',subscriptionBlocked&&isProfilePage);
   if(subscriptionBlocked&&!isProfilePage){
-   location.replace(new URL('profil.html?abonnement=requis',location.href).href);
+   location.replace(new URL('profil.html?abonnement=requis',appRootUrl()).href);
    return;
   }
   document.body.classList.toggle('ib-unverified-comms',!isCertified&&!isSuperAdmin);
