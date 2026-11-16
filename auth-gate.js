@@ -409,9 +409,12 @@ function startRealtimePresence(){
   .subscribe(async status=>{
    if(channel!==realtimePresenceChannel)return;
    if(status==='SUBSCRIBED'){
-    presenceRetryAttempt=0;window.__ibPresenceRealtimeHealthy=true;
-    try{await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',online_at:new Date().toISOString()});publishRealtimePresence();}
-    catch(error){schedulePresenceReconnect(channel,error)}
+    window.__ibPresenceRealtimeHealthy=true;
+    try{
+     const tracked=await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',online_at:new Date().toISOString()});
+     if(tracked&&tracked!=='ok')throw new Error('Échec du suivi de présence : '+tracked);
+     presenceRetryAttempt=0;publishRealtimePresence();
+    }catch(error){schedulePresenceReconnect(channel,error)}
    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){schedulePresenceReconnect(channel,status)}
   });
 }
