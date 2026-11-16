@@ -139,7 +139,7 @@ function withTimeout(promise,ms,label){
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
 let client=window.inspecteurBotAuthClient||null;
-let me=null,myProfile=null,people=[],active=null,replyTarget=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map(),typingResetTimer=null,typingStopTimer=null,lastTypingSentAt=0;
+let me=null,myProfile=null,people=[],active=null,replyTarget=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,certificationRequestChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map(),typingResetTimer=null,typingStopTimer=null,lastTypingSentAt=0;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
@@ -213,13 +213,19 @@ async function init(authDetail={}){
  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},()=>refreshInbox())
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>{updateReadReceipt(payload.new);refreshInbox()})
  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setNotice('Connexion temps réel interrompue. Reconnexion automatique…');else if(status==='SUBSCRIBED')setNotice('')});
- profileChannel=client.channel('ib-profile-photos-'+me.id)
+ if(me.id===IB_SUPER_ADMIN_ID){
+  certificationRequestChannel=client.channel('ib-certification-requests-'+me.id)
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>{void refreshInbox()})
+   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'registration_requests'},()=>{void refreshInbox()})
+   .subscribe();
+ }
+  profileChannel=client.channel('ib-profile-photos-'+me.id)
  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{
   const changedId=payload.new?.id;
   if(changedId&&changedId!==me.id){void refreshDirectoryOnly()}
  }).subscribe();
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')void refreshAll()});
- window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);window.removeEventListener('inspecteurbot:presence-updated',onSharedPresenceUpdate);if(profileChannel)client.removeChannel(profileChannel);clearInterval(directoryRefreshTimer)});
+ window.addEventListener('pagehide',()=>{clearInterval(refreshTimer);window.removeEventListener('inspecteurbot:presence-updated',onSharedPresenceUpdate);if(profileChannel)client.removeChannel(profileChannel);if(certificationRequestChannel)client.removeChannel(certificationRequestChannel);clearInterval(directoryRefreshTimer)});
 }
 async function loadPeople(term='',onlyOnline=false){
  const {data,error}=await withTimeout(client.rpc('get_agent_directory',{search_text:term,online_only:onlyOnline}),12000,'annuaire des agents');
@@ -315,15 +321,34 @@ async function refreshAdminMessageArchive(){
 }
 async function refreshInbox(){
  if(!me)return;
- let data;
- try{data=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}),'historique des conversations')}
- catch(error){$('inbox').innerHTML='<div class="empty">Le chargement des conversations prend trop de temps. Vérifiez votre connexion puis réessayez.</div>';console.warn('Historique messagerie:',error);return}
+ let data,certificationCards='';
+ try{
+  data=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}),'historique des conversations');
+  if(me.id===IB_SUPER_ADMIN_ID){
+   const {data:requests,error}=await client.from('registration_requests').select('id,user_id,nom_complet,matricule,email,categorie,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(100);
+   if(error)throw error;
+   const requestIds=[...new Set((requests||[]).map(r=>r.user_id).filter(Boolean))];
+   let requestProfiles=[];
+   if(requestIds.length){
+    const result=await client.from('profiles').select('id,display_name,avatar_url').in('id',requestIds);
+    if(result.error)throw result.error;
+    requestProfiles=result.data||[];
+   }
+   const profileMap=new Map(requestProfiles.map(p=>[p.id,p]));
+   certificationCards=(requests||[]).map(r=>{
+    const p=profileMap.get(r.user_id)||{};
+    const label=p.display_name||r.nom_complet||r.email||'Demandeur';
+    return '<button class="person certification-request-person" data-certification-person="'+esc(r.user_id||'')+'" style="width:100%;text-align:left;border:1px solid #e8b85b;background:#fffaf0;border-radius:12px;padding:10px;margin:5px 0;display:flex;align-items:center;gap:10px;color:#243b53"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" src="'+esc(p.avatar_url||avatar(null))+'" alt=""></span><span class="person-info"><span class="person-name">🛡️ Demande de certification · '+esc(label)+'</span><span class="preview">Matricule : '+esc(r.matricule||'Non renseigné')+' · '+esc(r.email||'')+' · '+esc(new Date(r.created_at).toLocaleDateString('fr-FR'))+'</span><span class="preview" style="color:#946200;font-weight:700">Ouvrir la conversation pour répondre</span></span></button>';
+   }).join('');
+  }
+ }catch(error){$('inbox').innerHTML='<div class="empty">Le chargement des conversations ou demandes de certification a échoué. Vérifiez votre connexion puis actualisez.</div>';console.warn('Historique messagerie:',error);return}
  const latest=new Map(),unread=new Map();
  for(const msg of data){const other=msg.sender_id===me.id?msg.recipient_id:msg.sender_id;if(!latest.has(other))latest.set(other,msg);if(msg.recipient_id===me.id&&!msg.read_at)unread.set(other,(unread.get(other)||0)+1)}
  const ids=[...latest.keys()];
  const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent InspecteurBot',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((x,y)=>new Date(y.message.created_at)-new Date(x.message.created_at));
  const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
- $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
+ const conversationCards=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
+ $('inbox').innerHTML=certificationCards+conversationCards;
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne';$('chatStatus').classList.remove('typing')}
 function openProfilePhotoViewer(){
@@ -550,7 +575,28 @@ $('searchToggle').addEventListener('click',()=>{$('searchBox').classList.toggle(
 $('newMessage').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').focus()});
 $('searchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(e.target.value),250)});
 $('onlineStories').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p)}});
-$('inbox').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p);else loadPeople().then(list=>{people=list;const found=list.find(x=>x.id===b.dataset.person);if(found)openChat(found)})}});
+$('inbox').addEventListener('click',async e=>{
+ const request=e.target.closest('[data-certification-person]');
+ if(request){
+  if(me?.id!==IB_SUPER_ADMIN_ID)return;
+  const id=request.dataset.certificationPerson;
+  if(!id){toast('Cette demande ne possède pas de compte utilisateur relié.');return;}
+  request.disabled=true;
+  try{
+   let person=people.find(x=>x.id===id);
+   if(!person){
+    const {data,error}=await client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status').eq('id',id).maybeSingle();
+    if(error)throw error;if(!data)throw new Error('Profil du demandeur introuvable.');
+    person={...data,is_online:false};people=[...people,person];
+   }
+   await openChat(person);
+  }catch(error){toast(error.message||'Impossible d’ouvrir la conversation.');}
+  finally{request.disabled=false;}
+  return;
+ }
+ const b=e.target.closest('[data-person]');
+ if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p);else loadPeople().then(list=>{people=list;const found=list.find(x=>x.id===b.dataset.person);if(found)openChat(found)})}
+});
 $('closeChat').addEventListener('click',()=>{void sendTypingState(false);clearTimeout(typingStopTimer);clearTimeout(typingResetTimer);$('chat').classList.remove('open');document.body.classList.remove('conversation-open');active=null;if(conversationChannel){client.removeChannel(conversationChannel);conversationChannel=null}});
 $('chatAvatarButton').addEventListener('click',openProfilePhotoViewer);
 $('closeProfilePhotoViewer').addEventListener('click',closeProfilePhotoViewer);
