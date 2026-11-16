@@ -1149,6 +1149,7 @@ function renderEffectifBlock(kind, idx) {
 
     return {
       id: fields.record_id || uniqueId(),
+      ownerId: currentOwnerId(),
       code: CURRENT_CODE,
       savedAt: new Date().toISOString(),
       fields,
@@ -1205,26 +1206,75 @@ function renderEffectifBlock(kind, idx) {
     updateQR();
   }
 
+  function currentOwnerId() {
+    return String(window.inspecteurBotAuthUser?.id || "");
+  }
+
   function storageKey() {
-    return "InspecteurBotRDC:archives";
+    const ownerId = currentOwnerId();
+    return ownerId ? "InspecteurBotRDC:archives:" + ownerId : null;
   }
 
   function readArchives() {
+    const key = storageKey();
+    if (!key) return [];
     try {
-      return JSON.parse(localStorage.getItem(storageKey()) || "[]");
+      const rows = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(rows) ? rows.filter(row => row && row.ownerId === currentOwnerId()) : [];
     } catch {
       return [];
     }
   }
 
   function writeArchives(arr) {
-    localStorage.setItem(storageKey(), JSON.stringify(arr));
+    const key = storageKey();
+    const ownerId = currentOwnerId();
+    if (!key || !ownerId) throw new Error("Compte utilisateur non identifié. Connectez-vous avant d’enregistrer.");
+    localStorage.setItem(key, JSON.stringify(arr.filter(row => row && row.ownerId === ownerId)));
+  }
+
+  function validateRequiredFields() {
+    const form = document.getElementById("inspectionForm");
+    const missing = [];
+    let firstMissing = null;
+    const controls = [...form.querySelectorAll("[data-required='1'], [required]")];
+    const checkedRadioGroups = new Set();
+    controls.forEach(input => {
+      if (input.disabled || input.type === "hidden" || input.closest("[hidden]")) return;
+      let empty = false;
+      if (input.type === "radio") {
+        if (checkedRadioGroups.has(input.name)) return;
+        checkedRadioGroups.add(input.name);
+        empty = !form.querySelector('input[type="radio"][name="' + CSS.escape(input.name) + '"]:checked');
+      } else if (input.type === "checkbox") {
+        empty = !input.checked;
+      } else {
+        empty = !String(input.value || "").trim();
+      }
+      if (empty) {
+        firstMissing ||= input;
+        const label = input.closest(".seg")?.querySelector("span")?.textContent
+          || input.labels?.[0]?.textContent || input.name || "Champ obligatoire";
+        const clean = String(label).replace(/[:*]/g, "").trim();
+        if (!missing.includes(clean)) missing.push(clean);
+      }
+    });
+    if (!missing.length) return true;
+    alert("Enregistrement impossible. Veuillez compléter tous les champs obligatoires :\\n\\n• " + missing.join("\\n• "));
+    firstMissing?.scrollIntoView({ behavior: "smooth", block: "center" });
+    firstMissing?.focus({ preventScroll: true });
+    return false;
   }
 
   function saveData() {
+    if (!currentOwnerId()) {
+      alert("Votre compte n’est pas encore identifié. Attendez la fin de la connexion puis réessayez.");
+      return;
+    }
+    if (!validateRequiredFields()) return;
     const data = collectData();
     const archives = readArchives();
-    const existing = archives.find(x => x.id === data.id);
+    const existing = archives.find(x => x.id === data.id && x.ownerId === data.ownerId);
 
     const historyEntry = {
       at: new Date().toISOString(),
@@ -1264,6 +1314,10 @@ function renderEffectifBlock(kind, idx) {
   function renderArchiveList() {
     const list = document.getElementById("formArchiveList");
     if (!list) return;
+    if (!currentOwnerId()) {
+      list.innerHTML = "<p style='color:#64748b'>Connexion sécurisée en cours…</p>";
+      return;
+    }
     const rows = readArchives().slice().sort((a, b) => {
       const da = Date.parse(a.savedAt || a.createdAt || 0) || 0;
       const db = Date.parse(b.savedAt || b.createdAt || 0) || 0;
@@ -1555,6 +1609,7 @@ ${ai}
   initDefaults();
   exposeDashboardAPI();
   renderArchiveList();
+  window.addEventListener("inspecteurbot:authenticated", () => renderArchiveList());
   const archiveIdFromUrl = new URLSearchParams(location.search).get("archiveId");
   if (archiveIdFromUrl) {
     const archivedRecord = readArchives().find(x => x.id === archiveIdFromUrl && x.code === CURRENT_CODE);
