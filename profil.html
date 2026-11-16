@@ -141,7 +141,22 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
  <button id="ib-passkey-register" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Configurer mon empreinte digitale</button>
  <small style="display:block;margin-top:8px;color:#61768a">Activez une protection rapide avec l’empreinte digitale, la reconnaissance faciale ou le code PIN de votre appareil, selon ses capacités.</small>
 </div>
-<section id="ib-subscription-card" style="margin:14px 0 18px;padding:18px;border:1px solid #c8dce9;border-radius:14px;background:linear-gradient(135deg,#f6fbff,#eaf4fb)">
+
+<form id="editProfile" class="fields">
+ 
+<label class="field wide"><small>Adresse physique *</small><input id="editAddress" maxlength="300" autocomplete="street-address" required></label>
+<label class="field"><small>Téléphone *</small><input id="editPhone" type="tel" maxlength="40" autocomplete="tel" required></label>
+<label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
+<label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
+<label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
+<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="display:block;margin:10px 0 0;font-size:13px;line-height:1.55"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles sont affichées dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.</p></div>
+</form>
+</section>
+<div class="grid" id="mes-informations">
+<section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
+<section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
+<section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
+<section id="ib-subscription-card" style="margin:16px 0 0;padding:18px;border:1px solid #c8dce9;border-radius:14px;background:linear-gradient(135deg,#f6fbff,#eaf4fb)">
  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:24px">💳</span><div><strong style="display:block;color:#073b70;font-size:16px">Abonnement InspecteurBot</strong><small style="color:#58718a">Accès trimestriel aux outils et fonctionnalités de l’application</small></div></div>
  <div id="ib-subscription-status" role="status" aria-live="polite" style="padding:11px 12px;border-radius:9px;background:#fff;color:#294760;font-size:13px;line-height:1.6">Chargement de votre statut d’abonnement…</div>
  <div id="ib-subscription-payment" hidden style="margin-top:14px">
@@ -159,22 +174,9 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
    <button id="ib-subscription-submit" type="submit" style="width:100%;margin-top:13px;padding:13px;border:0;border-radius:9px;background:#075b91;color:#fff;font-weight:800">Envoyer ma preuve de paiement</button>
   </form>
  </div>
- <small style="display:block;margin-top:10px;color:#71859a;font-size:11px;line-height:1.5">L’administrateur ne demande jamais votre code PIN M-Pesa. Ne communiquez jamais votre PIN ni un code secret.</small>
+ <small style="display:block;margin-top:10px;color:#58718a;font-size:12px;line-height:1.65">L’administrateur ne demande jamais votre code PIN M-Pesa. Le nom du compte M-Pesa qui apparaîtra lors de la confirmation de votre paiement est <strong>Limengo Daniel</strong>. Ne communiquez jamais votre PIN ni aucun code secret.</small>
+ <button id="ib-subscription-refresh" type="button" style="margin-top:10px;padding:9px 12px;border:1px solid #c8dce9;border-radius:8px;background:#fff;color:#075b91;font-weight:700;font-size:12px">Actualiser le statut de mon abonnement</button>
 </section>
-<form id="editProfile" class="fields">
- 
-<label class="field wide"><small>Adresse physique *</small><input id="editAddress" maxlength="300" autocomplete="street-address" required></label>
-<label class="field"><small>Téléphone *</small><input id="editPhone" type="tel" maxlength="40" autocomplete="tel" required></label>
-<label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
-<label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
-<label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
-<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="display:block;margin:10px 0 0;font-size:13px;line-height:1.55"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles sont affichées dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.</p></div>
-</form>
-</section>
-<div class="grid" id="mes-informations">
-<section><h2>🔐 Informations du compte</h2><div class="fields" id="account"></div></section>
-<section><h2>📇 Coordonnées personnelles</h2><div class="fields" id="contact"></div></section>
-<section class="wide"><h2>🏛️ Informations professionnelles IGT</h2><div class="fields" id="professional"></div></section>
 <section class="wide admin-tools" id="admin-tools" hidden><h2><i class="fa-solid fa-user-shield"></i> Espace administrateur</h2><p class="doc-help">Accédez aux outils autorisés pour votre rôle.</p><div class="admin-links" id="admin-links"></div></section>
 <section id="documents" class="wide">
 <h2>📁 Mes documents personnels</h2>
@@ -264,7 +266,7 @@ async function setupSubscriptionPanel(){
    const {data,error}=await client.functions.invoke('igt-subscriptions',{body:{action:'status'}});
    if(error||!data?.success)throw new Error(data?.message||error?.message||'Vérification impossible.');
    if(data.is_admin){status.textContent='Compte administrateur : abonnement gratuit et accès permanent à toutes les fonctionnalités.';return;}
-   if(!data.billing_enabled){status.textContent='Le tarif est de 4 USD pour 3 mois. La facturation commencera le 5 mars 2027. Aucun paiement n’est demandé avant cette date. Votre accès reste entièrement ouvert jusque-là.';return;}
+   if(!data.billing_enabled){status.textContent='MODE GRATUIT — InspecteurBot reste entièrement accessible à tous les utilisateurs jusqu’au 4 mars 2027 inclus. L’abonnement trimestriel de 4 USD débutera le 5 mars 2027. Aucun paiement n’est demandé pour le moment.';return;}
    if(data.payment_pending){
     status.textContent=data.status==='active'
      ?'Votre abonnement reste actif. Une demande de renouvellement est déjà en attente de vérification par l’administration.'
@@ -273,7 +275,7 @@ async function setupSubscriptionPanel(){
    }
    if(data.access_allowed&&data.status==='active'){
     const end=data.current_period_end?new Date(data.current_period_end).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric',timeZone:'Africa/Kinshasa'}):'—';
-    status.textContent='Abonnement actif jusqu’au '+end+'. Vous avez accès à tous les menus et fonctionnalités. Vous pouvez aussi renouveler à l’avance : le prochain trimestre commencera à la date d’expiration actuelle.';
+    status.textContent='ABONNEMENT ACTIF — Votre accès complet est garanti jusqu’au '+end+'. Prochaine date de renouvellement : '+end+'. Tout paiement trimestriel validé ajoute 3 mois à votre période d’accès. Vous pouvez renouveler à l’avance : la nouvelle période commencera à la date d’expiration actuelle.';
     payment.hidden=false;return;
    }
    status.textContent='Votre abonnement n’est pas actif. Pour retrouver l’accès à tous les menus, réglez 4 USD par M-Pesa au 0827563163, puis envoyez la référence de la transaction ci-dessous.';
@@ -291,6 +293,8 @@ async function setupSubscriptionPanel(){
   }catch(err){status.textContent=err?.message||'Impossible d’envoyer la référence. Réessayez.';}
   finally{button.disabled=false;button.textContent='Envoyer ma preuve de paiement';}
  });
+ const refreshButton=$('ib-subscription-refresh');
+ if(refreshButton)refreshButton.addEventListener('click',async()=>{refreshButton.disabled=true;refreshButton.textContent='Actualisation…';await refresh();refreshButton.disabled=false;refreshButton.textContent='Actualiser le statut de mon abonnement';});
  await refresh();
 }
 const fields=[
