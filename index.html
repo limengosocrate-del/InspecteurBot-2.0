@@ -397,15 +397,15 @@ html,body{max-width:100%;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scro
 .datetime-box{position:absolute!important;z-index:4!important;top:16px!important;right:20px!important;left:auto!important;bottom:auto!important;width:auto!important;max-width:48%;padding:0!important;margin:0!important;display:block!important;text-align:right!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;color:#fff!important}
 .datetime-top,.datetime-day,.datetime-date,.datetime-weather{display:block!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:right!important;color:#fff!important}
 .datetime-top strong,#clock{display:block;font-size:24px!important;line-height:1.15!important;font-weight:700!important;letter-spacing:.2px!important;color:#fff!important;text-shadow:0 1px 5px #000b}
-.datetime-day{display:block!important;font-size:12px!important;line-height:1.4!important;font-weight:700!important;color:#fff!important;text-shadow:0 1px 4px #000b}
-.datetime-date,#date{display:block!important;font-size:12px!important;line-height:1.45!important;min-height:1.45em!important;color:#fff!important;text-shadow:0 1px 4px #000b}
-.datetime-weather{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:5px!important;margin-top:3px!important;font-size:10px!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-day{display:block!important;font-size:12px!important;line-height:1.15!important;font-weight:700!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-date,#date{display:block!important;font-size:12px!important;line-height:1.15!important;min-height:0!important;color:#fff!important;text-shadow:0 1px 4px #000b}
+.datetime-weather{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:4px!important;margin-top:1px!important;font-size:10px!important;color:#fff!important;text-shadow:0 1px 4px #000b}
 .datetime-weather strong,#weather{font-size:12px!important;font-weight:700!important;color:#fff!important}
 .datetime-weather span,#city{font-size:10px!important;color:#fff!important}
 .slider img,.menu-index a,.quick-card{animation:none!important}
 .menu-index a,.quick-card{transition:background-color .15s ease,border-color .15s ease!important;box-shadow:0 3px 10px rgba(0,0,0,.16)!important}
 .menu-index a::before,.quick-card::before{display:none!important}
-@media(max-width:520px){.banner{height:340px;min-height:340px}.datetime-box{top:12px!important;right:13px!important;max-width:60%}.datetime-top strong,#clock{font-size:21px!important;line-height:1.2!important}.datetime-day{font-size:11px!important;line-height:1.4!important}.datetime-date,#date{font-size:11px!important;line-height:1.45!important;min-height:1.45em!important}.datetime-weather span,#city{font-size:10px!important;line-height:1.35!important}}
+@media(max-width:520px){.banner{height:340px;min-height:340px}.datetime-box{top:12px!important;right:13px!important;max-width:60%}.datetime-top strong,#clock{font-size:21px!important;line-height:1.2!important}.datetime-day{font-size:11px!important;line-height:1.15!important}.datetime-date,#date{font-size:11px!important;line-height:1.15!important;min-height:0!important}.datetime-weather span,#city{font-size:10px!important;line-height:1.35!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* Alerte prioritaire de certification affichée sous le menu Utilisateur. */
@@ -815,11 +815,8 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
         }  
   
         if (date) {  
-            date.textContent = now.toLocaleDateString("fr-FR", {  
-                day: "2-digit",  
-                month: "long",  
-                year: "numeric"  
-            });  
+            const mois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+            date.textContent = String(now.getDate()).padStart(2, "0") + "." + mois[now.getMonth()] + "." + now.getFullYear();  
         }  
     }  
   
