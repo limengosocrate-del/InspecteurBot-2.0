@@ -1511,12 +1511,14 @@ function openArchive(id) {
   document.getElementById('mOrder').value = item.order || '';
   document.getElementById('mGroup').value = item.group || '';
   document.getElementById('mRole').value = item.role || '';
-  document.getElementById('mParticipantCount').value = Array.isArray(item.participants)?item.participants.length:1; renderParticipantFields();
-  if(Array.isArray(item.participants))Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).forEach((card,i)=>{card.querySelector('[data-participant-name]').value=item.participants[i]?.name||'';card.querySelector('[data-participant-role]').value=item.participants[i]?.role||''});
+  const legacyParticipants=Array.isArray(item.participants)?item.participants:String(item.participants||'').split('\\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),role:(parts[1]||'').trim()}});
+  document.getElementById('mParticipantCount').value=Math.max(1,legacyParticipants.length);renderParticipantFields();
+  Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).forEach((card,i)=>{card.querySelector('[data-participant-name]').value=legacyParticipants[i]?.name||'';card.querySelector('[data-participant-role]').value=legacyParticipants[i]?.role||''});
   document.getElementById('mObjective').value = item.objective || '';
   document.getElementById('mMatter').value = item.matter || '';
-  document.getElementById('mCompanyCount').value = Array.isArray(item.companies)?item.companies.length:1; renderCompanyFields();
-  if(Array.isArray(item.companies))Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=item.companies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
+  const legacyCompanies=Array.isArray(item.companies)?item.companies:String(item.companies||'').split('\\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),sector:(parts[1]||'').trim()}});
+  document.getElementById('mCompanyCount').value=Math.max(1,legacyCompanies.length);renderCompanyFields();
+  Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=legacyCompanies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
   document.getElementById('mAddresses').value = item.addresses || '';
   document.getElementById('mPhone').value = item.phone || '';
   document.getElementById('mObservations').value = item.observations || '';
