@@ -451,6 +451,9 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 .ib-app-grid a:active{background:#ffffff20}
 @media(max-width:600px){.ib-app-launcher{width:calc(100% - 20px)}.ib-app-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.ib-app-grid a{min-height:76px;padding:10px 5px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ib-app-grid a{transition:none}}
+/* Fenêtre PWA avec commandes Windows superposées : réserve la zone système. */
+@media (display-mode: window-controls-overlay){body{padding-top:var(--ib-titlebar-height,env(titlebar-area-height,0px))!important}}
+
 </style>
 </head>  
   
@@ -539,6 +542,11 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
     <a href="office.html?v=20261111-office-local-v2">
         <i class="fa-solid fa-briefcase"></i>
         <span>Office</span>
+    </a>
+
+    <a href="notes.html">
+        <i class="fa-solid fa-note-sticky"></i>
+        <span>Bloc-notes</span>
     </a>
 
     <a href="profil.html?v=20261112-profile-cert-lock-v1">
@@ -862,6 +870,9 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
 
 
 
+<script>
+(()=>{const overlay=navigator.windowControlsOverlay;if(!overlay)return;const update=()=>{try{const rect=overlay.getTitlebarAreaRect?.();if(rect&&Number.isFinite(rect.height))document.documentElement.style.setProperty('--ib-titlebar-height',Math.max(0,rect.height)+'px')}catch(_){}};update();overlay.addEventListener?.('geometrychange',update)})();
+</script>
 </body>  
   
 </html>
