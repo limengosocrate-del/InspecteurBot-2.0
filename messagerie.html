@@ -87,6 +87,45 @@ body.conversation-open .fab{display:none!important}
 .group-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 .group-actions button{border:0;border-radius:12px;padding:11px 15px;font-weight:700}
 .group-cancel{background:#44464d;color:white}.group-submit{background:#0866ff;color:white}
+
+/* Défilement tactile fiable de la liste de messagerie sur Android/WebView. */
+html{
+ min-height:100%!important;
+ height:auto!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+}
+body{
+ min-height:100vh!important;
+ min-height:100dvh!important;
+ height:auto!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ -webkit-overflow-scrolling:touch!important;
+ overscroll-behavior-y:auto;
+ touch-action:pan-y;
+}
+body.conversation-open{
+ height:100dvh!important;
+ overflow:hidden!important;
+ touch-action:auto;
+}
+.wrap{
+ height:auto!important;
+ min-height:calc(100dvh - 66px)!important;
+ overflow:visible!important;
+}
+.inbox,#ib-admin-message-archive{
+ overflow:visible!important;
+ touch-action:pan-y;
+}
+.topnav{flex-shrink:0}
+.stories,.group-list{touch-action:pan-x pan-y}
+.chatbody{
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+ overscroll-behavior-y:contain!important;
+}
 </style>
 </head>
 <body>
