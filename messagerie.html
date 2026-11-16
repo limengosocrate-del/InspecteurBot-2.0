@@ -110,7 +110,7 @@ body.conversation-open .fab{display:none!important}
 <section class="chat" id="chat" aria-label="Conversation">
 <header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><button type="button" class="avatar-open" id="chatAvatarButton" aria-label="Agrandir la photo de profil" title="Voir la photo en grand"><span class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></span></button><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
 <div class="chatbody" id="chatBody"><div class="empty">Ouvrez une conversation</div></div>
-<form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="10000" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
+<div id="replyComposerPreview" hidden style="padding:8px 14px;background:#34363c;color:#fff;border-left:3px solid #4aa3ff;display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="min-width:0"><strong style="display:block;font-size:12px;color:#8fc8ff">Réponse à</strong><span id="replyComposerText" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px"></span></div><button type="button" id="cancelReply" aria-label="Annuler la réponse" style="border:0;background:transparent;color:#fff;font-size:20px">×</button></div><form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="10000" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
 </section>
 <div id="profilePhotoViewer" class="photo-viewer" hidden role="dialog" aria-modal="true" aria-label="Photo de profil agrandie">
   <button type="button" class="photo-close" id="closeProfilePhotoViewer" aria-label="Fermer la photo"><i class="fa-solid fa-xmark"></i></button>
@@ -127,7 +127,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-photo-viewer-typing-v38"></script>
+<script src="./auth-gate.js?v=20261116-replies-reactions-v39"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -139,7 +139,7 @@ function withTimeout(promise,ms,label){
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
 let client=window.inspecteurBotAuthClient||null;
-let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map(),typingResetTimer=null,typingStopTimer=null,lastTypingSentAt=0;
+let me=null,myProfile=null,people=[],active=null,replyTarget=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map(),typingResetTimer=null,typingStopTimer=null,lastTypingSentAt=0;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
@@ -372,7 +372,7 @@ async function openChat(person){
  await loadConversation();
 }
 async function loadConversation(){
- const personId=active.id,columns='id,sender_id,recipient_id,content,read_at,created_at';
+ const personId=active.id,columns='id,sender_id,recipient_id,content,read_at,created_at,reply_to_id';
  try{
   const [sent,received]=await Promise.all([
    fetchAllMessageRows(()=>client.from('messages').select(columns).eq('sender_id',me.id).eq('recipient_id',personId).order('created_at',{ascending:true}),'messages envoyés'),
@@ -425,11 +425,54 @@ function appendMessage(m){
  if(m.sender_id===me.id){
   const receipt=document.createElement('span');receipt.className='read-receipt';setReceiptState(receipt,m.recipient_id,!!m.read_at);meta.append(receipt);
  }
- el.append(text,meta);$('chatBody').append(el);scrollChat();
+ if(m.reply_to_id){const quoted=document.createElement('div');quoted.className='message-quote';quoted.style.cssText='border-left:3px solid #8fc8ff;background:#00000018;padding:6px 9px;margin-bottom:7px;border-radius:5px;font-size:12px;opacity:.9';quoted.textContent='Message cité';el.append(quoted);client.from('messages').select('content').eq('id',m.reply_to_id).maybeSingle().then(({data})=>{if(data)quoted.textContent=String(data.content||'Message cité').slice(0,180)});}
+ const actions=document.createElement('div');actions.className='message-actions';actions.style.cssText='display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12px';
+ const replyBtn=document.createElement('button');replyBtn.type='button';replyBtn.textContent='↩ Répondre';replyBtn.style.cssText='border:0;background:transparent;color:inherit;opacity:.85;padding:2px 4px';replyBtn.addEventListener('click',()=>setReplyTarget(m));actions.append(replyBtn);
+ const reactBtn=document.createElement('button');reactBtn.type='button';reactBtn.textContent='😊 Réagir';reactBtn.style.cssText='border:0;background:transparent;color:inherit;opacity:.85;padding:2px 4px';reactBtn.addEventListener('click',()=>showReactionPicker(el,m));actions.append(reactBtn);
+ el.append(text,actions,meta);$('chatBody').append(el);loadMessageReactions(m.id,el);scrollChat();
  if(m.recipient_id===me.id&&!m.read_at){
   client.from('messages').update({read_at:new Date().toISOString()}).eq('id',m.id).then(({error})=>{if(error)console.warn('Confirmation de lecture indisponible',error);else refreshInbox()});
  }
 }
+
+function setReplyTarget(message){
+ replyTarget=message;
+ $('replyComposerText').textContent=String(message.content||'').slice(0,180);
+ $('replyComposerPreview').hidden=false;
+ $('messageInput').focus();
+}
+function clearReplyTarget(){replyTarget=null;$('replyComposerPreview').hidden=true;$('replyComposerText').textContent=''}
+$('cancelReply').addEventListener('click',clearReplyTarget);
+function showReactionPicker(el,message){
+ document.querySelectorAll('.reaction-picker').forEach(x=>x.remove());
+ const picker=document.createElement('div');picker.className='reaction-picker';picker.style.cssText='display:flex;gap:7px;flex-wrap:wrap;padding:7px;margin-top:6px;background:#15171b;border-radius:20px;width:max-content;max-width:100%';
+ ['👍','❤️','😂','😮','😢','🙏','👏','🔥'].forEach(emoji=>{
+  const b=document.createElement('button');b.type='button';b.textContent=emoji;b.style.cssText='border:0;background:#ffffff18;border-radius:50%;width:34px;height:34px;font-size:19px';
+  b.addEventListener('click',()=>toggleMessageReaction(message,emoji,el,picker));picker.append(b);
+ });
+ el.append(picker);
+}
+async function toggleMessageReaction(message,emoji,el,picker){
+ try{
+  const {data,error}=await client.from('message_reactions').select('id').eq('message_id',message.id).eq('user_id',me.id).eq('emoji',emoji).maybeSingle();
+  if(error)throw error;
+  if(data){const removed=await client.from('message_reactions').delete().eq('id',data.id);if(removed.error)throw removed.error;}
+  else {const added=await client.from('message_reactions').insert({message_id:message.id,user_id:me.id,emoji});if(added.error)throw added.error;}
+  picker.remove();await loadMessageReactions(message.id,el);
+ }catch(error){console.warn('Réaction indisponible:',error);toast('Impossible d’enregistrer cette réaction. Vérifiez les autorisations.');}
+}
+async function loadMessageReactions(messageId,el){
+ try{
+  const {data,error}=await client.from('message_reactions').select('emoji,user_id').eq('message_id',messageId);
+  if(error)throw error;
+  let strip=el.querySelector('.message-reactions');
+  if(!strip){strip=document.createElement('div');strip.className='message-reactions';strip.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin-top:5px';el.append(strip);}
+  const groups=new Map();(data||[]).forEach(r=>{const x=groups.get(r.emoji)||{count:0,mine:false};x.count++;if(r.user_id===me.id)x.mine=true;groups.set(r.emoji,x)});
+  strip.innerHTML='';
+  groups.forEach((v,emoji)=>{const b=document.createElement('button');b.type='button';b.textContent=emoji+' '+v.count;b.title=v.mine?'Retirer votre réaction':'Réagir avec '+emoji;b.style.cssText='border:1px solid '+(v.mine?'#58a9ff':'#ffffff30')+';background:'+(v.mine?'#14538a':'#ffffff12')+';color:inherit;border-radius:14px;padding:2px 7px;font-size:12px';b.addEventListener('click',()=>toggleMessageReaction({id:messageId},emoji,el,b.parentElement));strip.append(b)});
+ }catch(error){console.warn('Chargement des réactions:',error)}
+}
+
 function scrollChat(){$('chatBody').scrollTop=$('chatBody').scrollHeight}
 function onIncoming(m){if(active?.id===m.sender_id){appendMessage(m)}else toast('Nouveau message reçu');refreshInbox()}
 async function sendMessage(e){
@@ -439,13 +482,13 @@ async function sendMessage(e){
  const recipientId=active.id;
  $('sendButton').disabled=true;
  try{
-  const {data,error}=await client.from('messages').insert({sender_id:me.id,recipient_id:recipientId,content}).select('id,sender_id,recipient_id,content,read_at,created_at').single();
+  const {data,error}=await client.from('messages').insert({sender_id:me.id,recipient_id:recipientId,content,reply_to_id:replyTarget?.id||null}).select('id,sender_id,recipient_id,content,read_at,created_at,reply_to_id').single();
   if(error){
    console.error('Échec de l’envoi du message Supabase:',{code:error.code,message:error.message,details:error.details,hint:error.hint});
    toast(error.code==='42501'?'Envoi refusé par les autorisations. Reconnectez-vous puis réessayez.':'Message non envoyé. Vérifiez votre connexion et réessayez.');
    return;
   }
-  input.value='';input.style.height='44px';void sendTypingState(false);appendMessage(data);await refreshInbox();
+  input.value='';input.style.height='44px';clearReplyTarget();void sendTypingState(false);appendMessage(data);await refreshInbox();
  }catch(error){
   console.error('Erreur réseau pendant l’envoi:',error);
   toast('Connexion interrompue : votre message n’a pas été envoyé.');
