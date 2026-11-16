@@ -138,6 +138,8 @@ function authReady(e){
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+currentUser.id},()=>{void loadInbox(true)})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'recipient_id=eq.'+currentUser.id},()=>{void loadInbox(true)})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{if(payload.new?.certification_status==='certified'){void loadCertification(true);void loadUsers();}})
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},()=>{void loadInbox(true);void loadCertification(true);})
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'registration_requests'},()=>{void loadInbox(true);void loadCertification(true);})
   .subscribe();
  window.addEventListener('pagehide',()=>{if(adminMessagesChannel)client.removeChannel(adminMessagesChannel)});
 }
@@ -171,8 +173,66 @@ $('message-person-search').addEventListener('input',renderMessagePeople);
 async function fetchMessageRecipientIds(mode){if(mode==='individual'){const id=$('message-person').value;if(!id||!users.some(u=>u.id===id&&u.role==='agent'))throw new Error('Recherchez et sélectionnez un membre.');return [id];}if(mode==='selected'){const ids=users.filter(u=>u.role==='agent'&&u.is_active&&selected.has(u.id)).map(u=>u.id);if(!ids.length)throw new Error('Sélectionnez au moins un membre dans l’annuaire.');return [...new Set(ids)];}const ids=[];let from=0;const size=500;while(true){let q=client.from('profiles').select('id').eq('role','agent').eq('is_active',true);if(mode==='certified')q=q.eq('certification_status','certified');else if(mode==='uncertified')q=q.or('certification_status.is.null,certification_status.neq.certified');const {data,error}=await q.order('id').range(from,from+size-1);if(error)throw error;const rows=data||[];ids.push(...rows.map(x=>x.id));if(rows.length<size)break;from+=size;}return [...new Set(ids)];}
 $('send-message').addEventListener('click',async()=>{const content=$('message-content').value.trim(),mode=$('message-mode').value;if(!content){status('message-feedback','Rédigez votre message avant de l’envoyer.');return;}const btn=$('send-message');btn.disabled=true;try{const recipients=await fetchMessageRecipientIds(mode);if(!recipients.length)throw new Error('Aucun destinataire ne correspond à cette sélection.');const labels={all:'à tous les comptes agents',certified:'à tous les membres certifiés',uncertified:'à tous les membres non certifiés',individual:'au membre sélectionné',selected:'aux membres sélectionnés'};if(!confirm('Confirmer l’envoi '+labels[mode]+' ('+recipients.length+' destinataire(s)) ?'))return;let sent=0;try{for(let i=0;i<recipients.length;i+=100){const rows=recipients.slice(i,i+100).map(id=>({sender_id:currentUser.id,recipient_id:id,content}));const {error}=await client.from('messages').insert(rows);if(error)throw error;sent+=rows.length;}}catch(sendError){status('message-feedback','Envoi partiel : '+sent+' message(s) transmis sur '+recipients.length+'. Erreur : '+(sendError.message||'échec Supabase'),false);return;}$('message-content').value='';$('message-mode').value='all';$('message-person-fields').classList.add('hidden');$('message-person-search').value='';status('message-feedback','Communication envoyée avec succès à '+sent+' membre(s).',true);await loadInbox(true);}catch(err){status('message-feedback','Envoi impossible : '+(err.message||'vérifiez la connexion et réessayez.'),false);}finally{btn.disabled=false;}});
 
-async function loadInbox(quiet=false){if(!client||!currentUser)return;const boxes=[$('inbox-list'),$('dashboard-inbox')];boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">Chargement des messages…</div>';});try{const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at,read_at').eq('recipient_id',currentUser.id).order('created_at',{ascending:false}).limit(100);if(error)throw error;const rows=data||[];const missing=[...new Set(rows.map(m=>m.sender_id).filter(id=>!users.some(u=>u.id===id)))];let extra=[];if(missing.length){const lookup=await client.from('profiles').select('id,display_name').in('id',missing);if(!lookup.error)extra=lookup.data||[];}const names=new Map([...users.map(u=>[u.id,u.display_name||u.email]),...extra.map(u=>[u.id,u.display_name])]);const html=rows.map(m=>'<article class="message-item"><div class="message-meta"><b>'+esc(names.get(m.sender_id)||'Membre InspecteurBot')+'</b><span>'+esc(new Date(m.created_at).toLocaleString('fr-FR'))+'</span></div><p>'+esc(m.content)+'</p><div class="actions"><button class="btn light" data-reply="'+esc(m.sender_id)+'">Répondre</button></div></article>').join('')||'<div class="empty">Aucun message reçu pour le moment.</div>';boxes.forEach(b=>{if(b)b.innerHTML=html;});const unread=rows.filter(m=>!m.read_at).map(m=>m.id);if(unread.length){const marked=await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);if(marked.error)console.warn('Marquage des messages lus:',marked.error);}}catch(e){boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">'+esc(e.message)+'</div>';});if(!quiet)status('global-feedback','Lecture des messages impossible : '+e.message);}}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-reply]');if(!b)return;selected.clear();selected.add(b.dataset.reply);$('message-mode').value='selected';view('messages');status('message-feedback','Réponse préparée. Vérifiez le destinataire avant l’envoi.',true);});
+async function loadInbox(quiet=false){
+ if(!client||!currentUser)return;
+ const boxes=[$('inbox-list'),$('dashboard-inbox')];
+ boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">Chargement des messages et demandes…</div>';});
+ try{
+  const [messageResult,requestResult]=await Promise.all([
+   client.from('messages').select('id,sender_id,recipient_id,content,created_at,read_at').eq('recipient_id',currentUser.id).order('created_at',{ascending:false}).limit(100),
+   client.from('registration_requests').select('id,user_id,nom_complet,categorie,matricule,email,statut,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(200)
+  ]);
+  if(messageResult.error)throw messageResult.error;if(requestResult.error)throw requestResult.error;
+  const rows=messageResult.data||[],requests=requestResult.data||[];
+  const ids=[...new Set([...rows.map(m=>m.sender_id),...requests.map(r=>r.user_id)].filter(Boolean))];
+  const missing=ids.filter(id=>!users.some(u=>u.id===id));let extra=[];
+  if(missing.length){const lookup=await client.from('profiles').select('id,display_name,avatar_url,certification_status').in('id',missing);if(!lookup.error)extra=lookup.data||[];}
+  const names=new Map([...users.map(u=>[u.id,u.display_name||u.email]),...extra.map(u=>[u.id,u.display_name])]);
+  const profileById=new Map(extra.map(p=>[p.id,p]));
+  const requestCards=requests.map(r=>{
+   const p=profileById.get(r.user_id)||users.find(u=>u.id===r.user_id)||{};
+   const photo=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="" style="width:42px;height:42px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:9px">':'<span style="display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#e7edf5;color:#456;margin-right:9px"><i class="fa-solid fa-user"></i></span>';
+   const reply=r.user_id?'<button class="btn light" data-reply="'+esc(r.user_id)+'"><i class="fa-solid fa-reply"></i> Répondre</button>':'';
+   return '<article class="message-item" style="border-left:4px solid #e3a008;background:#fffaf0"><div class="message-meta"><b style="color:#8a5600"><i class="fa-solid fa-shield-halved"></i> Nouvelle demande de certification</b><span>'+esc(new Date(r.created_at).toLocaleString('fr-FR'))+'</span></div><p style="display:flex;align-items:center;flex-wrap:wrap;color:#18324a">'+photo+'<span><b>'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small>Matricule : '+esc(r.matricule||'Non renseigné')+' · '+esc(categoryNames[r.categorie]||r.categorie)+'</small></span></p><div class="actions">'+reply+'<button class="btn green" data-cert-open="'+esc(r.id)+'"><i class="fa-solid fa-clipboard-check"></i> Examiner / Certifier</button><button class="btn red" data-cert-reject="'+esc(r.id)+'"><i class="fa-solid fa-ban"></i> Rejeter</button></div></article>';
+  }).join('');
+  const messageCards=rows.map(m=>{
+   const isRequest=String(m.content||'').startsWith('[CERTIFICATION_REQUEST:');
+   const body=isRequest?String(m.content).replace(/^\[CERTIFICATION_REQUEST:\d+\]\s*/,''):m.content;
+   const requestId=(String(m.content||'').match(/^\[CERTIFICATION_REQUEST:(\d+)\]/)||[])[1]||'';
+   return '<article class="message-item"><div class="message-meta"><b>'+esc(names.get(m.sender_id)||'Membre InspecteurBot')+'</b><span>'+esc(new Date(m.created_at).toLocaleString('fr-FR'))+'</span></div><p>'+esc(body)+'</p><div class="actions"><button class="btn light" data-reply="'+esc(m.sender_id)+'">Répondre</button>'+(isRequest?'<button class="btn green" data-cert-open="'+esc(requestId)+'">Examiner la certification</button>':'')+'</div></article>';
+  }).join('');
+  const html=requestCards+messageCards||'<div class="empty">Aucune demande ni aucun message reçu.</div>';
+  boxes.forEach(b=>{if(b)b.innerHTML=html;});
+  const unread=rows.filter(m=>!m.read_at).map(m=>m.id);
+  if(unread.length){const marked=await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);if(marked.error)console.warn('Marquage des messages lus:',marked.error);}
+ }catch(err){boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">'+esc(err.message)+'</div>';});if(!quiet)status('global-feedback','Lecture des messages impossible : '+err.message);}
+}
+document.addEventListener('click',async e=>{
+ const open=e.target.closest('[data-cert-open]');
+ if(open){
+  const requestId=String(open.dataset.certOpen||'');
+  view('certification');await loadCertification(true);
+  const row=$('certification-body').querySelector('[data-cert-row="'+requestId+'"]');
+  if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.style.outline='3px solid #f0bd38';setTimeout(()=>row.style.outline='',2500);}
+  return;
+ }
+ const reject=e.target.closest('[data-cert-reject]');
+ if(reject){
+  const id=Number(reject.dataset.certReject);
+  const request=await client.from('registration_requests').select('id,user_id,nom_complet').eq('id',id).maybeSingle();
+  if(request.error||!request.data){status('global-feedback','Demande introuvable ou inaccessible.');return;}
+  const note=prompt('Motif du rejet (facultatif) :')||'';
+  if(!confirm('Confirmer le rejet de la demande de '+request.data.nom_complet+' ?'))return;
+  reject.disabled=true;
+  try{
+   const {data,error}=await client.rpc('admin_set_profile_certification',{p_request_id:id,p_agent_id:null,p_decision:'reject',p_note:note.trim()||null});
+   if(error)throw error;if(!data?.success)throw new Error(data?.message||'Décision non confirmée.');
+   status('global-feedback','Demande rejetée. Le demandeur sera informé.',true);
+   await Promise.all([loadInbox(true),loadCertification(true)]);
+  }catch(err){status('global-feedback',err.message||'Rejet impossible.');reject.disabled=false;}
+  return;
+ }
+ const b=e.target.closest('[data-reply]');if(!b)return;selected.clear();selected.add(b.dataset.reply);$('message-mode').value='selected';view('messages');status('message-feedback','Réponse préparée. Vérifiez le destinataire avant l’envoi.',true);});
 $('refresh-inbox').addEventListener('click',()=>loadInbox());$('dashboard-inbox-refresh').addEventListener('click',()=>loadInbox());
 async function loadLogs(){if(!client)return;$('logs-list').innerHTML='<div class="empty">Chargement…</div>';try{const {data,error}=await client.from('admin_logs').select('action,details,created_at,target_user_id').order('created_at',{ascending:false}).limit(100);if(error)throw error;$('logs-list').innerHTML=(data||[]).map(x=>'<article class="message-item"><div class="message-meta"><b>'+esc(x.action)+'</b><span>'+esc(new Date(x.created_at).toLocaleString('fr-FR'))+'</span></div><p>'+esc(JSON.stringify(x.details||{}))+'</p></article>').join('')||'<div class="empty">Aucune opération enregistrée.</div>';}catch(e){$('logs-list').innerHTML='<div class="empty">'+esc(e.message)+'</div>';}}
 $('load-logs').addEventListener('click',loadLogs);
@@ -288,7 +348,7 @@ function renderCertification(){
   const blockers=[];if(!p?.avatar_url)blockers.push('Photo manquante');
   const certifyDisabled=(!r.user_id||!p?.avatar_url||certificationActionsInFlight.has(String(id)))?'disabled':'';
   const rejectDisabled=(!r.user_id||certificationActionsInFlight.has(String(id)))?'disabled':'';
-  return '<tr><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Rechercher par nom ou matricule"></td><td><select class="field" style="min-width:280px;max-width:320px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+certifyDisabled+' title="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'" aria-label="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'"><i class="fa-solid fa-shield-halved"></i> Certifier</button><button class="btn red" data-reject="'+id+'" '+rejectDisabled+'><i class="fa-solid fa-ban"></i> Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+(blockers.length?'<small style="display:block;color:#b42318;font-weight:600;margin-top:5px">'+esc(blockers.join(' · '))+'</small>':'')+'</td></tr>';
+  return '<tr data-cert-row="'+esc(id)+'"><td>'+person+'</td><td>'+esc(categoryNames[r.categorie]||r.categorie)+'</td><td>'+esc(r.matricule||'Non fourni')+'<br><small class="muted">'+esc(r.verification_status||'à vérifier')+'</small></td><td><input class="field" style="width:190px" type="search" data-cert-search="'+id+'" value="'+esc(q0)+'" placeholder="Rechercher par nom ou matricule"></td><td><select class="field" style="min-width:280px;max-width:320px" data-cert-agent="'+id+'">'+options+'</select></td><td><textarea class="field" style="min-width:180px;min-height:58px" data-cert-note="'+id+'" placeholder="Motif si identité différente"></textarea></td><td><div class="actions"><button class="btn green" data-certify="'+id+'" '+certifyDisabled+' title="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'" aria-label="'+(blockers.length?blockers.join(' — '):'Certifier ce compte')+'"><i class="fa-solid fa-shield-halved"></i> Certifier</button><button class="btn red" data-reject="'+id+'" '+rejectDisabled+'><i class="fa-solid fa-ban"></i> Rejeter</button></div>'+(r.user_id?'':'<small class="muted">Compte non relié</small>')+(blockers.length?'<small style="display:block;color:#b42318;font-weight:600;margin-top:5px">'+esc(blockers.join(' · '))+'</small>':'')+'</td></tr>';
  }).join('');
 }
 $('certification-search').addEventListener('input',renderCertification);

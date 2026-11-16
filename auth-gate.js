@@ -324,8 +324,10 @@ function setupNetworkStatus(){
   // qu’il soit certifié ou en attente de certification. On restaure simplement les services.
   window.setTimeout(()=>{
    if(!client||!user||navigator.onLine===false)return;
-   void updatePresence();startRealtimePresence();startIncomingMessageNotifications();startHeaderBadgeTracking();
-   void pollIncomingMessages();void refreshHeaderBadges();
+   const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+   if(communicationAllowed){void updatePresence();startRealtimePresence();startIncomingMessageNotifications();void pollIncomingMessages();}
+   else{stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();}
+   startHeaderBadgeTracking();void refreshHeaderBadges();
   },500);
  });
 }
@@ -523,13 +525,21 @@ async function refreshHeaderBadges(){
   // Les formations restent visibles dans leur rubrique, mais ne gonflent jamais la cloche.
   const msg=await client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null);
   if(msg.error)throw msg.error;
-  const count=Math.max(0,Number(msg.count||0));
-  if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false}
-  const shown=count>99?'99+':String(count);
-  const label=count+' communication(s) non lue(s)';
-  if(messages){messages.textContent=shown;messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}
-  if(menuMessageCount){menuMessageCount.textContent=shown;menuMessageCount.hidden=count===0}
-  if(notifications){notifications.textContent=String(count);notifications.hidden=count===0;notifications.parentElement.title=label;notifications.parentElement.setAttribute('aria-label',label)}
+  const messageCount=Math.max(0,Number(msg.count||0));
+  const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+  let pendingCertificationCount=0;
+  if(profile?.role==='super_admin'){
+   const pending=await client.from('registration_requests').select('id',{count:'exact',head:true}).eq('statut','en_attente');
+   if(!pending.error)pendingCertificationCount=Math.max(0,Number(pending.count||0));
+  }
+  const notificationCount=messageCount+pendingCertificationCount;
+  if(presence){presence.parentElement.hidden=!communicationAllowed;const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=!communicationAllowed}
+  const shown=messageCount>99?'99+':String(messageCount);
+  const label=messageCount+' communication(s) non lue(s)';
+  if(messages){messages.parentElement.hidden=!communicationAllowed;messages.textContent=shown;messages.hidden=!communicationAllowed||messageCount===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}
+  if(menuMessageCount){menuMessageCount.textContent=shown;menuMessageCount.hidden=!communicationAllowed||messageCount===0}
+  if(notifications){notifications.textContent=notificationCount>99?'99+':String(notificationCount);notifications.hidden=notificationCount===0;notifications.parentElement.title=notificationCount+' notification(s), dont '+pendingCertificationCount+' demande(s) de certification';notifications.parentElement.setAttribute('aria-label',notificationCount+' notification(s)')}
+
  }catch(e){console.warn('Actualisation du nombre exact de communications non lues impossible; dernier compteur conservé.',e)}
  finally{headerBadgeBusy=false;if(headerBadgeRefreshPending){headerBadgeRefreshPending=false;scheduleHeaderBadgeRefresh()}}
 }
@@ -555,9 +565,12 @@ function startHeaderBadgeTracking(){
 function startPostAuthServices(accountId){
  const run=()=>{
   if(!user||user.id!==accountId)return;
-  try{startPresenceTracking()}catch(e){console.warn('Présence différée',e)}
-  try{startRealtimePresence()}catch(e){console.warn('Présence temps réel différée',e)}
-  try{startIncomingMessageNotifications()}catch(e){console.warn('Notifications de messages différées',e)}
+  const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+  if(communicationAllowed){
+   try{startPresenceTracking()}catch(e){console.warn('Présence différée',e)}
+   try{startRealtimePresence()}catch(e){console.warn('Présence temps réel différée',e)}
+   try{startIncomingMessageNotifications()}catch(e){console.warn('Notifications de messages différées',e)}
+  }else{stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();}
   try{startHeaderBadgeTracking()}catch(e){console.warn('Compteurs différés',e)}
  };
  if(typeof requestIdleCallback==='function')requestIdleCallback(run,{timeout:1100});
@@ -705,6 +718,12 @@ async function validate(session){
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   const isCertified=data.certification_status==='certified';
   const isSuperAdmin=data.role==='super_admin';
+  document.body.classList.toggle('ib-unverified-comms',!isCertified&&!isSuperAdmin);
+  if(!document.getElementById('ib-unverified-comms-style')){
+   const style=document.createElement('style');style.id='ib-unverified-comms-style';
+   style.textContent='body.ib-unverified-comms #ib-header-presence,body.ib-unverified-comms #ib-header-messages{display:none!important}';
+   document.head.appendChild(style);
+  }
   const leaf=path.split('/').filter(Boolean).pop()||'index.html';
   const allowedBeforeCertification=isHome||leaf==='profil.html'||leaf==='notifications.html';
   // Les comptes agents actifs non certifiés conservent l'accès aux menus.
@@ -713,7 +732,9 @@ async function validate(session){
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile,session}}));
-  try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));if(updated.certification_status==='certified'||updated.role==='super_admin'){document.body.classList.remove('ib-account-pending');if(location.pathname.endsWith('/profil.html')||location.pathname.endsWith('/notifications.html'))location.replace(new URL('index.html?certified=1',location.href).href);}}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
+  try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));document.body.classList.toggle('ib-unverified-comms',updated.certification_status!=='certified'&&updated.role!=='super_admin');
+   startPostAuthServices(user.id);
+   if(updated.certification_status==='certified'||updated.role==='super_admin'){document.body.classList.remove('ib-account-pending');if(location.pathname.endsWith('/profil.html')||location.pathname.endsWith('/notifications.html'))location.replace(new URL('index.html?certified=1',location.href).href);}}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
    // À chaque authentification, synchroniser en arrière-plan la photo locale
    // du compte vers Supabase, sans recharger la page ni toucher aux données locales.
    void syncLocalProfilePhotoOnLogin(user.id).then(url=>{
@@ -733,7 +754,7 @@ async function validate(session){
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence&v=20261115-certification-broadcast-v28" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261116-message-presence-fast-v35" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html?v=20261116-notification-center-fix-v35" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence&v=20261115-certification-broadcast-v28" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261116-certification-access-v36" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html?v=20261116-certification-access-v36" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
     // Liens relatifs directs : pas de redirection JavaScript ni de reconstruction d'URL.
     // Le navigateur conserve la session de cet onglet entre les pages de même origine.

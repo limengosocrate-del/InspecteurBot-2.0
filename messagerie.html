@@ -127,7 +127,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-replies-reactions-v40"></script>
+<script src="./auth-gate.js?v=20261116-certification-requests-v41"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -186,11 +186,11 @@ async function init(authDetail={}){
  if(!session){setNotice('Aucune session active détectée. Revenez à l’accueil et actualisez une fois.');return}
  me=session.user;
  let profileResult;
- try{profileResult=await withTimeout(client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status').eq('id',me.id).maybeSingle(),12000,'profil')}
+ try{profileResult=await withTimeout(client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status,role').eq('id',me.id).maybeSingle(),12000,'profil')}
  catch(error){setNotice('Chargement du profil trop lent. Vérifiez votre connexion puis actualisez.');$('onlineStories').innerHTML='<div class="online-empty">Profil indisponible. Réessayez après vérification du réseau.</div>';$('groupList').innerHTML='<span class="online-empty">Groupes indisponibles pour le moment.</span>';$('inbox').innerHTML='<div class="empty">Conversations indisponibles. Vérifiez votre connexion.</div>';return}
  const {data:profile,error:pe}=profileResult;
  if(pe||!profile||!profile.is_active){setNotice('Accès réservé aux agents autorisés de l’Inspection Générale du Travail.');return}
- if(profile.certification_status!=='certified'){location.replace(new URL('profil.html?certification=required',location.href).href);return}
+ if(profile.certification_status!=='certified'&&profile.role!=='super_admin'){location.replace(new URL('profil.html?certification=required',location.href).href);return}
  myProfile=profile;
  applyRealtimePresence(window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:[]);
  // Présence partagée : un seul canal global est géré par auth-gate.js.
