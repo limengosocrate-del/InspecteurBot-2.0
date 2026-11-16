@@ -528,18 +528,13 @@ async function refreshHeaderBadges(){
   if(msg.error)throw msg.error;
   const messageCount=Math.max(0,Number(msg.count||0));
   const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
-  let pendingCertificationCount=0;
-  if(profile?.role==='super_admin'){
-   const pending=await client.from('registration_requests').select('id',{count:'exact',head:true}).eq('statut','en_attente');
-   if(!pending.error)pendingCertificationCount=Math.max(0,Number(pending.count||0));
-  }
-  const notificationCount=messageCount+pendingCertificationCount;
+  const notificationCount=messageCount;
   if(presence){presence.parentElement.hidden=!communicationAllowed;const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=!communicationAllowed}
   const shown=messageCount>99?'99+':String(messageCount);
   const label=messageCount+' communication(s) non lue(s)';
   if(messages){messages.parentElement.hidden=!communicationAllowed;messages.textContent=shown;messages.hidden=!communicationAllowed||messageCount===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}
   if(menuMessageCount){menuMessageCount.textContent=shown;menuMessageCount.hidden=!communicationAllowed||messageCount===0}
-  if(notifications){notifications.textContent=notificationCount>99?'99+':String(notificationCount);notifications.hidden=notificationCount===0;notifications.parentElement.title=notificationCount+' notification(s), dont '+pendingCertificationCount+' demande(s) de certification';notifications.parentElement.setAttribute('aria-label',notificationCount+' notification(s)')}
+  if(notifications){notifications.textContent=notificationCount>99?'99+':String(notificationCount);notifications.hidden=notificationCount===0;notifications.parentElement.title=notificationCount+' notification(s) non lue(s)';notifications.parentElement.setAttribute('aria-label',notificationCount+' notification(s)')}
 
  }catch(e){console.warn('Actualisation du nombre exact de communications non lues impossible; dernier compteur conservé.',e)}
  finally{headerBadgeBusy=false;if(headerBadgeRefreshPending){headerBadgeRefreshPending=false;scheduleHeaderBadgeRefresh()}}
