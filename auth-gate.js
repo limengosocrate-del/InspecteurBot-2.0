@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261116-single-navy-splash-chat-avatar-normal-v36';
+const IB_APP_BUILD='20261116-announcements-uncertified-training-delivery-v37';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
