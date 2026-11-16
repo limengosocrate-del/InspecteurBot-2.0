@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261116-announcements-uncertified-training-delivery-v37';
+const IB_APP_BUILD='20261116-notification-center-messages-unlimited-announcements-v38';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -522,7 +522,7 @@ async function refreshHeaderBadges(){
  try{
   const admin=user?.id==='ed2f76c7-4867-4689-8500-b45d6e9b14b2'||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
   const [msg,ann,annRead,train,trainRead,req,reqRead]=await Promise.all([
-   messages||menuMessageCount?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
+   messages||menuMessageCount||notifications?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
    notifications?(admin?client.from('announcements').select('id,created_by,target_user_id').limit(1000):client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(1000)):Promise.resolve({data:[]}),
    notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
    notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(1000):Promise.resolve({data:[]}),
@@ -534,9 +534,10 @@ async function refreshHeaderBadges(){
   if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
   if(notifications){
    let total=0,hasData=false,details=[];
-   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(!x.target_user_id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
+   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(admin||!x.target_user_id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
    if(train&&!train.error&&trainRead&&!trainRead.error){const read=new Set((trainRead.data||[]).map(x=>String(x.resource_id)));const count=(train.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' formation(s)');hasData=true}
    if(admin&&req&&!req.error&&reqRead&&!reqRead.error){const read=new Set((reqRead.data||[]).map(x=>String(x.request_id)));const count=(req.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' demande(s)');hasData=true}
+   if(msg&&!msg.error){const count=Number(msg.count||0);total+=count;if(count)details.push(count+' communication(s)');hasData=true}
    if(!admin&&profile?.certification_status!=='certified'){total++;details.push('certification requise');hasData=true}
    if(hasData){notifications.textContent=total>99?'99+':String(total);notifications.hidden=total===0;notifications.parentElement.title=details.join(' · ');notifications.parentElement.setAttribute('aria-label',total+' notification(s) non lue(s)')}
   }
