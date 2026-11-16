@@ -104,7 +104,7 @@ body.conversation-open .fab{display:none!important}
 <header class="head"><a class="back" href="index.html" aria-label="Retour" onclick="try{const r=new URL(document.referrer);if(r.origin===location.origin){history.back();return false}}catch(e){}"><i class="fa-solid fa-chevron-left"></i></a><h1>Messages</h1><button class="search-toggle" id="searchToggle" aria-label="Rechercher un agent"><i class="fa-solid fa-magnifying-glass"></i></button></header>
 <div class="searchbox" id="searchBox"><input id="searchInput" type="search" placeholder="Rechercher un agent par son nom…" autocomplete="off"></div>
 <div class="section-label">Conversations</div>
-<section class="inbox" id="inbox"><div class="empty">Chargement de vos conversations…</div></section><section id="ib-admin-message-archive" hidden style="margin:22px 0;padding:16px;border:1px solid #d8e4ef;border-radius:14px;background:#fff"><h2 style="margin:0 0 12px;color:#123d63;font-size:17px">Historique général des messages</h2><p style="margin:0 0 12px;color:#64748b;font-size:13px">Consultation réservée au super-administrateur. Les conversations privées restent inchangées pour les autres comptes.</p><div id="ib-admin-message-list"><div class="empty">Chargement de l’historique…</div></div></section>
+<section class="inbox" id="inbox"><div class="empty">Chargement de vos conversations…</div></section><section id="ib-admin-message-archive" hidden style="margin:22px 10px 90px;padding:16px;border:1px solid #d8e4ef;border-radius:14px;background:#fff;color:#243b53"><h2 style="margin:0 0 6px;color:#123d63;font-size:18px">Historique de vos échanges</h2><p style="margin:0 0 14px;color:#64748b;font-size:13px">Retrouvez les anciens messages envoyés et reçus par le compte administrateur. Sélectionnez un échange pour reprendre la conversation.</p><div id="ib-admin-message-list"><div class="empty">Chargement de l’historique…</div></div></section>
 </main>
 <button class="fab" id="newMessage" aria-label="Nouveau message"><i class="fa-solid fa-plus"></i></button>
 <section class="chat" id="chat" aria-label="Conversation">
@@ -317,20 +317,32 @@ async function fetchAllMessageRows(queryFactory,label){
 }
 const IB_SUPER_ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 async function refreshAdminMessageArchive(){
- const panel=$('ib-admin-message-archive'),list=$('ib-admin-message-list');
- if(!panel||me?.id!==IB_SUPER_ADMIN_ID)return;
- panel.hidden=false;
- try{
-  const rows=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').order('created_at',{ascending:false}),'archive générale des messages');
-  const name=id=>id===me.id?(myProfile?.display_name||'Administrateur'):(people.find(p=>p.id===id)?.display_name||'Agent IGT');
-  list.innerHTML=rows.length?rows.map(row=>'<article style="padding:11px 0;border-top:1px solid #e7edf3"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:#64748b"><strong style="color:#16456c">'+esc(name(row.sender_id))+' → '+esc(name(row.recipient_id))+'</strong><time>'+esc(new Date(row.created_at).toLocaleString('fr-FR'))+'</time></div><div style="margin-top:6px;white-space:pre-wrap;overflow-wrap:anywhere;color:#243b53">'+esc(row.content)+'</div><div style="margin-top:4px;font-size:11px;color:#718096">'+(row.read_at?'Lu':'Non lu')+'</div></article>').join(''):'<div class="empty">Aucun message enregistré.</div>';
- }catch(error){console.warn('Archive générale des messages:',error);list.innerHTML='<div class="empty">Impossible de charger l’historique général. Vérifiez les autorisations puis actualisez.</div>'}
-}
+  const panel=$('ib-admin-message-archive'),list=$('ib-admin-message-list');
+  if(!panel||me?.id!==IB_SUPER_ADMIN_ID)return;
+  panel.hidden=false;
+  try{
+   const rows=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).order('id',{ascending:false}),'historique des échanges administrateur');
+   const counterpartIds=[...new Set(rows.map(row=>row.sender_id===me.id?row.recipient_id:row.sender_id).filter(Boolean))];
+   const known=new Set(people.map(person=>person.id)),missing=counterpartIds.filter(id=>!known.has(id));
+   if(missing.length){
+    const result=await client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status').in('id',missing);
+    if(result.error)throw result.error;
+    people=[...people,...(result.data||[]).map(person=>({...person,is_online:false}))];
+   }
+   const name=id=>id===me.id?(myProfile?.display_name||'Administrateur'):(people.find(person=>person.id===id)?.display_name||'Agent IGT');
+   const card=row=>{
+    const sent=row.sender_id===me.id,other=sent?row.recipient_id:row.sender_id;
+    return '<button type="button" data-archive-person="'+esc(other)+'" style="display:block;width:100%;text-align:left;padding:12px 4px;border:0;border-top:1px solid #e7edf3;background:#fff;color:#243b53"><span style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px;color:#64748b"><strong style="color:#16456c">'+esc(name(row.sender_id))+' → '+esc(name(row.recipient_id))+'</strong><time>'+esc(new Date(row.created_at).toLocaleString('fr-FR'))+'</time></span><span style="display:block;margin-top:6px;white-space:pre-wrap;overflow-wrap:anywhere">'+esc(row.content)+'</span><span style="display:block;margin-top:5px;font-size:11px;color:#718096">'+(sent?'Message envoyé par l’administrateur':'Message reçu')+' · '+(row.read_at?'Lu':'Non lu')+' · Ouvrir la conversation</span></button>';
+   };
+   const sent=rows.filter(row=>row.sender_id===me.id),received=rows.filter(row=>row.recipient_id===me.id);
+   list.innerHTML=rows.length?'<h3 style="margin:8px 0 4px;color:#123d63;font-size:15px">Messages envoyés par l’administrateur ('+sent.length+')</h3>'+(sent.length?sent.map(card).join(''):'<p style="color:#64748b;font-size:13px">Aucun message envoyé pour le moment.</p>')+'<h3 style="margin:22px 0 4px;color:#123d63;font-size:15px">Messages reçus et réponses ('+received.length+')</h3>'+(received.length?received.map(card).join(''):'<p style="color:#64748b;font-size:13px">Aucun message reçu pour le moment.</p>'):'<div class="empty" style="color:#64748b">Aucun échange enregistré pour ce compte.</div>';
+  }catch(error){console.warn('Historique des échanges administrateur:',error);list.innerHTML='<div class="empty" style="color:#64748b">Impossible de charger tout l’historique. Vérifiez les autorisations puis actualisez.</div>'}
+ }
 async function refreshInbox(){
  if(!me)return;
  let data,certificationCards='';
  try{
-  data=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}),'historique des conversations');
+  data=await fetchAllMessageRows(()=>client.from('messages').select('id,sender_id,recipient_id,content,read_at,created_at').or('sender_id.eq.'+me.id+',recipient_id.eq.'+me.id).order('created_at',{ascending:false}).order('id',{ascending:false}),'historique des conversations');
   if(me.id===IB_SUPER_ADMIN_ID){
    const {data:requests,error}=await client.from('registration_requests').select('id,user_id,nom_complet,matricule,email,categorie,created_at').eq('statut','en_attente').order('created_at',{ascending:false}).limit(100);
    if(error)throw error;
@@ -352,10 +364,16 @@ async function refreshInbox(){
  const latest=new Map(),unread=new Map();
  for(const msg of data){const other=msg.sender_id===me.id?msg.recipient_id:msg.sender_id;if(!latest.has(other))latest.set(other,msg);if(msg.recipient_id===me.id&&!msg.read_at)unread.set(other,(unread.get(other)||0)+1)}
  const ids=[...latest.keys()];
+ const knownPeople=new Set(people.map(person=>person.id)),missingPeople=ids.filter(id=>!knownPeople.has(id));
+ if(missingPeople.length){
+  const profilesResult=await client.from('profiles').select('id,display_name,avatar_url,is_active,certification_status').in('id',missingPeople);
+  if(profilesResult.error)throw profilesResult.error;
+  people=[...people,...(profilesResult.data||[]).map(person=>({...person,is_online:false}))];
+ }
  const mapped=ids.map(id=>({person:people.find(p=>p.id===id)||{id,display_name:'Agent InspecteurBot',avatar_url:null,is_online:false},message:latest.get(id),unread:unread.get(id)||0})).sort((x,y)=>new Date(y.message.created_at)-new Date(x.message.created_at));
  const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
- const conversationCards=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
- $('inbox').innerHTML=certificationCards+conversationCards;
+ const conversationCards=mapped.length?'<div style="padding:14px 8px 5px;color:#aeb2bb;font-size:13px;font-weight:800">CONVERSATIONS ET MESSAGES ORDINAIRES</div>'+mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation ordinaire pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
+ $('inbox').innerHTML=(certificationCards?'<div style="padding:14px 8px 5px;color:#8b5b00;font-size:13px;font-weight:800">DEMANDES DE CERTIFICATION — PRIORITÉ</div>'+certificationCards:'')+conversationCards;
 }
 function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne';$('chatStatus').classList.remove('typing')}
 function openProfilePhotoViewer(){
@@ -582,6 +600,12 @@ $('searchToggle').addEventListener('click',()=>{$('searchBox').classList.toggle(
 $('newMessage').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').focus()});
 $('searchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(e.target.value),250)});
 $('onlineStories').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p)}});
+$('ib-admin-message-list').addEventListener('click',e=>{
+ const b=e.target.closest('[data-archive-person]');
+ if(!b||me?.id!==IB_SUPER_ADMIN_ID)return;
+ const person=people.find(item=>item.id===b.dataset.archivePerson);
+ if(person)void openChat(person);
+});
 $('inbox').addEventListener('click',async e=>{
  const request=e.target.closest('[data-certification-person]');
  if(request){
