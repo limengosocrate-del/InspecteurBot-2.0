@@ -119,5 +119,11 @@
   ],
   "launch_handler": {
     "client_mode": "focus-existing"
-  }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+inspecteurbot",
+      "url": "./protocol-handler.html?url=%s"
+    }
+  ]
 }
