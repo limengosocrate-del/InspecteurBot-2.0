@@ -141,6 +141,12 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
  <button id="ib-passkey-register" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Configurer mon empreinte digitale</button>
  <small style="display:block;margin-top:8px;color:#61768a">Activez une protection rapide avec l’empreinte digitale, la reconnaissance faciale ou le code PIN de votre appareil, selon ses capacités.</small>
 </div>
+<div id="ib-push-panel" style="margin:0 0 16px;padding:14px 16px;border:1px solid #cbdfee;border-radius:12px;background:#f2f8fc">
+ <strong style="display:block;color:#073b70;margin-bottom:6px">🔔 Notifications sur cet appareil</strong>
+ <p id="ib-push-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Recevez les messages, annonces, formations et mises à jour de certification, même lorsque InspecteurBot est fermé.</p>
+ <button id="ib-push-enable" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Activer les notifications</button>
+ <small style="display:block;margin-top:8px;color:#61768a">L’autorisation est demandée uniquement lorsque vous appuyez sur ce bouton. Vous pourrez la modifier dans les paramètres du navigateur.</small>
+</div>
 
 <form id="editProfile" class="fields">
  
@@ -255,6 +261,65 @@ async function setupPasskeyPanel(){
  await refresh();
 }
 
+async function setupPushNotifications(){
+ const panel=$('ib-push-panel'),status=$('ib-push-status'),button=$('ib-push-enable');
+ if(!panel||!status||!button)return;
+ const client=window.inspecteurBotAuthClient;
+ if(!client){status.textContent='Connectez-vous pour configurer les notifications.';button.disabled=true;return;}
+ if(!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window)){
+  status.textContent='Les notifications push ne sont pas prises en charge par ce navigateur. Utilisez Chrome sur Android ou un navigateur compatible.';
+  button.disabled=true;return;
+ }
+ const encodeKey=value=>{
+  const padding='='.repeat((4-value.length%4)%4);
+  const base64=(value+padding).replace(/-/g,'+').replace(/_/g,'/');
+  const raw=atob(base64),output=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)output[i]=raw.charCodeAt(i);
+  return output;
+ };
+ let registration=null;
+ try{
+  registration=await navigator.serviceWorker.getRegistration('./');
+  if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});
+  await navigator.serviceWorker.ready;
+  let current=await registration.pushManager.getSubscription();
+  if(current){
+   status.textContent='Les notifications sont déjà activées sur cet appareil.';
+   button.textContent='Actualiser mon inscription';
+  }else if(Notification.permission==='denied'){
+   status.textContent='Les notifications sont bloquées dans les paramètres du navigateur. Autorisez-les pour InspecteurBot, puis réessayez.';
+   button.disabled=true;return;
+  }
+ }catch(error){
+  console.warn('Préparation push',error);
+  status.textContent='Impossible de préparer les notifications. Vérifiez la connexion et rechargez la page.';
+  return;
+ }
+ button.addEventListener('click',async()=>{
+  button.disabled=true;button.textContent='Activation…';
+  try{
+   if(Notification.permission==='default'){
+    const permission=await Notification.requestPermission();
+    if(permission!=='granted')throw new Error('Autorisation de notification non accordée.');
+   }
+   if(Notification.permission!=='granted')throw new Error('Autorisez les notifications dans les paramètres du navigateur.');
+   const {data:keyData,error:keyError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'public_key'}});
+   if(keyError||!keyData?.success||!keyData.publicKey)throw new Error(keyData?.error||keyError?.message||'Clé publique indisponible.');
+   let subscription=await registration.pushManager.getSubscription();
+   if(!subscription){
+    subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:encodeKey(keyData.publicKey)});
+   }
+   const {data:saveData,error:saveError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'subscribe',subscription:subscription.toJSON()}});
+   if(saveError||!saveData?.success)throw new Error(saveData?.error||saveError?.message||'Enregistrement de l’appareil impossible.');
+   status.textContent='Notifications activées sur cet appareil. Vous recevrez les nouveaux messages, annonces, formations et mises à jour de certification.';
+   button.textContent='Notifications activées';
+  }catch(error){
+   console.error('Activation notifications push',error);
+   status.textContent=error?.message||'Activation impossible. Réessayez.';
+   button.textContent='Réessayer';
+  }finally{button.disabled=false;}
+ });
+}
 async function setupSubscriptionPanel(){
  const card=$('ib-subscription-card'),status=$('ib-subscription-status'),payment=$('ib-subscription-payment'),form=$('ib-subscription-payment-form');
  if(!card||!status||!payment||!form)return;
@@ -666,6 +731,7 @@ async function documents(){
 fields.forEach(([label,key])=>{const wrap=document.createElement('label');wrap.className='field';wrap.innerHTML='<small>'+esc(label)+' *</small><input id="edit_'+key+'" maxlength="180" required autocomplete="off" style="width:100%;padding:10px;border:1px solid #dce6ef;border-radius:8px">';$('editProfile').insertBefore(wrap,$('editAddress').parentElement)});
 show();
 setupPasskeyPanel().catch(error=>console.warn('Passkey profil',error));
+setupPushNotifications().catch(error=>console.warn('Notifications push profil',error));
 setupSubscriptionPanel().catch(error=>console.warn('Abonnement InspecteurBot',error));
 if(typeof data.avatar==='string'&&data.avatar.startsWith('data:image/')){syncAvatarToSupabase(data.avatar).then(()=>{$('avatarMessage').textContent='Votre ancienne photo a été synchronisée pour tous les agents.';$('avatarMessage').style.color='#138a65'}).catch(err=>{console.warn('Migration de la photo locale vers Supabase',err);$('avatarMessage').textContent='Ouvrez « Modifier ma photo » pour relancer la synchronisation.';$('avatarMessage').style.color='#b42318'});}
 if(profile?.certification_status==='certified')documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
