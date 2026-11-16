@@ -523,12 +523,12 @@ async function refreshHeaderBadges(){
   const admin=user?.id==='ed2f76c7-4867-4689-8500-b45d6e9b14b2'||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
   const [msg,ann,annRead,train,trainRead,req,reqRead]=await Promise.all([
    messages||menuMessageCount?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
-   notifications?client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(120):Promise.resolve({data:[]}),
-   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]}),
+   notifications?(admin?client.from('announcements').select('id,created_by,target_user_id').limit(1000):client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(1000)):Promise.resolve({data:[]}),
+   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
    notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(120):Promise.resolve({data:[]}),
-   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]}),
+   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
    notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(100):Promise.resolve({data:[]}),
-   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(250):Promise.resolve({data:[]})
+   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
   ]);
   if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false}
   if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
