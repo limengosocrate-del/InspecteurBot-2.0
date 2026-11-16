@@ -39,7 +39,7 @@ html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{d
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
 let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],communications=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v12_';
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v13_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
