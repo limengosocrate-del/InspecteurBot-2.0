@@ -15,7 +15,7 @@ async function checkInspecteurBotUpdate(force=false){
  if(!force&&Date.now()-ibUpdateCheckAt<60000)return false;
  ibUpdateCheckRunning=true;ibUpdateCheckAt=Date.now();
  try{
-  const response=await fetch('./app-version.json?check='+Date.now(),{method:'GET',cache:'no-store',credentials:'same-origin',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
+  const response=await fetch(new URL('app-version.json?check='+Date.now(),appRootUrl()),{method:'GET',cache:'no-store',credentials:'same-origin',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
   if(!response.ok)throw new Error('Version serveur indisponible');
   const latest=await response.json();
   if(!latest||typeof latest.build!=='string'||!latest.build)throw new Error('Version serveur invalide');
