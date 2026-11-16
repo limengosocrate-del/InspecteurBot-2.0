@@ -52,8 +52,14 @@ body.conversation-open .fab{display:none!important}
 .composer .send:disabled{opacity:.55!important}
 @media(max-width:420px){.chatbody{padding:14px 11px 18px}.bubblemsg{max-width:86%!important;font-size:16px!important}.composer{gap:7px!important;padding-left:9px!important;padding-right:9px!important}}
 
-.avatar-open{border:0;background:none;padding:0;cursor:default;border-radius:50%;display:block;pointer-events:none}
-#profilePhotoViewer{display:none!important}
+.avatar-open{border:0;background:transparent;padding:0;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:auto;color:inherit;flex:0 0 40px}
+.photo-viewer[hidden]{display:none!important}
+.photo-viewer:not([hidden]){display:flex!important}
+.photo-viewer{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.94);align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:58px 16px 24px}
+.photo-viewer img{display:block;max-width:94vw;max-height:82dvh;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 12px 40px #0009}
+.photo-viewer .photo-caption{color:#fff;font-size:14px;font-weight:650;text-align:center;max-width:90vw;overflow-wrap:anywhere}
+.photo-viewer .photo-close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:22px}
+.chatstatus.typing{color:#66d6ff;font-weight:700}
 /* Dimensions strictes des photos dans la liste et l'en-tête de conversation. */
 .person .avatar-wrap{width:48px!important;height:48px!important;min-width:48px!important;max-width:48px!important;flex:0 0 48px!important;margin:0!important}
 .person .avatar-wrap img.avatar{width:48px!important;height:48px!important;min-width:48px!important;max-width:48px!important;min-height:48px!important;max-height:48px!important}
@@ -102,10 +108,15 @@ body.conversation-open .fab{display:none!important}
 </main>
 <button class="fab" id="newMessage" aria-label="Nouveau message"><i class="fa-solid fa-plus"></i></button>
 <section class="chat" id="chat" aria-label="Conversation">
-<header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><span class="avatar-open" id="chatAvatarButton" aria-label="Photo de profil"><span class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></span></span><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
+<header class="chathead"><button class="back" id="closeChat" aria-label="Fermer"><i class="fa-solid fa-chevron-left"></i></button><button type="button" class="avatar-open" id="chatAvatarButton" aria-label="Agrandir la photo de profil" title="Voir la photo en grand"><span class="avatar-wrap"><img class="avatar" id="chatAvatar" alt=""><span class="dot" id="chatDot" hidden></span></span></button><div class="chatidentity"><div class="chatname" id="chatName">Agent</div><div class="chatstatus" id="chatStatus"> </div></div></header>
 <div class="chatbody" id="chatBody"><div class="empty">Ouvrez une conversation</div></div>
 <form class="composer" id="composer"><textarea id="messageInput" rows="1" maxlength="10000" placeholder="Écrire un message…" required></textarea><button class="send" id="sendButton" type="submit" aria-label="Envoyer"><i class="fa-solid fa-paper-plane"></i></button></form>
 </section>
+<div id="profilePhotoViewer" class="photo-viewer" hidden role="dialog" aria-modal="true" aria-label="Photo de profil agrandie">
+  <button type="button" class="photo-close" id="closeProfilePhotoViewer" aria-label="Fermer la photo"><i class="fa-solid fa-xmark"></i></button>
+  <img id="profilePhotoViewerImage" alt="Photo de profil agrandie">
+  <div class="photo-caption" id="profilePhotoViewerName"></div>
+</div>
 <div id="groupCreateModal" role="dialog" aria-modal="true" aria-labelledby="groupModalTitle">
 <form class="group-dialog" id="groupCreateForm">
 <h2 id="groupModalTitle">Créer un groupe</h2>
@@ -116,7 +127,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-chat-avatar-normal-v37"></script>
+<script src="./auth-gate.js?v=20261116-photo-viewer-typing-v38"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -128,7 +139,7 @@ function withTimeout(promise,ms,label){
 }
 if(!window.supabase||typeof window.supabase.createClient!=='function'){$('notice').textContent='La bibliothèque de connexion Supabase est inaccessible. Vérifiez votre connexion Internet puis actualisez.';$('notice').classList.add('show');$('onlineStories').innerHTML='<div class="online-empty">Impossible de démarrer la messagerie : service de connexion indisponible.</div>';$('groupList').textContent='Groupes indisponibles.';$('inbox').textContent='Conversations indisponibles.';return;}
 let client=window.inspecteurBotAuthClient||null;
-let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map();
+let me=null,myProfile=null,people=[],active=null,conversationChannel=null,messageChannel=null,presenceChannel=null,profileChannel=null,searchTimer=null,refreshTimer=null,directoryRefreshTimer=null,groupSearchTimer=null,groupSearchResults=[],selectedGroupMembers=new Map(),typingResetTimer=null,typingStopTimer=null,lastTypingSentAt=0;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const avatar=p=>p?.avatar_url||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#45464d"/><circle cx="50" cy="37" r="19" fill="#aeb2bb"/><path d="M15 95c2-24 16-36 35-36s33 12 35 36" fill="#aeb2bb"/></svg>');
 function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
@@ -314,12 +325,43 @@ async function refreshInbox(){
  const total=ids.reduce((sum,id)=>sum+(unread.get(id)||0),0);$('unreadTop').hidden=!total;$('unreadTop').textContent=total>99?'99+':String(total);
  $('inbox').innerHTML=mapped.length?mapped.map(x=>'<button class="person" data-person="'+esc(x.person.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(x.person))+'" alt="">'+(online(x.person)?'<i class="dot"></i>':'')+'</span><span class="person-info"><span class="person-name">'+esc(x.person.display_name)+(x.unread?'<span class="unread">'+x.unread+'</span>':'')+'</span><span class="preview">'+(x.message.sender_id===me.id?'Vous : ':'')+esc(x.message.content)+'</span></span></button>').join(''):'<div class="empty">Aucune conversation pour le moment.<br>Recherchez un collègue pour commencer à discuter.</div>';
 }
-function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne'}
+function updateChatHeader(p){$('chatName').textContent=p.display_name||'Agent IGT';$('chatAvatar').src=avatar(p);$('chatAvatar').alt='Photo de profil de '+(p.display_name||'Agent IGT');$('chatDot').hidden=!online(p);$('chatStatus').textContent=online(p)?'En ligne':'Hors ligne';$('chatStatus').classList.remove('typing')}
+function openProfilePhotoViewer(){
+ if(!active)return;
+ $('profilePhotoViewerImage').src=avatar(active);
+ $('profilePhotoViewerImage').alt='Photo de profil de '+(active.display_name||'Agent IGT');
+ $('profilePhotoViewerName').textContent=active.display_name||'Agent IGT';
+ $('profilePhotoViewer').hidden=false;
+ $('closeProfilePhotoViewer').focus();
+}
+function closeProfilePhotoViewer(){
+ $('profilePhotoViewer').hidden=true;
+ $('chatAvatarButton').focus();
+}
+function showRemoteTyping(payload){
+ if(!active||payload?.user_id!==active.id)return;
+ clearTimeout(typingResetTimer);
+ if(payload.typing){
+  $('chatStatus').textContent='Écrit…';$('chatStatus').classList.add('typing');
+  typingResetTimer=setTimeout(()=>{if(active)updateChatHeader(active)},2200);
+ }else updateChatHeader(active);
+}
+async function sendTypingState(typing){
+ if(!conversationChannel||!active||!me)return;
+ if(typing&&Date.now()-lastTypingSentAt<1200)return;
+ if(typing)lastTypingSentAt=Date.now();
+ try{await conversationChannel.send({type:'broadcast',event:'typing',payload:{user_id:me.id,typing:!!typing}})}
+ catch(error){console.debug('Indicateur de saisie momentanément indisponible',error)}
+}
 async function openChat(person){
- active=person;updateChatHeader(person);document.body.classList.add('conversation-open');$('chat').classList.add('open');$('messageInput').focus();
+ active=person;clearTimeout(typingResetTimer);clearTimeout(typingStopTimer);lastTypingSentAt=0;
+ updateChatHeader(person);document.body.classList.add('conversation-open');$('chat').classList.add('open');$('messageInput').focus();
  if(conversationChannel)await client.removeChannel(conversationChannel);
  const personId=person.id;
- conversationChannel=client.channel('ib-chat-'+[me.id,personId].sort().join('-'))
+ try{await client.realtime.setAuth()}catch(error){console.warn('Autorisation Realtime indisponible pour la saisie',error)}
+ const topic='ib-chat:'+ [me.id,personId].sort().join(':');
+ conversationChannel=client.channel(topic,{config:{private:true}})
+  .on('broadcast',{event:'typing'},event=>showRemoteTyping(event?.payload||{}))
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+personId},payload=>{if(payload.new.recipient_id===me.id)appendMessage(payload.new)})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>updateReadReceipt(payload.new));
  await new Promise(resolve=>{
@@ -403,7 +445,7 @@ async function sendMessage(e){
    toast(error.code==='42501'?'Envoi refusé par les autorisations. Reconnectez-vous puis réessayez.':'Message non envoyé. Vérifiez votre connexion et réessayez.');
    return;
   }
-  input.value='';input.style.height='44px';appendMessage(data);await refreshInbox();
+  input.value='';input.style.height='44px';void sendTypingState(false);appendMessage(data);await refreshInbox();
  }catch(error){
   console.error('Erreur réseau pendant l’envoi:',error);
   toast('Connexion interrompue : votre message n’a pas été envoyé.');
@@ -455,9 +497,14 @@ $('newMessage').addEventListener('click',()=>{$('searchBox').classList.add('show
 $('searchInput').addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>search(e.target.value),250)});
 $('onlineStories').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p)}});
 $('inbox').addEventListener('click',e=>{const b=e.target.closest('[data-person]');if(b){const p=people.find(x=>x.id===b.dataset.person);if(p)openChat(p);else loadPeople().then(list=>{people=list;const found=list.find(x=>x.id===b.dataset.person);if(found)openChat(found)})}});
-$('closeChat').addEventListener('click',()=>{$('chat').classList.remove('open');document.body.classList.remove('conversation-open');active=null;if(conversationChannel){client.removeChannel(conversationChannel);conversationChannel=null}});
+$('closeChat').addEventListener('click',()=>{void sendTypingState(false);clearTimeout(typingStopTimer);clearTimeout(typingResetTimer);$('chat').classList.remove('open');document.body.classList.remove('conversation-open');active=null;if(conversationChannel){client.removeChannel(conversationChannel);conversationChannel=null}});
+$('chatAvatarButton').addEventListener('click',openProfilePhotoViewer);
+$('closeProfilePhotoViewer').addEventListener('click',closeProfilePhotoViewer);
+$('profilePhotoViewer').addEventListener('click',event=>{if(event.target===$('profilePhotoViewer'))closeProfilePhotoViewer()});
+$('profilePhotoViewerImage').addEventListener('click',event=>event.stopPropagation());
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('profilePhotoViewer').hidden)closeProfilePhotoViewer()});
 $('composer').addEventListener('submit',sendMessage);
-$('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px'});
+$('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px';if(el.value.trim()){void sendTypingState(true);clearTimeout(typingStopTimer);typingStopTimer=setTimeout(()=>void sendTypingState(false),1400)}else{clearTimeout(typingStopTimer);void sendTypingState(false)}});
 $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
 $('peopleNav').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').value='';$('searchInput').focus();search('')});
 $('refreshNav').addEventListener('click',()=>refreshAll());
