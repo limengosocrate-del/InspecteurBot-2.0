@@ -367,15 +367,11 @@ function renderReportPreview(data) {
     ${logoHtml}
     <strong>Inspecteur et Contrôleur du Travail</strong><br/>
     Ordre de service : ${data.order || '—'} | Groupe : ${data.group || '—'} | Fonction : ${data.role || '—'}<br/>
-    Participants : ${data.participants ? data.participants.replace(/\n/g, ', ') : '—'}
+    Participants (${data.participantCount||data.participants?.length||0}) : ${Array.isArray(data.participants)?data.participants.map(p=>p.name+' — '+p.role).join('; '):String(data.participants||'—')}
   `;
   document.getElementById('previewMeta').innerHTML = meta;
 
-  const companiesText = data.companies ? data.companies.split('\n').map((line, i) => {
-    const [name, sector] = line.split('—').map(s => s.trim());
-    return `<tr><td>${i + 1}</td><td>${name || line}</td><td>${sector || '—'}</td><td>À vérifier</td><td>—</td></tr>`;
-  }).join('') : '';
-
+  const companiesText = Array.isArray(data.companies) ? data.companies.map((company,i) => `<tr><td>${i+1}</td><td>${company.name}</td><td>${company.sector}</td><td>À vérifier</td><td>—</td></tr>`).join('') : '';
   const body = `
     <h2>I. Introduction</h2>
     <p>Sur ordre de service N° <strong>${data.order || '—'}</strong> en exécution de l'Ordre de mission collectif de son Excellence Monsieur le Ministre de l'Emploi et du Travail.</p>
