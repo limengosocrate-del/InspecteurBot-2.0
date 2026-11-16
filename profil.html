@@ -295,6 +295,10 @@ async function setupSubscriptionPanel(){
  });
  const refreshButton=$('ib-subscription-refresh');
  if(refreshButton)refreshButton.addEventListener('click',async()=>{refreshButton.disabled=true;refreshButton.textContent='Actualisation…';await refresh();refreshButton.disabled=false;refreshButton.textContent='Actualiser le statut de mon abonnement';});
+ // Actualise automatiquement le statut lorsque l’utilisateur revient dans l’application,
+ // notamment après la validation de son paiement par l’administration.
+ window.addEventListener('focus',()=>refresh());
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
  await refresh();
 }
 const fields=[
