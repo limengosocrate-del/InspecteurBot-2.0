@@ -362,6 +362,7 @@ async function openChat(person){
  const topic='ib-chat:'+ [me.id,personId].sort().join(':');
  conversationChannel=client.channel(topic,{config:{private:true}})
   .on('broadcast',{event:'typing'},event=>showRemoteTyping(event?.payload||{}))
+  .on('postgres_changes',{event:'*',schema:'public',table:'message_reactions'},payload=>{const id=payload.new?.message_id||payload.old?.message_id;const el=id&&$('chatBody').querySelector('[data-msg="'+id+'"]');if(id&&el)loadMessageReactions(id,el)})
   .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'sender_id=eq.'+personId},payload=>{if(payload.new.recipient_id===me.id)appendMessage(payload.new)})
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'sender_id=eq.'+me.id},payload=>updateReadReceipt(payload.new));
  await new Promise(resolve=>{
