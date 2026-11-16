@@ -525,7 +525,7 @@ async function refreshHeaderBadges(){
    messages||menuMessageCount?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
    notifications?(admin?client.from('announcements').select('id,created_by,target_user_id').limit(1000):client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).limit(1000)):Promise.resolve({data:[]}),
    notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
-   notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(120):Promise.resolve({data:[]}),
+   notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(1000):Promise.resolve({data:[]}),
    notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
    notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(100):Promise.resolve({data:[]}),
    notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
