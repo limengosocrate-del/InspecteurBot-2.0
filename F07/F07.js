@@ -1607,16 +1607,21 @@ ${ai}
   bindToolbar();
   initDefaults();
   exposeDashboardAPI();
-  renderArchiveList();
-  window.addEventListener("inspecteurbot:authenticated", () => renderArchiveList());
-  const archiveIdFromUrl = new URLSearchParams(location.search).get("archiveId");
-  if (archiveIdFromUrl) {
+  function openArchiveFromUrl() {
+    const archiveIdFromUrl = new URLSearchParams(location.search).get("archiveId");
+    if (!archiveIdFromUrl || !currentOwnerId()) return;
     const archivedRecord = readArchives().find(x => x.id === archiveIdFromUrl && x.code === CURRENT_CODE);
     if (archivedRecord) {
       applyData(archivedRecord);
       history.replaceState(null, "", location.pathname + location.hash);
     }
   }
+  renderArchiveList();
+  window.addEventListener("inspecteurbot:authenticated", () => {
+    renderArchiveList();
+    openArchiveFromUrl();
+  });
+  openArchiveFromUrl();
 
 })();
 
