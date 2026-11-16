@@ -744,10 +744,23 @@ async function validate(session){
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   const isCertified=data.certification_status==='certified';
   const isSuperAdmin=data.role==='super_admin';
+  const subscription=data.subscription||{};
+  const subscriptionBlocked=!isSuperAdmin&&subscription.billing_enabled===true&&subscription.access_allowed===false;
+  const isProfilePage=path.endsWith('/profil.html');
+  document.body.classList.toggle('ib-subscription-required',subscriptionBlocked&&isProfilePage);
+  if(subscriptionBlocked&&!isProfilePage){
+   location.replace(new URL('profil.html?abonnement=requis',location.href).href);
+   return;
+  }
   document.body.classList.toggle('ib-unverified-comms',!isCertified&&!isSuperAdmin);
   if(!document.getElementById('ib-unverified-comms-style')){
    const style=document.createElement('style');style.id='ib-unverified-comms-style';
    style.textContent='body.ib-unverified-comms #ib-header-presence,body.ib-unverified-comms #ib-header-messages{display:none!important}';
+   document.head.appendChild(style);
+  }
+  if(!document.getElementById('ib-subscription-lock-style')){
+   const style=document.createElement('style');style.id='ib-subscription-lock-style';
+   style.textContent='body.ib-subscription-required .profile-hero .topbar>a,body.ib-subscription-required .avatar-card,body.ib-subscription-required #editProfile,body.ib-subscription-required #mes-informations,body.ib-subscription-required #privacyAccountActions{display:none!important}body.ib-subscription-required #parametres{margin:18px auto!important}body.ib-subscription-required #profile{max-width:900px;margin:auto;padding:0 14px}body.ib-subscription-required #ib-passkey-panel{display:none!important}';
    document.head.appendChild(style);
   }
   const leaf=path.split('/').filter(Boolean).pop()||'index.html';
