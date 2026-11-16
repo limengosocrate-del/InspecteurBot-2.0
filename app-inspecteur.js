@@ -250,68 +250,96 @@ function exportDocPDF() {
 // MISSION FORM & OFFICIAL REPORT GENERATION
 // ==========================================
 function initMissionForm() {
-  document.getElementById('mDate').valueAsDate = new Date();
+  const date=document.getElementById('mDate');
+  if(date&&!date.value)date.valueAsDate=new Date();
+  renderCompanyFields();
+  renderParticipantFields();
+  document.getElementById('mCompanyCount')?.addEventListener('input',renderCompanyFields);
+  document.getElementById('mParticipantCount')?.addEventListener('input',renderParticipantFields);
 }
-
+const MISSION_SECTORS=[
+ 'Agriculture, élevage, pêche et foresterie','Industries extractives et mines','Pétrole, gaz et hydrocarbures',
+ 'Industries manufacturières','Agroalimentaire et boissons','Textile, habillement et cuir','Bois, papier et imprimerie',
+ 'Chimie, pharmacie et plasturgie','Métallurgie et sidérurgie','Énergie, électricité et gaz','Eau, assainissement et déchets',
+ 'Construction et travaux publics','Commerce de gros et de détail','Transport et logistique','Entreposage et manutention',
+ 'Hôtellerie, restauration et tourisme','Télécommunications et technologies de l’information','Banque, finance et assurances',
+ 'Immobilier et services aux entreprises','Administration publique','Éducation et formation','Santé et action sociale',
+ 'Sécurité et gardiennage','Services professionnels et conseil','Arts, culture, médias et loisirs',
+ 'ONG, associations et organisations internationales','Environnement et développement durable','Autres'
+];
+function renderCompanyFields(){
+ const host=document.getElementById('mCompanyFields');if(!host)return;
+ const count=Math.max(1,Math.min(50,Number(document.getElementById('mCompanyCount')?.value)||1));
+ const previous=Array.from(host.querySelectorAll('.company-entry')).map(card=>({
+  name:card.querySelector('[data-company-name]')?.value||'',
+  sector:card.querySelector('[data-company-sector]')?.value||'',
+  other:card.querySelector('[data-company-other]')?.value||''
+ }));
+ host.innerHTML='';
+ for(let i=0;i<count;i++){
+  const old=previous[i]||{},card=document.createElement('div');card.className='dynamic-field-card company-entry';
+  card.innerHTML='<h4>Entreprise visitée n° '+(i+1)+'</h4><label>Nom / raison sociale *</label><input data-company-name required maxlength="180" placeholder="Nom officiel de l’entreprise"><label>Secteur d’activité *</label><select data-company-sector required><option value="">Sélectionner un secteur</option>'+MISSION_SECTORS.map(s=>'<option value="'+s.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+s+'</option>').join('')+'</select><div class="other-sector" hidden><label>Préciser le secteur « Autres » *</label><input data-company-other maxlength="140" placeholder="Décrire le secteur d’activité"></div>';
+  const name=card.querySelector('[data-company-name]'),sector=card.querySelector('[data-company-sector]'),otherWrap=card.querySelector('.other-sector'),other=card.querySelector('[data-company-other]');
+  name.value=old.name;sector.value=old.sector;other.value=old.other;
+  const sync=()=>{const show=sector.value==='Autres';otherWrap.hidden=!show;other.required=show;if(!show)other.setCustomValidity('');};
+  sector.addEventListener('change',sync);sync();host.append(card);
+ }
+}
+function renderParticipantFields(){
+ const host=document.getElementById('mParticipantFields');if(!host)return;
+ const count=Math.max(1,Math.min(50,Number(document.getElementById('mParticipantCount')?.value)||1));
+ const previous=Array.from(host.querySelectorAll('.participant-entry')).map(card=>({name:card.querySelector('[data-participant-name]')?.value||'',role:card.querySelector('[data-participant-role]')?.value||''}));
+ host.innerHTML='';
+ for(let i=0;i<count;i++){
+  const old=previous[i]||{},card=document.createElement('div');card.className='dynamic-field-card participant-entry';
+  card.innerHTML='<h4>Participant n° '+(i+1)+'</h4><label>Nom complet *</label><input data-participant-name required maxlength="160" placeholder="Nom et post-nom"><label>Fonction / qualité *</label><input data-participant-role required maxlength="120" placeholder="Inspecteur, contrôleur, chauffeur…">';
+  card.querySelector('[data-participant-name]').value=old.name;card.querySelector('[data-participant-role]').value=old.role;host.append(card);
+ }
+}
+function collectMissionData(){
+ const companies=Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).map(card=>({
+  name:card.querySelector('[data-company-name]').value.trim(),
+  sector:card.querySelector('[data-company-sector]').value==='Autres'?card.querySelector('[data-company-other]').value.trim():card.querySelector('[data-company-sector]').value
+ }));
+ const participants=Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).map(card=>({
+  name:card.querySelector('[data-participant-name]').value.trim(),role:card.querySelector('[data-participant-role]').value.trim()
+ }));
+ return {
+  date:document.getElementById('mDate').value,order:document.getElementById('mOrder').value,group:document.getElementById('mGroup').value,
+  role:document.getElementById('mRole').value,direction:document.getElementById('mDirection').value,
+  antenne:document.getElementById('mAntenne')?.value.trim()||'',participants,participantCount:participants.length,
+  objective:document.getElementById('mObjective').value,matter:document.getElementById('mMatter').value,
+  companies,companyCount:companies.length,addresses:document.getElementById('mAddresses').value,
+  phone:document.getElementById('mPhone').value,observations:document.getElementById('mObservations').value,
+  constats:document.getElementById('mConstats').value,recommandations:document.getElementById('mRecommandations').value,
+  conclusion:document.getElementById('mConclusion').value,difficiles:document.getElementById('mDifficultes').value,
+  logoFile:document.getElementById('mLogo').files[0]?URL.createObjectURL(document.getElementById('mLogo').files[0]):null
+ };
+}
+function validateMissionDynamicFields(){
+ const form=document.getElementById('missionForm');
+ if(!form.reportValidity())return false;
+ const companies=collectMissionData().companies;
+ if(companies.some(x=>!x.name||!x.sector)){showToast('Complétez le nom et le secteur d’activité de chaque entreprise.','error');return false;}
+ const participants=collectMissionData().participants;
+ if(participants.some(x=>!x.name||!x.role)){showToast('Complétez le nom et la fonction de chaque participant.','error');return false;}
+ return true;
+}
 function createMission(e) {
-  e.preventDefault();
-  const data = {
-    date: document.getElementById('mDate').value,
-    order: document.getElementById('mOrder').value,
-    group: document.getElementById('mGroup').value,
-    role: document.getElementById('mRole').value,
-    direction: document.getElementById('mDirection').value,
-    participants: document.getElementById('mParticipants').value,
-    objective: document.getElementById('mObjective').value,
-    matter: document.getElementById('mMatter').value,
-    companies: document.getElementById('mCompanies').value,
-    addresses: document.getElementById('mAddresses').value,
-    phone: document.getElementById('mPhone').value,
-    observations: document.getElementById('mObservations').value,
-    constats: document.getElementById('mConstats').value,
-    recommandations: document.getElementById('mRecommandations').value,
-    conclusion: document.getElementById('mConclusion').value,
-    difficiles: document.getElementById('mDifficultes').value,
-    logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
-  };
-  STATE.currentMission = data;
-  renderReportPreview(data);
-  document.getElementById('reportPreviewArea').classList.remove('hidden');
-  document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
-  showToast('Rapport généré avec succès — Aperçu A4 visible.', 'success');
-  // Auto-archive
-  STATE.archiveData.push({ ...data, id: Date.now(), status: 'active', timestamp: new Date().toISOString() });
-  saveArchive();
-  updateDashboard();
-  updateArchiveTable();
+ e.preventDefault();if(!validateMissionDynamicFields())return;
+ const data=collectMissionData();STATE.currentMission=data;renderReportPreview(data);
+ document.getElementById('reportPreviewArea').classList.remove('hidden');
+ document.getElementById('reportPreviewArea').scrollIntoView({behavior:'smooth'});
+ showToast('Rapport généré avec succès — Aperçu A4 visible.','success');
+ STATE.archiveData.push({...data,id:Date.now(),status:'active',timestamp:new Date().toISOString()});
+ saveArchive();updateDashboard();updateArchiveTable();
 }
-
 function previewMission(e) {
-  e.preventDefault();
-  const data = {
-    date: document.getElementById('mDate').value,
-    order: document.getElementById('mOrder').value,
-    group: document.getElementById('mGroup').value,
-    role: document.getElementById('mRole').value,
-    direction: document.getElementById('mDirection').value,
-    participants: document.getElementById('mParticipants').value,
-    objective: document.getElementById('mObjective').value,
-    matter: document.getElementById('mMatter').value,
-    companies: document.getElementById('mCompanies').value,
-    addresses: document.getElementById('mAddresses').value,
-    phone: document.getElementById('mPhone').value,
-    observations: document.getElementById('mObservations').value,
-    constats: document.getElementById('mConstats').value,
-    recommandations: document.getElementById('mRecommandations').value,
-    conclusion: document.getElementById('mConclusion').value,
-    difficiles: document.getElementById('mDifficultes').value,
-    logoFile: document.getElementById('mLogo').files[0] ? URL.createObjectURL(document.getElementById('mLogo').files[0]) : null,
-  };
-  STATE.currentMission = data;
-  renderReportPreview(data);
-  document.getElementById('reportPreviewArea').classList.remove('hidden');
-  document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
-  showToast('Aperçu du rapport généré selon le modèle officiel.', 'success');
+ e.preventDefault();if(!validateMissionDynamicFields())return;
+ const data=collectMissionData();STATE.currentMission=data;renderReportPreview(data);
+ document.getElementById('reportPreviewArea').classList.remove('hidden');
+ document.getElementById('reportPreviewArea').scrollIntoView({behavior:'smooth'});
+ showToast('Aperçu du rapport généré selon le modèle officiel.','success');
 }
 
 function resetMissionForm() {
@@ -322,7 +350,7 @@ function resetMissionForm() {
 }
 
 function renderReportPreview(data) {
-  const directionLabel = data.direction || '—';
+  const directionLabel = (data.direction || '—') + (data.antenne ? ' — Antenne : ' + data.antenne : '');
   const logoHtml = data.logoFile ? `<img src="${data.logoFile}" alt="Logo administration" style="max-height:60px;max-width:140px;margin:0.5rem auto;display:block;" />` : '';
   // Génération du code unique et QR pour le rapport
   const todayStr = data.date ? new Date(data.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
@@ -429,7 +457,7 @@ function exportReportPDF() {
   if(typeof html2pdf!=='function'){showToast('Le module PDF est indisponible. Rechargez la page puis réessayez.','error');return;}
 
   const generated=new Intl.DateTimeFormat('fr-FR',{dateStyle:'long',timeStyle:'short'}).format(new Date());
-  const fieldsToCheck=['order','group','role','direction','participants','objective','matter','companies','addresses','phone','observations','constats','recommandations','conclusion','difficiles'];
+  const fieldsToCheck=['order','group','role','direction','antenne','participants','objective','matter','companies','addresses','phone','observations','constats','recommandations','conclusion','difficiles'];
   const hasUserContent=fieldsToCheck.some(key=>String(data[key]??'').trim().length>0)||Boolean(data.logoFile);
 
   const exportRoot=document.createElement('div');
