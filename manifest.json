@@ -28,7 +28,7 @@
       "name": "Annuaire IGT",
       "short_name": "Annuaire",
       "description": "Rechercher un agent dans l’annuaire numérique.",
-      "url": "./igt.html",
+      "url": "./igt/index.html",
       "icons": [
         {
           "src": "./images/inspecteurbot-icon-512.png",
@@ -120,4 +120,4 @@
   "launch_handler": {
     "client_mode": "focus-existing"
   }
-}\n
+}
