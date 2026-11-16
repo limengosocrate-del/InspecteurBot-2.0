@@ -54,6 +54,13 @@ body.conversation-open .fab{display:none!important}
 
 .avatar-open{border:0;background:none;padding:0;cursor:default;border-radius:50%;display:block;pointer-events:none}
 #profilePhotoViewer{display:none!important}
+/* Dimensions strictes des photos dans la liste et l'en-tête de conversation. */
+.person .avatar-wrap{width:48px!important;height:48px!important;min-width:48px!important;max-width:48px!important;flex:0 0 48px!important;margin:0!important}
+.person .avatar-wrap img.avatar{width:48px!important;height:48px!important;min-width:48px!important;max-width:48px!important;min-height:48px!important;max-height:48px!important}
+.chathead .avatar-open,.chathead .avatar-open .avatar-wrap{display:block!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important;flex:0 0 40px!important;margin:0!important}
+.chathead .avatar-open .avatar-wrap{overflow:visible!important}
+.chathead img#chatAvatar{display:block!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important;object-fit:cover!important;aspect-ratio:1/1!important;border-radius:50%!important}
+.chathead{min-height:64px!important;flex:0 0 auto!important}
 
 .group-toolbar{display:flex;align-items:center;justify-content:space-between;padding:6px 16px}
 .group-create-btn{border:0;border-radius:20px;background:#0866ff;color:white;padding:8px 13px;font-weight:700}
@@ -109,7 +116,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-single-navy-splash-chat-avatar-normal-v36"></script>
+<script src="./auth-gate.js?v=20261116-chat-avatar-normal-v37"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
