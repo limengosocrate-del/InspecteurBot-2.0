@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261116-notification-center-announcements-realtime-v39';
+const IB_APP_BUILD='20261116-communications-only-certification-inbox-v40';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -521,24 +521,17 @@ async function refreshHeaderBadges(){
  const query=async q=>{try{const r=await q;if(r.error)throw r.error;return r.data||[]}catch(e){console.warn('Compteur de notification partiel',e);return null}};
  try{
   const admin=user?.id==='ed2f76c7-4867-4689-8500-b45d6e9b14b2'||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
-  const [msg,ann,annRead,train,trainRead,req,reqRead]=await Promise.all([
-   messages||menuMessageCount||notifications?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
-   notifications?client.from('announcements').select('id,created_by,target_user_id').or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id).order('id',{ascending:false}).limit(1000):Promise.resolve({data:[]}),
-   notifications?client.from('announcement_reads').select('announcement_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
+  const [msg,train,trainRead]=await Promise.all([
+   messages||notifications?client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null):Promise.resolve({count:0}),
    notifications?client.from('training_resources').select('id,created_by').eq('published',true).limit(1000):Promise.resolve({data:[]}),
-   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]}),
-   notifications&&admin?client.from('registration_requests').select('id').eq('statut','en_attente').limit(100):Promise.resolve({data:[]}),
-   notifications&&admin?client.from('admin_certification_reads').select('request_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
+   notifications?client.from('training_resource_reads').select('resource_id').eq('user_id',user.id).limit(1000):Promise.resolve({data:[]})
   ]);
   if(presence){const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=false}
-  if(messages||menuMessageCount){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
+  if(messages||menuMessageCount||notifications){if(!msg?.error){const count=Number(msg?.count||0),label=count+' message(s) non lu(s)';if(messages){messages.textContent=count>99?'99+':String(count);messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}if(menuMessageCount){menuMessageCount.textContent=count>99?'99+':String(count);menuMessageCount.hidden=count===0}}}
   if(notifications){
    let total=0,hasData=false,details=[];
-   if(ann&&!ann.error&&annRead&&!annRead.error){const read=new Set((annRead.data||[]).map(x=>String(x.announcement_id)));const count=(ann.data||[]).filter(x=>(admin||!x.target_user_id||x.target_user_id===user.id)&&!read.has(String(x.id))).length;total+=count;details.push(count+' annonce(s)');hasData=true}
    if(train&&!train.error&&trainRead&&!trainRead.error){const read=new Set((trainRead.data||[]).map(x=>String(x.resource_id)));const count=(train.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' formation(s)');hasData=true}
-   if(admin&&req&&!req.error&&reqRead&&!reqRead.error){const read=new Set((reqRead.data||[]).map(x=>String(x.request_id)));const count=(req.data||[]).filter(x=>!read.has(String(x.id))).length;total+=count;details.push(count+' demande(s)');hasData=true}
    if(msg&&!msg.error){const count=Number(msg.count||0);total+=count;if(count)details.push(count+' communication(s)');hasData=true}
-   if(!admin&&profile?.certification_status!=='certified'){total++;details.push('certification requise');hasData=true}
    if(hasData){notifications.textContent=total>99?'99+':String(total);notifications.hidden=total===0;notifications.parentElement.title=details.join(' · ');notifications.parentElement.setAttribute('aria-label',total+' notification(s) non lue(s)')}
   }
  }catch(e){console.warn('Actualisation des compteurs indisponible',e)}
@@ -557,12 +550,8 @@ function startHeaderBadgeTracking(){
  try{
   headerBadgeChannel=client.channel('ib-header-badges-'+user.id)
    .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},()=>scheduleHeaderBadgeRefresh())
    .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'*',schema:'public',table:'registration_requests'},()=>scheduleHeaderBadgeRefresh())
-   .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},()=>scheduleHeaderBadgeRefresh())
       .subscribe();
  }catch(e){console.warn('Compteurs temps réel non disponibles',e)}
  if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()})}
