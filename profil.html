@@ -265,11 +265,17 @@ async function setupSubscriptionPanel(){
    if(error||!data?.success)throw new Error(data?.message||error?.message||'Vérification impossible.');
    if(data.is_admin){status.textContent='Compte administrateur : abonnement gratuit et accès permanent à toutes les fonctionnalités.';return;}
    if(!data.billing_enabled){status.textContent='Le tarif est de 4 USD pour 3 mois. La facturation commencera le 5 mars 2027. Aucun paiement n’est demandé avant cette date. Votre accès reste entièrement ouvert jusque-là.';return;}
+   if(data.payment_pending){
+    status.textContent=data.status==='active'
+     ?'Votre abonnement reste actif. Une demande de renouvellement est déjà en attente de vérification par l’administration.'
+     :'Votre déclaration de paiement est en attente de vérification par l’administration. Les fonctionnalités seront réactivées dès validation.';
+    return;
+   }
    if(data.access_allowed&&data.status==='active'){
     const end=data.current_period_end?new Date(data.current_period_end).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric',timeZone:'Africa/Kinshasa'}):'—';
-    status.textContent='Abonnement actif jusqu’au '+end+'. Vous avez accès à tous les menus et fonctionnalités.';return;
+    status.textContent='Abonnement actif jusqu’au '+end+'. Vous avez accès à tous les menus et fonctionnalités. Vous pouvez aussi renouveler à l’avance : le prochain trimestre commencera à la date d’expiration actuelle.';
+    payment.hidden=false;return;
    }
-   if(data.payment_pending){status.textContent='Votre déclaration de paiement est en attente de vérification par l’administration. Les fonctionnalités seront réactivées dès validation.';return;}
    status.textContent='Votre abonnement n’est pas actif. Pour retrouver l’accès à tous les menus, réglez 4 USD par M-Pesa au 0827563163, puis envoyez la référence de la transaction ci-dessous.';
    payment.hidden=false;
   }catch(err){status.textContent='Impossible de vérifier votre abonnement : '+(err?.message||'vérifiez votre connexion et actualisez la page.');}
