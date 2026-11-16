@@ -17,10 +17,16 @@
   ],
   "icons": [
     {
-      "src": "./images/inspecteurbot-logo.png",
-      "sizes": "any",
-      "type": "image/jpeg",
+      "src": "./images/inspecteurbot-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "./images/inspecteurbot-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
