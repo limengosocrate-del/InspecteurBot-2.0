@@ -1,6 +1,5 @@
 {
-  "build": "20261116-communications-only-certification-inbox-v41",
+  "build": "20261116-communications-unread-exact-v42",
   "release": "2026-11-16",
-  "forceRefresh": false,
-  "updated_at": "2026-11-16T04:28:46.745Z"
+  "forceRefresh": false
 }
