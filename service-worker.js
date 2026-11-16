@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données et accès aux pages déjà visitées hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v40-20261116-communications-only-certification-inbox-v40';
+const CACHE='inspecteurbot-data-v41-20261116-communications-only-certification-inbox-v41';
 const SHELL=['./','./index.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
 
 self.addEventListener('install',event=>{
