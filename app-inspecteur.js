@@ -1452,7 +1452,7 @@ function updateArchiveTable() {
       <td>${item.order || '—'}</td>
       <td>${item.group || '—'}</td>
       <td>${item.role || '—'}</td>
-      <td>${item.companies ? item.companies.split('\n')[0] : '—'}</td>
+      <td>${Array.isArray(item.companies)?(item.companies[0]?.name||'—'):String(item.companies||'—').split('\n')[0]}</td>
       <td>${(item.addresses || '').split(',')[0] || '—'}</td>
       <td><span class="status-badge ${item.status === 'active' ? 'status-active' : 'status-archived'}">${item.status}</span></td>
       <td class="actions">
@@ -1483,10 +1483,10 @@ function searchArchives(query) {
       item.order || '',
       item.group || '',
       item.role || '',
-      item.participants || '',
+      Array.isArray(item.participants)?item.participants.map(p=>p.name+' '+p.role).join(' '):(item.participants||''),
       item.objective || '',
       item.matter || '',
-      item.companies || '',
+      Array.isArray(item.companies)?item.companies.map(x=>x.name+' '+x.sector).join(' '):(item.companies||''),
       item.addresses || '',
       item.phone || '',
       item.observations || '',
@@ -1511,12 +1511,12 @@ function openArchive(id) {
   document.getElementById('mOrder').value = item.order || '';
   document.getElementById('mGroup').value = item.group || '';
   document.getElementById('mRole').value = item.role || '';
-  const legacyParticipants=Array.isArray(item.participants)?item.participants:String(item.participants||'').split('\\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),role:(parts[1]||'').trim()}});
+  const legacyParticipants=Array.isArray(item.participants)?item.participants:String(item.participants||'').split('\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),role:(parts[1]||'').trim()}});
   document.getElementById('mParticipantCount').value=Math.max(1,legacyParticipants.length);renderParticipantFields();
   Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).forEach((card,i)=>{card.querySelector('[data-participant-name]').value=legacyParticipants[i]?.name||'';card.querySelector('[data-participant-role]').value=legacyParticipants[i]?.role||''});
   document.getElementById('mObjective').value = item.objective || '';
   document.getElementById('mMatter').value = item.matter || '';
-  const legacyCompanies=Array.isArray(item.companies)?item.companies:String(item.companies||'').split('\\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),sector:(parts[1]||'').trim()}});
+  const legacyCompanies=Array.isArray(item.companies)?item.companies:String(item.companies||'').split('\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),sector:(parts[1]||'').trim()}});
   document.getElementById('mCompanyCount').value=Math.max(1,legacyCompanies.length);renderCompanyFields();
   Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=legacyCompanies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
   document.getElementById('mAddresses').value = item.addresses || '';
