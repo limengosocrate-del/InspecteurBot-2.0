@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#041c5c"/>
+  <path d="M256 52 414 112v125c0 105-65 183-158 224C163 420 98 342 98 237V112z" fill="#0b477e" stroke="#f5cf42" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M174 176h164M256 145v185M190 176l-54 108h108zM322 176l-54 108h108z" fill="none" stroke="#f8dc73" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M177 319h158" stroke="#fff" stroke-width="18" stroke-linecap="round"/>
+  <text x="256" y="390" text-anchor="middle" font-family="Arial,sans-serif" font-size="66" font-weight="800" fill="#fff">IGT</text>
+</svg>
