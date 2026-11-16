@@ -55,7 +55,6 @@
       </div>
     </a>
     <div class="nav-links">
-      <a href="#" onclick="showSection('documentation')" class="nav-link"><i class="fa-solid fa-gavel"></i> Base juridique</a>
       <a href="#" onclick="showSection('mission')" class="nav-link"><i class="fa-solid fa-clipboard-check"></i> Élaboration du rapport de mission</a>
       <a href="#" onclick="showSection('formation-rapport')" class="nav-link"><i class="fa-solid fa-chalkboard-user"></i> Élaboration d'un rapport de formation</a>
       <a href="#" onclick="showSection('reunion-rapport')" class="nav-link"><i class="fa-solid fa-handshake"></i> Élaboration d'un rapport de réunion</a>
@@ -68,7 +67,6 @@
     <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu mobile"><i class="fa-solid fa-bars-staggered"></i></button>
   </nav>
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#" onclick="showSection('documentation'); toggleMobileMenu()">Base juridique</a>
     <a href="#" onclick="showSection('mission'); toggleMobileMenu()">Élaboration du rapport de mission</a>
     <a href="#" onclick="showSection('formation-rapport'); toggleMobileMenu()">Élaboration d'un rapport de formation</a>
     <a href="#" onclick="showSection('reunion-rapport'); toggleMobileMenu()">Élaboration d'un rapport de réunion</a>
@@ -103,11 +101,6 @@
       </div>
 
       <div class="quick-cards">
-        <article class="card" onclick="showSection('documentation')">
-          <i class="fa-solid fa-gavel card-icon"></i>
-          <h3>Base juridique</h3>
-          <p>Articles 187 à 198 du Code du travail — documentation moderne et interactive.</p>
-        </article>
         <article class="card" onclick="showSection('mission')">
           <i class="fa-solid fa-clipboard-check card-icon"></i>
           <h3>Élaboration du rapport de mission</h3>
@@ -123,40 +116,6 @@
           <h3>IT/CT IA</h3>
           <p>Assistant d'aide à la rédaction, de structuration des constats et de préparation des rapports.</p>
         </article>
-      </div>
-    </section>
-
-    <!-- ====== BASE JURIDIQUE ====== -->
-    <section id="documentation" class="section">
-      <h2><i class="fa-solid fa-gavel"></i> Base juridique — Articles 187 à 198</h2>
-      <p class="section-desc">Référence permanente fondée sur le Code du travail de la RDC (2002). Consultation interactive, recherche intelligente, impression et export PDF.</p>
-
-      <div class="doc-controls">
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="docSearch" placeholder="Recherche par mot-clé (inspection, serment, document, infraction...)" oninput="filterArticles(this.value)" aria-label="Recherche dans la base juridique" />
-        </div>
-        <button onclick="printDoc()" class="btn-outline" aria-label="Imprimer la documentation"><i class="fa-solid fa-print"></i> Imprimer A4</button>
-        <button onclick="exportDocPDF()" class="btn-outline" aria-label="Exporter en PDF"><i class="fa-solid fa-file-pdf"></i> Exporter PDF</button>
-      </div>
-
-      <div class="article-nav" id="articleNav">
-        <button onclick="navigateToArticle(187)" class="article-tab" data-art="187">Art. 187</button>
-        <button onclick="navigateToArticle(188)" class="article-tab" data-art="188">Art. 188</button>
-        <button onclick="navigateToArticle(189)" class="article-tab" data-art="189">Art. 189</button>
-        <button onclick="navigateToArticle(190)" class="article-tab" data-art="190">Art. 190</button>
-        <button onclick="navigateToArticle(191)" class="article-tab" data-art="191">Art. 191</button>
-        <button onclick="navigateToArticle(192)" class="article-tab" data-art="192">Art. 192</button>
-        <button onclick="navigateToArticle(193)" class="article-tab" data-art="193">Art. 193</button>
-        <button onclick="navigateToArticle(194)" class="article-tab" data-art="194">Art. 194</button>
-        <button onclick="navigateToArticle(195)" class="article-tab" data-art="195">Art. 195</button>
-        <button onclick="navigateToArticle(196)" class="article-tab" data-art="196">Art. 196</button>
-        <button onclick="navigateToArticle(197)" class="article-tab" data-art="197">Art. 197</button>
-        <button onclick="navigateToArticle(198)" class="article-tab" data-art="198">Art. 198</button>
-      </div>
-
-      <div class="doc-content" id="docContent">
-        <!-- Articles will be injected by JS -->
       </div>
     </section>
 
@@ -207,10 +166,6 @@
             <label for="mCompanyCount">Nombre d’entreprises visitées <span class="required">*</span></label>
             <input type="number" id="mCompanyCount" min="1" max="50" value="1" required />
             <div id="mCompanyFields" class="dynamic-fields" aria-live="polite"></div>
-          </div>
-          <div class="form-group full">
-            <label for="mAddresses">Adresse(s)</label>
-            <textarea id="mAddresses" rows="2" placeholder="Adresse complète de chaque site"></textarea>
           </div>
           <div class="form-group">
             <label for="mPhone">Téléphone du responsable</label>
