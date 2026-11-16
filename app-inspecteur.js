@@ -273,14 +273,15 @@ function renderCompanyFields(){
  const previous=Array.from(host.querySelectorAll('.company-entry')).map(card=>({
   name:card.querySelector('[data-company-name]')?.value||'',
   sector:card.querySelector('[data-company-sector]')?.value||'',
-  other:card.querySelector('[data-company-other]')?.value||''
+  other:card.querySelector('[data-company-other]')?.value||'',
+  address:card.querySelector('[data-company-address]')?.value||''
  }));
  host.innerHTML='';
  for(let i=0;i<count;i++){
   const old=previous[i]||{},card=document.createElement('div');card.className='dynamic-field-card company-entry';
-  card.innerHTML='<h4>Entreprise visitée n° '+(i+1)+'</h4><label>Nom / raison sociale *</label><input data-company-name required maxlength="180" placeholder="Nom officiel de l’entreprise"><label>Secteur d’activité *</label><select data-company-sector required><option value="">Sélectionner un secteur</option>'+MISSION_SECTORS.map(s=>'<option value="'+s.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+s+'</option>').join('')+'</select><div class="other-sector" hidden><label>Préciser le secteur « Autres » *</label><input data-company-other maxlength="140" placeholder="Décrire le secteur d’activité"></div>';
+  card.innerHTML='<h4>Entreprise visitée n° '+(i+1)+'</h4><label>Nom / raison sociale *</label><input data-company-name required maxlength="180" placeholder="Nom officiel de l’entreprise"><label>Secteur d’activité *</label><select data-company-sector required><option value="">Sélectionner un secteur</option>'+MISSION_SECTORS.map(s=>'<option value="'+s.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+s+'</option>').join('')+'</select><div class="other-sector" hidden><label>Préciser le secteur « Autres » *</label><input data-company-other maxlength="140" placeholder="Décrire le secteur d’activité"></div><label>Adresse complète de l’entreprise *</label><textarea data-company-address required maxlength="500" rows="2" placeholder="Avenue, numéro, quartier, commune, ville / province"></textarea>';
   const name=card.querySelector('[data-company-name]'),sector=card.querySelector('[data-company-sector]'),otherWrap=card.querySelector('.other-sector'),other=card.querySelector('[data-company-other]');
-  name.value=old.name;sector.value=old.sector;other.value=old.other;
+  name.value=old.name;sector.value=old.sector;other.value=old.other;card.querySelector('[data-company-address]').value=old.address||'';
   const sync=()=>{const show=sector.value==='Autres';otherWrap.hidden=!show;other.required=show;if(!show)other.setCustomValidity('');};
   sector.addEventListener('change',sync);sync();host.append(card);
  }
@@ -299,7 +300,8 @@ function renderParticipantFields(){
 function collectMissionData(){
  const companies=Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).map(card=>({
   name:card.querySelector('[data-company-name]').value.trim(),
-  sector:card.querySelector('[data-company-sector]').value==='Autres'?card.querySelector('[data-company-other]').value.trim():card.querySelector('[data-company-sector]').value
+  sector:card.querySelector('[data-company-sector]').value==='Autres'?card.querySelector('[data-company-other]').value.trim():card.querySelector('[data-company-sector]').value,
+  address:card.querySelector('[data-company-address]').value.trim()
  }));
  const participants=Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).map(card=>({
   name:card.querySelector('[data-participant-name]').value.trim(),role:card.querySelector('[data-participant-role]').value.trim()
@@ -309,7 +311,7 @@ function collectMissionData(){
   role:document.getElementById('mRole').value,direction:document.getElementById('mDirection').value,
   antenne:document.getElementById('mAntenne')?.value.trim()||'',participants,participantCount:participants.length,
   objective:document.getElementById('mObjective').value,matter:document.getElementById('mMatter').value,
-  companies,companyCount:companies.length,addresses:document.getElementById('mAddresses').value,
+  companies,companyCount:companies.length,addresses:companies.map(x=>x.address).filter(Boolean).join('\n'),
   phone:document.getElementById('mPhone').value,observations:document.getElementById('mObservations').value,
   constats:document.getElementById('mConstats').value,recommandations:document.getElementById('mRecommandations').value,
   conclusion:document.getElementById('mConclusion').value,difficiles:document.getElementById('mDifficultes').value,
@@ -320,7 +322,7 @@ function validateMissionDynamicFields(){
  const form=document.getElementById('missionForm');
  if(!form.reportValidity())return false;
  const companies=collectMissionData().companies;
- if(companies.some(x=>!x.name||!x.sector)){showToast('Complétez le nom et le secteur d’activité de chaque entreprise.','error');return false;}
+ if(companies.some(x=>!x.name||!x.sector||!x.address)){showToast('Complétez le nom, le secteur d’activité et l’adresse de chaque entreprise.','error');return false;}
  const participants=collectMissionData().participants;
  if(participants.some(x=>!x.name||!x.role)){showToast('Complétez le nom et la fonction de chaque participant.','error');return false;}
  return true;
@@ -371,7 +373,10 @@ function renderReportPreview(data) {
   `;
   document.getElementById('previewMeta').innerHTML = meta;
 
-  const companiesText = Array.isArray(data.companies) ? data.companies.map((company,i) => `<tr><td>${i+1}</td><td>${company.name}</td><td>${company.sector}</td><td>À vérifier</td><td>—</td></tr>`).join('') : '';
+  const safeReportText = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const companiesList = Array.isArray(data.companies) ? data.companies : [];
+  const companiesText = companiesList.map((company,i) => `<tr><td>${i+1}</td><td>${safeReportText(company.name||'—')}</td><td>${safeReportText(company.sector||'—')}</td><td class="report-company-address">${safeReportText(company.address||'—')}</td><td>À vérifier</td><td>—</td></tr>`).join('');
+  const companyAddressesText = companiesList.map((company,i) => `<li><strong>${safeReportText(company.name||('Entreprise n° '+(i+1)))} :</strong> ${safeReportText(company.address||'Adresse non renseignée')}</li>`).join('');
   const body = `
     <h2>I. Introduction</h2>
     <p>Sur ordre de service N° <strong>${data.order || '—'}</strong> en exécution de l'Ordre de mission collectif de son Excellence Monsieur le Ministre de l'Emploi et du Travail.</p>
@@ -380,7 +385,8 @@ function renderReportPreview(data) {
 
     <h2>II. Déroulement de la Mission</h2>
     <p><strong>Période :</strong> ${data.date || '—'}</p>
-    <p><strong>Lieu de la Mission :</strong> ${data.addresses ? data.addresses.split('\n')[0] : '—'}</p>
+    <p><strong>Adresses des entreprises visitées :</strong></p>
+    <ul class="report-company-addresses">${companyAddressesText || '<li>—</li>'}</ul>
     <p><strong>Méthodologie utilisée :</strong></p>
     <ul>
       <li>Présentation et prise de contact ;</li>
@@ -392,7 +398,7 @@ function renderReportPreview(data) {
 
     <h2>III. Entreprises visitées</h2>
     <table>
-      <thead><tr><th>N°</th><th>RAISON SOCIALE</th><th>SECTEUR D'ACTIVITÉS</th><th>CONSTAT</th><th>OBS</th></tr></thead>
+      <thead><tr><th>N°</th><th>RAISON SOCIALE</th><th>SECTEUR D'ACTIVITÉS</th><th>ADRESSE DE L'ENTREPRISE</th><th>CONSTAT</th><th>OBS</th></tr></thead>
       <tbody>${companiesText}</tbody>
     </table>
 
@@ -425,7 +431,7 @@ function renderReportPreview(data) {
   `;
   document.getElementById('previewBody').innerHTML = body;
   document.getElementById('previewDate').textContent = data.date ? new Date(data.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-  document.getElementById('previewCity').textContent = (data.addresses || '').split(',')[0] || 'KINSHASA';
+  document.getElementById('previewCity').textContent = ((companiesList[0]?.address || data.addresses || '').split(',')[0].trim()) || 'KINSHASA';
   document.getElementById('previewSignName').textContent = data.role ? (data.role === 'Inspecteur du Travail' ? 'Inspecteur' : data.role) : '';
   document.getElementById('previewSignRole').textContent = data.role || '';
   document.getElementById('previewSignPhone').textContent = data.phone || '';
@@ -1516,10 +1522,10 @@ function openArchive(id) {
   Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).forEach((card,i)=>{card.querySelector('[data-participant-name]').value=legacyParticipants[i]?.name||'';card.querySelector('[data-participant-role]').value=legacyParticipants[i]?.role||''});
   document.getElementById('mObjective').value = item.objective || '';
   document.getElementById('mMatter').value = item.matter || '';
-  const legacyCompanies=Array.isArray(item.companies)?item.companies:String(item.companies||'').split('\n').filter(Boolean).map(line=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),sector:(parts[1]||'').trim()}});
+  const legacyAddresses=String(item.addresses||'').split('\n').map(value=>value.trim());
+  const legacyCompanies=Array.isArray(item.companies)?item.companies.map((company,i)=>({...company,address:company.address||legacyAddresses[i]||''})):String(item.companies||'').split('\n').filter(Boolean).map((line,i)=>{const parts=line.split('—');return{name:(parts[0]||'').trim(),sector:(parts[1]||'').trim(),address:legacyAddresses[i]||''}});
   document.getElementById('mCompanyCount').value=Math.max(1,legacyCompanies.length);renderCompanyFields();
-  Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=legacyCompanies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
-  document.getElementById('mAddresses').value = item.addresses || '';
+  Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=legacyCompanies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';card.querySelector('[data-company-address]').value=x.address||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
   document.getElementById('mPhone').value = item.phone || '';
   document.getElementById('mObservations').value = item.observations || '';
   document.getElementById('mDifficultes').value = item.difficiles || item.observations || '';
