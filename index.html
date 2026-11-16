@@ -445,7 +445,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 @keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
-<script src="auth-gate.js?v=20261116-profile-photo-biometric-v47" defer></script>
+<script src="auth-gate.js?v=20261116-play-store-prep-v44" defer></script>
 
 <style id="ib-unified-shell">
 html{min-height:100%;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}
@@ -855,7 +855,7 @@ else window.addEventListener('load',scheduleWeatherLoad,{once:true});
 <script>
 /* Enregistrement léger : une vérification de mise à jour à l'ouverture, sans polling toutes les 5 minutes. */
 if('serviceWorker' in navigator && location.protocol==='https:'){
- window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261116-password-required-new-tab-v43',{scope:'./',updateViaCache:'none'}).catch(err=>console.info('Cache local indisponible',err)));
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=20261116-play-store-prep-v44',{scope:'./',updateViaCache:'none'}).catch(err=>console.info('Cache local indisponible',err)));
 }
 </script>
 
