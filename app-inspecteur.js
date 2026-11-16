@@ -1515,15 +1515,15 @@ function openArchive(id) {
   document.getElementById('mOrder').value = item.order || '';
   document.getElementById('mGroup').value = item.group || '';
   document.getElementById('mRole').value = item.role || '';
-  document.getElementById('mParticipants').value = item.participants || '';
+  document.getElementById('mParticipantCount').value = Array.isArray(item.participants)?item.participants.length:1; renderParticipantFields();\n  if(Array.isArray(item.participants))Array.from(document.querySelectorAll('#mParticipantFields .participant-entry')).forEach((card,i)=>{card.querySelector('[data-participant-name]').value=item.participants[i]?.name||'';card.querySelector('[data-participant-role]').value=item.participants[i]?.role||''});
   document.getElementById('mObjective').value = item.objective || '';
   document.getElementById('mMatter').value = item.matter || '';
-  document.getElementById('mCompanies').value = item.companies || '';
+  document.getElementById('mCompanyCount').value = Array.isArray(item.companies)?item.companies.length:1; renderCompanyFields();\n  if(Array.isArray(item.companies))Array.from(document.querySelectorAll('#mCompanyFields .company-entry')).forEach((card,i)=>{const x=item.companies[i]||{};const sector=card.querySelector('[data-company-sector]');sector.value=MISSION_SECTORS.includes(x.sector)?x.sector:'Autres';sector.dispatchEvent(new Event('change'));card.querySelector('[data-company-name]').value=x.name||'';if(!MISSION_SECTORS.includes(x.sector))card.querySelector('[data-company-other]').value=x.sector||''});
   document.getElementById('mAddresses').value = item.addresses || '';
   document.getElementById('mPhone').value = item.phone || '';
   document.getElementById('mObservations').value = item.observations || '';
   document.getElementById('mDifficultes').value = item.difficiles || item.observations || '';
-  document.getElementById('mDirection').value = item.direction || '';
+  document.getElementById('mDirection').value = item.direction || '';\n  document.getElementById('mAntenne').value = item.antenne || '';
   // Logo file is not recoverable from archive; leave empty for edit
   document.getElementById('mLogo').value = '';
   renderReportPreview(item);
