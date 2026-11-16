@@ -529,7 +529,7 @@ async function refreshHeaderBadges(){
   const label=count+' communication(s) non lue(s)';
   if(messages){messages.textContent=shown;messages.hidden=count===0;messages.parentElement.title=label;messages.parentElement.setAttribute('aria-label',label)}
   if(menuMessageCount){menuMessageCount.textContent=shown;menuMessageCount.hidden=count===0}
-  if(notifications){notifications.textContent=shown;notifications.hidden=count===0;notifications.parentElement.title=label;notifications.parentElement.setAttribute('aria-label',label)}
+  if(notifications){notifications.textContent=String(count);notifications.hidden=count===0;notifications.parentElement.title=label;notifications.parentElement.setAttribute('aria-label',label)}
  }catch(e){console.warn('Actualisation du nombre exact de communications non lues impossible; dernier compteur conservé.',e)}
  finally{headerBadgeBusy=false;if(headerBadgeRefreshPending){headerBadgeRefreshPending=false;scheduleHeaderBadgeRefresh()}}
 }
