@@ -30,7 +30,6 @@
   <button data-view="certification"><i class="fa-solid fa-id-card-clip"></i> Certification des comptes</button>
   <button data-view="payroll"><i class="fa-solid fa-money-check-dollar"></i> Catégories de paiement</button>
   <button data-view="messages"><i class="fa-solid fa-envelope"></i> Messagerie</button>
-  <button data-view="announcements"><i class="fa-solid fa-bullhorn"></i> Annonces officielles</button>
   <a class="nav-admin-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gestion des formations</a>
   <div class="nav-label">GESTION ET SÉCURITÉ</div>
   <button data-view="access"><i class="fa-solid fa-user-shield"></i> Gestion des accès</button>
@@ -58,7 +57,7 @@
   <div id="online-members" class="message-list"><div class="empty">Chargement des présences…</div></div>
  </div>
  <div class="panel"><div class="panel-head"><div><h3>Vue d'ensemble</h3><p class="sub">Accès rapide aux principales fonctions administratives.</p></div><button class="btn light" id="refresh-dashboard"><i class="fa-solid fa-rotate"></i> Actualiser</button></div>
-  <div class="toolbar"><button class="btn" data-go="members"><i class="fa-solid fa-users"></i> Gérer les membres</button><button class="btn light" data-go="messages"><i class="fa-solid fa-paper-plane"></i> Écrire aux membres</button><button class="btn light" data-go="announcements"><i class="fa-solid fa-bullhorn"></i> Publier une annonce</button><button class="btn light" data-go="history"><i class="fa-solid fa-list"></i> Voir l'historique</button></div>
+  <div class="toolbar"><button class="btn" data-go="members"><i class="fa-solid fa-users"></i> Gérer les membres</button><button class="btn light" data-go="messages"><i class="fa-solid fa-paper-plane"></i> Écrire aux membres</button><button class="btn light" data-go="history"><i class="fa-solid fa-list"></i> Voir l'historique</button></div>
  </div>
  <div class="panel"><div class="panel-head"><div><h3>Dernières communications reçues</h3><p class="sub">Messages adressés au compte administrateur.</p></div><button class="btn light" id="dashboard-inbox-refresh">Actualiser</button></div><div class="message-list" id="dashboard-inbox"><div class="empty">Les messages apparaîtront ici.</div></div></div>
 </section>
@@ -92,31 +91,18 @@
 </section>
 <section class="view" id="view-messages">
  <div class="grid2">
-  <div class="panel"><div class="panel-head"><div><h3>Écrire aux membres</h3><p class="sub">Envoyer un message privé à tous ou aux membres sélectionnés dans l'annuaire.</p></div></div>
-   <div class="notice">Pour écrire à quelques personnes, sélectionnez-les dans « Annuaire des membres », puis choisissez « Membres sélectionnés » ci-dessous.</div>
-   <div class="form-grid"><label>Destinataires<select class="field" id="message-mode"><option value="all">Tous les membres (comptes agents)</option><option value="selected">Membres sélectionnés dans l'annuaire</option></select></label><label>Message<textarea class="field" id="message-content" maxlength="2500" placeholder="Rédigez votre message officiel (2 500 caractères maximum)…"></textarea></label><button class="btn" id="send-message"><i class="fa-solid fa-paper-plane"></i> Envoyer le message</button></div><div class="feedback" id="message-feedback" role="status"></div>
-  </div>
-  <div class="panel"><div class="panel-head"><div><h3>Boîte de réception</h3><p class="sub">Messages adressés à l'administrateur par les membres.</p></div><button class="btn light" id="refresh-inbox">Actualiser</button></div><div class="message-list" id="inbox-list"><div class="empty">Cliquez sur Actualiser pour consulter les messages.</div></div></div>
- </div>
-</section>
-<section class="view" id="view-announcements">
- <div class="grid2">
-  <div class="panel"><div class="panel-head"><div><h3>Publier une annonce officielle</h3><p class="sub">Une annonce s'affiche dans les notifications des destinataires.</p></div></div>
+  <div class="panel"><div class="panel-head"><div><h3>Écrire aux membres</h3><p class="sub">Envoyer une communication aux agents selon leur statut ou à une personne choisie.</p></div></div>
    <div class="form-grid">
-    <label>Titre de l’annonce<input class="field" id="announcement-title" maxlength="180" required placeholder="Titre de l’annonce"></label>
-    <label>Destinataires<select class="field" id="announcement-mode"><option value="all">Tous les comptes agents</option><option value="uncertified">Tous les comptes non certifiés</option><option value="certified">Tous les comptes certifiés</option><option value="individual">Une personne précise</option></select></label>
-    <div id="announcement-person-fields" class="form-grid hidden">
-     <label>Rechercher une personne (nom, matricule ou e-mail)<input class="field" id="announcement-person-search" type="search" autocomplete="off" placeholder="Saisir le nom ou le matricule…"></label>
-     <label>Personne destinataire<select class="field" id="announcement-person" size="4"><option value="">— Recherchez puis sélectionnez une personne —</option></select></label>
-     <small class="muted" id="announcement-person-hint">Une seule personne recevra cette annonce.</small>
-    </div>
-    <label>Contenu de l’annonce<textarea class="field" id="announcement-body" required placeholder="Rédigez votre annonce sans limite de longueur…"></textarea></label>
-    <button class="btn gold" id="publish-announcement"><i class="fa-solid fa-bullhorn"></i> Publier l’annonce</button>
-   </div><div class="feedback" id="announcement-feedback" role="status"></div>
+    <label>Destinataires<select class="field" id="message-mode"><option value="all">Tous les comptes agents</option><option value="certified">Tous les membres certifiés</option><option value="uncertified">Tous les membres non certifiés</option><option value="individual">Choisir un membre par son nom</option><option value="selected">Membres sélectionnés dans l’annuaire</option></select></label>
+    <div id="message-person-fields" class="form-grid hidden"><label>Rechercher un membre par son nom, matricule ou e-mail<input class="field" id="message-person-search" type="search" autocomplete="off" placeholder="Saisir un nom ou un matricule…"></label><label>Membre destinataire<select class="field" id="message-person" size="4"><option value="">Recherchez un membre…</option></select></label><small class="muted" id="message-person-hint">Sélectionnez une seule personne.</small></div>
+    <label>Message<textarea class="field" id="message-content" placeholder="Rédigez votre communication…"></textarea></label>
+    <button class="btn" id="send-message"><i class="fa-solid fa-paper-plane"></i> Envoyer le message</button>
+   </div><div class="feedback" id="message-feedback" role="status"></div>
   </div>
-  <div class="panel"><div class="panel-head"><div><h3>Annonces publiées</h3><p class="sub">Historique des communications officielles.</p></div><button class="btn light" id="refresh-announcements">Actualiser</button></div><div class="message-list" id="announcement-list"><div class="empty">Aucune annonce chargée.</div></div></div>
+  <div class="panel"><div class="panel-head"><div><h3>Boîte de réception</h3><p class="sub">Communications reçues des membres, y compris les demandes de certification.</p></div><button class="btn light" id="refresh-inbox">Actualiser</button></div><div class="message-list" id="inbox-list"><div class="empty">Cliquez sur Actualiser pour consulter les messages.</div></div></div>
  </div>
 </section>
+
 <section class="view" id="view-access">
  <div class="panel"><div class="panel-head"><div><h3>Gestion des accès</h3><p class="sub">Les comptes administrateurs sont protégés. Les opérations sensibles demandent confirmation.</p></div></div>
   <div class="notice">Les suspensions et réactivations sont journalisées. Le compte super-administrateur principal ne peut pas être suspendu depuis cet espace.</div>
@@ -135,14 +121,26 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let client=null,currentUser=null,currentProfile=null,users=[],visibleUsers=[],selected=new Set(),booted=false,adminMessagesChannel=null,adminCertificationChannel=null;
+let client=null,currentUser=null,currentProfile=null,users=[],visibleUsers=[],selected=new Set(),booted=false,adminMessagesChannel=null;
 function status(id,msg,good=false){const el=$(id);if(el){el.textContent=msg;el.style.color=good?'#14845c':'#075b9b';}}
-function view(name){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===name));if(name==='messages')loadInbox();if(name==='announcements')loadAnnouncements();if(name==='history')loadLogs();if(name==='certification')loadCertification();if(name==='payroll')loadPayroll();}
+function view(name){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+name));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===name));if(name==='messages')loadInbox();if(name==='history')loadLogs();if(name==='certification')loadCertification();if(name==='payroll')loadPayroll();}
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.view)));
 document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.go)));
 $('mobile-menu').addEventListener('click',()=>$('sidebar').classList.toggle('mobile-open'));
 document.addEventListener('click',e=>{if(e.target.closest('[data-view]')||e.target.closest('[data-go]'))$('sidebar').classList.remove('mobile-open')});
-function authReady(e){if(booted)return;booted=true;client=e.detail.client;currentUser=e.detail.user;currentProfile=e.detail.profile;if(currentProfile?.role==='admin'){location.replace('formation.html');return;}if(currentProfile?.role!=='super_admin'){document.querySelector('.content').innerHTML='<div class="panel"><h3>Accès non autorisé</h3><p>Cette page de gestion globale est réservée au super-administrateur.</p><a href="index.html">Retour à l’accueil</a></div>';return;}if(!client){document.querySelector('.content').innerHTML='<div class="panel"><h3>Accès non autorisé</h3><p>Cette page est réservée au super-administrateur.</p><a href="index.html">Retour à l’accueil</a></div>';return;}const label=currentProfile.display_name||currentUser.email||'Administrateur';$('side-user').textContent=label;$('top-user').textContent=label;loadUsers().then(()=>{loadInbox(true)});adminMessagesChannel=client.channel('ib-admin-inbox-'+currentUser.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+currentUser.id},()=>{void loadInbox(true)}).subscribe();adminCertificationChannel=client.channel('ib-admin-certification-'+currentUser.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'registration_requests'},payload=>{const r=payload.new||{};status('global-feedback','Nouvelle demande de certification reçue : '+(r.nom_complet||'un membre')+'. La file d’attente est actualisée.',true);if('Notification'in window&&Notification.permission==='granted'){try{new Notification('Nouvelle demande de certification',{body:(r.nom_complet||'Un membre')+' vient de soumettre une demande.',icon:'assets/images/logo-igt.png'})}catch(_){}}void loadCertification();}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'registration_requests'},()=>{void loadCertification(true)}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{if(payload.new?.certification_status==='certified'){void loadCertification(true);void loadUsers();}}).subscribe();window.addEventListener('pagehide',()=>{if(adminMessagesChannel)client.removeChannel(adminMessagesChannel);if(adminCertificationChannel)client.removeChannel(adminCertificationChannel)});}
+function authReady(e){
+ if(booted)return;booted=true;client=e.detail.client;currentUser=e.detail.user;currentProfile=e.detail.profile;
+ if(currentProfile?.role==='admin'){location.replace('formation.html');return;}
+ if(currentProfile?.role!=='super_admin'||!client){document.querySelector('.content').innerHTML='<div class="panel"><h3>Accès non autorisé</h3><p>Cette page est réservée au super-administrateur.</p><a href="index.html">Retour à l’accueil</a></div>';return;}
+ const label=currentProfile.display_name||currentUser.email||'Administrateur';$('side-user').textContent=label;$('top-user').textContent=label;
+ loadUsers().then(()=>loadInbox(true));
+ adminMessagesChannel=client.channel('ib-admin-inbox-'+currentUser.id)
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:'recipient_id=eq.'+currentUser.id},()=>{void loadInbox(true)})
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'messages',filter:'recipient_id=eq.'+currentUser.id},()=>{void loadInbox(true)})
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles'},payload=>{if(payload.new?.certification_status==='certified'){void loadCertification(true);void loadUsers();}})
+  .subscribe();
+ window.addEventListener('pagehide',()=>{if(adminMessagesChannel)client.removeChannel(adminMessagesChannel)});
+}
 window.addEventListener('inspecteurbot:authenticated',authReady);
 if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthProfile){authReady({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile}});}
 async function adminCall(body){const {data,error}=await client.functions.invoke('igt-admin-users',{body});if(error)throw new Error(data?.message||error.message||'Service administrateur indisponible.');if(!data?.success)throw new Error(data?.message||'Opération refusée.');return data;}
@@ -157,7 +155,7 @@ function renderUsers(){
  $('selection-count').textContent=selected.size+' membre(s) sélectionné(s)';
  $('select-all-check').checked=visibleUsers.filter(u=>u.role==='agent').length>0&&visibleUsers.filter(u=>u.role==='agent').every(u=>selected.has(u.id));
 }
-async function loadUsers(){if(!client)return; $('users-body').innerHTML='<tr><td colspan="8" class="empty">Chargement sécurisé des membres…</td></tr>';try{const r=await adminCall({action:'list'});users=r.users||[];const live=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:null;if(live)users=users.map(u=>({...u,online:live.has(u.id),last_seen:live.has(u.id)?new Date().toISOString():u.last_seen}));renderUsers();updateStats();status('global-feedback',users.length+' comptes chargés.',true); }catch(e){$('users-body').innerHTML='<tr><td colspan="8" class="empty">'+esc(e.message)+'</td></tr>';status('global-feedback',e.message);}}
+async function loadUsers(){if(!client)return; $('users-body').innerHTML='<tr><td colspan="8" class="empty">Chargement sécurisé des membres…</td></tr>';try{const r=await adminCall({action:'list'});users=r.users||[];if($('message-person-search'))renderMessagePeople();const live=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:null;if(live)users=users.map(u=>({...u,online:live.has(u.id),last_seen:live.has(u.id)?new Date().toISOString():u.last_seen}));renderUsers();updateStats();status('global-feedback',users.length+' comptes chargés.',true); }catch(e){$('users-body').innerHTML='<tr><td colspan="8" class="empty">'+esc(e.message)+'</td></tr>';status('global-feedback',e.message);}}
 $('refresh-online').addEventListener('click',loadUsers);
 $('online-members').addEventListener('click',e=>{const b=e.target.closest('[data-message-user]');if(!b)return;selected.clear();selected.add(b.dataset.messageUser);$('message-mode').value='selected';view('messages');status('message-feedback','Message destiné à '+b.dataset.name+'.',true);});
 $('member-search').addEventListener('input',renderUsers);$('search-members').addEventListener('click',renderUsers);$('reload-members').addEventListener('click',loadUsers);$('refresh-dashboard').addEventListener('click',loadUsers);
@@ -166,69 +164,13 @@ $('clear-selection').addEventListener('click',()=>{selected.clear();renderUsers(
 $('select-all-check').addEventListener('change',e=>{visibleUsers.filter(u=>u.role==='agent').forEach(u=>e.target.checked?selected.add(u.id):selected.delete(u.id));renderUsers();});
 $('users-body').addEventListener('change',e=>{const id=e.target.dataset.selectUser;if(id){e.target.checked?selected.add(id):selected.delete(id);$('selection-count').textContent=selected.size+' membre(s) sélectionné(s)';}});
 $('users-body').addEventListener('click',async e=>{const msg=e.target.closest('[data-message-user]');if(msg){selected.clear();selected.add(msg.dataset.messageUser);$('message-mode').value='selected';view('messages');$('message-content').focus();status('message-feedback','Message destiné à '+msg.dataset.name+'.',true);return;}const b=e.target.closest('[data-toggle-user]');if(!b)return;const id=b.dataset.toggleUser,action=b.dataset.active==='1'?'suspend':'reactivate';if(!confirm(action==='suspend'?'Confirmer la suspension de ce compte ?':'Confirmer la réactivation de ce compte ?'))return;b.disabled=true;try{const r=await adminCall({action,user_id:id});status('global-feedback',r.message,true);await loadUsers();}catch(err){status('global-feedback',err.message);}finally{b.disabled=false;}});
-$('send-message').addEventListener('click',async()=>{const text=$('message-content').value.trim();if(!text||text.length>2500){status('message-feedback','Le message doit contenir entre 1 et 2 500 caractères.');return;}let recipients=$('message-mode').value==='all'?users.filter(u=>u.role==='agent'):users.filter(u=>selected.has(u.id)&&u.role==='agent');recipients=[...new Map(recipients.map(u=>[u.id,u])).values()];if(!recipients.length){status('message-feedback','Sélectionnez au moins un membre dans l’annuaire.');return;}if(!confirm('Envoyer ce message à '+recipients.length+' membre(s) ?'))return;const btn=$('send-message');btn.disabled=true;try{for(let i=0;i<recipients.length;i+=100){const rows=recipients.slice(i,i+100).map(u=>({sender_id:currentUser.id,recipient_id:u.id,content:text}));const {error}=await client.from('messages').insert(rows);if(error)throw error;}$('message-content').value='';status('message-feedback','Message envoyé à '+recipients.length+' membre(s).',true);await loadInbox();}catch(e){status('message-feedback','Envoi interrompu : '+e.message);}finally{btn.disabled=false;}});
-async function fetchAnnouncementProfileIds(certified){
- const ids=[];let from=0;const size=500;
- while(true){
-  let query=client.from('profiles').select('id').eq('role','agent');
-  query=certified?query.eq('certification_status','certified'):query.neq('certification_status','certified');
-  const {data,error}=await query.order('id').range(from,from+size-1);
-  if(error)throw error;
-  const rows=data||[];ids.push(...rows.map(x=>x.id));
-  if(rows.length<size)break;from+=size;
- }
- return [...new Set(ids)];
-}
-function renderAnnouncementPeople(){
- const q=String($('announcement-person-search').value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim();
- const matches=users.filter(u=>u.role==='agent'&&[u.display_name,u.email,u.agents?.nom_complet,u.agents?.matricule].some(v=>String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().includes(q))).slice(0,60);
- const select=$('announcement-person'),previous=select.value;
- select.innerHTML=matches.map(u=>'<option value="'+esc(u.id)+'">'+esc(u.display_name||u.agents?.nom_complet||'Agent')+' · Matricule : '+esc(u.agents?.matricule||'—')+' · '+esc(u.email||'')+'</option>').join('')||'<option value="">Aucun compte correspondant</option>';
- if(matches.some(u=>u.id===previous))select.value=previous;
- $('announcement-person-hint').textContent=matches.length+' compte(s) correspondant(s). Sélectionnez une seule personne.';
-}
-$('announcement-mode').addEventListener('change',()=>{
- const individual=$('announcement-mode').value==='individual';
- $('announcement-person-fields').classList.toggle('hidden',!individual);
- if(individual){$('announcement-person-search').value='';renderAnnouncementPeople();}
-});
-$('announcement-person-search').addEventListener('input',renderAnnouncementPeople);
-async function publishAnnouncement(){
- const title=$('announcement-title').value.trim(),body=$('announcement-body').value.trim(),mode=$('announcement-mode').value;
- if(!title||!body){status('announcement-feedback','Le titre et le contenu sont obligatoires.');return;}
- const btn=$('publish-announcement');btn.disabled=true;
- try{
-  let rows=[],label='';
-  if(mode==='all'){
-   rows=[{title,body,target_user_id:null,created_by:currentUser.id}];
-   label='à tous les comptes agents';
-  }else{
-   let targets=[];
-   if(mode==='uncertified'){targets=await fetchAnnouncementProfileIds(false);label='aux comptes non certifiés';}
-   else if(mode==='certified'){targets=await fetchAnnouncementProfileIds(true);label='aux comptes certifiés';}
-   else if(mode==='individual'){
-    const id=$('announcement-person').value;
-    const person=users.find(u=>u.id===id&&u.role==='agent');
-    if(!person)throw new Error('Recherchez et sélectionnez une seule personne avant de publier.');
-    targets=[id];label='à '+(person.display_name||person.agents?.nom_complet||person.email||'la personne sélectionnée');
-   }
-   targets=[...new Set(targets)];
-   if(!targets.length)throw new Error('Aucun destinataire ne correspond à cette catégorie.');
-   rows=targets.map(id=>({title,body,target_user_id:id,created_by:currentUser.id}));
-   label+=' ('+targets.length+' destinataire(s))';
-  }
-  if(!confirm('Confirmer la publication '+label+' ?'))return;
-  const {error}=await client.from('announcements').insert(rows);
-  if(error)throw error;
-  $('announcement-title').value='';$('announcement-body').value='';
-  $('announcement-mode').value='all';$('announcement-person-fields').classList.add('hidden');
-  $('announcement-person-search').value='';$('announcement-person').innerHTML='<option value="">— Recherchez puis sélectionnez une personne —</option>';
-  status('announcement-feedback','Annonce publiée avec succès et adressée '+label+'.',true);
-  await loadAnnouncements();
- }catch(e){status('announcement-feedback','Publication impossible : '+e.message,false);}
- finally{btn.disabled=false;}
-}
-$('publish-announcement').addEventListener('click',publishAnnouncement);
+function normalizeRecipientSearch(v){return String(v||'').toLowerCase().trim();}
+function renderMessagePeople(){const q=normalizeRecipientSearch($('message-person-search').value);const matches=users.filter(u=>u.role==='agent'&&[u.display_name,u.email,u.agents?.nom_complet,u.agents?.matricule].some(v=>normalizeRecipientSearch(v).includes(q))).slice(0,80);const select=$('message-person'),previous=select.value;select.innerHTML=matches.map(u=>'<option value="'+esc(u.id)+'">'+esc(u.display_name||u.agents?.nom_complet||'Agent')+' · Matricule : '+esc(u.agents?.matricule||'—')+' · '+esc(u.email||'')+'</option>').join('')||'<option value="">Aucun membre correspondant</option>';if(matches.some(u=>u.id===previous))select.value=previous;$('message-person-hint').textContent=matches.length+' membre(s) trouvé(s). Sélectionnez un destinataire.';}
+$('message-mode').addEventListener('change',()=>{const individual=$('message-mode').value==='individual';$('message-person-fields').classList.toggle('hidden',!individual);if(individual){$('message-person-search').value='';renderMessagePeople();}});
+$('message-person-search').addEventListener('input',renderMessagePeople);
+async function fetchMessageRecipientIds(mode){if(mode==='individual'){const id=$('message-person').value;if(!id||!users.some(u=>u.id===id&&u.role==='agent'))throw new Error('Recherchez et sélectionnez un membre.');return [id];}if(mode==='selected'){const ids=users.filter(u=>u.role==='agent'&&selected.has(u.id)).map(u=>u.id);if(!ids.length)throw new Error('Sélectionnez au moins un membre dans l’annuaire.');return [...new Set(ids)];}const ids=[];let from=0;const size=500;while(true){let q=client.from('profiles').select('id').eq('role','agent');if(mode==='certified')q=q.eq('certification_status','certified');else if(mode==='uncertified')q=q.neq('certification_status','certified');const {data,error}=await q.order('id').range(from,from+size-1);if(error)throw error;const rows=data||[];ids.push(...rows.map(x=>x.id));if(rows.length<size)break;from+=size;}return [...new Set(ids)];}
+$('send-message').addEventListener('click',async()=>{const content=$('message-content').value.trim(),mode=$('message-mode').value;if(!content){status('message-feedback','Rédigez votre message avant de l’envoyer.');return;}const btn=$('send-message');btn.disabled=true;try{const recipients=await fetchMessageRecipientIds(mode);if(!recipients.length)throw new Error('Aucun destinataire ne correspond à cette sélection.');const labels={all:'à tous les comptes agents',certified:'à tous les membres certifiés',uncertified:'à tous les membres non certifiés',individual:'au membre sélectionné',selected:'aux membres sélectionnés'};if(!confirm('Confirmer l’envoi '+labels[mode]+' ('+recipients.length+' destinataire(s)) ?'))return;let sent=0;try{for(let i=0;i<recipients.length;i+=100){const rows=recipients.slice(i,i+100).map(id=>({sender_id:currentUser.id,recipient_id:id,content}));const {error}=await client.from('messages').insert(rows);if(error)throw error;sent+=rows.length;}}catch(sendError){status('message-feedback','Envoi partiel : '+sent+' message(s) transmis sur '+recipients.length+'. Erreur : '+(sendError.message||'échec Supabase'),false);return;}$('message-content').value='';$('message-mode').value='all';$('message-person-fields').classList.add('hidden');$('message-person-search').value='';status('message-feedback','Communication envoyée avec succès à '+sent+' membre(s).',true);await loadInbox(true);}catch(err){status('message-feedback','Envoi impossible : '+(err.message||'vérifiez la connexion et réessayez.'),false);}finally{btn.disabled=false;}});
+
 async function loadInbox(quiet=false){if(!client||!currentUser)return;const boxes=[$('inbox-list'),$('dashboard-inbox')];boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">Chargement des messages…</div>';});try{const {data,error}=await client.from('messages').select('id,sender_id,recipient_id,content,created_at,read_at').eq('recipient_id',currentUser.id).order('created_at',{ascending:false}).limit(100);if(error)throw error;const rows=data||[];const missing=[...new Set(rows.map(m=>m.sender_id).filter(id=>!users.some(u=>u.id===id)))];let extra=[];if(missing.length){const lookup=await client.from('profiles').select('id,display_name').in('id',missing);if(!lookup.error)extra=lookup.data||[];}const names=new Map([...users.map(u=>[u.id,u.display_name||u.email]),...extra.map(u=>[u.id,u.display_name])]);const html=rows.map(m=>'<article class="message-item"><div class="message-meta"><b>'+esc(names.get(m.sender_id)||'Membre InspecteurBot')+'</b><span>'+esc(new Date(m.created_at).toLocaleString('fr-FR'))+'</span></div><p>'+esc(m.content)+'</p><div class="actions"><button class="btn light" data-reply="'+esc(m.sender_id)+'">Répondre</button></div></article>').join('')||'<div class="empty">Aucun message reçu pour le moment.</div>';boxes.forEach(b=>{if(b)b.innerHTML=html;});const unread=rows.filter(m=>!m.read_at).map(m=>m.id);if(unread.length){const marked=await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);if(marked.error)console.warn('Marquage des messages lus:',marked.error);}}catch(e){boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">'+esc(e.message)+'</div>';});if(!quiet)status('global-feedback','Lecture des messages impossible : '+e.message);}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-reply]');if(!b)return;selected.clear();selected.add(b.dataset.reply);$('message-mode').value='selected';view('messages');status('message-feedback','Réponse préparée. Vérifiez le destinataire avant l’envoi.',true);});
 $('refresh-inbox').addEventListener('click',()=>loadInbox());$('dashboard-inbox-refresh').addEventListener('click',()=>loadInbox());
