@@ -48,7 +48,6 @@ function exportToPDF(formId) {
   // });
 }
 
-// === Mode hors-ligne (PWA) ===
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
+// Le Service Worker principal est enregistré depuis index.html avec un chemin
+// relatif à la base GitHub Pages. Ne pas enregistrer ici /sw.js : ce chemin
+// vise la racine du domaine et ne correspond pas au déploiement /InspecteurBot-2.0/.
