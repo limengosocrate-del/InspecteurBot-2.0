@@ -26,7 +26,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer crossorigin="anonymous"></script>
 <script src="auth-gate.js?v=20261112-passkey-v2" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
-</head>
+<style id="mission-dynamic-fields">.dynamic-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.dynamic-field-card{background:#f4f8fc;border:1px solid #d7e4ef;border-radius:10px;padding:12px}.dynamic-field-card h4{margin:0 0 9px;color:#16466b;font-size:13px}.dynamic-field-card label{display:block;font-size:12px;font-weight:700;margin:7px 0 4px}.dynamic-field-card input,.dynamic-field-card select{width:100%;min-width:0;padding:10px;border:1px solid #cbd8e4;border-radius:8px;font:inherit;background:#fff}.dynamic-field-card .other-sector[hidden]{display:none!important}@media(max-width:650px){.dynamic-fields{grid-template-columns:1fr}}</style></head>
 <body>
 
   <a href="#" onclick="showSection('accueil'); return false;" class="back-top-btn" aria-label="Retour au menu principal" title="Retour au menu"><i class="fa-solid fa-arrow-up"></i> Menu</a>
@@ -96,8 +96,8 @@
         <div class="hero-visual">
           <div class="badge-hero">
             <i class="fa-solid fa-shield-halved"></i>
-            <span>Articles 187 — 198</span>
-            <span>Code du Travail RDC 2002</span>
+            
+            
           </div>
         </div>
       </div>
@@ -190,8 +190,12 @@
           </div>
           <div class="form-group full">
             <label for="mParticipants">Nom(s) des participants</label>
-            <textarea id="mParticipants" rows="2" placeholder="Nom — Fonction (un par ligne)"></textarea>
-          </div>
+            <div style="display:grid;grid-template-columns:minmax(110px,180px) 1fr;gap:10px;align-items:end;margin-bottom:10px">
+              <div><label for="mParticipantCount">Nombre de participants <span class="required">*</span></label><input type="number" id="mParticipantCount" min="1" max="50" value="1" required></div>
+              <div><small style="color:var(--mute)">Les champs nom et fonction seront créés automatiquement.</small></div>
+            </div>
+            <div id="mParticipantFields" class="dynamic-fields" aria-live="polite"></div>
+          
           <div class="form-group full">
             <label for="mObjective">Objectif de la mission <span class="required">*</span></label>
             <textarea id="mObjective" rows="2" placeholder="Ex. Identifier les entreprises utilisant la main d'œuvre nationale et étrangère..." required></textarea>
@@ -202,7 +206,10 @@
           </div>
           <div class="form-group full">
             <label for="mCompanies">Entreprise(s) à visiter</label>
-            <textarea id="mCompanies" rows="2" placeholder="Nom de l'entreprise — Secteur d'activité"></textarea>
+            <div class="form-group full">
+            <label for="mCompanyCount">Nombre d’entreprises visitées <span class="required">*</span></label>
+            <input type="number" id="mCompanyCount" min="1" max="50" value="1" required />
+            <div id="mCompanyFields" class="dynamic-fields" aria-live="polite"></div>
           </div>
           <div class="form-group full">
             <label for="mAddresses">Adresse(s)</label>
@@ -242,6 +249,10 @@
               <option>Direction provinciale de l'Ituri</option>
               <option>Direction provinciale du Sankuru</option>
             </select>
+          </div>
+          <div class="form-group full">
+            <label for="mAntenne">Antenne (facultatif)</label>
+            <input type="text" id="mAntenne" maxlength="120" placeholder="Nom de l’antenne / bureau local">
           </div>
           <div class="form-group full">
             <label for="mLogo">Logo de l'administration (pièce jointe)</label>
