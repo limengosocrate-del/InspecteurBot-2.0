@@ -46,7 +46,8 @@ function startLiveUpdateChecks(){
 
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,passkeyEnrollmentInProgress=false;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,presenceReconnectTimer=null,presenceRetryAttempt=0,presenceUpdateInFlight=false,passkeyEnrollmentInProgress=false;
+window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
 html:not(.inspecteur-auth-ready) body>*:not(#ib-auth-gate):not(#ib-startup-splash){visibility:hidden!important}\nhtml:not(.inspecteur-auth-ready) body::before{content:"InspecteurBot";position:fixed;inset:0;z-index:2147482998;display:grid;place-items:center;padding:0 20px 74px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;font:800 clamp(30px,7vw,44px) Arial,sans-serif;letter-spacing:.2px;visibility:visible!important}\nhtml:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc(50% - 16px);top:calc(50% + 16px);z-index:2147482998;width:28px;height:28px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-first-paint-spin .8s linear infinite;visibility:visible!important}\n@keyframes ib-first-paint-spin{to{transform:rotate(360deg)}}\nhtml.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}\n#ib-auth-gate[data-loading="true"]{visibility:visible!important;background:transparent!important;pointer-events:none!important}\n#ib-auth-gate[data-loading="true"] #ib-auth-card{display:none!important}\n#ib-auth-gate[data-loading="true"]::before,#ib-auth-gate[data-loading="true"]::after{display:none!important;content:none!important}\n#ib-auth-loading:not([hidden]){display:none!important}\n
@@ -341,15 +342,20 @@ function readSessionId(token){
  try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
 }
 async function updatePresence(){
- if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false)return;
- const now=new Date().toISOString();
- const {error}=await client.from('user_presence').upsert({user_id:user.id,last_seen:now,updated_at:now},{onConflict:'user_id'});
- if(error)console.warn('Mise à jour de présence indisponible',error);
+ if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false||document.visibilityState==='hidden'||presenceUpdateInFlight)return;
+ presenceUpdateInFlight=true;
+ try{
+  const now=new Date().toISOString();
+  const {error}=await client.from('user_presence').upsert({user_id:user.id,last_seen:now,updated_at:now},{onConflict:'user_id'});
+  if(error)console.warn('Mise à jour de présence indisponible',error);
+ }catch(error){console.warn('Erreur temporaire du signal de présence:',error)}
+ finally{presenceUpdateInFlight=false}
 }
 function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void updatePresence()},120000);
+ // 45 s laisse une marge confortable avant le seuil de présence de 150 s.
+ presenceTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void updatePresence()},45000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
@@ -361,31 +367,52 @@ function publishRealtimePresence(){
  Object.entries(state).forEach(([key,entries])=>(Array.isArray(entries)?entries:[]).forEach(entry=>{
   const id=entry?.user_id||key;if(id)ids.add(String(id));
  }));
+ window.__ibPresenceRealtimeHealthy=true;
  window.__ibOnlineUserIds=ids;
  const count=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));
  const badge=document.querySelector('#ib-header-presence .ib-header-count');
  if(badge){badge.textContent=String(count);badge.hidden=false;badge.parentElement.title=count+' agent(s) en ligne';badge.parentElement.setAttribute('aria-label',count+' agent(s) en ligne');}
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count}}));
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count,realtimeAvailable:true}}));
+}
+function schedulePresenceReconnect(channel,status){
+ if(channel!==realtimePresenceChannel)return;
+ realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
+ window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
+ const badge=document.querySelector('#ib-header-presence .ib-header-count');if(badge)badge.hidden=true;
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0,realtimeAvailable:false}}));
+ console.warn('Canal de présence interrompu; nouvelle tentative automatique:',status);
+ try{if(client)void client.removeChannel(channel)}catch(_){}
+ clearTimeout(presenceReconnectTimer);
+ const delay=Math.min(30000,2500*Math.pow(2,Math.min(presenceRetryAttempt++,4)));
+ presenceReconnectTimer=setTimeout(()=>{
+  presenceReconnectTimer=null;
+  if(client&&user&&(profile?.certification_status==='certified'||profile?.role==='super_admin')&&navigator.onLine!==false)startRealtimePresence();
+ },delay);
 }
 function stopRealtimePresence(){
+ clearTimeout(presenceReconnectTimer);presenceReconnectTimer=null;presenceRetryAttempt=0;
  const channel=realtimePresenceChannel;realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
- window.__ibOnlineUserIds=new Set();
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0}}));
+ window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
+ const badge=document.querySelector('#ib-header-presence .ib-header-count');if(badge)badge.hidden=true;
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0,realtimeAvailable:false}}));
  if(channel&&client){try{void channel.untrack()}catch(_){}try{void client.removeChannel(channel)}catch(_){}}
 }
 function startRealtimePresence(){
- if(!client||!user)return;
- if(realtimePresenceChannel){try{void client.removeChannel(realtimePresenceChannel)}catch(_){}}
+ if(!client||!user||navigator.onLine===false)return;
+ if(realtimePresenceChannel)return;
  const channel=client.channel('ib-presence-global',{config:{presence:{key:user.id}}});
  realtimePresenceChannel=channel;window.__inspecteurBotPresenceChannel=channel;
+ window.__ibPresenceRealtimeHealthy=false;
  channel.on('presence',{event:'sync'},publishRealtimePresence)
   .on('presence',{event:'join'},publishRealtimePresence)
   .on('presence',{event:'leave'},publishRealtimePresence)
   .subscribe(async status=>{
+   if(channel!==realtimePresenceChannel)return;
    if(status==='SUBSCRIBED'){
+    presenceRetryAttempt=0;window.__ibPresenceRealtimeHealthy=true;
     try{await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',online_at:new Date().toISOString()});publishRealtimePresence();}
-    catch(error){console.warn('Activation de la présence globale impossible:',error)}
-   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){console.warn('Canal de présence globale interrompu; reconnexion Realtime en cours:',status)}
+    catch(error){schedulePresenceReconnect(channel,error)}
+   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){schedulePresenceReconnect(channel,status)}
   });
 }
 
@@ -782,7 +809,7 @@ async function validate(session){
  finally{busy=false}
 }
 async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden)void updatePresence()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden){void updatePresence();if(user&&(profile?.certification_status==='certified'||profile?.role==='super_admin')&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
@@ -1001,7 +1028,7 @@ function setup(){
 
  client.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){recovery=true;const enrollChoice=byId('auth-passkey-enroll');if(enrollChoice?.closest('label'))enrollChoice.closest('label').hidden=true;const recoveryPanel=byId('auth-recovery-panel');if(recoveryPanel)recoveryPanel.hidden=true;form.hidden=false;forgot.hidden=true;gate('Choisissez un nouveau mot de passe.');wrap.hidden=false;email.parentElement.hidden=true;email.required=false;pw.autocomplete='new-password';forgot.hidden=true;submit.textContent='Enregistrer le mot de passe'}
-  else if(event==='SIGNED_OUT'){user=null;profile=null;stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate()}
+  else if(event==='SIGNED_OUT'){stopPresenceTracking();stopRealtimePresence();user=null;profile=null;stopIncomingMessageNotifications();stopHeaderBadgeTracking();gate()}
   else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'){if(!passkeyEnrollmentInProgress)setTimeout(()=>validate(session),0)}
  });
 }
