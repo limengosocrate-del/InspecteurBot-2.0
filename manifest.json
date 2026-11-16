@@ -75,6 +75,19 @@
           "type": "image/png"
         }
       ]
+    },
+    {
+      "name": "Bloc-notes",
+      "short_name": "Notes",
+      "description": "Créer et retrouver vos notes locales.",
+      "url": "./notes.html?new=1",
+      "icons": [
+        {
+          "src": "./images/inspecteurbot-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "share_target": {
@@ -124,6 +137,42 @@
     {
       "protocol": "web+inspecteurbot",
       "url": "./protocol-handler.html?url=%s"
+    }
+  ],
+  "display_override": [
+    "tabbed",
+    "window-controls-overlay"
+  ],
+  "tab_strip": {
+    "new_tab_button": {
+      "url": "./notes.html"
+    }
+  },
+  "edge_side_panel": {
+    "preferred_width": 420
+  },
+  "note_taking": {
+    "new_note_url": "./notes.html?new=1"
+  },
+  "widgets": [
+    {
+      "name": "InspecteurBot — Accès rapide",
+      "short_name": "InspecteurBot",
+      "description": "Accéder à InspecteurBot ou créer une note locale.",
+      "tag": "inspecteurbot-quick",
+      "template": "inspecteurbot-quick",
+      "ms_ac_template": "./widgets/inspecteurbot-widget-template.json",
+      "data": "./widgets/inspecteurbot-widget-data.json",
+      "type": "application/json",
+      "auth": false,
+      "multiple": false,
+      "screenshots": [
+        {
+          "src": "./widgets/inspecteurbot-widget-preview.svg",
+          "sizes": "600x400",
+          "label": "Aperçu du widget InspecteurBot"
+        }
+      ]
     }
   ]
 }
