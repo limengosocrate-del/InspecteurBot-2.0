@@ -843,7 +843,7 @@ function setup(){
     try{
      const {data:existingPasskeys,error:listError}=await client.auth.passkey.list();
      if(!listError&&Array.isArray(existingPasskeys)&&existingPasskeys.length){
-      enrollmentMessage='Une Passkey est déjà associée à votre compte. Vous pouvez utiliser le bouton de connexion biométrique lors de votre prochaine visite.';
+      enrollmentMessage='Une protection biométrique est déjà associée à votre compte. Vous pourrez utiliser la connexion par empreinte digitale lors de votre prochaine visite.';
      }else{
       const {data:passkeyData,error:passkeyError}=await client.auth.registerPasskey();
       if(passkeyError||!passkeyData?.id)throw passkeyError||new Error('Enregistrement non confirmé.');
@@ -851,7 +851,7 @@ function setup(){
      }
     }catch(passkeyError){
      console.warn('Activation Passkey après connexion classique',passkeyError);
-     enrollmentMessage='La connexion classique a réussi, mais la configuration biométrique n’a pas abouti. Vous pourrez réessayer plus tard. '+(passkeyError?.message||'');
+     enrollmentMessage='La connexion classique a réussi, mais l’activation de la protection biométrique n’a pas abouti. Vous pourrez réessayer plus tard. '+(passkeyError?.message||'');
     }
    }
    passkeyEnrollmentInProgress=false;
@@ -877,7 +877,7 @@ function setup(){
    }catch(error){
     console.warn('Connexion Passkey InspecteurBot',error);
     msg('Connexion biométrique impossible. Utilisez votre adresse e-mail et votre mot de passe. '+(error?.message||''));
-   }finally{passkeyLogin.disabled=false;passkeyLogin.textContent='🫆 Se connecter avec mon empreinte / Passkey'}
+   }finally{passkeyLogin.disabled=false;passkeyLogin.textContent='🫆 Se connecter avec mon empreinte digitale'}
   });
  }
  const recoveryPanel=byId('auth-recovery-panel'),recoveryEmail=byId('auth-recovery-email'),recoverySend=byId('auth-recovery-send'),recoveryBack=byId('auth-recovery-back'),recoveryMessage=byId('auth-recovery-message');
@@ -1017,13 +1017,13 @@ function setup(){
       passkeyRegistered=true;
      }catch(passkeyError){
       console.warn('Enregistrement Passkey facultatif',passkeyError);
-      passkeyNotice=' La Passkey n’a pas été configurée. Votre compte reste actif et vous pouvez vous connecter avec votre mot de passe. '+(passkeyError?.message||'');
+      passkeyNotice=' La protection biométrique n’a pas été configurée. Votre compte reste actif et vous pouvez vous connecter avec votre mot de passe. '+(passkeyError?.message||'');
      }
     }
    }
    passkeyEnrollmentInProgress=false;
    regPanel.hidden=true;regForm.reset();await validate(login.session);
-   const passkeyStatus=passkeyRegistered?' La connexion biométrique est activée sur cet appareil.':' La connexion biométrique n’a pas été activée ; vous pouvez toujours utiliser votre adresse e-mail et votre mot de passe.';
+   const passkeyStatus=passkeyRegistered?' La connexion par empreinte digitale est activée sur cet appareil.':' La connexion biométrique n’a pas été activée ; vous pouvez toujours utiliser votre adresse e-mail et votre mot de passe.';
    if(data.verification_status==='reconnu'){msg('Votre compte est créé. Votre identité a été reconnue dans le registre officiel ; votre grade et votre fonction seront certifiés après enregistrement de vos paramètres.'+passkeyStatus+passkeyNotice,true)}else{msg('Votre compte est créé. Votre identité est transmise à l’administrateur pour vérification.'+passkeyStatus+passkeyNotice,true)}
   }catch(err){console.error('Inscription InspecteurBot',err);const detail=String(err&&err.message||'');if(/already registered|already exists|user already|email_exists|user_already_exists|matricule_already_registered|matricule déjà utilisé|déjà inscrit|déjà un compte|compte existe|duplicate key|unique constraint/i.test(detail)){showDuplicateAccountToast()}else{regMessage.style.color='#b42318';regMessage.textContent=detail||'Impossible de créer le compte. Vérifiez les informations.'}}
   finally{regSubmit.disabled=false;regSubmit.textContent='Créer mon compte'}
