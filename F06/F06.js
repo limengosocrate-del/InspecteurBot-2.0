@@ -872,7 +872,7 @@ function renderEffectifBlock(kind, idx) {
         <strong>InspecteurBot — ${esc(d.code)}</strong>
         <button type="button" data-action="save">Enregistrer</button>
         <button type="button" data-action="load">Charger dernier</button>
-        <button type="button" data-action="history">Historique par date</button>
+        <button type="button" data-action="history">Archive</button>
 
         <button type="button" data-action="report">Rapport</button>
         <button type="button" data-action="print">Imprimer / PDF</button>
@@ -944,7 +944,7 @@ function renderEffectifBlock(kind, idx) {
 
     app.innerHTML = `
       ${renderToolbar(d)}
-      <section id="formArchivePanel" class="no-print" style="display:none;margin:12px auto;max-width:1100px;padding:16px;border:1px solid #b9c9d8;border-radius:14px;background:#fff;color:#172b42"><h3>Mes formulaires enregistrés</h3><div id="formArchiveList"></div></section>
+      <section id="formArchivePanel" class="no-print" style="display:none;margin:12px auto;max-width:1100px;padding:16px;border:1px solid #b9c9d8;border-radius:14px;background:#fff;color:#172b42"><div style="display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap"><h3 style="margin:0 0 6px">Archive des fiches de contrôle</h3><span style="font-size:12px;color:#52677d">Toutes les fiches enregistrées · Les plus récentes en premier</span></div><div id="formArchiveList" style="margin-top:10px"></div></section>
       ${datalists()}
       <div class="sheet-wrap">
         <section class="sheet ${d.code === "S03" ? "short-sheet" : ""}" id="officialSheet">
@@ -1262,9 +1262,25 @@ function renderEffectifBlock(kind, idx) {
   }
 
   function renderArchiveList() {
-    const list=document.getElementById("formArchiveList");if(!list)return;
-    const rows=readArchives().filter(x=>x.code===CURRENT_CODE).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));
-    list.innerHTML=rows.length?rows.map(x=>`<div style="display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #dbe3ea"><span><strong>${esc(x.fields?.raison||x.fields?.nom_entreprise||x.id)}</strong><br><small>${new Date(x.savedAt).toLocaleString("fr-FR")} · ${esc(x.fields?.province||"Province non précisée")} · ${esc(x.fields?.statut_dossier||"Enregistré")}</small></span><button type="button" data-load-record="${esc(x.id)}">Ouvrir</button></div>`).join(""):"<p>Aucun enregistrement pour ce formulaire.</p>";
+    const list = document.getElementById("formArchiveList");
+    if (!list) return;
+    const rows = readArchives().slice().sort((a, b) => {
+      const da = Date.parse(a.savedAt || a.createdAt || 0) || 0;
+      const db = Date.parse(b.savedAt || b.createdAt || 0) || 0;
+      return db - da;
+    });
+    list.innerHTML = rows.length ? rows.map(x => {
+      const date = x.savedAt || x.createdAt;
+      const title = x.fields?.raison || x.fields?.nom_entreprise || x.fields?.province_entite || x.id || "Fiche enregistrée";
+      const code = /^[FS]\\d{2}$/.test(String(x.code || "")) ? String(x.code) : "Fiche";
+      return `<article style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:12px 4px;border-bottom:1px solid #dbe3ea">
+        <span style="min-width:0;flex:1">
+          <strong style="color:#123d63">${esc(title)}</strong>
+          <br><small style="color:#52677d">${esc(code)} · ${date ? new Date(date).toLocaleString("fr-FR") : "Date non précisée"} · ${esc(x.fields?.province || "Province non précisée")} · ${esc(x.fields?.statut_dossier || "Enregistré")}</small>
+        </span>
+        <button type="button" data-load-record="${esc(x.id)}" style="border:0;border-radius:9px;background:#0b5cab;color:#fff;padding:9px 14px;font-weight:700">Ouvrir la fiche</button>
+      </article>`;
+    }).join("") : "<p style='color:#64748b'>Aucune fiche enregistrée dans l’archive pour le moment.</p>";
   }
 
   function loadLatest() {
@@ -1514,7 +1530,7 @@ ${ai}
       if (action === "report") generateReport();
       if (action === "print") window.print();
       if (action === "history") {const p=document.getElementById("formArchivePanel");if(p){p.style.display=p.style.display==="none"?"block":"none";renderArchiveList();}}
-      const record=e.target.closest("[data-load-record]");if(record){const item=readArchives().find(x=>x.id===record.dataset.loadRecord);if(item){applyData(item);window.scrollTo({top:0,behavior:"smooth"});}}
+      const record=e.target.closest("[data-load-record]");if(record){const item=readArchives().find(x=>x.id===record.dataset.loadRecord);if(item){if(item.code!==CURRENT_CODE&&/^[FS]\\d{2}$/.test(String(item.code||""))){location.href="../"+item.code+"/"+item.code+".html?archiveId="+encodeURIComponent(item.id);return;}applyData(item);window.scrollTo({top:0,behavior:"smooth"});}}
     });
       }
 
@@ -1538,6 +1554,14 @@ ${ai}
   initDefaults();
   exposeDashboardAPI();
   renderArchiveList();
+  const archiveIdFromUrl = new URLSearchParams(location.search).get("archiveId");
+  if (archiveIdFromUrl) {
+    const archivedRecord = readArchives().find(x => x.id === archiveIdFromUrl && x.code === CURRENT_CODE);
+    if (archivedRecord) {
+      applyData(archivedRecord);
+      history.replaceState(null, "", location.pathname + location.hash);
+    }
+  }
 
 })();
 
