@@ -126,6 +126,65 @@ body.conversation-open{
  touch-action:pan-y!important;
  overscroll-behavior-y:contain!important;
 }
+
+/* Correctif renforcé : même modèle de défilement que le menu Code du travail.
+   La page entière reste le conteneur vertical, y compris dans Android/WebView. */
+html,body{
+ width:100%!important;
+ max-width:100%!important;
+ height:auto!important;
+ min-height:100%!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ overscroll-behavior-y:auto!important;
+ touch-action:pan-y!important;
+ -webkit-overflow-scrolling:touch!important;
+ scroll-behavior:auto!important;
+}
+body{
+ position:static!important;
+ display:block!important;
+}
+body:not(.conversation-open){
+ height:auto!important;
+ max-height:none!important;
+ overflow-y:auto!important;
+}
+main.wrap{
+ display:block!important;
+ position:static!important;
+ width:100%!important;
+ max-width:850px!important;
+ height:auto!important;
+ min-height:calc(100dvh - 66px)!important;
+ max-height:none!important;
+ margin-left:auto!important;
+ margin-right:auto!important;
+ padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;
+ overflow:visible!important;
+ touch-action:pan-y!important;
+}
+#inbox,#ib-admin-message-archive{
+ display:block;
+ width:100%;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ overflow:visible!important;
+ touch-action:pan-y!important;
+}
+#inbox .person,#ib-admin-message-list button{
+ touch-action:pan-y!important;
+}
+body.conversation-open{
+ position:fixed!important;
+ inset:0!important;
+ width:100%!important;
+ height:100dvh!important;
+ min-height:0!important;
+ overflow:hidden!important;
+}
+
 </style>
 </head>
 <body>
