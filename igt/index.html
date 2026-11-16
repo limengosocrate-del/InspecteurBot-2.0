@@ -189,6 +189,16 @@ html,body{margin:0;min-height:100%;background:#f4f7fb}
   const client=window.inspecteurBotAuthClient;
   if(client){
    installLoginGuard(client);
+   if(!window.__ibIgtSessionHeartbeat){
+    window.__ibIgtSessionHeartbeat=setInterval(()=>{
+     const activeClient=window.inspecteurBotAuthClient;
+     if(!document.hidden&&activeClient){
+      activeClient.functions.invoke('igt-session-start',{body:{device_id:getDeviceId()}})
+       .then(({error})=>{if(error)console.info('Actualisation de la session IGT différée.')})
+       .catch(()=>{});
+     }
+    },300000);
+   }
    if(document.documentElement.classList.contains('inspecteur-auth-ready'))mount(client);
   }
   if(attempts>240)clearInterval(timer);
