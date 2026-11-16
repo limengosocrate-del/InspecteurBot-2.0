@@ -2,7 +2,7 @@
   "name": "InspecteurBot RDC — Code du Travail Intelligent",
   "short_name": "InspecteurBot RDC",
   "description": "Bibliothèque juridique intelligente et hors-ligne de l'Inspection Générale du Travail de la RDC avec IA et lecture vocale.",
-  "start_url": "./code-travail.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#041c5c",
