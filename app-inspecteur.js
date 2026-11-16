@@ -1527,7 +1527,9 @@ function openArchive(id) {
   document.getElementById('mAntenne').value = item.antenne || '';
   // Logo file is not recoverable from archive; leave empty for edit
   document.getElementById('mLogo').value = '';
-  renderReportPreview(item);
+  const normalizedItem={...item,companies:legacyCompanies,participants:legacyParticipants,companyCount:legacyCompanies.length,participantCount:legacyParticipants.length};
+  STATE.currentMission=normalizedItem;
+  renderReportPreview(normalizedItem);
   document.getElementById('reportPreviewArea').classList.remove('hidden');
   document.getElementById('reportPreviewArea').scrollIntoView({ behavior: 'smooth' });
 }
