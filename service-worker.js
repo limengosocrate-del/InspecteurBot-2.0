@@ -1,9 +1,9 @@
 /* InspecteurBot — cache économe en données, partage et accès hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v51-20261116-background-periodic-push-v1';
-const SHELL=['./','./index.html','./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4'];
+const CACHE='inspecteurbot-data-v52-20261117-pwa-capabilities-v1';
+const SHELL=['./','./index.html','./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'];
 self.addEventListener('install',event=>{
- event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(['./offline.html','./share.html','./file-handler.html','./protocol-handler.html'].map(path=>cache.add(new Request(new URL(path,self.registration.scope),{cache:'reload'})).catch(()=>{})));})());
+ event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(['./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'].map(path=>cache.add(new Request(new URL(path,self.registration.scope),{cache:'reload'})).catch(()=>{})));})());
  self.skipWaiting();
 });
 self.addEventListener('activate',event=>{
@@ -73,4 +73,25 @@ self.addEventListener('notificationclick',event=>{
   for(const client of windows){if('focus'in client){await client.focus();client.postMessage({type:'IB_OPEN_NOTIFICATION',url:target.href});return;}}
   if(self.clients.openWindow)await self.clients.openWindow(target.href);
  })());
+});
+
+// Widgets Windows 11 : contenu public et raccourcis sans données de compte.
+async function ibRenderQuickWidget(widget){
+ try{
+  if(!self.widgets||!widget||!widget.definition)return;
+  const definition=widget.definition;
+  const templatePath=definition.msAcTemplate||definition.ms_ac_template;
+  if(!templatePath||!definition.data||!definition.tag)return;
+  const templateUrl=new URL(templatePath,self.registration.scope),dataUrl=new URL(definition.data,self.registration.scope);
+  const responses=await Promise.all([fetch(templateUrl),fetch(dataUrl)]);
+  if(!responses[0].ok||!responses[1].ok)return;
+  const template=await responses[0].text(),data=await responses[1].text();
+  await self.widgets.updateByTag(definition.tag,{template,data});
+ }catch(error){/* Les navigateurs sans API Widgets ignorent cette capacité. */}
+}
+self.addEventListener('widgetinstall',event=>{if(event.widget)event.waitUntil(ibRenderQuickWidget(event.widget))});
+self.addEventListener('widgetresume',event=>{if(event.widget)event.waitUntil(ibRenderQuickWidget(event.widget))});
+self.addEventListener('widgetclick',event=>{
+ const destination=event.action==='new-note'?'./notes.html?new=1':'./index.html';
+ event.waitUntil(self.clients.openWindow(new URL(destination,self.registration.scope).href));
 });
