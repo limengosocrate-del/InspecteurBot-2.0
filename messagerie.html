@@ -127,7 +127,7 @@ body.conversation-open .fab{display:none!important}
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-replies-reactions-v39"></script>
+<script src="./auth-gate.js?v=20261116-replies-reactions-v40"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -381,7 +381,7 @@ async function loadConversation(){
   ]);
   if(active?.id!==personId)return;
   const data=[...sent,...received].sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
-  $('chatBody').innerHTML='';data.forEach(appendMessage);
+  $('chatBody').innerHTML='';data.forEach(m=>appendMessage(m,true));await loadConversationReactions(data);
   const unread=data.filter(msg=>msg.recipient_id===me.id&&!msg.read_at);
   for(let i=0;i<unread.length;i+=200){
    const batch=unread.slice(i,i+200).map(msg=>msg.id);
@@ -416,7 +416,7 @@ function updateReadReceipt(m){
  const receipt=el?.querySelector('.read-receipt');
  if(receipt)setReceiptState(receipt,m.recipient_id,true);
 }
-function appendMessage(m){
+function appendMessage(m,skipReactionLoad=false){
  if(!active||![m.sender_id,m.recipient_id].includes(active.id)||![m.sender_id,m.recipient_id].includes(me.id))return;
  if($('chatBody').querySelector('[data-msg="'+m.id+'"]')){updateReadReceipt(m);return}
  const el=document.createElement('div');el.className='bubblemsg'+(m.sender_id===me.id?' mine':'');el.dataset.msg=m.id;
@@ -429,8 +429,9 @@ function appendMessage(m){
  if(m.reply_to_id){const quoted=document.createElement('div');quoted.className='message-quote';quoted.style.cssText='border-left:3px solid #8fc8ff;background:#00000018;padding:6px 9px;margin-bottom:7px;border-radius:5px;font-size:12px;opacity:.9';quoted.textContent='Message cité';el.append(quoted);client.from('messages').select('content').eq('id',m.reply_to_id).maybeSingle().then(({data})=>{if(data)quoted.textContent=String(data.content||'Message cité').slice(0,180)});}
  const actions=document.createElement('div');actions.className='message-actions';actions.style.cssText='display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12px';
  const replyBtn=document.createElement('button');replyBtn.type='button';replyBtn.textContent='↩ Répondre';replyBtn.style.cssText='border:0;background:transparent;color:inherit;opacity:.85;padding:2px 4px';replyBtn.addEventListener('click',()=>setReplyTarget(m));actions.append(replyBtn);
+ const copyBtn=document.createElement('button');copyBtn.type='button';copyBtn.textContent='Copier';copyBtn.style.cssText='border:0;background:transparent;color:inherit;opacity:.85;padding:2px 4px';copyBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(String(m.content||''));toast('Message copié.')}catch(_){toast('Copie impossible sur cet appareil.')}});actions.append(copyBtn);
  const reactBtn=document.createElement('button');reactBtn.type='button';reactBtn.textContent='😊 Réagir';reactBtn.style.cssText='border:0;background:transparent;color:inherit;opacity:.85;padding:2px 4px';reactBtn.addEventListener('click',()=>showReactionPicker(el,m));actions.append(reactBtn);
- el.append(text,actions,meta);$('chatBody').append(el);loadMessageReactions(m.id,el);scrollChat();
+ el.append(text,actions,meta);$('chatBody').append(el);if(!skipReactionLoad)loadMessageReactions(m.id,el);scrollChat();
  if(m.recipient_id===me.id&&!m.read_at){
   client.from('messages').update({read_at:new Date().toISOString()}).eq('id',m.id).then(({error})=>{if(error)console.warn('Confirmation de lecture indisponible',error);else refreshInbox()});
  }
@@ -462,10 +463,19 @@ async function toggleMessageReaction(message,emoji,el,picker){
   picker.remove();await loadMessageReactions(message.id,el);
  }catch(error){console.warn('Réaction indisponible:',error);toast('Impossible d’enregistrer cette réaction. Vérifiez les autorisations.');}
 }
-async function loadMessageReactions(messageId,el){
+async function loadConversationReactions(messages){
+ const ids=messages.map(m=>m.id);if(!ids.length)return;
  try{
-  const {data,error}=await client.from('message_reactions').select('emoji,user_id').eq('message_id',messageId);
+  const {data,error}=await client.from('message_reactions').select('message_id,emoji,user_id').in('message_id',ids);
   if(error)throw error;
+  const byMessage=new Map();(data||[]).forEach(r=>{if(!byMessage.has(r.message_id))byMessage.set(r.message_id,[]);byMessage.get(r.message_id).push(r)});
+  messages.forEach(m=>{const el=$('chatBody').querySelector('[data-msg="'+m.id+'"]');if(el)loadMessageReactions(m.id,el,byMessage.get(m.id)||[])});
+ }catch(error){console.warn('Chargement groupé des réactions:',error)}
+}
+async function loadMessageReactions(messageId,el,providedRows){
+ try{
+  let data=providedRows;
+  if(!providedRows){const result=await client.from('message_reactions').select('emoji,user_id').eq('message_id',messageId);if(result.error)throw result.error;data=result.data||[];}
   let strip=el.querySelector('.message-reactions');
   if(!strip){strip=document.createElement('div');strip.className='message-reactions';strip.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin-top:5px';el.append(strip);}
   const groups=new Map();(data||[]).forEach(r=>{const x=groups.get(r.emoji)||{count:0,mine:false};x.count++;if(r.user_id===me.id)x.mine=true;groups.set(r.emoji,x)});
