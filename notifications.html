@@ -24,7 +24,7 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261116-notification-center-messages-unlimited-announcements-v38" defer></script>
+<script src="auth-gate.js?v=20261116-notification-center-announcements-realtime-v39" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html" onclick="try{const r=new URL(document.referrer);if(r.origin===location.origin){history.back();return false}}catch(e){}"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
@@ -67,7 +67,7 @@ async function load(force=false){
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
   const [ann,course,req,msg]=await Promise.all([
-   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});if(!admin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q},'annonces')),
+   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q},'annonces')),
    run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),
    admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null}),
    run('communications reçues',client.from('messages').select('id,sender_id,content,created_at,read_at').eq('recipient_id',user.id).order('created_at',{ascending:false}).limit(100))
