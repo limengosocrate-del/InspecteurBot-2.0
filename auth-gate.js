@@ -1010,7 +1010,7 @@ function setup(){
     if(!(window.isSecureContext&&window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.create)){
      passkeyNotice=' La biométrie n’est pas prise en charge par ce navigateur ou cet appareil. Vous pouvez continuer avec votre mot de passe.';
     }else{
-     regMessage.style.color='#334155';regMessage.textContent='Compte créé. Suivez les instructions de votre appareil pour enregistrer votre Passkey…';
+     regMessage.style.color='#334155';regMessage.textContent='Compte créé. Suivez les instructions de sécurité de votre appareil pour activer la connexion biométrique…';
      try{
       const {data:passkeyData,error:passkeyError}=await client.auth.registerPasskey();
       if(passkeyError||!passkeyData?.id)throw passkeyError||new Error('Enregistrement non confirmé.');
