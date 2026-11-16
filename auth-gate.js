@@ -431,10 +431,11 @@ async function showIncomingMessageToast(message){
  const avatar=document.createElement('span');avatar.className='ib-incoming-avatar';avatar.setAttribute('aria-hidden','true');
  if(senderAvatarUrl){const avatarImage=document.createElement('img');avatarImage.src=senderAvatarUrl;avatarImage.alt='';avatarImage.loading='eager';avatarImage.onerror=()=>{avatarImage.remove();avatar.textContent=(senderName.trim().charAt(0)||'A').toUpperCase()};avatar.appendChild(avatarImage)}else{avatar.textContent=(senderName.trim().charAt(0)||'A').toUpperCase()}
  const heading=document.createElement('span');heading.className='ib-incoming-heading';
- const titleText=document.createElement('span');titleText.textContent=senderName+' vous a envoyé un message';
+ const certificationRequest=/^\\[CERTIFICATION_REQUEST:\\d+\\]/.test(String(message.content||''));
+ const titleText=document.createElement('span');titleText.textContent=certificationRequest?'Nouvelle demande de certification':senderName+' vous a envoyé un message';
  const icon=document.createElement('i');icon.className='fa-solid fa-envelope';icon.setAttribute('aria-hidden','true');
  heading.append(titleText,document.createTextNode(' '),icon);title.append(avatar,heading);
- const preview=document.createElement('p');preview.className='ib-incoming-preview';preview.textContent=String(message.content||'Vous avez reçu un nouveau message.').slice(0,180);
+ const preview=document.createElement('p');preview.className='ib-incoming-preview';preview.textContent=certificationRequest?'Une nouvelle demande est en attente. Ouvrez la messagerie administrateur pour examiner le dossier et répondre.':String(message.content||'Vous avez reçu un nouveau message.').slice(0,180);
  const actions=document.createElement('div');actions.className='ib-incoming-actions';
  const reply=document.createElement('button');reply.type='button';reply.className='ib-incoming-reply';reply.textContent='Répondre';
  const ignore=document.createElement('button');ignore.type='button';ignore.className='ib-incoming-ignore';ignore.textContent='Ignorer';
