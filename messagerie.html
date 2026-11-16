@@ -168,7 +168,8 @@ function onSharedPresenceUpdate(event){applyRealtimePresence(event.detail?.userI
 function renderPresenceUI(){
  renderStories();
  document.querySelectorAll('.person[data-person]').forEach(button=>{
-  const isOnline=onlineUserIds.has(button.dataset.person);
+  const person=people.find(p=>p.id===button.dataset.person);
+  const isOnline=person?online(person):onlineUserIds.has(button.dataset.person);
   const wrap=button.querySelector('.avatar-wrap');
   if(!wrap)return;
   let dot=wrap.querySelector('.dot');
