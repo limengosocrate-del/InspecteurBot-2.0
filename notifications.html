@@ -24,22 +24,22 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261116-notification-center-announcements-realtime-v39" defer></script>
+<script src="auth-gate.js?v=20261116-communications-only-certification-inbox-v40" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html" onclick="try{const r=new URL(document.referrer);if(r.origin===location.origin){history.back();return false}}catch(e){}"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
 <main>
 <div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles, formations et communications reçues</p></div></div>
-<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="communications" type="button" id="communicationsTab">Communications</button><button class="tab" data-tab="requests" type="button" id="requestsTab" hidden>Demandes de certification <span id="requestsUnread" class="tab-count"></span></button></div><div style="display:flex;justify-content:flex-end;margin:-2px 0 12px"><button type="button" class="primary" id="refreshNotificationCenter"><i class="fa-solid fa-rotate"></i> Actualiser</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="communications" type="button" id="communicationsTab">Communications</button></div><div style="display:flex;justify-content:flex-end;margin:-2px 0 12px"><button type="button" class="primary" id="refreshNotificationCenter"><i class="fa-solid fa-rotate"></i> Actualiser</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
 
-<section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
+
 </main>
 <script>
 (function(){
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
-let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],communications=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
-const CACHE_PREFIX='inspecteurbot_notifications_cache_v13_';
+let client,user,profile,training=[],communications=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readTraining=new Set();
+const CACHE_PREFIX='inspecteurbot_notifications_cache_v14_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>new Date(s).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
@@ -57,117 +57,38 @@ async function fetchAllRows(queryFactory,label){
  return rows;
 }
 async function load(force=false){
- if(!client||!user)return;
- if(loadInFlight){if(force)loadQueued=true;return;}
- if(!force&&Date.now()-lastLoadAt<700)return;
- loadInFlight=true;lastLoadAt=Date.now();
- const seq=++loadSequence,list=$('notificationList');
- if(!announcements.length&&!training.length&&!requests.length&&!communications.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des notifications…</div>';
+ if(!client||!user)return;if(loadInFlight){if(force)loadQueued=true;return;}if(!force&&Date.now()-lastLoadAt<700)return;
+ loadInFlight=true;lastLoadAt=Date.now();const seq=++loadSequence,list=$('notificationList');if(!training.length&&!communications.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des communications et formations…</div>';
  const run=async(label,query)=>{try{const r=await query;if(r.error)throw r.error;return {data:r.data||[],error:null}}catch(error){console.error('InspecteurBot '+label,error);return {data:[],error}}};
- const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
- try{
-  const [ann,course,req,msg]=await Promise.all([
-   run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id+',created_by.eq.'+user.id);return q},'annonces')),
-   run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),
-   admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null}),
-   run('communications reçues',client.from('messages').select('id,sender_id,content,created_at,read_at').eq('recipient_id',user.id).order('created_at',{ascending:false}).limit(100))
-  ]);
-  if(seq!==loadSequence)return;
-  const errors=[];
-  if(!ann.error)announcements=ann.data;else errors.push('annonces');
-  if(!course.error){
-   training=await Promise.all(course.data.map(async item=>{
-    let notificationUrl=/^https?:\/\//i.test(item.external_url||'')?item.external_url:null;
-    if(!notificationUrl&&item.file_path){
-     try{
-      const signed=await client.storage.from('formation-resources').createSignedUrl(item.file_path,3600);
-      if(!signed.error&&signed.data?.signedUrl)notificationUrl=signed.data.signedUrl;
-      else console.warn('Lien sécurisé de formation indisponible:',signed.error);
-     }catch(storageError){console.warn('Lecture du fichier de formation indisponible:',storageError)}
-    }
-    return {...item,notification_url:notificationUrl};
-   }));
-  }else errors.push('formations');
-  if(admin&&!req.error)requests=req.data;else if(admin&&req.error)errors.push('demandes de certification');
-  if(!msg.error)communications=msg.data;else errors.push('communications reçues');
-  const [readA,readT,readR]=await Promise.all([
-   run('lectures annonces',fetchAllRows(()=>client.from('announcement_reads').select('announcement_id').eq('user_id',user.id),'lectures annonces')),
-   run('lectures formations',fetchAllRows(()=>client.from('training_resource_reads').select('resource_id').eq('user_id',user.id),'lectures formations')),
-   admin?run('lectures demandes',fetchAllRows(()=>client.from('admin_certification_reads').select('request_id').eq('user_id',user.id),'lectures demandes')):Promise.resolve({data:[],error:null})
-  ]);
-  if(seq!==loadSequence)return;
-  if(!readA.error){readAnnouncements.clear();readA.data.forEach(x=>readAnnouncements.add(String(x.announcement_id)))}else errors.push('lectures annonces');
-  if(!readT.error){readTraining.clear();readT.data.forEach(x=>readTraining.add(String(x.resource_id)))}else errors.push('lectures formations');
-  if(admin&&!readR.error){readRequests.clear();readR.data.forEach(x=>readRequests.add(String(x.request_id)))}else if(admin&&readR.error)errors.push('lectures demandes');
-  try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({announcements,training:training.map(({notification_url,...item})=>item),readAnnouncements:[...readAnnouncements],readTraining:[...readTraining],savedAt:Date.now()}))}catch(_){}
-  render();
-  if(errors.length){
-   const msg=document.createElement('div');msg.className='item';msg.setAttribute('role','status');
-   const strong=document.createElement('strong');strong.textContent='Synchronisation partielle';
-   const detail=document.createElement('div');detail.className='item-body';detail.textContent='Certaines données ne sont pas accessibles : '+errors.join(', ')+'. Réessayez avec Actualiser.';
-   msg.append(strong,detail);list.prepend(msg);
-  }
- }finally{
-  loadInFlight=false;
-  if(loadQueued){loadQueued=false;setTimeout(()=>load(true).catch(e=>console.warn('Actualisation en attente',e)),80)}
- }
+ try{const [course,msg]=await Promise.all([run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),run('communications reçues',client.from('messages').select('id,sender_id,content,created_at,read_at').eq('recipient_id',user.id).order('created_at',{ascending:false}).limit(200))]);if(seq!==loadSequence)return;const errors=[];
+ if(!course.error){training=await Promise.all(course.data.map(async item=>{let url=item.external_url&&String(item.external_url).startsWith('http')?item.external_url:null;if(!url&&item.file_path){try{const signed=await client.storage.from('formation-resources').createSignedUrl(item.file_path,3600);if(!signed.error&&signed.data?.signedUrl)url=signed.data.signedUrl;else console.warn('Lien sécurisé de formation indisponible:',signed.error)}catch(err){console.warn('Lecture du fichier de formation indisponible',err)}}return {...item,notification_url:url}}));}else errors.push('formations');
+ if(!msg.error)communications=msg.data;else errors.push('communications reçues');
+ const readT=await run('lectures formations',fetchAllRows(()=>client.from('training_resource_reads').select('resource_id').eq('user_id',user.id),'lectures formations'));if(seq!==loadSequence)return;if(!readT.error){readTraining.clear();readT.data.forEach(x=>readTraining.add(String(x.resource_id)))}else errors.push('lectures formations');
+ try{localStorage.setItem(CACHE_PREFIX+user.id,JSON.stringify({training:training.map(({notification_url,...item})=>item),readTraining:[...readTraining],savedAt:Date.now()}))}catch(_){}render();
+ if(errors.length){const box=document.createElement('div');box.className='item';box.setAttribute('role','status');const strong=document.createElement('strong');strong.textContent='Synchronisation partielle';const detail=document.createElement('div');detail.className='item-body';detail.textContent='Certaines données ne sont pas accessibles : '+errors.join(', ')+'. Réessayez avec Actualiser.';box.append(strong,detail);list.prepend(box)}
+ }finally{loadInFlight=false;if(loadQueued){loadQueued=false;setTimeout(()=>load(true).catch(e=>console.warn('Actualisation en attente',e)),80)}}
 }
 function render(){
- const ann=announcements.filter(x=>isAdmin||!x.target_user_id||x.target_user_id===user?.id).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:x.target_user_id?'Annonce ciblée • '+(isAdmin?'compte destinataire : '+x.target_user_id:'personnelle'):'Annonce officielle',isRead:readAnnouncements.has(String(x.id))}));
  const messages=communications.map(x=>({kind:'message',id:String(x.id),date:x.created_at,title:'Communication reçue',body:x.content||'Message sans contenu',meta:'Message privé • '+(x.read_at?'Déjà consulté':'Nouveau message'),isRead:Boolean(x.read_at)}));
- const courses=training.map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),resourceKind:x.kind,isRead:readTraining.has(String(x.id)),url:(/^https?:\/\//i.test(x.notification_url||x.external_url||'')?(x.notification_url||x.external_url):null)}));
- let items=ann.concat(courses,messages).sort((x,y)=>new Date(y.date)-new Date(x.date));
- if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
- if(tab==='training')items=items.filter(x=>x.kind==='training');
- if(tab==='communications')items=items.filter(x=>x.kind==='message');
- const certificationNotice='';
- const cards=items.map(x=>'<article class="item" data-read-state="'+(x.isRead?'read':'unread')+'" style="border-left:4px solid '+(x.isRead?'#91a3b3':'#087ca7')+'"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':x.kind==='message'?'<i class="fa-solid fa-envelope"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:'+(x.isRead?'#718096':'#087ca7')+';font-size:11px">'+(x.isRead?'DÉJÀ CONSULTÉE':'NOUVEAU')+'</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='announcement'&&x.title==='Votre compte doit être certifié'?'<a class="primary" href="profil.html?certification=required#parametres" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir mes paramètres et demander la certification</a>':'')+(x.kind==='training'?(x.url?(x.resourceKind==='audio'?'<audio controls preload="none" src="'+esc(x.url)+'" style="display:block;width:100%;max-width:520px;margin-top:12px"></audio><a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;text-decoration:none">Ouvrir le communiqué audio</a>':'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>'):'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+(x.isRead?'':'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button>')+'</article>').join('');
- const unreadRequests=requests.filter(x=>x.statut==='en_attente'&&!readRequests.has(String(x.id)));
- const reqCards=requests.map(x=>{const id=String(x.id),isRead=readRequests.has(String(x.id)),statusLabel=String(x.statut||'').replace(/_/g,' ');return '<article class="item" data-read-state="'+(isRead?'read':'unread')+'" style="border-left:4px solid '+(isRead?'#91a3b3':'#c18a11')+'"><div class="item-head"><div class="item-title"><i class="fa-solid fa-user-shield"></i> '+esc(x.nom_complet||'Demande de certification')+' <span style="color:'+(isRead?'#718096':'#b17a00')+';font-size:11px">'+(isRead?'CONSULTÉE':'NOUVELLE DEMANDE')+'</span></div><time class="item-time">'+esc(date(x.created_at))+'</time></div><div class="item-body">Matricule : '+esc(x.matricule||'Non renseigné')+'\nE-mail : '+esc(x.email||'Non renseigné')+'\nCatégorie : '+esc(x.categorie||'Non renseignée')+'</div><div class="meta">État : '+esc(statusLabel||'Non précisé')+'</div><a class="primary" href="admin.html" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la vérification</a>'+(isRead?'':'<button type="button" class="primary" data-mark-read="request" data-id="'+esc(id)+'" style="display:block;margin-top:10px">Marquer comme lue</button>')+'</article>'}).join('');
- if($('requestsTab')){$('requestsTab').hidden=!isAdmin;$('requestsUnread').textContent=String(unreadRequests.length);$('requestsUnread').hidden=unreadRequests.length===0;}
- const showAdminRequests=tab==='requests'||(tab==='all'&&isAdmin);
- const regularEmpty=empty(tab==='training'?'Aucune formation publiée.':tab==='announcements'?'Aucune annonce publiée.':tab==='communications'?'Aucune communication reçue.':'Aucune notification publiée.');
- const hasContent=Boolean(cards)||(showAdminRequests&&Boolean(reqCards));
- $('notificationList').innerHTML=tab==='requests'?(reqCards||empty('Aucune demande de certification dans l’historique.')):(certificationNotice+(hasContent?cards+(showAdminRequests?reqCards:''):regularEmpty));
+ const courses=training.map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),resourceKind:x.kind,isRead:readTraining.has(String(x.id)),url:x.notification_url||(x.external_url&&String(x.external_url).startsWith('http')?x.external_url:null)}));
+ let items=messages.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));if(tab==='training')items=items.filter(x=>x.kind==='training');if(tab==='communications')items=items.filter(x=>x.kind==='message');
+ const cards=items.map(x=>'<article class="item" data-read-state="'+(x.isRead?'read':'unread')+'" style="border-left:4px solid '+(x.isRead?'#91a3b3':'#087ca7')+'"><div class="item-head"><div class="item-title">'+(x.kind==='message'?'<i class="fa-solid fa-envelope"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:'+(x.isRead?'#718096':'#087ca7')+';font-size:11px">'+(x.isRead?'DÉJÀ CONSULTÉE':'NOUVEAU')+'</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='training'?(x.url?(x.resourceKind==='audio'?'<audio controls preload="none" src="'+esc(x.url)+'" style="display:block;width:100%;max-width:520px;margin-top:12px"></audio><a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;text-decoration:none">Ouvrir le communiqué audio</a>':'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>'):'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+(x.isRead?'':'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button>')+'</article>').join('');
+ $('notificationList').innerHTML=cards||empty(tab==='training'?'Aucune formation publiée.':tab==='communications'?'Aucune communication reçue.':'Aucune communication ou formation.');
 }
 async function markRead(kind,id){
- const set=kind==='announcement'?readAnnouncements:kind==='training'?readTraining:kind==='request'?readRequests:null;
  if(kind==='message'){const item=communications.find(x=>String(x.id)===String(id));if(!item||item.read_at)return;const {error}=await client.from('messages').update({read_at:new Date().toISOString()}).eq('id',Number(id)).eq('recipient_id',user.id);if(error)throw error;item.read_at=new Date().toISOString();render();window.dispatchEvent(new CustomEvent('inspecteurbot:notifications-read'));return;}
- if(set.has(String(id)))return;
- let result;
- if(kind==='announcement')result=await client.from('announcement_reads').insert({announcement_id:Number(id),user_id:user.id});
- else if(kind==='message')result=await client.from('messages').update({read_at:new Date().toISOString()}).eq('id',Number(id)).eq('recipient_id',user.id);
- else if(kind==='training')result=await client.from('training_resource_reads').insert({resource_id:id,user_id:user.id});
- else result=await client.from('admin_certification_reads').insert({request_id:Number(id),user_id:user.id});
- if(result?.error&&result.error.code!=='23505')throw result.error;
- set.add(String(id));render();window.dispatchEvent(new CustomEvent('inspecteurbot:notifications-read'));
+ if(kind==='training'){if(readTraining.has(String(id)))return;const {error}=await client.from('training_resource_reads').insert({resource_id:id,user_id:user.id});if(error&&error.code!=='23505')throw error;readTraining.add(String(id));render();window.dispatchEvent(new CustomEvent('inspecteurbot:notifications-read'));}
 }
-
 function init(d){
- if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;isAdmin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
- if(isAdmin){$('adminPanel').hidden=false;$('requestsTab').hidden=false;}
- document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));$('refreshNotificationCenter').addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Actualisation…';try{await load(true)}catch(err){console.error(err);alert('Actualisation impossible. Vérifiez votre connexion.')}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-rotate"></i> Actualiser'}});$('notificationList').addEventListener('click',async e=>{const b=e.target.closest('[data-mark-read]');if(!b)return;b.disabled=true;try{await markRead(b.dataset.markRead,b.dataset.id)}catch(err){console.error(err);b.disabled=false;alert('Impossible de confirmer la lecture. Vérifiez votre connexion puis réessayez.')}});
- if(isAdmin)$('announcementForm').addEventListener('submit',async e=>{
-  e.preventDefault();const title=$('announcementTitle').value.trim(),body=$('announcementBody').value.trim();if(!title||!body)return;
-  const b=$('publishAnnouncement');b.disabled=true;status('announcementStatus','Publication en cours…',true);
-  try{const {error}=await client.from('announcements').insert({title,body,created_by:user.id,target_user_id:null});if(error)throw error;$('announcementTitle').value='';$('announcementBody').value='';status('announcementStatus','Annonce publiée avec succès.',true);await load(true)}
-  catch(e){status('announcementStatus',e.message||'Publication impossible.',false)}finally{b.disabled=false}
- });
- try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){announcements=Array.isArray(cached.announcements)?cached.announcements:[];training=Array.isArray(cached.training)?cached.training:[];(cached.readAnnouncements||[]).forEach(x=>readAnnouncements.add(String(x)));(cached.readTraining||[]).forEach(x=>readTraining.add(String(x)));render()}}catch(_){}
- load(true).catch(e=>{console.warn('Synchronisation des notifications différée :',e.message);if(!announcements.length&&!training.length)$('notificationList').innerHTML='<div class="item" role="alert"><strong>Impossible de synchroniser les rubriques.</strong><div class="item-body">'+esc(e.message||'Vérifiez votre connexion Internet puis réessayez.')+'</div><button type="button" class="primary" id="retryNotifications">Réessayer</button></div>';$('retryNotifications')?.addEventListener('click',()=>load().catch(console.warn))});
- let refreshTimer=null;
- const refreshQuietly=()=>{clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>load(true).catch(e=>console.warn('Actualisation notifications',e)),400)};
- client.channel('ib-notification-center-rebuild-'+user.id)
-  .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'registration_requests'},refreshQuietly)
-  .on('postgres_changes',{event:'*',schema:'public',table:'admin_certification_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
-  .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Canal temps réel des notifications interrompu:',status)});
- const refresh=()=>{if(navigator.onLine!==false&&!document.hidden)setTimeout(()=>load(true).catch(e=>console.warn('Actualisation différée',e)),250)};
- window.addEventListener('online',refresh);window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+ if(started)return;started=true;client=d.client;user=d.user;profile=d.profile;
+ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()}));
+ $('refreshNotificationCenter').addEventListener('click',async e=>{const b=e.currentTarget;b.disabled=true;b.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Actualisation…';try{await load(true)}catch(err){console.error(err);alert('Actualisation impossible. Vérifiez votre connexion.')}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-rotate"></i> Actualiser'}});
+ $('notificationList').addEventListener('click',async e=>{const b=e.target.closest('[data-mark-read]');if(!b)return;b.disabled=true;try{await markRead(b.dataset.markRead,b.dataset.id)}catch(err){console.error(err);b.disabled=false;alert('Impossible de confirmer la lecture. Vérifiez votre connexion puis réessayez.')}});
+ try{const cached=JSON.parse(localStorage.getItem(CACHE_PREFIX+user.id)||'null');if(cached){training=Array.isArray(cached.training)?cached.training:[];(cached.readTraining||[]).forEach(x=>readTraining.add(String(x)));render()}}catch(_){}
+ load(true).catch(err=>{console.warn('Synchronisation des notifications différée :',err.message);if(!training.length&&!communications.length)$('notificationList').innerHTML='<div class="item" role="alert"><strong>Impossible de synchroniser les rubriques.</strong><div class="item-body">'+esc(err.message||'Vérifiez votre connexion Internet puis réessayez.')+'</div><button type="button" class="primary" id="retryNotifications">Réessayer</button></div>';$('retryNotifications')?.addEventListener('click',()=>load().catch(console.warn))});
+ let refreshTimer=null;const refreshQuietly=()=>{clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>load(true).catch(err=>console.warn('Actualisation notifications',err)),400)};
+ client.channel('ib-notification-center-communications-'+user.id).on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},refreshQuietly).on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},refreshQuietly).on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},refreshQuietly).subscribe(state=>{if(state==='CHANNEL_ERROR'||state==='TIMED_OUT')console.warn('Canal temps réel des notifications interrompu:',state)});
+ const refresh=()=>{if(navigator.onLine!==false&&!document.hidden)setTimeout(()=>load(true).catch(err=>console.warn('Actualisation différée',err)),250)};window.addEventListener('online',refresh);window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 }
 document.addEventListener('inspecteurbot:authenticated',e=>init(e.detail));
 function existing(){if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser&&window.inspecteurBotAuthProfile)init({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile})}
