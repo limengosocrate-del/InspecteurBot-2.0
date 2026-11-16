@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#041c5c">
     <meta name="description" content="InspecteurBot RDC : plateforme numérique de l’Inspection Générale du Travail, annuaire, droit du travail et outils de mission.">
-    <link rel="manifest" href="./manifest.json">\n    <link rel="apple-touch-icon" href="./images/inspecteurbot-icon-512.png">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./images/inspecteurbot-icon-512.png">
     <link rel="icon" type="image/svg+xml" href="./assets/icons/inspecteurbot-icon.svg">  
      <meta http-equiv="Cache-Control" content="no-cache">
   
@@ -43,7 +44,8 @@ body{
 /* Espace intermédiaire supprimé : le diaporama rejoint directement le menu. */  
 /* ================= MENU ================= */  
 .menu-index{  
-    display:grid;  
+    display:grid;
+    margin:0;  
     grid-template-columns:repeat(auto-fit,minmax(100px,1fr));  
     gap:18px;  
     padding:20px;  
@@ -368,11 +370,11 @@ footer img{
 
 /* Suppression des pictogrammes à côté de l’heure, de la date et de la température */
 .datetime-top i,.datetime-date i,.datetime-weather i,.datetime-box svg,.datetime-box .fa-clock,.datetime-box .fa-calendar,.datetime-box .fa-temperature-half,.datetime-box .fa-cloud-sun{display:none!important}
-@media(max-width:520px){.banner,.slider img{height:380px}}
+@media(max-width:520px){.banner{height:380px;min-height:380px}.slider img{height:100%}}
 
-/* Bandeau d'accueil restauré : horloge et date lisibles sur les photos */
-.banner{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(250px,42vw,520px)}
-.slider{position:absolute;inset:0;overflow:hidden}
+/* Bandeau d’accueil : image bord à bord, sans espace parasite avant le menu */
+.banner{position:relative;display:block;isolation:isolate;overflow:hidden;width:100%;height:clamp(300px,42vw,520px);min-height:300px;margin:0;padding:0;line-height:0}
+.slider{position:absolute;inset:0;overflow:hidden;margin:0;padding:0}
 .slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
 .slider img.active{opacity:1}
 .banner:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,15,38,.58),rgba(3,15,38,.08) 72%),linear-gradient(0deg,rgba(3,15,38,.45),transparent 65%);z-index:1;pointer-events:none}
