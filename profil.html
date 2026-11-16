@@ -282,7 +282,7 @@ async function setupPushNotifications(){
   registration=await navigator.serviceWorker.getRegistration('./');
   if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});
   await navigator.serviceWorker.ready;
-  let current=await registration.pushManager.getSubscription();
+  const current=await registration.pushManager.getSubscription();
   if(current){
    status.textContent='Les notifications sont déjà activées sur cet appareil.';
    button.textContent='Actualiser mon inscription';
@@ -293,27 +293,31 @@ async function setupPushNotifications(){
  }catch(error){
   console.warn('Préparation push',error);
   status.textContent='Impossible de préparer les notifications. Vérifiez la connexion et rechargez la page.';
-  return;
+  button.disabled=true;return;
  }
+ window.inspecteurBotEnsurePushNotifications=async()=>{
+  // La demande d’autorisation est déclenchée directement par le clic de l’utilisateur.
+  if(Notification.permission==='default'){
+   const permission=await Notification.requestPermission();
+   if(permission!=='granted')throw new Error('Autorisation de notification non accordée. Activez les notifications pour demander la certification.');
+  }
+  if(Notification.permission!=='granted')throw new Error('Les notifications sont bloquées. Autorisez-les dans les paramètres du navigateur.');
+  const activeRegistration=registration||await navigator.serviceWorker.getRegistration('./');
+  if(!activeRegistration)throw new Error('Service de notifications indisponible. Rechargez InspecteurBot puis réessayez.');
+  const {data:keyData,error:keyError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'public_key'}});
+  if(keyError||!keyData?.success||!keyData.publicKey)throw new Error(keyData?.error||keyError?.message||'Clé publique de notification indisponible.');
+  let subscription=await activeRegistration.pushManager.getSubscription();
+  if(!subscription)subscription=await activeRegistration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:encodeKey(keyData.publicKey)});
+  const {data:saveData,error:saveError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'subscribe',subscription:subscription.toJSON()}});
+  if(saveError||!saveData?.success)throw new Error(saveData?.error||saveError?.message||'Enregistrement de cet appareil impossible.');
+  status.textContent='Notifications activées et appareil enregistré. Vous recevrez les messages, annonces, formations et mises à jour de certification.';
+  button.textContent='Notifications activées';
+  return true;
+ };
  button.addEventListener('click',async()=>{
   button.disabled=true;button.textContent='Activation…';
-  try{
-   if(Notification.permission==='default'){
-    const permission=await Notification.requestPermission();
-    if(permission!=='granted')throw new Error('Autorisation de notification non accordée.');
-   }
-   if(Notification.permission!=='granted')throw new Error('Autorisez les notifications dans les paramètres du navigateur.');
-   const {data:keyData,error:keyError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'public_key'}});
-   if(keyError||!keyData?.success||!keyData.publicKey)throw new Error(keyData?.error||keyError?.message||'Clé publique indisponible.');
-   let subscription=await registration.pushManager.getSubscription();
-   if(!subscription){
-    subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:encodeKey(keyData.publicKey)});
-   }
-   const {data:saveData,error:saveError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'subscribe',subscription:subscription.toJSON()}});
-   if(saveError||!saveData?.success)throw new Error(saveData?.error||saveError?.message||'Enregistrement de l’appareil impossible.');
-   status.textContent='Notifications activées sur cet appareil. Vous recevrez les nouveaux messages, annonces, formations et mises à jour de certification.';
-   button.textContent='Notifications activées';
-  }catch(error){
+  try{await window.inspecteurBotEnsurePushNotifications();}
+  catch(error){
    console.error('Activation notifications push',error);
    status.textContent=error?.message||'Activation impossible. Réessayez.';
    button.textContent='Réessayer';
@@ -540,6 +544,19 @@ $('editProfile').addEventListener('submit',async e=>{
  const requiredFields=[['Nom complet',payload.display_name],['Matricule',payload.matricule],['Grade',payload.grade],['Fonction',payload.fonction],['Direction / Antenne',payload.direction_antenne],['Lieu d’affectation',payload.lieu_affectation],['Province',payload.province],['Adresse physique',payload.adresse_physique],['Téléphone',payload.telephone]];
  const missing=requiredFields.filter(([,value])=>!value);
  if(missing.length){message.textContent='Veuillez compléter les champs obligatoires : '+missing.map(([label])=>label).join(', ')+'.';message.style.color='#b42318';return}
+ // Toute demande initiale de certification exige un appareil réellement inscrit aux notifications push.
+ if(profile?.certification_status!=='certified'&&profile?.role!=='admin'){
+  try{
+   if(typeof window.inspecteurBotEnsurePushNotifications!=='function')throw new Error('Le service de notification n’est pas encore prêt. Rechargez la page puis activez les notifications.');
+   await window.inspecteurBotEnsurePushNotifications();
+  }catch(pushError){
+   message.textContent='Certification non envoyée : l’activation des notifications sur cet appareil est obligatoire. '+(pushError?.message||'Activez les notifications puis réessayez.');
+   message.style.color='#b42318';
+   $('ib-push-status').textContent=message.textContent;
+   $('ib-push-enable').scrollIntoView({behavior:'smooth',block:'center'});
+   return;
+  }
+ }
  button.disabled=true;message.textContent='Enregistrement sécurisé dans la base de données… Ne fermez pas cette page.';message.style.color='#075a96';
  window.__inspecteurBotProfileSaving=true;
  try{
