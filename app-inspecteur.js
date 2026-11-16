@@ -1690,15 +1690,17 @@ async function initApp() {
 
   // Initialize documentation content
   const docContainer = document.getElementById('docContent');
-  docContainer.innerHTML = Object.entries(ARTICLES).map(([num, art]) => `
-    <article class="doc-article" id="doc-article-${num}">
-      <button class="copy-btn" onclick="copyDocText(${num})" aria-label="Copier le texte de l'article ${num}">Copier</button>
-      <h3>${art.title}</h3>
-      <p class="article-meta">${art.meta}</p>
-      <div id="doc-text-${num}">${art.body}</div>
-    </article>
-  `).join('');
-  navigateToArticle(187);
+  if (docContainer) {
+    docContainer.innerHTML = Object.entries(ARTICLES).map(([num, art]) => `
+      <article class="doc-article" id="doc-article-${num}">
+        <button class="copy-btn" onclick="copyDocText(${num})" aria-label="Copier le texte de l'article ${num}">Copier</button>
+        <h3>${art.title}</h3>
+        <p class="article-meta">${art.meta}</p>
+        <div id="doc-text-${num}">${art.body}</div>
+      </article>
+    `).join('');
+    navigateToArticle(187);
+  }
 }
 
 function copyDocText(num) {
