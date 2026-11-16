@@ -203,7 +203,7 @@ async function loadInbox(quiet=false){
   }).join('');
   const html=requestCards+messageCards||'<div class="empty">Aucune demande ni aucun message reçu.</div>';
   boxes.forEach(b=>{if(b)b.innerHTML=html;});
-  const unread=rows.filter(m=>!m.read_at).map(m=>m.id);
+  const unread=rows.filter(m=>!m.read_at&&!String(m.content||'').startsWith('[CERTIFICATION_REQUEST:')).map(m=>m.id);
   if(unread.length){const marked=await client.from('messages').update({read_at:new Date().toISOString()}).in('id',unread);if(marked.error)console.warn('Marquage des messages lus:',marked.error);}
  }catch(err){boxes.forEach(b=>{if(b)b.innerHTML='<div class="empty">'+esc(err.message)+'</div>';});if(!quiet)status('global-feedback','Lecture des messages impossible : '+err.message);}
 }
