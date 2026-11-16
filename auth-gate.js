@@ -588,6 +588,24 @@ function startHeaderBadgeTracking(){
  if(!window.__ibHeaderReadEventBound){window.__ibHeaderReadEventBound=true;window.addEventListener('inspecteurbot:notifications-read',()=>scheduleHeaderBadgeRefresh())}
  if(!window.__ibHeaderVisibilityBound){window.__ibHeaderVisibilityBound=true;document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)scheduleHeaderBadgeRefresh()})}
 }
+let ibSubscriptionMonitor=null;
+function startSubscriptionMonitor(){
+ if(ibSubscriptionMonitor)clearInterval(ibSubscriptionMonitor);
+ ibSubscriptionMonitor=setInterval(async()=>{
+  if(!client||!user||profile?.role==='super_admin'||navigator.onLine===false)return;
+  try{
+   const {data,error}=await client.functions.invoke('igt-subscriptions',{body:{action:'status'}});
+   if(error||!data?.success)return;
+   const onProfile=location.pathname.endsWith('/profil.html');
+   if(data.access_allowed===false){
+    if(onProfile)document.body.classList.add('ib-subscription-required');
+    else location.replace(new URL('profil.html?abonnement=requis',location.href).href);
+   }else if(onProfile&&document.body.classList.contains('ib-subscription-required')){
+    location.replace(new URL('index.html?abonnement=actif',location.href).href);
+   }
+  }catch(error){console.warn('Vérification périodique de l’abonnement indisponible.',error)}
+ },60000);
+}
 function startPostAuthServices(accountId){
  const run=()=>{
   if(!user||user.id!==accountId)return;
@@ -738,14 +756,17 @@ async function validate(session){
   if(!data)throw Object.assign(new Error('Profil utilisateur indisponible. Réessayez.'),{authTransient:true});
   if(data.is_active!==true)throw Object.assign(new Error('Ce compte est suspendu ou ne dispose pas d’un profil actif. Contactez l’administrateur.'),{authFatal:true});
   try{localStorage.setItem(cacheKey,JSON.stringify({profile:data,savedAt:Date.now()}))}catch(_){}
-  user=session.user;profile=data;startPostAuthServices(user.id);
+  user=session.user;profile=data;startPostAuthServices(user.id);startSubscriptionMonitor();
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
   const isCertified=data.certification_status==='certified';
   const isSuperAdmin=data.role==='super_admin';
   const subscription=data.subscription||{};
-  const subscriptionBlocked=!isSuperAdmin&&subscription.billing_enabled===true&&subscription.access_allowed===false;
+  const launchDate=subscription.launch_date||'2027-03-05';
+  const kinshasaToday=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const billingEnabled=subscription.billing_enabled===true||kinshasaToday>=launchDate;
+  const subscriptionBlocked=!isSuperAdmin&&billingEnabled&&subscription.access_allowed!==true;
   const isProfilePage=path.endsWith('/profil.html');
   document.body.classList.toggle('ib-subscription-required',subscriptionBlocked&&isProfilePage);
   if(subscriptionBlocked&&!isProfilePage){
