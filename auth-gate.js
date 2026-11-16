@@ -596,15 +596,28 @@ let ibSubscriptionMonitor=null;
 function startSubscriptionMonitor(){
  if(ibSubscriptionMonitor)clearInterval(ibSubscriptionMonitor);
  ibSubscriptionMonitor=setInterval(async()=>{
-  if(!client||!user||profile?.role==='super_admin'||navigator.onLine===false)return;
+  if(!client||!user||profile?.role==='super_admin')return;
+  const onProfile=location.pathname.endsWith('/profil.html');
+  const cachedSub=profile?.subscription||{};
+  const localEnd=cachedSub.current_period_end?new Date(cachedSub.current_period_end).getTime():0;
+  const localToday=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const locallyExpired=localToday>=(cachedSub.launch_date||'2027-03-05')&&!(cachedSub.status==='active'&&Number.isFinite(localEnd)&&localEnd>Date.now());
+  if(locallyExpired){
+   if(onProfile)document.body.classList.add('ib-subscription-required');
+   else location.replace(new URL('profil.html?abonnement=requis',appRootUrl()).href);
+   if(navigator.onLine===false)return;
+  }
+  if(navigator.onLine===false)return;
   try{
    const {data,error}=await client.functions.invoke('igt-subscriptions',{body:{action:'status'}});
    if(error||!data?.success)return;
-   const onProfile=location.pathname.endsWith('/profil.html');
+   profile.subscription={...cachedSub,...data};
+   window.inspecteurBotAuthProfile=profile;
    if(data.access_allowed===false){
     if(onProfile)document.body.classList.add('ib-subscription-required');
     else location.replace(new URL('profil.html?abonnement=requis',appRootUrl()).href);
    }else if(onProfile&&document.body.classList.contains('ib-subscription-required')){
+    document.body.classList.remove('ib-subscription-required');
     location.replace(new URL('index.html?abonnement=actif',appRootUrl()).href);
    }
   }catch(error){console.warn('Vérification périodique de l’abonnement indisponible.',error)}
