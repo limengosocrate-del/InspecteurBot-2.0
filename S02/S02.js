@@ -1272,7 +1272,7 @@ function renderEffectifBlock(kind, idx) {
     list.innerHTML = rows.length ? rows.map(x => {
       const date = x.savedAt || x.createdAt;
       const title = x.fields?.raison || x.fields?.nom_entreprise || x.fields?.province_entite || x.id || "Fiche enregistrée";
-      const code = /^[FS]\\d{2}$/.test(String(x.code || "")) ? String(x.code) : "Fiche";
+      const code = /^[FS]\d{2}$/.test(String(x.code || "")) ? String(x.code) : "Fiche";
       return `<article style="display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:12px 4px;border-bottom:1px solid #dbe3ea">
         <span style="min-width:0;flex:1"><strong style="color:#123d63">${esc(title)}</strong><br><small style="color:#52677d">${esc(code)} · ${date ? new Date(date).toLocaleString("fr-FR") : "Date non précisée"} · ${esc(x.fields?.province || "Province non précisée")} · ${esc(x.fields?.statut_dossier || "Enregistré")}</small></span>
         <button type="button" data-load-record="${esc(x.id)}" style="border:0;border-radius:9px;background:#0b5cab;color:#fff;padding:9px 14px;font-weight:700">Ouvrir la fiche</button>
@@ -1527,7 +1527,7 @@ ${ai}
       if (action === "report") generateReport();
       if (action === "print") window.print();
       if (action === "history") {const p=document.getElementById("formArchivePanel");if(p){p.style.display=p.style.display==="none"?"block":"none";renderArchiveList();}}
-      const record=e.target.closest("[data-load-record]");if(record){const item=readArchives().find(x=>x.id===record.dataset.loadRecord);if(item){if(item.code!==CURRENT_CODE&&/^[FS]\\d{2}$/.test(String(item.code||""))){location.href="../"+item.code+"/"+item.code+".html?archiveId="+encodeURIComponent(item.id);return;}applyData(item);window.scrollTo({top:0,behavior:"smooth"});}}
+      const record=e.target.closest("[data-load-record]");if(record){const item=readArchives().find(x=>x.id===record.dataset.loadRecord);if(item){if(item.code!==CURRENT_CODE&&/^[FS]\d{2}$/.test(String(item.code||""))){location.href="../"+item.code+"/"+item.code+".html?archiveId="+encodeURIComponent(item.id);return;}applyData(item);window.scrollTo({top:0,behavior:"smooth"});}}
     });
       }
 
