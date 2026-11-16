@@ -24,21 +24,21 @@ html:not(.inspecteur-auth-ready) body::after{content:"";position:fixed;left:calc
 html.inspecteur-auth-ready body::before,html.inspecteur-auth-ready body::after{display:none!important}
 </style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin>
-<script src="auth-gate.js?v=20261116-announcements-uncertified-training-delivery-v37" defer></script>
+<script src="auth-gate.js?v=20261116-notification-center-messages-unlimited-announcements-v38" defer></script>
 <style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important;min-height:100vh!important}@media(max-width:760px){body{min-height:100dvh!important}}</style>
 </head><body>
 <header><a class="back" href="index.html" onclick="try{const r=new URL(document.referrer);if(r.origin===location.origin){history.back();return false}}catch(e){}"><i class="fa-solid fa-arrow-left"></i> Accueil</a><div class="brand">InspecteurBot<small>Votre assistant numérique</small></div></header>
 <main>
-<div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles et formations publiées par l’administration</p></div></div>
-<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="requests" type="button" id="requestsTab" hidden>Demandes de certification <span id="requestsUnread" class="tab-count"></span></button></div><div style="display:flex;justify-content:flex-end;margin:-2px 0 12px"><button type="button" class="primary" id="refreshNotificationCenter"><i class="fa-solid fa-rotate"></i> Actualiser</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
+<div class="heading"><div class="heading-icon"><i class="fa-regular fa-bell"></i></div><div><h1>Centre de notifications</h1><p class="sub">Annonces officielles, formations et communications reçues</p></div></div>
+<section class="panel"><div class="tabs"><button class="tab active" data-tab="all" type="button">Tout</button><button class="tab" data-tab="announcements" type="button">Annonces</button><button class="tab" data-tab="training" type="button">Formations</button><button class="tab" data-tab="communications" type="button" id="communicationsTab">Communications</button><button class="tab" data-tab="requests" type="button" id="requestsTab" hidden>Demandes de certification <span id="requestsUnread" class="tab-count"></span></button></div><div style="display:flex;justify-content:flex-end;margin:-2px 0 12px"><button type="button" class="primary" id="refreshNotificationCenter"><i class="fa-solid fa-rotate"></i> Actualiser</button></div><div id="notificationList"><div class="empty"><i class="fa-regular fa-bell-slash"></i>Aucune annonce ou notification.</div></div></section>
 
-<section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" maxlength="5000" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
+<section class="panel" id="adminPanel" hidden><h2><i class="fa-solid fa-bullhorn"></i> Publier une annonce officielle</h2><form id="announcementForm"><input id="announcementTitle" maxlength="180" required placeholder="Titre de l’annonce"><textarea id="announcementBody" required placeholder="Contenu de l’annonce…"></textarea><button class="primary" id="publishAnnouncement" type="submit">Publier l’annonce</button><div class="notice" id="announcementStatus" aria-live="polite"></div></form></section>
 </main>
 <script>
 (function(){
 'use strict';
 const ADMIN_ID='ed2f76c7-4867-4689-8500-b45d6e9b14b2';
-let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
+let client,user,profile,isAdmin=false,announcements=[],training=[],requests=[],communications=[],tab='all',started=false,loadSequence=0,loadInFlight=false,loadQueued=false,lastLoadAt=0;const readAnnouncements=new Set(),readTraining=new Set(),readRequests=new Set();
 const CACHE_PREFIX='inspecteurbot_notifications_cache_v12_';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -62,14 +62,15 @@ async function load(force=false){
  if(!force&&Date.now()-lastLoadAt<700)return;
  loadInFlight=true;lastLoadAt=Date.now();
  const seq=++loadSequence,list=$('notificationList');
- if(!announcements.length&&!training.length&&!requests.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des notifications…</div>';
+ if(!announcements.length&&!training.length&&!requests.length&&!communications.length)list.innerHTML='<div class="empty" role="status"><i class="fa-solid fa-spinner fa-spin"></i>Chargement des notifications…</div>';
  const run=async(label,query)=>{try{const r=await query;if(r.error)throw r.error;return {data:r.data||[],error:null}}catch(error){console.error('InspecteurBot '+label,error);return {data:[],error}}};
  const admin=user?.id===ADMIN_ID||['admin','super_admin'].includes(String(profile?.role||'').toLowerCase());
  try{
-  const [ann,course,req]=await Promise.all([
+  const [ann,course,req,msg]=await Promise.all([
    run('annonces',fetchAllRows(()=>{let q=client.from('announcements').select('*').order('created_at',{ascending:false});if(!admin)q=q.or('target_user_id.is.null,target_user_id.eq.'+user.id);return q},'annonces')),
    run('formations',fetchAllRows(()=>client.from('training_resources').select('*').eq('published',true).order('created_at',{ascending:false}),'formations')),
-   admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null})
+   admin?run('demandes de certification',fetchAllRows(()=>client.from('registration_requests').select('*').eq('statut','en_attente').order('created_at',{ascending:false}),'demandes')):Promise.resolve({data:[],error:null}),
+   run('communications reçues',client.from('messages').select('id,sender_id,content,created_at,read_at').eq('recipient_id',user.id).order('created_at',{ascending:false}).limit(100))
   ]);
   if(seq!==loadSequence)return;
   const errors=[];
@@ -88,6 +89,7 @@ async function load(force=false){
    }));
   }else errors.push('formations');
   if(admin&&!req.error)requests=req.data;else if(admin&&req.error)errors.push('demandes de certification');
+  if(!msg.error)communications=msg.data;else errors.push('communications reçues');
   const [readA,readT,readR]=await Promise.all([
    run('lectures annonces',fetchAllRows(()=>client.from('announcement_reads').select('announcement_id').eq('user_id',user.id),'lectures annonces')),
    run('lectures formations',fetchAllRows(()=>client.from('training_resource_reads').select('resource_id').eq('user_id',user.id),'lectures formations')),
@@ -112,25 +114,30 @@ async function load(force=false){
 }
 function render(){
  const ann=announcements.filter(x=>isAdmin||!x.target_user_id||x.target_user_id===user?.id).map(x=>({kind:'announcement',id:String(x.id),date:x.created_at,title:x.title,body:x.body,meta:x.target_user_id?'Annonce ciblée • '+(isAdmin?'compte destinataire : '+x.target_user_id:'personnelle'):'Annonce officielle',isRead:readAnnouncements.has(String(x.id))}));
+ const messages=communications.map(x=>({kind:'message',id:String(x.id),date:x.created_at,title:'Communication reçue',body:x.content||'Message sans contenu',meta:'Message privé • '+(x.read_at?'Déjà consulté':'Nouveau message'),isRead:Boolean(x.read_at)}));
  const courses=training.map(x=>({kind:'training',id:String(x.id),date:x.created_at,title:x.title,body:x.description||((x.kind==='audio')?'Communication audio publiée.':(x.kind==='pdf')?'Document de formation publié.':'Nouvelle ressource pédagogique publiée.'),meta:'Formation • '+String(x.kind||'ressource').toUpperCase(),resourceKind:x.kind,isRead:readTraining.has(String(x.id)),url:(/^https?:\/\//i.test(x.notification_url||x.external_url||'')?(x.notification_url||x.external_url):null)}));
- let items=ann.concat(courses).sort((x,y)=>new Date(y.date)-new Date(x.date));
+ let items=ann.concat(courses,messages).sort((x,y)=>new Date(y.date)-new Date(x.date));
  if(tab==='announcements')items=items.filter(x=>x.kind==='announcement');
  if(tab==='training')items=items.filter(x=>x.kind==='training');
+ if(tab==='communications')items=items.filter(x=>x.kind==='message');
  const certificationNotice='';
- const cards=items.map(x=>'<article class="item" data-read-state="'+(x.isRead?'read':'unread')+'" style="border-left:4px solid '+(x.isRead?'#91a3b3':'#087ca7')+'"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:'+(x.isRead?'#718096':'#087ca7')+';font-size:11px">'+(x.isRead?'DÉJÀ CONSULTÉE':'NOUVEAU')+'</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='announcement'&&x.title==='Votre compte doit être certifié'?'<a class="primary" href="profil.html?certification=required#parametres" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir mes paramètres et demander la certification</a>':'')+(x.kind==='training'?(x.url?(x.resourceKind==='audio'?'<audio controls preload="none" src="'+esc(x.url)+'" style="display:block;width:100%;max-width:520px;margin-top:12px"></audio><a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;text-decoration:none">Ouvrir le communiqué audio</a>':'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>'):'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+(x.isRead?'':'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button>')+'</article>').join('');
+ const cards=items.map(x=>'<article class="item" data-read-state="'+(x.isRead?'read':'unread')+'" style="border-left:4px solid '+(x.isRead?'#91a3b3':'#087ca7')+'"><div class="item-head"><div class="item-title">'+(x.kind==='announcement'?'<i class="fa-solid fa-bullhorn"></i> ':x.kind==='message'?'<i class="fa-solid fa-envelope"></i> ':'<i class="fa-solid fa-graduation-cap"></i> ')+esc(x.title)+' <span style="color:'+(x.isRead?'#718096':'#087ca7')+';font-size:11px">'+(x.isRead?'DÉJÀ CONSULTÉE':'NOUVEAU')+'</span></div><time class="item-time">'+esc(date(x.date))+'</time></div><div class="item-body">'+esc(x.body)+'</div><div class="meta">'+esc(x.meta)+'</div>'+(x.kind==='announcement'&&x.title==='Votre compte doit être certifié'?'<a class="primary" href="profil.html?certification=required#parametres" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir mes paramètres et demander la certification</a>':'')+(x.kind==='training'?(x.url?(x.resourceKind==='audio'?'<audio controls preload="none" src="'+esc(x.url)+'" style="display:block;width:100%;max-width:520px;margin-top:12px"></audio><a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;text-decoration:none">Ouvrir le communiqué audio</a>':'<a class="primary" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la ressource</a>'):'<a class="primary" href="formation.html" style="display:inline-block;margin-top:10px;text-decoration:none">Accéder au menu Formation</a>'):'')+(x.isRead?'':'<button type="button" class="primary" data-mark-read="'+x.kind+'" data-id="'+esc(x.id)+'" style="display:block;margin-top:10px">Marquer comme lu</button>')+'</article>').join('');
  const unreadRequests=requests.filter(x=>!readRequests.has(String(x.id)));
  const reqCards=unreadRequests.map(x=>{const id=String(x.id);return '<article class="item" style="border-left:4px solid #c18a11"><div class="item-head"><div class="item-title"><i class="fa-solid fa-user-shield"></i> '+esc(x.nom_complet||'Nouvelle demande de certification')+' <span style="color:#b17a00;font-size:11px">NOUVELLE DEMANDE</span></div><time class="item-time">'+esc(date(x.created_at))+'</time></div><div class="item-body">Matricule : '+esc(x.matricule||'Non renseigné')+'\nE-mail : '+esc(x.email||'Non renseigné')+'\nCatégorie : '+esc(x.categorie||'Non renseignée')+'</div><div class="meta">Demande en attente de vérification</div><a class="primary" href="admin.html" style="display:inline-block;margin-top:10px;text-decoration:none">Ouvrir la vérification</a><button type="button" class="primary" data-mark-read="request" data-id="'+esc(id)+'" style="display:block;margin-top:10px">Marquer comme lue</button></article>'}).join('');
+ if($('communicationsTab'))$('communicationsTab').hidden=false;
  if($('requestsTab')){$('requestsTab').hidden=!isAdmin;$('requestsUnread').textContent=String(unreadRequests.length);$('requestsUnread').hidden=unreadRequests.length===0;}
  const showAdminRequests=tab==='requests'||(tab==='all'&&isAdmin);
- const regularEmpty=empty(tab==='training'?'Aucune formation publiée.':tab==='announcements'?'Aucune annonce publiée.':'Aucune notification publiée.');
+ const regularEmpty=empty(tab==='training'?'Aucune formation publiée.':tab==='announcements'?'Aucune annonce publiée.':tab==='communications'?'Aucune communication reçue.':'Aucune notification publiée.');
  const hasContent=Boolean(cards)||(showAdminRequests&&Boolean(reqCards));
  $('notificationList').innerHTML=tab==='requests'?(reqCards||empty('Aucune demande de certification non lue.')):(certificationNotice+(hasContent?cards+(showAdminRequests?reqCards:''):regularEmpty));
 }
 async function markRead(kind,id){
- const set=kind==='announcement'?readAnnouncements:kind==='training'?readTraining:readRequests;
+ const set=kind==='announcement'?readAnnouncements:kind==='training'?readTraining:kind==='request'?readRequests:null;
+ if(kind==='message'){const item=communications.find(x=>String(x.id)===String(id));if(!item||item.read_at)return;const {error}=await client.from('messages').update({read_at:new Date().toISOString()}).eq('id',Number(id)).eq('recipient_id',user.id);if(error)throw error;item.read_at=new Date().toISOString();render();window.dispatchEvent(new CustomEvent('inspecteurbot:notifications-read'));return;}
  if(set.has(String(id)))return;
  let result;
  if(kind==='announcement')result=await client.from('announcement_reads').insert({announcement_id:Number(id),user_id:user.id});
+ else if(kind==='message')result=await client.from('messages').update({read_at:new Date().toISOString()}).eq('id',Number(id)).eq('recipient_id',user.id);
  else if(kind==='training')result=await client.from('training_resource_reads').insert({resource_id:id,user_id:user.id});
  else result=await client.from('admin_certification_reads').insert({request_id:Number(id),user_id:user.id});
  if(result?.error&&result.error.code!=='23505')throw result.error;
@@ -153,6 +160,7 @@ function init(d){
  const refreshQuietly=()=>{clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>load(true).catch(e=>console.warn('Actualisation notifications',e)),400)};
  client.channel('ib-notification-center-rebuild-'+user.id)
   .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},refreshQuietly)
+  .on('postgres_changes',{event:'*',schema:'public',table:'messages',filter:'recipient_id=eq.'+user.id},refreshQuietly)
   .on('postgres_changes',{event:'*',schema:'public',table:'training_resources'},refreshQuietly)
   .on('postgres_changes',{event:'*',schema:'public',table:'announcement_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
   .on('postgres_changes',{event:'*',schema:'public',table:'training_resource_reads',filter:'user_id=eq.'+user.id},refreshQuietly)
