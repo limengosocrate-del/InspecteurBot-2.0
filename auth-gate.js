@@ -4,7 +4,7 @@
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261116-communications-unread-exact-v42';
+const IB_APP_BUILD='20261116-password-required-new-tab-v43';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -818,7 +818,7 @@ function setup(){
  if(passkeyEnrollChoice?.closest('label'))passkeyEnrollChoice.closest('label').hidden=!passkeySupported;
  if(signupPasskeyChoice?.closest('label'))signupPasskeyChoice.closest('label').hidden=!passkeySupported;
  if(passkeyLogin){
-  passkeyLogin.hidden=!passkeySupported;
+  // La biométrie reste enregistrable dans le profil, mais chaque nouvelle connexion exige le mot de passe.\n  passkeyLogin.hidden=true;
   passkeyLogin.addEventListener('click',async()=>{
    if(passkeyLogin.disabled)return;
    passkeyLogin.disabled=true;passkeyLogin.textContent='Vérification biométrique…';msg('Suivez les instructions de sécurité affichées par votre appareil.',true);
@@ -1006,38 +1006,21 @@ async function start(){
  void loadGlobalTheme().catch(themeError=>console.warn('Thèmes globaux non chargés',themeError));
  try{
   await loadLib();
-  // Session partagée entre les pages et les onglets de l'application.
-  // Migration transparente de l'ancienne session sessionStorage vers localStorage.
-  const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v2';
+  // Session conservée uniquement pendant la session de l'onglet.
+  // Tous les menus visités dans le même onglet partagent cette session.
+  // À la fermeture de l'onglet, le navigateur efface sessionStorage :
+  // la prochaine ouverture exigera donc une nouvelle saisie du mot de passe.
+  // Aucune donnée métier de localStorage ou IndexedDB n'est touchée.
+  const IB_AUTH_STORAGE_KEY='inspecteurbot-auth-session-v3';
   let ibAuthStorage;
   try{
-   // Le stockage partagé permet à tous les menus et onglets de réutiliser
-   // la même session Supabase jusqu'à une déconnexion explicite.
-   ibAuthStorage=window.localStorage;
-   const legacyKeys=[IB_AUTH_STORAGE_KEY,'sb-icymfsvbuandgvrhwmaw-auth-token','supabase.auth.token','inspecteurbot-auth-session-v1'];
-   let best=null;
-   for(const storage of [window.localStorage,window.sessionStorage]){
-    for(const key of legacyKeys){
-     try{
-      const raw=storage.getItem(key);if(!raw)continue;
-      const parsed=JSON.parse(raw);const session=parsed?.currentSession||parsed;
-      if(session?.access_token&&session?.refresh_token){
-       const candidate={raw:JSON.stringify(session),expiresAt:Number(session.expires_at||0)};
-       if(!best||candidate.expiresAt>best.expiresAt)best=candidate;
-      }
-     }catch(_){}
-    }
-   }
-   const current=ibAuthStorage.getItem(IB_AUTH_STORAGE_KEY);
-   if(best&&(!current||best.raw!==current)){
-    let currentExpiry=0;
-    try{const parsed=JSON.parse(current||'null');currentExpiry=Number((parsed?.currentSession||parsed)?.expires_at||0)}catch(_){}
-    if(!current||best.expiresAt>currentExpiry+30)ibAuthStorage.setItem(IB_AUTH_STORAGE_KEY,best.raw);
-   }
-   // Ne jamais effacer le jeton courant : les menus doivent le partager.
-    }catch(storageError){
-   console.warn('Stockage de session temporaire indisponible.',storageError);
-   ibAuthStorage=window.localStorage;
+   ibAuthStorage=window.sessionStorage;
+   // Ne jamais importer une ancienne session depuis localStorage :
+   // cela contournerait la demande de mot de passe à la nouvelle ouverture.
+  }catch(storageError){
+   console.error('Stockage sécurisé de session indisponible.',storageError);
+   gate('Le stockage sécurisé de cette session est indisponible. Activez le stockage du navigateur puis réessayez.','retry');
+   return;
   }
   client=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,storage:ibAuthStorage,storageKey:IB_AUTH_STORAGE_KEY,autoRefreshToken:true,detectSessionInUrl:true,experimental:{passkey:true}},realtime:{heartbeatIntervalMs:10000}});
   window.inspecteurBotAuthClient=client;
@@ -1045,7 +1028,7 @@ async function start(){
   const {data,error}=await client.auth.getSession();
   if(error)throw error;
   if(data.session)await validate(data.session);else gate();
-  // La session reste active jusqu'à la déconnexion ou à sa révocation.
+  // La session reste active dans cet onglet jusqu'à la déconnexion ou sa fermeture.
   document.addEventListener('click',e=>{
    const a=e.target.closest&&e.target.closest('a');
    if(a&&(/logout/i.test(a.getAttribute('onclick')||'')||/déconnexion|logout/i.test(a.textContent||''))){
