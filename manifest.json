@@ -22,5 +22,102 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ]
-}
+  ],
+  "shortcuts": [
+    {
+      "name": "Annuaire IGT",
+      "short_name": "Annuaire",
+      "description": "Rechercher un agent dans l’annuaire numérique.",
+      "url": "./igt.html",
+      "icons": [
+        {
+          "src": "./images/inspecteurbot-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Code du Travail",
+      "short_name": "Code",
+      "description": "Consulter le Code du Travail.",
+      "url": "./code-travail.html",
+      "icons": [
+        {
+          "src": "./images/inspecteurbot-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Rapport",
+      "short_name": "Rapport",
+      "description": "Accéder à l’élaboration des rapports.",
+      "url": "./inspecteurs.html",
+      "icons": [
+        {
+          "src": "./images/inspecteurbot-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Quiz Académie IGT",
+      "short_name": "Quiz IGT",
+      "description": "Accéder au Quiz Académie IGT.",
+      "url": "./pages/Quiz_Academie_IGT/index.html",
+      "icons": [
+        {
+          "src": "./images/inspecteurbot-icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "./share.html",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "./file-handler.html",
+      "accept": {
+        "application/pdf": [
+          ".pdf"
+        ],
+        "image/png": [
+          ".png"
+        ],
+        "image/jpeg": [
+          ".jpg",
+          ".jpeg"
+        ],
+        "image/webp": [
+          ".webp"
+        ],
+        "text/plain": [
+          ".txt",
+          ".csv"
+        ],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+          ".xlsx"
+        ]
+      }
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
+}\n
