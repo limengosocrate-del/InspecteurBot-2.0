@@ -215,7 +215,7 @@ async function setupPasskeyPanel(){
     :'Aucune protection biométrique n’est encore activée. Vous pouvez la configurer sur cet appareil.';
    button.textContent=items.length?'Ajouter une protection supplémentaire':'Configurer mon empreinte digitale';
    button.disabled=false;
-  }catch(err){status.textContent='Impossible de vérifier la Passkey : '+(err?.message||'réessayez après avoir actualisé la page.');}
+  }catch(err){status.textContent='Impossible de vérifier la protection biométrique : '+(err?.message||'réessayez après avoir actualisé la page.');}
  };
  button.addEventListener('click',async()=>{
   button.disabled=true;status.textContent='Préparation de la configuration sécurisée…';
