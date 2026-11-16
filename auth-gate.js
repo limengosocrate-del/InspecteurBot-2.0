@@ -766,7 +766,9 @@ async function validate(session){
   const launchDate=subscription.launch_date||'2027-03-05';
   const kinshasaToday=new Intl.DateTimeFormat('en-CA',{timeZone:'Africa/Kinshasa',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const billingEnabled=subscription.billing_enabled===true||kinshasaToday>=launchDate;
-  const subscriptionBlocked=!isSuperAdmin&&billingEnabled&&subscription.access_allowed!==true;
+  const localPeriodEnd=subscription.current_period_end?new Date(subscription.current_period_end).getTime():0;
+  const localSubscriptionActive=subscription.status==='active'&&Number.isFinite(localPeriodEnd)&&localPeriodEnd>Date.now();
+  const subscriptionBlocked=!isSuperAdmin&&billingEnabled&&!localSubscriptionActive;
   const isProfilePage=path.endsWith('/profil.html');
   document.body.classList.toggle('ib-subscription-required',subscriptionBlocked&&isProfilePage);
   if(subscriptionBlocked&&!isProfilePage){
