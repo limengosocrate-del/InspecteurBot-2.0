@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#041c5c"><meta name="description" content="Bloc-notes local et privé d’InspecteurBot.">
+<link rel="manifest" href="./manifest.json">
+<title>Bloc-notes — InspecteurBot</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#f3f6fb;color:#102b4c}
+main{width:min(900px,calc(100% - 24px));margin:22px auto;padding:20px;background:#fff;border:1px solid #dce6f0;border-radius:18px;box-shadow:0 8px 30px #0b2a4a12}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:23px;color:#073b70;margin:0}p{line-height:1.5;color:#52657b}
+input,textarea{width:100%;padding:13px;border:1px solid #cbd8e6;border-radius:10px;font:16px Arial;color:#102b4c;background:#f8fbff}
+textarea{min-height:220px;resize:vertical;margin-top:10px;line-height:1.55}
+button,a{border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.primary{background:#07518a;color:#fff}.secondary{background:#e8f1f8;color:#17476b}.danger{background:#fff0ef;color:#a52b25}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+#status{min-height:20px;font-size:13px;color:#087448}
+#notes-list{display:grid;gap:8px;margin-top:14px}
+.note-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #e0e8f0;border-radius:11px;background:#fbfdff}
+.note-item button{padding:9px 11px}.note-title{font-weight:700;color:#173e62;overflow-wrap:anywhere}.note-date{font-size:12px;color:#728297;margin-top:4px}
+.privacy{font-size:12px;background:#edf7f2;color:#286047;padding:10px 12px;border-radius:9px}
+@media(max-width:520px){main{padding:15px;margin:12px auto}h1{font-size:20px}.actions button{flex:1}}
+</style>
+<script src="./auth-gate.js?v=20261117-pwa-capabilities-v52" defer></script>
+</head>
+<body>
+<main>
+<header><h1>📝 Bloc-notes InspecteurBot</h1><a class="secondary" href="./index.html">← Accueil</a></header>
+<p class="privacy">Vos notes sont enregistrées uniquement sur cet appareil, dans le navigateur, pour votre compte connecté. Elles ne sont pas envoyées à Supabase.</p>
+<input id="note-title" maxlength="120" placeholder="Titre de la note" aria-label="Titre de la note">
+<textarea id="note-body" placeholder="Commencez à écrire votre note…" aria-label="Contenu de la note"></textarea>
+<div class="actions"><button class="primary" id="new-note" type="button">+ Nouvelle note</button><button class="secondary" id="copy-note" type="button">Copier</button><button class="secondary" id="export-note" type="button">Exporter .txt</button><button class="danger" id="delete-note" type="button">Supprimer</button></div>
+<p id="status" aria-live="polite">Connexion sécurisée requise…</p>
+<h2 style="font-size:17px;color:#173e62;margin-top:22px">Mes notes enregistrées</h2>
+<div id="notes-list"></div>
+</main>
+<script>
+(()=>{'use strict';
+const title=document.getElementById('note-title'),body=document.getElementById('note-body'),status=document.getElementById('status'),list=document.getElementById('notes-list');
+let userId='',items=[],activeId=null,ready=false,saveTimer=0;
+const storageKey=()=> 'inspecteurbot_notes_v1_'+userId;
+const stamp=()=>new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'});
+function persist(){if(!ready)return;try{localStorage.setItem(storageKey(),JSON.stringify(items));status.textContent='Enregistré sur cet appareil · '+stamp()}catch(e){status.textContent='Espace local indisponible. Exportez vos notes pour les conserver.'}}
+function current(){return items.find(x=>x.id===activeId)}
+function renderList(){list.replaceChildren();if(!items.length){const p=document.createElement('p');p.textContent='Aucune note enregistrée pour le moment.';list.append(p);return}
+items.slice().sort((a,b)=>(b.updated||0)-(a.updated||0)).forEach(item=>{const row=document.createElement('div');row.className='note-item';const info=document.createElement('div');const name=document.createElement('div');name.className='note-title';name.textContent=item.title||'Sans titre';const date=document.createElement('div');date.className='note-date';date.textContent=item.date||'';info.append(name,date);const open=document.createElement('button');open.className='secondary';open.type='button';open.textContent='Ouvrir';open.addEventListener('click',()=>select(item.id));row.append(info,open);list.append(row)})}
+function select(id){const item=items.find(x=>x.id===id);if(!item)return;activeId=id;title.value=item.title||'';body.value=item.body||'';renderList();status.textContent='Note ouverte.'}
+function save(){const item=current();if(!item)return;item.title=title.value.trim();item.body=body.value;item.date=stamp();item.updated=Date.now();persist();renderList()}
+function create(){const id='n'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);items.push({id,title:'',body:'',date:stamp(),updated:Date.now()});activeId=id;title.value='';body.value='';persist();renderList();title.focus()}
+function init(event){const detail=event&&event.detail||{};const user=detail.user||window.inspecteurBotAuthUser;if(!user||!user.id||ready)return;userId=String(user.id);try{const parsed=JSON.parse(localStorage.getItem(storageKey())||'[]');items=Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.id==='string'):[]}catch(_){items=[]}ready=true;renderList();if(items.length&&!new URLSearchParams(location.search).has('new'))select(items.slice().sort((a,b)=>(b.updated||0)-(a.updated||0))[0].id);else create();status.textContent='Notes locales prêtes.'}
+window.addEventListener('inspecteurbot:authenticated',init);if(window.inspecteurBotAuthUser)init();
+title.addEventListener('input',()=>{clearTimeout(saveTimer);saveTimer=setTimeout(save,250)});body.addEventListener('input',()=>{clearTimeout(saveTimer);saveTimer=setTimeout(save,250)});
+document.getElementById('new-note').addEventListener('click',create);
+document.getElementById('delete-note').addEventListener('click',()=>{if(!activeId)return;items=items.filter(x=>x.id!==activeId);activeId=null;title.value='';body.value='';persist();renderList();if(items.length)select(items[0].id);else status.textContent='Note supprimée.'});
+document.getElementById('copy-note').addEventListener('click',async()=>{const value=[title.value,body.value].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(value);status.textContent='Note copiée.'}catch(_){body.focus();body.select();status.textContent='Sélectionnez le texte puis choisissez Copier.'}});
+document.getElementById('export-note').addEventListener('click',()=>{const item=current();if(!item)return;const blob=new Blob([item.title+'\n\n'+item.body],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(item.title||'note-inspecteurbot').replace(/[^a-z0-9-_ ]/gi,'').trim().replace(/\s+/g,'-')+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+})();
+</script>
+</body></html>
