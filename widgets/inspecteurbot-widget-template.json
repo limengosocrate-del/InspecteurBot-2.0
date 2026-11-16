@@ -1,0 +1,33 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "${title}",
+      "size": "Large",
+      "weight": "Bolder",
+      "color": "Light"
+    },
+    {
+      "type": "TextBlock",
+      "text": "${subtitle}",
+      "wrap": true,
+      "color": "Light",
+      "spacing": "Small"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Execute",
+      "title": "Ouvrir InspecteurBot",
+      "verb": "open-app"
+    },
+    {
+      "type": "Action.Execute",
+      "title": "Nouvelle note",
+      "verb": "new-note"
+    }
+  ]
+}
