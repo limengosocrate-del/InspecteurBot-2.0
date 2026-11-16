@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#073b70"><title>Gestion des abonnements — InspecteurBot</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--navy:#073b70;--blue:#075b91;--ink:#18344d;--muted:#647b91;--line:#dce6ef;--bg:#f3f7fb;--green:#13734d;--red:#ad3342}
+*{box-sizing:border-box}html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,Arial,sans-serif}
+header{background:linear-gradient(120deg,#082d59,#087fae);color:#fff;padding:20px max(16px,calc((100% - 1150px)/2))}
+header .top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}header h1{font-size:clamp(21px,4vw,29px);margin:0}header p{margin:5px 0 0;color:#e1f2fc;font-size:13px}
+a.back{color:#fff;text-decoration:none;font-weight:750;background:#ffffff18;padding:9px 12px;border-radius:9px}
+main{max-width:1150px;margin:20px auto;padding:0 14px 50px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:14px;box-shadow:0 4px 16px #123b5c08}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{padding:14px;border-radius:10px;background:#f1f7fb}.stat small{display:block;color:var(--muted)}.stat strong{font-size:24px;color:var(--navy)}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.toolbar input,.toolbar select{padding:10px 12px;border:1px solid var(--line);border-radius:9px;min-height:42px;background:white;color:var(--ink)}
+button{border:0;border-radius:9px;padding:10px 13px;font-weight:750;cursor:pointer}.primary{background:var(--blue);color:white}.soft{background:#eaf3fa;color:var(--blue)}.approve{background:#e4f6ed;color:var(--green)}.reject{background:#fff0f1;color:var(--red)}button:disabled{opacity:.5;cursor:wait}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;min-width:900px;border-collapse:collapse;font-size:12px}th,td{padding:11px 10px;text-align:left;vertical-align:top;border-bottom:1px solid #edf1f5}th{background:#edf5fb;color:#35536e;position:sticky;top:0}td strong{color:var(--navy)}.muted{color:var(--muted)}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#fff4df;color:#815719;font-weight:800;font-size:10px}.pill.ok{background:#e4f6ed;color:var(--green)}.pill.no{background:#fff0f1;color:var(--red)}.actions{display:flex;gap:7px;flex-wrap:wrap}.feedback{min-height:24px;margin:10px 0;color:var(--muted);font-size:13px}.empty{text-align:center;color:var(--muted);padding:26px}.foot{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6}
+@media(max-width:650px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+</style></head>
+<body>
+<header><div class="top"><div><h1><i class="fa-solid fa-credit-card"></i> Gestion des abonnements</h1><p>Vérification des paiements trimestriels M-Pesa · InspecteurBot RDC</p></div><a class="back" href="./profil.html"><i class="fa-solid fa-arrow-left"></i> Retour au profil</a></div></header>
+<main>
+<section class="card"><div class="stats">
+<div class="stat"><small>Déclarations reçues</small><strong id="count-all">—</strong></div>
+<div class="stat"><small>En attente</small><strong id="count-pending">—</strong></div>
+<div class="stat"><small>Paiements validés</small><strong id="count-approved">—</strong></div>
+</div>
+<div class="toolbar"><input id="search" type="search" placeholder="Rechercher nom, matricule ou référence…" style="flex:1;min-width:220px"><select id="filter"><option value="all">Tous les paiements</option><option value="pending">En attente</option><option value="approved">Validés</option><option value="rejected">Refusés</option></select><button id="refresh" class="soft"><i class="fa-solid fa-rotate"></i> Actualiser</button></div>
+<div id="feedback" class="feedback" role="status" aria-live="polite">Vérification des autorisations…</div>
+<div class="table-wrap"><table><thead><tr><th>Utilisateur</th><th>Matricule / téléphone</th><th>Montant</th><th>Référence M-Pesa</th><th>Date</th><th>État</th><th>Décision</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty">Chargement…</td></tr></tbody></table></div>
+<p class="foot">Ne validez un paiement qu’après avoir vérifié la réception réelle des 4 USD sur le compte M-Pesa destinataire 0827563163. Une référence saisie par un utilisateur n’est pas, à elle seule, une preuve de paiement. Chaque validation accorde 3 mois d’accès.</p>
+</section>
+</main>
+<script src="./auth-gate.js?v=20261116-subscriptions-v1"></script>
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);let client=null,user=null,profile=null,payments=[];
+function status(message,error=false){$("feedback").textContent=message;$("feedback").style.color=error?"#ad3342":"#647b91"}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function load(){
+ if(!client)return;status("Chargement sécurisé des déclarations de paiement…");
+ $("rows").innerHTML='<tr><td colspan="7" class="empty">Chargement…</td></tr>';
+ try{
+  const {data,error}=await client.functions.invoke("igt-subscriptions",{body:{action:"admin_list"}});
+  if(error||!data?.success)throw new Error(data?.message||error?.message||"Chargement impossible.");
+  payments=data.payments||[];render();status(payments.length+" déclaration(s) chargée(s).");
+ }catch(err){$("rows").innerHTML='<tr><td colspan="7" class="empty">'+esc(err.message)+'</td></tr>';status(err.message||"Erreur de chargement.",true)}
+}
+function render(){
+ const q=$("search").value.trim().toLowerCase(),filter=$("filter").value;
+ $("count-all").textContent=payments.length;$("count-pending").textContent=payments.filter(p=>p.status==="pending").length;$("count-approved").textContent=payments.filter(p=>p.status==="approved").length;
+ const rows=payments.filter(p=>(filter==="all"||p.status===filter)&&[p.profile?.display_name,p.profile?.matricule,p.profile?.telephone,p.transaction_reference].some(v=>String(v||"").toLowerCase().includes(q)));
+ if(!rows.length){$("rows").innerHTML='<tr><td colspan="7" class="empty">Aucune déclaration pour ce filtre.</td></tr>';return}
+ $("rows").innerHTML=rows.map(p=>{
+  const name=p.profile?.display_name||"Utilisateur";
+  const state=p.status==="approved"?'<span class="pill ok">Validé</span>':p.status==="rejected"?'<span class="pill no">Refusé</span>':'<span class="pill">En attente</span>';
+  const decision=p.status==="pending"?'<div class="actions"><button class="approve" data-review="approve" data-id="'+esc(p.id)+'"><i class="fa-solid fa-check"></i> Valider</button><button class="reject" data-review="reject" data-id="'+esc(p.id)+'"><i class="fa-solid fa-xmark"></i> Refuser</button></div>':(p.period_end?'Jusqu’au '+new Date(p.period_end).toLocaleDateString("fr-FR",{timeZone:"Africa/Kinshasa"}):"—");
+  return '<tr><td><strong>'+esc(name)+'</strong><br><span class="muted">'+esc(p.user_id)+'</span></td><td>'+esc(p.profile?.matricule||"—")+'<br>'+esc(p.profile?.telephone||"—")+'</td><td><strong>'+esc(p.amount)+' '+esc(p.currency)+'</strong><br><span class="muted">M-Pesa</span></td><td><strong>'+esc(p.transaction_reference)+'</strong><br><span class="muted">Vers '+esc(p.recipient_phone)+'</span></td><td>'+new Date(p.created_at).toLocaleString("fr-FR",{timeZone:"Africa/Kinshasa"})+'</td><td>'+state+(p.admin_note?'<br><small class="muted">'+esc(p.admin_note)+'</small>':"")+'</td><td>'+decision+'</td></tr>';
+ }).join("");
+}
+async function review(id,decision,button){
+ const p=payments.find(x=>x.id===id);if(!p)return;
+ const action=decision==="approve"?"valider":"refuser";
+ if(!confirm("Confirmez-vous de "+action+" le paiement M-Pesa de "+(p.profile?.display_name||"cet utilisateur")+" pour 4 USD ? Vérifiez d’abord la réception réelle des fonds."))return;
+ button.disabled=true;button.textContent="Traitement…";
+ try{
+  const {data,error}=await client.functions.invoke("igt-subscriptions",{body:{action:"admin_review",payment_id:id,decision}});
+  if(error||!data?.success)throw new Error(data?.message||error?.message||"Décision non enregistrée.");
+  status(data.message||"Décision enregistrée.");await load();
+ }catch(err){status(err.message||"Impossible d’enregistrer la décision.",true);button.disabled=false;button.textContent=decision==="approve"?"Valider":"Refuser"}
+}
+$("rows").addEventListener("click",e=>{const b=e.target.closest("[data-review]");if(b)review(b.dataset.id,b.dataset.review,b)});
+$("search").addEventListener("input",render);$("filter").addEventListener("change",render);$("refresh").addEventListener("click",load);
+function init(e){
+ client=e.detail.client;user=e.detail.user;profile=e.detail.profile;
+ if(!["super_admin","admin"].includes(profile?.role)){status("Accès réservé à l’administration.",true);$("rows").innerHTML='<tr><td colspan="7" class="empty">Accès non autorisé.</td></tr>';return}
+ void load();
+}
+window.addEventListener("inspecteurbot:authenticated",init,{once:true});
+if(window.inspecteurBotAuthUser?.id)init({detail:{client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser,profile:window.inspecteurBotAuthProfile}});
+})();
+</script></body></html>
