@@ -102,7 +102,7 @@
 <section class="view" id="view-announcements">
  <div class="grid2">
   <div class="panel"><div class="panel-head"><div><h3>Publier une annonce officielle</h3><p class="sub">Une annonce s'affiche dans les notifications des destinataires.</p></div></div>
-   <div class="form-grid"><label>Titre<input class="field" id="announcement-title" maxlength="160" placeholder="Titre de l'annonce"></label><label>Destinataires<select class="field" id="announcement-mode"><option value="all">Tous les membres</option><option value="uncertified">Tous les comptes non certifiés</option><option value="selected">Membres sélectionnés dans l'annuaire</option></select></label><label>Contenu<textarea class="field" id="announcement-body" maxlength="2500" placeholder="Rédigez l'annonce (2 500 caractères maximum)…"></textarea></label><button class="btn gold" id="publish-announcement"><i class="fa-solid fa-bullhorn"></i> Publier l'annonce</button></div><div class="feedback" id="announcement-feedback" role="status"></div>
+   <div class="form-grid"><label>Titre<input class="field" id="announcement-title" maxlength="160" placeholder="Titre de l'annonce"></label><label>Destinataires<select class="field" id="announcement-mode"><option value="all">Tous les membres</option><option value="uncertified">Tous les comptes non certifiés</option><option value="selected">Membres sélectionnés dans l'annuaire</option></select></label><label>Contenu<textarea class="field" id="announcement-body" placeholder="Rédigez l'annonce (2 500 caractères maximum)…"></textarea></label><button class="btn gold" id="publish-announcement"><i class="fa-solid fa-bullhorn"></i> Publier l'annonce</button></div><div class="feedback" id="announcement-feedback" role="status"></div>
   </div>
   <div class="panel"><div class="panel-head"><div><h3>Annonces publiées</h3><p class="sub">Historique des communications officielles.</p></div><button class="btn light" id="refresh-announcements">Actualiser</button></div><div class="message-list" id="announcement-list"><div class="empty">Aucune annonce chargée.</div></div></div>
  </div>
@@ -367,6 +367,6 @@ $('payroll-body').addEventListener('change',async e=>{
 
 })();
 </script>
-<script src="auth-gate.js?v=20261116-announcements-uncertified-training-delivery-v37"></script>
+<script src="auth-gate.js?v=20261116-notification-center-messages-unlimited-announcements-v38"></script>
 </body>
 </html>
