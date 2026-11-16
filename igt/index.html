@@ -21,7 +21,7 @@ html,body{margin:0;min-height:100%;background:#f4f7fb}
   navigator.serviceWorker.register('../service-worker.js?v=20261116-password-required-new-tab-v43',{scope:'../',updateViaCache:'none'}).catch(err=>console.info('Cache local IGT indisponible',err));
  }
  const startupStarted=Date.now();
- const version='20261116-password-required-new-tab-v43';
+ const version='20261116-igt-device-security-v1';
  const files=[
   'part-001.txt','part-002.txt',
   'part-003-01.txt','part-003-02.txt','part-003-03.txt','part-003-04.txt','part-003-05.txt',
@@ -48,6 +48,112 @@ html,body{margin:0;min-height:100%;background:#f4f7fb}
   const startupStyle='<style id="ib-igt-startup-style">#ib-igt-startup-splash{position:fixed;inset:0;z-index:2147483647;display:flex;visibility:visible!important;flex-direction:column;align-items:center;justify-content:center;gap:11px;padding:24px;background:radial-gradient(circle at 50% 35%,#123f70 0%,#071b34 58%,#031126 100%);color:#fff;text-align:center;font:15px Arial,sans-serif}#ib-igt-startup-splash strong{font-size:clamp(32px,8vw,46px);font-weight:800;letter-spacing:.3px}#ib-igt-startup-splash span{color:#d8eaff;font-size:15px}#ib-igt-startup-splash i{width:28px;height:28px;margin-top:12px;border:3px solid #ffffff40;border-top-color:#ffd700;border-radius:50%;animation:ib-igt-spin .8s linear infinite}@keyframes ib-igt-spin{to{transform:rotate(360deg)}}#ib-igt-startup-splash.ib-hide{opacity:0;pointer-events:none;transition:opacity .22s ease}</style>';
   page=page.replace('</head>',startupStyle+'\n</head>');
   page=page.replace(/<body([^>]*)>/i,'<body$1><div id="ib-igt-startup-splash" role="status" aria-live="polite"><strong>InspecteurBot</strong><span>Ouverture de votre espace IGT sécurisé…</span><i aria-hidden="true"></i></div>');
+  const securityPanel = `<script>
+(function(){
+ 'use strict';
+ const GUARD_PREFIX='ib_igt_login_guard_';
+ function installLoginGuard(client){
+  if(!client||client.auth.__ibIgtLoginGuard)return;
+  const original=client.auth.signInWithPassword.bind(client.auth);
+  client.auth.signInWithPassword=async function(credentials){
+   const email=String(credentials&&credentials.email||'').trim().toLowerCase();
+   const key=GUARD_PREFIX+encodeURIComponent(email||'compte');
+   let state={count:0,lockUntil:0};
+   try{state=Object.assign(state,JSON.parse(localStorage.getItem(key)||'{}'))}catch(_){}
+   const now=Date.now();
+   if(state.lockUntil>now){
+    const seconds=Math.ceil((state.lockUntil-now)/1000);
+    throw new Error('Protection de sécurité : trop de tentatives incorrectes. Réessayez dans '+(seconds>=60?Math.ceil(seconds/60)+' minute(s)':seconds+' seconde(s)')+'.');
+   }
+   if(state.lockUntil&&state.lockUntil<=now&&Number(state.count)>=5)state={count:0,lockUntil:0};
+   const result=await original(credentials);
+   if(result&&result.error){
+    const count=(Number(state.count)||0)+1;
+    const lockUntil=count>=5?now+10*60*1000:count>=3?now+15*1000:0;
+    try{localStorage.setItem(key,JSON.stringify({count,lockUntil,updatedAt:now}))}catch(_){}
+   }else{
+    try{localStorage.removeItem(key)}catch(_){}
+   }
+   return result;
+  };
+  client.auth.__ibIgtLoginGuard=true;
+ }
+ function addStyles(){
+  if(document.getElementById('ib-igt-security-style'))return;
+  const s=document.createElement('style');s.id='ib-igt-security-style';
+  s.textContent='#ib-igt-security-open{position:fixed;right:14px;bottom:16px;z-index:2147483000;border:0;border-radius:999px;padding:12px 16px;background:#123d60;color:#fff;font:700 13px Arial,sans-serif;box-shadow:0 5px 20px #061b3540;cursor:pointer}#ib-igt-security-shade{position:fixed;inset:0;z-index:2147483001;background:#061426a8;display:none;align-items:center;justify-content:center;padding:14px;font-family:Arial,sans-serif}#ib-igt-security-card{width:min(100%,540px);max-height:86vh;overflow:auto;background:#fff;color:#15283e;border-radius:18px;padding:18px;box-shadow:0 18px 60px #0005}#ib-igt-security-card h2{margin:0 0 6px;font-size:20px;color:#123d60}#ib-igt-security-card p{margin:0 0 14px;color:#52657a;font-size:13px;line-height:1.5}#ib-igt-security-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}#ib-igt-security-actions button,#ib-igt-security-card button{border:0;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}#ib-igt-security-refresh{background:#e7f1fb;color:#123d60}#ib-igt-security-close{background:#eef1f5;color:#334155}#ib-igt-security-list{display:grid;gap:9px}#ib-igt-security-list article{border:1px solid #dbe4ed;border-radius:12px;padding:12px;background:#f8fafc}#ib-igt-security-list strong{display:block;color:#173b5c;font-size:14px}#ib-igt-security-list small{display:block;color:#586b7d;font-size:12px;line-height:1.6;margin-top:4px;overflow-wrap:anywhere}#ib-igt-security-list .ib-igt-current{display:inline-block;margin-top:7px;padding:4px 8px;border-radius:20px;background:#e1f5e9;color:#17633a;font-size:11px;font-weight:700}#ib-igt-security-list .ib-igt-revoked{display:inline-block;margin-top:7px;padding:4px 8px;border-radius:20px;background:#f1f2f4;color:#596579;font-size:11px;font-weight:700}#ib-igt-security-list .ib-igt-revoke{margin-top:9px;background:#fff0f0;color:#a32121;font-size:12px}#ib-igt-security-status{font-size:12px;color:#52657a;min-height:18px;margin:6px 0}';
+  document.head.appendChild(s);
+ }
+ function mount(client){
+  if(document.getElementById('ib-igt-security-open'))return;
+  addStyles();
+  const open=document.createElement('button');open.id='ib-igt-security-open';open.type='button';open.textContent='🔐 Mes appareils';
+  const shade=document.createElement('div');shade.id='ib-igt-security-shade';
+  const card=document.createElement('section');card.id='ib-igt-security-card';card.setAttribute('role','dialog');card.setAttribute('aria-modal','true');
+  card.innerHTML='<h2>Sécurité de mon compte</h2><p>Consultez les connexions enregistrées depuis le Menu IGT. Si vous ne reconnaissez pas un appareil, révoquez sa session.</p><div id="ib-igt-security-actions"><button id="ib-igt-security-refresh" type="button">Actualiser</button><button id="ib-igt-security-close" type="button">Fermer</button></div><div id="ib-igt-security-status" role="status"></div><div id="ib-igt-security-list"></div>';
+  shade.appendChild(card);document.body.append(open,shade);
+  const status=card.querySelector('#ib-igt-security-status'),list=card.querySelector('#ib-igt-security-list');
+  function close(){shade.style.display='none'}
+  open.addEventListener('click',()=>{shade.style.display='flex';void load()});
+  shade.addEventListener('click',e=>{if(e.target===shade)close()});
+  card.querySelector('#ib-igt-security-close').addEventListener('click',close);
+  card.querySelector('#ib-igt-security-refresh').addEventListener('click',()=>void load());
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+  async function load(){
+   status.textContent='Chargement des connexions…';list.replaceChildren();
+   try{
+    const {data,error}=await client.functions.invoke('igt-device-security',{body:{action:'list'}});
+    if(error||!data||!data.success)throw error||new Error(data&&data.message||'Chargement impossible.');
+    const rows=Array.isArray(data.sessions)?data.sessions:[];
+    if(!rows.length){status.textContent='Aucune session enregistrée pour le moment.';return}
+    status.textContent=rows.length+' session(s) trouvée(s).';
+    rows.forEach(row=>{
+     const article=document.createElement('article');
+     const title=document.createElement('strong');title.textContent=row.device_label||'Appareil non identifié';
+     const details=document.createElement('small');
+     const started=new Date(row.started_at).toLocaleString('fr-FR',{timeZone:'Africa/Kinshasa'});
+     const seen=new Date(row.last_seen||row.started_at).toLocaleString('fr-FR',{timeZone:'Africa/Kinshasa'});
+     details.textContent='Première connexion : '+started+' · Dernière activité : '+seen;
+     article.append(title,details);
+     if(row.is_current&&!row.revoked_at){const badge=document.createElement('span');badge.className='ib-igt-current';badge.textContent='Session actuelle';article.appendChild(badge)}
+     if(row.revoked_at){const badge=document.createElement('span');badge.className='ib-igt-revoked';badge.textContent='Session révoquée';article.appendChild(badge)}
+     else{
+      const revoke=document.createElement('button');revoke.type='button';revoke.className='ib-igt-revoke';revoke.textContent=row.is_current?'Déconnecter cet appareil':'Déconnecter cet appareil';
+      revoke.addEventListener('click',async()=>{
+       if(!confirm('Confirmer la déconnexion de cet appareil ?'))return;
+       revoke.disabled=true;revoke.textContent='Déconnexion…';
+       try{
+        const result=await client.functions.invoke('igt-device-security',{body:{action:'revoke',session_id:row.session_id}});
+        if(result.error||!result.data?.success)throw result.error||new Error(result.data?.message||'Révocation impossible.');
+        if(result.data.current_revoked){close();if(typeof window.inspecteurBotSignOut==='function')window.inspecteurBotSignOut();return}
+        await load();
+       }catch(err){status.textContent=err.message||'Impossible de déconnecter cet appareil.';revoke.disabled=false;revoke.textContent='Réessayer'}
+      });
+      article.appendChild(revoke);
+     }
+     list.appendChild(article);
+    });
+   }catch(error){status.textContent=error&&error.message?error.message:'Impossible de charger les connexions. Vérifiez votre connexion Internet.'}
+  }
+ }
+ let attempts=0;
+ const timer=setInterval(()=>{
+  attempts++;
+  const client=window.inspecteurBotAuthClient;
+  if(client){
+   installLoginGuard(client);
+   if(document.documentElement.classList.contains('inspecteur-auth-ready'))mount(client);
+  }
+  if(attempts>240)clearInterval(timer);
+ },250);
+ const observer=new MutationObserver(()=>{
+  const client=window.inspecteurBotAuthClient;
+  if(client&&document.documentElement.classList.contains('inspecteur-auth-ready'))mount(client);
+ });
+ observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+})();
+<\/script>`;
+  page=page.replace('</body>',securityPanel+'</body>');
   page=page.replace('</body>','<script>(function(){const splash=document.getElementById("ib-igt-startup-splash");if(!splash)return;const started='+startupStarted+';let done=false;function finish(){if(done||document.body.classList.contains("igt-auth-pending"))return;done=true;const wait=0;setTimeout(()=>{splash.classList.add("ib-hide");setTimeout(()=>splash.remove(),260)},wait)}const observer=new MutationObserver(finish);observer.observe(document.body,{attributes:true,attributeFilter:["class"]});finish();setTimeout(()=>{if(!done){const label=splash.querySelector("span");if(label)label.textContent="Connexion à votre espace sécurisé…";}},7000);setTimeout(()=>{if(!done){const label=splash.querySelector("span");if(label)label.textContent="Le chargement prend plus de temps que prévu. Vérifiez votre connexion puis réessayez.";const retry=document.createElement("button");retry.type="button";retry.textContent="Réessayer";retry.style.cssText="margin-top:10px;padding:10px 16px;border:0;border-radius:9px;background:#ffd700;color:#071b35;font-weight:700";retry.addEventListener("click",()=>location.reload());splash.appendChild(retry);}},15000);})();<\/script></body>');
   const scroll='<style id="inspecteurbot-touch-scroll">html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:auto!important;scroll-behavior:auto!important}body{position:relative!important}</style>';
   if(!/<base\b/i.test(page))page=page.replace('</head>','<base href="./">\n'+scroll+'\n</head>');
