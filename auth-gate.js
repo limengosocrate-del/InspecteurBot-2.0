@@ -523,7 +523,7 @@ async function refreshHeaderBadges(){
  try{
   // Source unique de vérité : seules les communications reçues non lues comptent.
   // Les formations restent visibles dans leur rubrique, mais ne gonflent jamais la cloche.
-  const msg=await client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null);
+  const msg=await client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null).not('content','like','[CERTIFICATION_REQUEST:%');
   if(msg.error)throw msg.error;
   const messageCount=Math.max(0,Number(msg.count||0));
   const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';

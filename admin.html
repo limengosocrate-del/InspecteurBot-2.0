@@ -195,7 +195,7 @@ async function loadInbox(quiet=false){
    const reply=r.user_id?'<button class="btn light" data-reply="'+esc(r.user_id)+'"><i class="fa-solid fa-reply"></i> Répondre</button>':'';
    return '<article class="message-item" style="border-left:4px solid #e3a008;background:#fffaf0"><div class="message-meta"><b style="color:#8a5600"><i class="fa-solid fa-shield-halved"></i> Nouvelle demande de certification</b><span>'+esc(new Date(r.created_at).toLocaleString('fr-FR'))+'</span></div><p style="display:flex;align-items:center;flex-wrap:wrap;color:#18324a">'+photo+'<span><b>'+esc(r.nom_complet)+'</b><br><small>'+esc(r.email)+'</small><br><small>Matricule : '+esc(r.matricule||'Non renseigné')+' · '+esc(categoryNames[r.categorie]||r.categorie)+'</small></span></p><div class="actions">'+reply+'<button class="btn green" data-cert-open="'+esc(r.id)+'"><i class="fa-solid fa-clipboard-check"></i> Examiner / Certifier</button><button class="btn red" data-cert-reject="'+esc(r.id)+'"><i class="fa-solid fa-ban"></i> Rejeter</button></div></article>';
   }).join('');
-  const messageCards=rows.map(m=>{
+  const messageCards=rows.filter(m=>!String(m.content||'').startsWith('[CERTIFICATION_REQUEST:')).map(m=>{
    const isRequest=String(m.content||'').startsWith('[CERTIFICATION_REQUEST:');
    const body=isRequest?String(m.content).replace(/^\[CERTIFICATION_REQUEST:\d+\]\s*/,''):m.content;
    const requestId=(String(m.content||'').match(/^\[CERTIFICATION_REQUEST:(\d+)\]/)||[])[1]||'';
