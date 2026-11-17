@@ -667,6 +667,7 @@ function makeGate(){
   g.querySelectorAll('.ib-auth-logo').forEach(logo=>{
    logo.removeAttribute('style');
    logo.alt='Logo InspecteurBot';
+   logo.src=new URL('images/512.png',appRootUrl()).href;
   });
 
   // Garde-fou DOM : supprimer tout logo supplémentaire du bandeau d'accueil.
