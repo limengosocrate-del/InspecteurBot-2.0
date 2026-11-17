@@ -1,77 +1,108 @@
 # Préparation Android — InspecteurBot IGT (TWA)
 
-Ce dossier prépare l'emballage Android de l'application web existante. Il ne modifie pas l'application publiée sur la branche `main`.
+Ce dossier prépare le paquet Android de l'application web existante. Toutes les modifications restent sur la branche `android-twa-preparation` jusqu'à validation. La branche `main` et l'application en production ne sont pas modifiées par cette préparation.
 
 ## Paramètres approuvés
 
 - Nom affiché : InspecteurBot IGT
 - Nom court : InspecteurBot
 - Identifiant Android (package ID) : `cd.igt.inspecteurbot`
+- Version affichée : `1.0.0`
+- Code de version initial : `1` (à incrémenter pour chaque nouvelle version)
 - Méthode : Trusted Web Activity (TWA) avec Bubblewrap
-- Site actuel : https://limengosocrate-del.github.io/InspecteurBot-2.0/
-- Manifest PWA : https://limengosocrate-del.github.io/InspecteurBot-2.0/manifest.json
-- URL de lancement envisagée : https://limengosocrate-del.github.io/InspecteurBot-2.0/index.html
+- Site : https://limengosocrate-del.github.io/InspecteurBot-2.0/
+- Manifeste : https://limengosocrate-del.github.io/InspecteurBot-2.0/manifest.json
+- URL de lancement : https://limengosocrate-del.github.io/InspecteurBot-2.0/index.html
 - Langue : français
-- Couleurs de marque : bleu nuit `#041c5c`, bleu/cyan et or
 - Orientation : portrait
+- Couleurs : bleu nuit `#041c5c`
 
-## Pourquoi la construction AAB n'est pas encore faite
+Le manifeste Android de préparation doit conserver le véritable logo PNG 512×512 et les fonctions PWA déjà déclarées dans le manifeste de production. Ne pas remplacer l'icône par un fichier JPEG ni modifier le manifeste de production pour cette préparation.
 
-Bubblewrap doit lire le manifeste publié, créer le projet Android et générer une clé de signature. La clé privée et ses mots de passe doivent rester sous le contrôle du propriétaire et ne doivent jamais être ajoutés à GitHub ni envoyés dans une conversation.
+## Génération de l'APK signé
 
-## Étapes de construction
+La construction est à effectuer sur un ordinateur Windows, macOS ou Linux disposant de Node.js. Un téléphone Android seul ne suffit pas pour exécuter Bubblewrap et compiler le projet localement.
 
-Sur un ordinateur Windows, macOS ou Linux avec Node.js 18+ :
+Installer Bubblewrap :
 
 ```bash
 npm install --global @bubblewrap/cli
+```
+
+Valider le site :
+
+```bash
 bubblewrap validate --url=https://limengosocrate-del.github.io/InspecteurBot-2.0/
+```
+
+Initialiser le projet depuis le manifeste publié :
+
+```bash
 bubblewrap init --manifest=https://limengosocrate-del.github.io/InspecteurBot-2.0/manifest.json --directory=./android-twa-project
 ```
 
-Pendant `bubblewrap init`, confirmer :
+Confirmer pendant l'assistant :
 - Application ID : `cd.igt.inspecteurbot`
 - Nom : `InspecteurBot IGT`
 - Nom court : `InspecteurBot`
-- URL de lancement : `/InspecteurBot-2.0/index.html` (à confirmer dans l'assistant selon le manifeste téléchargé)
-- Orientation : `portrait`
-- Couleur de thème : `#041c5c`
-- Couleur d'arrière-plan : `#041c5c`
+- Version : `1.0.0`
+- Code de version : `1`
+- URL de lancement : `https://limengosocrate-del.github.io/InspecteurBot-2.0/index.html`
+- Orientation : portrait
+- Couleur de thème et d'arrière-plan : `#041c5c`
 
-L'assistant demandera les informations de création de la clé de signature. Utiliser une clé de production conservée dans un endroit sûr, faire une sauvegarde hors ligne et ne jamais la committer dans le dépôt.
+Bubblewrap crée ou demande une clé de signature. Le propriétaire doit créer/conserver cette clé et ses mots de passe. Ne jamais envoyer la clé privée, les mots de passe ou le fichier keystore dans une conversation, dans un dépôt Git ou dans un espace public.
 
-Après initialisation :
+Construire le paquet signé :
 
 ```bash
 cd android-twa-project
 bubblewrap build
 ```
 
-Le build Bubblewrap produit notamment un App Bundle signé `app-release-bundle.aab` et un APK de test. Vérifier le nom exact des fichiers affichés par la version installée de Bubblewrap.
+Bubblewrap génère notamment :
+- `app-release-signed.apk` : APK signé à installer directement sur les téléphones Android compatibles et à distribuer par lien privé/public.
+- `app-release-bundle.aab` : paquet destiné à Google Play Console.
 
-## Point bloquant à résoudre avant la TWA plein écran
+La documentation officielle Bubblewrap confirme ces deux sorties. Le fichier APK est celui à publier sur une page de téléchargement GitHub Releases. Ne jamais publier le keystore ni ses mots de passe avec l'APK.
 
-Une TWA exige un fichier Digital Asset Links à l'adresse `/.well-known/assetlinks.json` sur l'origine web, contenant l'empreinte SHA-256 du certificat de signature et le package ID exact.
+## Compatibilité Android
 
-Le site actuel est un GitHub Pages de projet sous le chemin `/InspecteurBot-2.0/`. Le fichier Digital Asset Links doit être servi à la racine de l'origine, pas simplement dans le sous-dossier du projet. Il faut donc confirmer un domaine racine maîtrisé (par exemple un domaine personnalisé dédié ou le site GitHub Pages utilisateur) et la façon d'y publier `/.well-known/assetlinks.json`.
+Les paquets Android générés par PWABuilder demandent Android 7.0 (API 24) ou plus récent. Les appareils plus anciens ne sont donc pas garantis compatibles. Vérifier le comportement sur plusieurs téléphones réels avant diffusion générale.
 
-Ne pas créer un fichier assetlinks avec une empreinte fictive. Après création de l'AAB et activation de Play App Signing, récupérer les empreintes SHA-256 correctes dans Play Console (certificat de signature de l'application et, si nécessaire pour les tests locaux, certificat de téléversement), puis publier le JSON exact.
+## Vérification TWA / Digital Asset Links
 
-Pour GitHub Pages/Jekyll, inclure le dossier caché `.well-known` dans la configuration du site (`include: [".well-known"]`) et vérifier que l'URL publique retourne directement le JSON avec HTTP 200.
+Pour afficher l'application sans barre d'adresse du navigateur, Android doit valider le domaine avec un fichier `/.well-known/assetlinks.json` à la racine de l'origine HTTPS, contenant le package ID exact et l'empreinte SHA-256 du certificat qui signe l'APK.
 
-## Contrôles avant envoi à Google Play
+Le site actuel est un GitHub Pages de projet sous le chemin `/InspecteurBot-2.0/`. Le dossier `.well-known` placé dans ce sous-dossier ne répondrait pas à l'URL racine requise `https://limengosocrate-del.github.io/.well-known/assetlinks.json`. Il faut donc un hébergement contrôlé à la racine de l'origine ou un domaine personnalisé avant d'activer la TWA plein écran.
 
-- Le site s'ouvre en HTTPS et le manifeste PWA est accessible publiquement.
-- Le test `bubblewrap validate` est réussi ou chaque avertissement est compris.
-- Les icônes PNG carrées de 512×512 au minimum sont accessibles publiquement.
-- Le package ID est définitivement confirmé et n'a jamais été publié.
-- La clé de téléversement est sauvegardée et jamais commitée.
-- Digital Asset Links est publié et validé.
-- Connexion, passkeys, annuaire, messagerie, notifications, GPS (avec autorisation), liens externes, formulaires et retour Android sont testés sur un vrai téléphone.
-- La fiche Google Play et la déclaration « Sécurité des données » reflètent exactement les données réellement traitées par la version Android.
+Ne jamais inventer l'empreinte SHA-256. La générer depuis le certificat réel avec lequel l'APK est signé, puis tester l'URL publique. Si la validation échoue, l'application peut s'ouvrir dans un onglet personnalisé avec barre d'adresse au lieu du plein écran.
+
+## Diffusion directe
+
+Après construction et vérification :
+1. Tester `app-release-signed.apk` sur plusieurs appareils.
+2. Créer une GitHub Release `InspecteurBot-v1.0.0`.
+3. Joindre uniquement l'APK signé à la release.
+4. Partager le lien de téléchargement public avec les agents.
+5. Conserver le keystore et ses mots de passe en sauvegarde hors ligne sécurisée.
+
+Les utilisateurs devront autoriser temporairement l'installation depuis leur navigateur ou leur gestionnaire de fichiers si Android le demande. Ils pourront installer les versions suivantes par-dessus uniquement si le package ID et la clé de signature restent identiques et si le code de version augmente.
+
+## Tests avant diffusion
+
+- Installation et ouverture sur Android 7.0+.
+- Connexion et création de compte Supabase.
+- Passkeys selon les capacités de l'appareil et du navigateur.
+- Annuaire IGT, recherche et photos.
+- Messagerie et notifications.
+- GPS uniquement après autorisation.
+- Liens externes, formulaires, navigation et bouton Retour Android.
+- Réseau lent et reprise après perte de connexion.
 
 ## Références officielles
 
 - Bubblewrap CLI : https://github.com/GoogleChromeLabs/bubblewrap
-- Guide TWA Android : https://developer.android.com/develop/ui/views/layout/webapps/guide-trusted-web-activities-version2
+- PWABuilder — Android : https://github.com/pwa-builder/PWABuilder/blob/main/docs/builder/android.md
+- Guide TWA Android : https://developer.chrome.com/docs/android/trusted-web-activity/quick-start
 - Digital Asset Links : https://developer.chrome.com/docs/android/trusted-web-activity/android-for-web-devs
