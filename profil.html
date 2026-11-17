@@ -577,20 +577,7 @@ $('editProfile').addEventListener('submit',async e=>{
  const requiredFields=[['Nom complet',payload.display_name],['Matricule',payload.matricule],['Grade',payload.grade],['Fonction',payload.fonction],['Direction / Antenne',payload.direction_antenne],['Lieu d’affectation',payload.lieu_affectation],['Province',payload.province],['Adresse physique',payload.adresse_physique],['Téléphone',payload.telephone]];
  const missing=requiredFields.filter(([,value])=>!value);
  if(missing.length){message.textContent='Veuillez compléter les champs obligatoires : '+missing.map(([label])=>label).join(', ')+'.';message.style.color='#b42318';return}
- // Toute demande initiale de certification exige un appareil réellement inscrit aux notifications push.
- if(profile?.certification_status!=='certified'&&profile?.role!=='admin'){
-  try{
-   if(typeof window.inspecteurBotEnsurePushNotifications!=='function')throw new Error('Le service de notification n’est pas encore prêt. Rechargez la page puis activez les notifications.');
-   await window.inspecteurBotEnsurePushNotifications();
-  }catch(pushError){
-   message.textContent='Certification non envoyée : l’activation des notifications sur cet appareil est obligatoire. '+(pushError?.message||'Activez les notifications puis réessayez.');
-   message.style.color='#b42318';
-   $('ib-push-status').textContent=message.textContent;
-   $('ib-push-enable').scrollIntoView({behavior:'smooth',block:'center'});
-   return;
-  }
- }
- button.disabled=true;message.textContent='Enregistrement sécurisé dans la base de données… Ne fermez pas cette page.';message.style.color='#075a96';
+button.disabled=true;message.textContent='Enregistrement sécurisé dans la base de données… Ne fermez pas cette page.';message.style.color='#075a96';
  window.__inspecteurBotProfileSaving=true;
  try{
   const {data:response,error}=await sb.functions.invoke('igt-update-profile',{body:payload});
