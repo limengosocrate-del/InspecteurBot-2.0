@@ -133,8 +133,8 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 </div>
 </section>
 <section class="wide" id="parametres" style="margin-bottom:16px">
-<h2>⚙️ Paramètres du compte et la certification du compte</h2>
-<div id="profileCertificationBanner" class="certification-banner" role="status">Vérification du statut de certification…</div>
+<h2>⚙️ Paramètres du compte</h2>
+<div id="profileCertificationBanner" class="certification-banner certified" role="status">La certification obligatoire est désactivée. Votre compte vous donne accès aux fonctionnalités d’InspecteurBot, à l’exception du Menu IGT réservé à l’administrateur.</div>
 <div id="ib-passkey-panel" style="margin:0 0 16px;padding:14px 16px;border:1px solid #cbdfee;border-radius:12px;background:#f2f8fc">
  <strong style="display:block;color:#073b70;margin-bottom:6px">🔐 Sécurité biométrique de votre compte</strong>
  <p id="ib-passkey-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Vérification de votre protection biométrique…</p>
@@ -144,7 +144,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <div id="notifications" style="scroll-margin-top:90px"></div>
 <div id="ib-push-panel" style="margin:0 0 16px;padding:14px 16px;border:1px solid #cbdfee;border-radius:12px;background:#f2f8fc">
  <strong style="display:block;color:#073b70;margin-bottom:6px">🔔 Notifications sur cet appareil</strong>
- <p id="ib-push-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Recevez les messages, annonces, formations et mises à jour de certification, même lorsque InspecteurBot est fermé.</p>
+ <p id="ib-push-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Recevez les messages, annonces, formations et informations importantes, même lorsque InspecteurBot est fermé.</p>
  <button id="ib-push-enable" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Activer les notifications</button>
  <button id="ib-push-disable" type="button" hidden style="margin-left:8px;padding:11px 15px;border:1px solid #aabaca;border-radius:9px;background:#fff;color:#8b2635;font-weight:700">Désactiver sur cet appareil</button>
  <small style="display:block;margin-top:8px;color:#61768a">L’autorisation est demandée uniquement lorsque vous appuyez sur ce bouton. Vous pourrez la modifier dans les paramètres du navigateur.</small>
@@ -157,7 +157,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
 <label class="field"><small>Banque payeuse Prime de MF.IT/CT</small><input id="editBankMF" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse SB — Salaire de base</small><input id="editBankSB" maxlength="120" placeholder="Nom de la banque"></label>
 <label class="field"><small>Banque payeuse PP — Prime permanente</small><input id="editBankPP" maxlength="120" placeholder="Nom de la banque"></label>
-<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="display:block;margin:10px 0 0;font-size:13px;line-height:1.55"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles sont affichées dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.</p></div>
+<div class="wide"><button id="saveProfile" type="submit">Enregistrer mes paramètres</button><span id="saveMessage" role="status" aria-live="polite" style="display:block;margin:10px 0 0;font-size:13px;line-height:1.55"></span><p id="profileCooldownNotice" class="notice" style="margin:12px 0 0">Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles sont affichées dans l’annuaire IGT. Le téléphone et l’adresse physique restent privés.</p></div>
 </form>
 </section>
 <div class="grid" id="mes-informations">
@@ -474,11 +474,9 @@ function applyProfileCooldown(){
  if(notice){
   if(locked){
    const date=deadline.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-   notice.textContent=(profile?.certification_status==='certified'?'Compte certifié : ':'Paramètres récemment enregistrés : ')+'vos paramètres sont verrouillés pendant 3 mois (90 jours), jusqu’au '+date+'.';
-  }else if(profile?.certification_status==='certified'){
-   notice.textContent='Compte certifié. Vos informations professionnelles sont visibles dans l’annuaire IGT. Le téléphone et l’adresse physique restent privés. Le délai de protection de 90 jours est terminé ; vous pouvez modifier vos paramètres.';
+   notice.textContent='Vos paramètres sont verrouillés pendant 3 mois (90 jours), jusqu’au '+date+'.';
   }else{
-   notice.textContent='Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Les informations professionnelles apparaîtront dans l’annuaire après vérification et certification. Le téléphone et l’adresse physique restent privés.';
+   notice.textContent='Après l’enregistrement, une nouvelle modification sera possible après 90 jours. Vos informations professionnelles sont affichées dans l’annuaire IGT. Le téléphone et l’adresse physique restent privés.';
   }
  }
 }
@@ -488,7 +486,7 @@ function show(){
  if(documentsSection)documentsSection.hidden=!isCertified;
  const certBanner=$('profileCertificationBanner');
  if(certBanner){certBanner.className='certification-banner '+(isCertified?'certified':'pending');certBanner.innerHTML=isCertified?'<span class="certification-status-badge" aria-label="Compte certifié">✓ Félicitations 🎉 Votre compte est bien certifié !</span><div style="margin-top:8px;font-size:13px;font-weight:600">Vos informations professionnelles ont été vérifiées. Vous pouvez consulter votre fiche dans l’annuaire numérique de l’IGT.</div>':'Votre compte n’est pas encore certifié. Vérifiez soigneusement votre nom, votre matricule, votre grade, votre fonction, votre direction et votre lieu d’affectation, puis enregistrez vos paramètres. Le système compare automatiquement vos informations au registre officiel de l’IGT. Seules les identités non reconnues sont transmises à l’administration.';}
- $('account').innerHTML=item('Nom complet',profile?.display_name||data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Certification',isCertified?'✓ Compte certifié':'En attente de vérification')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
+ $('account').innerHTML=item('Nom complet',profile?.display_name||data.username)+item('Adresse e-mail',data.email)+item('Type de compte',data.role)+item('Créé le',data.createdAt?new Date(data.createdAt).toLocaleDateString('fr-FR'):'Non renseigné')+item('Modification possible à partir du',profile?.next_profile_update_at?new Date(profile.next_profile_update_at).toLocaleDateString('fr-FR'):'Après votre premier enregistrement');
  $('contact').innerHTML=item('Téléphone',data.phone)+item('Adresse physique',data.address);
  $('professional').innerHTML=fields.map(([label,key])=>item(label,data.professional?.[key])).join('');
  const adminTools=$('admin-tools'),adminLinks=$('admin-links');if(adminTools&&adminLinks){const role=profile?.role||'agent';adminTools.hidden=!['admin','super_admin'].includes(role);adminLinks.innerHTML=role==='super_admin'?'<a class="admin-action-link" href="admin.html"><i class="fa-solid fa-gears"></i> Administration générale</a><a class="admin-action-link" href="admin-abonnements.html"><i class="fa-solid fa-credit-card"></i> Gérer les abonnements</a><a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':role==='admin'?'<a class="admin-action-link" href="formation.html"><i class="fa-solid fa-graduation-cap"></i> Gérer les formations</a>':'';}
@@ -613,10 +611,10 @@ $('editProfile').addEventListener('submit',async e=>{
   profile={...profile,...updated};
   if(!save())console.warn('Le profil est enregistré, mais le cache local n’a pas pu être actualisé.');
   localStorage.removeItem(DRAFT_KEY);
-  show();message.textContent=updated.certification_status==='certified'?'Félicitations 🎉 Votre compte est certifié. Le grade et la fonction ont été synchronisés avec le registre officiel de l’IGT.':'Vos paramètres sont enregistrés. Le numéro matricule ou le nom n’a pas été reconnu automatiquement dans la base officielle. Votre demande est transmise à l’administrateur pour vérification. Vous pouvez également contacter Pmiller.';
+  show();message.textContent='Vos paramètres sont enregistrés et vos informations ont été mises à jour.';
   message.style.color='#138a65';
   const next=updated.next_profile_update_at?new Date(updated.next_profile_update_at).toLocaleDateString('fr-FR'):'dans 3 mois';
-  $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. '+(updated.certification_status==='certified'?'Votre compte est certifié.':'Votre demande reste en attente de vérification.')+' La prochaine modification sera possible à partir du '+next+'.';
+  $('profileCooldownNotice').textContent='Vos paramètres sont enregistrés. La prochaine modification sera possible à partir du '+next+'.';
  }catch(err){
   console.error('Enregistrement du profil :',err);
   let serverMessage='';
