@@ -329,7 +329,7 @@ function setupNetworkStatus(){
   // qu’il soit certifié ou en attente de certification. On restaure simplement les services.
   window.setTimeout(()=>{
    if(!client||!user||navigator.onLine===false)return;
-   const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+   const communicationAllowed=!!user;
    if(communicationAllowed){void updatePresence();startRealtimePresence();startIncomingMessageNotifications();void pollIncomingMessages();}
    else{stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();}
    startHeaderBadgeTracking();void refreshHeaderBadges();
@@ -390,7 +390,7 @@ function schedulePresenceReconnect(channel,status){
  const delay=Math.min(30000,2500*Math.pow(2,Math.min(presenceRetryAttempt++,4)));
  presenceReconnectTimer=setTimeout(()=>{
   presenceReconnectTimer=null;
-  if(client&&user&&(profile?.certification_status==='certified'||profile?.role==='super_admin')&&navigator.onLine!==false)startRealtimePresence();
+  if(client&&user&&(!!user)&&navigator.onLine!==false)startRealtimePresence();
  },delay);
 }
 function stopRealtimePresence(){
@@ -561,7 +561,7 @@ async function refreshHeaderBadges(){
   const msg=await client.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',user.id).is('read_at',null).not('content','like','[CERTIFICATION_REQUEST:%');
   if(msg.error)throw msg.error;
   const messageCount=Math.max(0,Number(msg.count||0));
-  const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+  const communicationAllowed=!!user;
   const notificationCount=messageCount;
   if(presence){presence.parentElement.hidden=!communicationAllowed;const ids=window.__ibOnlineUserIds instanceof Set?window.__ibOnlineUserIds:new Set();const n=Math.max(0,ids.size-(ids.has(user.id)?1:0));presence.textContent=String(n);presence.hidden=!communicationAllowed}
   const shown=messageCount>99?'99+':String(messageCount);
@@ -626,7 +626,7 @@ function startSubscriptionMonitor(){
 function startPostAuthServices(accountId){
  const run=()=>{
   if(!user||user.id!==accountId)return;
-  const communicationAllowed=profile?.certification_status==='certified'||profile?.role==='super_admin';
+  const communicationAllowed=!!user;
   if(communicationAllowed){
    try{startPresenceTracking()}catch(e){console.warn('Présence différée',e)}
    try{startRealtimePresence()}catch(e){console.warn('Présence temps réel différée',e)}
@@ -778,7 +778,7 @@ async function validate(session){
   hideSplash();document.documentElement.classList.add('inspecteur-auth-ready');byId('auth-gate').hidden=true;
   const path=location.pathname;
   const isHome=path==='/'||path.endsWith('/index.html')||path.endsWith('/InspecteurBot-2.0/');
-  const isCertified=data.certification_status==='certified';
+  const isCertified=true; // La certification n'est plus une condition d'accès.
   const isSuperAdmin=data.role==='super_admin';
   const subscription=data.subscription||{};
   const launchDate=subscription.launch_date||'2027-03-05';
@@ -793,7 +793,7 @@ async function validate(session){
    location.replace(new URL('profil.html?abonnement=requis',appRootUrl()).href);
    return;
   }
-  document.body.classList.toggle('ib-unverified-comms',!isCertified&&!isSuperAdmin);
+  document.body.classList.remove('ib-unverified-comms');
   if(!document.getElementById('ib-unverified-comms-style')){
    const style=document.createElement('style');style.id='ib-unverified-comms-style';
    style.textContent='body.ib-unverified-comms #ib-header-presence,body.ib-unverified-comms #ib-header-messages{display:none!important}';
@@ -810,11 +810,12 @@ async function validate(session){
   // Le parcours de certification reste disponible depuis le profil et les notifications.
 
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
+   if(/\/igt\//i.test(path)&&data.role!=='super_admin'){gate('Le Menu IGT est réservé au compte administrateur.');return;}
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile,session}}));
-  try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));document.body.classList.toggle('ib-unverified-comms',updated.certification_status!=='certified'&&updated.role!=='super_admin');
+  try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));document.body.classList.remove('ib-unverified-comms');
    startPostAuthServices(user.id);
-   if(updated.certification_status==='certified'||updated.role==='super_admin'){document.body.classList.remove('ib-account-pending');if(location.pathname.endsWith('/profil.html')||location.pathname.endsWith('/notifications.html'))location.replace(new URL('index.html?certified=1',location.href).href);}}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
+   document.body.classList.remove('ib-account-pending');}).subscribe();}catch(certChannelError){console.warn('Actualisation automatique de la certification indisponible',certChannelError)}
    // À chaque authentification, synchroniser en arrière-plan la photo locale
    // du compte vers Supabase, sans recharger la page ni toucher aux données locales.
    void syncLocalProfilePhotoOnLogin(user.id).then(url=>{
@@ -829,7 +830,9 @@ async function validate(session){
     window.dispatchEvent(new CustomEvent('inspecteurbot:avatar-updated',{detail:{userId:user.id,avatarUrl:url}}));
    });
   if(isHome){
-   document.body.classList.toggle('ib-account-pending',!isCertified&&!isSuperAdmin);
+   document.body.classList.remove('ib-account-pending');
+   const igtMenuLink=document.querySelector('.menu-index a[href*="igt/index.html"]');
+   if(igtMenuLink)igtMenuLink.style.display=isSuperAdmin?'':'none';
    // Le message de personnalisation à la connexion a été supprimé.
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
@@ -866,7 +869,7 @@ async function validate(session){
  finally{busy=false}
 }
 async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden){void updatePresence();if(user&&(profile?.certification_status==='certified'||profile?.role==='super_admin')&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden){void updatePresence();if(user&&(!!user)&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
