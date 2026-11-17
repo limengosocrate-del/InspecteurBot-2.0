@@ -282,7 +282,7 @@ async function setupPushNotifications(){
  let registration=null;
  try{
   registration=await navigator.serviceWorker.getRegistration('./');
-  if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js',{scope:'./',updateViaCache:'none'});
+  if(!registration)registration=await navigator.serviceWorker.register('./service-worker.js?v=20261117-webpush-controls-v56',{scope:'./',updateViaCache:'none'});
   await navigator.serviceWorker.ready;
   const current=await registration.pushManager.getSubscription();
   if(current){
