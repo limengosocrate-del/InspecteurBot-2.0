@@ -784,7 +784,7 @@ setupPasskeyPanel().catch(error=>console.warn('Passkey profil',error));
 setupPushNotifications().catch(error=>console.warn('Notifications push profil',error));
 setupSubscriptionPanel().catch(error=>console.warn('Abonnement InspecteurBot',error));
 if(typeof data.avatar==='string'&&data.avatar.startsWith('data:image/')){syncAvatarToSupabase(data.avatar).then(()=>{$('avatarMessage').textContent='Votre ancienne photo a été synchronisée pour tous les agents.';$('avatarMessage').style.color='#138a65'}).catch(err=>{console.warn('Migration de la photo locale vers Supabase',err);$('avatarMessage').textContent='Ouvrez « Modifier ma photo » pour relancer la synchronisation.';$('avatarMessage').style.color='#b42318'});}
-if(profile?.certification_status==='certified')documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
+documents().catch(e=>{$('docList').innerHTML='<div class="doc-empty">Le stockage des documents est momentanément indisponible.</div>';});
 
 }
 window.addEventListener('inspecteurbot:authenticated',event=>initProfileForAccount(event.detail?.user,event.detail?.profile),{once:true});
