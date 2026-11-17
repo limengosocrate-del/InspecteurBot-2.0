@@ -874,6 +874,32 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
 <script>
 (()=>{const overlay=navigator.windowControlsOverlay;if(!overlay)return;const update=()=>{try{const rect=overlay.getTitlebarAreaRect?.();if(rect&&Number.isFinite(rect.height))document.documentElement.style.setProperty('--ib-titlebar-height',Math.max(0,rect.height)+'px')}catch(_){}};update();overlay.addEventListener?.('geometrychange',update)})();
 </script>
+<script id="ib-first-push-invitation">
+(()=> {
+ let shown=false;
+ window.addEventListener('inspecteurbot:authenticated',event=>{
+  if(shown||!('Notification' in window)||Notification.permission!=='default')return;
+  const userId=event.detail?.user?.id;
+  if(!userId)return;
+  const key='inspecteurbot_push_invitation_seen_v1_'+userId;
+  try{if(localStorage.getItem(key)==='1')return;}catch(_){}
+  shown=true;
+  window.setTimeout(()=>{
+   if(document.getElementById('ib-push-invitation'))return;
+   const overlay=document.createElement('div');
+   overlay.id='ib-push-invitation';
+   overlay.style.cssText='position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;padding:18px;background:#061a30b8;font-family:Arial,sans-serif';
+   overlay.innerHTML='<section role="dialog" aria-modal="true" aria-labelledby="ib-push-invite-title" style="width:min(420px,100%);padding:24px;border-radius:18px;background:#fff;color:#173b5c;box-shadow:0 20px 60px #00152f66;text-align:center"><div style="font-size:34px;margin-bottom:8px">🔔</div><h2 id="ib-push-invite-title" style="margin:0 0 10px;color:#073b70;font-size:21px">Restez informé avec InspecteurBot</h2><p style="margin:0 0 18px;line-height:1.55;color:#52677a;font-size:14px">Recevez les annonces urgentes, messages, formations et informations importantes de l’IGT, même lorsque l’application est fermée. Vous gardez le contrôle et pouvez désactiver les notifications à tout moment.</p><a href="./profil.html#notifications" style="display:block;padding:13px;border-radius:10px;background:#075a96;color:#fff;text-decoration:none;font-weight:700">Configurer les notifications</a><button type="button" id="ib-push-invite-later" style="margin-top:10px;padding:10px 14px;border:0;background:transparent;color:#52677a;font-weight:700">Plus tard</button></section>';
+   const close=()=>{try{localStorage.setItem(key,'1')}catch(_){}overlay.remove()};
+   overlay.querySelector('#ib-push-invite-later').addEventListener('click',close);
+   overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+   overlay.querySelector('a').addEventListener('click',()=>{try{localStorage.setItem(key,'1')}catch(_){}});
+   document.body.appendChild(overlay);
+  },1400);
+ });
+})();
+</script>
+
 </body>  
   
 </html>
