@@ -186,5 +186,9 @@
         }
       ]
     }
-  ]
+  ],
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "scope_extensions": []
 }
