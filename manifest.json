@@ -189,18 +189,20 @@
   ],
   "dir": "ltr",
   "prefer_related_applications": false,
-  "related_applications": [],
-  "scope_extensions": [],
   "screenshots": [
     {
       "src": "./images/capture%201.png",
-      "type": "image/png",
-      "label": "Capture 1 — Interface InspecteurBot"
+      "sizes": "1080x2138",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Capture mobile 1 — Interface InspecteurBot"
     },
     {
       "src": "./images/capture%202.png",
-      "type": "image/png",
-      "label": "Capture 2 — Interface InspecteurBot"
+      "sizes": "1080x2145",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Capture mobile 2 — Interface InspecteurBot"
     }
   ]
 }
