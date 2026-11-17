@@ -260,10 +260,3 @@
   }
   }
   
-
-
-/* Logo de connexion : utiliser uniquement l'image HTML préchargée. */
-#ib-auth-card::before{content:none!important;display:none!important;background-image:none!important}
-#ib-auth-card .ib-auth-brand{display:flex!important;align-items:center!important;justify-content:center!important;min-height:116px}
-#ib-auth-card .ib-auth-brand img.ib-auth-logo{display:block!important;width:132px!important;height:132px!important;max-width:48vw!important;object-fit:contain!important;margin:0 auto!important;content:normal!important;background:none!important}
-@media(max-width:520px){#ib-auth-card .ib-auth-brand{min-height:112px}#ib-auth-card .ib-auth-brand img.ib-auth-logo{width:116px!important;height:116px!important}}
