@@ -141,6 +141,7 @@ section h2{font-size:17px;font-weight:800;color:#062b58}
  <button id="ib-passkey-register" type="button" style="padding:11px 15px;border:0;border-radius:9px;background:#075a96;color:#fff;font-weight:700">Configurer mon empreinte digitale</button>
  <small style="display:block;margin-top:8px;color:#61768a">Activez une protection rapide avec l’empreinte digitale, la reconnaissance faciale ou le code PIN de votre appareil, selon ses capacités.</small>
 </div>
+<div id="notifications" style="scroll-margin-top:90px"></div>
 <div id="ib-push-panel" style="margin:0 0 16px;padding:14px 16px;border:1px solid #cbdfee;border-radius:12px;background:#f2f8fc">
  <strong style="display:block;color:#073b70;margin-bottom:6px">🔔 Notifications sur cet appareil</strong>
  <p id="ib-push-status" role="status" aria-live="polite" style="margin:0 0 10px;color:#40566b;font-size:13px;line-height:1.5">Recevez les messages, annonces, formations et mises à jour de certification, même lorsque InspecteurBot est fermé.</p>
@@ -307,7 +308,22 @@ async function setupPushNotifications(){
   const {data:keyData,error:keyError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'public_key'}});
   if(keyError||!keyData?.success||!keyData.publicKey)throw new Error(keyData?.error||keyError?.message||'Clé publique de notification indisponible.');
   let subscription=await activeRegistration.pushManager.getSubscription();
-  if(!subscription)subscription=await activeRegistration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:encodeKey(keyData.publicKey)});
+  const keyBytes=encodeKey(keyData.publicKey);
+  const sameApplicationKey=(current)=>{
+   const saved=current?.options?.applicationServerKey;
+   if(!saved)return false;
+   const a=new Uint8Array(saved);
+   if(a.length!==keyBytes.length)return false;
+   for(let i=0;i<a.length;i++)if(a[i]!==keyBytes[i])return false;
+   return true;
+  };
+  if(subscription&&!sameApplicationKey(subscription)){
+   const oldEndpoint=subscription.endpoint;
+   await subscription.unsubscribe();
+   await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'unsubscribe',endpoint:oldEndpoint}}).catch(()=>{});
+   subscription=null;
+  }
+  if(!subscription)subscription=await activeRegistration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:keyBytes});
   const {data:saveData,error:saveError}=await client.functions.invoke('inspecteurbot-push-subscriptions',{body:{action:'subscribe',subscription:subscription.toJSON()}});
   if(saveError||!saveData?.success)throw new Error(saveData?.error||saveError?.message||'Enregistrement de cet appareil impossible.');
   status.textContent='Notifications activées et appareil enregistré. Vous recevrez les messages, annonces, formations et mises à jour de certification.';
