@@ -190,5 +190,17 @@
   "dir": "ltr",
   "prefer_related_applications": false,
   "related_applications": [],
-  "scope_extensions": []
+  "scope_extensions": [],
+  "screenshots": [
+    {
+      "src": "./images/capture%201.png",
+      "type": "image/png",
+      "label": "Capture 1 — Interface InspecteurBot"
+    },
+    {
+      "src": "./images/capture%202.png",
+      "type": "image/png",
+      "label": "Capture 2 — Interface InspecteurBot"
+    }
+  ]
 }
