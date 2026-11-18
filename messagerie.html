@@ -224,7 +224,7 @@ body.conversation-open{
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261118-group-chat-v68"></script>
+<script src="./auth-gate.js?v=20261118-live-presence-v69"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -244,7 +244,7 @@ function initials(s){return s||'Agent'}
 let realtimePresenceReady=false;
 let onlineUserIds=new Set();
 let lastRenderedPresenceSignature='';
-function online(p){return !!p?.id&&(realtimePresenceReady?onlineUserIds.has(p.id):!!p?.is_online)}
+function online(p){return !!p?.id&&realtimePresenceReady&&onlineUserIds.has(String(p.id))}
 function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtimeHealthy===true,liveProfiles=window.__ibOnlineProfiles instanceof Map?[...window.__ibOnlineProfiles.values()]:[]){
  if(!realtimeAvailable){realtimePresenceReady=false;renderPresenceUI();return}
  const shared=ids instanceof Set?ids:(Array.isArray(ids)?new Set(ids):window.__ibOnlineUserIds);
@@ -424,7 +424,10 @@ function renderStories(){
  const wanted=new Set(list.map(p=>String(p.id)));
  container.querySelectorAll('.story[data-person]').forEach(node=>{if(!wanted.has(String(node.dataset.person)))node.remove()});
  if(!list.length){
-  if(!container.querySelector('.online-empty'))container.innerHTML='<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
+  const message=realtimePresenceReady?'Aucun agent en ligne pour le moment.':'Connexion aux présences en temps réel…';
+  const empty=container.querySelector('.online-empty');
+  if(empty){if(empty.textContent!==message)empty.textContent=message}
+  else container.innerHTML='<div class="online-empty">'+message+'</div>';
   return;
  }
  const empty=container.querySelector('.online-empty');if(empty)empty.remove();
