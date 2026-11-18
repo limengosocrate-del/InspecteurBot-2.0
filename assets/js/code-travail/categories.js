@@ -124,16 +124,18 @@ setTimeout(()=>{overlay.remove();card.style.removeProperty("min-height");card.st
 prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListener("click",()=>turn(next,"next"));
 nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
 let sx=0,sy=0,startTime=0,tracking=false,dragging=false,direction=1,originalHTML="",overlay=null,target=null;
-function clear(){card.classList.remove("ct-page-touching");card.style.removeProperty("--ct-fold-x-top");card.style.removeProperty("--ct-fold-x-bottom");card.style.removeProperty("--ct-fold-mid");overlay?.remove();overlay=null;dragging=false;tracking=false;}
+function clear(){card.classList.remove("ct-page-touching");card.style.removeProperty("--ct-fold-x-top");card.style.removeProperty("--ct-fold-x-bottom");card.style.removeProperty("--ct-fold-mid");card.style.removeProperty("min-height");overlay?.remove();overlay=null;dragging=false;tracking=false;turning=false;}
 function setFold(progress,yRatio){const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));card.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");card.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");card.style.setProperty("--ct-fold-mid",(direction>0?(top+bottom)/2:100-(top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));}
 function beginCurl(e){
 target=direction>0?next:previous;if(!target||turning)return false;
 originalHTML=card.innerHTML;
+const oldHeight=card.getBoundingClientRect().height;
 card.innerHTML=articleMarkup(target);
+card.style.minHeight=Math.max(oldHeight,card.scrollHeight)+"px";
 overlay=document.createElement("div");overlay.className="ct-finger-curl "+(direction>0?"ct-curl-forward":"ct-curl-backward");
 overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';
 overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;card.appendChild(overlay);
-card.classList.add("ct-page-touching");dragging=true;
+card.classList.add("ct-page-touching");overlay.style.transition="none";turning=true;dragging=true;
 const rect=card.getBoundingClientRect();setFold(0,(e.clientY-rect.top)/Math.max(1,rect.height));return true;
 }
 card.addEventListener("pointerdown",e=>{
@@ -149,7 +151,7 @@ if(!tracking)return;const dx=e.clientX-sx,dy=e.clientY-sy;
 if(!dragging){
 const intended=direction>0?-dx:dx;
 if(Math.abs(dy)>Math.abs(dx)*1.15&&Math.abs(dy)>10){tracking=false;return;}
-if(intended<14)return;
+if(intended<3)return;
 if(!beginCurl(e)){tracking=false;return;}
 }
 const rect=card.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;
