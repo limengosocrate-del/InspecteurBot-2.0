@@ -138,18 +138,41 @@ window.LivreEngine = {
   },
 
   turn: function (dir) {
-    const articles = window.CodeTravailState?.articles || [];
-    const next = this.currentPage + dir;
-    if (this.turning || next < 0 || next >= articles.length) return;
-    const page = document.getElementById("livrePage");
-    this.turning = true;
-    page?.classList.remove("flip-next", "flip-prev");
-    void page?.offsetWidth;
-    page?.classList.add(dir > 0 ? "flip-next" : "flip-prev");
-    setTimeout(() => {
-      this.render(next);
-      this.turning = false;
-    }, 520);
+    const articles=window.CodeTravailState?.articles||[];
+    const targetIndex=this.currentPage+dir;
+    if(this.turning||targetIndex<0||targetIndex>=articles.length)return;
+    const page=document.getElementById("livrePage");
+    if(!page)return;
+    const originalHTML=page.innerHTML;
+    const oldHeight=page.getBoundingClientRect().height;
+    const targetHTML=this.articleMarkup(articles[targetIndex],targetIndex,articles.length);
+    this.turning=true;
+    page.innerHTML=targetHTML;
+    page.style.minHeight=Math.max(oldHeight,page.scrollHeight)+"px";
+    const overlay=document.createElement("div");
+    overlay.className="ct-finger-curl "+(dir>0?"ct-curl-forward":"ct-curl-backward");
+    overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';
+    overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;
+    page.appendChild(overlay);
+    const setProgress=p=>{
+      const base=(1-p)*100;
+      page.style.setProperty("--ct-fold-x-top",dir>0?base+"%":(100-base)+"%");
+      page.style.setProperty("--ct-fold-x-bottom",dir>0?base+"%":(100-base)+"%");
+      page.style.setProperty("--ct-fold-mid",(dir>0?base:100-base)+"%");
+      overlay.style.setProperty("--ct-fold-progress",String(p));
+    };
+    setProgress(0);
+    overlay.style.transition="clip-path 560ms cubic-bezier(.22,.68,.18,1)";
+    requestAnimationFrame(()=>requestAnimationFrame(()=>setProgress(1)));
+    setTimeout(()=>{
+      overlay.remove();
+      page.style.removeProperty("min-height");
+      page.style.removeProperty("--ct-fold-x-top");
+      page.style.removeProperty("--ct-fold-x-bottom");
+      page.style.removeProperty("--ct-fold-mid");
+      this.render(targetIndex);
+      this.turning=false;
+    },590);
   },
 
   gotoArticle: function (num) {
