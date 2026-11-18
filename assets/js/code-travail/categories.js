@@ -95,35 +95,24 @@ let turning=false;
 function turn(target,direction){if(!target||turning)return;turning=true;card.classList.add(direction==="next"?"ct-turn-next":"ct-turn-prev");setTimeout(()=>openArticle(target,state.parentView,true),520);}
 prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListener("click",()=>turn(next,"next"));
 nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
-let startX=0,startY=0,lastX=0,lastY=0,dragging=false,moved=false;
-function pointDown(e){
-if(e.target.closest("button"))return;
-startX=lastX=e.clientX;startY=lastY=e.clientY;dragging=true;moved=false;
-try{card.setPointerCapture(e.pointerId);}catch(_){}
-card.classList.add("ct-page-touching");
-}
-function pointMove(e){
-if(!dragging)return;
-lastX=e.clientX;lastY=e.clientY;
-const dx=lastX-startX,dy=lastY-startY;
-if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.15){moved=true;card.classList.toggle("ct-drag-next",dx<0);card.classList.toggle("ct-drag-prev",dx>0);card.style.setProperty("--ct-drag-progress",Math.min(1,Math.abs(dx)/Math.max(150,card.clientWidth*.42)));}
-}
-function pointUp(e){
-if(!dragging)return;
-const dx=e.clientX-startX,dy=e.clientY-startY;
-const wasMoved=moved;dragging=false;card.classList.remove("ct-page-touching","ct-drag-next","ct-drag-prev");card.style.removeProperty("--ct-drag-progress");
-if(wasMoved&&Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.15){turn(dx<0?next:previous,dx<0?"next":"prev");return;}
-if(!wasMoved&&!e.target.closest("button")){
-const rect=card.getBoundingClientRect(),localX=e.clientX-rect.left;
-const edge=Math.max(58,Math.min(92,rect.width*.16));
-if(localX>=rect.width-edge)turn(next,"next");
-else if(localX<=edge)turn(previous,"prev");
-}
-}
-card.addEventListener("pointerdown",pointDown);
-card.addEventListener("pointermove",pointMove);
-card.addEventListener("pointerup",pointUp);
-card.addEventListener("pointercancel",()=>{dragging=false;card.classList.remove("ct-page-touching","ct-drag-next","ct-drag-prev");card.style.removeProperty("--ct-drag-progress");});
+let sx=0,sy=0,startTime=0,dragging=false,direction=1,originalHTML="",overlay=null;
+function clear(){dragging=false;card.classList.remove("ct-page-touching");card.style.removeProperty("--ct-fold-x-top");card.style.removeProperty("--ct-fold-x-bottom");card.style.removeProperty("--ct-fold-mid");overlay?.remove();overlay=null;}
+function setFold(progress,yRatio){const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));card.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");card.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");card.style.setProperty("--ct-fold-mid",((top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));}
+card.addEventListener("pointerdown",e=>{
+if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;
+const rect=card.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(48,Math.min(104,rect.width*.19));
+if(x<edge)direction=-1;else if(x>rect.width-edge)direction=1;else return;
+const target=direction>0?next:previous;if(!target||turning)return;
+sx=e.clientX;sy=e.clientY;startTime=performance.now();originalHTML=card.innerHTML;dragging=true;
+const escHtml=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const markup=art=>'<div class="ct-book-topline"><span class="legal-article-category">'+escHtml(art.titreSection||art.categorie||"Code du Travail")+'</span><span class="ct-book-count">'+(all.findIndex(x=>String(x.numero)===String(art.numero))+1)+' / '+all.length+'</span></div><h3>Article '+escHtml(art.numero)+(art.titre?" — "+escHtml(art.titre):"")+'</h3><div class="legal-article-text ct-book-text">'+escHtml(art.contenu||"Contenu non disponible.")+'</div>'+(art.sanction?'<aside class="legal-sanction"><strong>Sanction / disposition associée</strong><p>'+escHtml(art.sanction)+'</p></aside>':"")+'<p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez doucement le coin pour plier la feuille</p>';
+card.innerHTML=markup(target);overlay=document.createElement("div");overlay.className="ct-finger-curl "+(direction>0?"ct-curl-forward":"ct-curl-backward");
+overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;card.appendChild(overlay);
+card.classList.add("ct-page-touching");setFold(0,(e.clientY-rect.top)/Math.max(1,rect.height));try{card.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();
+});
+card.addEventListener("pointermove",e=>{if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dy)>Math.abs(dx)*1.35&&Math.abs(dy)>14)return;const rect=card.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;setFold(Math.max(0,distance/Math.max(1,rect.width)),(e.clientY-rect.top)/Math.max(1,rect.height));e.preventDefault();});
+function finish(e,cancelled){if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy,rect=card.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx,progress=Math.max(0,Math.min(1,distance/Math.max(1,rect.width))),speed=Math.abs(dx)/Math.max(1,performance.now()-startTime),commit=!cancelled&&Math.abs(dx)>Math.abs(dy)*1.12&&(progress>=.34||(progress>=.19&&speed>.5));dragging=false;card.classList.remove("ct-page-touching");if(!overlay){card.innerHTML=originalHTML;return;}overlay.style.transition="clip-path 430ms cubic-bezier(.2,.72,.2,1)";if(commit){setFold(1,.5);setTimeout(()=>{clear();openArticle(target,state.parentView,true);},445);}else{setFold(0,.5);setTimeout(()=>{clear();card.innerHTML=originalHTML;},445);}}
+card.addEventListener("pointerup",e=>finish(e,false));card.addEventListener("pointercancel",e=>finish(e,true));
 card.addEventListener("keydown",e=>{if(e.key==="ArrowRight"&&next)turn(next,"next");if(e.key==="ArrowLeft"&&previous)turn(previous,"prev");});
 }
 
