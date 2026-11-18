@@ -81,7 +81,7 @@ const top=document.createElement("div");top.className="ct-book-topline";
 const category=document.createElement("span");category.className="legal-article-category";category.textContent=a.titreSection||a.categorie||"Code du Travail";
 const count=document.createElement("span");count.className="ct-book-count";count.textContent=(index>=0?index+1:"—")+" / "+all.length;
 top.append(category,count);
-const h=document.createElement("h3");h.textContent="Article "+a.numero+(a.titre?" — "+a.titre:"");
+const cleanTitle=String(a.titre||"").trim();const duplicateTitle=new RegExp("^article\\s+"+Number(a.numero)+"$","i").test(cleanTitle);const h=document.createElement("h3");h.textContent="Article "+a.numero+(cleanTitle&&!duplicateTitle?" — "+cleanTitle:"");
 const body=document.createElement("div");body.className="legal-article-text ct-book-text";body.textContent=a.contenu||"Contenu non disponible.";
 card.append(top,h,body);
 if(a.sanction){const sanction=document.createElement("aside");sanction.className="legal-sanction";const sh=document.createElement("strong");sh.textContent="Sanction / disposition associée";const sp=document.createElement("p");sp.textContent=a.sanction;sanction.append(sh,sp);card.append(sanction);}
@@ -95,7 +95,7 @@ let turning=false;
 function escapeArticle(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 function articleMarkup(art){
 const idx=all.findIndex(x=>String(x.numero)===String(art.numero));
-return '<div class="ct-book-topline"><span class="legal-article-category">'+escapeArticle(art.titreSection||art.categorie||"Code du Travail")+'</span><span class="ct-book-count">'+(idx+1)+' / '+all.length+'</span></div><h3>Article '+escapeArticle(art.numero)+(art.titre?" — "+escapeArticle(art.titre):"")+'</h3><div class="legal-article-text ct-book-text">'+escapeArticle(art.contenu||"Contenu non disponible.")+'</div>'+(art.sanction?'<aside class="legal-sanction"><strong>Sanction / disposition associée</strong><p>'+escapeArticle(art.sanction)+'</p></aside>':"")+'<p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez doucement le coin pour plier la feuille</p>';
+const rawTitle=String(art.titre||"").trim();const duplicateTitle=new RegExp("^article\\s+"+Number(art.numero)+"$","i").test(rawTitle);return '<div class="ct-book-topline"><span class="legal-article-category">'+escapeArticle(art.titreSection||art.categorie||"Code du Travail")+'</span><span class="ct-book-count">'+(idx+1)+' / '+all.length+'</span></div><h3>Article '+escapeArticle(art.numero)+(rawTitle&&!duplicateTitle?" — "+escapeArticle(rawTitle):"")+'</h3><div class="legal-article-text ct-book-text">'+escapeArticle(art.contenu||"Contenu non disponible.")+'</div>'+(art.sanction?'<aside class="legal-sanction"><strong>Sanction / disposition associée</strong><p>'+escapeArticle(art.sanction)+'</p></aside>':"")+'<p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez doucement le coin pour plier la feuille</p>';
 }
 function turn(target,direction){
 if(!target||turning)return;
