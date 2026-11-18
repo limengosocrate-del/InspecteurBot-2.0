@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261118-fast-auth-v61';
+const IB_APP_BUILD='20261118-auto-update-v62';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -21,8 +21,9 @@ async function checkInspecteurBotUpdate(force=false){
   if(!latest||typeof latest.build!=='string'||!latest.build)throw new Error('Version serveur invalide');
   if(latest.build!==IB_APP_BUILD){
    const guard='inspecteurbot_update_reload_'+latest.build;
-   if(sessionStorage.getItem(guard)==='1')return false;
-   sessionStorage.setItem(guard,'1');
+   const attempts=Number(sessionStorage.getItem(guard)||0);
+   if(attempts>=2)return false;
+   sessionStorage.setItem(guard,String(attempts+1));
    try{
     if('serviceWorker' in navigator){
      const registrations=await navigator.serviceWorker.getRegistrations();
@@ -33,7 +34,9 @@ async function checkInspecteurBotUpdate(force=false){
    }catch(cleanError){console.info('Mise à jour du cache différée',cleanError)}
    // Une mise à jour du code ne déconnecte jamais un compte actif.
    // La validité reste contrôlée par Supabase et la fonction igt-session-start.
-   location.replace(location.pathname+location.search+(location.search?'&':'?')+'ibrefresh='+encodeURIComponent(latest.build));
+   const refreshUrl=new URL(location.href);
+   refreshUrl.searchParams.set('ibrefresh',latest.build);
+   location.replace(refreshUrl.href);
    return true;
   }
   return false;
@@ -46,6 +49,12 @@ function startLiveUpdateChecks(){
  window.addEventListener('online',()=>void checkInspecteurBotUpdate(true));
  window.addEventListener('focus',()=>void checkInspecteurBotUpdate(false));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)void checkInspecteurBotUpdate(false)});
+ if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message',event=>{
+   const data=event.data||{};
+   if(data.type==='IB_BACKGROUND_REFRESH'&&data.build&&data.build!==IB_APP_BUILD)void checkInspecteurBotUpdate(true);
+  });
+ }
 }
 
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
