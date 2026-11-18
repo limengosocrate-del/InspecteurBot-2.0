@@ -521,3 +521,8 @@ body.dark-theme #livreHost .ct-page-turn-back{background:linear-gradient(255deg,
 #livreHost .livre-page,.legal-article-view.ct-book-page{position:relative;isolation:isolate;touch-action:pan-y pinch-zoom}
 .ct-finger-curl .ct-book-hint{visibility:hidden}
 body.dark-theme .ct-curl-fold-shadow{background:linear-gradient(90deg,transparent,rgba(0,0,0,.42),rgba(255,255,255,.24),rgba(0,0,0,.3),transparent)}
+
+/* Même animation de pli pour le doigt et les commandes Précédent/Suivant */
+.ct-finger-curl{transition:clip-path 560ms cubic-bezier(.22,.68,.18,1);contain:paint}
+.ct-curl-original{width:100%;height:100%;box-sizing:border-box}
+.ct-curl-fold-shadow{pointer-events:none}
