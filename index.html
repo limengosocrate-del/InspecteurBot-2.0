@@ -465,6 +465,11 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 @media(min-width:700px){#ib-install-card{left:auto;right:22px;bottom:22px;width:440px}}
 @media(prefers-reduced-motion:no-preference){#ib-install-card .ib-install-panel{animation:ib-install-in .22s ease-out}}
 @keyframes ib-install-in{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ib-motivation-strip{display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 16px;background:#02102f;color:#fff;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
+.ib-motivation-strip p{margin:0;color:#ffd700;font-size:14px;font-weight:700;line-height:1.4}
+.ib-motivation-icon{color:#ffd700;font-size:18px;flex:0 0 auto}
+@media(max-width:520px){.ib-motivation-strip{min-height:44px;padding:9px 12px;gap:7px}.ib-motivation-strip p{font-size:12px}}
+@media(prefers-reduced-motion:no-preference){.ib-motivation-strip p{animation:ib-motivation-in .3s ease-out}@keyframes ib-motivation-in{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}}
 </style>
 </head>  
   
@@ -482,8 +487,13 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
         <img src="images/photos_igt/2.jpg?v=20261109-2" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="lazy" fetchpriority="low">
     </div>  
   
-</section>  
-  
+</section>
+
+<!-- Messages de motivation : affichage successif toutes les 3 secondes -->
+<section class="ib-motivation-strip" aria-live="polite" aria-atomic="true">
+  <span class="ib-motivation-icon" aria-hidden="true">✦</span>
+  <p id="motivationText">Le travail construit la nation 🇨🇩</p>
+</section>
 
 <!-- ================= MENU PRINCIPAL ================= -->  
   
@@ -742,21 +752,23 @@ const motivations = [
   
 ];  
   
-let motivationIndex = 0;  
-  
-setInterval(() => {  
-  
-    const texte = document.getElementById("motivationText");  
-  
-    if (texte) {  
-  
-        motivationIndex = (motivationIndex + 1) % motivations.length;  
-  
-        texte.textContent = motivations[motivationIndex];  
-  
-    }  
-  
-}, 2500);  
+let motivationIndex = 0;
+let motivationTimer = null;
+function showNextMotivation() {
+    const texte = document.getElementById("motivationText");
+    if (!texte || document.hidden) return;
+    motivationIndex = (motivationIndex + 1) % motivations.length;
+    texte.textContent = motivations[motivationIndex];
+}
+function scheduleMotivation() {
+    clearTimeout(motivationTimer);
+    if (!document.hidden) motivationTimer = setTimeout(() => {
+        showNextMotivation();
+        scheduleMotivation();
+    }, 3000);
+}
+scheduleMotivation();
+document.addEventListener("visibilitychange", scheduleMotivation);  
   
     /* Les alertes réelles sont gérées par Supabase et le centre de notifications. */
   
