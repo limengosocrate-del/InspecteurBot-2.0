@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données, partage et accès hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v64-20261118-online-profiles-v64';
+const CACHE='inspecteurbot-data-v65-20261118-motivation-3s-v65';
 const SHELL=['./','./index.html','./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(['./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'].map(path=>cache.add(new Request(new URL(path,self.registration.scope),{cache:'reload'})).catch(()=>{})));})());
