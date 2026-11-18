@@ -556,7 +556,9 @@ async function openGroup(group){
   const {data:members,error}=await withTimeout(client.from('chat_group_members').select('user_id').eq('group_id',group.id),12000,'membres du groupe');
   if(error)throw error;
   const ids=[...new Set((members||[]).map(m=>String(m.user_id)))];
-  if(ids.length){const {data:profiles,error:profileError}=await withTimeout(client.from('profiles').select('id,display_name,avatar_url').in('id',ids),12000,'profils des membres');if(profileError)throw profileError;(profiles||[]).forEach(p=>activeGroupMembers.set(String(p.id),p))}
+  // Utiliser l'annuaire déjà autorisé au lieu de lire directement les profils
+  // des autres membres : les politiques RLS limitent cette lecture au super-admin.
+  ids.forEach(id=>{const person=id===String(me.id)?myProfile:people.find(p=>String(p.id)===id);if(person)activeGroupMembers.set(id,person)});
   group.member_count=ids.length;updateChatHeader(active);
   try{await client.realtime.setAuth()}catch(error){console.warn('Autorisation Realtime du groupe:',error)}
   conversationChannel=client.channel('ib-group-chat:'+group.id)
@@ -824,6 +826,9 @@ async function startWithSharedAuth(detail){
 }
 window.addEventListener('inspecteurbot:authenticated',event=>{void startWithSharedAuth(event.detail)});
 if(window.inspecteurBotAuthClient&&window.inspecteurBotAuthUser)void startWithSharedAuth({client:window.inspecteurBotAuthClient,user:window.inspecteurBotAuthUser});
+// Éviter de laisser indéfiniment les libellés « Chargement… » si la session
+// partagée n'est pas transmise à cette page (PWA/WebView ou retour réseau).
+window.setTimeout(()=>{if(!messengerStarted){$('onlineStories').innerHTML='<div class="online-empty">Connexion à la messagerie en attente. Revenez à l’accueil, puis rouvrez ce menu.</div>';$('groupList').innerHTML='<span class="online-empty">Connexion en attente pour afficher vos groupes.</span>';$('inbox').innerHTML='<div class="empty">La session n’a pas encore été transmise à la messagerie.</div>'}},12000);
 })();
 </script>
 </body></html>
