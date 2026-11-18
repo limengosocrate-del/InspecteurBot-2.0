@@ -377,16 +377,22 @@ function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 function publishRealtimePresence(){
  if(!realtimePresenceChannel)return;
  const state=realtimePresenceChannel.presenceState()||{};
- const ids=new Set();
+ const ids=new Set(),profilesById=new Map();
  Object.entries(state).forEach(([key,entries])=>(Array.isArray(entries)?entries:[]).forEach(entry=>{
-  const id=entry?.user_id||key;if(id)ids.add(String(id));
+  const id=String(entry?.user_id||key||'');if(!id)return;
+  ids.add(id);
+  const displayName=String(entry?.display_name||'').trim();
+  const avatarUrl=typeof entry?.avatar_url==='string'?entry.avatar_url:'';
+  const current=profilesById.get(id)||{id};
+  profilesById.set(id,{...current,...(displayName?{display_name:displayName}:{}),...(avatarUrl?{avatar_url:avatarUrl}:{})});
  }));
  window.__ibPresenceRealtimeHealthy=true;
  window.__ibOnlineUserIds=ids;
+ window.__ibOnlineProfiles=profilesById;
  const count=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));
  const badge=document.querySelector('#ib-header-presence .ib-header-count');
  if(badge){badge.textContent=String(count);badge.hidden=false;badge.parentElement.title=count+' agent(s) en ligne';badge.parentElement.setAttribute('aria-label',count+' agent(s) en ligne');}
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],count,realtimeAvailable:true}}));
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],profiles:[...profilesById.values()],count,realtimeAvailable:true}}));
 }
 function schedulePresenceReconnect(channel,status){
  if(channel!==realtimePresenceChannel)return;
@@ -425,7 +431,7 @@ function startRealtimePresence(){
    if(status==='SUBSCRIBED'){
     window.__ibPresenceRealtimeHealthy=true;
     try{
-     const tracked=await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',online_at:new Date().toISOString()});
+     const tracked=await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',avatar_url:profile?.avatar_url||'',online_at:new Date().toISOString()});
      if(tracked&&tracked!=='ok')throw new Error('Échec du suivi de présence : '+tracked);
      presenceRetryAttempt=0;publishRealtimePresence();
     }catch(error){schedulePresenceReconnect(channel,error)}
