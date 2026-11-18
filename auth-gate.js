@@ -475,6 +475,7 @@ async function resumeRealtimePresenceAfterBackground(){
   }catch(error){schedulePresenceReconnect(realtimePresenceChannel,error)}
  }else startRealtimePresence();
 }
+window.addEventListener('offline',()=>{if(realtimePresenceChannel)schedulePresenceReconnect(realtimePresenceChannel,'offline')});
 document.addEventListener('visibilitychange',()=>{
  if(!document.hidden)void resumeRealtimePresenceAfterBackground();
 });
