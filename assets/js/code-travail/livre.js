@@ -101,87 +101,40 @@ window.LivreEngine = {
   },
 
   bindTouch: function () {
-    const page = document.getElementById("livrePage");
-    if (!page || page.dataset.touchBound) return;
-    page.dataset.touchBound = "1";
-    let sx = 0, sy = 0, dragging = false, direction = 1, startTime = 0, originalHTML = "", originalMinHeight = "";
-    const clearGesture = () => {
-      dragging = false;
-      page.classList.remove("ct-page-touching");
-      page.querySelector(".ct-page-turn-sheet")?.remove();
-    };
-    page.addEventListener("pointerdown", e => {
-      if (e.button !== undefined && e.button !== 0) return;
-      if (e.target.closest("button, input, a, select, textarea")) return;
-      const rect = page.getBoundingClientRect();
-      const localX = e.clientX - rect.left;
-      const edge = Math.max(46, Math.min(90, rect.width * .16));
-      // Le geste commence sur un coin/bord : cela évite de gêner la sélection du texte.
-      if (localX < edge) direction = -1;
-      else if (localX > rect.width - edge) direction = 1;
-      else return;
-      const targetIndex = this.currentPage + direction;
-      const articles = window.CodeTravailState?.articles || [];
-      if (targetIndex < 0 || targetIndex >= articles.length || this.turning) return;
-      sx = e.clientX; sy = e.clientY; startTime = performance.now();
-      dragging = true; originalHTML = page.innerHTML;
-      const targetHTML = this.articleMarkup(articles[targetIndex], targetIndex, articles.length);
-      // La page suivante/précédente est déjà dessous : aucun fond vide pendant le pli.
-      page.innerHTML = targetHTML;
-      const sheet = document.createElement("div");
-      sheet.className = "ct-page-turn-sheet " + (direction > 0 ? "ct-sheet-next" : "ct-sheet-prev");
-      sheet.innerHTML = '<div class="ct-page-turn-face ct-page-turn-front"></div><div class="ct-page-turn-face ct-page-turn-back"></div>';
-      sheet.querySelector(".ct-page-turn-front").innerHTML = originalHTML;
-      sheet.querySelector(".ct-page-turn-back").innerHTML = targetHTML;
-      page.appendChild(sheet);
-      page.classList.add("ct-page-touching");
-      sheet.style.transform = "rotateY(0deg)";
-      try { page.setPointerCapture(e.pointerId); } catch (_) {}
-      e.preventDefault();
+    const page=document.getElementById("livrePage");
+    if(!page||page.dataset.touchBound)return;
+    page.dataset.touchBound="1";
+    let sx=0,sy=0,startTime=0,dragging=false,direction=1,originalHTML="",targetIndex=-1,overlay=null;
+    const clear=()=>{dragging=false;page.classList.remove("ct-page-touching");page.style.removeProperty("--ct-fold-x-top");page.style.removeProperty("--ct-fold-x-bottom");page.style.removeProperty("--ct-fold-mid");overlay?.remove();overlay=null;};
+    const setFold=(progress,yRatio)=>{const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));page.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");page.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");page.style.setProperty("--ct-fold-mid",((top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));};
+    page.addEventListener("pointerdown",e=>{
+      if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;
+      const rect=page.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(48,Math.min(104,rect.width*.19));
+      if(x<edge)direction=-1;else if(x>rect.width-edge)direction=1;else return;
+      const articles=window.CodeTravailState?.articles||[];targetIndex=this.currentPage+direction;
+      if(targetIndex<0||targetIndex>=articles.length||this.turning)return;
+      sx=e.clientX;sy=e.clientY;startTime=performance.now();originalHTML=page.innerHTML;dragging=true;
+      const targetHTML=this.articleMarkup(articles[targetIndex],targetIndex,articles.length);
+      page.innerHTML=targetHTML;overlay=document.createElement("div");overlay.className="ct-finger-curl "+(direction>0?"ct-curl-forward":"ct-curl-backward");
+      overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;page.appendChild(overlay);
+      page.classList.add("ct-page-touching");setFold(0,(e.clientY-rect.top)/Math.max(1,rect.height));
+      try{page.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();
     });
-    page.addEventListener("pointermove", e => {
-      if (!dragging) return;
-      const dx = e.clientX - sx, dy = e.clientY - sy;
-      if (Math.abs(dy) > Math.abs(dx) * 1.25 && Math.abs(dy) > 14) return;
-      const width = Math.max(1, page.clientWidth);
-      const distance = direction > 0 ? sx - e.clientX : e.clientX - sx;
-      const progress = Math.max(0, Math.min(1, distance / width));
-      const angle = direction > 0 ? -180 * progress : 180 * progress;
-      const sheet = page.querySelector(".ct-page-turn-sheet");
-      if (sheet) {
-        sheet.style.transform = "rotateY(" + angle + "deg)";
-        sheet.style.setProperty("--ct-fold-progress", progress.toFixed(3));
-      }
-      page.style.setProperty("--ct-page-shadow", progress.toFixed(3));
+    page.addEventListener("pointermove",e=>{
+      if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dy)>Math.abs(dx)*1.35&&Math.abs(dy)>14)return;
+      const rect=page.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;
+      setFold(Math.max(0,distance/Math.max(1,rect.width)),(e.clientY-rect.top)/Math.max(1,rect.height));e.preventDefault();
     });
-    const finish = (e, cancelled) => {
-      if (!dragging) return;
-      const dx = e.clientX - sx, dy = e.clientY - sy;
-      const distance = direction > 0 ? sx - e.clientX : e.clientX - sx;
-      const progress = Math.max(0, Math.min(1, distance / Math.max(1, page.clientWidth)));
-      const elapsed = Math.max(1, performance.now() - startTime);
-      const velocity = Math.abs(dx) / elapsed;
-      const commit = !cancelled && Math.abs(dx) > Math.abs(dy) * 1.1 && (progress >= .36 || (progress >= .18 && velocity > .55));
-      const sheet = page.querySelector(".ct-page-turn-sheet");
-      dragging = false;
-      page.classList.remove("ct-page-touching");
-      page.style.removeProperty("--ct-page-shadow");
-      if (!sheet) { page.innerHTML = originalHTML; return; }
-      sheet.classList.add(commit ? "ct-sheet-commit" : "ct-sheet-revert");
-      sheet.style.transform = "rotateY(" + (commit ? (direction > 0 ? -180 : 180) : 0) + "deg)";
-      sheet.style.transition = "transform 360ms cubic-bezier(.2,.72,.2,1)";
-      setTimeout(() => {
-        sheet.remove();
-        if (commit) {
-          const target = this.currentPage + direction;
-          this.render(target);
-        } else {
-          page.innerHTML = originalHTML;
-        }
-      }, 370);
+    const finish=(e,cancelled)=>{
+      if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy,rect=page.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;
+      const progress=Math.max(0,Math.min(1,distance/Math.max(1,rect.width))),speed=Math.abs(dx)/Math.max(1,performance.now()-startTime);
+      const commit=!cancelled&&Math.abs(dx)>Math.abs(dy)*1.12&&(progress>=.34||(progress>=.19&&speed>.5));dragging=false;page.classList.remove("ct-page-touching");
+      if(!overlay){page.innerHTML=originalHTML;return;}
+      overlay.style.transition="clip-path 430ms cubic-bezier(.2,.72,.2,1)";
+      if(commit){setFold(1,.5);setTimeout(()=>{clear();this.render(targetIndex);},445);}
+      else{setFold(0,.5);setTimeout(()=>{clear();page.innerHTML=originalHTML;},445);}
     };
-    page.addEventListener("pointerup", e => finish(e, false));
-    page.addEventListener("pointercancel", e => finish(e, true));
+    page.addEventListener("pointerup",e=>finish(e,false));page.addEventListener("pointercancel",e=>finish(e,true));
   },
 
   turn: function (dir) {
