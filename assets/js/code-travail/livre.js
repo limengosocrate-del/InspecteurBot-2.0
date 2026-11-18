@@ -104,46 +104,84 @@ window.LivreEngine = {
     const page = document.getElementById("livrePage");
     if (!page || page.dataset.touchBound) return;
     page.dataset.touchBound = "1";
-    let sx = 0, sy = 0, dragging = false, horizontal = false;
+    let sx = 0, sy = 0, dragging = false, direction = 1, startTime = 0, originalHTML = "";
+    const clearGesture = () => {
+      dragging = false;
+      page.classList.remove("ct-page-touching");
+      page.querySelector(".ct-page-turn-sheet")?.remove();
+    };
     page.addEventListener("pointerdown", e => {
       if (e.button !== undefined && e.button !== 0) return;
-      sx = e.clientX; sy = e.clientY; dragging = true; horizontal = false;
-      try { page.setPointerCapture(e.pointerId); } catch (_) {}
+      if (e.target.closest("button, input, a, select, textarea")) return;
+      const rect = page.getBoundingClientRect();
+      const localX = e.clientX - rect.left;
+      const edge = Math.max(46, Math.min(90, rect.width * .16));
+      // Le geste commence sur un coin/bord : cela évite de gêner la sélection du texte.
+      if (localX < edge) direction = -1;
+      else if (localX > rect.width - edge) direction = 1;
+      else return;
+      const targetIndex = this.currentPage + direction;
+      const articles = window.CodeTravailState?.articles || [];
+      if (targetIndex < 0 || targetIndex >= articles.length || this.turning) return;
+      sx = e.clientX; sy = e.clientY; startTime = performance.now();
+      dragging = true; originalHTML = page.innerHTML;
+      const targetHTML = this.articleMarkup(articles[targetIndex], targetIndex, articles.length);
+      // La page suivante/précédente est déjà dessous : aucun fond vide pendant le pli.
+      page.innerHTML = targetHTML;
+      const sheet = document.createElement("div");
+      sheet.className = "ct-page-turn-sheet " + (direction > 0 ? "ct-sheet-next" : "ct-sheet-prev");
+      sheet.innerHTML = '<div class="ct-page-turn-face ct-page-turn-front"></div><div class="ct-page-turn-face ct-page-turn-back"></div>';
+      sheet.querySelector(".ct-page-turn-front").innerHTML = originalHTML;
+      sheet.querySelector(".ct-page-turn-back").innerHTML = targetHTML;
+      page.appendChild(sheet);
       page.classList.add("ct-page-touching");
+      sheet.style.transform = "rotateY(0deg)";
+      try { page.setPointerCapture(e.pointerId); } catch (_) {}
+      e.preventDefault();
     });
     page.addEventListener("pointermove", e => {
       if (!dragging) return;
       const dx = e.clientX - sx, dy = e.clientY - sy;
-      if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-        horizontal = true;
-        page.classList.toggle("ct-drag-next", dx < 0);
-        page.classList.toggle("ct-drag-prev", dx > 0);
-        page.style.setProperty("--ct-drag-progress", Math.min(1, Math.abs(dx) / Math.max(150, page.clientWidth * .42)));
+      if (Math.abs(dy) > Math.abs(dx) * 1.25 && Math.abs(dy) > 14) return;
+      const width = Math.max(1, page.clientWidth);
+      const distance = direction > 0 ? sx - e.clientX : e.clientX - sx;
+      const progress = Math.max(0, Math.min(1, distance / width));
+      const angle = direction > 0 ? -180 * progress : 180 * progress;
+      const sheet = page.querySelector(".ct-page-turn-sheet");
+      if (sheet) {
+        sheet.style.transform = "rotateY(" + angle + "deg)";
+        sheet.style.setProperty("--ct-fold-progress", progress.toFixed(3));
       }
+      page.style.setProperty("--ct-page-shadow", progress.toFixed(3));
     });
-    const finish = e => {
+    const finish = (e, cancelled) => {
       if (!dragging) return;
       const dx = e.clientX - sx, dy = e.clientY - sy;
-      const wasHorizontal = horizontal;
+      const distance = direction > 0 ? sx - e.clientX : e.clientX - sx;
+      const progress = Math.max(0, Math.min(1, distance / Math.max(1, page.clientWidth)));
+      const elapsed = Math.max(1, performance.now() - startTime);
+      const velocity = Math.abs(dx) / elapsed;
+      const commit = !cancelled && Math.abs(dx) > Math.abs(dy) * 1.1 && (progress >= .36 || (progress >= .18 && velocity > .55));
+      const sheet = page.querySelector(".ct-page-turn-sheet");
       dragging = false;
-      page.classList.remove("ct-page-touching", "ct-drag-next", "ct-drag-prev");
-      page.style.removeProperty("--ct-drag-progress");
-      if (wasHorizontal && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-        this.turn(dx < 0 ? 1 : -1);
-      } else if (!wasHorizontal && Math.abs(dx) < 10 && Math.abs(dy) < 10) {
-        const rect = page.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const edge = Math.max(42, Math.min(76, rect.width * .13));
-        if (x >= rect.width - edge) this.turn(1);
-        else if (x <= edge) this.turn(-1);
-      }
+      page.classList.remove("ct-page-touching");
+      page.style.removeProperty("--ct-page-shadow");
+      if (!sheet) { page.innerHTML = originalHTML; return; }
+      sheet.classList.add(commit ? "ct-sheet-commit" : "ct-sheet-revert");
+      sheet.style.transform = "rotateY(" + (commit ? (direction > 0 ? -180 : 180) : 0) + "deg)";
+      sheet.style.transition = "transform 360ms cubic-bezier(.2,.72,.2,1)";
+      setTimeout(() => {
+        sheet.remove();
+        if (commit) {
+          const target = this.currentPage + direction;
+          this.render(target);
+        } else {
+          page.innerHTML = originalHTML;
+        }
+      }, 370);
     };
-    page.addEventListener("pointerup", finish);
-    page.addEventListener("pointercancel", () => {
-      dragging = false;
-      page.classList.remove("ct-page-touching", "ct-drag-next", "ct-drag-prev");
-      page.style.removeProperty("--ct-drag-progress");
-    });
+    page.addEventListener("pointerup", e => finish(e, false));
+    page.addEventListener("pointercancel", e => finish(e, true));
   },
 
   turn: function (dir) {
@@ -173,6 +211,17 @@ window.LivreEngine = {
     document.getElementById("livreHost")?.scrollIntoView({ behavior: "smooth", block: "start" });
   },
 
+  articleMarkup: function (art, index, total) {
+    const esc = value => window.InspecteurUtils?.escapeHtml ? window.InspecteurUtils.escapeHtml(String(value ?? "")) : String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+    return `
+      <div class="ct-book-topline"><span class="livre-titre-section">${esc(art.titreSection || art.categorie || "Code du Travail RDC")}</span><span class="ct-book-count">${index + 1} / ${total}</span></div>
+      <div class="livre-numero">Article <span>${esc(art.numero)}</span></div>
+      <h3 class="livre-article-titre">${esc(art.titre || "Disposition légale")}</h3>
+      <div class="livre-contenu ct-book-text">${esc(art.contenu || "Contenu non disponible.")}</div>
+      ${art.sanction ? `<div class="livre-sanction"><i class="fa-solid fa-gavel"></i> Sanction : ${esc(art.sanction)}</div>` : ""}
+      <p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Faites glisser le coin de la feuille pour la tourner</p>`;
+  },
+
   render: function (index) {
     const articles = window.CodeTravailState?.articles || [];
     if (!articles.length) return;
@@ -181,15 +230,7 @@ window.LivreEngine = {
     const art = articles[index];
     const page = document.getElementById("livrePage");
     if (!page) return;
-    const esc = value => window.InspecteurUtils?.escapeHtml ? window.InspecteurUtils.escapeHtml(String(value ?? "")) : String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
-    page.innerHTML = `
-      <div class="ct-book-topline"><span class="livre-titre-section">${esc(art.titreSection || art.categorie || "Code du Travail RDC")}</span><span class="ct-book-count">${index + 1} / ${articles.length}</span></div>
-      <div class="livre-numero">Article <span>${esc(art.numero)}</span></div>
-      <h3 class="livre-article-titre">${esc(art.titre || "Disposition légale")}</h3>
-      <div class="livre-contenu ct-book-text">${esc(art.contenu || "Contenu non disponible.")}</div>
-      ${art.sanction ? `<div class="livre-sanction"><i class="fa-solid fa-gavel"></i> Sanction : ${esc(art.sanction)}</div>` : ""}
-      <p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez le coin de la page pour la tourner · Touchez les bords pour avancer ou revenir</p>`;
-    page.classList.remove("flip-next", "flip-prev");
+    page.innerHTML = this.articleMarkup(art, index, articles.length);
     const pagination = document.getElementById("livrePagination");
     if (pagination) pagination.textContent = `— Article ${art.numero} · Page ${index + 1} sur ${articles.length} —`;
     const progress = document.getElementById("livreProgressBar");
