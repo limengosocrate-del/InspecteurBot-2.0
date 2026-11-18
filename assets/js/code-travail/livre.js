@@ -110,6 +110,7 @@ window.LivreEngine = {
       page.style.removeProperty("--ct-fold-x-top");
       page.style.removeProperty("--ct-fold-x-bottom");
       page.style.removeProperty("--ct-fold-mid");
+      page.style.removeProperty("min-height");
       overlay?.remove();overlay=null;dragging=false;tracking=false;
     };
     const setFold=(progress,yRatio)=>{
@@ -125,12 +126,14 @@ window.LivreEngine = {
       targetIndex=this.currentPage+direction;
       if(targetIndex<0||targetIndex>=articles.length||this.turning)return false;
       originalHTML=page.innerHTML;
+      const oldHeight=page.getBoundingClientRect().height;
       page.innerHTML=this.articleMarkup(articles[targetIndex],targetIndex,articles.length);
+      page.style.minHeight=Math.max(oldHeight,page.scrollHeight)+"px";
       overlay=document.createElement("div");
       overlay.className="ct-finger-curl "+(direction>0?"ct-curl-forward":"ct-curl-backward");
       overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';
       overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;
-      page.appendChild(overlay);page.classList.add("ct-page-touching");dragging=true;
+      page.appendChild(overlay);page.classList.add("ct-page-touching");overlay.style.transition="none";dragging=true;
       const rect=page.getBoundingClientRect();setFold(0,(e.clientY-rect.top)/Math.max(1,rect.height));
       return true;
     };
@@ -149,7 +152,7 @@ window.LivreEngine = {
       if(!dragging){
         const intended=direction>0?-dx:dx;
         if(Math.abs(dy)>Math.abs(dx)*1.15&&Math.abs(dy)>10){tracking=false;return;}
-        if(intended<14)return;
+        if(intended<3)return;
         if(!beginCurl(e)){tracking=false;return;}
       }
       const rect=page.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;
