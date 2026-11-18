@@ -75,7 +75,7 @@ const all=window.CodeTravailState?.articles||[];
 const index=all.findIndex(x=>String(x.numero)===String(a.numero));
 const previous=index>0?all[index-1]:null;
 const next=index>=0&&index<all.length-1?all[index+1]:null;
-const el=header("Lecture du Code — Mode Livre","Tournez les pages avec les boutons ou faites glisser votre doigt sur le livre.");
+const el=header("Lecture du Code — Mode Livre","Touchez les coins ou faites glisser la page avec votre doigt.");
 const card=document.createElement("article");card.className="legal-article-view ct-book-page";card.setAttribute("role","region");card.setAttribute("aria-label","Article "+a.numero);
 const top=document.createElement("div");top.className="ct-book-topline";
 const category=document.createElement("span");category.className="legal-article-category";category.textContent=a.titreSection||a.categorie||"Code du Travail";
@@ -85,18 +85,45 @@ const h=document.createElement("h3");h.textContent="Article "+a.numero+(a.titre?
 const body=document.createElement("div");body.className="legal-article-text ct-book-text";body.textContent=a.contenu||"Contenu non disponible.";
 card.append(top,h,body);
 if(a.sanction){const sanction=document.createElement("aside");sanction.className="legal-sanction";const sh=document.createElement("strong");sh.textContent="Sanction / disposition associée";const sp=document.createElement("p");sp.textContent=a.sanction;sanction.append(sh,sp);card.append(sanction);}
-const hint=document.createElement("p");hint.className="ct-book-hint";hint.innerHTML='<i class="fa-solid fa-hand-pointer"></i> Faites glisser votre doigt vers la gauche ou la droite pour tourner la page';card.append(hint);
+const hint=document.createElement("p");hint.className="ct-book-hint";hint.innerHTML='<i class="fa-solid fa-hand-pointer"></i> Glissez le coin de la page pour la tourner · Touchez les bords pour avancer ou revenir';card.append(hint);
 const nav=document.createElement("div");nav.className="ct-book-navigation";
 const prev=document.createElement("button");prev.type="button";prev.className="legal-secondary-btn ct-book-nav";prev.disabled=!previous;prev.innerHTML='<i class="fa-solid fa-chevron-left"></i> Page précédente';
 const nextBtn=document.createElement("button");nextBtn.type="button";nextBtn.className="legal-primary-btn ct-book-nav";nextBtn.disabled=!next;nextBtn.innerHTML='Page suivante <i class="fa-solid fa-chevron-right"></i>';
 const speak=document.createElement("button");speak.type="button";speak.className="legal-secondary-btn ct-book-listen";speak.innerHTML='<i class="fa-solid fa-volume-high"></i> Écouter';
 speak.addEventListener("click",()=>{if(window.SpeechEngine?.speak)window.SpeechEngine.speak("Article "+a.numero+". "+(a.titre||"")+". "+(a.contenu||""));else alert("La lecture vocale n’est pas disponible sur cet appareil.");});
-function turn(target,direction){if(!target||card.dataset.turning==="1")return;card.dataset.turning="1";card.classList.add(direction==="next"?"ct-turn-next":"ct-turn-prev");setTimeout(()=>openArticle(target,state.parentView,true),260);}
+let turning=false;
+function turn(target,direction){if(!target||turning)return;turning=true;card.classList.add(direction==="next"?"ct-turn-next":"ct-turn-prev");setTimeout(()=>openArticle(target,state.parentView,true),520);}
 prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListener("click",()=>turn(next,"next"));
 nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
-let pointerX=0,pointerY=0;
-card.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;pointerX=e.clientX;pointerY=e.clientY;});
-card.addEventListener("pointerup",e=>{if(!pointerX||e.target.closest("button"))return;const dx=e.clientX-pointerX,dy=e.clientY-pointerY;pointerX=0;pointerY=0;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.25){turn(dx<0?next:previous,dx<0?"next":"prev");}});
+let startX=0,startY=0,lastX=0,lastY=0,dragging=false,moved=false;
+function pointDown(e){
+if(e.target.closest("button"))return;
+startX=lastX=e.clientX;startY=lastY=e.clientY;dragging=true;moved=false;
+try{card.setPointerCapture(e.pointerId);}catch(_){}
+card.classList.add("ct-page-touching");
+}
+function pointMove(e){
+if(!dragging)return;
+lastX=e.clientX;lastY=e.clientY;
+const dx=lastX-startX,dy=lastY-startY;
+if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.15){moved=true;card.classList.toggle("ct-drag-next",dx<0);card.classList.toggle("ct-drag-prev",dx>0);card.style.setProperty("--ct-drag-progress",Math.min(1,Math.abs(dx)/Math.max(150,card.clientWidth*.42)));}
+}
+function pointUp(e){
+if(!dragging)return;
+const dx=e.clientX-startX,dy=e.clientY-startY;
+const wasMoved=moved;dragging=false;card.classList.remove("ct-page-touching","ct-drag-next","ct-drag-prev");card.style.removeProperty("--ct-drag-progress");
+if(wasMoved&&Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.15){turn(dx<0?next:previous,dx<0?"next":"prev");return;}
+if(!wasMoved&&!e.target.closest("button")){
+const rect=card.getBoundingClientRect(),localX=e.clientX-rect.left;
+const edge=Math.max(58,Math.min(92,rect.width*.16));
+if(localX>=rect.width-edge)turn(next,"next");
+else if(localX<=edge)turn(previous,"prev");
+}
+}
+card.addEventListener("pointerdown",pointDown);
+card.addEventListener("pointermove",pointMove);
+card.addEventListener("pointerup",pointUp);
+card.addEventListener("pointercancel",()=>{dragging=false;card.classList.remove("ct-page-touching","ct-drag-next","ct-drag-prev");card.style.removeProperty("--ct-drag-progress");});
 card.addEventListener("keydown",e=>{if(e.key==="ArrowRight"&&next)turn(next,"next");if(e.key==="ArrowLeft"&&previous)turn(previous,"prev");});
 }
 
