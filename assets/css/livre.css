@@ -432,3 +432,63 @@ body.dark-theme .ct-book-hint{color:#c2d0dc}
 .ct-book-page.ct-drag-next .ct-book-text,.ct-book-page.ct-drag-prev .ct-book-text{pointer-events:none}
 .ct-book-page.ct-turn-next,.ct-book-page.ct-turn-prev{pointer-events:none}
 @media(hover:hover){.ct-book-page{cursor:grab}.ct-book-page:active{cursor:grabbing}}
+
+
+/* MODE LIVRE — harmonisation visuelle et navigation tactile du lecteur en bas de page */
+#livreHost{scroll-margin-top:18px}
+#livreHost .livre-section-heading{text-align:center;margin:0 auto 18px}
+#livreHost .livre-section-heading h2{color:#183a56;font-weight:850}
+#livreHost .livre-section-heading p{color:#64758a}
+#livreHost .livre-voice-selector{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:430px;margin:0 auto 20px;padding:9px 12px;background:#183a56;border:1px solid rgba(184,138,50,.35);border-radius:14px}
+#livreHost .livre-voice-selector span{color:#f3d78d;font-size:13px;font-weight:800}
+#livreHost .livre-voice-selector button{border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:9px 13px;background:transparent;color:#edf3f8;font-weight:750}
+#livreHost .livre-voice-selector button.active{background:#f0cf78;color:#18324a;box-shadow:0 3px 12px rgba(0,0,0,.15)}
+#livreHost .livre-wrapper{max-width:1180px;width:100%;margin:0 auto}
+#livreHost .livre{position:relative;min-height:0;height:auto;padding:clamp(22px,4vw,48px) clamp(18px,5vw,64px) 28px;overflow:hidden;border:1px solid #e6dcc9;border-left:12px solid #9b7434;border-radius:14px 22px 22px 14px;background:linear-gradient(105deg,#fffefa 0%,#fffefa 82%,#f1eadc 100%);box-shadow:0 18px 42px rgba(18,48,72,.14),inset 9px 0 15px rgba(126,91,38,.08)}
+#livreHost .livre:before{width:9px;background:linear-gradient(90deg,#b58a3b,#ead8a8 45%,transparent);opacity:.7}
+#livreHost .livre:after{pointer-events:none}
+#livreHost .livre-page{position:relative;z-index:2;min-height:300px;height:auto;animation:none;transform-origin:left center;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
+#livreHost .livre-page .livre-titre-section{display:inline-block;text-align:left;margin:0;padding:0;border:0;color:#8b6a2b;font-size:12px;letter-spacing:.7px}
+#livreHost .livre-page .livre-numero{margin:18px 0 7px;color:#183a56;font-family:Georgia,serif;font-size:clamp(28px,3vw,38px)}
+#livreHost .livre-page .livre-numero span{color:#a47b2c}
+#livreHost .livre-page .livre-article-titre{color:#183a56;font-family:Georgia,serif;font-size:clamp(23px,2.5vw,31px);font-style:normal;line-height:1.4}
+#livreHost .livre-page .livre-contenu{max-height:none!important;height:auto!important;overflow:visible!important;padding:0;margin:0;color:#263646;font-family:Georgia,"Times New Roman",serif;font-size:clamp(17px,1.5vw,20px);line-height:1.9;text-align:left;white-space:pre-line;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
+#livreHost .livre-page .livre-sanction{margin-top:20px;padding:14px 16px;border-left:4px solid #b43d36;border-radius:9px;background:#fff5f3;color:#78302b;font-size:15px;line-height:1.7}
+#livreHost .livre-page .ct-book-hint{margin:20px 0 0;color:#7a6b51;font-size:12px;font-weight:650;text-align:center}
+#livreHost .livre-page .ct-book-hint i{margin-right:6px;color:#a47b2c}
+#livreHost .ct-book-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #e6dcc9}
+#livreHost .ct-book-count{color:#8b6a2b;font-size:12px;font-weight:800;white-space:nowrap}
+#livreHost .livre-pagination{position:relative;left:auto;bottom:auto;width:100%;margin:18px 0 0;padding-top:12px;border-top:1px solid rgba(140,120,80,.22);color:#8b6a2b}
+#livreHost .livre-progress{max-width:1180px;height:7px;margin:16px auto 0;background:#e8e1d4;border:0}
+#livreHost .livre-progress-bar{background:linear-gradient(90deg,#8b6a2b,#d8b65f)}
+#livreHost .livre-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:20px}
+#livreHost .livre-page-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+#livreHost .livre-btn{min-height:44px;padding:11px 16px;border-radius:11px;background:#183a56;color:#fff;font-size:13px;box-shadow:0 5px 14px rgba(18,48,72,.12)}
+#livreHost .livre-btn.audio{background:#a47b2c;color:#fff}
+#livreHost .livre-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+#livreHost .livre-goto{background:#f7f4ed;border-color:#e5dccb}
+#livreHost .livre-goto label{color:#183a56}
+#livreHost .livre-goto input{border:1px solid #d9d2c4;background:#fff}
+#livreHost .livre-page.flip-next{animation:ct-real-page-next .52s cubic-bezier(.45,.05,.2,1) both;backface-visibility:hidden}
+#livreHost .livre-page.flip-prev{animation:ct-real-page-prev .52s cubic-bezier(.45,.05,.2,1) both;backface-visibility:hidden}
+#livreHost .livre-page.ct-page-touching{cursor:grabbing}
+#livreHost .livre-page.ct-drag-next{box-shadow:inset -18px 0 28px rgba(115,83,36,.16)}
+#livreHost .livre-page.ct-drag-prev{box-shadow:inset 18px 0 28px rgba(115,83,36,.16)}
+#livreHost .livre-page.ct-turn-next,#livreHost .livre-page.ct-turn-prev{pointer-events:none}
+body.dark-theme #livreHost .livre{background:linear-gradient(105deg,#1c3042 0%,#1c3042 82%,#152536 100%);border-color:#2a4057;border-left-color:#9b7434}
+body.dark-theme #livreHost .livre-page .livre-numero,body.dark-theme #livreHost .livre-page .livre-article-titre,body.dark-theme #livreHost .livre-page .livre-contenu{color:#edf3f8}
+body.dark-theme #livreHost .livre-page .livre-titre-section,body.dark-theme #livreHost .livre-page .ct-book-hint{color:#c2d0dc}
+body.dark-theme #livreHost .livre-page .livre-sanction{background:#382321;color:#ffd8d2}
+body.dark-theme #livreHost .livre-goto{background:#20364d;border-color:#40566a}
+body.dark-theme #livreHost .livre-goto label{color:#e2eaf2}
+@media(max-width:700px){
+ #livreHost .livre{padding:26px 18px 28px 26px}
+ #livreHost .livre-page{min-height:0}
+ #livreHost .livre-controls{display:grid;grid-template-columns:1fr 1fr}
+ #livreHost .livre-page-nav{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
+ #livreHost #livreAudio{grid-column:1/-1;justify-content:center}
+ #livreHost .livre-goto{grid-column:1/-1;justify-content:center}
+ #livreHost .livre-page .livre-contenu{font-size:17px;line-height:1.8}
+ #livreHost .livre-btn{justify-content:center;padding:11px 8px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){#livreHost .livre-page.flip-next,#livreHost .livre-page.flip-prev{animation-duration:.01ms!important}}
