@@ -251,7 +251,7 @@ function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtime
  const shared=ids instanceof Set?ids:(Array.isArray(ids)?new Set(ids):window.__ibOnlineUserIds);
  if(shared instanceof Set){
   onlineUserIds=new Set([...shared].map(String));
-  const renderSignature=JSON.stringify([...onlineUserIds].sort());
+  const renderSignature=JSON.stringify({ids:[...onlineUserIds].sort(),profiles:(Array.isArray(liveProfiles)?liveProfiles:[]).map(p=>[String(p?.id||''),p?.display_name||'',p?.avatar_url||'']).sort((a,b)=>a[0].localeCompare(b[0]))});
   const previousSignature=lastRenderedPresenceSignature;
   lastRenderedPresenceSignature=renderSignature;
   // Le canal Presence fournit aussi les informations publiques du profil.
