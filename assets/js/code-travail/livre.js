@@ -32,7 +32,7 @@ window.LivreEngine = {
     return `
       <div class="section-title livre-section-heading">
         <h2><i class="fa-solid fa-book-bookmark"></i> Lecture du Code — Mode Livre</h2>
-        <p>Tournez les pages, article par article, comme un véritable ouvrage juridique.</p>
+        <p>Touchez les coins ou faites glisser la page avec votre doigt.</p>
       </div>
       <div class="voice-selector livre-voice-selector" role="group" aria-label="Choisir la voix de lecture">
         <span><i class="fa-solid fa-microphone-lines"></i> Voix :</span>
@@ -226,14 +226,16 @@ window.LivreEngine = {
 
   articleMarkup: function (art, index, total) {
     const esc = value => window.InspecteurUtils?.escapeHtml ? window.InspecteurUtils.escapeHtml(String(value ?? "")) : String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+    const rawTitle = String(art.titre || "").trim();
+    const duplicateTitle = new RegExp("^article\\s+" + Number(art.numero) + "$", "i").test(rawTitle);
+    const heading = "Article " + esc(art.numero) + (rawTitle && !duplicateTitle ? " — " + esc(rawTitle) : "");
     return `
-      <div class="ct-book-topline"><span class="livre-titre-section">${esc(art.titreSection || art.categorie || "Code du Travail RDC")}</span><span class="ct-book-count">${index + 1} / ${total}</span></div>
-      <div class="livre-numero">Article <span>${esc(art.numero)}</span></div>
-      <h3 class="livre-article-titre">${esc(art.titre || "Disposition légale")}</h3>
+      <div class="ct-book-topline"><span class="livre-titre-section">${esc(art.titreSection || art.categorie || "Code du Travail")}</span><span class="ct-book-count">${index + 1} / ${total}</span></div>
+      <h3 class="livre-article-titre">${heading}</h3>
       <div class="livre-contenu ct-book-text">${esc(art.contenu || "Contenu non disponible.")}</div>
       ${art.sanction ? `<div class="livre-sanction"><i class="fa-solid fa-gavel"></i> Sanction : ${esc(art.sanction)}</div>` : ""}
       <p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Faites glisser le coin de la feuille pour la tourner</p>`;
-  },
+  }
 
   render: function (index) {
     const articles = window.CodeTravailState?.articles || [];
