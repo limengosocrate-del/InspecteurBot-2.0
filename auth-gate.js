@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261117-certification-off-admin-igt-v58';
+const IB_APP_BUILD='20261118-igt-all-agents-v59';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -810,7 +810,7 @@ async function validate(session){
   // Le parcours de certification reste disponible depuis le profil et les notifications.
 
   if(path.endsWith('/admin.html')&&data.role!=='super_admin'){gate('Accès réservé au super-administrateur.');return;}
-   if(/\/igt\//i.test(path)&&data.role!=='super_admin'){gate('Le Menu IGT est réservé au compte administrateur.');return;}
+   // Le Menu IGT est accessible à tous les comptes agents connectés.
   window.inspecteurBotAuthUser=user;window.inspecteurBotAuthProfile=profile;
   window.dispatchEvent(new CustomEvent('inspecteurbot:authenticated',{detail:{client,user,profile,session}}));
   try{if(window.__ibCertificationChannel)client.removeChannel(window.__ibCertificationChannel);window.__ibCertificationChannel=client.channel('ib-certification-live-'+user.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+user.id},payload=>{const updated=payload.new;if(!updated)return;profile=updated;window.inspecteurBotAuthProfile=updated;window.dispatchEvent(new CustomEvent('inspecteurbot:certification-updated',{detail:{profile:updated}}));document.body.classList.remove('ib-unverified-comms');
@@ -831,8 +831,7 @@ async function validate(session){
    });
   if(isHome){
    document.body.classList.remove('ib-account-pending');
-   const igtMenuLink=document.querySelector('.menu-index a[href*="igt/index.html"]');
-   if(igtMenuLink)igtMenuLink.style.display=isSuperAdmin?'':'none';
+   // Le lien du Menu IGT reste visible pour tous les utilisateurs connectés.
    // Le message de personnalisation à la connexion a été supprimé.
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
