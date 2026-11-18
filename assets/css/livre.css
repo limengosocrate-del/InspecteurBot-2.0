@@ -558,3 +558,9 @@ body.dark-theme .ct-curl-fold-shadow{background:linear-gradient(90deg,transparen
 body.dark-theme #livreHost .livre-page.ct-book-page{background:#142438!important;border-color:#2a4057!important;color:#e2eaf2!important}
 body.dark-theme #livreHost .livre-page .livre-article-titre,body.dark-theme #livreHost .livre-page .livre-contenu{color:#e2eaf2!important}
 @media(max-width:640px){#livreHost{padding:0 9px}#livreHost .livre-page.ct-book-page{padding:16px 14px!important;border-radius:14px!important}#livreHost .livre-page .livre-contenu{font-size:15px!important;line-height:1.8!important}}
+
+
+/* Pendant le glissement, le pli suit le doigt sans transition automatique ni retard */
+.ct-page-touching .ct-finger-curl{transition:none!important;will-change:clip-path}
+.ct-page-touching .ct-curl-original{backface-visibility:hidden}
+.ct-page-touching .ct-curl-fold-shadow{transition:none!important}
