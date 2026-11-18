@@ -1,6 +1,6 @@
 /* InspecteurBot — cache économe en données, partage et accès hors connexion */
 'use strict';
-const CACHE='inspecteurbot-data-v58-20261117-certification-off-admin-igt-v58';
+const CACHE='inspecteurbot-data-v59-20261118-igt-all-agents-v59';
 const SHELL=['./','./index.html','./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./office.html','./office.css?v=20261111-office-local-v5','./office.js?v=20261111-office-local-v6','./office-templates.js?v=20261111-templates-v4','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(['./offline.html','./share.html','./file-handler.html','./protocol-handler.html','./notes.html','./widgets/inspecteurbot-widget-template.json','./widgets/inspecteurbot-widget-data.json','./widgets/inspecteurbot-widget-preview.svg'].map(path=>cache.add(new Request(new URL(path,self.registration.scope),{cache:'reload'})).catch(()=>{})));})());
