@@ -235,7 +235,7 @@ window.LivreEngine = {
       <div class="livre-contenu ct-book-text">${esc(art.contenu || "Contenu non disponible.")}</div>
       ${art.sanction ? `<div class="livre-sanction"><i class="fa-solid fa-gavel"></i> Sanction : ${esc(art.sanction)}</div>` : ""}
       <p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Faites glisser le coin de la feuille pour la tourner</p>`;
-  }
+  },
 
   render: function (index) {
     const articles = window.CodeTravailState?.articles || [];
