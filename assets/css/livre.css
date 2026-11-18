@@ -564,3 +564,17 @@ body.dark-theme #livreHost .livre-page .livre-article-titre,body.dark-theme #liv
 .ct-page-touching .ct-finger-curl{transition:none!important;will-change:clip-path}
 .ct-page-touching .ct-curl-original{backface-visibility:hidden}
 .ct-page-touching .ct-curl-fold-shadow{transition:none!important}
+
+/* Tour de page recto-verso commun : l'article suivant n'apparait que sur le verso qui pivote sous le doigt. */
+#livreHost .livre-page,.legal-article-view.ct-book-page{perspective:1800px;transform-style:preserve-3d;overflow:visible}
+#livreHost .ct-page-turn-sheet,.legal-article-view.ct-book-page .ct-page-turn-sheet{position:absolute!important;z-index:40!important;inset:0 auto auto 0!important;width:100%!important;margin:0!important;min-height:100%;transform-style:preserve-3d!important;backface-visibility:visible;pointer-events:none;will-change:transform;overflow:visible!important;box-shadow:0 10px 28px rgba(20,38,55,.2)}
+#livreHost .ct-page-turn-sheet.ct-sheet-next,.legal-article-view.ct-book-page .ct-page-turn-sheet.ct-sheet-next{transform-origin:left center}
+#livreHost .ct-page-turn-sheet.ct-sheet-prev,.legal-article-view.ct-book-page .ct-page-turn-sheet.ct-sheet-prev{transform-origin:right center}
+#livreHost .ct-page-turn-face,.legal-article-view.ct-book-page .ct-page-turn-face{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:100%;box-sizing:border-box;overflow:hidden!important;backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;background:var(--ct-paper,#fffefa);color:var(--ct-ink,#243746)}
+#livreHost .ct-page-turn-front,.legal-article-view.ct-book-page .ct-page-turn-front{transform:rotateY(0deg);z-index:2}
+#livreHost .ct-page-turn-back,.legal-article-view.ct-book-page .ct-page-turn-back{transform:rotateY(180deg);z-index:1;background:var(--ct-paper,#fffefa);box-shadow:inset 12px 0 24px rgba(20,38,55,.12)}
+#livreHost .ct-page-turn-face .ct-book-hint,.legal-article-view.ct-book-page .ct-page-turn-face .ct-book-hint{visibility:hidden}
+.ct-page-touching .ct-page-turn-sheet{transition:none!important}
+.ct-page-turn-sheet:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(20,38,55,calc(var(--ct-fold-progress,0)*.22)),transparent 48%,rgba(255,255,255,calc(var(--ct-fold-progress,0)*.18)))}
+body.dark-theme #livreHost .ct-page-turn-face,body.dark-theme .legal-article-view.ct-book-page .ct-page-turn-face{background:#142438;color:#e2eaf2}
+body.dark-theme #livreHost .ct-page-turn-face h3,body.dark-theme #livreHost .ct-page-turn-face .ct-book-text,body.dark-theme .legal-article-view.ct-book-page .ct-page-turn-face h3,body.dark-theme .legal-article-view.ct-book-page .ct-page-turn-face .ct-book-text{color:#e2eaf2!important}
