@@ -450,6 +450,22 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 @media (display-mode: window-controls-overlay){body{padding-top:var(--ib-titlebar-height,env(titlebar-area-height,0px))!important}}
 
 </style>
+
+<style id="ib-pwa-install-ui">
+#ib-install-card{position:fixed;left:14px;right:14px;bottom:14px;z-index:2147481000;display:none;justify-content:center;font-family:Arial,sans-serif;pointer-events:none}
+#ib-install-card .ib-install-panel{width:min(520px,100%);padding:16px 17px;border:1px solid #d8e5f2;border-radius:17px;background:#fff;color:#17324d;box-shadow:0 12px 38px #00152f55;pointer-events:auto}
+#ib-install-card .ib-install-head{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+#ib-install-card .ib-install-logo{width:42px;height:42px;flex:0 0 42px;border-radius:11px;object-fit:contain;background:#061d50}
+#ib-install-card h2{margin:0;color:#073b70;font-size:17px;line-height:1.25}
+#ib-install-card p{margin:7px 0 12px;color:#40566b;font-size:13px;line-height:1.5}
+#ib-install-card .ib-install-actions{display:flex;gap:9px;align-items:center}
+#ib-install-card button{min-height:42px;padding:10px 15px;border:0;border-radius:10px;font-size:14px;font-weight:750;cursor:pointer}
+#ib-install-now{flex:1;background:#075a96;color:#fff}
+#ib-install-later{background:#edf2f7;color:#40566b}
+@media(min-width:700px){#ib-install-card{left:auto;right:22px;bottom:22px;width:440px}}
+@media(prefers-reduced-motion:no-preference){#ib-install-card .ib-install-panel{animation:ib-install-in .22s ease-out}}
+@keyframes ib-install-in{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
 </head>  
   
 <body>
@@ -886,6 +902,60 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
 })();
 </script>
 
+
+<script id="ib-pwa-smart-install">
+(()=> {
+ 'use strict';
+ const KEY='ib_pwa_install_notice_dismissed_v1';
+ let installPrompt=null,card=null;
+ const isStandalone=()=>window.matchMedia?.('(display-mode: standalone)').matches||window.matchMedia?.('(display-mode: fullscreen)').matches||navigator.standalone===true;
+ const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const isAndroid=()=>/android/i.test(navigator.userAgent);
+ const isChrome=()=>/Chrome\//i.test(navigator.userAgent)&&!/EdgA?\//i.test(navigator.userAgent);
+ const wasDismissed=()=>{try{return localStorage.getItem(KEY)==='1'}catch(_){return false}};
+ const dismiss=()=>{try{localStorage.setItem(KEY,'1')}catch(_){}if(card)card.remove();card=null};
+ function showCard(kind){
+  if(card||isStandalone()||wasDismissed()||!document.body)return;
+  card=document.createElement('aside');card.id='ib-install-card';
+  const title=kind==='ios'?'Installer InspecteurBot sur iPhone':'Installer InspecteurBot RDC';
+  let message='',button='Installer';
+  if(kind==='ios'){
+   message=isIOS()&&/Safari/i.test(navigator.userAgent)&&!/CriOS/i.test(navigator.userAgent)
+    ?'Touchez Partager dans Safari, choisissez « Sur l’écran d’accueil », puis « Ajouter ».'
+    :'Sur iPhone, ouvrez ce lien dans Safari, touchez Partager, choisissez « Sur l’écran d’accueil », puis « Ajouter ».';
+   button='Compris';
+  }else if(installPrompt){
+   message='Ajoutez InspecteurBot à votre téléphone pour l’ouvrir directement comme une application.';
+   button='Installer l’application';
+  }else{
+   message=isChrome()
+    ?'Dans Chrome, ouvrez le menu ⋮ puis choisissez « Installer l’application » ou « Ajouter à l’écran d’accueil ».'
+    :'Pour installer InspecteurBot, ouvrez ce lien avec Google Chrome, puis choisissez « Installer l’application » dans le menu ⋮.';
+   button='Voir comment installer';
+  }
+  card.innerHTML='<section class="ib-install-panel" role="dialog" aria-label="'+title+'"><div class="ib-install-head"><img class="ib-install-logo" src="./images/512.png" alt=""><h2>'+title+'</h2></div><p>'+message+'</p><div class="ib-install-actions"><button type="button" id="ib-install-now">'+button+'</button><button type="button" id="ib-install-later">Plus tard</button></div></section>';
+  card.querySelector('#ib-install-later').addEventListener('click',dismiss);
+  card.querySelector('#ib-install-now').addEventListener('click',async()=>{
+   if(kind==='ios'||!installPrompt){dismiss();return}
+   const prompt=installPrompt;
+   try{await prompt.prompt();const choice=await prompt.userChoice;if(choice?.outcome==='accepted')dismiss();else{installPrompt=null;card.remove();card=null;setTimeout(()=>showCard('android'),7000)}}catch(_){installPrompt=null;card.remove();card=null;setTimeout(()=>showCard('android'),1500)}
+  });
+  document.body.appendChild(card);card.style.display='flex';
+ }
+ window.addEventListener('beforeinstallprompt',event=>{
+  if(!isAndroid()||isStandalone())return;
+  event.preventDefault();installPrompt=event;
+  if(card){card.remove();card=null}
+  setTimeout(()=>showCard('android'),900);
+ });
+ window.addEventListener('appinstalled',()=>{installPrompt=null;if(card){card.remove();card=null}try{localStorage.removeItem(KEY)}catch(_){}});
+ window.addEventListener('load',()=>{
+  if(isStandalone()||wasDismissed())return;
+  if(isIOS())setTimeout(()=>showCard('ios'),1300);
+  else if(isAndroid())setTimeout(()=>showCard('android'),2200);
+ });
+})();
+</script>
 </body>  
   
 </html>
