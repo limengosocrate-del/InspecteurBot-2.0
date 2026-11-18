@@ -225,7 +225,7 @@ body.conversation-open{
 <div class="group-actions"><button class="group-cancel" id="cancelGroupCreate" type="button">Annuler</button><button class="group-submit" id="submitGroupCreate" type="submit">Créer le groupe</button></div>
 </form></div><div class="toast" id="toast" role="status"></div>
 <script src="./storage-optimizer.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="./auth-gate.js?v=20261116-certification-requests-v42"></script>
+<script src="./auth-gate.js?v=20261118-presence-stable-v67"></script>
 <script>
 (()=>{'use strict';
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
@@ -244,12 +244,16 @@ function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setT
 function initials(s){return s||'Agent'}
 let realtimePresenceReady=false;
 let onlineUserIds=new Set();
+let lastRenderedPresenceSignature='';
 function online(p){return !!p?.id&&(realtimePresenceReady?onlineUserIds.has(p.id):!!p?.is_online)}
 function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtimeHealthy===true,liveProfiles=window.__ibOnlineProfiles instanceof Map?[...window.__ibOnlineProfiles.values()]:[]){
  if(!realtimeAvailable){realtimePresenceReady=false;renderPresenceUI();return}
  const shared=ids instanceof Set?ids:(Array.isArray(ids)?new Set(ids):window.__ibOnlineUserIds);
  if(shared instanceof Set){
   onlineUserIds=new Set([...shared].map(String));
+  const renderSignature=JSON.stringify([...onlineUserIds].sort());
+  const previousSignature=lastRenderedPresenceSignature;
+  lastRenderedPresenceSignature=renderSignature;
   // Le canal Presence fournit aussi les informations publiques du profil.
   // Cela évite qu'un agent récemment connecté soit compté en ligne mais absent
   // de la liste pendant le chargement de l'annuaire RPC.
@@ -263,7 +267,8 @@ function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtime
    known.add(id);
   });
   people=people.map(p=>({...p,is_online:onlineUserIds.has(String(p.id))}));
-  realtimePresenceReady=true;renderPresenceUI();
+  realtimePresenceReady=true;
+  if(renderSignature!==previousSignature)renderPresenceUI();
  }
 }
 window.addEventListener('inspecteurbot:presence-updated',event=>{
@@ -523,7 +528,7 @@ function showRemoteTyping(payload){
  clearTimeout(typingResetTimer);
  if(payload.typing){
   $('chatStatus').textContent='est en train d’écrire…';$('chatStatus').classList.add('typing');
-  typingResetTimer=setTimeout(()=>{if(active)updateChatHeader(active)},2200);
+  typingResetTimer=setTimeout(()=>{if(active)updateChatHeader(active)},3500);
  }else updateChatHeader(active);
 }
 async function sendTypingState(typing){
@@ -765,8 +770,9 @@ $('profilePhotoViewer').addEventListener('click',event=>{if(event.target===$('pr
 $('profilePhotoViewerImage').addEventListener('click',event=>event.stopPropagation());
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('profilePhotoViewer').hidden)closeProfilePhotoViewer()});
 $('composer').addEventListener('submit',sendMessage);
-$('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px';if(el.value.trim()){void sendTypingState(true);clearTimeout(typingStopTimer);typingStopTimer=setTimeout(()=>void sendTypingState(false),1400)}else{clearTimeout(typingStopTimer);void sendTypingState(false)}});
+$('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px';if(el.value.trim()){void sendTypingState(true);clearTimeout(typingStopTimer);typingStopTimer=setTimeout(()=>void sendTypingState(false),1800)}else{clearTimeout(typingStopTimer);void sendTypingState(false)}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(typingStopTimer);void sendTypingState(false)}});
+$('messageInput').addEventListener('blur',()=>{clearTimeout(typingStopTimer);if($('messageInput').value.trim())void sendTypingState(false)});
 $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
 $('peopleNav').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').value='';$('searchInput').focus();search('')});
 $('refreshNav').addEventListener('click',()=>refreshAll());
