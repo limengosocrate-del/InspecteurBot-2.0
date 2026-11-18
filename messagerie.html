@@ -410,10 +410,29 @@ async function refreshGroups(){
 }
 
 function renderStories(){
- const list=people.filter(online);
+ const list=people.filter(online),container=$('onlineStories');
  const exactCount=realtimePresenceReady?Math.max(0,onlineUserIds.size-(onlineUserIds.has(me?.id)?1:0)):list.length;
  $('onlineCount').textContent=String(exactCount);
- $('onlineStories').innerHTML=list.length?list.map(p=>'<button class="story online" data-person="'+esc(p.id)+'"><span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" src="'+esc(avatar(p))+'" alt=""><i class="dot"></i></span><span class="story-name">'+esc(initials(p.display_name))+'</span></button>').join(''):'<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
+ const wanted=new Set(list.map(p=>String(p.id)));
+ container.querySelectorAll('.story[data-person]').forEach(node=>{if(!wanted.has(String(node.dataset.person)))node.remove()});
+ if(!list.length){
+  if(!container.querySelector('.online-empty'))container.innerHTML='<div class="online-empty">Aucun agent en ligne pour le moment.</div>';
+  return;
+ }
+ const empty=container.querySelector('.online-empty');if(empty)empty.remove();
+ const existing=new Map([...container.querySelectorAll('.story[data-person]')].map(node=>[String(node.dataset.person),node]));
+ list.forEach(p=>{
+  const id=String(p.id);let button=existing.get(id);
+  if(!button){
+   button=document.createElement('button');button.type='button';button.className='story online';button.dataset.person=id;
+   button.innerHTML='<span class="avatar-wrap"><img class="avatar" loading="lazy" decoding="async" fetchpriority="low" alt=""><i class="dot"></i></span><span class="story-name"></span>';
+   container.append(button);
+  }
+  const img=button.querySelector('img.avatar'),src=avatar(p);
+  if(img&&img.getAttribute('src')!==src)img.src=src;
+  const label=button.querySelector('.story-name'),name=initials(p.display_name);
+  if(label&&label.textContent!==name)label.textContent=name;
+ });
 }
 async function fetchAllMessageRows(queryFactory,label){
  const all=[],pageSize=500;let offset=0;
