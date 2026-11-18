@@ -106,7 +106,7 @@ window.LivreEngine = {
     page.dataset.touchBound="1";
     let sx=0,sy=0,startTime=0,dragging=false,direction=1,originalHTML="",targetIndex=-1,overlay=null;
     const clear=()=>{dragging=false;page.classList.remove("ct-page-touching");page.style.removeProperty("--ct-fold-x-top");page.style.removeProperty("--ct-fold-x-bottom");page.style.removeProperty("--ct-fold-mid");overlay?.remove();overlay=null;};
-    const setFold=(progress,yRatio)=>{const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));page.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");page.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");page.style.setProperty("--ct-fold-mid",((top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));};
+    const setFold=(progress,yRatio)=>{const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));page.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");page.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");page.style.setProperty("--ct-fold-mid",(direction>0?(top+bottom)/2:100-(top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));};
     page.addEventListener("pointerdown",e=>{
       if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;
       const rect=page.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(48,Math.min(104,rect.width*.19));
