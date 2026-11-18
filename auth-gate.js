@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261118-auto-update-v62';
+const IB_APP_BUILD='20261118-group-chat-v68';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
