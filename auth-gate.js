@@ -1023,7 +1023,8 @@ function setup(){
   if(!v||!recoveryEmail.checkValidity()){recoveryMessage.textContent='Veuillez saisir une adresse e-mail valide.';recoveryEmail.focus();return}
   recoverySend.disabled=true;recoverySend.textContent='Envoi en cours…';
   try{
-   const {error}=await client.auth.resetPasswordForEmail(v,{redirectTo:location.href.split('#')[0]});
+   const redirectTo=new URL('./',appRootUrl()).href;
+   const {error}=await client.auth.resetPasswordForEmail(v,{redirectTo});
    if(error)throw error;
    recoveryMessage.style.color='#167044';
    recoveryMessage.textContent='Votre demande a bien été prise en compte. Si cette adresse est associée à un compte InspecteurBot, un e-mail contenant un lien sécurisé de réinitialisation vient de vous être envoyé. Consultez votre boîte de réception ainsi que vos courriers indésirables, puis cliquez sur « Réinitialiser mon mot de passe ».';
