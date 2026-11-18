@@ -245,16 +245,29 @@ function initials(s){return s||'Agent'}
 let realtimePresenceReady=false;
 let onlineUserIds=new Set();
 function online(p){return !!p?.id&&(realtimePresenceReady?onlineUserIds.has(p.id):!!p?.is_online)}
-function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtimeHealthy===true){
+function applyRealtimePresence(ids,realtimeAvailable=window.__ibPresenceRealtimeHealthy===true,liveProfiles=[]){
  if(!realtimeAvailable){realtimePresenceReady=false;renderPresenceUI();return}
  const shared=ids instanceof Set?ids:(Array.isArray(ids)?new Set(ids):window.__ibOnlineUserIds);
  if(shared instanceof Set){
-  onlineUserIds=new Set([...shared].map(String));realtimePresenceReady=true;
-  people=people.map(p=>({...p,is_online:onlineUserIds.has(p.id)}));renderPresenceUI();
+  onlineUserIds=new Set([...shared].map(String));
+  // Le canal Presence fournit aussi les informations publiques du profil.
+  // Cela évite qu'un agent récemment connecté soit compté en ligne mais absent
+  // de la liste pendant le chargement de l'annuaire RPC.
+  const known=new Set(people.map(p=>String(p.id)));
+  (Array.isArray(liveProfiles)?liveProfiles:[]).forEach(p=>{
+   if(!p?.id)return;
+   const id=String(p.id),existing=people.find(x=>String(x.id)===id);
+   const merged={...(existing||{}),...p,id,is_active:true,is_online:onlineUserIds.has(id)};
+   if(existing)people=people.map(x=>String(x.id)===id?merged:x);
+   else if(id!==String(me?.id))people.push(merged);
+   known.add(id);
+  });
+  people=people.map(p=>({...p,is_online:onlineUserIds.has(String(p.id))}));
+  realtimePresenceReady=true;renderPresenceUI();
  }
 }
 window.addEventListener('inspecteurbot:presence-updated',event=>{
- applyRealtimePresence(event.detail?.userIds||[],event.detail?.realtimeAvailable===true);
+ applyRealtimePresence(event.detail?.userIds||[],event.detail?.realtimeAvailable===true,event.detail?.profiles||[]);
  if(event.detail?.realtimeAvailable===false)void refreshDirectoryOnly();
 });
 function syncMessengerPresence(){
