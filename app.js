@@ -161,7 +161,7 @@ function showMessage() {
 }
 
 showMessage();
-setInterval(showMessage, 7000);
+setInterval(showMessage, 3000);
 
 /*=========================================
       GRAPHIQUE INSPECTIONS
