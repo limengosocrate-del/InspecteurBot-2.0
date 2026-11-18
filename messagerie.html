@@ -503,7 +503,7 @@ function showRemoteTyping(payload){
  if(!active||payload?.user_id!==active.id)return;
  clearTimeout(typingResetTimer);
  if(payload.typing){
-  $('chatStatus').textContent='Écrit…';$('chatStatus').classList.add('typing');
+  $('chatStatus').textContent='est en train d’écrire…';$('chatStatus').classList.add('typing');
   typingResetTimer=setTimeout(()=>{if(active)updateChatHeader(active)},2200);
  }else updateChatHeader(active);
 }
@@ -747,6 +747,7 @@ $('profilePhotoViewerImage').addEventListener('click',event=>event.stopPropagati
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('profilePhotoViewer').hidden)closeProfilePhotoViewer()});
 $('composer').addEventListener('submit',sendMessage);
 $('messageInput').addEventListener('input',()=>{const el=$('messageInput');el.style.height='44px';el.style.height=Math.min(el.scrollHeight,110)+'px';if(el.value.trim()){void sendTypingState(true);clearTimeout(typingStopTimer);typingStopTimer=setTimeout(()=>void sendTypingState(false),1400)}else{clearTimeout(typingStopTimer);void sendTypingState(false)}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(typingStopTimer);void sendTypingState(false)}});
 $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('composer').requestSubmit()}});
 $('peopleNav').addEventListener('click',()=>{$('searchBox').classList.add('show');$('searchInput').value='';$('searchInput').focus();search('')});
 $('refreshNav').addEventListener('click',()=>refreshAll());
