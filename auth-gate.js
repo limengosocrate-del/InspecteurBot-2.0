@@ -659,7 +659,7 @@ function gate(t,mode){
  const g=byId('auth-gate'),form=byId('auth-form'),forgot=byId('auth-forgot'),retry=byId('auth-retry'),intro=byId('auth-intro');
  g.hidden=false;g.dataset.loading=(mode==='loading'||mode==='boot')?'true':'false';if(mode!=='loading'&&mode!=='boot')hideSplash();
  const loginOpen=byId('auth-login-open'),loginChosen=loginOpen?.dataset.open==='true';
- form.hidden=!loginChosen;forgot.hidden=false;byId('auth-register-open').hidden=false;byId('auth-passkey-login').hidden=!loginChosen;retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
+ form.hidden=!loginChosen;forgot.hidden=false;byId('auth-register-open').hidden=loginChosen;byId('auth-passkey-login').hidden=!loginChosen;retry.hidden=mode!=='retry';byId('auth-loading').hidden=mode!=='loading';byId('auth-message').style.color=mode==='loading'?'#07518a':'#b42318';
  if(intro&&mode==='loading')intro.textContent='Préparation de votre espace sécurisé…';
  if(t&&mode!=='loading')msg(t,mode==='loading');
 }
@@ -670,7 +670,7 @@ function makeGate(){
  document.body.appendChild(g);
   // Afficher immédiatement le choix de connexion, sans attendre le CDN.
   const earlyLogin=byId('auth-login-open'),earlyForm=byId('auth-form'),earlyChoice=g.querySelector('.ib-auth-choices'),earlyForgot=byId('auth-forgot');
-  if(earlyLogin){earlyLogin.dataset.bound='1';earlyLogin.addEventListener('click',()=>{byId('auth-card')?.classList.add('ib-login-mode');earlyLogin.dataset.open='true';if(earlyForm)earlyForm.hidden=false;if(earlyChoice)earlyChoice.hidden=true;if(earlyForgot)earlyForgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.removeAttribute('hidden');byId('auth-email')?.focus()});}
+  if(earlyLogin){earlyLogin.dataset.bound='1';earlyLogin.addEventListener('click',()=>{byId('auth-card')?.classList.add('ib-login-mode');earlyLogin.dataset.open='true';if(earlyForm)earlyForm.hidden=false;if(earlyChoice)earlyChoice.hidden=true;if(earlyForgot)earlyForgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.setAttribute('hidden','');byId('auth-email')?.focus()});}
   const earlySubmit=byId('auth-submit');if(earlySubmit)earlySubmit.disabled=true;
   byId('auth-retry')?.addEventListener('click',()=>{if(!client)location.reload()});
   // Les deux écrans sont séparés : un logo dédié par écran, jamais visibles ensemble.
@@ -892,7 +892,7 @@ function setup(){
  const form=byId('auth-form'),email=byId('auth-email'),pw=byId('auth-password'),confirm=byId('auth-confirm'),wrap=byId('auth-confirm-wrap'),submit=byId('auth-submit'),forgot=byId('auth-forgot');
  submit.disabled=false;
  const loginOpen=byId('auth-login-open'),choiceBox=byId('auth-card')?.querySelector('.ib-auth-choices');
- if(loginOpen&&!loginOpen.dataset.bound){loginOpen.dataset.bound='1';loginOpen.addEventListener('click',()=>{const card=byId('auth-card');if(card)card.classList.add('ib-login-mode');loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.removeAttribute('hidden');email?.focus()});}
+ if(loginOpen&&!loginOpen.dataset.bound){loginOpen.dataset.bound='1';loginOpen.addEventListener('click',()=>{const card=byId('auth-card');if(card)card.classList.add('ib-login-mode');loginOpen.dataset.open='true';if(form)form.hidden=false;if(choiceBox)choiceBox.hidden=true;if(forgot)forgot.hidden=false;byId('auth-passkey-login')?.removeAttribute('hidden');byId('auth-register-open')?.setAttribute('hidden','');email?.focus()});}
  const retry=byId('auth-retry');
  ['auth-password','auth-confirm','auth-register-password','auth-register-password2'].forEach(installPasswordEye);
  retry.addEventListener('click',async()=>{retry.disabled=true;gate('Nouvelle vérification de votre session…','loading');try{const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await validate(data.session);else gate()}catch(e){gate(e.message||'Vérification impossible. Réessayez.','retry')}finally{retry.disabled=false}});
