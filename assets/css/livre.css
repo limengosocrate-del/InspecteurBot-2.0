@@ -421,3 +421,14 @@ body.dark-theme .ct-book-topline{border-color:#40566a}
 body.dark-theme .ct-book-hint{color:#c2d0dc}
 @media(max-width:600px){.ct-book-navigation{display:grid;grid-template-columns:1fr 1fr}.ct-book-listen{grid-column:1/-1;grid-row:1}.ct-book-nav{width:100%;padding:11px 8px;font-size:12px}.ct-book-hint{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ct-turn-next,.ct-turn-prev{animation-duration:.01ms!important}}
+
+
+/* Manipulation directe de la feuille au toucher */
+.ct-book-page{touch-action:pan-y pinch-zoom;cursor:grab;--ct-drag-progress:0}
+.ct-book-page.ct-page-touching{cursor:grabbing}
+.ct-book-page.ct-page-touching:after{content:"";position:absolute;z-index:4;top:0;right:0;width:9px;height:100%;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(158,119,54,.22));opacity:.9}
+.ct-book-page.ct-drag-next{box-shadow:inset -18px 0 28px rgba(115,83,36,calc(var(--ct-drag-progress)*.22)),0 18px 42px rgba(18,48,72,.16)!important}
+.ct-book-page.ct-drag-prev{box-shadow:inset 18px 0 28px rgba(115,83,36,calc(var(--ct-drag-progress)*.22)),0 18px 42px rgba(18,48,72,.16)!important}
+.ct-book-page.ct-drag-next .ct-book-text,.ct-book-page.ct-drag-prev .ct-book-text{pointer-events:none}
+.ct-book-page.ct-turn-next,.ct-book-page.ct-turn-prev{pointer-events:none}
+@media(hover:hover){.ct-book-page{cursor:grab}.ct-book-page:active{cursor:grabbing}}
