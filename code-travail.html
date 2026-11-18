@@ -269,6 +269,13 @@ body.dark-theme .legal-library-card{background:#192c41;border-color:#354a60;colo
 .ct65-wrap{display:grid;gap:13px}.ct65-intro{padding:15px;border:1px solid var(--ct-border);border-radius:14px;background:rgba(120,140,160,.08);color:var(--ct-muted);font-size:13px;line-height:1.55}.ct65-tools{display:grid;gap:10px}.ct65-search,.ct65-filter{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--ct-border);border-radius:12px;background:var(--ct-paper);color:var(--ct-ink);font:inherit}.ct65-count{font-size:13px;color:var(--ct-muted);font-weight:700}.ct65-list{display:grid;gap:10px}.ct65-item{width:100%;padding:15px;border:1px solid var(--ct-border);border-radius:15px;background:var(--ct-paper);color:var(--ct-ink);text-align:left;display:grid;grid-template-columns:42px 1fr;gap:12px;cursor:pointer}.ct65-num{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(59,130,246,.12);color:#60a5fa;font-weight:900;font-size:17px}.ct65-title{font-weight:800;font-size:15px;line-height:1.45}.ct65-meta{display:block;margin-top:7px;color:var(--ct-muted);font-size:12px;line-height:1.5}.ct65-detail{grid-column:2;border-top:1px solid var(--ct-border);padding-top:10px;margin-top:2px;font-size:13px;line-height:1.6}.ct65-detail b{color:var(--ct-ink)}.ct65-empty{padding:20px;text-align:center;color:var(--ct-muted)}
 </style>
 
+
+<style id="ct-library-centralized-heading-v1">
+.title-box{text-align:center!important}
+.title-box .ct-library-subtitle{margin:5px 0 0!important;color:#f4d58e!important;font-size:clamp(12px,2vw,15px)!important;font-weight:800!important;line-height:1.4!important;letter-spacing:.15px!important}
+@media(max-width:650px){.title-box{ text-align:center!important}.title-box .ct-library-subtitle{font-size:11px!important}}
+</style>
+
 </head>
 
 <body class="light-theme">
@@ -283,11 +290,9 @@ body.dark-theme .legal-library-card{background:#192c41;border-color:#354a60;colo
             <div style="font-size: 70px; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));">⚖️</div>
         </div>
 
-        <div class="title-box">
+        <div class="title-box" style="text-align:center">
             <h1>CODE DU TRAVAIL RDC</h1>
-            <h2>République Démocratique du Congo</h2>
-            <h3>Inspection Générale du Travail (IGT)</h3>
-            <p>⚡ Bibliothèque Juridique Intelligente — Loi n° 16/010 ⚡</p>
+            <p class="ct-library-subtitle">⚡ Bibliothèque Juridique Intelligente — Loi n° 16/010 ⚡</p>
         </div>
 
         <!-- Compatibilité des scripts historiques : données temporelles masquées. --><div hidden aria-hidden="true"><span id="clock"></span><span id="day"></span><span id="date"></span><span id="temperature"></span><span id="city"></span></div>
