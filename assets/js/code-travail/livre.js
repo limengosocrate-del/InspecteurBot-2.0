@@ -104,7 +104,7 @@ window.LivreEngine = {
     const page = document.getElementById("livrePage");
     if (!page || page.dataset.touchBound) return;
     page.dataset.touchBound = "1";
-    let sx = 0, sy = 0, dragging = false, direction = 1, startTime = 0, originalHTML = "";
+    let sx = 0, sy = 0, dragging = false, direction = 1, startTime = 0, originalHTML = "", originalMinHeight = "";
     const clearGesture = () => {
       dragging = false;
       page.classList.remove("ct-page-touching");
