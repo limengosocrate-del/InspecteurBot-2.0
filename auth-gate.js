@@ -356,7 +356,7 @@ function readSessionId(token){
  try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
 }
 async function updatePresence(){
- if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false||document.visibilityState==='hidden'||presenceUpdateInFlight)return;
+ if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false||presenceUpdateInFlight)return;
  presenceUpdateInFlight=true;
  try{
   const now=new Date().toISOString();
@@ -369,7 +369,7 @@ function startPresenceTracking(){
  clearInterval(presenceTimer);
  void updatePresence();
  // 45 s laisse une marge confortable avant le seuil de présence de 150 s.
- presenceTimer=setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine!==false)void updatePresence()},45000);
+ presenceTimer=setInterval(()=>{if(navigator.onLine!==false)void updatePresence()},45000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
@@ -397,10 +397,10 @@ function publishRealtimePresence(){
 function schedulePresenceReconnect(channel,status){
  if(channel!==realtimePresenceChannel)return;
  realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
- window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
- const badge=document.querySelector('#ib-header-presence .ib-header-count');if(badge)badge.hidden=true;
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0,realtimeAvailable:false}}));
- console.warn('Canal de présence interrompu; nouvelle tentative automatique:',status);
+ // Conserver le dernier état connu pendant une coupure très brève : évite le clignotement des pastilles.
+ // Le prochain événement sync du canal rétabli remplacera cette liste par l'état réel.
+ window.__ibPresenceRealtimeHealthy=true;
+ console.warn('Canal de présence interrompu; état conservé pendant la reconnexion automatique:',status);
  try{if(client)void client.removeChannel(channel)}catch(_){}
  clearTimeout(presenceReconnectTimer);
  const delay=Math.min(30000,2500*Math.pow(2,Math.min(presenceRetryAttempt++,4)));
@@ -852,7 +852,7 @@ async function validate(session){
    let chip=byId('ib-auth-chip')||byId('auth-chip');
    if(!chip){
     const appHeader=document.createElement('header');appHeader.id='ib-app-header';
-    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence&v=20261118-online-profiles-v64" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261116-certification-access-v36" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html?v=20261116-certification-access-v36" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
+    appHeader.innerHTML='<div id="ib-auth-slot"></div><div class="ib-brand"><span class="ib-brand-copy">InspecteurBot<small>Votre assistant numérique</small></span></div><div class="ib-header-actions"><a class="ib-header-action" id="ib-header-presence" href="./messagerie.html?view=presence&v=20261118-stable-presence-typing-v66" aria-label="Agents en ligne" title="Agents en ligne"><i class="fa-solid fa-user-group"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-header-messages" href="./messagerie.html?v=20261116-certification-access-v36" aria-label="Messages" title="Messages"><i class="fa-brands fa-facebook-messenger"></i><span class="ib-header-count" hidden></span></a><a class="ib-header-action" id="ib-notification-link" href="./notifications.html?v=20261116-certification-access-v36" aria-label="Annonces et formations" title="Annonces et formations"><i class="fa-regular fa-bell"></i><span class="ib-notification-count" hidden></span></a><button type="button" id="ib-header-menu" aria-label="Ouvrir le menu principal" aria-expanded="false"><i class="fa-solid fa-bars"></i></button></div>';
     document.body.insertBefore(appHeader,document.body.firstChild);
     // Liens relatifs directs : pas de redirection JavaScript ni de reconstruction d'URL.
     // Le navigateur conserve la session de cet onglet entre les pages de même origine.
@@ -884,7 +884,7 @@ async function validate(session){
  finally{busy=false}
 }
 async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else if(!document.hidden){void updatePresence();if(user&&(!!user)&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else{if(user&&navigator.onLine!==false)void updatePresence();if(!document.hidden&&user&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
  const input=byId(id);if(!input||input.parentElement?.classList.contains('ib-password-wrap'))return;
