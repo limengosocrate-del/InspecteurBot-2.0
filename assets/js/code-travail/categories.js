@@ -125,7 +125,7 @@ prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListene
 nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
 let sx=0,sy=0,startTime=0,dragging=false,direction=1,originalHTML="",overlay=null;
 function clear(){dragging=false;card.classList.remove("ct-page-touching");card.style.removeProperty("--ct-fold-x-top");card.style.removeProperty("--ct-fold-x-bottom");card.style.removeProperty("--ct-fold-mid");overlay?.remove();overlay=null;}
-function setFold(progress,yRatio){const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));card.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");card.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");card.style.setProperty("--ct-fold-mid",((top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));}
+function setFold(progress,yRatio){const p=Math.max(0,Math.min(1,progress)),base=(1-p)*100,tilt=(yRatio-.5)*Math.min(18,p*24),top=Math.max(0,Math.min(100,base+tilt)),bottom=Math.max(0,Math.min(100,base-tilt));card.style.setProperty("--ct-fold-x-top",direction>0?top+"%":(100-top)+"%");card.style.setProperty("--ct-fold-x-bottom",direction>0?bottom+"%":(100-bottom)+"%");card.style.setProperty("--ct-fold-mid",(direction>0?(top+bottom)/2:100-(top+bottom)/2)+"%");overlay?.style.setProperty("--ct-fold-progress",p.toFixed(3));}
 card.addEventListener("pointerdown",e=>{
 if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;
 const rect=card.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(48,Math.min(104,rect.width*.19));
