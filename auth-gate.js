@@ -59,7 +59,7 @@ function startLiveUpdateChecks(){
 
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,presenceReconnectTimer=null,presenceRetryAttempt=0,presenceUpdateInFlight=false,passkeyEnrollmentInProgress=false;
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,presenceReconnectTimer=null,presenceRetryAttempt=0,presenceUpdateInFlight=false,passkeyEnrollmentInProgress=false,lastPublishedPresenceSignature='';
 window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
@@ -389,6 +389,9 @@ function publishRealtimePresence(){
  window.__ibPresenceRealtimeHealthy=true;
  window.__ibOnlineUserIds=ids;
  window.__ibOnlineProfiles=profilesById;
+ const signature=JSON.stringify([...profilesById.values()].sort((a,b)=>a.id.localeCompare(b.id)).map(p=>[p.id,p.display_name||'',p.avatar_url||'']));
+ if(signature===lastPublishedPresenceSignature)return;
+ lastPublishedPresenceSignature=signature;
  const count=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));
  const badge=document.querySelector('#ib-header-presence .ib-header-count');
  if(badge){badge.textContent=String(count);badge.hidden=false;badge.parentElement.title=count+' agent(s) en ligne';badge.parentElement.setAttribute('aria-label',count+' agent(s) en ligne');}
@@ -438,6 +441,31 @@ function startRealtimePresence(){
    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){schedulePresenceReconnect(channel,status)}
   });
 }
+
+// Reprise du signal de présence après suspension par Android/WebView.
+ // Le navigateur peut suspendre le réseau en arrière-plan : on rétablit le heartbeat
+ // et le canal dès que l'application redevient active, sans effacer l'état pendant la pause.
+async function resumeRealtimePresenceAfterBackground(){
+ if(!client||!user||navigator.onLine===false)return;
+ void updatePresence();
+ if(realtimePresenceChannel&&window.__ibPresenceRealtimeHealthy===true){
+  try{
+   const result=await realtimePresenceChannel.track({
+    user_id:user.id,
+    display_name:profile?.display_name||user.email||'Agent',
+    avatar_url:profile?.avatar_url||'',
+    online_at:new Date().toISOString()
+   });
+   if(result&&result!=='ok')throw new Error(String(result));
+   publishRealtimePresence();
+  }catch(error){schedulePresenceReconnect(realtimePresenceChannel,error)}
+ }else startRealtimePresence();
+}
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden)void resumeRealtimePresenceAfterBackground();
+});
+window.addEventListener('focus',()=>void resumeRealtimePresenceAfterBackground());
+window.addEventListener('pageshow',()=>void resumeRealtimePresenceAfterBackground());
 
 // Notifications globales des messages privés : actives sur tous les menus de l'application.
 let incomingMessagePoll=null,incomingMessageCursor=null,incomingMessageToastTimer=null,incomingMessageBusy=false,incomingMessageChannel=null;
