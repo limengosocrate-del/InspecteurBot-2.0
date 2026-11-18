@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261118-group-chat-v68';
+const IB_APP_BUILD='20261118-live-presence-v69';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -59,7 +59,7 @@ function startLiveUpdateChecks(){
 
 const SUPABASE_URL='https://icymfsvbuandgvrhwmaw.supabase.co';
 const KEY='sb_publishable_ehMQbO5ac2-9RSdiOmxKJw_yPw2ES7z';
-let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,presenceReconnectTimer=null,presenceRetryAttempt=0,presenceUpdateInFlight=false,passkeyEnrollmentInProgress=false,lastPublishedPresenceSignature='';
+let client=null,user=null,profile=null,busy=false,expiry=null,validation=null,recovery=false,sessionDeadline=0,presenceTimer=null,realtimePresenceChannel=null,presenceReconnectTimer=null,presenceGraceTimer=null,presenceRetryAttempt=0,presenceUpdateInFlight=false,presenceClientKey='',presenceClientUserId='',passkeyEnrollmentInProgress=false,lastPublishedPresenceSignature='';
 window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
 const css=document.createElement('style');
 css.textContent=`\nhtml,body{max-width:100%;overflow-x:hidden;overscroll-behavior:contain}\nbody{position:relative}\nimg,video,canvas,iframe{max-width:100%}\n
@@ -367,14 +367,15 @@ async function updatePresence(){
 }
 function startPresenceTracking(){
  clearInterval(presenceTimer);
+ if(profile?.certification_status!=='certified'&&profile?.role!=='super_admin')return;
  void updatePresence();
- // 45 s laisse une marge confortable avant le seuil de présence de 150 s.
- presenceTimer=setInterval(()=>{if(navigator.onLine!==false)void updatePresence()},45000);
+ // Heartbeat de secours toutes les 20 secondes; l'affichage principal reste piloté par WebSocket.
+ presenceTimer=setInterval(()=>{if(navigator.onLine!==false)void updatePresence()},20000);
 }
 function stopPresenceTracking(){clearInterval(presenceTimer);presenceTimer=null}
 
 // Canal Supabase Presence partagé par tous les menus et toutes les pages.
-function publishRealtimePresence(){
+function publishRealtimePresence(force=false){
  if(!realtimePresenceChannel)return;
  const state=realtimePresenceChannel.presenceState()||{};
  const ids=new Set(),profilesById=new Map();
@@ -386,57 +387,70 @@ function publishRealtimePresence(){
   const current=profilesById.get(id)||{id};
   profilesById.set(id,{...current,...(displayName?{display_name:displayName}:{}),...(avatarUrl?{avatar_url:avatarUrl}:{})});
  }));
- window.__ibPresenceRealtimeHealthy=true;
  window.__ibOnlineUserIds=ids;
  window.__ibOnlineProfiles=profilesById;
  const signature=JSON.stringify([...profilesById.values()].sort((a,b)=>a.id.localeCompare(b.id)).map(p=>[p.id,p.display_name||'',p.avatar_url||'']));
- if(signature===lastPublishedPresenceSignature)return;
+ if(signature===lastPublishedPresenceSignature&&!force)return;
  lastPublishedPresenceSignature=signature;
  const count=Math.max(0,ids.size-(user&&ids.has(user.id)?1:0));
  const badge=document.querySelector('#ib-header-presence .ib-header-count');
  if(badge){badge.textContent=String(count);badge.hidden=false;badge.parentElement.title=count+' agent(s) en ligne';badge.parentElement.setAttribute('aria-label',count+' agent(s) en ligne');}
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],profiles:[...profilesById.values()],count,realtimeAvailable:true}}));
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[...ids],profiles:[...profilesById.values()],count,realtimeAvailable:window.__ibPresenceRealtimeHealthy===true}}));
 }
 function schedulePresenceReconnect(channel,status){
  if(channel!==realtimePresenceChannel)return;
  realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
- // Conserver le dernier état connu pendant une coupure très brève : évite le clignotement des pastilles.
- // Le prochain événement sync du canal rétabli remplacera cette liste par l'état réel.
- window.__ibPresenceRealtimeHealthy=true;
- console.warn('Canal de présence interrompu; état conservé pendant la reconnexion automatique:',status);
+ // Tolérance courte aux micro-coupures; au-delà, ne pas conserver un faux statut en ligne.
+ if(!presenceGraceTimer){
+  presenceGraceTimer=setTimeout(()=>{
+   presenceGraceTimer=null;
+   if(realtimePresenceChannel&&window.__ibPresenceRealtimeHealthy===true)return;
+   window.__ibPresenceRealtimeHealthy=false;
+   window.__ibOnlineUserIds=new Set();window.__ibOnlineProfiles=new Map();lastPublishedPresenceSignature='';
+   const badge=document.querySelector('#ib-header-presence .ib-header-count');if(badge)badge.hidden=true;
+   window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],profiles:[],count:0,realtimeAvailable:false}}));
+  },8000);
+ }
+ console.warn('Canal de présence interrompu; reconnexion automatique:',status);
  try{if(client)void client.removeChannel(channel)}catch(_){}
  clearTimeout(presenceReconnectTimer);
- const delay=Math.min(30000,2500*Math.pow(2,Math.min(presenceRetryAttempt++,4)));
+ const delay=Math.min(15000,2000*Math.pow(2,Math.min(presenceRetryAttempt++,3)));
  presenceReconnectTimer=setTimeout(()=>{
   presenceReconnectTimer=null;
-  if(client&&user&&(!!user)&&navigator.onLine!==false)startRealtimePresence();
+  if(client&&user&&navigator.onLine!==false)startRealtimePresence();
  },delay);
 }
 function stopRealtimePresence(){
- clearTimeout(presenceReconnectTimer);presenceReconnectTimer=null;presenceRetryAttempt=0;
+ clearTimeout(presenceReconnectTimer);presenceReconnectTimer=null;clearTimeout(presenceGraceTimer);presenceGraceTimer=null;presenceRetryAttempt=0;
  const channel=realtimePresenceChannel;realtimePresenceChannel=null;window.__inspecteurBotPresenceChannel=null;
- window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();
+ window.__ibPresenceRealtimeHealthy=false;window.__ibOnlineUserIds=new Set();window.__ibOnlineProfiles=new Map();lastPublishedPresenceSignature='';
+ presenceClientKey='';presenceClientUserId='';
  const badge=document.querySelector('#ib-header-presence .ib-header-count');if(badge)badge.hidden=true;
- window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],count:0,realtimeAvailable:false}}));
+ window.dispatchEvent(new CustomEvent('inspecteurbot:presence-updated',{detail:{userIds:[],profiles:[],count:0,realtimeAvailable:false}}));
  if(channel&&client){try{void channel.untrack()}catch(_){}try{void client.removeChannel(channel)}catch(_){}}
 }
 function startRealtimePresence(){
- if(!client||!user||navigator.onLine===false)return;
+ if(!client||!user||navigator.onLine===false||presenceReconnectTimer)return;
  if(realtimePresenceChannel)return;
- const channel=client.channel('ib-presence-global',{config:{presence:{key:user.id}}});
+ if(presenceClientUserId!==String(user.id)){
+  presenceClientUserId=String(user.id);
+  const nonce=window.crypto?.randomUUID?.()||(''+Date.now()+'-'+Math.random().toString(36).slice(2));
+  presenceClientKey=String(user.id)+':'+nonce;
+ }
+ const channel=client.channel('ib-presence-global',{config:{presence:{key:presenceClientKey}}});
  realtimePresenceChannel=channel;window.__inspecteurBotPresenceChannel=channel;
- window.__ibPresenceRealtimeHealthy=false;
- channel.on('presence',{event:'sync'},publishRealtimePresence)
-  .on('presence',{event:'join'},publishRealtimePresence)
-  .on('presence',{event:'leave'},publishRealtimePresence)
+ channel.on('presence',{event:'sync'},()=>publishRealtimePresence())
+  .on('presence',{event:'join'},()=>publishRealtimePresence())
+  .on('presence',{event:'leave'},()=>publishRealtimePresence())
   .subscribe(async status=>{
    if(channel!==realtimePresenceChannel)return;
    if(status==='SUBSCRIBED'){
-    window.__ibPresenceRealtimeHealthy=true;
     try{
      const tracked=await channel.track({user_id:user.id,display_name:profile?.display_name||user.email||'Agent',avatar_url:profile?.avatar_url||'',online_at:new Date().toISOString()});
      if(tracked&&tracked!=='ok')throw new Error('Échec du suivi de présence : '+tracked);
-     presenceRetryAttempt=0;publishRealtimePresence();
+     clearTimeout(presenceGraceTimer);presenceGraceTimer=null;
+     window.__ibPresenceRealtimeHealthy=true;
+     presenceRetryAttempt=0;publishRealtimePresence(true);
     }catch(error){schedulePresenceReconnect(channel,error)}
    }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){schedulePresenceReconnect(channel,status)}
   });
