@@ -92,7 +92,35 @@ const nextBtn=document.createElement("button");nextBtn.type="button";nextBtn.cla
 const speak=document.createElement("button");speak.type="button";speak.className="legal-secondary-btn ct-book-listen";speak.innerHTML='<i class="fa-solid fa-volume-high"></i> Écouter';
 speak.addEventListener("click",()=>{if(window.SpeechEngine?.speak)window.SpeechEngine.speak("Article "+a.numero+". "+(a.titre||"")+". "+(a.contenu||""));else alert("La lecture vocale n’est pas disponible sur cet appareil.");});
 let turning=false;
-function turn(target,direction){if(!target||turning)return;turning=true;card.classList.add(direction==="next"?"ct-turn-next":"ct-turn-prev");setTimeout(()=>openArticle(target,state.parentView,true),520);}
+function escapeArticle(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+function articleMarkup(art){
+const idx=all.findIndex(x=>String(x.numero)===String(art.numero));
+return '<div class="ct-book-topline"><span class="legal-article-category">'+escapeArticle(art.titreSection||art.categorie||"Code du Travail")+'</span><span class="ct-book-count">'+(idx+1)+' / '+all.length+'</span></div><h3>Article '+escapeArticle(art.numero)+(art.titre?" — "+escapeArticle(art.titre):"")+'</h3><div class="legal-article-text ct-book-text">'+escapeArticle(art.contenu||"Contenu non disponible.")+'</div>'+(art.sanction?'<aside class="legal-sanction"><strong>Sanction / disposition associée</strong><p>'+escapeArticle(art.sanction)+'</p></aside>':"")+'<p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez doucement le coin pour plier la feuille</p>';
+}
+function turn(target,direction){
+if(!target||turning)return;
+turning=true;
+const originalHTML=card.innerHTML,oldHeight=card.getBoundingClientRect().height;
+card.innerHTML=articleMarkup(target);
+card.style.minHeight=Math.max(oldHeight,card.scrollHeight)+"px";
+const overlay=document.createElement("div");
+overlay.className="ct-finger-curl "+(direction==="next"?"ct-curl-forward":"ct-curl-backward");
+overlay.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';
+overlay.querySelector(".ct-curl-original").innerHTML=originalHTML;
+card.appendChild(overlay);
+const dir=direction==="next"?1:-1;
+const setProgress=p=>{
+const base=(1-p)*100;
+card.style.setProperty("--ct-fold-x-top",dir>0?base+"%":(100-base)+"%");
+card.style.setProperty("--ct-fold-x-bottom",dir>0?base+"%":(100-base)+"%");
+card.style.setProperty("--ct-fold-mid",(dir>0?base:100-base)+"%");
+overlay.style.setProperty("--ct-fold-progress",String(p));
+};
+setProgress(0);
+overlay.style.transition="clip-path 560ms cubic-bezier(.22,.68,.18,1)";
+requestAnimationFrame(()=>requestAnimationFrame(()=>setProgress(1)));
+setTimeout(()=>{overlay.remove();card.style.removeProperty("min-height");card.style.removeProperty("--ct-fold-x-top");card.style.removeProperty("--ct-fold-x-bottom");card.style.removeProperty("--ct-fold-mid");openArticle(target,state.parentView,true);},590);
+}
 prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListener("click",()=>turn(next,"next"));
 nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
 let sx=0,sy=0,startTime=0,dragging=false,direction=1,originalHTML="",overlay=null;
