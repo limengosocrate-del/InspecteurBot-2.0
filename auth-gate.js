@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261118-registration-no-photo-v60';
+const IB_APP_BUILD='20261118-fast-auth-v61';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -892,28 +892,35 @@ function setup(){
   try{
    if(recovery){if(pw.value.length<8)throw Error('Le mot de passe doit contenir au moins 8 caractères.');if(pw.value!==confirm.value)throw Error('Les deux mots de passe ne correspondent pas.');const {error}=await client.auth.updateUser({password:pw.value});if(error)throw error;recovery=false;wrap.hidden=true;email.parentElement.hidden=false;email.required=true;pw.value='';confirm.value='';await client.auth.signOut();submit.textContent='Se connecter';msg('Mot de passe mis à jour. Connectez-vous avec votre compte existant.',true);return}
    const enrollPasskey=byId('auth-passkey-enroll')?.checked===true;
-   passkeyEnrollmentInProgress=enrollPasskey;
-   submit.textContent='Connexion…';const {data,error}=await client.auth.signInWithPassword({email:email.value.trim(),password:pw.value});
-   if(error){passkeyEnrollmentInProgress=false;throw Error('Connexion impossible. Vérifiez votre adresse e-mail et votre mot de passe.');}
-   let enrollmentMessage='';
+   // Priorité à l'ouverture de session : aucune vérification biométrique supplémentaire
+   // ne doit retarder l'accès à l'application.
+   passkeyEnrollmentInProgress=false;
+   submit.textContent='Vérification…';
+   const {data,error}=await client.auth.signInWithPassword({email:email.value.trim().toLowerCase(),password:pw.value});
+   if(error){
+    const code=String(error.code||'').toLowerCase(),detail=String(error.message||'').toLowerCase();
+    if(code==='invalid_credentials'||detail.includes('invalid login credentials')||detail.includes('invalid credentials')){
+     throw Error('Mot de passe incorrect ou adresse e-mail invalide. Vérifiez vos identifiants puis réessayez.');
+    }
+    if(detail.includes('email not confirmed'))throw Error('Votre adresse e-mail n’est pas encore confirmée. Consultez votre boîte de réception.');
+    if(detail.includes('too many requests'))throw Error('Trop de tentatives. Patientez quelques instants avant de réessayer.');
+    throw Error('Connexion momentanément impossible. Vérifiez votre connexion Internet puis réessayez.');
+   }
+   await validate(data.session);
+   // L'inscription biométrique est facultative et ne bloque plus la connexion.
    if(enrollPasskey){
-    try{
-     const {data:existingPasskeys,error:listError}=await client.auth.passkey.list();
-     if(!listError&&Array.isArray(existingPasskeys)&&existingPasskeys.length){
-      enrollmentMessage='Une protection biométrique est déjà associée à votre compte. Vous pourrez utiliser la connexion par empreinte digitale lors de votre prochaine visite.';
-     }else{
+    void (async()=>{
+     try{
+      const {data:existingPasskeys,error:listError}=await client.auth.passkey.list();
+      if(!listError&&Array.isArray(existingPasskeys)&&existingPasskeys.length){
+       msg('Une connexion biométrique est déjà associée à votre compte.',true);return;
+      }
       const {data:passkeyData,error:passkeyError}=await client.auth.registerPasskey();
       if(passkeyError||!passkeyData?.id)throw passkeyError||new Error('Enregistrement non confirmé.');
-      enrollmentMessage='La connexion biométrique est maintenant activée sur cet appareil.';
-     }
-    }catch(passkeyError){
-     console.warn('Activation Passkey après connexion classique',passkeyError);
-     enrollmentMessage='La connexion classique a réussi, mais l’activation de la protection biométrique n’a pas abouti. Vous pourrez réessayer plus tard. '+(passkeyError?.message||'');
-    }
+      msg('La connexion biométrique est activée sur cet appareil.',true);
+     }catch(passkeyError){console.warn('Activation Passkey facultative',passkeyError)}
+    })();
    }
-   passkeyEnrollmentInProgress=false;
-   await validate(data.session);
-   if(enrollmentMessage)msg(enrollmentMessage,true);
   }catch(e){msg(e.message||'Une erreur est survenue.')}finally{submit.disabled=false;if(!recovery)submit.textContent='Se connecter'}
  });
  const passkeyLogin=byId('auth-passkey-login');
