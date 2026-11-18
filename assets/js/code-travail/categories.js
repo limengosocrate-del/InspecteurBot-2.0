@@ -94,17 +94,76 @@ speak.addEventListener("click",()=>{if(window.SpeechEngine?.speak)window.SpeechE
 let turning=false;
 function escapeArticle(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 function articleMarkup(art){const idx=all.findIndex(x=>String(x.numero)===String(art.numero)),rawTitle=String(art.titre||"").trim(),duplicateTitle=new RegExp("^article\\s+"+Number(art.numero)+"$","i").test(rawTitle);return '<div class="ct-book-topline"><span class="legal-article-category">'+escapeArticle(art.titreSection||art.categorie||"Code du Travail")+'</span><span class="ct-book-count">'+(idx+1)+' / '+all.length+'</span></div><h3>Article '+escapeArticle(art.numero)+(rawTitle&&!duplicateTitle?" — "+escapeArticle(rawTitle):"")+'</h3><div class="legal-article-text ct-book-text">'+escapeArticle(art.contenu||"Contenu non disponible.")+'</div>'+(art.sanction?'<aside class="legal-sanction"><strong>Sanction / disposition associée</strong><p>'+escapeArticle(art.sanction)+'</p></aside>':"")+'<p class="ct-book-hint"><i class="fa-solid fa-hand-pointer"></i> Glissez doucement le coin pour plier la feuille</p>';}
-function createTurnSheet(frontHTML,backHTML,dir){const height=card.getBoundingClientRect().height,sheet=document.createElement("div");sheet.className="ct-page-turn-sheet ct-touch-sheet "+(dir>0?"ct-sheet-next":"ct-sheet-prev");sheet.innerHTML='<div class="ct-page-turn-face ct-page-turn-front"></div><div class="ct-page-turn-face ct-page-turn-back"></div>';sheet.querySelector(".ct-page-turn-front").innerHTML=frontHTML;sheet.querySelector(".ct-page-turn-back").innerHTML=backHTML;sheet.style.height=Math.max(height,1)+"px";card.style.minHeight=Math.max(height,1)+"px";card.appendChild(sheet);return sheet;}
-function setSheetProgress(sheet,dir,p){const v=Math.max(0,Math.min(1,p));sheet.style.transform="rotateY("+(dir>0?-180*v:180*v)+"deg)";sheet.style.setProperty("--ct-fold-progress",String(v));}
-function turn(target,direction){if(!target||turning)return;turning=true;const dir=direction==="next"?1:-1,sheet=createTurnSheet(card.innerHTML,articleMarkup(target),dir);setSheetProgress(sheet,dir,0);sheet.style.transition="transform 560ms cubic-bezier(.22,.68,.18,1)";requestAnimationFrame(()=>requestAnimationFrame(()=>setSheetProgress(sheet,dir,1)));setTimeout(()=>{sheet.remove();card.style.removeProperty("min-height");openArticle(target,state.parentView,true);},590);}
-prev.addEventListener("click",()=>turn(previous,"prev"));nextBtn.addEventListener("click",()=>turn(next,"next"));nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
-let sx=0,sy=0,startTime=0,tracking=false,dragging=false,direction=1,sheet=null,target=null;
+function createCurlSheet(frontHTML,backHTML,dir){
+ const height=card.getBoundingClientRect().height;
+ card.style.minHeight=Math.max(height,1)+"px";
+ card.innerHTML=backHTML;
+ const sheet=document.createElement("div");
+ sheet.className="ct-finger-curl "+(dir>0?"ct-curl-forward":"ct-curl-backward");
+ sheet.innerHTML='<div class="ct-curl-original"></div><div class="ct-curl-fold-shadow"></div>';
+ sheet.querySelector(".ct-curl-original").innerHTML=frontHTML;
+ sheet.style.height=Math.max(height,1)+"px";card.appendChild(sheet);return sheet;
+}
+function setCurlEdge(sheet,dir,clientX,clientY){
+ const rect=card.getBoundingClientRect(),w=Math.max(1,rect.width),x=Math.max(0,Math.min(w,clientX-rect.left));
+ const p=dir>0?(w-x)/w:x/w,bend=Math.min(18,w*.035)*Math.sin(Math.PI*Math.max(0,Math.min(1,p)));
+ const top=Math.max(0,Math.min(w,x+(dir>0?bend:-bend))),bottom=Math.max(0,Math.min(w,x-(dir>0?bend:-bend)));
+ sheet.style.setProperty("--ct-fold-x-top",(top/w*100).toFixed(2)+"%");
+ sheet.style.setProperty("--ct-fold-x-bottom",(bottom/w*100).toFixed(2)+"%");
+ sheet.style.setProperty("--ct-fold-mid",x+"px");
+ sheet.style.setProperty("--ct-fold-progress",String(Math.max(0,Math.min(1,p))));
+ sheet.style.setProperty("--ct-fold-y",((clientY-rect.top)/Math.max(1,rect.height)*100).toFixed(1)+"%");
+}
 function clearTurn(){card.classList.remove("ct-page-touching");card.style.removeProperty("min-height");if(sheet)sheet.remove();sheet=null;dragging=false;tracking=false;turning=false;}
-function beginCurl(){target=direction>0?next:previous;if(!target||turning)return false;sheet=createTurnSheet(card.innerHTML,articleMarkup(target),direction);card.classList.add("ct-page-touching");sheet.style.transition="none";turning=true;dragging=true;setSheetProgress(sheet,direction,0);return true;}
-card.addEventListener("pointerdown",e=>{if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;const rect=card.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(42,Math.min(72,rect.width*.13));if(x<edge)direction=-1;else if(x>rect.width-edge)direction=1;else return;if((direction>0&&!next)||(direction<0&&!previous)||turning)return;sx=e.clientX;sy=e.clientY;startTime=performance.now();tracking=true;dragging=false;try{card.setPointerCapture(e.pointerId);}catch(_){}});
-card.addEventListener("pointermove",e=>{if(!tracking)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(!dragging){const intended=direction>0?-dx:dx;if(Math.abs(dy)>Math.abs(dx)*1.15&&Math.abs(dy)>10){tracking=false;return;}if(intended<3)return;if(!beginCurl()){tracking=false;return;}}const rect=card.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx;setSheetProgress(sheet,direction,distance/Math.max(1,rect.width));e.preventDefault();});
-function finishTurn(e,cancelled){if(!tracking)return;tracking=false;if(!dragging)return;const dx=e.clientX-sx,dy=e.clientY-sy,rect=card.getBoundingClientRect(),distance=direction>0?sx-e.clientX:e.clientX-sx,p=Math.max(0,Math.min(1,distance/Math.max(1,rect.width))),speed=Math.abs(dx)/Math.max(1,performance.now()-startTime),commit=!cancelled&&Math.abs(dx)>Math.abs(dy)*1.12&&(p>=.34||(p>=.19&&speed>.5));card.classList.remove("ct-page-touching");sheet.style.transition="transform 430ms cubic-bezier(.2,.72,.2,1)";if(commit){setSheetProgress(sheet,direction,1);setTimeout(()=>{clearTurn();openArticle(target,state.parentView,true);},445);}else{setSheetProgress(sheet,direction,0);setTimeout(clearTurn,445);}}
-card.addEventListener("pointerup",e=>finishTurn(e,false));card.addEventListener("pointercancel",e=>finishTurn(e,true));
+function turn(target,direction){
+ if(!target||turning)return;
+ turning=true;
+ const dir=direction==="next"?1:-1,front=card.innerHTML,rect=card.getBoundingClientRect();
+ sheet=createCurlSheet(front,articleMarkup(target),dir);
+ const startX=dir>0?rect.right:rect.left,endX=dir>0?rect.left:rect.right;
+ setCurlEdge(sheet,dir,startX,rect.top+rect.height/2);
+ sheet.style.transition="clip-path 780ms cubic-bezier(.22,.68,.18,1)";
+ requestAnimationFrame(()=>requestAnimationFrame(()=>setCurlEdge(sheet,dir,endX,rect.top+rect.height/2)));
+ setTimeout(()=>{clearTurn();openArticle(target,state.parentView,true);},810);
+}
+prev.addEventListener("click",()=>turn(previous,"prev"));
+nextBtn.addEventListener("click",()=>turn(next,"next"));
+nav.append(prev,speak,nextBtn);card.append(nav);el.append(card);
+let sx=0,sy=0,startTime=0,tracking=false,dragging=false,direction=1,sheet=null,target=null;
+function finishTurn(e,cancelled){
+ if(!tracking)return;
+ tracking=false;if(!dragging||!sheet)return;
+ const dx=e.clientX-sx,dy=e.clientY-sy,rect=card.getBoundingClientRect();
+ const distance=direction>0?sx-e.clientX:e.clientX-sx,p=Math.max(0,Math.min(1,distance/Math.max(1,rect.width)));
+ const speed=Math.abs(dx)/Math.max(1,performance.now()-startTime);
+ const commit=!cancelled&&Math.abs(dx)>Math.abs(dy)*1.15&&(p>=.34||(p>=.22&&speed>.45));
+ card.classList.remove("ct-page-touching");
+ sheet.style.transition="clip-path 720ms cubic-bezier(.22,.68,.18,1)";
+ const endX=commit?(direction>0?rect.left:rect.right):(direction>0?rect.right:rect.left);
+ setCurlEdge(sheet,direction,endX,e.clientY);
+ setTimeout(()=>{clearTurn();openArticle(commit?target:a,state.parentView,true);},740);
+}
+card.addEventListener("pointerdown",e=>{
+ if((e.button!==undefined&&e.button!==0)||e.target.closest("button,input,a,select,textarea"))return;
+ const rect=card.getBoundingClientRect(),x=e.clientX-rect.left,edge=Math.max(42,Math.min(68,rect.width*.12));
+ if(x<edge)direction=-1;else if(x>rect.width-edge)direction=1;else return;
+ target=direction>0?next:previous;if(!target||turning)return;
+ sx=e.clientX;sy=e.clientY;startTime=performance.now();tracking=true;dragging=false;
+ try{card.setPointerCapture(e.pointerId);}catch(_){}
+});
+card.addEventListener("pointermove",e=>{
+ if(!tracking)return;
+ const dx=e.clientX-sx,dy=e.clientY-sy,intended=direction>0?-dx:dx;
+ if(!dragging){
+  if(Math.abs(dy)>Math.abs(dx)*1.12&&Math.abs(dy)>10){tracking=false;return;}
+  if(intended<12)return;
+  sheet=createCurlSheet(card.innerHTML,articleMarkup(target),direction);
+  card.classList.add("ct-page-touching");sheet.style.transition="none";turning=true;dragging=true;
+ }
+ setCurlEdge(sheet,direction,e.clientX,e.clientY);e.preventDefault();
+});
+card.addEventListener("pointerup",e=>finishTurn(e,false));
+card.addEventListener("pointercancel",e=>finishTurn(e,true));
 card.addEventListener("keydown",e=>{if(e.key==="ArrowRight"&&next)turn(next,"next");if(e.key==="ArrowLeft"&&previous)turn(previous,"prev");});
 }
 
