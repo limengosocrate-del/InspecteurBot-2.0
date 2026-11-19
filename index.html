@@ -465,7 +465,7 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
 @media(min-width:700px){#ib-install-card{left:auto;right:22px;bottom:22px;width:440px}}
 @media(prefers-reduced-motion:no-preference){#ib-install-card .ib-install-panel{animation:ib-install-in .22s ease-out}}
 @keyframes ib-install-in{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
-.ib-motivation-strip{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:9px 16px;background:rgba(2,16,47,.78);color:#fff;text-align:center;border-top:1px solid rgba(255,255,255,.2);line-height:normal;backdrop-filter:blur(3px)}
+.ib-motivation-strip{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:10px;min-height:42px;margin:0;padding:9px 16px;background:linear-gradient(90deg,#03153d,#08285b,#03153d);color:#fff;text-align:center;border:0;line-height:normal;}
 .ib-motivation-strip p{margin:0;color:#ffd700;font-size:14px;font-weight:750;line-height:1.35;text-shadow:0 1px 3px #000}
 .ib-motivation-icon{color:#ffd700;font-size:18px;flex:0 0 auto}
 @media(max-width:520px){.ib-motivation-strip{min-height:42px;padding:8px 12px;gap:7px}.ib-motivation-strip p{font-size:12px}}
@@ -488,12 +488,13 @@ body{min-height:100vh;height:auto;overflow-x:hidden;overflow-y:visible!important
         <img src="images/photos_igt/2.jpg?v=20261109-2" alt="Bâtiment de l’Inspection Générale du Travail" decoding="async" loading="lazy" fetchpriority="low">
     </div>  
   
-<!-- Message de motivation intégré au bas de la photo -->
-    <div class="ib-motivation-strip" aria-live="polite" aria-atomic="true">
-      <span class="ib-motivation-icon" aria-hidden="true">✦</span>
-      <p id="motivationText">Le travail construit la nation 🇨🇩</p>
-    </div>
 </section>
+
+<!-- Message de motivation placé sous le diaporama (Hero bottom slide) -->
+<div class="ib-motivation-strip" aria-live="polite" aria-atomic="true">
+  <span class="ib-motivation-icon" aria-hidden="true">✦</span>
+  <p id="motivationText">Le travail construit la nation 🇨🇩</p>
+</div>
 
 <!-- ================= MENU PRINCIPAL ================= -->  
   
