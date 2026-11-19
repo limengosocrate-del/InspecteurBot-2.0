@@ -8,7 +8,7 @@ function appRootUrl(){
 if (window.__inspecteurBotAuthLoaded) return;
 window.__inspecteurBotAuthLoaded = true;
 
-const IB_APP_BUILD='20261118-live-presence-v69';
+const IB_APP_BUILD='20261119-session-2h-v71';
 let ibUpdateCheckAt=0,ibUpdateCheckRunning=false;
 async function checkInspecteurBotUpdate(force=false){
  if(ibUpdateCheckRunning||navigator.onLine===false)return false;
@@ -349,8 +349,12 @@ function setupNetworkStatus(){
 
 function armSessionExpiry(payload){
  clearTimeout(expiry);expiry=null;
- // Pas de durée de session personnalisée : déconnexion ou révocation uniquement.
- sessionDeadline=Number.POSITIVE_INFINITY;
+ const started=Date.parse(payload?.started_at||'');
+ const serverExpiry=Date.parse(payload?.expires_at||'');
+ sessionDeadline=Number.isFinite(serverExpiry)?serverExpiry:(Number.isFinite(started)?started+2*60*60*1000:Date.now()+2*60*60*1000);
+ const remaining=sessionDeadline-Date.now();
+ if(remaining<=0){void expireSession();return}
+ expiry=setTimeout(()=>void expireSession(),Math.min(remaining,2147483647));
 }
 function readSessionId(token){
  try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
@@ -774,7 +778,7 @@ async function serverCheck(session){
     break;
    }
    if(code==='SESSION_ALREADY_INITIALIZED'&&attempt<2){await new Promise(resolve=>setTimeout(resolve,180));continue}
-   const fatal=['LOGIN_REQUIRED','INVALID_SESSION_ID','SESSION_REVOKED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
+   const fatal=['LOGIN_REQUIRED','INVALID_SESSION_ID','SESSION_REVOKED','SESSION_EXPIRED','PROFILE_INACTIVE','ACCOUNT_SUSPENDED','ROLE_NOT_ALLOWED'].includes(code);
    const err=new Error(payload?.message||error?.message||'Vérification de sécurité momentanément indisponible.');
    err.authFatal=fatal;err.authTransient=!fatal;lastError=err;if(fatal)throw err;
   }catch(error){if(error?.authFatal)throw error;lastError=error}
