@@ -938,7 +938,7 @@ async function validate(session){
  }catch(e){console.error('Authentification InspecteurBot : erreur de validation ou d’interface',e);if(e.authFatal){stopRealtimePresence();await client.auth.signOut({scope:'local'}).catch(()=>{});user=null;profile=null;gate(e.message||'Accès refusé.')}else{gate(e.message||'Une erreur temporaire empêche le chargement. Votre session est conservée : réessayez.','retry');return}}
  finally{busy=false}
 }
-async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut().catch(()=>{});user=null;profile=null;gate('Vous êtes déconnecté.')}
+async function signOut(){clearTimeout(expiry);sessionDeadline=0;stopPresenceTracking();stopRealtimePresence();stopIncomingMessageNotifications();clearInterval(validation);if(client)await client.auth.signOut({scope:'local'}).catch(()=>{});try{sessionStorage.removeItem('inspecteurbot-auth-session-v3')}catch(_){}user=null;profile=null;gate('Vous êtes déconnecté.')}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sessionDeadline&&Date.now()>=sessionDeadline)void expireSession();else{if(user&&navigator.onLine!==false)void updatePresence();if(!document.hidden&&user&&window.__ibPresenceRealtimeHealthy!==true)startRealtimePresence()}});
 window.addEventListener('focus',()=>{if(sessionDeadline&&Date.now()>=sessionDeadline)void expireSession()});
 function installPasswordEye(id){
