@@ -352,6 +352,8 @@ function setupNetworkStatus(){
 
 function armSessionExpiry(payload){
  clearTimeout(expiry);expiry=null;
+ // session_open est confirmé par igt-session-start : pas d’expiration locale automatique.
+ if(payload?.session_open===true){sessionDeadline=0;return}
  const started=Date.parse(payload?.started_at||'');
  const serverExpiry=Date.parse(payload?.expires_at||'');
  sessionDeadline=Number.isFinite(serverExpiry)?serverExpiry:(Number.isFinite(started)?started+2*60*60*1000:Date.now()+2*60*60*1000);
@@ -363,7 +365,7 @@ function readSessionId(token){
  try{const part=String(token||'').split('.')[1];if(!part)return null;const base64=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(base64.padEnd(Math.ceil(base64.length/4)*4,'=')));return typeof payload.session_id==='string'?payload.session_id:null}catch(_){return null}
 }
 async function updatePresence(){
- if(!client||!user||!sessionDeadline||Date.now()>=sessionDeadline||navigator.onLine===false||presenceUpdateInFlight)return;
+ if(!client||!user||(sessionDeadline&&Date.now()>=sessionDeadline)||navigator.onLine===false||presenceUpdateInFlight)return;
  presenceUpdateInFlight=true;
  try{
   const now=new Date().toISOString();
@@ -795,7 +797,7 @@ async function serverCheck(session){
    const cached=JSON.parse(localStorage.getItem('inspecteurbot_profile_cache_v2_'+userId)||'null');
    const age=Date.now()-Number(cached?.savedAt||0);
    if(cached?.profile?.id===userId&&cached.profile.is_active===true&&age>=0&&age<=24*60*60*1000){
-    armSessionExpiry({cached:true});
+    armSessionExpiry({cached:true,session_open:true});
     console.warn('Validation distante indisponible : restauration temporaire du profil déjà validé.');
     return {success:true,cached:true,profile:cached.profile,session};
    }
