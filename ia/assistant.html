@@ -153,10 +153,10 @@ async function send(){
  if(window.NeuroJuris&&window.NeuroJuris.ready){
    try{
      const articles=window.NeuroJuris.retrieve(prompt,5).filter(a=>a&&a.authentique===true);
-     if(articles.length)body.knowledge_context=articles.map(a=>"Article "+a.numero+" — "+a.titre+"\\n"+a.contenu+(a.sanction?"\\nSanction indiquée : "+a.sanction:"")).join("\\n\\n").slice(0,10000);
+     if(articles.length)body.knowledge_context=articles.map(a=>"Article "+a.numero+" — "+a.titre+"\n"+a.contenu+(a.sanction?"\nSanction indiquée : "+a.sanction:"")).join("\n\n").slice(0,10000);
    }catch(retrievalError){console.warn("Contexte juridique local indisponible",retrievalError);}
  }
- if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\\n\\n"+attachedDocument.text;
+ if(attachedDocument)body.document_context="Document joint : "+attachedDocument.name+"\n\n"+attachedDocument.text;
  const {data,error}=await client.functions.invoke("inspecteurbot-ai",{body});
  if(error||!data||!data.answer){let msg=data&&data.error?data.error:"Le service IA n'a pas répondu.";if(error&&error.context&&typeof error.context.clone==="function"){try{const d=await error.context.clone().json();if(d&&d.error)msg=d.error;}catch(_){}}throw Error(msg);}
  pending.remove();const answer=nettoyerSalutationIA(data.answer);window.ASSISTANT.addMessage("bot",answer);addBubble("bot",answer,new Date().toISOString());if(speakAuto)window.ASSISTANT.speak(answer);attachedDocument=null;document.getElementById("attachmentChip").classList.remove("visible");
