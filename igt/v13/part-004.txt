@@ -9,7 +9,24 @@ function openModal(x){let modal=document.getElementById('modal');document.getEle
 function norm(x){return (x||'').toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
 function agentText(a){return [a.nom_complet_transcrit,a.matricule_transcrit,a.grade_transcrit,a.fonction_et_affectation_transcrites].join(' ')}
 function canonicalAgentName(a){return norm(String(a.nom_complet_transcrit||'').replace(/^(?:VILLE|PROVINCE|DIRECTION)\s+/i,''))}
-function dedupeAgents(list,mode='identity'){const byIdentity=new Map();const quality=x=>{const n=canonicalAgentName(x);let q=0;if(/^(securite technique|contentieux professionnels|prevoyance sociale|controle de la main|etude et planification|antenne|direction provinciale|administration centrale)/.test(n))q-=12;if(/^(mayi mbuji mayi|mbuji mayi|matadi|ville de kolwezi|ville de)/.test(n))q-=6;if(n.length>75)q-=10;if(n.length<8)q-=4;return q};for(const a of list){const mat=norm(a.matricule_transcrit||'');const key=mat&&mat!=='NONRENSEIGNE'?'M:'+mat:'N:'+canonicalAgentName(a);const previous=byIdentity.get(key);const priority=x=>(x.maj_v5?10:0)+(x.maj_commission?3:0)+(x.id?2:0)+(String(x.source_document||'').includes('LISTE DECLARATIVE')?1:0)+quality(x);if(!previous||priority(a)>priority(previous))byIdentity.set(key,a)}return [...byIdentity.values()]}
+function dedupeAgents(list,mode='identity'){
+ const byIdentity=new Map();
+ const nameOf=a=>canonicalAgentName(a)||norm(a.nom_complet||a.name||'');
+ const matriculeOf=a=>norm(a.matricule_transcrit||a.matricule||a.numero_matricule||'');
+ const priority=a=>{
+  const source=String(a.source_document||'').toLowerCase();
+  const assignment=String(a.fonction_et_affectation_transcrites||a.fonction||'');
+  const duplicated=/((inspecteur|controleur) du travail[^,]*,?\s*(antenne|direction)[^,]*)(?:\s+\1)/i.test(assignment);
+  return (a.maj_commission?1000:0)+(a.maj_v5?500:0)+(/commission/.test(source)?250:0)+(/affectation confirmée par commission/i.test(String(a.statut_dossier||''))?100:0)+(a.id?20:0)+(a.direction_affectation||a.direction_antenne?8:0)+(a.lieu_affectation?6:0)+(a.province_affectation?4:0)+(a.grade_transcrit||a.grade?2:0)+(assignment&&!duplicated?1:0);
+ };
+ for(const a of list){
+  const mat=matriculeOf(a),name=nameOf(a);
+  const key=mat&&mat!=='nonrenseigne'?'M:'+mat:'N:'+name;
+  const previous=byIdentity.get(key);
+  if(!previous||priority(a)>priority(previous))byIdentity.set(key,a);
+ }
+ return [...byIdentity.values()];
+}
 function findAgents(q){
  let cleaned=String(q||'').replace(/^(recherche|trouve|chercher|matricule|le|la|agent)\s+/i,'').trim(),n=norm(cleaned);
  if(!n)return [];
@@ -19,7 +36,7 @@ function findAgents(q){
  if(/^[0-9\s.-]+$/.test(cleaned))return unique(activeOfficial.filter(a=>String(a.matricule_transcrit||'').replace(/\D/g,'')===n));
  const exactOfficial=unique(activeOfficial.filter(a=>canonicalAgentName(a)===n));
  const exactAdmin=agentsAdministratifs.filter(a=>norm(a.nom_complet)===n).map(a=>({...a,_administratif:true}));
- const exact=[...exactOfficial,...exactAdmin];
+ const exact=unique([...exactOfficial,...exactAdmin]);
  if(exact.length){
   if(exact.length===1)return exact;
   const ranked=exactOfficial.slice().sort((a,b)=>((b.maj_v5?10:0)+(b.maj_commission?3:0)+(b.id?2:0))-((a.maj_v5?10:0)+(a.maj_commission?3:0)+(a.id?2:0)));
@@ -30,7 +47,7 @@ function findAgents(q){
  const terms=cleaned.split(/\s+/).map(norm).filter(Boolean);
  const officialMatches=unique(activeOfficial.filter(a=>{const name=canonicalAgentName(a);return terms.every(t=>name.includes(t));}));
  const adminMatches=agentsAdministratifs.filter(a=>{const name=norm(a.nom_complet);return terms.every(t=>name.includes(t));}).map(a=>({...a,_administratif:true}));
- return [...officialMatches,...adminMatches];
+ return unique([...officialMatches,...adminMatches]);
 }
 function esc(x){return String(x||'Non renseigné').replace(/</g,'&lt;')}
 function cleanIdentity(name,a){
