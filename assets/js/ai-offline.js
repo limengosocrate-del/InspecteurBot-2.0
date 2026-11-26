@@ -53,13 +53,23 @@ window.NeuroJuris = {
     // Boost par synonymes juridiques
     const boosted = [...qTokens];
     const syn = {
+      // Rupture du contrat et relations professionnelles
       "renvoi":"licenciement","virer":"licenciement","chasser":"licenciement","renvoyer":"licenciement",
-      "paie":"salaire","argent":"salaire","paye":"salaire","remuneration":"salaire",
-      "vacances":"conge","repos":"conge",
-      "enceinte":"maternite","grossesse":"maternite","accouchement":"maternite",
-      "blessure":"securite","accident":"securite","danger":"securite",
-      "greve":"conflit","syndicat":"syndicat","delegue":"syndicat",
-      "prison":"sanction","amende":"sanction","peine":"sanction"
+      "licencie":"licenciement","licencier":"licenciement","abusif":"licenciement","demission":"rupture",
+      "embauche":"contrat","recrutement":"contrat","engagement":"contrat","cdi":"contrat","cdd":"contrat",
+      // Rémunération et temps de travail
+      "paie":"salaire","argent":"salaire","paye":"salaire","payer":"salaire","remuneration":"salaire",
+      "prime":"salaire","primes":"salaire","smig":"salaire","bulletin":"salaire","fiche":"salaire",
+      "heures":"horaire","supplementaires":"horaire","nuit":"horaire","dimanche":"repos",
+      "vacances":"conge","permission":"conge","repos":"conge","absence":"conge",
+      // Santé, sécurité et protection
+      "enceinte":"maternite","grossesse":"maternite","accouchement":"maternite","allaitement":"maternite",
+      "blessure":"securite","accident":"securite","danger":"securite","epi":"securite","protection":"securite",
+      "harcelement":"violence","intimidation":"violence","discrimination":"egalite",
+      // Inspection, représentation et sanctions
+      "controle":"inspection","inspecteur":"inspection","visite":"inspection","pv":"proces verbal",
+      "greve":"conflit","syndicat":"syndicat","delegue":"syndicat","travailleurs":"travailleur",
+      "prison":"sanction","amende":"sanction","peine":"sanction","punition":"sanction"
     };
     qTokens.forEach(t => { if (syn[t]) boosted.push(syn[t]); });
 
