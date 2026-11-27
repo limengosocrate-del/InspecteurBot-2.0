@@ -90,6 +90,43 @@
       "Je peux adapter cette trame dès que vous fournissez le type de PV, les faits constatés, la date, le lieu, l'entreprise et les pièces. Aucun fait ni article ne sera inventé.";
   }
 
+  function legalTopicAnswer(question) {
+    const q = norm(question);
+    const isDecompte = /\b(decompte|solde de tout compte|fin de contrat|cessation|licenciement|demission|preavis)\b/.test(q);
+    const isSmig = /\b(smig|salaire minimum|minimum interprofessionnel)\b/.test(q);
+    if (!isDecompte && !isSmig) return null;
+    const db = Array.isArray(window.CODE_TRAVAIL_DB) ? window.CODE_TRAVAIL_DB : [];
+    const terms = isDecompte
+      ? ["decompte", "cessation", "fin du contrat", "preavis", "indemnite", "conge", "remuneration"]
+      : ["smig", "salaire minimum", "minimum interprofessionnel", "remuneration", "salaire"];
+    const scored = db.map(article => {
+      const body = norm((article.titre || "") + " " + (article.contenu || article.texte || ""));
+      let score = 0;
+      for (const term of terms) { const t = norm(term); if (body.includes(t)) score += t.length > 8 ? 5 : 3; }
+      return { article, score };
+    }).filter(x => x.score > 0).sort((a,b) => b.score-a.score || a.article.numero-b.article.numero).slice(0,4);
+    const parts = ["**" + (isDecompte ? "RECHERCHE JURIDIQUE — DÉCOMPTE FINAL" : "RECHERCHE JURIDIQUE — SMIG") + "**", ""];
+    if (scored.length) {
+      parts.push("**Articles repérés dans la base locale :**");
+      for (const hit of scored) {
+        const a = hit.article, content = String(a.contenu || a.texte || "").trim();
+        parts.push("**Article " + a.numero + (a.categorie ? " — " + a.categorie : "") + "**\n" + content.slice(0,850) + (content.length > 850 ? "…" : ""));
+      }
+    } else parts.push("Aucun article suffisamment pertinent n’a été retrouvé automatiquement dans la base locale. Je préfère ne pas inventer de référence.");
+    if (isDecompte) {
+      parts.push("**COMMENT PRÉPARER LE DÉCOMPTE FINAL**",
+        "Le calculateur Décompte final déjà intégré à InspecteurBot doit être utilisé pour le calcul chiffré. Il faut distinguer les éléments dus selon le dossier : rémunération restant due, préavis applicable, congés acquis non pris, indemnités éventuelles, avantages et retenues légalement justifiées.",
+        "**Données à réunir :** nom du travailleur, employeur, fonction et catégorie, dates d’engagement et de fin, motif de rupture, salaire et avantages, préavis presté ou non, congés pris et restants, jours prestés du dernier mois, retenues justifiées.",
+        "Le résultat du moteur est une estimation fondée sur ses paramètres. Les taux et formules doivent être contrôlés avec le texte en vigueur, la convention collective et les pièces du dossier avant signature.");
+    } else {
+      parts.push("**COMMENT VÉRIFIER LE SMIG**",
+        "Le montant applicable dépend de la période concernée et de la classification professionnelle. Utilisez le barème SMIG déjà intégré à l’application, sélectionnez la fonction ou la classe, puis comparez le salaire dû à la rémunération réellement versée.",
+        "Ne transposez pas automatiquement un ancien barème à une période plus récente : vérifiez le décret applicable à la date de paie et la catégorie du travailleur.");
+    }
+    parts.push("**Limite documentaire :** la base locale reprend la Loi n° 015/2002 et des consolidations ciblées de la Loi n° 16/010 de 2016. Toutes les modifications ne sont pas intégrées. Vérifiez la version officielle avant toute décision ou verbalisation.");
+    return { text: parts.join("\n\n"), confidence: 0.78, source: "recherche juridique et procédures locales" };
+  }
+
   function localAnswer(question, options) {
     options = options || {};
     const q = String(question || "").trim();
@@ -100,6 +137,8 @@
     }
 
     const nq = norm(q);
+    const legalTopic = legalTopicAnswer(q);
+    if (legalTopic) return legalTopic;
     if (/\b(types? de pv|quels pv|quels sont les pv|liste des pv)\b/.test(nq)) {
       return { text: "**Types de documents prévus dans le module PV**\n\n" + PV_TYPES.map((name, i) => (i + 1) + ". " + name).join("\n") + "\n\nJe peux ensuite préparer une trame avec les faits et les renseignements que vous fournissez.\n\n" + DEV_NOTICE, confidence: 0.7, source: "catalogue local PV" };
     }
