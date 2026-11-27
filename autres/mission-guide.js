@@ -3,7 +3,7 @@
 if(document.getElementById("ib-mission-guide")) return;
 const intro=document.querySelector("main.wrap > .intro");
 if(!intro) return;
-const html=\`
+const html=`
 <section class="panel" id="ib-mission-guide">
 <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
 <div><span class="status active">GUIDE DE FORMATION PRATIQUE</span><h3 style="margin:8px 0"><i class="fa fa-graduation-cap"></i> Préparer et conduire une mission d’inspection du travail</h3><p class="hint">Guide opérationnel pour les Inspecteurs et Contrôleurs du Travail, notamment ceux qui participent à leur première mission.</p></div>
@@ -107,7 +107,7 @@ const html=\`
 </section>
 <style>
 #ib-mission-guide{margin-top:14px}.ib-shortcuts{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}.ib-shortcuts a{padding:8px 11px;border-radius:9px;background:var(--soft);border:1px solid var(--line);color:var(--ink);font-size:12px;font-weight:800;text-decoration:none}.ib-callout,.ib-example{padding:13px 14px;border-radius:11px;background:var(--soft);border-left:4px solid var(--gold);margin:12px 0;color:var(--ink)}.ib-part{border-top:1px solid var(--line);padding-top:17px;margin-top:18px;scroll-margin-top:12px}.ib-part h4{font-size:17px;color:var(--blue);margin:0 0 10px}.ib-part h5{font-size:14px;margin:14px 0 7px;color:var(--ink)}.ib-part p,.ib-part li{line-height:1.68}.ib-part ol,.ib-part ul{padding-left:22px}.ib-part li{margin:6px 0}.ib-check{columns:2}.ib-check li{break-inside:avoid}.ib-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.ib-cards article,.ib-two>div{border:1px solid var(--line);border-radius:11px;padding:13px;background:var(--soft);min-width:0}.ib-cards p{font-size:13px;margin:7px 0}.ib-cards a{font-size:12px;font-weight:800;color:var(--blue)}.ib-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}#ib-mission-guide details{border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:8px 0;background:var(--soft)}#ib-mission-guide summary{font-weight:800;color:var(--ink);cursor:pointer}#ib-mission-guide details p{margin:10px 0 2px}@media(max-width:650px){.ib-cards,.ib-two{grid-template-columns:1fr}.ib-check{columns:1}}
-</style>\`;
+</style>`;
 intro.insertAdjacentHTML("afterend",html);
 document.querySelectorAll(".ib-shortcuts a").forEach(a=>a.addEventListener("click",e=>{const t=document.querySelector(a.getAttribute("href"));if(t){e.preventDefault();t.scrollIntoView({behavior:"smooth",block:"start"});}}));
 })();
